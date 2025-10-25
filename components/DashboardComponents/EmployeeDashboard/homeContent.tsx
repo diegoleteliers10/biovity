@@ -17,9 +17,16 @@ import {
   IdeaIcon,
 } from "@hugeicons/core-free-icons";
 import { DATA } from "@/lib/data/data-test";
+import { authClient } from "@/lib/auth-client";
 
 
 export const HomeContent = () => {
+
+    const { useSession } = authClient;
+    const data = useSession();
+    if(data.isPending == false) {
+      console.log(data);
+    }
 
     const handleJobClick = (jobTitle: string, company: string) => {
       // Navigate to job details page
