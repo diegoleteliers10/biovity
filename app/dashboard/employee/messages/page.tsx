@@ -2,11 +2,11 @@ import { MessagesContent } from "@/components/DashboardComponents/EmployeeDashbo
 import { DashboardLayout } from "@/components/Layouts/DashboardLayout"
 
 const EmployeeMessages = () => {
-	return (
-		<DashboardLayout>
-			<MessagesContent />
-		</DashboardLayout>
-	)
+  return (
+    <DashboardLayout>
+      <MessagesContent />
+    </DashboardLayout>
+  )
 }
 
 export default EmployeeMessages
