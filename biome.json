@@ -7,20 +7,11 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": [
-			"",
-			"!node_modules/",
-			"!!node_modules/",
-			"!out/",
-			"!!build/",
-			"!dist/",
-			"!next-env.d.ts",
-			"!.next/"
-		]
+		"includes": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
+		"indentStyle": "space",
 		"lineWidth": 100,
 		"lineEnding": "lf",
 		"formatWithErrors": false
