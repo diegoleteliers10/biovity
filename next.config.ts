@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  //Here you put your configs
-};
+	//Here you put your configs
+}
 
-export default nextConfig;
+export default nextConfig
