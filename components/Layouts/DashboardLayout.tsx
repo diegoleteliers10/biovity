@@ -1,10 +1,9 @@
 "use client"
 
-import { Settings01Icon, TransitionLeftIcon } from "@hugeicons/core-free-icons"
+import { Settings01Icon, TransitionRightIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { usePathname, useRouter } from "next/navigation"
 import type { ReactNode } from "react"
-import * as React from "react"
 import {
   Tooltip,
   TooltipContent,
@@ -43,19 +42,19 @@ const SidebarComponent = () => {
         <div className="flex items-center justify-between">
           {state === "collapsed" ? (
             <SidebarMenuItem
-              className="w-full justify-center group cursor-pointer"
+              className="w-full justify-center group/logo cursor-pointer"
               onClick={() => setOpen(!open)}
               aria-label="App Logo"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground relative overflow-hidden">
-                <span className="text-sm font-bold group-hover:opacity-0 transition-opacity duration-200">
+                <span className="text-sm font-bold group-hover/logo:opacity-0 transition-opacity duration-200">
                   B
                 </span>
                 <HugeiconsIcon
-                  icon={TransitionLeftIcon}
+                  icon={TransitionRightIcon}
                   size={24}
                   strokeWidth={1.5}
-                  className="absolute inset-0 m-auto size-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  className="absolute inset-0 m-auto size-4 opacity-0 group-hover/logo:opacity-100 transition-opacity duration-200"
                 />
               </div>
             </SidebarMenuItem>
@@ -74,7 +73,7 @@ const SidebarComponent = () => {
                   </div>
                 </SidebarMenuItem>
               </div>
-              <SidebarTrigger />
+              <SidebarTrigger className="cursor-pointer"/>
             </>
           )}
         </div>
@@ -161,7 +160,7 @@ const SidebarComponent = () => {
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">{NAV_DATA.profileProgress.percentage}%</span>
-            <button className="text-sm text-gray-600 hover:text-gray-800">
+            <button className="text-sm text-gray-600 hover:text-gray-800" type="button" onClick={() => router.push("/dashboard/employee/profile")}>
               {NAV_DATA.profileProgress.actionText}
             </button>
           </div>
@@ -169,7 +168,7 @@ const SidebarComponent = () => {
       </SidebarContent>
 
       <SidebarFooter>
-        <Tooltip side="right" align="center">
+        {/*<Tooltip side="right" align="center">
           <TooltipTrigger asChild>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
@@ -183,14 +182,15 @@ const SidebarComponent = () => {
           <TooltipContent>
             <p>Configuración</p>
           </TooltipContent>
-        </Tooltip>
+        </Tooltip>*/}
 
         {/* User Profile */}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
+              onClick={() => router.push("/dashboard/employee/profile")}
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <div className="h-full w-full rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">

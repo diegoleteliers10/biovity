@@ -15,65 +15,164 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/animate-ui/components/radix/dropdown-menu'
 import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
+import { Suspense, useState } from "react"
+
+
 
 export const HomeContent = () => {
   const { useSession } = authClient
-  const data = useSession()
-  if (data.isPending === false) {
-    console.log(data)
-  }
+  const { data, isPending } = useSession()
+
+  // Estado para las notificaciones
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: "Nueva aplicación recibida",
+      message: "TechCorp ha revisado tu aplicación para Desarrollador Senior",
+      time: "Hace 2 horas",
+      isRead: false,
+      type: "application"
+    },
+    {
+      id: 2,
+      title: "Entrevista programada",
+      message: "BioCorp ha programado una entrevista para mañana",
+      time: "Hace 4 horas",
+      isRead: false,
+      type: "interview"
+    },
+    {
+      id: 3,
+      title: "Nuevo empleo recomendado",
+      message: "Hemos encontrado 3 empleos que podrían interesarte",
+      time: "Hace 1 día",
+      isRead: true,
+      type: "recommendation"
+    }
+  ])
+
+  const unreadCount = notifications.filter(n => !n.isRead).length
+
 
   const handleJobClick = (jobTitle: string, company: string) => {
-    // Navigate to job details page
-    // You can replace this with your preferred routing method (Next.js router, etc.)
     console.log(`Navigating to job: ${jobTitle} at ${company}`)
-    // Example: router.push(`/dashboard/employee/jobs/${encodeURIComponent(jobTitle)}`);
   }
 
   const handleApplyJob = (jobId: number, jobTitle: string, company: string) => {
     console.log(`Applying to job: ${jobTitle} at ${company} (ID: ${jobId})`)
-    // Add your application logic here
   }
 
   const handleSaveJob = (jobId: number, jobTitle: string, company: string) => {
     console.log(`Saving job: ${jobTitle} at ${company} (ID: ${jobId})`)
-    // Add your save job logic here
   }
 
   const handleViewAllJobs = () => {
     console.log("Viewing all recommended jobs")
-    // Navigate to all jobs page
   }
 
   const handleCreateAlert = () => {
     console.log("Creating new job alert")
-    // Add alert creation logic here
   }
 
-  // const handleEditAlert = (alertId: number) => {
-  // 	console.log(`Editing alert with ID: ${alertId}`)
-  // 	// Add alert editing logic here
-  // }
+  // Componente para el header con skeleton
+  const HeaderContent = () => {
+    if (isPending) {
+      return (
+        <div className="space-y-2">
+          <Skeleton className="h-9 w-80" />
+          <Skeleton className="h-5 w-96" />
+        </div>
+      )
+    }
+
+    const firstName = data?.user?.name?.split(" ")[0] || "Usuario"
+    
+    return (
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-wide">
+          ¡Bienvenido/a de vuelta, {firstName}!
+        </h1>
+        <p className="text-muted-foreground">
+          Aquí está lo que está pasando con tus aplicaciones de trabajo hoy.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-wide">
-            ¡Bienvenido/a de vuelta, {DATA.user.name.split(" ")[0]}!
-          </h1>
-          <p className="text-muted-foreground">
-            Aquí está lo que está pasando con tus aplicaciones de trabajo hoy.
-          </p>
-        </div>
+        <Suspense fallback={
+          <div className="space-y-2">
+            <Skeleton className="h-9 w-80" />
+            <Skeleton className="h-5 w-96" />
+          </div>
+        }>
+          <HeaderContent />
+        </Suspense>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="relative">
-            <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
-            <span className="absolute top-[8px] right-[9px] h-2 w-2 bg-red-500 rounded-full"></span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-[8px] right-[9px] h-2 w-2 bg-red-500 rounded-full"></span>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-80" align="end">
+              <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
+              
+              {/* Ejemplo de notificaciones */}
+              <div className="p-2 space-y-2">
+                {notifications.map((notification) => (
+                  <div 
+                    key={notification.id}
+                    className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                    onClick={() => {
+                      // Marcar como leída
+                      setNotifications(prev => 
+                        prev.map(n => 
+                          n.id === notification.id ? { ...n, isRead: true } : n
+                        )
+                      )
+                    }}
+                  >
+                    <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                      notification.isRead ? 'bg-gray-300' : 
+                      notification.type === 'application' ? 'bg-blue-500' :
+                      notification.type === 'interview' ? 'bg-green-500' : 'bg-purple-500'
+                    }`}></div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm ${notification.isRead ? 'font-normal' : 'font-medium'}`}>
+                        {notification.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{notification.message}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            
+              {/*<div className="p-2">
+                <Button variant="ghost" className="w-full justify-center text-xs">
+                  Ver todas las notificaciones
+                </Button>
+              </div>*/}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -211,7 +310,7 @@ export const HomeContent = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {DATA.recommendedJobs.map((job) => (
             <Card
-              key={job.id}
+              key={job.jobTitle}
               className="relative overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-300"
               onClick={() => handleJobClick(job.jobTitle, job.company)}
               aria-label={`Ver detalles del trabajo ${job.jobTitle} en ${job.company}`}
@@ -274,7 +373,7 @@ export const HomeContent = () => {
                 <div className="flex flex-wrap gap-1">
                   {job.tags.slice(0, 2).map((tag) => (
                     <span
-                      key={job.id}
+                      key={job.jobTitle}
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground truncate"
                     >
                       {tag}
