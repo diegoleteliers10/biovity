@@ -8,10 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
+import { useRouter} from "next/navigation"
 
 const { signUp } = authClient
 
 export default function RegisterPage() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<"organización" | "persona">("persona")
   const [formData, setFormData] = useState({
     name: "",
@@ -92,15 +94,13 @@ export default function RegisterPage() {
         password: formData.password,
         name: formData.name,
         type: formData.type,
-        callbackURL: "/dashboard/employee",
-      })
+      });
 
       if (result.error) {
         console.error("Sign up error:", result.error)
         setErrors({ general: "Error al crear la cuenta. Inténtalo de nuevo." })
       } else {
-        // Redirect to dashboard
-        window.location.href = "/register"
+        router.push("/dashboard/employee")
       }
     } catch (error) {
       console.error("Sign up error:", error)

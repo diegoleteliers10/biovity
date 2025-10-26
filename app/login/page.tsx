@@ -27,7 +27,7 @@ export default function LoginPage() {
         email,
         password,
         rememberMe: rememberMe,
-        callbackURL: "/dashboard/employee",
+        callbackURL: "http://localhost:3000/dashboard/employee",
       })
 
       if (result.error) {
