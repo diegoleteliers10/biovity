@@ -1,10 +1,25 @@
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react"
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+} from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 export function Footer() {
   const footerSections = [
     {
       title: "Para Profesionales",
-      links: ["Buscar Empleos", "Subir CV", "Alertas de Empleo", "Consejos de Carrera", "Blog"],
+      links: [
+        "Buscar Empleos",
+        "Subir CV",
+        "Alertas de Empleo",
+        "Consejos de Carrera",
+        "Blog",
+      ],
     },
     {
       title: "Para Empresas",
@@ -26,7 +41,7 @@ export function Footer() {
         "Política de Cookies",
       ],
     },
-  ]
+  ];
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -35,21 +50,20 @@ export function Footer() {
           {/* Company info */}
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">B</span>
-              </div>
-              <span className="text-xl font-semibold">Bioruby</span>
+              <Logo size="sm" />
+              <span className="text-xl font-semibold">Biovity</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              La plataforma líder que conecta talento científico con las mejores oportunidades en
-              biotecnología, química, farmacia y áreas relacionadas.
+              La plataforma líder que conecta talento científico con las mejores
+              oportunidades en biotecnología, química, farmacia y áreas
+              relacionadas.
             </p>
 
             {/* Contact info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-gray-400">
                 <Mail className="w-4 h-4" />
-                <span>contacto@bioruby.com</span>
+                <span>contacto@biovity.com</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
                 <Phone className="w-4 h-4" />
@@ -69,7 +83,10 @@ export function Footer() {
               <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    <a
+                      href="#"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
                       {link}
                     </a>
                   </li>
@@ -83,21 +100,33 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="text-gray-400 mb-4 md:mb-0">
-              © 2024 Bioruby. Todos los derechos reservados.
+              © 2024 Biovity. Todos los derechos reservados.
             </div>
 
             {/* Social links */}
             <div className="flex items-center space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -105,5 +134,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

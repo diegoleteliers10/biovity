@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
+import Image from "next/image";
 
 const menuItems = [
   { name: "Empleos", href: "#" },
@@ -36,7 +37,14 @@ export const Header = () => {
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
               <Link href="/" aria-label="home" className="flex items-center space-x-2">
-                <h3>Biovity</h3>
+                <Image
+                  src="/logoIcon.png"
+                  alt="Biovity Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain"
+                  priority
+                />
               </Link>
 
               <button
@@ -95,10 +103,12 @@ export const Header = () => {
                     <span>Sign Up</span>
                   </Link>
                 </Button>
-                <Button asChild size="sm" className={cn(isScrolled ? "lg:inline-flex" : "hidden")}>
-                  <Link href="#">
-                    <span>Get Started</span>
-                  </Link>
+                <Button
+                  size="sm"
+                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                >
+                  <span>Get Started</span>
                 </Button>
               </div>
             </div>

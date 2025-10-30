@@ -1,14 +1,26 @@
-"use client"
+"use client";
 
-import { Settings01Icon, TransitionRightIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { usePathname, useRouter } from "next/navigation"
-import type { ReactNode } from "react"
+import {
+  FlipRightIcon,
+  Settings01Icon,
+  TransitionRightIcon,
+  User02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { usePathname, useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/animate-ui/components/animate/tooltip"
+} from "@/components/animate-ui/components/animate/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/animate-ui/components/radix/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -23,18 +35,42 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from "@/components/animate-ui/components/radix/sidebar"
-import { Avatar } from "@/components/ui/avatar"
-import { NAV_DATA } from "@/lib/data/nav-data"
+} from "@/components/animate-ui/components/radix/sidebar";
+import { Avatar } from "@/components/ui/avatar";
+import { Logo } from "@/components/ui/logo";
+import { authClient } from "@/lib/auth-client";
+import { NAV_DATA } from "@/lib/data/nav-data";
 
 interface DashboardLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 const SidebarComponent = () => {
-  const { state, setOpen, open } = useSidebar()
-  const pathname = usePathname()
-  const router = useRouter()
+  const { state, setOpen, open } = useSidebar();
+  const pathname = usePathname();
+  const router = useRouter();
+  const { signOut, useSession } = authClient;
+  const { data, isPending } = useSession();
+
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/login");
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Fallback: redirect to login anyway
+      router.push("/login");
+    }
+  };
+
+  const handleViewProfile = () => {
+    router.push("/dashboard/employee/profile");
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-none">
@@ -46,12 +82,13 @@ const SidebarComponent = () => {
               onClick={() => setOpen(!open)}
               aria-label="App Logo"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground relative overflow-hidden">
-                <span className="text-sm font-bold group-hover/logo:opacity-0 transition-opacity duration-200">
-                  B
-                </span>
+              <div className="relative">
+                <Logo
+                  size="sm"
+                  className="group-hover/logo:opacity-0 transition-opacity duration-200"
+                />
                 <HugeiconsIcon
-                  icon={TransitionRightIcon}
+                  icon={FlipRightIcon}
                   size={24}
                   strokeWidth={1.5}
                   className="absolute inset-0 m-auto size-4 opacity-0 group-hover/logo:opacity-100 transition-opacity duration-200"
@@ -61,19 +98,14 @@ const SidebarComponent = () => {
           ) : (
             <>
               <div className="flex-1">
-                <SidebarMenuItem className="w-full h-auto p-2" aria-label="App Logo and Name">
-                  <div className="flex items-center gap-2">
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                      <span className="text-sm font-bold">B</span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-lg font-bold text-foreground">Biovity</span>
-                      <span className="text-xs text-muted-foreground">Dashboard</span>
-                    </div>
-                  </div>
+                <SidebarMenuItem
+                  className="w-full h-auto p-2"
+                  aria-label="App Logo and Name"
+                >
+                  <Logo size="sm" showText={true} textSize="md" />
                 </SidebarMenuItem>
               </div>
-              <SidebarTrigger className="cursor-pointer"/>
+              <SidebarTrigger className="cursor-pointer" />
             </>
           )}
         </div>
@@ -84,18 +116,26 @@ const SidebarComponent = () => {
         <SidebarGroup>
           <SidebarMenu className="font-mono">
             {NAV_DATA.navMain.map((item) => {
-              const isActive = pathname === item.url
+              const isActive = pathname === item.url;
               return (
                 <Tooltip key={item.title} side="right" align="center">
                   <TooltipTrigger asChild>
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive} size="default">
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        size="default"
+                      >
                         <button
                           type="button"
                           onClick={() => router.push(item.url)}
                           className="flex items-center w-full focus:outline-none cursor-pointer"
                         >
-                          <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
+                          <HugeiconsIcon
+                            icon={item.icon}
+                            size={24}
+                            strokeWidth={1.5}
+                          />
                           <span>{item.title}</span>
                           {item.badge && (
                             <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
@@ -110,7 +150,7 @@ const SidebarComponent = () => {
                     <p>{item.title}</p>
                   </TooltipContent>
                 </Tooltip>
-              )
+              );
             })}
           </SidebarMenu>
         </SidebarGroup>
@@ -120,7 +160,7 @@ const SidebarComponent = () => {
           <SidebarGroupLabel>Explorar</SidebarGroupLabel>
           <SidebarMenu className="font-mono">
             {NAV_DATA.explore.map((item) => {
-              const isActive = pathname === item.url
+              const isActive = pathname === item.url;
               return (
                 <Tooltip key={item.title} side="right" align="center">
                   <TooltipTrigger asChild>
@@ -131,7 +171,11 @@ const SidebarComponent = () => {
                           onClick={() => router.push(item.url)}
                           className="flex items-center w-full focus:outline-none cursor-pointer"
                         >
-                          <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
+                          <HugeiconsIcon
+                            icon={item.icon}
+                            size={24}
+                            strokeWidth={1.5}
+                          />
                           <span>{item.title}</span>
                         </button>
                       </SidebarMenuButton>
@@ -141,29 +185,48 @@ const SidebarComponent = () => {
                     <p>{item.title}</p>
                   </TooltipContent>
                 </Tooltip>
-              )
+              );
             })}
           </SidebarMenu>
         </SidebarGroup>
 
         {/* Profile Progress Card */}
         <div
-          className={`mx-4 mb-4 p-4 bg-white rounded-lg transition-opacity duration-300 shadow-sm group-data-[collapsible=icon]:hidden`}
+          className={`mx-4 mb-4 p-5 bg-card border border-border rounded-xl transition-all duration-300 shadow-sm hover:shadow-md group-data-[collapsible=icon]:hidden`}
         >
-          <h3 className="font-semibold text-gray-800 mb-2">{NAV_DATA.profileProgress.title}</h3>
-          <p className="text-sm text-gray-600 mb-2">{NAV_DATA.profileProgress.subtitle}</p>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex-1">
+              <h3 className="font-semibold text-card-foreground mb-1 text-sm">
+                {NAV_DATA.profileProgress.title}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {NAV_DATA.profileProgress.subtitle}
+              </p>
+            </div>
+            <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+              <span className="text-xs font-bold text-primary">
+                {NAV_DATA.profileProgress.percentage}%
+              </span>
+            </div>
+          </div>
+          
+          <div className="relative w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
             <div
-              className="bg-gray-800 h-2 rounded-full"
+              className="bg-gradient-to-r from-primary to-primary/80 h-2 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${NAV_DATA.profileProgress.percentage}%` }}
-            ></div>
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">{NAV_DATA.profileProgress.percentage}%</span>
-            <button className="text-sm text-gray-600 hover:text-gray-800" type="button" onClick={() => router.push("/dashboard/employee/profile")}>
-              {NAV_DATA.profileProgress.actionText}
-            </button>
-          </div>
+          
+          <button
+            className="w-full text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-1"
+            type="button"
+            onClick={() => router.push("/dashboard/employee/profile")}
+            tabIndex={0}
+            aria-label={`${NAV_DATA.profileProgress.actionText} - Perfil ${NAV_DATA.profileProgress.percentage}% completo`}
+          >
+            {NAV_DATA.profileProgress.actionText}
+          </button>
         </div>
       </SidebarContent>
 
@@ -187,32 +250,71 @@ const SidebarComponent = () => {
         {/* User Profile */}
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
-              onClick={() => router.push("/dashboard/employee/profile")}
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <div className="h-full w-full rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white text-sm font-semibold">
-                    {NAV_DATA.user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </span>
-                </div>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{NAV_DATA.user.name}</span>
-                <span className="truncate text-xs">{NAV_DATA.user.title}</span>
-              </div>
-            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <div className="h-full w-full rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                      <span className="text-white text-sm font-semibold">
+                        {NAV_DATA.user.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </span>
+                    </div>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">
+                      {data?.user ? data?.user.name : "Usuario"}
+                    </span>
+                    <span className="truncate text-xs">
+                      {NAV_DATA.user.title}
+                    </span>
+                  </div>
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-56"
+                align="end"
+                side="top"
+                sideOffset={8}
+              >
+                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={handleViewProfile}
+                  className="cursor-pointer"
+                >
+                  <HugeiconsIcon
+                    icon={User02Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="mr-2"
+                  />
+                  Ver Perfil
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer text-red-600 focus:text-red-600"
+                >
+                  <HugeiconsIcon
+                    icon={TransitionRightIcon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="mr-2 text-red-600"
+                  />
+                  Cerrar Sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
-}
+  );
+};
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
@@ -220,5 +322,5 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <SidebarComponent />
       <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
     </SidebarProvider>
-  )
-}
+  );
+};

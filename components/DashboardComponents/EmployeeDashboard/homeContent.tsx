@@ -12,10 +12,7 @@ import {
   TradeUpIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Suspense, useState } from "react"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -23,12 +20,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/animate-ui/components/radix/dropdown-menu'
+} from "@/components/animate-ui/components/radix/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
-import { Suspense, useState } from "react"
-
-
 
 export const HomeContent = () => {
   const { useSession } = authClient
@@ -42,7 +40,7 @@ export const HomeContent = () => {
       message: "TechCorp ha revisado tu aplicación para Desarrollador Senior",
       time: "Hace 2 horas",
       isRead: false,
-      type: "application"
+      type: "application",
     },
     {
       id: 2,
@@ -50,7 +48,7 @@ export const HomeContent = () => {
       message: "BioCorp ha programado una entrevista para mañana",
       time: "Hace 4 horas",
       isRead: false,
-      type: "interview"
+      type: "interview",
     },
     {
       id: 3,
@@ -58,12 +56,11 @@ export const HomeContent = () => {
       message: "Hemos encontrado 3 empleos que podrían interesarte",
       time: "Hace 1 día",
       isRead: true,
-      type: "recommendation"
-    }
+      type: "recommendation",
+    },
   ])
 
-  const unreadCount = notifications.filter(n => !n.isRead).length
-
+  const unreadCount = notifications.filter((n) => !n.isRead).length
 
   const handleJobClick = (jobTitle: string, company: string) => {
     console.log(`Navigating to job: ${jobTitle} at ${company}`)
@@ -97,12 +94,10 @@ export const HomeContent = () => {
     }
 
     const firstName = data?.user?.name?.split(" ")[0] || "Usuario"
-    
+
     return (
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-wide">
-          ¡Bienvenido/a de vuelta, {firstName}!
-        </h1>
+        <h1 className="text-[28px] font-bold tracking-wide">¡Bienvenido/a de vuelta, {firstName}!</h1>
         <p className="text-muted-foreground">
           Aquí está lo que está pasando con tus aplicaciones de trabajo hoy.
         </p>
@@ -114,12 +109,14 @@ export const HomeContent = () => {
     <div className="flex flex-1 flex-col gap-4 p-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Suspense fallback={
-          <div className="space-y-2">
-            <Skeleton className="h-9 w-80" />
-            <Skeleton className="h-5 w-96" />
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="space-y-2">
+              <Skeleton className="h-9 w-80" />
+              <Skeleton className="h-5 w-96" />
+            </div>
+          }
+        >
           <HeaderContent />
         </Suspense>
         <div className="flex items-center gap-4">
@@ -134,29 +131,35 @@ export const HomeContent = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-80" align="end">
               <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
-              
+
               {/* Ejemplo de notificaciones */}
               <div className="p-2 space-y-2">
                 {notifications.map((notification) => (
-                  <div 
+                  <div
                     key={notification.id}
                     className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer"
                     onClick={() => {
                       // Marcar como leída
-                      setNotifications(prev => 
-                        prev.map(n => 
-                          n.id === notification.id ? { ...n, isRead: true } : n
-                        )
+                      setNotifications((prev) =>
+                        prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
                       )
                     }}
                   >
-                    <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                      notification.isRead ? 'bg-gray-300' : 
-                      notification.type === 'application' ? 'bg-blue-500' :
-                      notification.type === 'interview' ? 'bg-green-500' : 'bg-purple-500'
-                    }`}></div>
+                    <div
+                      className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                        notification.isRead
+                          ? "bg-gray-300"
+                          : notification.type === "application"
+                            ? "bg-blue-500"
+                            : notification.type === "interview"
+                              ? "bg-green-500"
+                              : "bg-purple-500"
+                      }`}
+                    ></div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm ${notification.isRead ? 'font-normal' : 'font-medium'}`}>
+                      <p
+                        className={`text-sm ${notification.isRead ? "font-normal" : "font-medium"}`}
+                      >
                         {notification.title}
                       </p>
                       <p className="text-xs text-muted-foreground">{notification.message}</p>
@@ -165,7 +168,7 @@ export const HomeContent = () => {
                   </div>
                 ))}
               </div>
-            
+
               {/*<div className="p-2">
                 <Button variant="ghost" className="w-full justify-center text-xs">
                   Ver todas las notificaciones
