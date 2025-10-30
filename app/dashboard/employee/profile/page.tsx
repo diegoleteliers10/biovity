@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { DashboardLayout } from "@/components/Layouts/DashboardLayout";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +17,7 @@ import {
   Calendar01Icon,
   Camera01Icon,
 } from "@hugeicons/core-free-icons";
+import { authClient } from "@/lib/auth-client";
 
 interface ProfileData {
   name: string;
@@ -47,6 +47,28 @@ const EmployeeProfile = () => {
 
   const [formData, setFormData] = useState<ProfileData>(profileData);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Load session user data from BetterAuth
+  const { useSession } = authClient;
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const user: any | undefined = session?.user as any;
+    if (!user) return;
+
+    setProfileData((prev) => ({
+      ...prev,
+      name: user.name ?? prev.name,
+      email: user.email ?? prev.email,
+      avatar: user.image ?? prev.avatar,
+      location: user.location ?? prev.location,
+      profession: user.title ?? prev.profession,
+    }));
+  }, [session]);
+
+  useEffect(() => {
+    setFormData(profileData);
+  }, [profileData]);
 
   const handleInputChange = (field: keyof ProfileData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -91,7 +113,6 @@ const EmployeeProfile = () => {
   };
 
   return (
-    <DashboardLayout>
       <main className="p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -362,7 +383,6 @@ const EmployeeProfile = () => {
           </div>
       </div>
       </main>
-    </DashboardLayout>
   );
 };
 

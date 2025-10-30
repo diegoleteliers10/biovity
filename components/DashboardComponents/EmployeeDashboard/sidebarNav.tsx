@@ -1,14 +1,21 @@
 "use client";
 
-import {
-  FlipRightIcon,
-  Settings01Icon,
-  TransitionRightIcon,
-  User02Icon,
-} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { usePathname, useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import { authClient } from "@/lib/auth-client";
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/animate-ui/components/radix/sidebar";
 import {
   Tooltip,
   TooltipContent,
@@ -21,31 +28,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/animate-ui/components/radix/dropdown-menu";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/animate-ui/components/radix/sidebar";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
-import { authClient } from "@/lib/auth-client";
 import { NAV_DATA } from "@/lib/data/nav-data";
+import {
+  FlipRightIcon,
+  TransitionRightIcon,
+  User02Icon,
+} from "@hugeicons/core-free-icons";
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
-
-const SidebarComponent = () => {
+// pega aquí el contenido de tu SidebarComponent original, sin modificar lógica
+export const SidebarComponent = () => {
   const { state, setOpen, open } = useSidebar();
   const pathname = usePathname();
   const router = useRouter();
@@ -209,7 +202,7 @@ const SidebarComponent = () => {
               </span>
             </div>
           </div>
-          
+
           <div className="relative w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
             <div
               className="bg-gradient-to-r from-primary to-primary/80 h-2 rounded-full transition-all duration-500 ease-out"
@@ -217,7 +210,7 @@ const SidebarComponent = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
           </div>
-          
+
           <button
             className="w-full text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-1"
             type="button"
@@ -313,14 +306,5 @@ const SidebarComponent = () => {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  );
-};
-
-export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  return (
-    <SidebarProvider className="pt-2 pl-2 bg-sidebar">
-      <SidebarComponent />
-      <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
-    </SidebarProvider>
   );
 };
