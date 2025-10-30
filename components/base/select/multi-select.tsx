@@ -25,13 +25,11 @@ import {
 } from "react-aria-components"
 import type { ListData } from "react-stately"
 import { useListData } from "react-stately"
-import { Avatar } from "@/components/base/avatar/avatar"
 import type { IconComponentType } from "@/components/base/badges/badge-types"
 import { HintText } from "@/components/base/input/hint-text"
 import { Label } from "@/components/base/input/label"
 import { Popover } from "@/components/base/select/popover"
 import { type SelectItemType, sizes } from "@/components/base/select/select"
-import { TagCloseX } from "@/components/base/tags/base-components/tag-close-x"
 import { useResizeObserver } from "@/hooks/use-resize-observer"
 import { cx } from "@/lib/utils/cx"
 import { SelectItem } from "./select-item"
@@ -259,72 +257,11 @@ const InnerMultiSelect = ({
     }
   }
 
-  const handleTagKeyDown = (event: KeyboardEvent<HTMLButtonElement>, value: Key) => {
-    // Do nothing when tab is clicked to move focus from the tag to the input element.
-    if (event.key === "Tab") {
-      return
-    }
-
-    event.preventDefault()
-
-    const isFirstTag = comboBoxContext?.selectedItems?.items?.[0]?.id === value
-
-    switch (event.key) {
-      case " ":
-      case "Enter":
-      case "Backspace":
-        if (isFirstTag) {
-          focusManager?.focusNext({ wrap: false, tabbable: false })
-        } else {
-          focusManager?.focusPrevious({ wrap: false, tabbable: false })
-        }
-
-        comboBoxContext.onRemove(new Set([value]))
-        break
-
-      case "ArrowLeft":
-        focusManager?.focusPrevious({ wrap: false, tabbable: false })
-        break
-      case "ArrowRight":
-        focusManager?.focusNext({ wrap: false, tabbable: false })
-        break
-      case "Escape":
-        comboBoxStateContext?.close()
-        break
-    }
-  }
-
-  const isSelectionEmpty = comboBoxContext?.selectedItems?.items?.length === 0
-
   return (
-    <div className="relative flex w-full flex-1 flex-row flex-wrap items-center justify-start gap-1.5">
-      {!isSelectionEmpty &&
-        comboBoxContext?.selectedItems?.items?.map((value) => (
-          <span
-            key={value.id}
-            className="flex items-center rounded-md bg-primary py-0.5 pr-1 pl-1.25 ring-1 ring-primary ring-inset"
-          >
-            <Avatar size="xxs" alt={value?.label} src={value?.avatarUrl} />
-
-            <p className="ml-1.25 truncate text-sm font-medium whitespace-nowrap text-secondary select-none">
-              {value?.label}
-            </p>
-
-            <TagCloseX
-              size="md"
-              isDisabled={isDisabled}
-              className="ml-0.75"
-              // For workaround, onKeyDown is added to the button
-              onKeyDown={(event) => handleTagKeyDown(event, value.id)}
-              onPress={() => comboBoxContext.onRemove(new Set([value.id]))}
-            />
-          </span>
-        ))}
-
+    <div className="relative flex w-full flex-1 flex-row items-center justify-start gap-1.5">
       <div
         className={cx(
           "relative flex min-w-[20%] flex-1 flex-row items-center",
-          !isSelectionEmpty && "ml-0.5",
           shortcut && "min-w-[30%]"
         )}
       >
