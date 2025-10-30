@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Logo } from "@/components/ui/logo";
 import { authClient } from "@/lib/auth-client";
+import { motion } from "motion/react";
 
 export default function RegisterSelectionPage() {
   const router = useRouter();
@@ -41,9 +42,32 @@ export default function RegisterSelectionPage() {
     return (
       <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+          <CardContent className="p-8">
+            <div className="flex flex-col items-center gap-5">
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="flex items-end gap-2"
+                aria-label="Cargando"
+                role="status"
+              >
+                <motion.span
+                  className="h-3 w-3 rounded-full bg-green-600"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.span
+                  className="h-3.5 w-3.5 rounded-full bg-emerald-500"
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay: 0.12 }}
+                />
+                <motion.span
+                  className="h-3 w-3 rounded-full bg-purple-600"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay: 0.24 }}
+                />
+              </motion.div>
               <p className="text-sm text-gray-600">Verificando sesión...</p>
             </div>
           </CardContent>
