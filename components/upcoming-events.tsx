@@ -85,8 +85,8 @@ export function UpcomingEvents() {
   }
 
   return (
-    <Card className="bg-sidebar border-sidebar-border shadow-sm">
-      <div className="p-6">
+    <Card className="bg-sidebar border-sidebar-border h-full">
+      <div className="p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-6">
           <Calendar className="h-5 w-5 text-sidebar-primary" />
           <h3 className="text-lg font-semibold text-sidebar-foreground">Próximos Eventos</h3>
@@ -97,8 +97,8 @@ export function UpcomingEvents() {
             <div
               key={event.id}
               className={`
-                relative p-4 rounded-lg border-l-4 transition-all duration-200
-                hover:shadow-sm cursor-pointer
+                relative p-4 rounded-lg border-l-4 transition-colors duration-200
+                cursor-pointer
                 ${getEventTypeColor(event.type)}
               `}
             >
@@ -142,7 +142,7 @@ export function UpcomingEvents() {
           ))}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-sidebar-border">
+        <div className="mt-auto pt-4 border-t border-sidebar-border">
           <button className="w-full text-sm text-sidebar-primary hover:text-sidebar-primary/80 font-medium transition-colors">
             Ver todos los eventos →
           </button>

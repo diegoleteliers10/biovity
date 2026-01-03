@@ -13,6 +13,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Suspense, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -29,6 +30,7 @@ import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
 
 export const HomeContent = () => {
+  const router = useRouter()
   const { useSession } = authClient
   const { data, isPending } = useSession()
 
@@ -62,12 +64,20 @@ export const HomeContent = () => {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length
 
+  const toSlug = (value: string): string => {
+    return value
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-+|-+$/g, "")
+  }
+
   const handleJobClick = (jobTitle: string, company: string) => {
-    console.log(`Navigating to job: ${jobTitle} at ${company}`)
+    const slug = toSlug(jobTitle)
+    router.push(`/dashboard/employee/job/${slug}`)
   }
 
   const handleApplyJob = (jobId: number, jobTitle: string, company: string) => {
-    console.log(`Applying to job: ${jobTitle} at ${company} (ID: ${jobId})`)
+    router.push(`/dashboard/employee/job/${jobId}`)
   }
 
   const handleSaveJob = (jobId: number, jobTitle: string, company: string) => {
@@ -146,7 +156,7 @@ export const HomeContent = () => {
                     }}
                   >
                     <div
-                      className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                      className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
                         notification.isRead
                           ? "bg-gray-300"
                           : notification.type === "application"
@@ -314,7 +324,7 @@ export const HomeContent = () => {
           {DATA.recommendedJobs.map((job) => (
             <Card
               key={job.jobTitle}
-              className="relative overflow-hidden flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-300"
+              className="relative overflow-hidden flex flex-col cursor-pointer transition-colors duration-300"
               onClick={() => handleJobClick(job.jobTitle, job.company)}
               aria-label={`Ver detalles del trabajo ${job.jobTitle} en ${job.company}`}
             >

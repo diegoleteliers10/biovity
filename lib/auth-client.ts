@@ -8,6 +8,8 @@ export const authClient = createAuthClient({
     inferAdditionalFields({
       user: {
         type: { type: "string" as DBFieldType },
+        profession: { type: "string" as DBFieldType },
+        avatar: { type: "string" as DBFieldType },
       },
     }),
   ],

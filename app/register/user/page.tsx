@@ -4,6 +4,8 @@ import {
   SquareLock02Icon,
   Mail01Icon,
   UserIcon,
+  ViewIcon,
+  ViewOffSlashIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
@@ -40,6 +42,10 @@ export default function UserRegisterPage() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  
+  console.log(formData)
 
   // Lista de profesiones/cargos
   const professions = [
@@ -323,16 +329,29 @@ export default function UserRegisterPage() {
                 <Input
                   id="password"
                   name="password"
-                  type="password"
+                  type={isPasswordVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) =>
                     handleInputChange("password", e.target.value)
                   }
-                  className={`pl-10 ${errors.password ? "border-red-500" : ""}`}
+                  className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
                   required
                   autoComplete="new-password"
                 />
+                <button
+                  type="button"
+                  aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-pressed={isPasswordVisible}
+                  onClick={() => setIsPasswordVisible((v) => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
+                >
+                  <HugeiconsIcon
+                    icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                    size={18}
+                    strokeWidth={1.75}
+                  />
+                </button>
               </div>
               {errors.password && (
                 <p className="text-sm text-red-500">{errors.password}</p>
@@ -357,16 +376,29 @@ export default function UserRegisterPage() {
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
+                  type={isConfirmVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={(e) =>
                     handleInputChange("confirmPassword", e.target.value)
                   }
-                  className={`pl-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                  className={`pl-10 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
                   required
                   autoComplete="new-password"
                 />
+                <button
+                  type="button"
+                  aria-label={isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-pressed={isConfirmVisible}
+                  onClick={() => setIsConfirmVisible((v) => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
+                >
+                  <HugeiconsIcon
+                    icon={isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
+                    size={18}
+                    strokeWidth={1.75}
+                  />
+                </button>
               </div>
               {errors.confirmPassword && (
                 <p className="text-sm text-red-500">{errors.confirmPassword}</p>

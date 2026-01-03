@@ -6,23 +6,35 @@ import {
   Briefcase01Icon,
   CheckmarkCircle02Icon,
   Clock01Icon,
+  Image01Icon,
   MoreHorizontalIcon,
   Search01Icon,
   Sent02Icon,
-  SmileIcon,
   Video01Icon,
+  Calendar04Icon,
+  BubbleChatIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type * as React from "react"
-import { useState } from "react"
+import { useRef, useState } from "react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/animate-ui/components/radix/dropdown-menu"
 import { Avatar } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MESSAGES_DATA } from "@/lib/data/messages-data"
 
 export const MessagesContent = () => {
-  const [selectedConversation, setSelectedConversation] = useState(MESSAGES_DATA.activeConversation)
+  const [selectedConversation, setSelectedConversation] = useState<any>(null)
   const [messageInput, setMessageInput] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   const handleSendMessage = () => {
     if (messageInput.trim()) {
@@ -39,10 +51,38 @@ export const MessagesContent = () => {
     }
   }
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      // Aquí iría la lógica para procesar los archivos
+      console.log("Archivos seleccionados:", Array.from(files))
+      // Resetear el input para permitir seleccionar el mismo archivo nuevamente
+      e.target.value = ""
+    }
+  }
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      // Aquí iría la lógica para procesar las imágenes
+      console.log("Imágenes seleccionadas:", Array.from(files))
+      // Resetear el input para permitir seleccionar la misma imagen nuevamente
+      e.target.value = ""
+    }
+  }
+
+  const handleSelectFiles = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleSelectImages = () => {
+    imageInputRef.current?.click()
+  }
+
   return (
-    <div className="flex flex-1">
+    <div className="flex flex-1 overflow-hidden">
       {/* Sidebar de conversaciones */}
-      <div className="w-80 border-r-1 border-border flex flex-col">
+      <div className="w-80 border-r border-border flex flex-col max-h-screen overflow-hidden">
         {/* Header del sidebar */}
         <div className="p-4">
           <div className="flex items-center justify-between mb-6">
@@ -76,7 +116,7 @@ export const MessagesContent = () => {
             <div
               key={conversation.id}
               className={`p-4 border-b border-border cursor-pointer hover:bg-muted/50 transition-colors ${
-                selectedConversation.id === conversation.id ? "bg-muted" : ""
+                selectedConversation?.id === conversation.id ? "bg-muted" : ""
               }`}
               onClick={() => {
                 const fullConversation = MESSAGES_DATA.conversations.find(
@@ -93,7 +133,7 @@ export const MessagesContent = () => {
               <div className="flex items-start gap-3">
                 <div className="relative">
                   <Avatar className="h-12 w-12">
-                    <div className="h-full w-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                    <div className="h-full w-full rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                       <span className="text-white text-sm font-semibold">
                         {conversation.recruiter.name
                           .split(" ")
@@ -112,7 +152,7 @@ export const MessagesContent = () => {
                     <h3 className="font-semibold text-sm truncate">
                       {conversation.recruiter.name}
                     </h3>
-                    <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                    <span className="text-xs text-muted-foreground shrink-0 ml-2">
                       {conversation.lastMessage.time}
                     </span>
                   </div>
@@ -132,7 +172,7 @@ export const MessagesContent = () => {
                       {conversation.lastMessage.text}
                     </p>
                     {conversation.unreadCount > 0 && (
-                      <span className="bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center flex-shrink-0">
+                      <span className="bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center shrink-0">
                         {conversation.unreadCount}
                       </span>
                     )}
@@ -153,18 +193,32 @@ export const MessagesContent = () => {
       </div>
 
       {/* Área de chat principal */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col max-h-screen overflow-hidden">
+        {!selectedConversation ? (
+          <div className="flex flex-1 items-center justify-center">
+            <div className="text-center max-w-md px-6">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                <HugeiconsIcon icon={BubbleChatIcon} size={24} strokeWidth={1.5} className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h2 className="text-lg font-semibold">Tus mensajes</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Selecciona una conversación en la izquierda para comenzar.
+              </p>
+            </div>
+          </div>
+        ) : (
+        <>
         {/* Header del chat */}
-        <div className="p-4 border-b border-border bg-background">
+        <div className="shrink-0 p-4 border-b border-border bg-background">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3 flex-1">
               <div className="relative">
                 <Avatar className="h-12 w-12">
-                  <div className="h-full w-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <div className="w-full rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                     <span className="text-white text-sm font-semibold">
                       {selectedConversation.recruiter.name
                         .split(" ")
-                        .map((n) => n[0])
+                        .map((n: string) => n[0])
                         .join("")}
                     </span>
                   </div>
@@ -215,12 +269,6 @@ export const MessagesContent = () => {
 
             <div className="flex items-center gap-1 ml-4">
               <Button variant="ghost" size="icon" className="h-8 w-8">
-                <HugeiconsIcon icon={AiPhone01Icon} size={18} />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <HugeiconsIcon icon={Video01Icon} size={18} />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
                 <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
               </Button>
             </div>
@@ -228,9 +276,9 @@ export const MessagesContent = () => {
         </div>
 
         {/* Área de mensajes */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+        <div className="flex-1 p-4 space-y-4 min-h-0 overflow-y-scroll scrollbar-message-hide">
           <div className="space-y-4">
-            {selectedConversation.messages.map((message) => (
+            {selectedConversation.messages.map((message: any) => (
               <div
                 key={message.id}
                 className={`flex ${
@@ -243,12 +291,12 @@ export const MessagesContent = () => {
                   }`}
                 >
                   {message.sender === "recruiter" && (
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                      <div className="h-full w-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <div className="h-full w-full rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-semibold">
                           {selectedConversation.recruiter.name
                             .split(" ")
-                            .map((n) => n[0])
+                            .map((n: string) => n[0])
                             .join("")}
                         </span>
                       </div>
@@ -289,11 +337,73 @@ export const MessagesContent = () => {
         </div>
 
         {/* Input de mensaje */}
-        <div className="p-4 border-t border-border bg-background">
+        <div className="shrink-0 p-4 border-t border-border bg-background">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
-              <HugeiconsIcon icon={Attachment01Icon} size={20} />
-            </Button>
+            {/* Inputs ocultos para archivos e imágenes */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".pdf,.doc,.docx,.txt,.zip,.rar"
+              onChange={handleFileSelect}
+              className="hidden"
+              aria-label="Seleccionar archivos"
+            />
+            <input
+              ref={imageInputRef}
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageSelect}
+              className="hidden"
+              aria-label="Seleccionar imágenes"
+            />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Adjuntar archivo o imagen"
+                >
+                  <HugeiconsIcon icon={Attachment01Icon} size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuLabel>Adjuntar</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={handleSelectImages}
+                  className="cursor-pointer"
+                >
+                  <HugeiconsIcon
+                    icon={Image01Icon}
+                    size={18}
+                    className="mr-2 h-4 w-4"
+                  />
+                  <span>Imágenes</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    console.log("Adjuntar reunión")
+                  }}
+                  className="cursor-pointer"
+                >
+                  <HugeiconsIcon icon={Calendar04Icon} size={18} className="mr-2 h-4 w-4" />
+                  <span>Reunión</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleSelectFiles}
+                  className="cursor-pointer"
+                >
+                  <HugeiconsIcon
+                    icon={Attachment01Icon}
+                    size={18}
+                    className="mr-2 h-4 w-4"
+                  />
+                  <span>Archivos</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <div className="flex-1 relative">
               <textarea
@@ -301,21 +411,15 @@ export const MessagesContent = () => {
                 onChange={(e) => {
                   setMessageInput(e.target.value);
                   // Auto-resize functionality
-                  e.target.style.height = 'auto';
-                  e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                  e.target.style.height = "auto";
+                  e.target.style.height =
+                    Math.min(e.target.scrollHeight, 120) + "px";
                 }}
                 onKeyPress={handleKeyPress}
                 placeholder="Escribe un mensaje..."
-                className="w-full min-h-[36px] max-h-[120px] px-3 py-2 pr-12 border border-input rounded-md bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring resize-none overflow-y-auto"
+                className="w-full min-h-[36px] max-h-[120px] px-3 py-2 border border-input rounded-md bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring resize-none overflow-y-auto"
                 rows={1}
               />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
-              >
-                <HugeiconsIcon icon={SmileIcon} size={18} />
-              </Button>
             </div>
 
             <Button
@@ -327,6 +431,8 @@ export const MessagesContent = () => {
             </Button>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

@@ -185,15 +185,45 @@ export const SearchContent = () => {
             </div>
           </div>
 
-          <AnimatePresence initial={false} mode="popLayout">
+          <AnimatePresence initial={false}>
             {showAdvanced && (
               <motion.div
                 key="advanced-filters"
-                layout
-                initial={{ opacity: 0, y: -8, scale: 0.99 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.99, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ 
+                  opacity: 0, 
+                  y: -10, 
+                  scale: 0.97
+                }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  y: -6, 
+                  scale: 0.97,
+                  transition: { 
+                    duration: 0.2, 
+                    ease: [0.4, 0, 0.2, 1]
+                  } 
+                }}
+                transition={{ 
+                  duration: 0.3, 
+                  ease: [0.4, 0, 0.2, 1],
+                  opacity: {
+                    duration: 0.25,
+                    ease: [0.4, 0, 0.2, 1]
+                  },
+                  y: {
+                    duration: 0.3,
+                    ease: [0.34, 1.56, 0.64, 1]
+                  },
+                  scale: {
+                    duration: 0.3,
+                    ease: [0.34, 1.56, 0.64, 1]
+                  }
+                }}
                 className="rounded-lg border border-border/60 bg-card p-3 mt-4"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
@@ -263,7 +293,7 @@ export const SearchContent = () => {
         {filteredJobs.map((job) => (
           <Card
             key={job.id}
-            className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group hover:shadow-md"
+            className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group"
           >
             <CardHeader className="pb-0">
               <div className="flex items-start justify-between gap-3">

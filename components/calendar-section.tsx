@@ -40,7 +40,7 @@ export function CalendarSection() {
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Calendar Section */}
       <div className="lg:col-span-3">
-        <div className="bg-card rounded-lg border border-border shadow-sm">
+        <div className="bg-card rounded-lg border border-border">
           {/* Calendar Header */}
           <div className="flex items-center justify-between p-6 border-b border-border">
             <h2 className="text-2xl font-semibold text-card-foreground">

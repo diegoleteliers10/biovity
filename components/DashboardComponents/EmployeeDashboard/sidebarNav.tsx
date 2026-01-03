@@ -185,7 +185,7 @@ export const SidebarComponent = () => {
 
         {/* Profile Progress Card */}
         <div
-          className={`mx-4 mb-4 p-5 bg-card border border-border rounded-xl transition-all duration-300 shadow-sm hover:shadow-md group-data-[collapsible=icon]:hidden`}
+          className={`mx-4 mb-4 p-5 bg-card border border-border rounded-xl transition-colors duration-300 group-data-[collapsible=icon]:hidden`}
         >
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">

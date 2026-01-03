@@ -1,24 +1,33 @@
 import { betterAuth } from "better-auth"
 import { Pool } from "pg"
+import { createAuthMiddleware } from "better-auth/api"
 
 export const auth = betterAuth({
   database: new Pool({
     connectionString:
-      "postgresql://postgres:J5qvqaP0mU8XscNT@db.ozdaoqgtvjdfkpqosnnj.supabase.co:5432/postgres",
+      "postgresql://postgres:AlineLarroucau270221_@db.ozdaoqgtvjdfkpqosnnj.supabase.co:5432/postgres",
   }),
+	hooks: {
+		before: createAuthMiddleware(async (ctx) => {
+			// Execute before processing the request
+			console.log("Request path:", ctx.body);
+		}),
+	},
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
     },
   },
   account: {
+    modelName: "account",
     fields: {
       userId: "user_id",
-      providerId: "provider", // mapea providerId de Better Auth a tu columna 'provider'
-      accountId: "provideraccountid", // mapea accountId de Better Auth a tu columna 'providerAccountId'
+      providerId: "provider",
+      accountId: "provideraccountid",
       refreshToken: "refresh_token",
       accessToken: "access_token",
       accessTokenExpiresAt: "expires_at",
+      refreshTokenExpiresAt: "refreshTokenExpiresAt", // Added missing field
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
@@ -35,9 +44,23 @@ export const auth = betterAuth({
     additionalFields: {
       isActive: {
         type: "boolean",
+        required: false,
+        input: false,
+      },
+      avatar: {
+        type: "string",
+        required: false,
+        input: false,
+      },
+      profession: {
+        type: "string",
+        required: true,
+        input: true,
       },
       verificationToken: {
         type: "string",
+        required: false,
+        input: false,
       },
       type: {
         type: "string",
@@ -64,33 +87,33 @@ export const auth = betterAuth({
     },
     expiresIn: 604800, // 7 days
     updateAge: 86400, // 1 day
-    disableSessionRefresh: true, // Disable session refresh so that the session is not updated regardless of the `updateAge` option. (default: `false`)
+    disableSessionRefresh: true,
     additionalFields: {
-      // Additional fields for the session table
       customField: {
         type: "string",
+        required: false,
+        input: false,
       },
     },
     cookieCache: {
-      enabled: true, // Enable caching session in cookie (default: `false`)
+      enabled: true,
       maxAge: 300, // 5 minutes
+    },
+  },
+  verification: {
+    modelName: "verification",
+    fields: {
+      identifier: "identifier",
+      value: "value",
+      expiresAt: "expiresAt",
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
     },
   },
   emailAndPassword: {
     enabled: true,
   },
-  socialProviders: {
-    github: {
-      clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET as string,
-    },
-  },
-  logger: {
+	logger: {
     level: "debug",
-    transport: {
-      console: {
-        level: "debug",
-      },
-    },
-  },
+	}
 })

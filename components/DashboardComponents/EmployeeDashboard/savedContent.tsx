@@ -11,6 +11,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { DATA } from "@/lib/data/data-test"
+import { useRouter } from "next/navigation"
 
 type JobItem = {
   id: number
@@ -26,6 +27,7 @@ type JobItem = {
 }
 
 export const SavedContent = () => {
+  const router = useRouter()
   const jobs: JobItem[] = (DATA.recommendedJobs as unknown as JobItem[]).filter(
     (j) => j.isSaved
   )
@@ -42,10 +44,31 @@ export const SavedContent = () => {
       </div>
 
       {jobs.length === 0 ? (
-        <div className="flex items-center justify-center py-16 rounded-lg border border-dashed">
-          <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">Aún no tienes empleos guardados.</p>
-            <p className="text-xs text-muted-foreground">Usa el icono de guardar en los listados para añadirlos aquí.</p>
+        <div
+          className="flex flex-1 items-center justify-center rounded-lg border border-dashed"
+        >
+          <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+              <HugeiconsIcon
+                icon={Bookmark02Icon}
+                size={44}
+                strokeWidth={1.5}
+                className="h-11 w-11 text-muted-foreground"
+              />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Aún no tienes empleos guardados.</p>
+              <p className="text-xs text-muted-foreground">
+                Usa el icono de guardar en los listados para añadirlos aquí.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/employee/search")}
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-md shadow transition-colors hover:bg-primary/90"
+            >
+              Ver todos los empleos
+            </button>
           </div>
         </div>
       ) : (
@@ -53,7 +76,7 @@ export const SavedContent = () => {
           {jobs.map((job) => (
             <Card
               key={job.id}
-              className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group hover:shadow-md"
+              className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group"
             >
               <CardHeader className="pb-0">
                 <div className="flex items-start justify-between gap-3">

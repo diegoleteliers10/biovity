@@ -4,6 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Calendar04Icon, File02Icon, IdeaIcon, Message01Icon, Share05Icon, CheckmarkCircle02Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { useMemo, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DATA } from "@/lib/data/data-test"
 import { motion } from "motion/react"
@@ -35,6 +36,7 @@ const getCurrentStageIndex = (status: string) => {
 }
 
 export const ApplicationsContent = () => {
+  const router = useRouter()
   const applications: ApplicationItem[] = useMemo(() => DATA.recentApplications as unknown as ApplicationItem[], [])
   const [hovered, setHovered] = useState<string | null>(null)
 
@@ -47,6 +49,26 @@ export const ApplicationsContent = () => {
         </div>
       </div>
 
+      {applications.length === 0 ? (
+        <div
+          className="flex flex-1 items-center justify-center rounded-lg border border-dashed"
+        >
+          <div className="flex flex-col items-center justify-center text-center gap-3 py-12">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+              <HugeiconsIcon
+                icon={File02Icon}
+                size={44}
+                strokeWidth={1.5}
+                className="h-11 w-11 text-muted-foreground"
+              />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Aún no tienes aplicaciones.</p>
+              <p className="text-xs text-muted-foreground">Busca empleos y postula para verlos aquí.</p>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 gap-4">
         {applications.map((app) => {
           const key = `${app.company}-${app.jobTitle}`
@@ -55,7 +77,7 @@ export const ApplicationsContent = () => {
           return (
             <div key={key} className="relative">
               <Card
-                className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group hover:shadow-md"
+                className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group"
               >
                 <CardHeader className="pb-0">
                   <div className="flex items-start justify-between gap-3">
@@ -67,11 +89,17 @@ export const ApplicationsContent = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Button
-                        variant="default"
+                        variant="ghost"
                         size="icon-sm"
-                        className="rounded-md bg-black text-white hover:bg-black/90"
-                        aria-label="Compartir detalle"
+                        className="rounded-md bg-muted hover:bg-muted/80 text-foreground hover:text-primary transition-colors duration-200"
                         title="Compartir detalle"
+                        onClick={() => {
+                          const slug = app.jobTitle
+                            .toLowerCase()
+                            .replace(/[^\p{L}\p{N}]+/gu, "-")
+                            .replace(/^-+|-+$/g, "")
+                          router.push(`/dashboard/employee/job/${slug}`)
+                        }}
                       >
                         <HugeiconsIcon icon={Share05Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
                       </Button>
@@ -125,6 +153,7 @@ export const ApplicationsContent = () => {
           )
         })}
       </div>
+      )}
     </div>
   )
 }
