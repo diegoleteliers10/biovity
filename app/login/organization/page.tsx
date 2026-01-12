@@ -100,18 +100,14 @@ export default function OrganizationLoginPage() {
       });
 
       if (result.error) {
-        console.error("Sign in error:", result.error);
         setErrors({
-          general:
-            "Credenciales inválidas. Por favor verifica tu email y contraseña.",
-        });
+          general: "Credenciales inválidas. Por favor verifica tu email y contraseña.",
+        })
       } else {
-        // Login exitoso, redirigir a la página solicitada
-        router.push(redirectTo);
+        router.push(redirectTo)
       }
-    } catch (error) {
-      console.error("Sign in error:", error);
-      setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." });
+    } catch (_error) {
+      setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." })
     } finally {
       setIsLoading(false);
     }
@@ -127,25 +123,12 @@ export default function OrganizationLoginPage() {
           </div>
 
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Portal Organizacional
+            <CardTitle className="text-3xl font-bold text-gray-800">
+              <h2>Portal Organizacional</h2>
             </CardTitle>
             <CardDescription className="text-gray-600">
               Acceso para empresas y organizaciones
             </CardDescription>
-          </div>
-
-          {/* Organization Type Indicator */}
-          <div className="flex items-center justify-center gap-2 py-2 px-4 bg-purple-50 rounded-md">
-            <HugeiconsIcon
-              icon={Building06Icon}
-              size={16}
-              strokeWidth={1.5}
-              className="text-purple-600"
-            />
-            <span className="text-sm font-medium text-purple-700">
-              Acceso Organizacional
-            </span>
           </div>
         </CardHeader>
 

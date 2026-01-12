@@ -104,8 +104,8 @@ export default function LoginSelectionPage() {
           </div>
 
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Bienvenido a Biovity
+            <CardTitle className="text-3xl font-bold text-gray-800">
+              <h2>Bienvenido a Biovity</h2>
             </CardTitle>
             <CardDescription className="text-gray-600">
               Selecciona tu tipo de acceso para continuar

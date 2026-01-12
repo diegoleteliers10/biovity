@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,16 +19,24 @@ import {
 } from "@hugeicons/core-free-icons";
 import { authClient } from "@/lib/auth-client";
 
-interface ProfileData {
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
-  profession: string;
-  bio: string;
-  experience: string;
-  skills: string[];
-  avatar: string;
+type ProfileData = {
+  readonly name: string
+  readonly email: string
+  readonly phone: string
+  readonly location: string
+  readonly profession: string
+  readonly bio: string
+  readonly experience: string
+  readonly skills: readonly string[]
+  readonly avatar: string
+}
+
+type SessionUser = {
+  readonly name?: string
+  readonly email?: string
+  readonly image?: string
+  readonly location?: string
+  readonly title?: string
 }
 
 const EmployeeProfile = () => {
@@ -46,15 +54,14 @@ const EmployeeProfile = () => {
   });
 
   const [formData, setFormData] = useState<ProfileData>(profileData);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Load session user data from BetterAuth
-  const { useSession } = authClient;
+  const { useSession } = authClient
   const { data: session } = useSession();
 
   useEffect(() => {
-    const user: any | undefined = session?.user as any;
-    if (!user) return;
+    const user: SessionUser | undefined = session?.user as SessionUser | undefined
+    if (!user) return
 
     setProfileData((prev) => ({
       ...prev,
@@ -63,44 +70,51 @@ const EmployeeProfile = () => {
       avatar: user.image ?? prev.avatar,
       location: user.location ?? prev.location,
       profession: user.title ?? prev.profession,
-    }));
-  }, [session]);
+    }))
+  }, [session])
 
   useEffect(() => {
     setFormData(profileData);
   }, [profileData]);
 
-  const handleInputChange = (field: keyof ProfileData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+  const handleInputChange = useCallback((field: keyof ProfileData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    setErrors((prev) => {
+      if (prev[field]) {
+        const next = { ...prev }
+        delete next[field]
+        return next
+      }
+      return prev
+    })
+  }, [])
+
+  const handleSave = useCallback(() => {
+    const validationErrors: Record<string, string> = {}
+
+    if (!formData.name.trim()) validationErrors.name = "El nombre es requerido"
+    if (!formData.email.trim()) validationErrors.email = "El email es requerido"
+    if (!formData.profession.trim()) {
+      validationErrors.profession = "La profesión es requerida"
     }
-  };
 
-  const handleSave = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) newErrors.name = "El nombre es requerido";
-    if (!formData.email.trim()) newErrors.email = "El email es requerido";
-    if (!formData.profession.trim()) newErrors.profession = "La profesión es requerida";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
     }
 
-    setProfileData(formData);
-    setIsEditing(false);
-    setErrors({});
-  };
+    setProfileData(formData)
+    setIsEditing(false)
+    setErrors({})
+  }, [formData])
 
-  const handleCancel = () => {
-    setFormData(profileData);
-    setIsEditing(false);
-    setErrors({});
-  };
+  const handleCancel = useCallback(() => {
+    setFormData(profileData)
+    setIsEditing(false)
+    setErrors({})
+  }, [profileData])
 
-  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();

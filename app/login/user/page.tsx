@@ -96,20 +96,16 @@ export default function UserLoginPage() {
       });
 
       if (result.error) {
-        console.error("Sign in error:", result.error);
         setErrors({
-          general:
-            "Credenciales inválidas. Por favor verifica tu email y contraseña.",
-        });
+          general: "Credenciales inválidas. Por favor verifica tu email y contraseña.",
+        })
       } else {
-        // Login exitoso, redirigir a la página solicitada
-        router.push(redirectTo);
+        router.push(redirectTo)
       }
-    } catch (error) {
-      console.error("Sign in error:", error);
-      setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." });
+    } catch (_error) {
+      setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   };
 
@@ -123,25 +119,12 @@ export default function UserLoginPage() {
           </div>
 
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Bienvenido
+            <CardTitle className="text-3xl font-bold text-gray-800">
+              <h2>Bienvenido</h2>
             </CardTitle>
             <CardDescription className="text-gray-600">
               Acceso para usuarios individuales
             </CardDescription>
-          </div>
-
-          {/* User Type Indicator */}
-          <div className="flex items-center justify-center gap-2 py-2 px-4 bg-blue-50 rounded-md">
-            <HugeiconsIcon
-              icon={UserIcon}
-              size={16}
-              strokeWidth={1.5}
-              className="text-blue-600"
-            />
-            <span className="text-sm font-medium text-blue-700">
-              Acceso de Usuario
-            </span>
           </div>
         </CardHeader>
 
@@ -171,7 +154,6 @@ export default function UserLoginPage() {
                   className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
                   required
                   autoComplete="email"
-                  autoFill="current-email"
                 />
               </div>
               {errors.email && (
@@ -205,7 +187,6 @@ export default function UserLoginPage() {
                   className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
                   required
                   autoComplete="current-password"
-                  autoFill="current-password"
                 />
                 <button
                   type="button"

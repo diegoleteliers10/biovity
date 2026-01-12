@@ -94,44 +94,33 @@ export default function OrganizationRegisterPage() {
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!validateForm()) {
-      return;
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
-    try {
-      const result = await signUp.email({
-        password: formData.contactPassword,
-        name: formData.contactName,
-        type: "organización",
+    const result = await signUp.email({
+      password: formData.contactPassword,
+      name: formData.contactName,
+      type: "organización",
+      organizationName: formData.organizationName,
+      organizationWebsite: formData.organizationWebsite,
+      contactPosition: formData.contactPosition,
+    })
 
-        // Información adicional de la organización
-        organizationName: formData.organizationName,
-        organizationWebsite: formData.organizationWebsite,
-        contactPosition: formData.contactPosition,
-      });
-
-      if (result.error) {
-        console.error("Sign up error:", result.error);
-        setErrors({
-          general:
-            "Error al crear la cuenta organizacional. Inténtalo de nuevo.",
-        });
-      } else {
-        router.push("/dashboard/organization");
-      }
-    } catch (error) {
-      console.error("Sign up error:", error);
+    if (result.error) {
       setErrors({
         general: "Error al crear la cuenta organizacional. Inténtalo de nuevo.",
-      });
-    } finally {
-      setIsLoading(false);
+      })
+    } else {
+      router.push("/dashboard/organization")
     }
-  };
+
+    setIsLoading(false)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
@@ -143,25 +132,12 @@ export default function OrganizationRegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Registrar Organización
+            <CardTitle className="text-3xl font-bold text-gray-800">
+              <h2>Registrar Organización</h2>
             </CardTitle>
             <CardDescription className="text-gray-600">
               Únete a la red de organizaciones en biociencias
             </CardDescription>
-          </div>
-
-          {/* Organization Type Indicator */}
-          <div className="flex items-center justify-center gap-2 py-2 px-4 bg-purple-50 rounded-md">
-            <HugeiconsIcon
-              icon={Building06Icon}
-              size={16}
-              strokeWidth={1.5}
-              className="text-purple-600"
-            />
-            <span className="text-sm font-medium text-purple-700">
-              Registro Organizacional
-            </span>
           </div>
         </CardHeader>
 
@@ -169,7 +145,7 @@ export default function OrganizationRegisterPage() {
           <form onSubmit={handleSignUp} className="space-y-8">
             {/* Información del Contacto Principal */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              <h3 className="text-lg font-semibold text-gray-800 pb-2">
                 Información del Contacto Principal
               </h3>
 
@@ -331,7 +307,7 @@ export default function OrganizationRegisterPage() {
 
             {/* Información de la Organización */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              <h3 className="text-lg font-semibold text-gray-800 pb-2">
                 Información de la Organización
               </h3>
 

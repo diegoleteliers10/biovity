@@ -42,10 +42,8 @@ export default function UserRegisterPage() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-  
-  console.log(formData)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false)
 
   // Lista de profesiones/cargos
   const professions = [
@@ -149,36 +147,32 @@ export default function UserRegisterPage() {
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!validateForm()) {
-      return;
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
-    try {
-      const result = await signUp.email({
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        type: "persona",
-        profession: formData.profession,
-      });
+    const result = await signUp.email({
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      type: "persona",
+      profession: formData.profession,
+    })
 
-      if (result.error) {
-        console.error("Sign up error:", result.error);
-        setErrors({ general: "Error al crear la cuenta. Inténtalo de nuevo." });
-      } else {
-        router.push("/dashboard/employee");
-      }
-    } catch (error) {
-      console.error("Sign up error:", error);
-      setErrors({ general: "Error al crear la cuenta. Inténtalo de nuevo." });
-    } finally {
-      setIsLoading(false);
+    if (result.error) {
+      setErrors({
+        general: "Error al crear la cuenta. Inténtalo de nuevo.",
+      })
+    } else {
+      router.push("/dashboard/employee")
     }
-  };
+
+    setIsLoading(false)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
@@ -190,30 +184,17 @@ export default function UserRegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Crear cuenta de usuario
+            <CardTitle className="text-3xl font-bold text-gray-800">
+              <h2>Crear cuenta de usuario</h2>
             </CardTitle>
             <CardDescription className="text-gray-600">
               Únete a la comunidad de profesionales en biociencias
             </CardDescription>
           </div>
-
-          {/* User Type Indicator */}
-          <div className="flex items-center justify-center gap-2 py-2 px-4 bg-blue-50 rounded-md">
-            <HugeiconsIcon
-              icon={UserIcon}
-              size={16}
-              strokeWidth={1.5}
-              className="text-blue-600"
-            />
-            <span className="text-sm font-medium text-blue-700">
-              Registro de Usuario Individual
-            </span>
-          </div>
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSignUp} className="space-y-6" autoComplete="on">
+          <form onSubmit={handleSignUp} className="space-y-6">
             {/* Name Field */}
             <div className="space-y-2">
               <label
