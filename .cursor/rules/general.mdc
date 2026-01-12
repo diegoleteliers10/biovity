@@ -1,0 +1,104 @@
+---
+alwaysApply: true
+---
+
+# Cursor AI General Rules
+
+## AI Behavioral Principles
+- Always reason step-by-step before answering or coding.
+- Clearly state assumptions and ask for clarification when context is missing.
+- Never make irreversible changes without explicit user approval.
+
+## Coding Guidelines
+- Follow DRY and KISS principles.
+- Respect language and framework conventions (TypeScript, Python, JavaScript, etc.).
+- Prefer pure functions and minimize side effects.
+- Consistently document code and changes with comments in English.
+- Use existing code patterns and utilities over creating new ones.
+- Suggest only minimal, focused changes related to the current request.
+- Ensure strict typing where language allows.
+
+## Commit & Change Protocol
+- Use Conventional Commits:
+    - Format: `<type>(<scope>): <description>`
+    - Supported types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+    - Clearly mark breaking changes with `!` or the `BREAKING CHANGE:` footer.
+- Only commit changes when explicitly instructed.
+- Summarize impacts and related files before making any modification.
+
+## Error Handling
+- Explicitly raise and describe errors; never ignore them.
+- Avoid catch-all exceptions or masking errors—always surface root causes.
+- When errors occur, report what went wrong, why, and provide actionable next steps.
+
+## Project Structure
+- Always use file paths relative to workspace root.
+- Use tree and codebase search to understand project layout before modifying code.
+- Read README.md and key docs for context before committing any changes.
+
+## Request Validation
+- Pause and ask for clarification if the task or codebase context is ambiguous.
+- Validate assumptions with codebase or grep search before executing changes.
+- Offer alternatives and trade-offs when multiple solutions are possible.
+
+## Test and Quality Checks
+- Always propose and document test scenarios for any code change.
+- Prioritize maintainability and reusability for all generated code.
+- Suggest adding logs or metrics for new/critical features and fixes.
+
+## Example Usage Flow
+1. Collect relevant context using codebase search, tree, or terminal tools.
+2. Plan the change, reasoning out dependencies and risks.
+3. Write code following best practices and existing patterns.
+4. Suggest tests and validation steps.
+5. Pause for user confirmation before committing.
+# Cursor AI General Rules
+
+## AI Behavioral Principles
+- Always reason step-by-step before answering or coding.
+- Clearly state assumptions and ask for clarification when context is missing.
+- Never make irreversible changes without explicit user approval.
+
+## Coding Guidelines
+- Follow DRY and KISS principles.
+- Respect language and framework conventions (TypeScript, Python, JavaScript, etc.).
+- Prefer pure functions and minimize side effects.
+- Consistently document code and changes with comments in English.
+- Use existing code patterns and utilities over creating new ones.
+- Suggest only minimal, focused changes related to the current request.
+- Ensure strict typing where language allows.
+
+## Commit & Change Protocol
+- Use Conventional Commits:
+    - Format: `<type>(<scope>): <description>`
+    - Supported types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+    - Clearly mark breaking changes with `!` or the `BREAKING CHANGE:` footer.
+- Only commit changes when explicitly instructed.
+- Summarize impacts and related files before making any modification.
+
+## Error Handling
+- Explicitly raise and describe errors; never ignore them.
+- Avoid catch-all exceptions or masking errors—always surface root causes.
+- When errors occur, report what went wrong, why, and provide actionable next steps.
+
+## Project Structure
+- Always use file paths relative to workspace root.
+- Use tree and codebase search to understand project layout before modifying code.
+- Read README.md and key docs for context before committing any changes.
+
+## Request Validation
+- Pause and ask for clarification if the task or codebase context is ambiguous.
+- Validate assumptions with codebase or grep search before executing changes.
+- Offer alternatives and trade-offs when multiple solutions are possible.
+
+## Test and Quality Checks
+- Always propose and document test scenarios for any code change.
+- Prioritize maintainability and reusability for all generated code.
+- Suggest adding logs or metrics for new/critical features and fixes.
+
+## Example Usage Flow
+1. Collect relevant context using codebase search, tree, or terminal tools.
+2. Plan the change, reasoning out dependencies and risks.
+3. Write code following best practices and existing patterns.
+4. Suggest tests and validation steps.
+5. Pause for user confirmation before committing.
