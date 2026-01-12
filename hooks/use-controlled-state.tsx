@@ -1,20 +1,19 @@
 import * as React from "react"
 
-interface CommonControlledStateProps<T> {
-  value?: T
-  defaultValue?: T
+type CommonControlledStateProps<T> = {
+  readonly value?: T
+  readonly defaultValue?: T
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useControlledState<T, Rest extends any[] = []>(
+export function useControlledState<T, Rest extends readonly unknown[] = readonly []>(
   props: CommonControlledStateProps<T> & {
-    onChange?: (value: T, ...args: Rest) => void
+    readonly onChange?: (value: T, ...args: Rest) => void
   }
 ): readonly [T, (next: T, ...args: Rest) => void] {
   const { value, defaultValue, onChange } = props
 
   const [state, setInternalState] = React.useState<T>(
-    value !== undefined ? value : (defaultValue as T)
+    value !== undefined ? value : (defaultValue ?? (undefined as unknown as T))
   )
 
   React.useEffect(() => {

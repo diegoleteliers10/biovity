@@ -8,9 +8,7 @@ export const auth = betterAuth({
       "postgresql://postgres:AlineLarroucau270221_@db.ozdaoqgtvjdfkpqosnnj.supabase.co:5432/postgres",
   }),
 	hooks: {
-		before: createAuthMiddleware(async (ctx) => {
-			// Execute before processing the request
-			console.log("Request path:", ctx.body);
+		before: createAuthMiddleware(async (_ctx) => {
 		}),
 	},
   advanced: {

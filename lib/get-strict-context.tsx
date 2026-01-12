@@ -1,4 +1,5 @@
 import * as React from "react"
+import { createContextError } from "./errors"
 
 function getStrictContext<T>(
   name?: string
@@ -15,7 +16,7 @@ function getStrictContext<T>(
   const useSafeContext = () => {
     const ctx = React.useContext(Context)
     if (ctx === undefined) {
-      throw new Error(`useContext must be used within ${name ?? "a Provider"}`)
+      throw createContextError(name)
     }
     return ctx
   }
