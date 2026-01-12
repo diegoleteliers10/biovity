@@ -78,10 +78,20 @@ export function Hero() {
       className="relative h-screen w-full flex items-center justify-center overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-green-50 pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute top-20 -right-32 w-80 h-80 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-25 blur-3xl"></div>
-        <div className="absolute top-40 left-1/4 w-72 h-72 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute top-10 left-1/2 w-64 h-64 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full opacity-25 blur-3xl"></div>
+        {/* Purple-Pink */}
+        {/* All same moderately large size, evenly spaced, a bit smaller */}
+        {/* Purple-Pink */}
+        <div className="absolute -top-24 -left-28 w-[22rem] h-[22rem] bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-20 right-24 w-[22rem] h-[22rem] bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-3xl"></div>
+        {/* Blue-Cyan */}
+        <div className="absolute top-24 right-8 w-[22rem] h-[22rem] bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-25 blur-3xl"></div>
+        <div className="absolute bottom-24 left-[55%] w-[22rem] h-[22rem] bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20 blur-3xl"></div>
+        {/* Green-Emerald */}
+        <div className="absolute top-32 left-1/3 w-[22rem] h-[22rem] bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-8 right-1/4 w-[22rem] h-[22rem] bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-15 blur-3xl"></div>
+        {/* Indigo-Purple */}
+        <div className="absolute top-14 left-[60%] w-[22rem] h-[22rem] bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full opacity-25 blur-3xl"></div>
+        <div className="absolute bottom-6 left-24 w-[22rem] h-[22rem] bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full opacity-20 blur-3xl"></div>
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
