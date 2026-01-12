@@ -38,8 +38,6 @@ export const MessagesContent = () => {
 
   const handleSendMessage = () => {
     if (messageInput.trim()) {
-      // Aquí iría la lógica para enviar el mensaje
-      console.log("Enviando mensaje:", messageInput)
       setMessageInput("")
     }
   }
@@ -54,9 +52,6 @@ export const MessagesContent = () => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files && files.length > 0) {
-      // Aquí iría la lógica para procesar los archivos
-      console.log("Archivos seleccionados:", Array.from(files))
-      // Resetear el input para permitir seleccionar el mismo archivo nuevamente
       e.target.value = ""
     }
   }
@@ -64,9 +59,6 @@ export const MessagesContent = () => {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files && files.length > 0) {
-      // Aquí iría la lógica para procesar las imágenes
-      console.log("Imágenes seleccionadas:", Array.from(files))
-      // Resetear el input para permitir seleccionar la misma imagen nuevamente
       e.target.value = ""
     }
   }
@@ -384,7 +376,6 @@ export const MessagesContent = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    console.log("Adjuntar reunión")
                   }}
                   className="cursor-pointer"
                 >

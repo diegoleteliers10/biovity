@@ -4,8 +4,8 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/lib/utils"
+import { createChartError } from "@/lib/errors"
 
-// Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
 
 export type ChartConfig = {
@@ -28,7 +28,7 @@ function useChart() {
   const context = React.useContext(ChartContext)
 
   if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />")
+    throw createChartError("useChart must be used within a <ChartContainer />")
   }
 
   return context
@@ -308,7 +308,33 @@ function ChartLegendContent({
   )
 }
 
-// Helper to extract item config from a payload.
+const getConfigLabelKey = (
+  payload: unknown,
+  payloadPayload: unknown,
+  key: string
+): string => {
+  if (
+    typeof payload === "object" &&
+    payload !== null &&
+    key in payload &&
+    typeof (payload as Record<string, unknown>)[key] === "string"
+  ) {
+    return (payload as Record<string, unknown>)[key] as string
+  }
+
+  if (
+    payloadPayload &&
+    typeof payloadPayload === "object" &&
+    payloadPayload !== null &&
+    key in payloadPayload &&
+    typeof (payloadPayload as Record<string, unknown>)[key] === "string"
+  ) {
+    return (payloadPayload as Record<string, unknown>)[key] as string
+  }
+
+  return key
+}
+
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
@@ -325,22 +351,7 @@ function getPayloadConfigFromPayload(
       ? payload.payload
       : undefined
 
-  let configLabelKey: string = key
-
-  if (
-    key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
-  ) {
-    configLabelKey = payload[key as keyof typeof payload] as string
-  } else if (
-    payloadPayload &&
-    key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
-  ) {
-    configLabelKey = payloadPayload[
-      key as keyof typeof payloadPayload
-    ] as string
-  }
+  const configLabelKey = getConfigLabelKey(payload, payloadPayload, key)
 
   return configLabelKey in config
     ? config[configLabelKey]

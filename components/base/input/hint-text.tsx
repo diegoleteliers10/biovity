@@ -5,11 +5,10 @@ import type { TextProps as AriaTextProps } from "react-aria-components"
 import { Text as AriaText } from "react-aria-components"
 import { cx } from "@/lib/utils/cx"
 
-interface HintTextProps extends AriaTextProps {
-  /** Indicates that the hint text is an error message. */
-  isInvalid?: boolean
-  ref?: Ref<HTMLElement>
-  children: ReactNode
+type HintTextProps = AriaTextProps & {
+  readonly isInvalid?: boolean
+  readonly ref?: Ref<HTMLElement>
+  readonly children: ReactNode
 }
 
 export const HintText = ({ isInvalid, className, ...props }: HintTextProps) => {
@@ -19,8 +18,6 @@ export const HintText = ({ isInvalid, className, ...props }: HintTextProps) => {
       slot={isInvalid ? "errorMessage" : "description"}
       className={cx(
         "text-sm text-tertiary",
-
-        // Invalid state
         isInvalid && "text-error-primary",
         "group-invalid:text-error-primary",
 

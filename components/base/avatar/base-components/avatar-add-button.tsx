@@ -14,9 +14,9 @@ const sizes = {
   md: { root: "size-10", icon: "size-5" },
 }
 
-interface AvatarAddButtonProps extends AriaButtonProps {
-  size: "xs" | "sm" | "md"
-  title?: string
+type AvatarAddButtonProps = AriaButtonProps & {
+  readonly size: "xs" | "sm" | "md"
+  readonly title?: string
   className?: string
 }
 

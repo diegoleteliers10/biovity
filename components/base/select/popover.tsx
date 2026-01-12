@@ -5,9 +5,10 @@ import type { PopoverProps as AriaPopoverProps } from "react-aria-components"
 import { Popover as AriaPopover } from "react-aria-components"
 import { cx } from "@/lib/utils/cx"
 
-interface PopoverProps extends AriaPopoverProps, RefAttributes<HTMLElement> {
-  size: "sm" | "md"
-}
+type PopoverProps = AriaPopoverProps &
+  RefAttributes<HTMLElement> & {
+    readonly size: "sm" | "md"
+  }
 
 export const Popover = (props: PopoverProps) => {
   return (

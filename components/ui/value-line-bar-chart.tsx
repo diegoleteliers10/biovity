@@ -144,12 +144,12 @@ export function ValueLineBarChart() {
   );
 }
 
-interface CustomReferenceLabelProps {
-  viewBox?: {
-    x?: number;
-    y?: number;
-  };
-  value: number;
+type CustomReferenceLabelProps = {
+  readonly viewBox?: {
+    readonly x?: number
+    readonly y?: number
+  }
+  readonly value: number
 }
 
 const CustomReferenceLabel: React.FC<CustomReferenceLabelProps> = (props) => {

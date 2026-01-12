@@ -6,12 +6,12 @@ import { useState } from "react"
 import { EventTooltip } from "./event-tooltip"
 import { DayModal } from "./day-modal"
 
-interface Event {
-  id: string
-  title: string
-  time: string
-  description: string
-  type: "meeting" | "personal" | "work" | "important"
+type Event = {
+  readonly id: string
+  readonly title: string
+  readonly time: string
+  readonly description: string
+  readonly type: "meeting" | "personal" | "work" | "important"
 }
 
 const sampleEvents: Record<string, Event[]> = {
@@ -79,8 +79,8 @@ const sampleEvents: Record<string, Event[]> = {
 const weekDays = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
 const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
 
-interface CalendarProps {
-  currentDate: Date
+type CalendarProps = {
+  readonly currentDate: Date
 }
 
 export function Calendar({ currentDate }: CalendarProps) {

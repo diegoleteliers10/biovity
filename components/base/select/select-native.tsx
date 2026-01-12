@@ -6,11 +6,11 @@ import { HintText } from "@/components/base/input/hint-text"
 import { Label } from "@/components/base/input/label"
 import { cx } from "@/lib/utils/cx"
 
-interface NativeSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string
-  hint?: string
-  selectClassName?: string
-  options: { label: string; value: string; disabled?: boolean }[]
+type NativeSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
+  readonly label?: string
+  readonly hint?: string
+  readonly selectClassName?: string
+  readonly options: readonly { readonly label: string; readonly value: string; readonly disabled?: boolean }[]
 }
 
 export const NativeSelect = ({
@@ -41,15 +41,10 @@ export const NativeSelect = ({
           aria-labelledby={selectId}
           className={cx(
             "appearance-none rounded-lg bg-primary px-3.5 py-2.5 text-md font-medium text-primary shadow-xs ring-1 ring-primary outline-hidden transition duration-100 ease-linear ring-inset placeholder:text-fg-quaternary focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-not-allowed disabled:bg-disabled_subtle disabled:text-disabled",
-            // Styles when the select is within an `InputGroup`
             "in-data-input-wrapper:flex in-data-input-wrapper:h-full in-data-input-wrapper:gap-1 in-data-input-wrapper:bg-inherit in-data-input-wrapper:px-3 in-data-input-wrapper:py-2 in-data-input-wrapper:font-normal in-data-input-wrapper:text-tertiary in-data-input-wrapper:shadow-none in-data-input-wrapper:ring-transparent",
-            // Styles for the select when `TextField` is disabled
             "in-data-input-wrapper:group-disabled:pointer-events-none in-data-input-wrapper:group-disabled:cursor-not-allowed in-data-input-wrapper:group-disabled:bg-transparent in-data-input-wrapper:group-disabled:text-disabled",
-            // Common styles for sizes and border radius within `InputGroup`
             "in-data-input-wrapper:in-data-leading:rounded-r-none in-data-input-wrapper:in-data-trailing:rounded-l-none in-data-input-wrapper:in-data-[input-size=md]:py-2.5 in-data-input-wrapper:in-data-leading:in-data-[input-size=md]:pl-3.5 in-data-input-wrapper:in-data-[input-size=sm]:py-2 in-data-input-wrapper:in-data-[input-size=sm]:pl-3",
-            // For "leading" dropdown within `InputGroup`
             "in-data-input-wrapper:in-data-leading:in-data-[input-size=md]:pr-4.5 in-data-input-wrapper:in-data-leading:in-data-[input-size=sm]:pr-4.5",
-            // For "trailing" dropdown within `InputGroup`
             "in-data-input-wrapper:in-data-trailing:in-data-[input-size=md]:pr-8 in-data-input-wrapper:in-data-trailing:in-data-[input-size=sm]:pr-7.5",
             selectClassName
           )}

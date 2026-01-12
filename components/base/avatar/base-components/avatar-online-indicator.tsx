@@ -13,9 +13,9 @@ const sizes = {
   "4xl": "size-5",
 }
 
-interface AvatarOnlineIndicatorProps {
-  size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl"
-  status: "online" | "offline"
+type AvatarOnlineIndicatorProps = {
+  readonly size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl"
+  readonly status: "online" | "offline"
   className?: string
 }
 

@@ -12,7 +12,7 @@ import {
   TradeUpIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Suspense, useState } from "react"
+import { Suspense, useState, useMemo, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import {
   DropdownMenu,
@@ -34,7 +34,6 @@ export const HomeContent = () => {
   const { useSession } = authClient
   const { data, isPending } = useSession()
 
-  // Estado para las notificaciones
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -62,37 +61,35 @@ export const HomeContent = () => {
     },
   ])
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.isRead).length,
+    [notifications]
+  )
 
-  const toSlug = (value: string): string => {
+  const toSlug = useCallback((value: string): string => {
     return value
       .toLowerCase()
       .replace(/[^\p{L}\p{N}]+/gu, "-")
       .replace(/^-+|-+$/g, "")
-  }
+  }, [])
 
-  const handleJobClick = (jobTitle: string, company: string) => {
+  const handleJobClick = useCallback((jobTitle: string, _company: string) => {
     const slug = toSlug(jobTitle)
     router.push(`/dashboard/employee/job/${slug}`)
-  }
+  }, [toSlug, router])
 
-  const handleApplyJob = (jobId: number, jobTitle: string, company: string) => {
+  const handleApplyJob = useCallback((jobId: number, _jobTitle: string, _company: string) => {
     router.push(`/dashboard/employee/job/${jobId}`)
-  }
+  }, [router])
 
-  const handleSaveJob = (jobId: number, jobTitle: string, company: string) => {
-    console.log(`Saving job: ${jobTitle} at ${company} (ID: ${jobId})`)
-  }
+  const handleSaveJob = useCallback((_jobId: number, _jobTitle: string, _company: string) => {
+  }, [])
 
-  const handleViewAllJobs = () => {
-    console.log("Viewing all recommended jobs")
-  }
+  const handleViewAllJobs = useCallback(() => {
+  }, [])
 
-  const handleCreateAlert = () => {
-    console.log("Creating new job alert")
-  }
-
-  // Componente para el header con skeleton
+  const handleCreateAlert = useCallback(() => {
+  }, [])
   const HeaderContent = () => {
     if (isPending) {
       return (
@@ -149,7 +146,6 @@ export const HomeContent = () => {
                     key={notification.id}
                     className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer"
                     onClick={() => {
-                      // Marcar como leída
                       setNotifications((prev) =>
                         prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
                       )

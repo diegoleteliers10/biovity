@@ -54,9 +54,7 @@ export const SidebarComponent = () => {
           },
         },
       });
-    } catch (error) {
-      console.error("Error during logout:", error);
-      // Fallback: redirect to login anyway
+    } catch (_error) {
       router.push("/login");
     }
   };

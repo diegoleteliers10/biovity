@@ -4,6 +4,7 @@ import { AnimatePresence, motion, type Transition } from "motion/react"
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { createHighlightError } from "@/lib/errors"
 
 type HighlightMode = "children" | "parent"
 
@@ -36,16 +37,15 @@ type HighlightContextType<T extends string> = {
 }
 
 const HighlightContext = React.createContext<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  HighlightContextType<any> | undefined
+  HighlightContextType<string> | undefined
 >(undefined)
 
 function useHighlight<T extends string>(): HighlightContextType<T> {
   const context = React.useContext(HighlightContext)
   if (!context) {
-    throw new Error("useHighlight must be used within a HighlightProvider")
+    throw createHighlightError("useHighlight must be used within a HighlightProvider")
   }
-  return context as unknown as HighlightContextType<T>
+  return context as HighlightContextType<T>
 }
 
 type BaseHighlightProps<T extends React.ElementType = "div"> = {

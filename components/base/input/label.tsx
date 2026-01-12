@@ -7,12 +7,12 @@ import { Label as AriaLabel } from "react-aria-components"
 import { Tooltip, TooltipTrigger } from "@/components/base/tooltip/tooltip"
 import { cx } from "@/lib/utils/cx"
 
-interface LabelProps extends AriaLabelProps {
-  children: ReactNode
-  isRequired?: boolean
-  tooltip?: string
-  tooltipDescription?: string
-  ref?: Ref<HTMLLabelElement>
+type LabelProps = AriaLabelProps & {
+  readonly children: ReactNode
+  readonly isRequired?: boolean
+  readonly tooltip?: string
+  readonly tooltipDescription?: string
+  readonly ref?: Ref<HTMLLabelElement>
 }
 
 export const Label = ({
@@ -24,10 +24,6 @@ export const Label = ({
 }: LabelProps) => {
   return (
     <AriaLabel
-      // Used for conditionally hiding/showing the label element via CSS:
-      // <Input label="Visible only on mobile" className="lg:**:data-label:hidden" />
-      // or
-      // <Input label="Visible only on mobile" className="lg:label:hidden" />
       data-label="true"
       {...props}
       className={cx(
@@ -50,9 +46,6 @@ export const Label = ({
       {tooltip && (
         <Tooltip title={tooltip} description={tooltipDescription} placement="top">
           <TooltipTrigger
-            // `TooltipTrigger` inherits the disabled state from the parent form field
-            // but we don't that. We want the tooltip be enabled even if the parent
-            // field is disabled.
             isDisabled={false}
             className="cursor-pointer text-fg-quaternary transition duration-200 hover:text-fg-quaternary_hover focus:text-fg-quaternary_hover"
           >

@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-interface LogoProps {
-  size?: "sm" | "md" | "lg" | "xl";
-  className?: string;
-  showText?: boolean;
-  textSize?: "sm" | "md" | "lg";
+type LogoProps = {
+  readonly size?: "sm" | "md" | "lg" | "xl"
+  readonly className?: string
+  readonly showText?: boolean
+  readonly textSize?: "sm" | "md" | "lg"
 }
 
 const sizeClasses = {

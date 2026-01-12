@@ -34,16 +34,16 @@ import { useResizeObserver } from "@/hooks/use-resize-observer"
 import { cx } from "@/lib/utils/cx"
 import { SelectItem } from "./select-item"
 
-interface ComboBoxValueProps extends AriaGroupProps {
-  size: "sm" | "md"
-  shortcut?: boolean
-  isDisabled?: boolean
-  placeholder?: string
-  shortcutClassName?: string
-  placeholderIcon?: IconComponentType | null
-  ref?: RefObject<HTMLDivElement | null>
-  onFocus?: FocusEventHandler
-  onPointerEnter?: PointerEventHandler
+type ComboBoxValueProps = AriaGroupProps & {
+  readonly size: "sm" | "md"
+  readonly shortcut?: boolean
+  readonly isDisabled?: boolean
+  readonly placeholder?: string
+  readonly shortcutClassName?: string
+  readonly placeholderIcon?: IconComponentType | null
+  readonly ref?: RefObject<HTMLDivElement | null>
+  readonly onFocus?: FocusEventHandler
+  readonly onPointerEnter?: PointerEventHandler
 }
 
 const ComboboxContext = createContext<{
@@ -60,24 +60,23 @@ const ComboboxContext = createContext<{
   onInputChange: () => {},
 })
 
-interface MultiSelectProps
-  extends Omit<AriaComboBoxProps<SelectItemType>, "children" | "items">,
-    RefAttributes<HTMLDivElement> {
-  hint?: string
-  label?: string
-  tooltip?: string
-  size?: "sm" | "md"
-  placeholder?: string
-  shortcut?: boolean
-  items?: SelectItemType[]
-  popoverClassName?: string
-  shortcutClassName?: string
-  selectedItems: ListData<SelectItemType>
-  placeholderIcon?: IconComponentType | null
-  children: AriaListBoxProps<SelectItemType>["children"]
-  onItemCleared?: (key: Key) => void
-  onItemInserted?: (key: Key) => void
-}
+type MultiSelectProps = Omit<AriaComboBoxProps<SelectItemType>, "children" | "items"> &
+  RefAttributes<HTMLDivElement> & {
+    readonly hint?: string
+    readonly label?: string
+    readonly tooltip?: string
+    readonly size?: "sm" | "md"
+    readonly placeholder?: string
+    readonly shortcut?: boolean
+    readonly items?: readonly SelectItemType[]
+    readonly popoverClassName?: string
+    readonly shortcutClassName?: string
+    readonly selectedItems: ListData<SelectItemType>
+    readonly placeholderIcon?: IconComponentType | null
+    readonly children: AriaListBoxProps<SelectItemType>["children"]
+    readonly onItemCleared?: (key: Key) => void
+    readonly onItemInserted?: (key: Key) => void
+  }
 
 export const MultiSelectBase = ({
   items,
@@ -88,7 +87,6 @@ export const MultiSelectBase = ({
   onItemInserted,
   shortcut,
   placeholder = "Search",
-  // Omit these props to avoid conflicts with the `Select` component
   name: _name,
   className: _className,
   ...props
@@ -149,7 +147,6 @@ export const MultiSelectBase = ({
   const placeholderRef = useRef<HTMLDivElement>(null)
   const [popoverWidth, setPopoverWidth] = useState("")
 
-  // Resize observer for popover width
   const onResize = useCallback(() => {
     if (!placeholderRef.current) return
     const divRect = placeholderRef.current?.getBoundingClientRect()
@@ -178,7 +175,6 @@ export const MultiSelectBase = ({
         items={accessibleList.items}
         onInputChange={onInputChange}
         inputValue={accessibleList.filterText}
-        // This keeps the combobox popover open and the input value unchanged when an item is selected.
         selectedKey={null}
         onSelectionChange={onSelectionChange}
         {...props}
@@ -196,8 +192,6 @@ export const MultiSelectBase = ({
               shortcut={shortcut}
               ref={placeholderRef}
               placeholder={placeholder}
-              // This is a workaround to correctly calculating the trigger width
-              // while using ResizeObserver wasn't 100% reliable.
               onFocus={onResize}
               onPointerEnter={onResize}
             />
@@ -250,12 +244,11 @@ const InnerMultiSelect = ({
     }
   }
 
-  // Ensure dropdown opens on click even if input is already focused
-  const handleInputMouseDown = (_event: React.MouseEvent<HTMLInputElement>) => {
+  const handleInputMouseDown = useCallback((_event: React.MouseEvent<HTMLInputElement>) => {
     if (comboBoxStateContext && !comboBoxStateContext.isOpen) {
       comboBoxStateContext.open()
     }
-  }
+  }, [comboBoxStateContext])
 
   return (
     <div className="relative flex w-full flex-1 flex-row items-center justify-start gap-1.5">
@@ -301,7 +294,6 @@ export const MultiSelectTagsValue = ({
   placeholder,
   shortcutClassName,
   placeholderIcon: Icon = SearchLg,
-  // Omit this prop to avoid invalid HTML attribute warning
   isDisabled: _isDisabled,
   ...otherProps
 }: ComboBoxValueProps) => {

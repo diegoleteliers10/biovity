@@ -14,30 +14,13 @@ import {
 } from "react-aria-components"
 import { cx } from "@/lib/utils/cx"
 
-interface TooltipProps
-  extends AriaTooltipTriggerComponentProps,
-    Omit<AriaTooltipProps, "children"> {
-  /**
-   * The title of the tooltip.
-   */
-  title: ReactNode
-  /**
-   * The description of the tooltip.
-   */
-  description?: ReactNode
-  /**
-   * Whether to show the arrow on the tooltip.
-   *
-   * @default false
-   */
-  arrow?: boolean
-  /**
-   * Delay in milliseconds before the tooltip is shown.
-   *
-   * @default 300
-   */
-  delay?: number
-}
+type TooltipProps = AriaTooltipTriggerComponentProps &
+  Omit<AriaTooltipProps, "children"> & {
+    readonly title: ReactNode
+    readonly description?: ReactNode
+    readonly arrow?: boolean
+    readonly delay?: number
+  }
 
 export const Tooltip = ({
   title,
@@ -60,7 +43,6 @@ export const Tooltip = ({
   const isTopOrBottomRight = ["top right", "top start", "bottom right", "bottom start"].includes(
     placement
   )
-  // Set negative cross offset for left and right placement to visually balance the tooltip.
   const calculatedCrossOffset = isTopOrBottomLeft ? -12 : isTopOrBottomRight ? 12 : 0
 
   return (
@@ -115,7 +97,7 @@ export const Tooltip = ({
   )
 }
 
-interface TooltipTriggerProps extends AriaButtonProps {}
+type TooltipTriggerProps = AriaButtonProps
 
 export const TooltipTrigger = ({ children, className, ...buttonProps }: TooltipTriggerProps) => {
   return (

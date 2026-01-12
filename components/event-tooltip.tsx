@@ -4,17 +4,17 @@ import { useEffect, useState } from "react"
 import { Card } from "./ui/card"
 import { Clock } from "lucide-react"
 
-interface Event {
-  id: string
-  title: string
-  time: string
-  description: string
-  type: "meeting" | "personal" | "work" | "important"
+type Event = {
+  readonly id: string
+  readonly title: string
+  readonly time: string
+  readonly description: string
+  readonly type: "meeting" | "personal" | "work" | "important"
 }
 
-interface EventTooltipProps {
-  event: Event
-  position: { x: number; y: number }
+type EventTooltipProps = {
+  readonly event: Event
+  readonly position: { readonly x: number; readonly y: number }
 }
 
 export function EventTooltip({ event, position }: EventTooltipProps) {

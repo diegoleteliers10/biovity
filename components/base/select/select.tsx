@@ -36,22 +36,21 @@ export interface CommonProps {
   placeholder?: string
 }
 
-interface SelectProps
-  extends Omit<AriaSelectProps<SelectItemType>, "children" | "items">,
-    RefAttributes<HTMLDivElement>,
-    CommonProps {
-  items?: SelectItemType[]
-  popoverClassName?: string
-  placeholderIcon?: FC | ReactNode
-  children: ReactNode | ((item: SelectItemType) => ReactNode)
-}
+type SelectProps = Omit<AriaSelectProps<SelectItemType>, "children" | "items"> &
+  RefAttributes<HTMLDivElement> &
+  CommonProps & {
+    readonly items?: readonly SelectItemType[]
+    readonly popoverClassName?: string
+    readonly placeholderIcon?: FC | ReactNode
+    readonly children: ReactNode | ((item: SelectItemType) => ReactNode)
+  }
 
-interface SelectValueProps {
-  isOpen: boolean
-  size: "sm" | "md"
-  isFocused: boolean
-  isDisabled: boolean
-  placeholder?: string
+type SelectValueProps = {
+  readonly isOpen: boolean
+  readonly size: "sm" | "md"
+  readonly isFocused: boolean
+  readonly isDisabled: boolean
+  readonly placeholder?: string
   ref?: Ref<HTMLButtonElement>
   placeholderIcon?: FC | ReactNode
 }
@@ -82,8 +81,6 @@ const SelectValue = ({
       <AriaSelectValue<SelectItemType>
         className={cx(
           "flex h-max w-full items-center justify-start gap-2 truncate text-left align-middle",
-
-          // Icon styles
           "*:data-icon:size-5 *:data-icon:shrink-0 *:data-icon:text-fg-quaternary in-disabled:*:data-icon:text-fg-disabled",
 
           sizes[size].root

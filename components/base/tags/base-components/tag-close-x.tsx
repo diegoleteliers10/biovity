@@ -5,10 +5,11 @@ import type { RefAttributes } from "react"
 import { Button as AriaButton, type ButtonProps as AriaButtonProps } from "react-aria-components"
 import { cx } from "@/lib/utils/cx"
 
-interface TagCloseXProps extends AriaButtonProps, RefAttributes<HTMLButtonElement> {
-  size?: "sm" | "md" | "lg"
-  className?: string
-}
+type TagCloseXProps = AriaButtonProps &
+  RefAttributes<HTMLButtonElement> & {
+    readonly size?: "sm" | "md" | "lg"
+    readonly className?: string
+  }
 
 const styles = {
   sm: { root: "p-0.5", icon: "size-2.5" },

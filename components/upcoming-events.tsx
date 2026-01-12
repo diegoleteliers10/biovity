@@ -3,13 +3,13 @@
 import { Card } from "./ui/card"
 import { Calendar, Clock, MapPin } from "lucide-react"
 
-interface Event {
-  id: string
-  title: string
-  date: string
-  time: string
-  location?: string
-  type: "meeting" | "personal" | "work" | "important"
+type Event = {
+  readonly id: string
+  readonly title: string
+  readonly date: string
+  readonly time: string
+  readonly location?: string
+  readonly type: "meeting" | "personal" | "work" | "important"
 }
 
 const upcomingEvents: Event[] = [

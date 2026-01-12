@@ -10,7 +10,7 @@ import {
   Bookmark02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useMemo, useState } from "react"
+import { useMemo, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -47,8 +47,6 @@ const EXPERIENCE_LEVELS = [
   { id: "senior", label: "Senior" },
 ]
 
-// Tags filter removed per request
-
 export const SearchContent = () => {
   const [query, setQuery] = useState("")
   const [location, setLocation] = useState("")
@@ -59,13 +57,10 @@ export const SearchContent = () => {
   const [maxSalary, setMaxSalary] = useState("")
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  // Tags selection removed
+  const handleSearch = useCallback(() => {
+  }, [])
 
-  const handleSearch = () => {
-    // In a real app, trigger API fetch here
-  }
-
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setQuery("")
     setLocation("")
     setRemoteOnly(false)
@@ -73,50 +68,42 @@ export const SearchContent = () => {
     setExperience("any")
     setMinSalary("")
     setMaxSalary("")
-    // cleared tags removed
-  }
+  }, [])
 
-  const jobs: JobItem[] = DATA.recommendedJobs as unknown as JobItem[]
+  const jobs: readonly JobItem[] = DATA.recommendedJobs satisfies readonly JobItem[]
 
   const filteredJobs = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    const loc = location.trim().toLowerCase()
-    const min = Number(minSalary.replace(/[^0-9]/g, "")) || 0
-    const max = Number(maxSalary.replace(/[^0-9]/g, "")) || Number.MAX_SAFE_INTEGER
-    // no tag filters
+    const normalizedQuery = query.trim().toLowerCase()
+    const normalizedLocation = location.trim().toLowerCase()
+    const minimumSalary = Number(minSalary.replace(/[^0-9]/g, "")) || 0
+    const maximumSalary = Number(maxSalary.replace(/[^0-9]/g, "")) || Number.MAX_SAFE_INTEGER
 
     return jobs.filter((job) => {
-      if (q && !(`${job.jobTitle} ${job.company}`.toLowerCase().includes(q))) return false
-      if (loc && !job.location.toLowerCase().includes(loc)) return false
+      if (normalizedQuery && !(`${job.jobTitle} ${job.company}`.toLowerCase().includes(normalizedQuery))) return false
+      if (normalizedLocation && !job.location.toLowerCase().includes(normalizedLocation)) return false
       if (remoteOnly && !/remoto|remote/.test(job.location.toLowerCase())) return false
 
-      // Simulated jobType/experience filter (no fields in sample): accept all unless specific
       if (jobType !== "any") {
-        // placeholder rule: filter by presence of certain keywords in tags
         if (!job.tags.some((t) => t.toLowerCase().includes(jobType.split("-")[0]))) return false
       }
       if (experience !== "any") {
         if (!job.tags.some((t) => t.toLowerCase().includes(experience))) return false
       }
 
-      // Salary parsing (sample has ranges as text). Extract numbers and compare mid value
-      const match = job.salary.match(/(\d+[\d,.]*)\s*-\s*(\d+[\d,.]*)/)
-      if (match) {
-        const low = Number(match[1].replace(/[^0-9]/g, "")) || 0
-        const high = Number(match[2].replace(/[^0-9]/g, "")) || 0
-        const mid = (low + high) / 2
-        if (mid < min || mid > max) return false
+      const salaryMatch = job.salary.match(/(\d+[\d,.]*)\s*-\s*(\d+[\d,.]*)/)
+      if (salaryMatch) {
+        const lowSalary = Number(salaryMatch[1].replace(/[^0-9]/g, "")) || 0
+        const highSalary = Number(salaryMatch[2].replace(/[^0-9]/g, "")) || 0
+        const midSalary = (lowSalary + highSalary) / 2
+        if (midSalary < minimumSalary || midSalary > maximumSalary) return false
       }
-
-      // tag filters removed
 
       return true
     })
   }, [query, location, remoteOnly, jobType, experience, minSalary, maxSalary, jobs])
 
-  const handleSave = (job: JobItem) => {
-    console.log("save", job.id)
-  }
+  const handleSave = useCallback((_job: JobItem) => {
+  }, [])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">

@@ -1,20 +1,20 @@
 "use client"
 import { X, Clock, CalendarIcon } from "lucide-react"
 
-interface Event {
-  id: string
-  title: string
-  time: string
-  description: string
-  type: "meeting" | "personal" | "work" | "important"
+type Event = {
+  readonly id: string
+  readonly title: string
+  readonly time: string
+  readonly description: string
+  readonly type: "meeting" | "personal" | "work" | "important"
 }
 
-interface DayModalProps {
-  isOpen: boolean
-  onClose: () => void
-  day: number
-  dayName: string
-  events: Event[]
+type DayModalProps = {
+  readonly isOpen: boolean
+  readonly onClose: () => void
+  readonly day: number
+  readonly dayName: string
+  readonly events: readonly Event[]
 }
 
 const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]

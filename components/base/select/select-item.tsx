@@ -15,9 +15,8 @@ const sizes = {
   md: "p-2.5 pl-2",
 }
 
-interface SelectItemProps
-  extends Omit<AriaListBoxItemProps<SelectItemType>, "id">,
-    SelectItemType {}
+type SelectItemProps = Omit<AriaListBoxItemProps<SelectItemType>, "id"> &
+  SelectItemType
 
 export const SelectItem = ({
   label,
@@ -67,8 +66,6 @@ export const SelectItem = ({
             state.isDisabled && "cursor-not-allowed",
             state.isFocused && "bg-primary_hover",
             state.isFocusVisible && "ring-2 ring-focus-ring ring-inset",
-
-            // Icon styles
             "*:data-icon:size-5 *:data-icon:shrink-0 *:data-icon:text-fg-quaternary",
             state.isDisabled && "*:data-icon:text-fg-disabled",
 

@@ -28,25 +28,24 @@ import {
 import { useResizeObserver } from "@/hooks/use-resize-observer"
 import { cx } from "@/lib/utils/cx"
 
-interface ComboBoxProps
-  extends Omit<AriaComboBoxProps<SelectItemType>, "children" | "items">,
-    RefAttributes<HTMLDivElement>,
-    CommonProps {
-  shortcut?: boolean
-  items?: SelectItemType[]
-  popoverClassName?: string
-  shortcutClassName?: string
-  children: AriaListBoxProps<SelectItemType>["children"]
-}
+type ComboBoxProps = Omit<AriaComboBoxProps<SelectItemType>, "children" | "items"> &
+  RefAttributes<HTMLDivElement> &
+  CommonProps & {
+    readonly shortcut?: boolean
+    readonly items?: readonly SelectItemType[]
+    readonly popoverClassName?: string
+    readonly shortcutClassName?: string
+    readonly children: AriaListBoxProps<SelectItemType>["children"]
+  }
 
-interface ComboBoxValueProps extends AriaGroupProps {
-  size: "sm" | "md"
-  shortcut: boolean
-  placeholder?: string
-  shortcutClassName?: string
-  onFocus?: FocusEventHandler
-  onPointerEnter?: PointerEventHandler
-  ref?: RefObject<HTMLDivElement | null>
+type ComboBoxValueProps = AriaGroupProps & {
+  readonly size: "sm" | "md"
+  readonly shortcut: boolean
+  readonly placeholder?: string
+  readonly shortcutClassName?: string
+  readonly onFocus?: FocusEventHandler
+  readonly onPointerEnter?: PointerEventHandler
+  readonly ref?: RefObject<HTMLDivElement | null>
 }
 
 const ComboBoxValue = ({
@@ -121,7 +120,6 @@ export const ComboBox = ({
   const placeholderRef = useRef<HTMLDivElement>(null)
   const [popoverWidth, setPopoverWidth] = useState("")
 
-  // Resize observer for popover width
   const onResize = useCallback(() => {
     if (!placeholderRef.current) return
 
@@ -153,8 +151,6 @@ export const ComboBox = ({
               shortcut={shortcut}
               shortcutClassName={shortcutClassName}
               size={size}
-              // This is a workaround to correctly calculating the trigger width
-              // while using ResizeObserver wasn't 100% reliable.
               onFocus={onResize}
               onPointerEnter={onResize}
             />

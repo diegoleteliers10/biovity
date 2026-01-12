@@ -13,9 +13,9 @@ const sizes = {
   "4xl": { root: "size-8", tick: "size-[14px]" },
 }
 
-interface VerifiedTickProps {
-  size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl"
-  className?: string
+type VerifiedTickProps = {
+  readonly size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl"
+  readonly className?: string
 }
 
 export const VerifiedTick = ({ size, className }: VerifiedTickProps) => (

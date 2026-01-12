@@ -11,9 +11,9 @@ const sizes = {
   "2xl": "size-5 ring-[1.67px]",
 }
 
-interface AvatarCompanyIconProps {
-  size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
-  src: string
+type AvatarCompanyIconProps = {
+  readonly size: "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
+  readonly src: string
   alt?: string
 }
 
