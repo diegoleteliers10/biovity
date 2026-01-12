@@ -193,12 +193,12 @@ export function HowItWorks() {
           opacity: 1,
           scale: 1,
           rotation: 0,
-          duration: 0.4,
+          duration: 0.2,
           stagger: 0.08,
           ease: "back.out(2)",
           scrollTrigger: {
             trigger: markersRef.current,
-            start: "top 85%",
+            start: "top 90%",
             toggleActions: "play none none none",
           },
         }
