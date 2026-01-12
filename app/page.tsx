@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <LandingLayout>
-      <main className="flex min-h-screen flex-col relative">
+      <main className="flex flex-col relative">
         <Hero />
         <TransparencyGuarantee />
         <HowItWorks />
