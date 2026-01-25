@@ -1,0 +1,27 @@
+{
+  "name": "Biovity - Portal de Empleo en Biotecnología y Ciencias",
+  "short_name": "Biovity",
+  "description": "Conectamos profesionales y estudiantes con oportunidades laborales en biotecnología, bioquímica, química, ingeniería química y salud en Chile.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563EB",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es-CL",
+  "categories": ["business", "education", "productivity"],
+  "icons": [
+    {
+      "src": "/logoIconBiovity.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logoIconBiovity.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
