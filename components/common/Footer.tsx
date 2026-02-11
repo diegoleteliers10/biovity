@@ -17,6 +17,7 @@ export function Footer() {
         "Subir CV",
         "Alertas de Empleo",
         "Consejos de Carrera",
+        "Salarios",
         "Blog",
       ],
     },
