@@ -3,6 +3,23 @@
 Base: Conventional Commits (`<type>(<scope>): <description>`)
 Types: feat, fix, refactor, docs, style, chore
 
+## Ejecutados (2026-02-10)
+
+| # | Commit | Descripción |
+|---|--------|-------------|
+| 1 | `feat(waitlist)` | Lista de espera con Supabase, API, rate limit, proxy |
+| 2 | `feat(security)` | Security headers, .env.example, docs/SECURITY.md |
+| 3 | `feat(blog)` | Blog section con MDX |
+| 4 | `feat(trabajos)` | Job board público y páginas de detalle |
+| 5 | `feat(salarios)` | Página de información salarial |
+| 6 | `feat(seo)` | Sitemap, robots, OG images |
+| 7 | `refactor(landing)` | Migración a estructura feature-based |
+| 8 | `refactor(dashboard)` | Migración a estructura feature-based |
+| 9 | `feat(ui)` | LogoutButton, auth, nuevos UI components, calendar |
+| 10 | `style` | Globals y tailwind config |
+| 11 | `chore` | Footer, Header, layout, utils |
+| 12 | `docs` | CLAUDE.md, COMMITS.md |
+
 ---
 
 ## 1. feat(waitlist): add waitlist page with Supabase and production proxy
