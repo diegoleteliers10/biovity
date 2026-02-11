@@ -38,16 +38,16 @@ export default function RegisterSelectionPage() {
   }, [session, isPending, router]);
 
   // Mostrar loading mientras se verifica la sesión
-  if (isPending) {
+    if (isPending) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
         <Card className="w-full max-w-md">
           <CardContent className="p-8">
             <div className="flex flex-col items-center gap-5">
               <motion.div
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 className="flex items-end gap-2"
                 aria-label="Cargando"
                 role="status"
@@ -55,17 +55,31 @@ export default function RegisterSelectionPage() {
                 <motion.span
                   className="h-3 w-3 rounded-full bg-green-600"
                   animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 0.9,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 />
                 <motion.span
                   className="h-3.5 w-3.5 rounded-full bg-emerald-500"
                   animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay: 0.12 }}
+                  transition={{
+                    duration: 0.9,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.12,
+                  }}
                 />
                 <motion.span
-                  className="h-3 w-3 rounded-full bg-purple-600"
+                  className="h-3 w-3 rounded-full bg-blue-600"
                   animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay: 0.24 }}
+                  transition={{
+                    duration: 0.9,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.24,
+                  }}
                 />
               </motion.div>
               <p className="text-sm text-gray-600">Verificando sesión...</p>
@@ -81,7 +95,7 @@ export default function RegisterSelectionPage() {
     return null;
   }
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
       <Card className="w-full max-w-4xl">
         <CardHeader className="text-center space-y-1">
           {/* Logo */}

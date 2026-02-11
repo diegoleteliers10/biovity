@@ -81,7 +81,7 @@ export default function UserRegisterPage() {
   // Mostrar loading mientras se verifica la sesión
   if (isPending) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
         <Card className="w-full max-w-lg">
           <CardContent className="p-6">
             <div className="flex flex-col items-center space-y-4">
@@ -107,8 +107,8 @@ export default function UserRegisterPage() {
     }
   };
 
-  const handleProfessionChange = (value: string | null) => {
-    handleInputChange("profession", value || "");
+  const handleProfessionChange = (value: string | number | null) => {
+    handleInputChange("profession", value ? String(value) : "");
   };
 
   const validateForm = () => {
@@ -161,6 +161,7 @@ export default function UserRegisterPage() {
       name: formData.name,
       type: "persona",
       profession: formData.profession,
+      avatar: "",
     })
 
     if (result.error) {
@@ -175,7 +176,7 @@ export default function UserRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center space-y-4">
           {/* Logo */}
@@ -243,7 +244,6 @@ export default function UserRegisterPage() {
                   selectedKey={formData.profession}
                   onSelectionChange={handleProfessionChange}
                   className="w-full"
-                  autoComplete="organization-title"
                 >
                   {(item) => (
                     <Select.Item

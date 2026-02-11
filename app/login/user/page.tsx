@@ -57,7 +57,7 @@ export default function UserLoginPage() {
   // Mostrar loading mientras se verifica la sesión
   if (isPending) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
         <Card className="w-full max-w-md">
           <CardContent className="p-6">
             <div className="flex flex-col items-center space-y-4">
@@ -110,7 +110,7 @@ export default function UserLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-100 to-purple-100 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           {/* Logo */}

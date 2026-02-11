@@ -45,7 +45,7 @@ function useHighlight<T extends string>(): HighlightContextType<T> {
   if (!context) {
     throw createHighlightError("useHighlight must be used within a HighlightProvider")
   }
-  return context as HighlightContextType<T>
+  return context as unknown as HighlightContextType<T>
 }
 
 type BaseHighlightProps<T extends React.ElementType = "div"> = {
