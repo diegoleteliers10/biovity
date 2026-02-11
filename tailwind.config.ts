@@ -8,19 +8,10 @@ const config: Config = {
   ],
   theme: {
     fontFamily: {
-      sans: [
-        "Satoshi",
-        "Inter",
-        "system-ui",
-        "-apple-system",
-        "Segoe UI",
-        "Roboto",
-        "Helvetica Neue",
-        "Arial",
-        "sans-serif",
-      ],
-      serif: ["Instrument Serif", "Georgia", "Times New Roman", "serif"],
-      mono: ["var(--font-geist-mono)", "Courier New", "monospace"],
+      sans: ["var(--font-sans)"],
+      serif: ["var(--font-serif)"],
+      mono: ["var(--font-mono)"],
+      rubik: ["var(--font-rubik)"],
     },
     extend: {},
   },

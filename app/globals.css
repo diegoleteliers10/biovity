@@ -6,8 +6,10 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+    --font-sans: "Satoshi", "Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif";
+    --font-mono: "var(--font-geist-mono)", "Courier New", "monospace";
+    --font-serif: "Instrument Serif", "Georgia", "Times New Roman", "serif";
+    --font-rubik: "Rubik", var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -124,64 +126,35 @@
     body {
         @apply bg-background text-foreground;
     }
-}
-
-.scrollbar-message-hide {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-/* CUSTOM FONT RULES - AFTER ALL OTHER STYLES */
-
-/* Landing pages use Satoshi for body text */
-.landing-layout {
-    font-family:
-        "Satoshi",
-        "Inter",
-        system-ui,
-        -apple-system,
-        sans-serif !important;
-}
-
-.landing-layout p,
-.landing-layout a,
-.landing-layout li,
-.landing-layout label,
-.landing-layout button,
-.landing-layout input,
-.landing-layout textarea,
-.landing-layout div {
-    font-family:
-        "Satoshi",
-        "Inter",
-        system-ui,
-        -apple-system,
-        sans-serif !important;
-}
-
-/* Titles in landing pages use Instrument Serif */
-.landing-layout h1,
-.landing-layout h2,
-.landing-layout h3,
-.landing-layout h4,
-.landing-layout h5,
-.landing-layout h6 {
-    font-family:
-        "Instrument Serif", "Georgia", "Times New Roman", serif !important;
-}
-
-/* CardContent h3 elements use Satoshi */
-[data-slot="card-content"] h3 {
-    font-family:
-        "Satoshi",
-        "Inter",
-        system-ui,
-        -apple-system,
-        sans-serif !important;
-}
-
-/* Dashboard mono font */
-.font-mono,
-[class*="font-mono"] {
-    font-family: var(--font-geist-mono), "Courier New", monospace !important;
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+        line-height: 1.25;
+        font-family: var(--font-rubik);
+    }
+    
+    [data-slot="card-content"] h3 {
+        font-family: var(--font-rubik);
+    }
+    
+    [class*="font-mono"] {
+        font-family: var(--font-geist-mono), "Courier New", monospace !important;
+    }
+    
+    /* Hide scrollbars but allow scrolling */
+    .scrollbar-message-hide {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    p,
+    a,
+    li,
+    label,
+    button,
+    input,
+    textarea,
+    div {
+        font-family: var(--font-rubik);
+    }
 }
