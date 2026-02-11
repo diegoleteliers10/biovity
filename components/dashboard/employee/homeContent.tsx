@@ -380,9 +380,9 @@ export const HomeContent = () => {
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1">
-                  {job.tags.slice(0, 2).map((tag) => (
+                  {job.tags.slice(0, 2).map((tag, index) => (
                     <span
-                      key={job.jobTitle}
+                      key={`${job.jobTitle}-tag-${index}`}
                       className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground truncate"
                     >
                       {tag}

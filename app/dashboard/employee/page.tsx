@@ -1,4 +1,4 @@
-import { HomeContent } from "@/components/DashboardComponents/EmployeeDashboard/homeContent"
+import { HomeContent } from "@/components/dashboard/employee/homeContent"
 
 const EmployeeHome = () => {
   return (

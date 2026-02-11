@@ -1,5 +1,5 @@
 
-import { MetricsContent } from "@/components/DashboardComponents/EmployeeDashboard/metricsContent"
+import { MetricsContent } from "@/components/dashboard/employee/metricsContent"
 
 const EmployeeMetricsPage = () => {
   return (

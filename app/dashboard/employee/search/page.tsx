@@ -1,5 +1,5 @@
 
-import { SearchContent } from "@/components/DashboardComponents/EmployeeDashboard/searchContent"
+import { SearchContent } from "@/components/dashboard/employee/searchContent"
 
 const EmployeeSearchPage = () => {
   return (

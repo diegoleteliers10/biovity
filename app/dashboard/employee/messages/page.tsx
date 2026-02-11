@@ -1,4 +1,4 @@
-import { MessagesContent } from "@/components/DashboardComponents/EmployeeDashboard/messagesContent"
+import { MessagesContent } from "@/components/dashboard/employee/messagesContent"
 
 const EmployeeMessages = () => {
   return (

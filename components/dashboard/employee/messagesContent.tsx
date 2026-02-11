@@ -74,7 +74,7 @@ export const MessagesContent = () => {
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Sidebar de conversaciones */}
-      <div className="w-80 border-r border-border flex flex-col max-h-screen overflow-hidden">
+      <div className="w-80 border-r border-border flex flex-col max-h-dvh overflow-hidden">
         {/* Header del sidebar */}
         <div className="p-4">
           <div className="flex items-center justify-between mb-6">
@@ -185,7 +185,7 @@ export const MessagesContent = () => {
       </div>
 
       {/* Área de chat principal */}
-      <div className="flex-1 flex flex-col max-h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col max-h-dvh overflow-hidden">
         {!selectedConversation ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center max-w-md px-6">
