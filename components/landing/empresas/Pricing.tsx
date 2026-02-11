@@ -1,98 +1,17 @@
 "use client"
 
-import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ArrowRight, Check } from "lucide-react"
-import { useRef, useState } from "react"
+import { motion, useReducedMotion } from "motion/react"
+import { useState } from "react"
 import { Button } from "../../ui/button"
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger)
-}
-
-const planes = [
-  {
-    name: "Free",
-    price: "0",
-    period: "para siempre",
-    description: "Perfecto para empezar a explorar la plataforma.",
-    features: [
-      "3 ofertas activas",
-      "Acceso limitado a perfiles",
-      "1 oferta destacada/mes",
-      "Soporte por email",
-      "ATS básico",
-    ],
-    cta: "Comienza gratis",
-    href: "/register/organization",
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    price: "35.000",
-    period: "/mes",
-    description: "Para empresas que buscan talento activamente.",
-    features: [
-      "10 ofertas activas",
-      "Acceso completo a perfiles",
-      "Filtros avanzados de búsqueda",
-      "4 ofertas destacadas/mes",
-      "Soporte por email",
-      "ATS completo",
-    ],
-    cta: "Comenzar con Pro",
-    href: "/register/organization?plan=pro",
-    highlighted: true,
-    badge: "Más popular",
-  },
-  {
-    name: "Business",
-    price: "75.000",
-    period: "/mes",
-    description: "Para equipos de RRHH con alto volumen de contratación.",
-    features: [
-      "20 ofertas activas",
-      "Acceso completo a perfiles",
-      "Filtros avanzados de búsqueda",
-      "10 ofertas destacadas/mes",
-      "Soporte email + llamada",
-      "ATS completo",
-      "AI Matching de candidatos",
-      "Página de empresa personalizada",
-    ],
-    cta: "Comenzar con Business",
-    href: "/register/organization?plan=business",
-    highlighted: false,
-  },
-  {
-    name: "Enterprise",
-    price: "Personalizado",
-    period: "",
-    description: "Soluciones a medida para grandes organizaciones.",
-    features: [
-      "Ofertas ilimitadas",
-      "Acceso completo a perfiles",
-      "Todas las funcionalidades",
-      "Account manager dedicado",
-      "Soporte prioritario 24/7",
-      "Integraciones personalizadas",
-      "Onboarding personalizado",
-      "SLA garantizado",
-    ],
-    cta: "Contactar ventas",
-    href: "#contacto",
-    highlighted: false,
-    isEnterprise: true,
-  },
-]
+import { PLANES_EMPRESAS } from "@/lib/data/empresas-data"
+import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
 export function Pricing() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const toggleRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<HTMLDivElement>(null)
   const [isAnual, setIsAnual] = useState(false)
+  const reducedMotion = useReducedMotion()
+  const t = (delay = 0) => getTransition({ delay, reducedMotion })
+  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   const getPrice = (price: string) => {
     if (price === "0" || price === "Personalizado") return price
@@ -104,78 +23,43 @@ export function Pricing() {
     return price
   }
 
-  useGSAP(
-    () => {
-      if (!sectionRef.current) return
-
-      gsap.fromTo(
-        headerRef.current?.children || [],
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        }
-      )
-
-      gsap.fromTo(
-        toggleRef.current,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: 0.2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: toggleRef.current,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        }
-      )
-
-      gsap.fromTo(
-        cardsRef.current?.children || [],
-        { opacity: 0, y: 50, scale: 0.95 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.7,
-          stagger: 0.1,
-          ease: "back.out(1.1)",
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 75%",
-            toggleActions: "play none none none",
-          },
-        }
-      )
-    },
-    { scope: sectionRef }
-  )
-
   return (
-    <section ref={sectionRef} className="py-24 bg-white" id="pricing">
+    <section className="py-24 bg-white" id="pricing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={headerRef} className="text-center mb-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-serif">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+          transition={t(0)}
+          className="text-center mb-8"
+        >
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+            transition={t(0)}
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-rubik"
+          >
             Planes simples y transparentes
-          </h2>
-          <p className="text-xl text-gray-500 max-w-3xl mx-auto">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+            transition={t(LANDING_ANIMATION.sequenceDelay)}
+            className="text-xl text-gray-500 max-w-3xl mx-auto"
+          >
             Elige el plan que mejor se adapte a las necesidades de tu empresa.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div ref={toggleRef} className="flex items-center justify-center gap-4 mb-12 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+          transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
+          className="flex items-center justify-center gap-4 mb-12 relative"
+        >
           <span className={`text-sm font-medium ${!isAnual ? "text-gray-900" : "text-gray-500"}`}>
             Mensual
           </span>
@@ -203,12 +87,16 @@ export function Pricing() {
           >
             Ahorra 20%
           </span>
-        </div>
+        </motion.div>
 
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {planes.map((plan) => (
-            <div
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {PLANES_EMPRESAS.map((plan, index) => (
+            <motion.div
               key={plan.name}
+              initial={{ opacity: 0, y: 36, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+              transition={ts(index * LANDING_ANIMATION.chainStagger)}
               className={`relative rounded-2xl p-6 flex flex-col ${
                 plan.highlighted
                   ? "bg-gray-900 text-white ring-2 ring-blue-500 shadow-xl"
@@ -291,7 +179,7 @@ export function Pricing() {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </a>
               </Button>
-            </div>
+            </motion.div>
           ))}
         </div>
 
