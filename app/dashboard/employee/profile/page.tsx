@@ -77,7 +77,7 @@ const EmployeeProfile = () => {
     setFormData(profileData);
   }, [profileData]);
 
-  const handleInputChange = useCallback((field: keyof ProfileData, value: string) => {
+  const handleInputChange = useCallback((field: keyof ProfileData, value: string | readonly string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     setErrors((prev) => {
       if (prev[field]) {
@@ -124,7 +124,7 @@ const EmployeeProfile = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
+  }, []);
 
   return (
       <main className="p-6 space-y-6">

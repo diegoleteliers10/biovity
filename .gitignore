@@ -32,10 +32,17 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
 
+# waitlist data (contains user emails)
+/data/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# docs
+/docs/

@@ -1,5 +1,5 @@
 
-import { CalendarSection } from "@/components/calendar-section"
+import { CalendarSection } from "@/components/dashboard/employee/calendar/calendar-section"
 
 const EmployeeCalendarPage = () => {
   return (

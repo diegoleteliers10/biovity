@@ -1,20 +1,21 @@
 import { betterAuth } from "better-auth"
 import { Pool } from "pg"
-import { createAuthMiddleware } from "better-auth/api"
 
 export const auth = betterAuth({
   database: new Pool({
-    connectionString:
-      "postgresql://postgres:AlineLarroucau270221_@db.ozdaoqgtvjdfkpqosnnj.supabase.co:5432/postgres",
+    connectionString: process.env.DATABASE_URL,
   }),
-	hooks: {
-		before: createAuthMiddleware(async (_ctx) => {
-		}),
-	},
+  // Rate limiting for security
+  rateLimit: {
+    enabled: true,
+    window: 60, // 1 minute
+    max: 10, // 10 requests per minute per IP
+  },
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
     },
+    useSecureCookies: process.env.NODE_ENV === "production",
   },
   account: {
     modelName: "account",
@@ -25,7 +26,7 @@ export const auth = betterAuth({
       refreshToken: "refresh_token",
       accessToken: "access_token",
       accessTokenExpiresAt: "expires_at",
-      refreshTokenExpiresAt: "refreshTokenExpiresAt", // Added missing field
+      refreshTokenExpiresAt: "refreshTokenExpiresAt",
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
@@ -48,7 +49,7 @@ export const auth = betterAuth({
       avatar: {
         type: "string",
         required: false,
-        input: false,
+        input: true,
       },
       profession: {
         type: "string",
@@ -84,15 +85,7 @@ export const auth = betterAuth({
       updatedAt: "updated_at",
     },
     expiresIn: 604800, // 7 days
-    updateAge: 86400, // 1 day
-    disableSessionRefresh: true,
-    additionalFields: {
-      customField: {
-        type: "string",
-        required: false,
-        input: false,
-      },
-    },
+    updateAge: 86400, // 1 day - sessions refresh after 1 day of activity
     cookieCache: {
       enabled: true,
       maxAge: 300, // 5 minutes
@@ -111,7 +104,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-	logger: {
-    level: "debug",
-	}
+  logger: {
+    level: process.env.NODE_ENV === "production" ? "error" : "debug",
+  },
 })

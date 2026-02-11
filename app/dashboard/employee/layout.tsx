@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
-import { DashboardShell } from "@/components/DashboardComponents/EmployeeDashboard/sidebarshell";
+import { DashboardShell } from "@/components/dashboard/employee/sidebarshell"
 
 // Este layout envuelve TODAS las páginas bajo /dashboard/employee
 export default async function EmployeeLayout({

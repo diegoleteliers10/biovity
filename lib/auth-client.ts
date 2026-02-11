@@ -1,17 +1,35 @@
 import { inferAdditionalFields } from "better-auth/client/plugins"
-import type { DBFieldType } from "better-auth/db"
 import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient({
-  /** The base URL of the server (optional if you're using the same domain) */
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   plugins: [
     inferAdditionalFields({
       user: {
-        type: { type: "string" as DBFieldType },
-        profession: { type: "string" as DBFieldType },
-        avatar: { type: "string" as DBFieldType },
+        type: {
+          type: "string",
+          required: true,
+        },
+        profession: {
+          type: "string",
+          required: true,
+        },
+        avatar: {
+          type: "string",
+          required: false,
+        },
+        isActive: {
+          type: "boolean",
+          required: false,
+        },
+        organizationId: {
+          type: "string",
+          required: false,
+        },
       },
     }),
   ],
-  baseURL: "http://localhost:3000",
 })
+
+// Export typed hooks and methods for convenience
+export const { useSession, signIn, signUp, signOut } = authClient

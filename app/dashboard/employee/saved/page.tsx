@@ -1,5 +1,5 @@
 
-import { SavedContent } from "@/components/DashboardComponents/EmployeeDashboard/savedContent"
+import { SavedContent } from "@/components/dashboard/employee/savedContent"
 
 const EmployeeSavedPage = () => {
   return (

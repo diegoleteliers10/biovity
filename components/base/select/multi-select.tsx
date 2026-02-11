@@ -105,7 +105,7 @@ export const MultiSelectBase = ({
   )
 
   const accessibleList = useListData({
-    initialItems: items,
+    initialItems: items ? [...items] : [],
     filter,
   })
 

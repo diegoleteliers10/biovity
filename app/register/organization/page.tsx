@@ -3,6 +3,7 @@
 import {
   Building06Icon,
   Globe02Icon,
+  Mail01Icon,
   SquareLock02Icon,
   UserIcon,
   ViewIcon,
@@ -32,6 +33,7 @@ export default function OrganizationRegisterPage() {
   const [formData, setFormData] = useState({
     // Información del contacto principal
     contactName: "",
+    contactEmail: "",
     contactPassword: "",
     confirmPassword: "",
     contactPosition: "",
@@ -60,6 +62,12 @@ export default function OrganizationRegisterPage() {
     // Validación del contacto principal
     if (!formData.contactName.trim()) {
       newErrors.contactName = "El nombre del contacto es requerido";
+    }
+
+    if (!formData.contactEmail.trim()) {
+      newErrors.contactEmail = "El correo electrónico es requerido";
+    } else if (!/\S+@\S+\.\S+/.test(formData.contactEmail)) {
+      newErrors.contactEmail = "El correo electrónico no es válido";
     }
 
     if (!formData.contactPassword) {
@@ -103,12 +111,12 @@ export default function OrganizationRegisterPage() {
     setIsLoading(true)
 
     const result = await signUp.email({
+      email: formData.contactEmail,
       password: formData.contactPassword,
       name: formData.contactName,
       type: "organización",
-      organizationName: formData.organizationName,
-      organizationWebsite: formData.organizationWebsite,
-      contactPosition: formData.contactPosition,
+      profession: formData.contactPosition || "Representante",
+      avatar: "",
     })
 
     if (result.error) {
@@ -123,7 +131,7 @@ export default function OrganizationRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center space-y-4">
           {/* Logo */}
@@ -206,6 +214,39 @@ export default function OrganizationRegisterPage() {
                     </p>
                   )}
                 </div>
+              </div>
+
+              {/* Contact Email */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="contactEmail"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Correo electrónico corporativo
+                </label>
+                <div className="relative">
+                  <HugeiconsIcon
+                    icon={Mail01Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
+                  <Input
+                    id="contactEmail"
+                    type="email"
+                    placeholder="contacto@tuorganizacion.com"
+                    value={formData.contactEmail}
+                    onChange={(e) =>
+                      handleInputChange("contactEmail", e.target.value)
+                    }
+                    className={`pl-10 ${errors.contactEmail ? "border-red-500" : ""}`}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+                {errors.contactEmail && (
+                  <p className="text-sm text-red-500">{errors.contactEmail}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
