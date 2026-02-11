@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Building06Icon,
   Globe02Icon,
   SquareLock02Icon,
   Mail01Icon,
@@ -11,7 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,9 +24,9 @@ import { Input } from "@/components/ui/input";
 import { Logo } from "@/components/ui/logo";
 import { authClient } from "@/lib/auth-client";
 
-const { signIn } = authClient;
+const { signIn } = authClient
 
-export default function OrganizationLoginPage() {
+function OrganizationLoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/dashboard/organization";
@@ -307,5 +306,26 @@ export default function OrganizationLoginPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function OrganizationLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+          <Card className="w-full max-w-md">
+            <CardContent className="p-6">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600" />
+                <p className="text-sm text-gray-600">Cargando...</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      }
+    >
+      <OrganizationLoginContent />
+    </Suspense>
   );
 }

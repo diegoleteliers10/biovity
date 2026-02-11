@@ -1,4 +1,3 @@
-import { Agentation } from "agentation"
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
 import "./globals.css"
@@ -120,7 +119,6 @@ export default function RootLayout({
       </head>
       <body className={`${geistMono.variable} antialiased`}>
         {children}
-        {process.env.NODE_ENV === "development" && <Agentation />}
       </body>
     </html>
   )
