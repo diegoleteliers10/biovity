@@ -4,7 +4,8 @@ import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
-import { TrendingDown } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { TrendingDown01Icon } from "@hugeicons/core-free-icons"
 import { useRef, useState } from "react"
 import { useSpring, useMotionValueEvent } from "motion/react"
 
@@ -54,7 +55,7 @@ export function ClippedAreaChart() {
         <CardTitle>
           ${springY.get().toFixed(0)}
           <Badge variant="secondary" className="ml-2">
-            <TrendingDown className="h-4 w-4" />
+            <HugeiconsIcon icon={TrendingDown01Icon} className="h-4 w-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>

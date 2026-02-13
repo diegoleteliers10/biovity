@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowRight, GraduationCap } from "lucide-react"
+import { ArrowRight01Icon, GraduationScrollIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { BENEFITS_FOR_STUDENTS } from "@/lib/data/home-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
@@ -56,29 +57,26 @@ export function ForStudents() {
               transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
               className="grid grid-cols-2 gap-4 mb-10"
             >
-              {BENEFITS_FOR_STUDENTS.map((benefit, index) => {
-                const IconComponent = benefit.icon
-                return (
-                  <motion.div
-                    key={benefit.title}
-                    initial={{ opacity: 0, y: 14 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-                    transition={ts(index * LANDING_ANIMATION.chainStagger)}
-                    className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+              {BENEFITS_FOR_STUDENTS.map((benefit, index) => (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+                  transition={ts(index * LANDING_ANIMATION.chainStagger)}
+                  className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  <div
+                    className={`p-2 rounded-lg bg-gradient-to-r ${benefit.gradient} shadow-md flex-shrink-0`}
                   >
-                    <div
-                      className={`p-2 rounded-lg bg-gradient-to-r ${benefit.gradient} shadow-md flex-shrink-0`}
-                    >
-                      <IconComponent className="w-5 h-5 text-white" />
+                    <HugeiconsIcon icon={benefit.icon} size={20} className="text-white" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 text-sm">{benefit.title}</h4>
                       <p className="text-gray-500 text-xs mt-1">{benefit.description}</p>
                     </div>
                   </motion.div>
-                )
-              })}
+              ))}
             </motion.div>
 
             <button
@@ -86,7 +84,7 @@ export function ForStudents() {
               className="inline-flex items-center px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-full font-medium transition-all duration-200 hover:-translate-y-1 shadow-lg hover:shadow-xl"
             >
               Explorar oportunidades
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
             </button>
           </motion.div>
 
@@ -101,7 +99,7 @@ export function ForStudents() {
               <div className="bg-white rounded-2xl p-8 shadow-lg">
                 <div className="flex items-center space-x-4 mb-8">
                   <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl flex items-center justify-center shadow-md">
-                    <GraduationCap className="w-10 h-10 text-blue-600" />
+                    <HugeiconsIcon icon={GraduationScrollIcon} className="w-10 h-10 text-blue-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 text-xl">Estudiantes</h3>

@@ -1,6 +1,14 @@
 "use client"
 
-import { ArrowRight, Building2, Mail, Phone, Send, User } from "lucide-react"
+import {
+  ArrowRight01Icon,
+  Building02Icon,
+  CallIcon,
+  CheckmarkCircle02Icon,
+  Mail01Icon,
+  UserIcon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { useRef, useState } from "react"
 import { validateOrganizationContact } from "@/lib/validations"
@@ -75,7 +83,7 @@ export function CTAContacto() {
               >
                 <a href="/register/organization">
                   Comienza gratis
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
                 </a>
               </Button>
             </div>
@@ -89,11 +97,11 @@ export function CTAContacto() {
             className="space-y-4"
           >
             <div className="flex items-center gap-3 text-gray-400">
-              <Mail className="w-5 h-5" />
+              <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5" />
               <span>empresas@biovity.cl</span>
             </div>
             <div className="flex items-center gap-3 text-gray-400">
-              <Phone className="w-5 h-5" />
+              <HugeiconsIcon icon={CallIcon} className="w-5 h-5" />
               <span>+56 9 1234 5678</span>
             </div>
 
@@ -106,7 +114,7 @@ export function CTAContacto() {
               {isSubmitted ? (
                 <div className="bg-white rounded-2xl p-8 text-center">
                   <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                    <Send className="w-8 h-8 text-green-600" />
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">¡Mensaje enviado!</h3>
                   <p className="text-gray-500 text-pretty">
@@ -137,7 +145,7 @@ export function CTAContacto() {
                           Nombre
                         </label>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <HugeiconsIcon icon={UserIcon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                           <Input
                             id="nombre"
                             name="nombre"
@@ -172,7 +180,7 @@ export function CTAContacto() {
                         Email corporativo
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="email"
                           name="email"
@@ -192,7 +200,7 @@ export function CTAContacto() {
                         Empresa
                       </label>
                       <div className="relative">
-                        <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <HugeiconsIcon icon={Building02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="empresa"
                           name="empresa"
@@ -211,7 +219,7 @@ export function CTAContacto() {
                         Teléfono (opcional)
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <HugeiconsIcon icon={CallIcon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="telefono"
                           name="telefono"
@@ -251,7 +259,7 @@ export function CTAContacto() {
                       ) : (
                         <>
                           Enviar mensaje
-                          <ArrowRight className="w-5 h-5 ml-2" />
+                          <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
                         </>
                       )}
                     </Button>

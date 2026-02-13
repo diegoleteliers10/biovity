@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRight01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { useState } from "react"
 import { Button } from "../../ui/button"
@@ -150,7 +151,8 @@ export function Pricing() {
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
-                    <Check
+                    <HugeiconsIcon
+                      icon={Tick02Icon}
                       className={`w-5 h-5 flex-shrink-0 ${
                         plan.highlighted ? "text-blue-400" : "text-green-500"
                       }`}
@@ -176,7 +178,7 @@ export function Pricing() {
               >
                 <a href={plan.href}>
                   {plan.cta}
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
                 </a>
               </Button>
             </motion.div>

@@ -1,4 +1,5 @@
-import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Tick02Icon, ArrowRight01Icon, CircleIcon } from "@hugeicons/core-free-icons"
 import * as React from "react"
 import {
   DropdownMenuCheckboxItem as DropdownMenuCheckboxItemPrimitive,
@@ -133,7 +134,7 @@ function DropdownMenuCheckboxItem({
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <CheckIcon className="size-4" />
+            <HugeiconsIcon icon={Tick02Icon} className="size-4" />
           </DropdownMenuItemIndicatorPrimitive>
         </span>
         {children}
@@ -168,7 +169,7 @@ function DropdownMenuRadioItem({
       >
         <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
           <DropdownMenuItemIndicatorPrimitive layoutId="dropdown-menu-item-indicator-radio">
-            <CircleIcon className="size-2 fill-current" />
+            <HugeiconsIcon icon={Tick02Icon} className="size-2 fill-current" />
           </DropdownMenuItemIndicatorPrimitive>
         </span>
         {children}
@@ -243,7 +244,7 @@ function DropdownMenuSubTrigger({
         {...props}
       >
         {children}
-        <ChevronRightIcon data-slot="chevron" className="ml-auto size-4" />
+        <HugeiconsIcon icon={ArrowRight01Icon} data-slot="chevron" className="ml-auto size-4" />
       </DropdownMenuSubTriggerPrimitive>
     </DropdownMenuHighlightItemPrimitive>
   )

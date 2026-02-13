@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import type { IconSvgElement } from "@hugeicons/react"
 
 export interface EducacionChartItem {
   nivel: string
@@ -25,7 +25,7 @@ export interface CarreraChartItem {
 }
 
 export interface ConclusionItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   title: string
   description: string
   color: string
@@ -33,7 +33,7 @@ export interface ConclusionItem {
 }
 
 export interface SalariosHeroStatItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   value: string
   label: string
   color: string

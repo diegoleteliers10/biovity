@@ -6,7 +6,12 @@ import type {
   RegionChartItem,
   SalariosHeroStatItem,
 } from "@/lib/types/salarios"
-import { Building2, GraduationCap, MapPin, TrendingUp } from "lucide-react"
+import {
+  Building02Icon,
+  GraduationScrollIcon,
+  Location05Icon,
+  TradeUpIcon,
+} from "@hugeicons/core-free-icons"
 
 export const EDUCACION_CHART_DATA: EducacionChartItem[] = [
   { nivel: "Magíster", promedio: 2550, porcentaje: 34 },
@@ -44,7 +49,7 @@ export const CARRERA_CHART_DATA: CarreraChartItem[] = [
 
 export const CONCLUSIONES_SALARIOS: ConclusionItem[] = [
   {
-    icon: TrendingUp,
+    icon: TradeUpIcon,
     title: "Sector Polarizado",
     description:
       "Las carreras con mayor componente de Ingeniería Civil y Análisis de Datos (Bioinformática), especialmente aquellas ligadas a la Minería y Tech/Pharma, ofrecen los sueldos más altos.",
@@ -52,7 +57,7 @@ export const CONCLUSIONES_SALARIOS: ConclusionItem[] = [
     bgColor: "bg-blue-50",
   },
   {
-    icon: MapPin,
+    icon: Location05Icon,
     title: "Impacto Regional",
     description:
       "La ubicación geográfica es crucial. Antofagasta (Norte Minero) ofrece los mejores sueldos, seguida de la Región Metropolitana (Servicios, Pharma, Tech).",
@@ -60,7 +65,7 @@ export const CONCLUSIONES_SALARIOS: ConclusionItem[] = [
     bgColor: "bg-green-50",
   },
   {
-    icon: GraduationCap,
+    icon: GraduationScrollIcon,
     title: "Valor del Postgrado",
     description:
       "La especialización a través de postgrados puede aumentar significativamente el sueldo, especialmente en roles de I+D y Bioinformática.",
@@ -68,7 +73,7 @@ export const CONCLUSIONES_SALARIOS: ConclusionItem[] = [
     bgColor: "bg-purple-50",
   },
   {
-    icon: Building2,
+    icon: Building02Icon,
     title: "Recomendación para ATS",
     description:
       "Para empresas que utilizan software ATS, es crucial categorizar los puestos por competencia (ej. 'Bioinformático' o 'Ingeniero de Procesos') más que por el título de pregrado, y ajustar la oferta salarial según la región y el nivel de postgrado requerido.",
@@ -78,7 +83,7 @@ export const CONCLUSIONES_SALARIOS: ConclusionItem[] = [
 ]
 
 export const SALARIOS_HERO_STATS: SalariosHeroStatItem[] = [
-  { icon: GraduationCap, value: "5", label: "carreras analizadas", color: "#6366f1" },
-  { icon: Building2, value: "7", label: "industrias evaluadas", color: "#3b82f6" },
-  { icon: MapPin, value: "3", label: "regiones comparadas", color: "#10b981" },
+  { icon: GraduationScrollIcon, value: "5", label: "carreras analizadas", color: "#6366f1" },
+  { icon: Building02Icon, value: "7", label: "industrias evaluadas", color: "#3b82f6" },
+  { icon: Location05Icon, value: "3", label: "regiones comparadas", color: "#10b981" },
 ]

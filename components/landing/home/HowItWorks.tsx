@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { STEPS_HOME } from "@/lib/data/home-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
@@ -12,7 +12,6 @@ export function HowItWorks() {
 
   const StepCard = ({ step, index }: { step: (typeof STEPS_HOME)[0]; index: number }) => {
     const isEven = index % 2 === 0
-    const IconComponent = step.icon
     const cardDelay = index * LANDING_ANIMATION.chainStagger
     return (
       <motion.div
@@ -29,7 +28,7 @@ export function HowItWorks() {
             {/* Mobile step indicator */}
             <div className="flex items-center mb-4 md:hidden">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md ring-2 ring-white mr-3">
-                <IconComponent className="w-5 h-5 text-white" />
+                <HugeiconsIcon icon={step.icon} size={20} className="text-white" />
               </div>
               <span className="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
                 Paso {step.number}
@@ -92,7 +91,6 @@ export function HowItWorks() {
   )
 
   const StepMarker = ({ index }: { index: number }) => {
-    const IconComponent = STEPS_HOME[index].icon
     const topPosition = `${(index / (STEPS_HOME.length - 1)) * 85 + 7.5}%`
     // Markers appear AFTER their corresponding step card (chain effect)
     const markerDelay = index * LANDING_ANIMATION.chainStagger + LANDING_ANIMATION.duration + 0.08
@@ -107,7 +105,7 @@ export function HowItWorks() {
         transition={ts(markerDelay)}
       >
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg ring-4 ring-white">
-          <IconComponent className="w-8 h-8 text-white" />
+          <HugeiconsIcon icon={STEPS_HOME[index].icon} size={32} className="text-white" />
         </div>
       </motion.div>
     )

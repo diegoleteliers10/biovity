@@ -1,7 +1,6 @@
 "use client"
 
 import { Bar, BarChart, XAxis, YAxis, Cell } from "recharts"
-import { MapPin, TrendingUp } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,

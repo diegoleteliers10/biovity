@@ -1,5 +1,6 @@
 "use client"
 
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { FEATURES_ATS } from "@/lib/data/empresas-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
@@ -49,7 +50,6 @@ export function FeaturesATS() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {FEATURES_ATS.map((feature, index) => {
-            const IconComponent = feature.icon
             const iconColor = ICON_COLOR_CLASSES[index % 3]
             return (
               <motion.div
@@ -62,7 +62,11 @@ export function FeaturesATS() {
               >
                 <div className="bg-gray-50 rounded-2xl p-6 h-full border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-200">
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200">
-                    <IconComponent className={`w-7 h-7 ${iconColor}`} />
+                    <HugeiconsIcon
+                      icon={feature.icon}
+                      size={28}
+                      className={iconColor}
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
                   <p className="text-gray-500 leading-relaxed">{feature.description}</p>

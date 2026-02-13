@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronRight } from "lucide-react"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { Button } from "../../ui/button"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
@@ -42,22 +43,20 @@ export function Categories() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {CATEGORIES_HOME.map((category, index) => {
-            const IconComponent = category.icon
-            return (
-              <motion.div
-                key={category.title}
-                initial={{ opacity: 0, y: 32, scale: 0.96 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-                transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              >
-                <Card className="group p-6 cursor-pointer border-0 bg-white">
-                  <div className="flex items-center space-x-4">
-                    <div
-                      className={`flex-shrink-0 w-12 h-12 bg-gradient-to-r ${category.color} rounded-xl flex items-center justify-center shadow-lg`}
-                    >
-                      <IconComponent className="w-6 h-6 text-white" />
+          {CATEGORIES_HOME.map((category, index) => (
+            <motion.div
+              key={category.title}
+              initial={{ opacity: 0, y: 32, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+              transition={ts(index * LANDING_ANIMATION.chainStagger)}
+            >
+              <Card className="group p-6 cursor-pointer border-0 bg-white">
+                <div className="flex items-center space-x-4">
+                  <div
+                    className={`flex-shrink-0 w-12 h-12 bg-gradient-to-r ${category.color} rounded-xl flex items-center justify-center shadow-lg`}
+                  >
+                    <HugeiconsIcon icon={category.icon} size={24} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-gray-900 text-lg mb-1">{category.title}</h3>
@@ -65,12 +64,11 @@ export function Categories() {
                         <span className="text-gray-500 text-sm">{category.positions}</span>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                    <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </div>
                 </Card>
               </motion.div>
-            )
-          })}
+          ))}
         </div>
 
         <div className="text-center">
@@ -80,7 +78,7 @@ export function Categories() {
             className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 transition-all px-8 py-3"
           >
             Ver todas las especialidades
-            <ChevronRight className="w-5 h-5 ml-2" />
+            <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>
         </div>
       </div>

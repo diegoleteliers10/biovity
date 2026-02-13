@@ -1,4 +1,13 @@
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react"
+import {
+  CallIcon,
+  Facebook01Icon,
+  InstagramIcon,
+  Linkedin02Icon,
+  Mail01Icon,
+  MapPinIcon,
+  TwitterIcon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { Logo } from "@/components/ui/logo"
 
 export function Footer() {
@@ -54,15 +63,15 @@ export function Footer() {
             {/* Contact info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-gray-400">
-                <Mail className="w-4 h-4" />
+                <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4" />
                 <span>contacto@biovity.com</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
-                <Phone className="w-4 h-4" />
+                <HugeiconsIcon icon={CallIcon} className="w-4 h-4" />
                 <span>+56 2 2345 6789</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
-                <MapPin className="w-4 h-4" />
+                <HugeiconsIcon icon={MapPinIcon} className="w-4 h-4" />
                 <span>Santiago, Chile</span>
               </div>
             </div>
@@ -95,30 +104,20 @@ export function Footer() {
             {/* Social links */}
             <div className="flex items-center space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Facebook className="w-5 h-5" />
+                <HugeiconsIcon icon={Facebook01Icon} className="w-5 h-5" />
               </a>
               <a
                 href="#"
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="X (formerly Twitter)"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                >
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
+                <HugeiconsIcon icon={TwitterIcon} className="w-5 h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Linkedin className="w-5 h-5" />
+                <HugeiconsIcon icon={Linkedin02Icon} className="w-5 h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Instagram className="w-5 h-5" />
+                <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5" />
               </a>
             </div>
           </div>

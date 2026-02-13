@@ -16,8 +16,11 @@ import {
   Linkedin02Icon,
   Mail01Icon,
   WhatsappIcon,
+  HeartPulse01Icon,
+  Laptop01Icon,
+  Airplane01Icon,
+  GraduationCap01Icon,
 } from "@hugeicons/core-free-icons"
-import { HeartPulse, Laptop, Plane, GraduationCap } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -268,12 +271,12 @@ export default function JobDetailPage() {
                 {benefits.map((b) => {
                   const Icon =
                     b.type === "health"
-                      ? HeartPulse
+                      ? HeartPulse01Icon
                       : b.type === "vacation"
-                        ? Plane
+                        ? Airplane01Icon
                         : b.type === "learning"
-                          ? GraduationCap
-                          : Laptop
+                          ? GraduationCap01Icon
+                          : Laptop01Icon
                   return (
                     <div
                       key={b.id}

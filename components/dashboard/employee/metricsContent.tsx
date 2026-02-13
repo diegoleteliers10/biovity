@@ -35,7 +35,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown } from "lucide-react"
+import { TradeUpIcon, TradeDownIcon } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 
 type TimeRange = "3m" | "6m" | "12m"
@@ -386,9 +386,9 @@ export const MetricsContent = () => {
                   )}
                 >
                   {kpi.trendPositive ? (
-                    <TrendingUp className="h-3 w-3" />
+                    <HugeiconsIcon icon={TradeUpIcon} className="h-3 w-3" />
                   ) : (
-                    <TrendingDown className="h-3 w-3" />
+                    <HugeiconsIcon icon={TradeDownIcon} className="h-3 w-3" />
                   )}
                   {kpi.trend}
                 </p>
@@ -413,7 +413,7 @@ export const MetricsContent = () => {
                     variant="outline"
                     className="text-green-500 bg-green-500/10 border-none ml-2"
                   >
-                    <TrendingUp className="h-4 w-4" />
+                    <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
                     <span>12%</span>
                   </Badge>
                 </CardTitle>
@@ -459,7 +459,7 @@ export const MetricsContent = () => {
             <CardTitle>
               Tiempo de respuesta
               <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-                <TrendingUp className="h-4 w-4" />
+                <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
                 <span>Mejorando</span>
               </Badge>
             </CardTitle>
@@ -564,7 +564,7 @@ export const MetricsContent = () => {
             <CardTitle>
               Industrias aplicadas
               <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-                <TrendingUp className="h-4 w-4" />
+                <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
                 <span>5 sectores</span>
               </Badge>
             </CardTitle>

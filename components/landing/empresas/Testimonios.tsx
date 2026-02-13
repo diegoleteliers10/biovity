@@ -1,6 +1,7 @@
 "use client"
 
-import { Quote } from "lucide-react"
+import { QuoteDownIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion } from "motion/react"
 
 // TODO: Reemplazar con testimonios reales de clientes
@@ -79,7 +80,7 @@ export function Testimonios() {
                 transition={{ delay: index * 0.03, duration: 0.2, ease: "easeOut" }}
                 className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 relative"
               >
-                <Quote className="absolute top-6 right-6 w-10 h-10 text-blue-100" />
+                <HugeiconsIcon icon={QuoteDownIcon} className="absolute top-6 right-6 w-10 h-10 text-blue-100" />
                 <p className="text-gray-600 leading-relaxed relative z-10 mb-6">
                   &ldquo;{testimonio.quote}&rdquo;
                 </p>

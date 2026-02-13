@@ -1,52 +1,91 @@
-"use client"
-import { X, Clock, CalendarIcon } from "lucide-react"
+"use client";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  Clock01Icon,
+  Calendar01Icon,
+} from "@hugeicons/core-free-icons";
 
 type Event = {
-  readonly id: string
-  readonly title: string
-  readonly time: string
-  readonly description: string
-  readonly type: "meeting" | "personal" | "work" | "important"
-}
+  readonly id: string;
+  readonly title: string;
+  readonly time: string;
+  readonly description: string;
+  readonly type: "meeting" | "personal" | "work" | "important";
+};
 
 type DayModalProps = {
-  readonly isOpen: boolean
-  readonly onClose: () => void
-  readonly day: number
-  readonly dayName: string
-  readonly events: readonly Event[]
-}
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly day: number;
+  readonly dayName: string;
+  readonly events: readonly Event[];
+};
 
-const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+const dayNames = [
+  "Domingo",
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+];
 
-export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProps) {
-  if (!isOpen) return null
+export function DayModal({
+  isOpen,
+  onClose,
+  day,
+  dayName,
+  events,
+}: DayModalProps) {
+  if (!isOpen) return null;
 
   const getEventTypeInfo = (type: Event["type"]) => {
     switch (type) {
       case "meeting":
-        return { color: "bg-primary/10 text-primary border-primary/20", label: "Reunión" }
+        return {
+          color: "bg-primary/10 text-primary border-primary/20",
+          label: "Reunión",
+        };
       case "important":
         return {
           color: "bg-destructive/10 text-destructive border-destructive/20",
           label: "Importante",
-        }
+        };
       case "personal":
         return {
-          color: "bg-secondary/10 text-secondary-foreground border-secondary/20",
+          color:
+            "bg-secondary/10 text-secondary-foreground border-secondary/20",
           label: "Personal",
-        }
+        };
       case "work":
-        return { color: "bg-accent/10 text-accent-foreground border-accent/20", label: "Trabajo" }
+        return {
+          color: "bg-accent/10 text-accent-foreground border-accent/20",
+          label: "Trabajo",
+        };
       default:
-        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Evento" }
+        return {
+          color: "bg-muted/10 text-muted-foreground border-muted/20",
+          label: "Evento",
+        };
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm border-none p-0 cursor-pointer"
+        onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" || e.key === "Enter") {
+            onClose();
+          }
+        }}
+        aria-label="Cerrar modal"
+      />
 
       {/* Modal */}
       <div className="relative bg-card border border-border rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden">
@@ -54,7 +93,10 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl">
-              <CalendarIcon className="w-6 h-6 text-primary" />
+              <HugeiconsIcon
+                icon={Calendar01Icon}
+                className="w-6 h-6 text-primary"
+              />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-card-foreground">{day}</h2>
@@ -62,10 +104,14 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-muted/50 transition-colors"
           >
-            <X className="w-4 h-4 text-muted-foreground" />
+            <HugeiconsIcon
+              icon={Cancel01Icon}
+              className="w-4 h-4 text-muted-foreground"
+            />
           </button>
         </div>
 
@@ -74,9 +120,14 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
           {events.length === 0 ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CalendarIcon className="w-8 h-8 text-muted-foreground" />
+                <HugeiconsIcon
+                  icon={Calendar01Icon}
+                  className="w-8 h-8 text-muted-foreground"
+                />
               </div>
-              <p className="text-muted-foreground">No hay eventos programados para este día</p>
+              <p className="text-muted-foreground">
+                No hay eventos programados para este día
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -88,7 +139,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
 
               <div className="space-y-3">
                 {events.map((event) => {
-                  const typeInfo = getEventTypeInfo(event.type)
+                  const typeInfo = getEventTypeInfo(event.type);
                   return (
                     <div
                       key={event.id}
@@ -109,7 +160,10 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                       </div>
 
                       <div className="flex items-center gap-2 mb-3">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
+                        <HugeiconsIcon
+                          icon={Clock01Icon}
+                          className="w-4 h-4 text-muted-foreground"
+                        />
                         <span className="text-sm font-medium text-muted-foreground">
                           {event.time}
                         </span>
@@ -119,7 +173,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                         {event.description}
                       </p>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -127,5 +181,5 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
         </div>
       </div>
     </div>
-  )
+  );
 }

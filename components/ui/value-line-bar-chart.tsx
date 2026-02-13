@@ -1,6 +1,7 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { TrendingUp01Icon } from "@hugeicons/core-free-icons"
 import { Bar, BarChart, Cell, XAxis, ReferenceLine } from "recharts"
 import React from "react"
 import { AnimatePresence } from "motion/react"
@@ -84,7 +85,7 @@ export function ValueLineBarChart() {
             ${maxValueIndex.value}
           </span>
           <Badge variant="secondary">
-            <TrendingUp className="h-4 w-4" />
+            <HugeiconsIcon icon={TrendingUp01Icon} className="h-4 w-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

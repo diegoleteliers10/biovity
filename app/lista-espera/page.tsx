@@ -1,6 +1,7 @@
 "use client"
 
-import { Briefcase, Building2, CheckCircle2, Loader2, Mail } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Briefcase01Icon, Building06Icon, CheckmarkCircle02Icon, Loading01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
 import Image from "next/image"
 import { motion, useReducedMotion } from "motion/react"
 import { useState } from "react"
@@ -11,9 +12,9 @@ import { cn } from "@/lib/utils"
 
 type Role = "professional" | "empresa"
 
-const ROLE_OPTIONS: { value: Role; label: string; icon: typeof Briefcase }[] = [
-  { value: "professional", label: "Profesional", icon: Briefcase },
-  { value: "empresa", label: "Empresa", icon: Building2 },
+const ROLE_OPTIONS: { value: Role; label: string; icon: any }[] = [
+  { value: "professional", label: "Profesional", icon: Briefcase01Icon },
+  { value: "empresa", label: "Empresa", icon: Building06Icon },
 ]
 
 export default function ListaEsperaPage() {
@@ -67,7 +68,7 @@ export default function ListaEsperaPage() {
             priority
           />
           <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-green-600" />
+            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={40} className="text-green-600" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance">
             ¡Estás en la lista!
@@ -150,7 +151,7 @@ export default function ListaEsperaPage() {
                     aria-pressed={role === opt.value}
                     aria-label={`Seleccionar ${opt.label}`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <HugeiconsIcon icon={Icon} size={20} />
                     {opt.label}
                   </button>
                 )
@@ -163,7 +164,7 @@ export default function ListaEsperaPage() {
               {emailLabel}
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <HugeiconsIcon icon={Mail01Icon} size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <Input
                 id="email"
                 type="email"
@@ -191,7 +192,7 @@ export default function ListaEsperaPage() {
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="size-5 animate-spin" aria-hidden />
+                <HugeiconsIcon icon={Loading01Icon} size={20} className="animate-spin" aria-hidden />
                 Registrando...
               </>
             ) : (

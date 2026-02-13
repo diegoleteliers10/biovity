@@ -1,19 +1,22 @@
 "use client"
 
-import { ChevronDown } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
-import { useState } from "react"
 import { FAQS_EMPRESAS } from "@/lib/data/empresas-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/animate-ui/components/radix/accordion"
 
 export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-24 bg-white">
+    <section id="faq" className="py-24 bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -47,43 +50,34 @@ export function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
-          className="space-y-4"
         >
-          {FAQS_EMPRESAS.map((faq, index) => {
-            return (
-              <motion.div
+          <Accordion
+            type="single"
+            collapsible
+            className="space-y-4"
+          >
+            {FAQS_EMPRESAS.map((faq) => (
+              <AccordionItem
                 key={faq.question}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-                transition={ts(index * LANDING_ANIMATION.chainStagger * 0.6)}
+                value={faq.question}
                 className="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden"
               >
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200"
+                <AccordionTrigger className="w-full px-6 py-5 flex items-center justify-between text-left transition-colors duration-200 hover:no-underline font-semibold text-gray-900 text-base gap-4 [&>svg]:text-gray-500">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent
+                  className="px-6 pb-5 text-gray-600 leading-relaxed text-pretty text-base"
+                  keepRendered
+                  transition={{
+                    duration: reducedMotion ? 0.01 : 0.7,
+                    ease: [0.22, 0.61, 0.36, 1],
+                  }}
                 >
-                  <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${
-                      openIndex === index ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                <motion.div
-                  initial={{ maxHeight: 0 }}
-                  animate={{ maxHeight: openIndex === index ? 500 : 0 }}
-                  transition={{ duration: 0.3, ease: [0.4, 0, 0.3, 1] }}
-                  className="overflow-hidden"
-                >
-                  <p className="px-6 pb-5 text-gray-600 leading-relaxed text-pretty">
-                    {faq.answer}
-                  </p>
-                </motion.div>
-              </motion.div>
-            )
-          })}
+                  <p>{faq.answer}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </motion.div>
       </div>
     </section>

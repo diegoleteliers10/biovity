@@ -1,21 +1,21 @@
-import type { LucideIcon } from "lucide-react"
+import type { IconSvgElement } from "@hugeicons/react"
 
 export interface StepHomeItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   title: string
   description: string
   number: string
 }
 
 export interface BenefitHomeItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   title: string
   description: string
   gradient: string
 }
 
 export interface TransparencyFeatureItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   title: string
   description: string
   gradient: string
@@ -23,7 +23,7 @@ export interface TransparencyFeatureItem {
 }
 
 export interface CategoryHomeItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   title: string
   positions: string
   color: string
