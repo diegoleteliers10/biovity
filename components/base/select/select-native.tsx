@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronDown } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
 import { type SelectHTMLAttributes, useId } from "react"
 import { HintText } from "@/components/base/input/hint-text"
 import { Label } from "@/components/base/input/label"
@@ -59,7 +60,8 @@ export const NativeSelect = ({
             </option>
           ))}
         </select>
-        <ChevronDown
+        <HugeiconsIcon
+          icon={ArrowDown01Icon}
           aria-hidden="true"
           className="pointer-events-none absolute right-3.5 size-5 text-fg-quaternary in-data-input-wrapper:right-0 in-data-input-wrapper:size-4 in-data-input-wrapper:stroke-[2.625px] in-data-input-wrapper:in-data-trailing:in-data-[input-size=sm]:right-3"
         />

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { TrendingDown01Icon } from "@hugeicons/core-free-icons"
+import { TradeDownIcon } from "@hugeicons/core-free-icons"
 import { useRef, useState } from "react"
 import { useSpring, useMotionValueEvent } from "motion/react"
 
@@ -55,7 +55,7 @@ export function ClippedAreaChart() {
         <CardTitle>
           ${springY.get().toFixed(0)}
           <Badge variant="secondary" className="ml-2">
-            <HugeiconsIcon icon={TrendingDown01Icon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeDownIcon} className="h-4 w-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>

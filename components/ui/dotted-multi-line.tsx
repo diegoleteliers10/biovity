@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { TrendingDown01Icon } from "@hugeicons/core-free-icons"
+import { TradeDownIcon } from "@hugeicons/core-free-icons"
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 87 },
@@ -40,7 +40,7 @@ export function DottedMultiLineChart() {
         <CardTitle>
           Multi Line Chart
           <Badge variant="outline" className="text-red-500 bg-red-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TrendingDown01Icon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeDownIcon} className="h-4 w-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>

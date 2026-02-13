@@ -2,7 +2,7 @@
 
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Building01Icon, TrendingUp01Icon, Award01Icon } from "@hugeicons/core-free-icons"
+import { Building01Icon, TradeUpIcon, Award01Icon } from "@hugeicons/core-free-icons"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -205,7 +205,7 @@ export function SalariosPorIndustria() {
                 </div>
               </div>
               <div className="grid grid-cols-[auto_1fr] gap-3">
-                <HugeiconsIcon icon={TrendingUp01Icon} size={20} className="text-green-600 mt-0.5 shrink-0" />
+                <HugeiconsIcon icon={TradeUpIcon} size={20} className="text-green-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-sm">Tech/Pharma en crecimiento</p>
                   <p className="text-xs text-gray-600">Segundo lugar con $2.35M promedio</p>

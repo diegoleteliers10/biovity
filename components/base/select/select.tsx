@@ -1,6 +1,7 @@
 "use client"
 
-import { ChevronDown } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
 import type { FC, ReactNode, Ref, RefAttributes } from "react"
 import { createContext, isValidElement } from "react"
 import type { SelectProps as AriaSelectProps } from "react-aria-components"
@@ -117,7 +118,8 @@ const SelectValue = ({
                 </p>
               )}
 
-              <ChevronDown
+              <HugeiconsIcon
+                icon={ArrowDown01Icon}
                 aria-hidden="true"
                 className={cx(
                   "ml-auto shrink-0 text-fg-quaternary",

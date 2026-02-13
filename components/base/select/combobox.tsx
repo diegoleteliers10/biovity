@@ -1,6 +1,5 @@
 "use client"
 
-import { SearchLg as SearchIcon } from "@untitledui/icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Briefcase01Icon } from "@hugeicons/core-free-icons"
 import type { FocusEventHandler, PointerEventHandler, RefAttributes, RefObject } from "react"

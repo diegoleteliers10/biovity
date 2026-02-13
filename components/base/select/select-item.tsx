@@ -1,6 +1,7 @@
 "use client"
 
-import { Check } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Tick02Icon } from "@hugeicons/core-free-icons"
 import { isValidElement, useContext } from "react"
 import type { ListBoxItemProps as AriaListBoxItemProps } from "react-aria-components"
 import { ListBoxItem as AriaListBoxItem, Text as AriaText } from "react-aria-components"
@@ -104,7 +105,8 @@ export const SelectItem = ({
           </div>
 
           {state.isSelected && (
-            <Check
+            <HugeiconsIcon
+              icon={Tick02Icon}
               aria-hidden="true"
               className={cx(
                 "ml-auto text-muted-foreground",

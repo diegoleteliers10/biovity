@@ -1,6 +1,7 @@
 "use client"
 
-import { SearchLg } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Search01Icon } from "@hugeicons/core-free-icons"
 import type {
   FocusEventHandler,
   KeyboardEvent,
@@ -33,6 +34,10 @@ import { type SelectItemType, sizes } from "@/components/base/select/select"
 import { useResizeObserver } from "@/hooks/use-resize-observer"
 import { cx } from "@/lib/utils/cx"
 import { SelectItem } from "./select-item"
+
+const SearchIcon = ({ className }: { className?: string }) => (
+  <HugeiconsIcon icon={Search01Icon} className={className} />
+)
 
 type ComboBoxValueProps = AriaGroupProps & {
   readonly size: "sm" | "md"
@@ -296,7 +301,7 @@ export const MultiSelectTagsValue = ({
   shortcut,
   placeholder,
   shortcutClassName,
-  placeholderIcon: Icon = SearchLg,
+  placeholderIcon: Icon = SearchIcon,
   isDisabled: _isDisabled,
   ...otherProps
 }: ComboBoxValueProps) => {
