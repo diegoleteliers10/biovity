@@ -36,11 +36,7 @@ export function TrabajosPageContent() {
 
       // Filtro por ubicación
       if (filtros.ubicacion) {
-        if (
-          !trabajo.ubicacion
-            .toLowerCase()
-            .includes(filtros.ubicacion.toLowerCase())
-        ) {
+        if (!trabajo.ubicacion.toLowerCase().includes(filtros.ubicacion.toLowerCase())) {
           return false
         }
       }
@@ -92,10 +88,7 @@ export function TrabajosPageContent() {
   return (
     <>
       <TrabajosHero />
-      <TrabajosSearchFilters
-        filtros={filtros}
-        onFiltrosChange={setFiltros}
-      />
+      <TrabajosSearchFilters filtros={filtros} onFiltrosChange={setFiltros} />
       <TrabajosList trabajos={trabajosFiltrados} />
     </>
   )

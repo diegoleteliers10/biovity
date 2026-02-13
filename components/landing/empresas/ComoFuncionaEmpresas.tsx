@@ -23,7 +23,7 @@ export function ComoFuncionaEmpresas() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-rubik text-balance"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
           >
             Cómo funciona para empresas
           </motion.h2>

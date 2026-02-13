@@ -4,11 +4,7 @@ import { motion, useReducedMotion } from "motion/react"
 import { BENEFICIOS_EMPRESAS } from "@/lib/data/empresas-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
-const ICON_COLOR_CLASSES = [
-  "text-violet-500",
-  "text-emerald-500",
-  "text-blue-500",
-] as const
+const ICON_COLOR_CLASSES = ["text-violet-500", "text-emerald-500", "text-blue-500"] as const
 
 export function PropuestaValor() {
   const reducedMotion = useReducedMotion()
@@ -29,7 +25,7 @@ export function PropuestaValor() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-rubik text-balance"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
           >
             ¿Por qué elegir Biovity?
           </motion.h2>

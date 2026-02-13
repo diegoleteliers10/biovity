@@ -14,11 +14,26 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useMemo, useState, useRef } from "react"
 import { useSpring, useMotionValueEvent } from "motion/react"
-import { Area, AreaChart, CartesianGrid, XAxis, Bar, BarChart, Pie, PieChart, LabelList } from "recharts"
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  Bar,
+  BarChart,
+  Pie,
+  PieChart,
+  LabelList,
+} from "recharts"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, TrendingDown } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -26,9 +41,7 @@ import { cn } from "@/lib/utils"
 type TimeRange = "3m" | "6m" | "12m"
 
 // Custom bar components for DuotoneBarChart
-const CustomDuotoneBar = (
-  props: React.SVGProps<SVGRectElement> & { dataKey?: string }
-) => {
+const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
   const { fill, x, y, width, height, dataKey } = props
 
   return (
@@ -61,29 +74,14 @@ const CustomDuotoneBar = (
 
 const DottedBackgroundPattern = ({ patternId }: { patternId: string }) => {
   return (
-    <pattern
-      id={patternId}
-      x="0"
-      y="0"
-      width="10"
-      height="10"
-      patternUnits="userSpaceOnUse"
-    >
-      <circle
-        className="dark:text-muted/40 text-muted"
-        cx="2"
-        cy="2"
-        r="1"
-        fill="currentColor"
-      />
+    <pattern id={patternId} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
     </pattern>
   )
 }
 
 // Custom bar for multiple series
-const CustomDuotoneBarMultiple = (
-  props: React.SVGProps<SVGRectElement> & { dataKey?: string }
-) => {
+const CustomDuotoneBarMultiple = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
   const { fill, x, y, width, height, dataKey } = props
 
   return (
@@ -421,9 +419,7 @@ export const MetricsContent = () => {
                 </CardTitle>
               </div>
             </div>
-            <CardDescription>
-              Evolución de postulaciones en el período seleccionado
-            </CardDescription>
+            <CardDescription>Evolución de postulaciones en el período seleccionado</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={applicationsChartConfig}>
@@ -438,23 +434,9 @@ export const MetricsContent = () => {
                 />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                 <defs>
-                  <linearGradient
-                    id="gradient-applications"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="5%"
-                      stopColor="var(--color-applications)"
-                      stopOpacity={0.5}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="var(--color-applications)"
-                      stopOpacity={0.1}
-                    />
+                  <linearGradient id="gradient-applications" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-applications)" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="var(--color-applications)" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
                 <Area
@@ -476,10 +458,7 @@ export const MetricsContent = () => {
           <CardHeader>
             <CardTitle>
               Tiempo de respuesta
-              <Badge
-                variant="outline"
-                className="text-green-500 bg-green-500/10 border-none ml-2"
-              >
+              <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
                 <TrendingUp className="h-4 w-4" />
                 <span>Mejorando</span>
               </Badge>
@@ -499,16 +478,8 @@ export const MetricsContent = () => {
                 <defs>
                   <DottedBackgroundPattern patternId="default-pattern-dots-response" />
                 </defs>
-                <XAxis
-                  dataKey="period"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
+                <XAxis dataKey="period" tickLine={false} tickMargin={10} axisLine={false} />
+                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                 <Bar
                   dataKey="count"
                   fill="var(--color-count)"
@@ -528,10 +499,7 @@ export const MetricsContent = () => {
           <CardHeader>
             <CardTitle>
               Embudo de contratación
-              <Badge
-                variant="outline"
-                className="text-blue-500 bg-blue-500/10 border-none ml-2"
-              >
+              <Badge variant="outline" className="text-blue-500 bg-blue-500/10 border-none ml-2">
                 <span>42 aplicaciones</span>
               </Badge>
             </CardTitle>
@@ -550,12 +518,7 @@ export const MetricsContent = () => {
                 <defs>
                   <DottedBackgroundPattern patternId="default-multiple-pattern-dots" />
                 </defs>
-                <XAxis
-                  dataKey="stage"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
+                <XAxis dataKey="stage" tickLine={false} tickMargin={10} axisLine={false} />
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent indicator="dashed" hideLabel />}
@@ -600,10 +563,7 @@ export const MetricsContent = () => {
           <CardHeader className="items-center pb-0">
             <CardTitle>
               Industrias aplicadas
-              <Badge
-                variant="outline"
-                className="text-green-500 bg-green-500/10 border-none ml-2"
-              >
+              <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
                 <TrendingUp className="h-4 w-4" />
                 <span>5 sectores</span>
               </Badge>
@@ -616,9 +576,7 @@ export const MetricsContent = () => {
               className="[&_.recharts-text]:fill-background mx-auto aspect-square max-h-[250px]"
             >
               <PieChart>
-                <ChartTooltip
-                  content={<ChartTooltipContent nameKey="count" hideLabel />}
-                />
+                <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
                 <Pie
                   data={industriesDataWithColors}
                   innerRadius={30}

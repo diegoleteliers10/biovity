@@ -3,7 +3,7 @@ import { Header } from "../common/Header"
 
 export const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="landing-layout font-rubik">
+    <div className="landing-layout">
       <Header />
       {children}
       <Footer />

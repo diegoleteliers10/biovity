@@ -10,11 +10,11 @@ export type { Post }
 
 export async function getPostBySlug(slug: string): Promise<Post> {
   const filePath = path.join(POSTS_PATH, `${slug}.mdx`)
-  
+
   if (!fs.existsSync(filePath)) {
     throw new Error(`Post with slug "${slug}" not found`)
   }
-  
+
   const fileContent = fs.readFileSync(filePath, "utf-8")
   const { data, content } = matter(fileContent)
 

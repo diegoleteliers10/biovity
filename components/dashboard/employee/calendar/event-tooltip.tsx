@@ -94,7 +94,9 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
           {/* Header with title and type badge */}
           <div className="space-y-2">
             <div className="flex items-start justify-between gap-3">
-              <h4 className="font-semibold text-base leading-tight text-foreground">{event.title}</h4>
+              <h4 className="font-semibold text-base leading-tight text-foreground">
+                {event.title}
+              </h4>
               <span
                 className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getEventTypeColor(event.type)}`}
               >

@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { cn } from "@/lib/utils";
+import Image from "next/image"
+import { cn } from "@/lib/utils"
 
 type LogoProps = {
   readonly size?: "sm" | "md" | "lg" | "xl"
@@ -15,20 +15,15 @@ const sizeClasses = {
   md: "w-12 h-12",
   lg: "w-16 h-16",
   xl: "w-20 h-20",
-};
+}
 
 const textSizeClasses = {
   sm: "text-sm",
   md: "text-lg",
   lg: "text-xl",
-};
+}
 
-export function Logo({
-  size = "lg",
-  className,
-  showText = false,
-  textSize = "lg"
-}: LogoProps) {
+export function Logo({ size = "lg", className, showText = false, textSize = "lg" }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className={cn("relative", sizeClasses[size])}>
@@ -46,11 +41,9 @@ export function Logo({
           <span className={cn("font-bold text-foreground", textSizeClasses[textSize])}>
             Biovity
           </span>
-          <span className="text-xs text-muted-foreground">
-            Dashboard
-          </span>
+          <span className="text-xs text-muted-foreground">Dashboard</span>
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -29,15 +29,17 @@ export function ProblemaSolucion() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
                 transition={t(LANDING_ANIMATION.sequenceDelay)}
-                className="text-2xl font-bold text-gray-900 font-rubik"
+                className="text-2xl font-bold text-gray-900"
               >
                 El Problema que Resolvemos
               </motion.h2>
             </div>
             <p className="text-lg text-gray-700 leading-relaxed text-pretty">
               El mercado laboral de ciencias en Chile está fragmentado, con poca transparencia y
-              omisión de información crítica. Profesionales enfrentan pocas ofertas dispersas en múltiples
-              plataformas, mientras empresas no solo tienen dificultades para encontrar talento especializado, y mantener un seguimiento de inicio a fin centralizado de sus procesos de selección.
+              omisión de información crítica. Profesionales enfrentan pocas ofertas dispersas en
+              múltiples plataformas, mientras empresas no solo tienen dificultades para encontrar
+              talento especializado, y mantener un seguimiento de inicio a fin centralizado de sus
+              procesos de selección.
             </p>
           </motion.div>
 
@@ -58,16 +60,16 @@ export function ProblemaSolucion() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
                 transition={t(LANDING_ANIMATION.sequenceDelay)}
-                className="text-2xl font-bold text-gray-900 font-rubik"
+                className="text-2xl font-bold text-gray-900"
               >
                 Nuestra Solución
               </motion.h2>
             </div>
             <p className="text-lg text-gray-700 leading-relaxed text-pretty">
-              Creamos Biovity como un espacio centralizado donde profesionales pueden encontrar empleos,
-              comparar salarios del sector, acceder a consejos de carrera y conectar con una comunidad
-              activa. Para empresas, ofrecemos herramientas ATS simplificadas y acceso directo a talento
-              verificado.
+              Creamos Biovity como un espacio centralizado donde profesionales pueden encontrar
+              empleos, comparar salarios del sector, acceder a consejos de carrera y conectar con
+              una comunidad activa. Para empresas, ofrecemos herramientas ATS simplificadas y acceso
+              directo a talento verificado.
             </p>
           </motion.div>
         </div>

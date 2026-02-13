@@ -19,7 +19,7 @@ export function PostCard({ post }: PostCardProps) {
           />
         </div>
         <div className="p-6">
-          <h2 className="font-rubik text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+          <h2 className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
             {post.frontmatter.title}
           </h2>
           <p className="mt-2 text-gray-600">{post.frontmatter.excerpt}</p>

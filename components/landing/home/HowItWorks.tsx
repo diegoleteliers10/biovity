@@ -75,7 +75,14 @@ export function HowItWorks() {
           )
         })}
         <defs>
-          <linearGradient id="line-gradient" x1="0" y1="0" x2="0" y2="1200" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="line-gradient"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="1200"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="#BFDBFE" />
             <stop offset="100%" stopColor="#C4B5FD" />
           </linearGradient>
@@ -121,7 +128,7 @@ export function HowItWorks() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-rubik text-balance"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
           >
             Tu Camino hacia el Éxito Profesional
           </motion.h2>

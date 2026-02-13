@@ -13,7 +13,7 @@ export function SalariosHero() {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight font-rubik text-balance"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight text-balance"
           >
             Estudio de{" "}
             <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
@@ -27,8 +27,8 @@ export function SalariosHero() {
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
             className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed font-sans text-pretty"
           >
-            Análisis completo de remuneraciones en el sector de biociencias en Chile.
-            Datos segmentados por carrera, industria, región y nivel educativo (2024-2025).
+            Análisis completo de remuneraciones en el sector de biociencias en Chile. Datos
+            segmentados por carrera, industria, región y nivel educativo (2024-2025).
           </motion.p>
 
           <motion.div
@@ -60,9 +60,7 @@ export function SalariosHero() {
                   <div className="mx-auto mb-3 flex justify-center">
                     <IconComponent className="w-10 h-10" style={{ color: stat.color }} />
                   </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stat.value}
-                  </p>
+                  <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
                   <p className="text-sm text-gray-500">{stat.label}</p>
                 </motion.div>
               )

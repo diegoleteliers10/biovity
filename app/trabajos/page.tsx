@@ -1,10 +1,7 @@
 import type { Metadata } from "next"
 import { TrabajosPageContent } from "@/components/landing/trabajos/TrabajosPageContent"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import {
-  BreadcrumbJsonLd,
-  OrganizationJsonLd,
-} from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
   title: "Trabajos en Ciencias | Biovity",

@@ -32,39 +32,11 @@ export async function proxy(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   if (isProtectedRoute) {
-    // Verificar si hay una sesión activa
+    // Solo verificar la cookie de sesión (sincrónico, sin fetch).
+    // Evita redirecciones falsas por fallos intermitentes de get-session.
     const sessionToken = request.cookies.get("better-auth.session_token")?.value
 
     if (!sessionToken) {
-      const loginUrl = new URL("/login", request.url)
-      loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
-      return NextResponse.redirect(loginUrl)
-    }
-
-    // Verificar la sesión usando el endpoint correcto de Better Auth
-    try {
-      const response = await fetch(`${request.nextUrl.origin}/api/auth/get-session`, {
-        method: "GET",
-        headers: {
-          Cookie: request.headers.get("cookie") || "",
-          "Content-Type": "application/json",
-        },
-      })
-
-      if (!response.ok) {
-        const loginUrl = new URL("/login", request.url)
-        loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
-        return NextResponse.redirect(loginUrl)
-      }
-
-      const sessionData = await response.json()
-
-      if (!sessionData || !sessionData.user) {
-        const loginUrl = new URL("/login", request.url)
-        loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
-        return NextResponse.redirect(loginUrl)
-      }
-    } catch (error) {
       const loginUrl = new URL("/login", request.url)
       loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
       return NextResponse.redirect(loginUrl)

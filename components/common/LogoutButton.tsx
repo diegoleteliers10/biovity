@@ -24,11 +24,7 @@ export function LogoutButton() {
   }
 
   return (
-    <Button
-      variant="outline"
-      onClick={handleLogout}
-      className="mt-4"
-    >
+    <Button variant="outline" onClick={handleLogout} className="mt-4">
       Cerrar sesión
     </Button>
   )

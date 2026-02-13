@@ -23,7 +23,7 @@ export function Equipo() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-rubik text-balance"
+            className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance"
           >
             Nuestro Equipo
           </motion.h2>
@@ -57,13 +57,11 @@ export function Equipo() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={t(LANDING_ANIMATION.sequenceDelay * 3)}
-              className="text-2xl font-bold text-gray-900 mb-2 font-rubik"
+              className="text-2xl font-bold text-gray-900 mb-2"
             >
               Diego Letelier
             </motion.h3>
-            <p className="text-lg text-blue-600 mb-6 font-semibold">
-              CEO & CTO
-            </p>
+            <p className="text-lg text-blue-600 mb-6 font-semibold">CEO & CTO</p>
 
             {/* Brief Description */}
             <p className="text-gray-600 leading-relaxed mb-6 text-pretty">

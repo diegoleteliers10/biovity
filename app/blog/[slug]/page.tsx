@@ -71,12 +71,8 @@ export default async function PostPage({ params }: Props) {
 
     return (
       <LandingLayout>
-
         <article className="py-32">
-
-
           <main className="mx-auto max-w-4xl px-8 md:px-12">
-
             <Breadcrumb className="mb-8">
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -114,7 +110,7 @@ export default async function PostPage({ params }: Props) {
               </span>
               <span>•</span>
               <span>Por {post.frontmatter.author}</span>
-              <SocialShare className="ml-auto"/>
+              <SocialShare className="ml-auto" />
             </div>
 
             {/* Hero Image */}

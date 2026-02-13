@@ -10,8 +10,6 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ListaEsperaLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function ListaEsperaLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <>{children}</>
 }

@@ -1,18 +1,12 @@
-"use client";
+"use client"
 
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { Badge } from "@/components/ui/badge";
-import { TrendingDown } from "lucide-react";
-import { useRef, useState } from "react";
-import { useSpring, useMotionValueEvent } from "motion/react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { Badge } from "@/components/ui/badge"
+import { TrendingDown } from "lucide-react"
+import { useRef, useState } from "react"
+import { useSpring, useMotionValueEvent } from "motion/react"
 
 const chartData = [
   { month: "January", mobile: 245 },
@@ -27,32 +21,32 @@ const chartData = [
   { month: "October", mobile: 476 },
   { month: "November", mobile: 687 },
   { month: "December", mobile: 198 },
-];
+]
 
 const chartConfig = {
   mobile: {
     label: "Mobile",
     color: "#FCA070",
   },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 
 export function ClippedAreaChart() {
-  const chartRef = useRef<HTMLDivElement>(null);
-  const [axis, setAxis] = useState(0);
+  const chartRef = useRef<HTMLDivElement>(null)
+  const [axis, setAxis] = useState(0)
 
   // motion values
   const springX = useSpring(0, {
     damping: 30,
     stiffness: 100,
-  });
+  })
   const springY = useSpring(0, {
     damping: 30,
     stiffness: 100,
-  });
+  })
 
   useMotionValueEvent(springX, "change", (latest) => {
-    setAxis(latest);
-  });
+    setAxis(latest)
+  })
 
   return (
     <Card>
@@ -67,26 +61,22 @@ export function ClippedAreaChart() {
         <CardDescription>Total revenue for last year</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          ref={chartRef}
-          className="h-54 w-full"
-          config={chartConfig}
-        >
+        <ChartContainer ref={chartRef} className="h-54 w-full" config={chartConfig}>
           <AreaChart
             className="overflow-visible"
             accessibilityLayer
             data={chartData}
             onMouseMove={(state) => {
-              const x = state.activeCoordinate?.x;
-              const dataValue = state.activePayload?.[0]?.value;
+              const x = state.activeCoordinate?.x
+              const dataValue = state.activePayload?.[0]?.value
               if (x && dataValue !== undefined) {
-                springX.set(x);
-                springY.set(dataValue);
+                springX.set(x)
+                springY.set(dataValue)
               }
             }}
             onMouseLeave={() => {
-              springX.set(chartRef.current?.getBoundingClientRect().width || 0);
-              springY.jump(chartData[chartData.length - 1].mobile);
+              springX.set(chartRef.current?.getBoundingClientRect().width || 0)
+              springY.jump(chartData[chartData.length - 1].mobile)
             }}
             margin={{
               right: 0,
@@ -97,8 +87,8 @@ export function ClippedAreaChart() {
               vertical={false}
               strokeDasharray="3 3"
               horizontalCoordinatesGenerator={(props) => {
-                const { height } = props;
-                return [0, height - 30];
+                const { height } = props
+                return [0, height - 30]
               }}
             />
             <XAxis
@@ -128,13 +118,7 @@ export function ClippedAreaChart() {
               strokeLinecap="round"
               strokeOpacity={0.2}
             />
-            <rect
-              x={axis - 50}
-              y={0}
-              width={50}
-              height={18}
-              fill="var(--color-mobile)"
-            />
+            <rect x={axis - 50} y={0} width={50} height={18} fill="var(--color-mobile)" />
             <text
               x={axis - 25}
               fontWeight={600}
@@ -153,31 +137,11 @@ export function ClippedAreaChart() {
               strokeOpacity={0.1}
             />
             <defs>
-              <linearGradient
-                id="gradient-cliped-area-mobile"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.2}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0}
-                />
+              <linearGradient id="gradient-cliped-area-mobile" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0} />
                 <mask id="mask-cliped-area-chart">
-                  <rect
-                    x={0}
-                    y={0}
-                    width={"50%"}
-                    height={"100%"}
-                    fill="white"
-                  />
+                  <rect x={0} y={0} width={"50%"} height={"100%"} fill="white" />
                 </mask>
               </linearGradient>
             </defs>
@@ -185,5 +149,5 @@ export function ClippedAreaChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

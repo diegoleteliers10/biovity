@@ -33,7 +33,7 @@ export function ForStudents() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={t(LANDING_ANIMATION.sequenceDelay)}
-              className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 font-rubik text-balance"
+              className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 text-balance"
             >
               Da tu primer paso en la ciencia
             </motion.h2>

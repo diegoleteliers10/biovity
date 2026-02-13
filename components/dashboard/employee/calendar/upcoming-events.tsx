@@ -112,7 +112,9 @@ export function UpcomingEvents() {
 
               <div className="space-y-2">
                 <div className="flex items-start justify-between">
-                  <h4 className="font-medium text-sidebar-foreground text-sm leading-tight">{event.title}</h4>
+                  <h4 className="font-medium text-sidebar-foreground text-sm leading-tight">
+                    {event.title}
+                  </h4>
                   {index === 0 && (
                     <span className="text-xs bg-sidebar-accent text-sidebar-accent-foreground px-2 py-1 rounded-full font-medium">
                       Próximo

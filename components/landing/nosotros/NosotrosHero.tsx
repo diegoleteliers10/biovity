@@ -30,7 +30,7 @@ export function NosotrosHero() {
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(0)}
-            className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight font-rubik text-balance"
+            className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight text-balance"
           >
             Conectando el Talento Científico de Chile
           </motion.h1>
@@ -41,8 +41,9 @@ export function NosotrosHero() {
             transition={ts(LANDING_ANIMATION.sequenceDelay)}
             className="text-lg md:text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed text-pretty"
           >
-            Nuestra misión es crear una comunidad que conecte profesionales y estudiantes en biotecnología,
-            química, farmacia y ciencias de la salud con las mejores oportunidades del mercado laboral.
+            Nuestra misión es crear una comunidad que conecte profesionales y estudiantes en
+            biotecnología, química, farmacia y ciencias de la salud con las mejores oportunidades
+            del mercado laboral.
           </motion.p>
 
           <motion.div

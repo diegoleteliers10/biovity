@@ -3,9 +3,10 @@
 import { ArrowRight, Building2, Mail, Phone, Send, User } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
 import { useRef, useState } from "react"
+import { validateOrganizationContact } from "@/lib/validations"
 import { Button } from "../../ui/button"
 import { Input } from "../../ui/input"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import { LANDING_ANIMATION, getSpringTransition } from "@/lib/animations"
 
 export function CTAContacto() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -13,10 +14,33 @@ export function CTAContacto() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setErrors({})
+
+    if (!formRef.current) return
+
+    const formData = new FormData(formRef.current)
+    const data = {
+      nombre: formData.get("nombre") as string,
+      apellido: formData.get("apellido") as string,
+      email: formData.get("email") as string,
+      telefono: formData.get("telefono") as string | null,
+      empresa: formData.get("empresa") as string,
+      mensaje: formData.get("mensaje") as string,
+    }
+
+    const result = validateOrganizationContact(data)
+
+    if (!result.success) {
+      setErrors(result.errors ?? {})
+      return
+    }
+
     setIsSubmitting(true)
+    // TODO: Send data to API
     await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsSubmitting(false)
     setIsSubmitted(true)
@@ -35,7 +59,7 @@ export function CTAContacto() {
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(0)}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight font-rubik text-balance">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight text-balance">
               ¿Listo para encontrar tu próximo talento?
             </h2>
             <p className="text-xl text-gray-400 mb-8 leading-relaxed text-pretty">
@@ -97,10 +121,19 @@ export function CTAContacto() {
                 >
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Contacta con ventas</h3>
 
+                  {Object.keys(errors).length > 0 && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-sm text-red-600">{Object.values(errors)[0]}</p>
+                    </div>
+                  )}
+
                   <div className="space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="nombre"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Nombre
                         </label>
                         <div className="relative">
@@ -110,12 +143,15 @@ export function CTAContacto() {
                             name="nombre"
                             required
                             placeholder="Tu nombre"
-                            className="pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white"
+                            className={`pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white ${errors.nombre ? "border-red-500" : ""}`}
                           />
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="apellido" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="apellido"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Apellido
                         </label>
                         <Input
@@ -129,7 +165,10 @@ export function CTAContacto() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Email corporativo
                       </label>
                       <div className="relative">
@@ -146,7 +185,10 @@ export function CTAContacto() {
                     </div>
 
                     <div>
-                      <label htmlFor="empresa" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="empresa"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Empresa
                       </label>
                       <div className="relative">
@@ -162,7 +204,10 @@ export function CTAContacto() {
                     </div>
 
                     <div>
-                      <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="telefono"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Teléfono (opcional)
                       </label>
                       <div className="relative">
@@ -178,7 +223,10 @@ export function CTAContacto() {
                     </div>
 
                     <div>
-                      <label htmlFor="mensaje" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="mensaje"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         ¿Cómo podemos ayudarte?
                       </label>
                       <textarea

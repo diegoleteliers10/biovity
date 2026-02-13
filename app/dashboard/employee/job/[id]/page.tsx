@@ -30,9 +30,7 @@ import { useRouter } from "next/navigation"
 
 const toTitle = (slug: string | undefined) => {
   if (!slug) return "Vacante"
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase())
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 export default function JobDetailPage() {
@@ -41,7 +39,11 @@ export default function JobDetailPage() {
   const jobId = params?.id
   const jobTitle = toTitle(jobId)
 
-  const benefits: { id: string; label: string; type: "health" | "vacation" | "learning" | "equipment" }[] = [
+  const benefits: {
+    id: string
+    label: string
+    type: "health" | "vacation" | "learning" | "equipment"
+  }[] = [
     { id: "b1", label: "Seguro de salud y dental", type: "health" },
     { id: "b2", label: "Vacaciones pagadas y días personales", type: "vacation" },
     { id: "b3", label: "Presupuesto anual para formación", type: "learning" },
@@ -57,7 +59,11 @@ export default function JobDetailPage() {
       >
         <div className="mx-auto max-w-6xl px-4 py-6 md:py-8">
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <button type="button" onClick={() => router.back()} className="hover:text-foreground cursor-pointer">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="hover:text-foreground cursor-pointer"
+            >
               ← Volver a empleos
             </button>
             <span className="text-muted-foreground/60">/</span>
@@ -65,8 +71,16 @@ export default function JobDetailPage() {
           </div>
 
           <div className="mt-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-md bg-primary/10 text-primary grid place-items-center" aria-hidden>
-              <HugeiconsIcon icon={Briefcase01Icon} size={24} strokeWidth={1.5} className="h-5 w-5" />
+            <div
+              className="h-10 w-10 rounded-md bg-primary/10 text-primary grid place-items-center"
+              aria-hidden
+            >
+              <HugeiconsIcon
+                icon={Briefcase01Icon}
+                size={24}
+                strokeWidth={1.5}
+                className="h-5 w-5"
+              />
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Empresa</p>
@@ -79,15 +93,16 @@ export default function JobDetailPage() {
           {/* Meta */}
           <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1">
-              <HugeiconsIcon icon={Location05Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+              <HugeiconsIcon
+                icon={Location05Icon}
+                size={24}
+                strokeWidth={1.5}
+                className="h-4 w-4"
+              />
               Buenos Aires · Híbrido
             </span>
-            <span className="inline-flex items-center gap-1">
-              Senior · Full time
-            </span>
-            <span className="inline-flex items-center gap-1">
-              Programación
-            </span>
+            <span className="inline-flex items-center gap-1">Senior · Full time</span>
+            <span className="inline-flex items-center gap-1">Programación</span>
             <span className="inline-flex items-center gap-1 font-semibold text-foreground">
               <HugeiconsIcon icon={Cash02Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
               $2,500 - 3,000 USD/mes
@@ -98,14 +113,24 @@ export default function JobDetailPage() {
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <Button className="px-6">Postular</Button>
             <Button variant="outline" className="px-3" aria-label="Guardar">
-              <HugeiconsIcon icon={Bookmark02Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+              <HugeiconsIcon
+                icon={Bookmark02Icon}
+                size={24}
+                strokeWidth={1.5}
+                className="h-4 w-4"
+              />
             </Button>
             <div className="ml-auto flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Compartir</span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="Compartir">
-                    <HugeiconsIcon icon={Share05Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+                    <HugeiconsIcon
+                      icon={Share05Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="h-4 w-4"
+                    />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
@@ -118,17 +143,30 @@ export default function JobDetailPage() {
                       } catch {}
                     }}
                   >
-                    <HugeiconsIcon icon={Link04Icon} size={24} strokeWidth={1.5} className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon
+                      icon={Link04Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="mr-2 h-4 w-4"
+                    />
                     Copiar enlace
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer"
                     onClick={() => {
                       const url = encodeURIComponent(window.location.href)
-                      window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${url}`, "_blank")
+                      window.open(
+                        `https://www.linkedin.com/shareArticle?mini=true&url=${url}`,
+                        "_blank"
+                      )
                     }}
                   >
-                    <HugeiconsIcon icon={Linkedin02Icon} size={24} strokeWidth={1.5} className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon
+                      icon={Linkedin02Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="mr-2 h-4 w-4"
+                    />
                     LinkedIn
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -138,7 +176,12 @@ export default function JobDetailPage() {
                       window.location.href = `mailto:?subject=${encodeURIComponent(jobTitle)}&body=${url}`
                     }}
                   >
-                    <HugeiconsIcon icon={Mail01Icon} size={24} strokeWidth={1.5} className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon
+                      icon={Mail01Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="mr-2 h-4 w-4"
+                    />
                     Email
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -148,7 +191,12 @@ export default function JobDetailPage() {
                       window.open(`https://wa.me/?text=${url}`, "_blank")
                     }}
                   >
-                    <HugeiconsIcon icon={WhatsappIcon} size={24} strokeWidth={1.5} className="mr-2 h-4 w-4" />
+                    <HugeiconsIcon
+                      icon={WhatsappIcon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="mr-2 h-4 w-4"
+                    />
                     WhatsApp
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -166,8 +214,8 @@ export default function JobDetailPage() {
             <h2 className="text-base font-semibold">Descripción</h2>
             <p className="text-sm text-muted-foreground">
               Únete al equipo para construir productos de alto impacto. Esta es una maqueta con el
-              diseño adaptado al sistema visual del proyecto. Sustituye este texto con contenido real
-              cuando conectemos la fuente de datos.
+              diseño adaptado al sistema visual del proyecto. Sustituye este texto con contenido
+              real cuando conectemos la fuente de datos.
             </p>
 
             <h3 className="mt-4 text-sm font-semibold">Requisitos</h3>
@@ -193,7 +241,12 @@ export default function JobDetailPage() {
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Publicado</span>
                 <span className="inline-flex items-center gap-1">
-                  <HugeiconsIcon icon={Clock01Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+                  <HugeiconsIcon
+                    icon={Clock01Icon}
+                    size={24}
+                    strokeWidth={1.5}
+                    className="h-4 w-4"
+                  />
                   21 Oct 2025
                 </span>
               </div>
@@ -222,7 +275,10 @@ export default function JobDetailPage() {
                           ? GraduationCap
                           : Laptop
                   return (
-                    <div key={b.id} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div
+                      key={b.id}
+                      className="flex items-center gap-2 text-sm text-muted-foreground"
+                    >
                       <Icon className="h-4 w-4 text-foreground/80" aria-hidden />
                       <span>{b.label}</span>
                     </div>
@@ -236,5 +292,3 @@ export default function JobDetailPage() {
     </div>
   )
 }
-
-

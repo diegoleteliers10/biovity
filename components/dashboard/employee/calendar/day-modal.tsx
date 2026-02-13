@@ -27,9 +27,15 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
       case "meeting":
         return { color: "bg-primary/10 text-primary border-primary/20", label: "Reunión" }
       case "important":
-        return { color: "bg-destructive/10 text-destructive border-destructive/20", label: "Importante" }
+        return {
+          color: "bg-destructive/10 text-destructive border-destructive/20",
+          label: "Importante",
+        }
       case "personal":
-        return { color: "bg-secondary/10 text-secondary-foreground border-secondary/20", label: "Personal" }
+        return {
+          color: "bg-secondary/10 text-secondary-foreground border-secondary/20",
+          label: "Personal",
+        }
       case "work":
         return { color: "bg-accent/10 text-accent-foreground border-accent/20", label: "Trabajo" }
       default:
@@ -89,7 +95,9 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                       className="p-4 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-3 mb-3">
-                        <h4 className="font-medium text-card-foreground leading-tight">{event.title}</h4>
+                        <h4 className="font-medium text-card-foreground leading-tight">
+                          {event.title}
+                        </h4>
                         <span
                           className={`
                           px-2 py-1 rounded-md text-xs font-medium border shrink-0
@@ -102,10 +110,14 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
 
                       <div className="flex items-center gap-2 mb-3">
                         <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium text-muted-foreground">{event.time}</span>
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {event.time}
+                        </span>
                       </div>
 
-                      <p className="text-sm text-muted-foreground leading-relaxed">{event.description}</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {event.description}
+                      </p>
                     </div>
                   )
                 })}

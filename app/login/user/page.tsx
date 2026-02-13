@@ -1,62 +1,56 @@
-"use client";
+"use client"
 
 import {
   SquareLock02Icon,
   Mail01Icon,
   ViewIcon,
   ViewOffSlashIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { Logo } from "@/components/ui/logo";
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
+import { Logo } from "@/components/ui/logo"
 
-const { signIn } = authClient;
+const { signIn } = authClient
 
 function UserLoginContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/dashboard/employee";
-  const { useSession } = authClient;
-  const { data: session, isPending } = useSession();
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect") || "/dashboard/employee"
+  const { useSession } = authClient
+  const { data: session, isPending } = useSession()
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     profession: "",
-  });
-  const [rememberMe, setRememberMe] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  })
+  const [rememberMe, setRememberMe] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
       if (session.user.type === "persona") {
-        router.push("/dashboard/employee");
+        router.push("/dashboard/employee")
       } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization");
+        router.push("/dashboard/organization")
       }
     }
-  }, [session, isPending, router]);
+  }, [session, isPending, router])
 
   // Mostrar loading mientras se verifica la sesión
   if (isPending) {
     return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="p-6">
             <div className="flex flex-col items-center space-y-4">
@@ -66,33 +60,33 @@ function UserLoginContent() {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   // Si hay sesión, no mostrar nada (se está redirigiendo)
   if (session?.user) {
-    return null;
+    return null
   }
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }))
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }))
     }
-  };
+  }
 
   const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
+    e.preventDefault()
+    setIsLoading(true)
+    setErrors({})
 
     try {
       const result = await signIn.email({
         email: formData.email,
         password: formData.password,
         rememberMe: rememberMe,
-      });
+      })
 
       if (result.error) {
         setErrors({
@@ -106,10 +100,10 @@ function UserLoginContent() {
     } finally {
       setIsLoading(false)
     }
-  };
+  }
 
   return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+    <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           {/* Logo */}
@@ -131,10 +125,7 @@ function UserLoginContent() {
           <form onSubmit={handleSignIn} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -155,17 +146,12 @@ function UserLoginContent() {
                   autoComplete="email"
                 />
               </div>
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="text-sm font-medium text-gray-700">
                 Contraseña
               </label>
               <div className="relative">
@@ -180,9 +166,7 @@ function UserLoginContent() {
                   type={isPasswordVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) =>
-                    handleInputChange("password", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("password", e.target.value)}
                   className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
                   required
                   autoComplete="current-password"
@@ -201,9 +185,7 @@ function UserLoginContent() {
                   />
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
-              )}
+              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
             </div>
 
             {/* Remember Me and Forgot Password */}
@@ -224,9 +206,7 @@ function UserLoginContent() {
 
             {/* General Error */}
             {errors.general && (
-              <div className="text-sm text-red-500 text-center">
-                {errors.general}
-              </div>
+              <div className="text-sm text-red-500 text-center">{errors.general}</div>
             )}
 
             {/* Submit Button */}
@@ -268,14 +248,14 @@ function UserLoginContent() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
 
 export default function UserLoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+        <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardContent className="p-6">
               <div className="flex flex-col items-center space-y-4">
@@ -289,5 +269,5 @@ export default function UserLoginPage() {
     >
       <UserLoginContent />
     </Suspense>
-  );
+  )
 }

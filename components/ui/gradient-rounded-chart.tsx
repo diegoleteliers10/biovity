@@ -1,22 +1,16 @@
-"use client";
+"use client"
 
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Badge } from "@/components/ui/badge";
-import { TrendingDown } from "lucide-react";
+} from "@/components/ui/chart"
+import { Badge } from "@/components/ui/badge"
+import { TrendingDown } from "lucide-react"
 
 const chartData = [
   { month: "January", desktop: 342, mobile: 245 },
@@ -31,7 +25,7 @@ const chartData = [
   { month: "October", desktop: 532, mobile: 476 },
   { month: "November", desktop: 803, mobile: 687 },
   { month: "December", desktop: 271, mobile: 198 },
-];
+]
 
 const chartConfig = {
   desktop: {
@@ -42,7 +36,7 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 
 export function GradientRoundedAreaChart() {
   return (
@@ -50,17 +44,12 @@ export function GradientRoundedAreaChart() {
       <CardHeader>
         <CardTitle>
           Rounded Area Chart
-          <Badge
-            variant="outline"
-            className="text-red-500 bg-red-500/10 border-none ml-2"
-          >
+          <Badge variant="outline" className="text-red-500 bg-red-500/10 border-none ml-2">
             <TrendingDown className="h-4 w-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
+        <CardDescription>Showing total visitors for the last 6 months</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -75,41 +64,13 @@ export function GradientRoundedAreaChart() {
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <defs>
-              <linearGradient
-                id="gradient-rounded-chart-desktop"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.5}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
-                />
+              <linearGradient id="gradient-rounded-chart-desktop" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={0.5} />
+                <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0.1} />
               </linearGradient>
-              <linearGradient
-                id="gradient-rounded-chart-mobile"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.5}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.1}
-                />
+              <linearGradient id="gradient-rounded-chart-mobile" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.5} />
+                <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <Area
@@ -136,5 +97,5 @@ export function GradientRoundedAreaChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )
 }

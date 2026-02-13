@@ -6,10 +6,7 @@ import { SalariosPorEducacion } from "@/components/landing/salarios/SalariosPorE
 import { SalariosPorIndustria } from "@/components/landing/salarios/SalariosPorIndustria"
 import { SalariosPorRegion } from "@/components/landing/salarios/SalariosPorRegion"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import {
-  BreadcrumbJsonLd,
-  OrganizationJsonLd,
-} from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
   title: "Estudio de Sueldos en Biociencias | Biovity",
@@ -41,8 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: "Estudio de Sueldos en Biociencias | Biovity",
-    description:
-      "Análisis exhaustivo de remuneraciones en el sector de biociencias en Chile.",
+    description: "Análisis exhaustivo de remuneraciones en el sector de biociencias en Chile.",
     images: ["/og/home.png"],
   },
   alternates: {

@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   SquareLock02Icon,
@@ -6,31 +6,26 @@ import {
   UserIcon,
   ViewIcon,
   ViewOffSlashIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Select } from "@/components/base/select/select";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Logo } from "@/components/ui/logo";
-import { authClient } from "@/lib/auth-client";
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { Select } from "@/components/base/select/select"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { Logo } from "@/components/ui/logo"
+import { authClient } from "@/lib/auth-client"
+import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
-const { signUp } = authClient;
+const { signUp } = authClient
 
 export default function UserRegisterPage() {
-  const router = useRouter();
-  const { useSession } = authClient;
-  const { data: session, isPending } = useSession();
+  const router = useRouter()
+  const { useSession } = authClient
+  const { data: session, isPending } = useSession()
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,10 +33,10 @@ export default function UserRegisterPage() {
     password: "",
     confirmPassword: "",
     profession: "",
-  });
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  })
+  const [acceptTerms, setAcceptTerms] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmVisible, setIsConfirmVisible] = useState(false)
 
@@ -65,23 +60,23 @@ export default function UserRegisterPage() {
     { label: "Docente/Profesor", id: "docente" },
     { label: "Estudiante", id: "estudiante" },
     { label: "Otro", id: "otro" },
-  ];
+  ]
 
   // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
       if (session.user.type === "persona") {
-        router.push("/dashboard/employee");
+        router.push("/dashboard/employee")
       } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization");
+        router.push("/dashboard/organization")
       }
     }
-  }, [session, isPending, router]);
+  }, [session, isPending, router])
 
   // Mostrar loading mientras se verifica la sesión
   if (isPending) {
     return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-lg">
           <CardContent className="p-6">
             <div className="flex flex-col items-center space-y-4">
@@ -91,60 +86,43 @@ export default function UserRegisterPage() {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   // Si hay sesión, no mostrar nada (se está redirigiendo)
   if (session?.user) {
-    return null;
+    return null
   }
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }))
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }))
     }
-  };
+  }
 
   const handleProfessionChange = (value: string | number | null) => {
-    handleInputChange("profession", value ? String(value) : "");
-  };
+    handleInputChange("profession", value ? String(value) : "")
+  }
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+    const result = validateFormZod(userRegistrationSchema, {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+      profession: formData.profession,
+      acceptTerms: acceptTerms,
+    })
 
-    if (!formData.name.trim()) {
-      newErrors.name = "El nombre es requerido";
+    if (!result.success) {
+      setErrors(result.errors)
+      return false
     }
 
-    if (!formData.profession.trim()) {
-      newErrors.profession = "La profesión es requerida";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "El correo electrónico es requerido";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "El correo electrónico no es válido";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "La contraseña es requerida";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Las contraseñas no coinciden";
-    }
-
-    if (!acceptTerms) {
-      newErrors.terms = "Debes aceptar los términos y condiciones";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    return true
+  }
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -176,7 +154,7 @@ export default function UserRegisterPage() {
   }
 
   return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+    <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center space-y-4">
           {/* Logo */}
@@ -198,10 +176,7 @@ export default function UserRegisterPage() {
           <form onSubmit={handleSignUp} className="space-y-6">
             {/* Name Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="name"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="name" className="text-sm font-medium text-gray-700">
                 Nombre completo
               </label>
               <div className="relative">
@@ -223,17 +198,12 @@ export default function UserRegisterPage() {
                   autoComplete="name"
                 />
               </div>
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name}</p>
-              )}
+              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
             </div>
 
             {/* Profession Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="profession"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="profession" className="text-sm font-medium text-gray-700">
                 Profesión o Cargo
               </label>
               <div className="relative">
@@ -246,26 +216,18 @@ export default function UserRegisterPage() {
                   className="w-full"
                 >
                   {(item) => (
-                    <Select.Item
-                      id={item.id}
-                      supportingText={item.supportingText}
-                    >
+                    <Select.Item id={item.id} supportingText={item.supportingText}>
                       {item.label}
                     </Select.Item>
                   )}
                 </Select.ComboBox>
               </div>
-              {errors.profession && (
-                <p className="text-sm text-red-500">{errors.profession}</p>
-              )}
+              {errors.profession && <p className="text-sm text-red-500">{errors.profession}</p>}
             </div>
 
             {/* Email Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -287,17 +249,12 @@ export default function UserRegisterPage() {
                   autoComplete="email"
                 />
               </div>
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="text-sm font-medium text-gray-700">
                 Contraseña
               </label>
               <div className="relative">
@@ -313,9 +270,7 @@ export default function UserRegisterPage() {
                   type={isPasswordVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) =>
-                    handleInputChange("password", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("password", e.target.value)}
                   className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
                   required
                   autoComplete="new-password"
@@ -334,17 +289,12 @@ export default function UserRegisterPage() {
                   />
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password}</p>
-              )}
+              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
             </div>
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <label
-                htmlFor="confirmPassword"
-                className="text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
                 Confirmar contraseña
               </label>
               <div className="relative">
@@ -360,9 +310,7 @@ export default function UserRegisterPage() {
                   type={isConfirmVisible ? "text" : "password"}
                   placeholder="••••••••"
                   value={formData.confirmPassword}
-                  onChange={(e) =>
-                    handleInputChange("confirmPassword", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   className={`pl-10 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
                   required
                   autoComplete="new-password"
@@ -412,16 +360,12 @@ export default function UserRegisterPage() {
                   </span>
                 }
               />
-              {errors.terms && (
-                <p className="text-sm text-red-500">{errors.terms}</p>
-              )}
+              {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
             </div>
 
             {/* General Error */}
             {errors.general && (
-              <div className="text-sm text-red-500 text-center">
-                {errors.general}
-              </div>
+              <div className="text-sm text-red-500 text-center">{errors.general}</div>
             )}
 
             {/* Submit Button */}
@@ -463,5 +407,5 @@ export default function UserRegisterPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

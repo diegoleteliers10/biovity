@@ -20,10 +20,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { HeartPulse, Laptop, Plane, GraduationCap } from "lucide-react"
-import {
-  BreadcrumbJsonLd,
-  OrganizationJsonLd,
-} from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
 import type { TipoBeneficio } from "@/lib/types/trabajos"
 import {
@@ -100,10 +97,10 @@ export default async function TrabajoDetailPage({ params }: Props) {
           { name: trabajo.titulo, url: `https://biovity.cl/trabajos/${trabajo.slug}` },
         ]}
       />
-      <article className="py-16 font-rubik">
+      <article className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
-          <Breadcrumb className="mb-8 font-rubik">
+          <Breadcrumb className="mb-8">
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink href="/">Inicio</BreadcrumbLink>
@@ -132,34 +129,26 @@ export default async function TrabajoDetailPage({ params }: Props) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Empresa</p>
-                <p className="text-lg font-semibold text-foreground font-rubik">
+                <p className="text-lg font-semibold text-foreground">
                   {trabajo.empresa}
                 </p>
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 font-rubik">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               {trabajo.titulo}
             </h1>
 
             {/* Meta información */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6 font-rubik">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon
-                  icon={Location05Icon}
-                  size={20}
-                  className="text-muted-foreground"
-                />
+                <HugeiconsIcon icon={Location05Icon} size={20} className="text-muted-foreground" />
                 <span>{trabajo.ubicacion}</span>
               </div>
-              <Badge
-                className={`${getModalidadBadgeColor(trabajo.modalidad)} capitalize`}
-              >
+              <Badge className={`${getModalidadBadgeColor(trabajo.modalidad)} capitalize`}>
                 {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
               </Badge>
-              <Badge
-                className={`${getFormatoBadgeColor(trabajo.formato)} capitalize`}
-              >
+              <Badge className={`${getFormatoBadgeColor(trabajo.formato)} capitalize`}>
                 {trabajo.formato === "full-time"
                   ? "Full Time"
                   : trabajo.formato === "part-time"
@@ -172,43 +161,31 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 </Badge>
               )}
               <div className="flex items-center gap-2 font-semibold text-gray-900">
-                <HugeiconsIcon
-                  icon={Cash02Icon}
-                  size={20}
-                  className="text-muted-foreground"
-                />
+                <HugeiconsIcon icon={Cash02Icon} size={20} className="text-muted-foreground" />
                 <span>
                   {formatSalarioRango(trabajo.rangoSalarial.min, trabajo.rangoSalarial.max)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <HugeiconsIcon
-                  icon={Clock01Icon}
-                  size={20}
-                  className="text-muted-foreground"
-                />
+                <HugeiconsIcon icon={Clock01Icon} size={20} className="text-muted-foreground" />
                 <span>Publicado {formatFechaLarga(trabajo.fechaPublicacion)}</span>
               </div>
             </div>
           </div>
 
           {/* Contenido principal - 2 columnas */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 font-rubik">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
             {/* Columna izquierda (70%) */}
             <div className="space-y-8">
               {/* Descripción */}
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  Descripción
-                </h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Descripción</h2>
                 <p className="text-gray-700 leading-relaxed">{trabajo.descripcion}</p>
               </section>
 
               {/* Requisitos */}
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  Requisitos
-                </h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Requisitos</h2>
                 <ul className="list-disc list-inside space-y-2 text-gray-700">
                   {trabajo.requisitos.map((req, index) => (
                     <li key={index}>{req}</li>
@@ -218,9 +195,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
 
               {/* Responsabilidades */}
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  Responsabilidades
-                </h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Responsabilidades</h2>
                 <ul className="list-disc list-inside space-y-2 text-gray-700">
                   {trabajo.responsabilidades.map((resp, index) => (
                     <li key={index}>{resp}</li>
@@ -231,9 +206,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
               {/* Beneficios */}
               {trabajo.beneficios && trabajo.beneficios.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                    Beneficios
-                  </h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Beneficios</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {trabajo.beneficios.map((beneficio, index) => {
                       const IconComponent = getBeneficioIcon(beneficio.tipo)
@@ -254,25 +227,19 @@ export default async function TrabajoDetailPage({ params }: Props) {
             </div>
 
             {/* Columna derecha (30%) - Card fija */}
-            <div className="lg:sticky lg:top-8 h-fit font-rubik">
+            <div className="lg:sticky lg:top-8 h-fit">
               <Card className="shadow-lg border-0">
                 <CardContent className="p-6 space-y-4">
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      Información del Trabajo
-                    </h3>
+                    <h3 className="font-semibold text-gray-900 mb-2">Información del Trabajo</h3>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex justify-between">
                         <span>Empresa:</span>
-                        <span className="font-medium text-gray-900">
-                          {trabajo.empresa}
-                        </span>
+                        <span className="font-medium text-gray-900">{trabajo.empresa}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Ubicación:</span>
-                        <span className="font-medium text-gray-900">
-                          {trabajo.ubicacion}
-                        </span>
+                        <span className="font-medium text-gray-900">{trabajo.ubicacion}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Modalidad:</span>
@@ -293,21 +260,15 @@ export default async function TrabajoDetailPage({ params }: Props) {
                       <div className="flex justify-between">
                         <span>Salario:</span>
                         <span className="font-medium text-gray-900">
-                          {formatSalarioRango(
-                            trabajo.rangoSalarial.min,
-                            trabajo.rangoSalarial.max,
-                          )}
+                          {formatSalarioRango(trabajo.rangoSalarial.min, trabajo.rangoSalarial.max)}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t font-rubik">
+                  <div className="pt-4 border-t">
                     <Link href={`/login?redirect=/trabajos/${trabajo.slug}`}>
-                      <Button
-                        size="lg"
-                        className="w-full bg-gray-900 hover:bg-gray-800 text-white"
-                      >
+                      <Button size="lg" className="w-full bg-gray-900 hover:bg-gray-800 text-white">
                         Postular ahora
                       </Button>
                     </Link>

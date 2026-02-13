@@ -4,11 +4,7 @@ import { motion, useReducedMotion } from "motion/react"
 import { FEATURES_ATS } from "@/lib/data/empresas-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
-const ICON_COLOR_CLASSES = [
-  "text-violet-500",
-  "text-emerald-500",
-  "text-blue-500",
-] as const
+const ICON_COLOR_CLASSES = ["text-violet-500", "text-emerald-500", "text-blue-500"] as const
 
 export function FeaturesATS() {
   const reducedMotion = useReducedMotion()
@@ -29,7 +25,7 @@ export function FeaturesATS() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-rubik text-balance"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
           >
             Sistema ATS avanzado
           </motion.h2>
@@ -40,7 +36,8 @@ export function FeaturesATS() {
             transition={t(LANDING_ANIMATION.sequenceDelay)}
             className="text-xl text-gray-500 max-w-3xl mx-auto text-pretty"
           >
-            Herramientas profesionales para gestionar el reclutamiento científico de principio a fin.
+            Herramientas profesionales para gestionar el reclutamiento científico de principio a
+            fin.
           </motion.p>
         </motion.div>
 

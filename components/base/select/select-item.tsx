@@ -15,8 +15,7 @@ const sizes = {
   md: "p-2.5 pl-2",
 }
 
-type SelectItemProps = Omit<AriaListBoxItemProps<SelectItemType>, "id"> &
-  SelectItemType
+type SelectItemProps = Omit<AriaListBoxItemProps<SelectItemType>, "id"> & SelectItemType
 
 export const SelectItem = ({
   label,

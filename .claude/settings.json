@@ -1,0 +1,9 @@
+{
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "supabase@claude-plugins-official": true,
+    "glm-plan-usage@zai-coding-plugins": true,
+    "interface-design@interface-design": true,
+    "expo-app-design@expo-plugins": true
+  }
+}

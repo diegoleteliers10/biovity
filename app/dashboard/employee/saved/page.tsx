@@ -1,12 +1,7 @@
-
 import { SavedContent } from "@/components/dashboard/employee/savedContent"
 
 const EmployeeSavedPage = () => {
-  return (
-    <SavedContent />
-  );
+  return <SavedContent />
 }
 
 export default EmployeeSavedPage
-
-

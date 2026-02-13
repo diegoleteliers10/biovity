@@ -47,13 +47,28 @@ export function CalendarSection() {
               {months[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigateMonth("prev")} className="h-8 w-8 p-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigateMonth("prev")}
+                className="h-8 w-8 p-0"
+              >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setCurrentDate(new Date())} className="text-sm px-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentDate(new Date())}
+                className="text-sm px-3"
+              >
                 Hoy
               </Button>
-              <Button variant="outline" size="sm" onClick={() => navigateMonth("next")} className="h-8 w-8 p-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigateMonth("next")}
+                className="h-8 w-8 p-0"
+              >
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
