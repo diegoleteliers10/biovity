@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ChevronDown01Icon } from "@hugeicons/core-free-icons"
+import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
 
 import {
   Accordion as AccordionPrimitive,
@@ -53,7 +53,7 @@ function AccordionTrigger({
       >
         {children}
         {showArrow && (
-          <HugeiconsIcon icon={ChevronDown01Icon} className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" />
+          <HugeiconsIcon icon={ArrowDown01Icon} className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" />
         )}
       </AccordionTriggerPrimitive>
     </AccordionHeaderPrimitive>

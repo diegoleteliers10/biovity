@@ -1,5 +1,5 @@
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Check01Icon, ChevronRight01Icon, Circle01Icon } from "@hugeicons/core-free-icons"
+import { Check01Icon, ArrowRight01Icon, Circle01Icon } from "@hugeicons/core-free-icons"
 import * as React from "react"
 import {
   DropdownMenuCheckboxItem as DropdownMenuCheckboxItemPrimitive,
@@ -244,7 +244,7 @@ function DropdownMenuSubTrigger({
         {...props}
       >
         {children}
-        <HugeiconsIcon icon={ChevronRight01Icon} data-slot="chevron" className="ml-auto size-4" />
+        <HugeiconsIcon icon={ArrowRight01Icon} data-slot="chevron" className="ml-auto size-4" />
       </DropdownMenuSubTriggerPrimitive>
     </DropdownMenuHighlightItemPrimitive>
   )
