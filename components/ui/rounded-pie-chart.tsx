@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { TrendingUp01Icon } from "@hugeicons/core-free-icons"
+import { TradeUpIcon } from "@hugeicons/core-free-icons"
 
 export const description = "A pie chart with a label list"
 
@@ -56,7 +56,7 @@ export function RoundedPieChart() {
         <CardTitle>
           Pie Chart
           <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TrendingUp01Icon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

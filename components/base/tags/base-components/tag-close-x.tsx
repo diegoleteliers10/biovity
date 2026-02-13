@@ -1,6 +1,7 @@
 "use client"
 
-import { XClose } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Cancel01Icon } from "@hugeicons/core-free-icons"
 import type { RefAttributes } from "react"
 import { Button as AriaButton, type ButtonProps as AriaButtonProps } from "react-aria-components"
 import { cx } from "@/lib/utils/cx"
@@ -29,7 +30,7 @@ export const TagCloseX = ({ size = "md", className, ...otherProps }: TagCloseXPr
       )}
       {...otherProps}
     >
-      <XClose className={cx("transition-inherit-all", styles[size].icon)} strokeWidth="3" />
+      <HugeiconsIcon icon={Cancel01Icon} className={cx("transition-inherit-all", styles[size].icon)} strokeWidth={3} />
     </AriaButton>
   )
 }

@@ -1,6 +1,7 @@
 "use client"
 
-import { User01 } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { UserIcon } from "@hugeicons/core-free-icons"
 import { type FC, type ReactNode, useState } from "react"
 import { cx } from "@/lib/utils/cx"
 import { AvatarOnlineIndicator, VerifiedTick } from "./base-components"
@@ -128,7 +129,7 @@ export const Avatar = ({
       return <PlaceholderIcon className={cx("text-fg-quaternary", styles[size].icon)} />
     }
 
-    return placeholder || <User01 className={cx("text-fg-quaternary", styles[size].icon)} />
+    return placeholder || <HugeiconsIcon icon={UserIcon} className={cx("text-fg-quaternary", styles[size].icon)} />
   }
 
   const renderBadgeContent = () => {

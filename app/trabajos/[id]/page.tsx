@@ -17,6 +17,10 @@ import {
   Cash02Icon,
   Clock01Icon,
   Briefcase01Icon,
+  HeartAddIcon,
+  AirplaneLanding01Icon,
+  GraduationScrollIcon,
+  LaptopIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
@@ -66,13 +70,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const getBeneficioIcon = (tipo: TipoBeneficio) => {
   switch (tipo) {
     case "salud":
-      return HeartPulse01Icon
+      return HeartAddIcon
     case "vacaciones":
-      return Airplane01Icon
+      return AirplaneLanding01Icon
     case "formacion":
-      return GraduationCap01Icon
+      return GraduationScrollIcon
     case "equipo":
-      return Laptop01Icon
+      return LaptopIcon
     default:
       return null
   }
@@ -215,7 +219,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
                           key={index}
                           className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                         >
-                          <IconComponent className="h-5 w-5 text-primary" />
+                          <HugeiconsIcon icon={IconComponent} className="h-5 w-5 text-primary" />
                           <span className="text-gray-700">{beneficio.label}</span>
                         </div>
                       )

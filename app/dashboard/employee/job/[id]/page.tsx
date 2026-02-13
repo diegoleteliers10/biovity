@@ -16,10 +16,10 @@ import {
   Linkedin02Icon,
   Mail01Icon,
   WhatsappIcon,
-  HeartPulse01Icon,
-  Laptop01Icon,
-  Airplane01Icon,
-  GraduationCap01Icon,
+  HeartAddIcon,
+  LaptopIcon,
+  AirplaneLanding01Icon,
+  GraduationScrollIcon,
 } from "@hugeicons/core-free-icons"
 import {
   DropdownMenu,
@@ -271,18 +271,18 @@ export default function JobDetailPage() {
                 {benefits.map((b) => {
                   const Icon =
                     b.type === "health"
-                      ? HeartPulse01Icon
+                      ? HeartAddIcon
                       : b.type === "vacation"
-                        ? Airplane01Icon
+                        ? AirplaneLanding01Icon
                         : b.type === "learning"
-                          ? GraduationCap01Icon
-                          : Laptop01Icon
+                          ? GraduationScrollIcon
+                          : LaptopIcon
                   return (
                     <div
                       key={b.id}
                       className="flex items-center gap-2 text-sm text-muted-foreground"
                     >
-                      <Icon className="h-4 w-4 text-foreground/80" aria-hidden />
+                      <HugeiconsIcon icon={Icon} className="h-4 w-4 text-foreground/80" aria-hidden />
                       <span>{b.label}</span>
                     </div>
                   )

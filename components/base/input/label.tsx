@@ -1,6 +1,7 @@
 "use client"
 
-import { HelpCircle } from "@untitledui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { IdeaIcon } from "@hugeicons/core-free-icons"
 import type { ReactNode, Ref } from "react"
 import type { LabelProps as AriaLabelProps } from "react-aria-components"
 import { Label as AriaLabel } from "react-aria-components"
@@ -49,7 +50,7 @@ export const Label = ({
             isDisabled={false}
             className="cursor-pointer text-fg-quaternary transition duration-200 hover:text-fg-quaternary_hover focus:text-fg-quaternary_hover"
           >
-            <HelpCircle className="size-4" />
+            <HugeiconsIcon icon={IdeaIcon} className="size-4" />
           </TooltipTrigger>
         </Tooltip>
       )}
