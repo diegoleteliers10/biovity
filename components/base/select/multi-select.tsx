@@ -244,11 +244,14 @@ const InnerMultiSelect = ({
     }
   }
 
-  const handleInputMouseDown = useCallback((_event: React.MouseEvent<HTMLInputElement>) => {
-    if (comboBoxStateContext && !comboBoxStateContext.isOpen) {
-      comboBoxStateContext.open()
-    }
-  }, [comboBoxStateContext])
+  const handleInputMouseDown = useCallback(
+    (_event: React.MouseEvent<HTMLInputElement>) => {
+      if (comboBoxStateContext && !comboBoxStateContext.isOpen) {
+        comboBoxStateContext.open()
+      }
+    },
+    [comboBoxStateContext]
+  )
 
   return (
     <div className="relative flex w-full flex-1 flex-row items-center justify-start gap-1.5">

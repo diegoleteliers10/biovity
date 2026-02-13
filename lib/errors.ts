@@ -17,11 +17,7 @@ type SignUpError = {
   readonly cause?: unknown
 }
 
-const createSignUpError = (
-  message: string,
-  code?: string,
-  cause?: unknown
-): SignUpError => ({
+const createSignUpError = (message: string, code?: string, cause?: unknown): SignUpError => ({
   name: "SignUpError",
   message,
   code,

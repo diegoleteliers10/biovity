@@ -1,12 +1,7 @@
-
 import { MetricsContent } from "@/components/dashboard/employee/metricsContent"
 
 const EmployeeMetricsPage = () => {
-  return (
-    <MetricsContent />
-  );
+  return <MetricsContent />
 }
 
 export default EmployeeMetricsPage
-
-

@@ -60,9 +60,7 @@ export function Categories() {
                       <IconComponent className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 text-lg mb-1">
-                        {category.title}
-                      </h3>
+                      <h3 className="font-semibold text-gray-900 text-lg mb-1">{category.title}</h3>
                       <div className="flex items-center">
                         <span className="text-gray-500 text-sm">{category.positions}</span>
                       </div>

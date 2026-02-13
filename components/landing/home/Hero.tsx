@@ -49,9 +49,8 @@ export function Hero() {
             transition={ts(LANDING_ANIMATION.sequenceDelay)}
             className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty"
           >
-            Ayudamos a profesionales y estudiantes a encontrar trabajo y
-            oportunidades en biotecnología, bioquímica, química, ingeniería
-            química y salud.
+            Ayudamos a profesionales y estudiantes a encontrar trabajo y oportunidades en
+            biotecnología, bioquímica, química, ingeniería química y salud.
           </motion.p>
 
           <motion.div
@@ -107,5 +106,5 @@ export function Hero() {
         </div>
       </div>
     </section>
-  );
+  )
 }

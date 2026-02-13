@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Building06Icon,
@@ -8,28 +8,23 @@ import {
   UserIcon,
   ViewIcon,
   ViewOffSlashIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Logo } from "@/components/ui/logo";
-import { authClient } from "@/lib/auth-client";
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { Logo } from "@/components/ui/logo"
+import { authClient } from "@/lib/auth-client"
+import { organizationRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
-const { signUp } = authClient;
+const { signUp } = authClient
 
 export default function OrganizationRegisterPage() {
-  const router = useRouter();
+  const router = useRouter()
   const [formData, setFormData] = useState({
     // Información del contacto principal
     contactName: "",
@@ -41,65 +36,40 @@ export default function OrganizationRegisterPage() {
     // Información de la organización
     organizationName: "",
     organizationWebsite: "",
-  });
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  })
+  const [acceptTerms, setAcceptTerms] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false)
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }))
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }))
     }
-  };
+  }
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+    const result = validateFormZod(organizationRegistrationSchema, {
+      contactName: formData.contactName,
+      contactEmail: formData.contactEmail,
+      contactPassword: formData.contactPassword,
+      confirmPassword: formData.confirmPassword,
+      contactPosition: formData.contactPosition,
+      organizationName: formData.organizationName,
+      organizationWebsite: formData.organizationWebsite,
+      acceptTerms: acceptTerms,
+    })
 
-    // Validación del contacto principal
-    if (!formData.contactName.trim()) {
-      newErrors.contactName = "El nombre del contacto es requerido";
+    if (!result.success) {
+      setErrors(result.errors)
+      return false
     }
 
-    if (!formData.contactEmail.trim()) {
-      newErrors.contactEmail = "El correo electrónico es requerido";
-    } else if (!/\S+@\S+\.\S+/.test(formData.contactEmail)) {
-      newErrors.contactEmail = "El correo electrónico no es válido";
-    }
-
-    if (!formData.contactPassword) {
-      newErrors.contactPassword = "La contraseña es requerida";
-    } else if (formData.contactPassword.length < 8) {
-      newErrors.contactPassword =
-        "La contraseña debe tener al menos 8 caracteres";
-    }
-
-    if (formData.contactPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Las contraseñas no coinciden";
-    }
-
-    // Validación de la organización
-    if (!formData.organizationName.trim()) {
-      newErrors.organizationName = "El nombre de la organización es requerido";
-    }
-
-    if (!formData.organizationWebsite.trim()) {
-      newErrors.organizationWebsite = "El sitio web es requerido";
-    } else if (!/^https?:\/\/.+/.test(formData.organizationWebsite)) {
-      newErrors.organizationWebsite =
-        "La URL debe comenzar con http:// o https://";
-    }
-
-    if (!acceptTerms) {
-      newErrors.terms = "Debes aceptar los términos y condiciones";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    return true
+  }
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -131,7 +101,7 @@ export default function OrganizationRegisterPage() {
   }
 
   return (
-      <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+    <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center space-y-4">
           {/* Logo */}
@@ -160,10 +130,7 @@ export default function OrganizationRegisterPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Contact Name */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="contactName"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="contactName" className="text-sm font-medium text-gray-700">
                     Nombre completo
                   </label>
                   <div className="relative">
@@ -178,9 +145,7 @@ export default function OrganizationRegisterPage() {
                       type="text"
                       placeholder="Nombre del representante"
                       value={formData.contactName}
-                      onChange={(e) =>
-                        handleInputChange("contactName", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("contactName", e.target.value)}
                       className={`pl-10 ${errors.contactName ? "border-red-500" : ""}`}
                       required
                     />
@@ -192,10 +157,7 @@ export default function OrganizationRegisterPage() {
 
                 {/* Contact Position */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="contactPosition"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="contactPosition" className="text-sm font-medium text-gray-700">
                     Cargo/Posición
                   </label>
                   <Input
@@ -203,25 +165,18 @@ export default function OrganizationRegisterPage() {
                     type="text"
                     placeholder="Director, Gerente, CEO, etc."
                     value={formData.contactPosition}
-                    onChange={(e) =>
-                      handleInputChange("contactPosition", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("contactPosition", e.target.value)}
                     className={errors.contactPosition ? "border-red-500" : ""}
                   />
                   {errors.contactPosition && (
-                    <p className="text-sm text-red-500">
-                      {errors.contactPosition}
-                    </p>
+                    <p className="text-sm text-red-500">{errors.contactPosition}</p>
                   )}
                 </div>
               </div>
 
               {/* Contact Email */}
               <div className="space-y-2">
-                <label
-                  htmlFor="contactEmail"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="contactEmail" className="text-sm font-medium text-gray-700">
                   Correo electrónico corporativo
                 </label>
                 <div className="relative">
@@ -236,9 +191,7 @@ export default function OrganizationRegisterPage() {
                     type="email"
                     placeholder="contacto@tuorganizacion.com"
                     value={formData.contactEmail}
-                    onChange={(e) =>
-                      handleInputChange("contactEmail", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("contactEmail", e.target.value)}
                     className={`pl-10 ${errors.contactEmail ? "border-red-500" : ""}`}
                     required
                     autoComplete="email"
@@ -252,10 +205,7 @@ export default function OrganizationRegisterPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Password */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="contactPassword"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="contactPassword" className="text-sm font-medium text-gray-700">
                     Contraseña
                   </label>
                   <div className="relative">
@@ -270,9 +220,7 @@ export default function OrganizationRegisterPage() {
                       type={isPasswordVisible ? "text" : "password"}
                       placeholder="••••••••"
                       value={formData.contactPassword}
-                      onChange={(e) =>
-                        handleInputChange("contactPassword", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("contactPassword", e.target.value)}
                       className={`pl-10 pr-10 ${errors.contactPassword ? "border-red-500" : ""}`}
                       required
                     />
@@ -291,18 +239,13 @@ export default function OrganizationRegisterPage() {
                     </button>
                   </div>
                   {errors.contactPassword && (
-                    <p className="text-sm text-red-500">
-                      {errors.contactPassword}
-                    </p>
+                    <p className="text-sm text-red-500">{errors.contactPassword}</p>
                   )}
                 </div>
 
                 {/* Confirm Password */}
                 <div className="space-y-2">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
                     Confirmar contraseña
                   </label>
                   <div className="relative">
@@ -317,9 +260,7 @@ export default function OrganizationRegisterPage() {
                       type={isConfirmVisible ? "text" : "password"}
                       placeholder="••••••••"
                       value={formData.confirmPassword}
-                      onChange={(e) =>
-                        handleInputChange("confirmPassword", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                       className={`pl-10 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
                       required
                     />
@@ -338,9 +279,7 @@ export default function OrganizationRegisterPage() {
                     </button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-sm text-red-500">
-                      {errors.confirmPassword}
-                    </p>
+                    <p className="text-sm text-red-500">{errors.confirmPassword}</p>
                   )}
                 </div>
               </div>
@@ -354,10 +293,7 @@ export default function OrganizationRegisterPage() {
 
               {/* Organization Name */}
               <div className="space-y-2">
-                <label
-                  htmlFor="organizationName"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="organizationName" className="text-sm font-medium text-gray-700">
                   Nombre de la organización
                 </label>
                 <div className="relative">
@@ -372,26 +308,19 @@ export default function OrganizationRegisterPage() {
                     type="text"
                     placeholder="Nombre oficial de la organización"
                     value={formData.organizationName}
-                    onChange={(e) =>
-                      handleInputChange("organizationName", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("organizationName", e.target.value)}
                     className={`pl-10 ${errors.organizationName ? "border-red-500" : ""}`}
                     required
                   />
                 </div>
                 {errors.organizationName && (
-                  <p className="text-sm text-red-500">
-                    {errors.organizationName}
-                  </p>
+                  <p className="text-sm text-red-500">{errors.organizationName}</p>
                 )}
               </div>
 
               {/* Website */}
               <div className="space-y-2">
-                <label
-                  htmlFor="organizationWebsite"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="organizationWebsite" className="text-sm font-medium text-gray-700">
                   Sitio web
                 </label>
                 <div className="relative">
@@ -406,17 +335,13 @@ export default function OrganizationRegisterPage() {
                     type="url"
                     placeholder="https://tuorganizacion.com"
                     value={formData.organizationWebsite}
-                    onChange={(e) =>
-                      handleInputChange("organizationWebsite", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("organizationWebsite", e.target.value)}
                     className={`pl-10 ${errors.organizationWebsite ? "border-red-500" : ""}`}
                     required
                   />
                 </div>
                 {errors.organizationWebsite && (
-                  <p className="text-sm text-red-500">
-                    {errors.organizationWebsite}
-                  </p>
+                  <p className="text-sm text-red-500">{errors.organizationWebsite}</p>
                 )}
               </div>
             </div>
@@ -446,9 +371,7 @@ export default function OrganizationRegisterPage() {
                   </span>
                 }
               />
-              {errors.terms && (
-                <p className="text-sm text-red-500">{errors.terms}</p>
-              )}
+              {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
             </div>
 
             {/* General Error */}
@@ -464,9 +387,7 @@ export default function OrganizationRegisterPage() {
               className="w-full bg-purple-600 text-white hover:bg-purple-700 h-11"
               disabled={isLoading}
             >
-              {isLoading
-                ? "Registrando organización..."
-                : "Registrar Organización"}
+              {isLoading ? "Registrando organización..." : "Registrar Organización"}
             </Button>
           </form>
 
@@ -499,5 +420,5 @@ export default function OrganizationRegisterPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

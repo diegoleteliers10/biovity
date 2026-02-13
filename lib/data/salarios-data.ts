@@ -14,11 +14,7 @@ export const EDUCACION_CHART_DATA: EducacionChartItem[] = [
   { nivel: "Sin Postgrado", promedio: 1494, porcentaje: 33 },
 ]
 
-export const EDUCACION_CHART_COLORS = [
-  "#10b981",
-  "#3b82f6",
-  "#6366f1",
-]
+export const EDUCACION_CHART_COLORS = ["#10b981", "#3b82f6", "#6366f1"]
 
 export const REGION_CHART_DATA: RegionChartItem[] = [
   { region: "Antofagasta\n(Norte Minero)", promedio: 2650 },
@@ -26,11 +22,7 @@ export const REGION_CHART_DATA: RegionChartItem[] = [
   { region: "O'Higgins/Maule\n(Agroindustrial)", promedio: 1450 },
 ]
 
-export const REGION_CHART_COLORS = [
-  "#10b981",
-  "#3b82f6",
-  "#6366f1",
-]
+export const REGION_CHART_COLORS = ["#10b981", "#3b82f6", "#6366f1"]
 
 export const INDUSTRIA_CHART_DATA: IndustriaChartItem[] = [
   { industria: "Minería", minimo: 1800, maximo: 3500, promedio: 2650 },

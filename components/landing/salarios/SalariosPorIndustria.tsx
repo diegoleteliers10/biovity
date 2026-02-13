@@ -2,13 +2,7 @@
 
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Building2, TrendingUp, Award } from "lucide-react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
@@ -34,9 +28,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const CustomDuotoneBarMultiple = (
-  props: React.SVGProps<SVGRectElement> & { dataKey?: string }
-) => {
+const CustomDuotoneBarMultiple = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
   const { fill, x, y, width, height, dataKey } = props
 
   return (
@@ -77,13 +69,7 @@ const DottedBackgroundPatternIndustria = () => {
       height="10"
       patternUnits="userSpaceOnUse"
     >
-      <circle
-        className="dark:text-muted/40 text-muted"
-        cx="2"
-        cy="2"
-        r="1"
-        fill="currentColor"
-      />
+      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
     </pattern>
   )
 }
@@ -93,23 +79,23 @@ export function SalariosPorIndustria() {
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-rubik">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Sueldos por Industria
             </span>
           </h2>
           <div className="space-y-4 text-gray-700 leading-relaxed">
             <p>
-              El factor más determinante en la remuneración dentro del sector de biociencias es
-              la industria en la que se desempeña el profesional. Nuestro análisis revela
-              diferencias significativas entre sectores, con la minería liderando los rangos
-              salariales más altos.
+              El factor más determinante en la remuneración dentro del sector de biociencias es la
+              industria en la que se desempeña el profesional. Nuestro análisis revela diferencias
+              significativas entre sectores, con la minería liderando los rangos salariales más
+              altos.
             </p>
             <p>
               Las industrias de alto valor agregado como Minería (aplicación de biotecnología),
-              Tech/Pharma y Retail/Pharma ofrecen los mejores sueldos, mientras que sectores
-              como Academia/I+D y Agroindustrial presentan rangos más moderados, aunque con
-              mayor estabilidad y beneficios adicionales.
+              Tech/Pharma y Retail/Pharma ofrecen los mejores sueldos, mientras que sectores como
+              Academia/I+D y Agroindustrial presentan rangos más moderados, aunque con mayor
+              estabilidad y beneficios adicionales.
             </p>
           </div>
         </div>
@@ -146,26 +132,17 @@ export function SalariosPorIndustria() {
                   textAnchor="end"
                   height={120}
                 />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `$${value}K`}
-                />
+                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}K`} />
                 <ChartTooltip
                   cursor={false}
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null
                     return (
                       <div className="rounded-lg border bg-background p-2 shadow-sm">
-                        <div className="mb-2 font-medium">
-                          {payload[0]?.payload?.industria}
-                        </div>
+                        <div className="mb-2 font-medium">{payload[0]?.payload?.industria}</div>
                         <div className="grid gap-2">
                           {payload.map((item, index) => (
-                            <div
-                              key={index}
-                              className="grid grid-cols-[auto_1fr_auto] gap-2"
-                            >
+                            <div key={index} className="grid grid-cols-[auto_1fr_auto] gap-2">
                               <div
                                 className="h-2 w-2 rounded-full mt-1.5"
                                 style={{ backgroundColor: item.color }}
@@ -223,18 +200,14 @@ export function SalariosPorIndustria() {
                 <Award className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-sm">Minería lidera</p>
-                  <p className="text-xs text-gray-600">
-                    Promedio de $2.65M, rango hasta $3.5M
-                  </p>
+                  <p className="text-xs text-gray-600">Promedio de $2.65M, rango hasta $3.5M</p>
                 </div>
               </div>
               <div className="grid grid-cols-[auto_1fr] gap-3">
                 <TrendingUp className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-sm">Tech/Pharma en crecimiento</p>
-                  <p className="text-xs text-gray-600">
-                    Segundo lugar con $2.35M promedio
-                  </p>
+                  <p className="text-xs text-gray-600">Segundo lugar con $2.35M promedio</p>
                 </div>
               </div>
             </CardContent>

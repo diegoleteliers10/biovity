@@ -6,8 +6,7 @@ import { LandingLayout } from "@/components/layouts/LandingLayout"
 
 export const metadata: Metadata = {
   title: "Blog",
-  description:
-    "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
+  description: "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
   keywords: [
     "blog biotecnología",
     "noticias ciencias Chile",
@@ -17,8 +16,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Blog | Biovity",
-    description:
-      "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
+    description: "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
     url: "/blog",
     images: [
       {
@@ -32,8 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Blog | Biovity",
-    description:
-      "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
+    description: "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
     images: ["/og/home.png"],
   },
   alternates: {
@@ -46,7 +43,6 @@ export default async function BlogPage() {
 
   return (
     <LandingLayout>
-
       <div className="py-32">
         <BlogHeader />
         <main className="container mx-auto px-4 py-8">

@@ -27,20 +27,13 @@ interface TrabajosSearchFiltersProps {
   onFiltrosChange: (filtros: FiltrosTrabajos) => void
 }
 
-export function TrabajosSearchFilters({
-  filtros,
-  onFiltrosChange,
-}: TrabajosSearchFiltersProps) {
+export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSearchFiltersProps) {
   const [query, setQuery] = useState(filtros.query)
   const [ubicacion, setUbicacion] = useState(filtros.ubicacion)
   const [modalidad, setModalidad] = useState(filtros.modalidad)
   const [formato, setFormato] = useState(filtros.formato)
-  const [salarioMin, setSalarioMin] = useState(
-    filtros.salarioMin?.toString() || "",
-  )
-  const [salarioMax, setSalarioMax] = useState(
-    filtros.salarioMax?.toString() || "",
-  )
+  const [salarioMin, setSalarioMin] = useState(filtros.salarioMin?.toString() || "")
+  const [salarioMax, setSalarioMax] = useState(filtros.salarioMax?.toString() || "")
   const [experiencia, setExperiencia] = useState(filtros.experiencia)
   const [categoria, setCategoria] = useState(filtros.categoria || "todas")
 
@@ -137,9 +130,7 @@ export function TrabajosSearchFilters({
               {/* Modalidad */}
               <Select
                 value={modalidad}
-                onValueChange={(value) =>
-                  setModalidad(value as FiltrosTrabajos["modalidad"])
-                }
+                onValueChange={(value) => setModalidad(value as FiltrosTrabajos["modalidad"])}
               >
                 <SelectTrigger className={cn("w-full !h-9")}>
                   <SelectValue placeholder="Modalidad" />
@@ -156,9 +147,7 @@ export function TrabajosSearchFilters({
               {/* Formato */}
               <Select
                 value={formato}
-                onValueChange={(value) =>
-                  setFormato(value as FiltrosTrabajos["formato"])
-                }
+                onValueChange={(value) => setFormato(value as FiltrosTrabajos["formato"])}
               >
                 <SelectTrigger className={cn("w-full !h-9")}>
                   <SelectValue placeholder="Formato" />
@@ -193,9 +182,7 @@ export function TrabajosSearchFilters({
               {/* Experiencia */}
               <Select
                 value={experiencia}
-                onValueChange={(value) =>
-                  setExperiencia(value as FiltrosTrabajos["experiencia"])
-                }
+                onValueChange={(value) => setExperiencia(value as FiltrosTrabajos["experiencia"])}
               >
                 <SelectTrigger className={cn("w-full !h-9")}>
                   <SelectValue placeholder="Experiencia" />
@@ -210,10 +197,7 @@ export function TrabajosSearchFilters({
               </Select>
 
               {/* Categoría */}
-              <Select
-                value={categoria}
-                onValueChange={(value) => setCategoria(value)}
-              >
+              <Select value={categoria} onValueChange={(value) => setCategoria(value)}>
                 <SelectTrigger className={cn("w-full !h-9")}>
                   <SelectValue placeholder="Categoría" />
                 </SelectTrigger>
@@ -236,12 +220,7 @@ export function TrabajosSearchFilters({
               >
                 Buscar
               </Button>
-              <Button
-                onClick={handleLimpiar}
-                variant="outline"
-                size="lg"
-                className="px-8"
-              >
+              <Button onClick={handleLimpiar} variant="outline" size="lg" className="px-8">
                 Limpiar filtros
               </Button>
             </div>

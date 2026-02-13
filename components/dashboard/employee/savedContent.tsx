@@ -28,9 +28,7 @@ type JobItem = {
 
 export const SavedContent = () => {
   const router = useRouter()
-  const jobs: JobItem[] = (DATA.recommendedJobs as unknown as JobItem[]).filter(
-    (j) => j.isSaved
-  )
+  const jobs: JobItem[] = (DATA.recommendedJobs as unknown as JobItem[]).filter((j) => j.isSaved)
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -44,9 +42,7 @@ export const SavedContent = () => {
       </div>
 
       {jobs.length === 0 ? (
-        <div
-          className="flex flex-1 items-center justify-center rounded-lg border border-dashed"
-        >
+        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
           <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
               <HugeiconsIcon
@@ -90,8 +86,18 @@ export const SavedContent = () => {
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
                       {job.compatibility}% compatibilidad
                     </span>
-                    <Button variant="ghost" size="icon-sm" className="rounded-md" aria-label="Guardado">
-                      <HugeiconsIcon icon={Bookmark02Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="rounded-md"
+                      aria-label="Guardado"
+                    >
+                      <HugeiconsIcon
+                        icon={Bookmark02Icon}
+                        size={24}
+                        strokeWidth={1.5}
+                        className="h-4 w-4"
+                      />
                     </Button>
                   </div>
                 </div>
@@ -99,19 +105,39 @@ export const SavedContent = () => {
               <CardContent className="space-y-3 pt-3 flex-1 flex flex-col">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted-foreground">
                   <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon icon={Location05Icon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
+                    <HugeiconsIcon
+                      icon={Location05Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="h-3.5 w-3.5"
+                    />
                     <span className="truncate">{job.location}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon icon={Clock01Icon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
+                    <HugeiconsIcon
+                      icon={Clock01Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="h-3.5 w-3.5"
+                    />
                     <span className="truncate">{job.postedTime}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon icon={Cash02Icon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
+                    <HugeiconsIcon
+                      icon={Cash02Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="h-3.5 w-3.5"
+                    />
                     <span className="truncate">{job.salary}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon icon={StarIcon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
+                    <HugeiconsIcon
+                      icon={StarIcon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="h-3.5 w-3.5"
+                    />
                     <span className="truncate">Relevante</span>
                   </div>
                 </div>
@@ -141,5 +167,3 @@ export const SavedContent = () => {
 }
 
 export default SavedContent
-
-

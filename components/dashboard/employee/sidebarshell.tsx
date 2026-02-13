@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { type ReactNode } from "react";
-import { SidebarProvider, SidebarInset } from "@/components/animate-ui/components/radix/sidebar";
-import { SidebarComponent } from "./sidebarNav"; // ver paso 3
+import { type ReactNode } from "react"
+import { SidebarProvider, SidebarInset } from "@/components/animate-ui/components/radix/sidebar"
+import { SidebarComponent } from "./sidebarNav" // ver paso 3
 
 type DashboardShellProps = {
-  children: ReactNode;
-  defaultOpen: boolean;
-};
+  children: ReactNode
+  defaultOpen: boolean
+}
 
 export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
   return (
@@ -15,5 +15,5 @@ export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
       <SidebarComponent />
       <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
     </SidebarProvider>
-  );
+  )
 }

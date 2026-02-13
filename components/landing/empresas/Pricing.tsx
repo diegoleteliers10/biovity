@@ -38,7 +38,7 @@ export function Pricing() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-rubik"
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
           >
             Planes simples y transparentes
           </motion.h2>

@@ -115,11 +115,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
           rel="stylesheet"
         />
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet"/>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${geistMono.variable} antialiased`}>
-        {children}
-      </body>
+      <body className={`${geistMono.variable} antialiased`}>{children}</body>
     </html>
   )
 }

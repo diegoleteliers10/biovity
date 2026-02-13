@@ -1,12 +1,5 @@
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
-import { Logo } from "@/components/ui/logo";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react"
+import { Logo } from "@/components/ui/logo"
 
 export function Footer() {
   const footerSections = [
@@ -41,7 +34,7 @@ export function Footer() {
         "Política de Cookies",
       ],
     },
-  ];
+  ]
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -54,9 +47,8 @@ export function Footer() {
               <span className="text-xl font-semibold">Biovity</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              La plataforma líder que conecta talento científico con las mejores
-              oportunidades en biotecnología, química, farmacia y áreas
-              relacionadas.
+              La plataforma líder que conecta talento científico con las mejores oportunidades en
+              biotecnología, química, farmacia y áreas relacionadas.
             </p>
 
             {/* Contact info */}
@@ -83,10 +75,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link}>
-                    <a
-                      href="#"
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
+                    <a href="#" className="text-gray-400 hover:text-white transition-colors">
                       {link}
                     </a>
                   </li>
@@ -105,10 +94,7 @@ export function Footer() {
 
             {/* Social links */}
             <div className="flex items-center space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
               <a
@@ -128,16 +114,10 @@ export function Footer() {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -145,5 +125,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

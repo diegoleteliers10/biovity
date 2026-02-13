@@ -1,9 +1,7 @@
 import { MessagesContent } from "@/components/dashboard/employee/messagesContent"
 
 const EmployeeMessages = () => {
-  return (
-    <MessagesContent />
-  );
+  return <MessagesContent />
 }
 
 export default EmployeeMessages

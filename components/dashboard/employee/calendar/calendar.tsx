@@ -20,7 +20,8 @@ const sampleEvents: Record<string, Event[]> = {
       id: "today-1",
       title: "Reunión de proyecto",
       time: "9:00 AM",
-      description: "Revisión del progreso del proyecto y definición de próximos pasos con el equipo de desarrollo",
+      description:
+        "Revisión del progreso del proyecto y definición de próximos pasos con el equipo de desarrollo",
       type: "meeting",
     },
     {
@@ -84,8 +85,15 @@ type CalendarProps = {
 }
 
 export function Calendar({ currentDate }: CalendarProps) {
-  const [hoveredEvent, setHoveredEvent] = useState<{ event: Event; position: { x: number; y: number } } | null>(null)
-  const [selectedDay, setSelectedDay] = useState<{ day: number; dayName: string; events: Event[] } | null>(null)
+  const [hoveredEvent, setHoveredEvent] = useState<{
+    event: Event
+    position: { x: number; y: number }
+  } | null>(null)
+  const [selectedDay, setSelectedDay] = useState<{
+    day: number
+    dayName: string
+    events: Event[]
+  } | null>(null)
 
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
@@ -160,10 +168,15 @@ export function Calendar({ currentDate }: CalendarProps) {
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden">
         {days.map((day, index) => {
-          const dateKey = day ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}` : null
+          const dateKey = day
+            ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+            : null
           const dayEvents = dateKey ? sampleEvents[dateKey] || [] : []
           const isToday =
-            day && new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year
+            day &&
+            new Date().getDate() === day &&
+            new Date().getMonth() === month &&
+            new Date().getFullYear() === year
 
           return (
             <div

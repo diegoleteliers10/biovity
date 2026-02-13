@@ -1,21 +1,15 @@
-"use client";
+"use client"
 
-import { Bar, BarChart, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Bar, BarChart, XAxis } from "recharts"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Badge } from "@/components/ui/badge";
-import { TrendingDown } from "lucide-react";
+} from "@/components/ui/chart"
+import { Badge } from "@/components/ui/badge"
+import { TrendingDown } from "lucide-react"
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -24,7 +18,7 @@ const chartData = [
   { month: "April", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
-];
+]
 
 const chartConfig = {
   desktop: {
@@ -35,7 +29,7 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 
 export function DuotoneBarMultipleChart() {
   return (
@@ -43,10 +37,7 @@ export function DuotoneBarMultipleChart() {
       <CardHeader>
         <CardTitle>
           Bar Chart - Multiple
-          <Badge
-            variant="outline"
-            className="text-red-500 bg-red-500/10 border-none ml-2"
-          >
+          <Badge variant="outline" className="text-red-500 bg-red-500/10 border-none ml-2">
             <TrendingDown className="h-4 w-4" />
             <span>-5.2%</span>
           </Badge>
@@ -94,13 +85,11 @@ export function DuotoneBarMultipleChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )
 }
 
-const CustomDuotoneBarMultiple = (
-  props: React.SVGProps<SVGRectElement> & { dataKey?: string }
-) => {
-  const { fill, x, y, width, height, dataKey } = props;
+const CustomDuotoneBarMultiple = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
+  const { fill, x, y, width, height, dataKey } = props
 
   return (
     <>
@@ -127,8 +116,8 @@ const CustomDuotoneBarMultiple = (
         </linearGradient>
       </defs>
     </>
-  );
-};
+  )
+}
 
 const DottedBackgroundPattern = () => {
   return (
@@ -140,13 +129,7 @@ const DottedBackgroundPattern = () => {
       height="10"
       patternUnits="userSpaceOnUse"
     >
-      <circle
-        className="dark:text-muted/40 text-muted"
-        cx="2"
-        cy="2"
-        r="1"
-        fill="currentColor"
-      />
+      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
     </pattern>
-  );
-};
+  )
+}

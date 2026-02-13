@@ -10,7 +10,11 @@ type NativeSelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
   readonly label?: string
   readonly hint?: string
   readonly selectClassName?: string
-  readonly options: readonly { readonly label: string; readonly value: string; readonly disabled?: boolean }[]
+  readonly options: readonly {
+    readonly label: string
+    readonly value: string
+    readonly disabled?: boolean
+  }[]
 }
 
 export const NativeSelect = ({

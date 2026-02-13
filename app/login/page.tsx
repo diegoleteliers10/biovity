@@ -1,46 +1,36 @@
-"use client";
+"use client"
 
-import {
-  UserIcon,
-  Building06Icon,
-  ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Logo } from "@/components/ui/logo";
-import { authClient } from "@/lib/auth-client";
-import { motion } from "motion/react";
+import { UserIcon, Building06Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Logo } from "@/components/ui/logo"
+import { authClient } from "@/lib/auth-client"
+import { motion } from "motion/react"
 
 export default function LoginSelectionPage() {
-  const router = useRouter();
-  const { useSession } = authClient;
-  const { data: session, isPending } = useSession();
+  const router = useRouter()
+  const { useSession } = authClient
+  const { data: session, isPending } = useSession()
 
   // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
       if (session.user.type === "persona") {
-        router.push("/dashboard/employee");
+        router.push("/dashboard/employee")
       } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization");
+        router.push("/dashboard/organization")
       }
     }
-  }, [session, isPending, router]);
+  }, [session, isPending, router])
 
   // Mostrar loading mientras se verifica la sesión
-    if (isPending) {
+  if (isPending) {
     return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4 font-rubik">
+      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardContent className="p-8">
             <div className="flex flex-col items-center gap-5">
@@ -87,15 +77,15 @@ export default function LoginSelectionPage() {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   // Si hay sesión, no mostrar nada (se está redirigiendo)
   if (session?.user) {
-    return null;
+    return null
   }
   return (
-    <div className="min-h-dvh bg-gradient-to-r from-blue-100 to-green-100 flex items-center justify-center p-4 font-rubik">
+    <div className="min-h-dvh bg-gradient-to-r from-blue-100 to-green-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-4xl">
         <CardHeader className="text-center space-y-1">
           {/* Logo */}
@@ -129,9 +119,7 @@ export default function LoginSelectionPage() {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        Usuario Individual
-                      </h3>
+                      <h3 className="text-lg font-semibold text-gray-800">Usuario Individual</h3>
                       <p className="text-sm text-gray-600">
                         Acceso para profesionales, investigadores y estudiantes
                       </p>
@@ -161,9 +149,7 @@ export default function LoginSelectionPage() {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        Organización
-                      </h3>
+                      <h3 className="text-lg font-semibold text-gray-800">Organización</h3>
                       <p className="text-sm text-gray-600">
                         Portal para empresas, instituciones y laboratorios
                       </p>
@@ -183,9 +169,7 @@ export default function LoginSelectionPage() {
           <div className="flex-1 flex flex-col justify-center space-y-6">
             {/* Divider */}
             <div className="text-center uppercase">
-              <h3 className="text-sm font-semibold text-gray-800 mb-4">
-                ¿Eres Nuevo en Biovity?
-              </h3>
+              <h3 className="text-sm font-semibold text-gray-800 mb-4">¿Eres Nuevo en Biovity?</h3>
             </div>
 
             {/* Registration Options */}
@@ -196,12 +180,7 @@ export default function LoginSelectionPage() {
                 className="w-full h-12 border-blue-200 hover:bg-blue-50 text-base"
               >
                 <Link href="/register/user">
-                  <HugeiconsIcon
-                    icon={UserIcon}
-                    size={20}
-                    strokeWidth={1.5}
-                    className="mr-2"
-                  />
+                  <HugeiconsIcon icon={UserIcon} size={20} strokeWidth={1.5} className="mr-2" />
                   Crear cuenta de usuario
                 </Link>
               </Button>
@@ -227,10 +206,7 @@ export default function LoginSelectionPage() {
             <div className="text-center pt-4">
               <p className="text-sm text-gray-500">
                 ¿Necesitas ayuda?{" "}
-                <a
-                  href="mailto:support@biovity.com"
-                  className="text-blue-600 hover:underline"
-                >
+                <a href="mailto:support@biovity.com" className="text-blue-600 hover:underline">
                   Contactar soporte
                 </a>
               </p>
@@ -239,5 +215,5 @@ export default function LoginSelectionPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

@@ -1,4 +1,6 @@
-export const MESSAGES_DATA = {
+import type { MessagesData } from "@/lib/types/messages"
+
+export const MESSAGES_DATA: MessagesData = {
   conversations: [
     {
       id: 1,

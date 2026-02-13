@@ -1,21 +1,15 @@
-"use client";
+"use client"
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { TrendingUp } from "lucide-react"
+import { Bar, BarChart, XAxis } from "recharts"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/ui/chart"
+import { Badge } from "@/components/ui/badge"
 
 const chartData = [
   { month: "January", desktop: 342 },
@@ -30,14 +24,14 @@ const chartData = [
   { month: "October", desktop: 532 },
   { month: "November", desktop: 803 },
   { month: "December", desktop: 271 },
-];
+]
 
 const chartConfig = {
   desktop: {
     label: "Desktop",
     color: "var(--chart-1)",
   },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 
 export function DuotoneBarChart() {
   return (
@@ -45,10 +39,7 @@ export function DuotoneBarChart() {
       <CardHeader>
         <CardTitle>
           Bar Chart
-          <Badge
-            variant="outline"
-            className="text-green-500 bg-green-500/10 border-none ml-2"
-          >
+          <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
             <TrendingUp className="h-4 w-4" />
             <span>5.2%</span>
           </Badge>
@@ -58,13 +49,7 @@ export function DuotoneBarChart() {
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={chartData}>
-            <rect
-              x="0"
-              y="0"
-              width="100%"
-              height="85%"
-              fill="url(#default-pattern-dots)"
-            />
+            <rect x="0" y="0" width="100%" height="85%" fill="url(#default-pattern-dots)" />
             <defs>
               <DottedBackgroundPattern />
             </defs>
@@ -75,10 +60,7 @@ export function DuotoneBarChart() {
               axisLine={false}
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Bar
               dataKey="desktop"
               fill="var(--color-desktop)"
@@ -89,13 +71,11 @@ export function DuotoneBarChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  );
+  )
 }
 
-const CustomDuotoneBar = (
-  props: React.SVGProps<SVGRectElement> & { dataKey?: string }
-) => {
-  const { fill, x, y, width, height, dataKey } = props;
+const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
+  const { fill, x, y, width, height, dataKey } = props
 
   return (
     <>
@@ -122,8 +102,8 @@ const CustomDuotoneBar = (
         </linearGradient>
       </defs>
     </>
-  );
-};
+  )
+}
 
 const DottedBackgroundPattern = () => {
   return (
@@ -135,13 +115,7 @@ const DottedBackgroundPattern = () => {
       height="10"
       patternUnits="userSpaceOnUse"
     >
-      <circle
-        className="dark:text-muted/40 text-muted"
-        cx="2"
-        cy="2"
-        r="1"
-        fill="currentColor"
-      />
+      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
     </pattern>
-  );
-};
+  )
+}

@@ -26,8 +26,7 @@ export default function ListaEsperaPage() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   const emailLabel = role === "empresa" ? "Correo corporativo" : "Correo personal"
-  const emailPlaceholder =
-    role === "empresa" ? "contacto@empresa.cl" : "tu@email.com"
+  const emailPlaceholder = role === "empresa" ? "contacto@empresa.cl" : "tu@email.com"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,12 +69,12 @@ export default function ListaEsperaPage() {
           <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-10 h-10 text-green-600" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-rubik text-balance">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance">
             ¡Estás en la lista!
           </h1>
           <p className="text-lg text-gray-600 text-pretty">
-            Te avisaremos cuando Biovity esté listo. Mientras tanto, seguimos construyendo
-            el mejor portal de empleo para el sector científico en Chile.
+            Te avisaremos cuando Biovity esté listo. Mientras tanto, seguimos construyendo el mejor
+            portal de empleo para el sector científico en Chile.
           </p>
         </motion.div>
       </main>
@@ -111,7 +110,7 @@ export default function ListaEsperaPage() {
             className="mx-auto mb-6"
             priority
           />
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight font-rubik text-balance">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight text-balance">
             <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Biovity
             </span>{" "}
@@ -131,9 +130,9 @@ export default function ListaEsperaPage() {
           className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl border border-gray-100"
         >
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <span className="block text-sm font-medium text-gray-700 mb-3">
               ¿Qué te describe mejor?
-            </label>
+            </span>
             <div className="flex gap-3">
               {ROLE_OPTIONS.map((opt) => {
                 const Icon = opt.icon

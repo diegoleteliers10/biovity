@@ -6,11 +6,7 @@ import { Button } from "../../ui/button"
 import { HERO_STATS_EMPRESAS } from "@/lib/data/empresas-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
-const ICON_COLOR_CLASSES = [
-  "text-violet-500",
-  "text-emerald-500",
-  "text-blue-500",
-] as const
+const ICON_COLOR_CLASSES = ["text-violet-500", "text-emerald-500", "text-blue-500"] as const
 
 export function HeroEmpresas() {
   const reducedMotion = useReducedMotion()
@@ -47,10 +43,10 @@ export function HeroEmpresas() {
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(0)}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight font-rubik px-2 text-balance"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight px-2 text-balance"
           >
             Conecta con el nuevo
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent font-rubik">
+            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               {" "}
               talento científico{" "}
             </span>
@@ -107,7 +103,9 @@ export function HeroEmpresas() {
                   key={stat.label}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={ts(LANDING_ANIMATION.sequenceDelay * 3 + index * LANDING_ANIMATION.stagger)}
+                  transition={ts(
+                    LANDING_ANIMATION.sequenceDelay * 3 + index * LANDING_ANIMATION.stagger
+                  )}
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center">

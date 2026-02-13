@@ -47,35 +47,22 @@ export const mdxComponents: MDXComponents = {
     </em>
   ),
   a: ({ children, href, ...props }) => (
-    <a
-      href={href}
-      className="text-blue-600 hover:text-blue-800 underline"
-      {...props}
-    >
+    <a href={href} className="text-blue-600 hover:text-blue-800 underline" {...props}>
       {children}
     </a>
   ),
   blockquote: ({ children, ...props }) => (
-    <blockquote
-      className="border-l-4 border-gray-300 pl-4 italic my-4"
-      {...props}
-    >
+    <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4" {...props}>
       {children}
     </blockquote>
   ),
   code: ({ children, ...props }) => (
-    <code
-      className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono"
-      {...props}
-    >
+    <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
       {children}
     </code>
   ),
   pre: ({ children, ...props }) => (
-    <pre
-      className="bg-gray-100 p-4 rounded-lg overflow-x-auto mb-4"
-      {...props}
-    >
+    <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto mb-4" {...props}>
       {children}
     </pre>
   ),
