@@ -1,5 +1,5 @@
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Check01Icon, ArrowRight01Icon, Circle01Icon } from "@hugeicons/core-free-icons"
+import { Tick02Icon, ArrowRight01Icon, Circle01Icon } from "@hugeicons/core-free-icons"
 import * as React from "react"
 import {
   DropdownMenuCheckboxItem as DropdownMenuCheckboxItemPrimitive,

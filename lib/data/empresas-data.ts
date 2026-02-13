@@ -21,7 +21,7 @@ import {
   Shield01Icon,
   SparklesIcon,
   Target01Icon,
-  UserCheck01Icon,
+  Tick02Icon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
 
@@ -214,7 +214,7 @@ export const PASOS_EMPRESAS: PasoEmpresaItem[] = [
     number: "03",
   },
   {
-    icon: UserCheck01Icon,
+    icon: Tick02Icon,
     title: "Contrata al mejor",
     description:
       "Conecta con los candidatos ideales, agenda entrevistas y realiza la contratación perfecta.",

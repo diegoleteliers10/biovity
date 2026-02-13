@@ -1,7 +1,7 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Briefcase01Icon, CorporateBuilding01Icon, CheckCircle01Icon, Loading01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
+import { Briefcase01Icon, Building06Icon, CheckmarkCircle02Icon, Loading01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
 import Image from "next/image"
 import { motion, useReducedMotion } from "motion/react"
 import { useState } from "react"
@@ -14,7 +14,7 @@ type Role = "professional" | "empresa"
 
 const ROLE_OPTIONS: { value: Role; label: string; icon: any }[] = [
   { value: "professional", label: "Profesional", icon: Briefcase01Icon },
-  { value: "empresa", label: "Empresa", icon: CorporateBuilding01Icon },
+  { value: "empresa", label: "Empresa", icon: Building06Icon },
 ]
 
 export default function ListaEsperaPage() {
@@ -68,7 +68,7 @@ export default function ListaEsperaPage() {
             priority
           />
           <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-            <HugeiconsIcon icon={CheckCircle01Icon} size={40} className="text-green-600" />
+            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={40} className="text-green-600" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance">
             ¡Estás en la lista!
