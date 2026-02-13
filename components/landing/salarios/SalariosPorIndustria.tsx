@@ -1,7 +1,8 @@
 "use client"
 
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
-import { Building2, TrendingUp, Award } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Building01Icon, TrendingUp01Icon, Award01Icon } from "@hugeicons/core-free-icons"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -191,20 +192,20 @@ export function SalariosPorIndustria() {
           <Card className="border bg-gradient-to-br from-blue-50 to-indigo-50">
             <CardHeader className="pb-3">
               <div className="grid grid-cols-[auto_1fr] gap-2">
-                <Building2 className="w-5 h-5 text-blue-600" />
+                <HugeiconsIcon icon={Building01Icon} size={20} className="text-blue-600" />
                 <CardTitle className="text-lg">Insights Clave</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-[auto_1fr] gap-3">
-                <Award className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                <HugeiconsIcon icon={Award01Icon} size={20} className="text-blue-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-sm">Minería lidera</p>
                   <p className="text-xs text-gray-600">Promedio de $2.65M, rango hasta $3.5M</p>
                 </div>
               </div>
               <div className="grid grid-cols-[auto_1fr] gap-3">
-                <TrendingUp className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                <HugeiconsIcon icon={TrendingUp01Icon} size={20} className="text-green-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-sm">Tech/Pharma en crecimiento</p>
                   <p className="text-xs text-gray-600">Segundo lugar con $2.35M promedio</p>

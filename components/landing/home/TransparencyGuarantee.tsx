@@ -1,5 +1,6 @@
 "use client"
 
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { TRANSPARENCY_FEATURES } from "@/lib/data/home-data"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
@@ -48,28 +49,29 @@ export function TransparencyGuarantee() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TRANSPARENCY_FEATURES.map((feature, index) => {
-            const IconComponent = feature.icon
-            return (
-              <motion.div
-                key={feature.title}
-                data-card
-                initial={{ opacity: 0, y: 36, scale: 0.96 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-                transition={ts(index * LANDING_ANIMATION.chainStagger)}
-                className="relative bg-gray-50 rounded-2xl p-8 border-2 border-dashed border-gray-300"
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="mb-6">
-                    <IconComponent className={`w-12 h-12 ${feature.iconColor}`} />
+          {TRANSPARENCY_FEATURES.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              data-card
+              initial={{ opacity: 0, y: 36, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+              transition={ts(index * LANDING_ANIMATION.chainStagger)}
+              className="relative bg-gray-50 rounded-2xl p-8 border-2 border-dashed border-gray-300"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="mb-6">
+                  <HugeiconsIcon
+                    icon={feature.icon}
+                    size={48}
+                    className={feature.iconColor}
+                  />
                   </div>
                   <h3 className="text-gray-900 text-lg mb-3">{feature.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
                 </div>
               </motion.div>
-            )
-          })}
+          ))}
         </div>
       </div>
     </section>

@@ -1,7 +1,8 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { Calendar, Clock, MapPin } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Calendar01Icon, Clock01Icon, Location05Icon } from "@hugeicons/core-free-icons"
 
 type Event = {
   readonly id: string
@@ -88,7 +89,7 @@ export function UpcomingEvents() {
     <Card className="bg-sidebar border-sidebar-border h-full">
       <div className="p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-6">
-          <Calendar className="h-5 w-5 text-sidebar-primary" />
+          <HugeiconsIcon icon={Calendar01Icon} className="h-5 w-5 text-sidebar-primary" />
           <h3 className="text-lg font-semibold text-sidebar-foreground">Próximos Eventos</h3>
         </div>
 
@@ -124,18 +125,18 @@ export function UpcomingEvents() {
 
                 <div className="flex items-center gap-4 text-xs text-sidebar-foreground/70">
                   <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
+                    <HugeiconsIcon icon={Calendar01Icon} className="h-3 w-3" />
                     <span>{event.date}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                    <HugeiconsIcon icon={Clock01Icon} className="h-3 w-3" />
                     <span>{event.time}</span>
                   </div>
                 </div>
 
                 {event.location && (
                   <div className="flex items-center gap-1 text-xs text-sidebar-foreground/60">
-                    <MapPin className="h-3 w-3" />
+                    <HugeiconsIcon icon={Location05Icon} className="h-3 w-3" />
                     <span>{event.location}</span>
                   </div>
                 )}

@@ -1,4 +1,5 @@
-import { XIcon } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Close01Icon } from "@hugeicons/core-free-icons"
 import * as React from "react"
 import {
   SheetClose as SheetClosePrimitive,
@@ -77,7 +78,7 @@ function SheetContent({
         {children}
         {showCloseButton && (
           <SheetClose className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
-            <XIcon className="size-4" />
+            <HugeiconsIcon icon={Close01Icon} className="size-4" />
             <span className="sr-only">Close</span>
           </SheetClose>
         )}

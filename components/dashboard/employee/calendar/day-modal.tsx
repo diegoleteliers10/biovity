@@ -1,5 +1,6 @@
 "use client"
-import { X, Clock, CalendarIcon } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Close01Icon, Clock01Icon, Calendar01Icon } from "@hugeicons/core-free-icons"
 
 type Event = {
   readonly id: string
@@ -54,7 +55,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl">
-              <CalendarIcon className="w-6 h-6 text-primary" />
+              <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-card-foreground">{day}</h2>
@@ -65,7 +66,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
             onClick={onClose}
             className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-muted/50 transition-colors"
           >
-            <X className="w-4 h-4 text-muted-foreground" />
+            <HugeiconsIcon icon={Close01Icon} className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
@@ -74,7 +75,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
           {events.length === 0 ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CalendarIcon className="w-8 h-8 text-muted-foreground" />
+                <HugeiconsIcon icon={Calendar01Icon} className="w-8 h-8 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground">No hay eventos programados para este día</p>
             </div>
@@ -109,7 +110,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                       </div>
 
                       <div className="flex items-center gap-2 mb-3">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
+                        <HugeiconsIcon icon={Clock01Icon} className="w-4 h-4 text-muted-foreground" />
                         <span className="text-sm font-medium text-muted-foreground">
                           {event.time}
                         </span>

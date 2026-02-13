@@ -1,7 +1,8 @@
 "use client"
 
 import { BarChart, Bar, XAxis, YAxis, Cell } from "recharts"
-import { GraduationCap, Award } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { GraduationCap01Icon, Award01Icon } from "@hugeicons/core-free-icons"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -163,20 +164,20 @@ export function SalariosPorEducacion() {
             <Card className="border bg-gradient-to-br from-blue-50 to-indigo-50">
               <CardHeader className="pb-3">
                 <div className="grid grid-cols-[auto_1fr] gap-2">
-                  <GraduationCap className="w-5 h-5 text-blue-600" />
+                  <HugeiconsIcon icon={GraduationCap01Icon} size={20} className="text-blue-600" />
                   <CardTitle className="text-lg">Insights Clave</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-[auto_1fr] gap-3">
-                  <Award className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                  <HugeiconsIcon icon={Award01Icon} size={20} className="text-blue-600 mt-0.5 shrink-0" />
                   <div>
                     <p className="font-semibold text-sm">Magíster lidera</p>
                     <p className="text-xs text-gray-600">$2.55M promedio, orientado a industria</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-3">
-                  <GraduationCap className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                  <HugeiconsIcon icon={GraduationCap01Icon} className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
                   <div>
                     <p className="font-semibold text-sm">Postgrado marca diferencia</p>
                     <p className="text-xs text-gray-600">+$1M sobre sin postgrado</p>

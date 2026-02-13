@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowRight, CheckCircle2 } from "lucide-react"
+import { ArrowRight01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { Button } from "../../ui/button"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
@@ -57,7 +58,7 @@ export function CTA() {
             className="inline-flex items-center px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
           >
             Crear cuenta gratis
-            <ArrowRight className="w-5 h-5 ml-2" />
+            <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>
           <Button
             type="button"
@@ -84,7 +85,7 @@ export function CTA() {
               transition={ts(index * LANDING_ANIMATION.chainStagger * 0.5)}
               className="flex items-center text-gray-500"
             >
-              <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2 text-green-500" />
               {benefit}
             </motion.div>
           ))}

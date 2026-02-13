@@ -1,6 +1,7 @@
 "use client"
 
-import { Briefcase, MapPin, Search } from "lucide-react"
+import { Briefcase01Icon, Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { motion, useReducedMotion } from "motion/react"
 import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 import { Button } from "../../ui/button"
@@ -61,14 +62,14 @@ export function Hero() {
             <Card className="p-4 sm:p-6 max-w-4xl mx-auto shadow-lg border-0 bg-white/80 backdrop-blur-sm w-full px-4 sm:px-6">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="flex-1 relative">
-                  <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <HugeiconsIcon icon={Briefcase01Icon} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     placeholder="¿Qué puesto buscas?"
                     className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white transition-colors"
                   />
                 </div>
                 <div className="flex-1 relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <HugeiconsIcon icon={Location05Icon} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
                     placeholder="¿Dónde?"
                     className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white transition-colors"
@@ -78,7 +79,7 @@ export function Hero() {
                   size="lg"
                   className="h-12 px-6 sm:px-8 bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-sm hover:shadow-md transition-all w-full sm:w-auto"
                 >
-                  <Search className="w-5 h-5 mr-2" />
+                  <HugeiconsIcon icon={Search01Icon} className="w-5 h-5 mr-2" />
                   Buscar
                 </Button>
               </div>
@@ -90,7 +91,7 @@ export function Hero() {
                 size="sm"
                 className="bg-white/50 hover:bg-white text-xs sm:text-sm"
               >
-                <Briefcase className="w-4 h-4 mr-2" />
+                <HugeiconsIcon icon={Briefcase01Icon} className="w-4 h-4 mr-2" />
                 Para Profesionales
               </Button>
               <Button
@@ -98,7 +99,7 @@ export function Hero() {
                 size="sm"
                 className="bg-white/50 hover:bg-white text-xs sm:text-sm"
               >
-                <Search className="w-4 h-4 mr-2" />
+                <HugeiconsIcon icon={Search01Icon} className="w-4 h-4 mr-2" />
                 Para Empresas
               </Button>
             </div>

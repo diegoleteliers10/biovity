@@ -19,7 +19,6 @@ import {
   Briefcase01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { HeartPulse, Laptop, Plane, GraduationCap } from "lucide-react"
 import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
 import type { TipoBeneficio } from "@/lib/types/trabajos"
@@ -67,13 +66,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const getBeneficioIcon = (tipo: TipoBeneficio) => {
   switch (tipo) {
     case "salud":
-      return HeartPulse
+      return HeartPulse01Icon
     case "vacaciones":
-      return Plane
+      return Airplane01Icon
     case "formacion":
-      return GraduationCap
+      return GraduationCap01Icon
     case "equipo":
-      return Laptop
+      return Laptop01Icon
     default:
       return null
   }

@@ -1,4 +1,5 @@
-import { Check } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Check01Icon } from "@hugeicons/core-free-icons"
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -20,7 +21,7 @@ const Checkbox = React.forwardRef<
             className
           )}
         >
-          {props.checked && <Check className="w-3 h-3 text-white" />}
+          {props.checked && <HugeiconsIcon icon={Check01Icon} className="w-3 h-3 text-white" />}
         </div>
       </div>
       {label && <span className="text-sm text-gray-700">{label}</span>}

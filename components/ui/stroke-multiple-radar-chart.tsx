@@ -9,7 +9,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { TrendingUp01Icon } from "@hugeicons/core-free-icons"
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 92 },
@@ -44,7 +45,7 @@ export function StrokeMultipleRadarChart() {
         <CardTitle>
           Radar Chart
           <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-            <TrendingUp className="h-4 w-4" />
+            <HugeiconsIcon icon={TrendingUp01Icon} className="h-4 w-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

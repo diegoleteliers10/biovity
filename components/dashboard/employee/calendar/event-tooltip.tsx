@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { Clock } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Clock01Icon } from "@hugeicons/core-free-icons"
 
 type Event = {
   readonly id: string
@@ -106,7 +107,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
 
             {/* Time with icon */}
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-3.5 w-3.5" />
+              <HugeiconsIcon icon={Clock01Icon} className="h-3.5 w-3.5" />
               <span className="text-sm font-medium">{event.time}</span>
             </div>
           </div>

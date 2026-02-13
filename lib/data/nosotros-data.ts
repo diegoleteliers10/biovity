@@ -1,23 +1,32 @@
-import { Clock, Target, Heart } from "lucide-react"
-import type { IconTitleDescription } from "@/lib/types/landing"
+import {
+  Clock01Icon,
+  FavouriteIcon,
+  Link01Icon,
+} from "@hugeicons/core-free-icons"
+import type { IconSvgElement } from "@hugeicons/react"
 
-export type ValorItem = IconTitleDescription
+/** Values section item using HugeIcons (Misión, Visión, Valores) */
+export interface ValorItem {
+  icon: IconSvgElement
+  title: string
+  description: string
+}
 
 export const VALUES_DATA: ValorItem[] = [
   {
-    icon: Target,
+    icon: Link01Icon,
     title: "Misión",
     description:
       "Conectar talento científico con oportunidades significativas en el sector de biociencias.",
   },
   {
-    icon: Clock,
+    icon: Clock01Icon,
     title: "Visión",
     description:
       "Ser la comunidad líder de unificación de recursos para profesionales de ciencias en Latinoamérica.",
   },
   {
-    icon: Heart,
+    icon: FavouriteIcon,
     title: "Valores",
     description: "Transparencia, calidad, innovación y comunidad científica.",
   },

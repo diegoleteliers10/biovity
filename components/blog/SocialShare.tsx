@@ -1,6 +1,7 @@
 "use client"
 
-import { Linkedin, Twitter } from "lucide-react"
+import { Linkedin02Icon, TwitterIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -26,7 +27,7 @@ export function SocialShare({ className }: { className?: string }) {
           rel="noopener noreferrer"
           aria-label="Compartir en Twitter"
         >
-          <Twitter className="h-4 w-4" />
+          <HugeiconsIcon icon={TwitterIcon} className="h-4 w-4" />
         </a>
       </Button>
       <Button asChild variant="outline" size="icon-sm">
@@ -36,7 +37,7 @@ export function SocialShare({ className }: { className?: string }) {
           rel="noopener noreferrer"
           aria-label="Compartir en LinkedIn"
         >
-          <Linkedin className="h-4 w-4" />
+          <HugeiconsIcon icon={Linkedin02Icon} className="h-4 w-4" />
         </a>
       </Button>
     </div>

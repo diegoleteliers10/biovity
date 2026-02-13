@@ -1,8 +1,15 @@
 "use client"
 
-import { Location05Icon, Cash02Icon, Clock01Icon } from "@hugeicons/core-free-icons"
+import {
+  AirplaneLanding01Icon,
+  Cash02Icon,
+  Clock01Icon,
+  HeartAddIcon,
+  LaptopIcon,
+  LibraryIcon,
+  Location05Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { HeartPulse, Laptop, Plane, GraduationCap } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -21,13 +28,13 @@ interface TrabajosListProps {
 const getBeneficioIcon = (tipo: TipoBeneficio) => {
   switch (tipo) {
     case "salud":
-      return HeartPulse
+      return HeartAddIcon
     case "vacaciones":
-      return Plane
+      return AirplaneLanding01Icon
     case "formacion":
-      return GraduationCap
+      return LibraryIcon
     case "equipo":
-      return Laptop
+      return LaptopIcon
     default:
       return null
   }
@@ -99,11 +106,11 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                       {trabajo.beneficios && trabajo.beneficios.length > 0 && (
                         <div className="flex items-center gap-2 sm:mr-20">
                           {trabajo.beneficios.map((beneficio, index) => {
-                            const IconComponent = getBeneficioIcon(beneficio.tipo)
-                            if (!IconComponent) return null
+                            const icon = getBeneficioIcon(beneficio.tipo)
+                            if (!icon) return null
                             return (
                               <div key={index} className="text-gray-600" title={beneficio.label}>
-                                <IconComponent className="h-4 w-4 text-muted-foreground" />
+                                <HugeiconsIcon icon={icon} size={16} className="text-muted-foreground" />
                               </div>
                             )
                           })}

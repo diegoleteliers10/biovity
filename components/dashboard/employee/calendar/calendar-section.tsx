@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { Calendar } from "./calendar"
 import { UpcomingEvents } from "./upcoming-events"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ChevronLeft01Icon, ChevronRight01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 
 const months = [
@@ -53,7 +54,7 @@ export function CalendarSection() {
                 onClick={() => navigateMonth("prev")}
                 className="h-8 w-8 p-0"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <HugeiconsIcon icon={ChevronLeft01Icon} className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
@@ -69,7 +70,7 @@ export function CalendarSection() {
                 onClick={() => navigateMonth("next")}
                 className="h-8 w-8 p-0"
               >
-                <ChevronRight className="h-4 w-4" />
+                <HugeiconsIcon icon={ChevronRight01Icon} className="h-4 w-4" />
               </Button>
             </div>
           </div>

@@ -1,7 +1,8 @@
 "use client"
 
 import { SearchLg as SearchIcon } from "@untitledui/icons"
-import { Briefcase } from "lucide-react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Briefcase01Icon } from "@hugeicons/core-free-icons"
 import type { FocusEventHandler, PointerEventHandler, RefAttributes, RefObject } from "react"
 import { useCallback, useContext, useRef, useState } from "react"
 import type {
@@ -78,7 +79,7 @@ const ComboBoxValue = ({
     >
       {({ isDisabled }) => (
         <>
-          <Briefcase className="pointer-events-none text-gray-400 w-4 h-4" />
+          <HugeiconsIcon icon={Briefcase01Icon} className="pointer-events-none text-gray-400 w-4 h-4" />
 
           <div className="relative flex w-full items-center gap-2">
             {inputValue && (

@@ -1,5 +1,6 @@
 "use client"
 
+import { HugeiconsIcon } from "@hugeicons/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CONCLUSIONES_SALARIOS } from "@/lib/data/salarios-data"
 
@@ -28,19 +29,17 @@ export function SalariosConclusiones() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {CONCLUSIONES_SALARIOS.map((conclusionItem, index) => {
-            const IconComponent = conclusionItem.icon
-            return (
-              <Card
-                key={index}
-                className={`border-0 shadow-lg ${conclusionItem.bgColor} hover:shadow-xl transition-shadow`}
-              >
-                <CardHeader>
-                  <div className="grid grid-cols-[auto_1fr] gap-3 mb-2">
-                    <div
-                      className={`p-3 rounded-lg ${conclusionItem.bgColor} ${conclusionItem.color}`}
-                    >
-                      <IconComponent className="w-6 h-6" />
+          {CONCLUSIONES_SALARIOS.map((conclusionItem, index) => (
+            <Card
+              key={index}
+              className={`border-0 shadow-lg ${conclusionItem.bgColor} hover:shadow-xl transition-shadow`}
+            >
+              <CardHeader>
+                <div className="grid grid-cols-[auto_1fr] gap-3 mb-2">
+                  <div
+                    className={`p-3 rounded-lg ${conclusionItem.bgColor} ${conclusionItem.color}`}
+                  >
+                    <HugeiconsIcon icon={conclusionItem.icon} size={24} className={conclusionItem.color} />
                     </div>
                     <CardTitle className={conclusionItem.color}>{conclusionItem.title}</CardTitle>
                   </div>
@@ -49,8 +48,7 @@ export function SalariosConclusiones() {
                   <p className="text-gray-700 leading-relaxed">{conclusionItem.description}</p>
                 </CardContent>
               </Card>
-            )
-          })}
+          ))}
         </div>
 
         <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">

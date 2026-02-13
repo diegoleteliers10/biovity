@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import type { IconSvgElement } from "@hugeicons/react"
 import type { IconTitleDescription } from "@/lib/types/landing"
 
 export interface FAQItem {
@@ -28,7 +28,7 @@ export interface PasoEmpresaItem extends IconTitleDescription {
 }
 
 export interface HeroStatEmpresaItem {
-  icon: LucideIcon
+  icon: IconSvgElement
   value: string
   label: string
 }
