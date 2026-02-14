@@ -14,6 +14,8 @@ export async function proxy(request: NextRequest) {
       "/favicon.ico",
       "/logoIconBiovity.png",
       "/manifest.json",
+      "/browserconfig.xml",
+      "/images",
     ]
     const isAllowed =
       pathname === WAITLIST_PATH ||

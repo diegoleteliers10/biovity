@@ -28,7 +28,7 @@ export function HistoriaMision() {
             className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-balance"
           >
             Nuestra{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Historia
             </span>
           </motion.h2>
