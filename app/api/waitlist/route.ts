@@ -37,6 +37,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error("[waitlist] Error:", err)
+
+    // PostgreSQL unique constraint violation (duplicate email)
+    const isDuplicateEmail =
+      err instanceof Error && "code" in err && (err as { code?: string }).code === "23505"
+
+    if (isDuplicateEmail) {
+      return NextResponse.json(
+        { error: "Ya estás registrado. Pronto te contactaremos." },
+        { status: 409 }
+      )
+    }
+
     return NextResponse.json({ error: "Error al guardar. Intenta de nuevo." }, { status: 500 })
   }
 }
