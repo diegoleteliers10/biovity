@@ -27,7 +27,7 @@ export function Equipo() {
             className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance"
           >
             Nuestro{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Equipo
             </span>
           </motion.h2>
@@ -51,7 +51,7 @@ export function Equipo() {
         >
           <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 max-w-md w-full text-center hover:shadow-lg transition-shadow">
             {/* Photo/Avatar */}
-            <div className="mx-auto mb-6 w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+            <div className="mx-auto mb-6 w-28 h-28 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
               <span className="text-4xl font-bold text-white">DL</span>
             </div>
 

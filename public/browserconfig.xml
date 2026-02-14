@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+  <msapplication>
+    <tile>
+      <square70x70logo src="/images/windows11/SmallTile.scale-100.webp"/>
+      <square150x150logo src="/images/windows11/Square150x150Logo.scale-100.webp"/>
+      <square310x310logo src="/images/windows11/LargeTile.scale-100.webp"/>
+      <wide310x150logo src="/images/windows11/Wide310x150Logo.scale-100.webp"/>
+      <TileColor>#2563EB</TileColor>
+    </tile>
+  </msapplication>
+</browserconfig>
