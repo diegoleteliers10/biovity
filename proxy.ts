@@ -16,6 +16,7 @@ export async function proxy(request: NextRequest) {
       "/manifest.json",
       "/browserconfig.xml",
       "/images",
+      "/opengraph-image",
     ]
     const isAllowed =
       pathname === WAITLIST_PATH ||
