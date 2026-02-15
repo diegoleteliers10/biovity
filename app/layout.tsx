@@ -9,7 +9,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
+// Use deployment URL on Vercel so OG image is reachable from the same origin
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://biovity.cl")
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -70,7 +73,7 @@ export const metadata: Metadata = {
       "Conectamos profesionales y estudiantes con oportunidades laborales en biotecnología, bioquímica, química, ingeniería química y salud en Chile.",
     images: [
       {
-        url: "/opengraph-image",
+        url: `${siteUrl}/opengraph-image`,
         width: 1200,
         height: 630,
         alt: "Biovity - Portal de Empleo en Biotecnología y Ciencias",
@@ -82,7 +85,7 @@ export const metadata: Metadata = {
     title: "Biovity | Portal de Empleo en Biotecnología y Ciencias",
     description:
       "Conectamos profesionales y estudiantes con oportunidades laborales en biotecnología, bioquímica y ciencias en Chile.",
-    images: ["/opengraph-image"],
+    images: [`${siteUrl}/opengraph-image`],
     creator: "@biovity",
   },
   robots: {
