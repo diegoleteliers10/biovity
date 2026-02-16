@@ -73,9 +73,10 @@ export const metadata: Metadata = {
       "Conectamos profesionales y estudiantes con oportunidades laborales en biotecnología, bioquímica, química, ingeniería química y salud en Chile.",
     images: [
       {
-        url: `${siteUrl}/opengraph-image`,
+        url: `${siteUrl}/api/og`,
         width: 1200,
         height: 630,
+        type: "image/jpeg",
         alt: "Biovity - Portal de Empleo en Biotecnología y Ciencias",
       },
     ],
@@ -85,8 +86,16 @@ export const metadata: Metadata = {
     title: "Biovity | Portal de Empleo en Biotecnología y Ciencias",
     description:
       "Conectamos profesionales y estudiantes con oportunidades laborales en biotecnología, bioquímica y ciencias en Chile.",
-    images: [`${siteUrl}/opengraph-image`],
+    images: [
+      {
+        url: `${siteUrl}/api/og`,
+        width: 1200,
+        height: 630,
+        alt: "Biovity - Portal de Empleo en Biotecnología y Ciencias",
+      },
+    ],
     creator: "@biovity",
+    site: "@biovity",
   },
   robots: {
     index: true,
