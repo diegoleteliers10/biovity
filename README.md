@@ -17,6 +17,7 @@ Biovity ayuda a profesionales y estudiantes a encontrar trabajo y oportunidades 
 Este proyecto está construido con las siguientes tecnologías:
 
 ### Frontend
+
 - **[Next.js 16](https://nextjs.org/)** - Framework React con App Router
 - **[React 19](https://react.dev/)** - Biblioteca de UI
 - **[TypeScript](https://www.typescriptlang.org/)** - Tipado estático
@@ -26,10 +27,12 @@ Este proyecto está construido con las siguientes tecnologías:
 - **[Lucide React](https://lucide.dev/)** - Iconos
 
 ### Backend & Autenticación
+
 - **[Better Auth](https://www.better-auth.com/)** - Sistema de autenticación
 - **[PostgreSQL](https://www.postgresql.org/)** - Base de datos
 
 ### Herramientas de Desarrollo
+
 - **[Biome](https://biomejs.dev/)** - Linter y formateador
 - **[Turbopack](https://turbo.build/pack)** - Bundler rápido
 
@@ -43,12 +46,14 @@ Este proyecto está construido con las siguientes tecnologías:
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**
+
    ```bash
    git clone <repository-url>
    cd biovity
    ```
 
 2. **Instalar dependencias**
+
    ```bash
    bun install
    # o
@@ -56,17 +61,21 @@ Este proyecto está construido con las siguientes tecnologías:
    ```
 
 3. **Configurar variables de entorno**
+
    ```bash
    cp .env.example .env.local
    ```
+
    Edita `.env.local` con tus credenciales de base de datos y otras configuraciones necesarias.
 
 4. **Ejecutar migraciones de base de datos** (si aplica)
+
    ```bash
    bun run db:migrate
    ```
 
 5. **Iniciar el servidor de desarrollo**
+
    ```bash
    bun dev
    # o
@@ -74,6 +83,7 @@ Este proyecto está construido con las siguientes tecnologías:
    ```
 
 6. **Abrir en el navegador**
+
    ```
    http://localhost:3000
    ```
@@ -135,48 +145,56 @@ Las ramas deben seguir el siguiente formato:
 #### Tipos de Ramas
 
 - **`feat/`** - Nueva funcionalidad
+
   ```bash
   git checkout -b feat/user-profile-page
   git checkout -b feat/job-search-filters
   ```
 
 - **`fix/`** - Corrección de bugs
+
   ```bash
   git checkout -b fix/login-validation-error
   git checkout -b fix/mobile-responsive-header
   ```
 
 - **`hotfix/`** - Corrección urgente en producción
+
   ```bash
   git checkout -b hotfix/critical-security-patch
   git checkout -b hotfix/payment-processing-error
   ```
 
 - **`design/`** - Cambios de diseño/UI/UX
+
   ```bash
   git checkout -b design/landing-page-redesign
   git checkout -b design/dashboard-sidebar-improvement
   ```
 
 - **`refactor/`** - Refactorización de código
+
   ```bash
   git checkout -b refactor/auth-service-modularization
   git checkout -b refactor/component-structure-reorganization
   ```
 
 - **`docs/`** - Documentación
+
   ```bash
   git checkout -b docs/api-documentation
   git checkout -b docs/setup-guide-update
   ```
 
 - **`test/`** - Pruebas
+
   ```bash
   git checkout -b test/add-unit-tests-auth
   git checkout -b test/integration-tests-job-search
   ```
 
 - **`chore/`** - Tareas de mantenimiento
+
   ```bash
   git checkout -b chore/update-dependencies
   git checkout -b chore/ci-cd-pipeline-setup
@@ -185,6 +203,7 @@ Las ramas deben seguir el siguiente formato:
 #### Ejemplos de Buenas Prácticas
 
 ✅ **Buenos nombres de ramas:**
+
 ```bash
 feat/user-dashboard-metrics
 fix/header-scroll-behavior
@@ -193,6 +212,7 @@ refactor/auth-middleware-cleanup
 ```
 
 ❌ **Nombres a evitar:**
+
 ```bash
 feature                    # Muy genérico
 fix-bug                   # Sin prefijo de tipo
@@ -217,65 +237,76 @@ Utilizamos [Conventional Commits](https://www.conventionalcommits.org/) para man
 #### Tipos de Commits
 
 - **`feat:`** - Nueva funcionalidad
+
   ```bash
   git commit -m "feat: agregar filtro de búsqueda por ubicación"
   git commit -m "feat(dashboard): implementar gráfico de métricas de usuario"
   ```
 
 - **`fix:`** - Corrección de bugs
+
   ```bash
   git commit -m "fix: corregir validación de email en registro"
   git commit -m "fix(auth): resolver problema de sesión expirada"
   ```
 
 - **`hotfix:`** - Corrección urgente
+
   ```bash
   git commit -m "hotfix: corregir vulnerabilidad de seguridad crítica"
   git commit -m "hotfix(payment): resolver error en procesamiento de pagos"
   ```
 
 - **`design:`** - Cambios de diseño/UI
+
   ```bash
   git commit -m "design: mejorar responsive del header en móviles"
   git commit -m "design(landing): actualizar animaciones del hero section"
   ```
 
 - **`refactor:`** - Refactorización sin cambiar funcionalidad
+
   ```bash
   git commit -m "refactor: reorganizar estructura de componentes"
   git commit -m "refactor(auth): modularizar servicio de autenticación"
   ```
 
 - **`docs:`** - Cambios en documentación
+
   ```bash
   git commit -m "docs: actualizar guía de instalación"
   git commit -m "docs(api): agregar documentación de endpoints"
   ```
 
 - **`test:`** - Agregar o modificar tests
+
   ```bash
   git commit -m "test: agregar tests unitarios para componente Button"
   git commit -m "test(auth): agregar tests de integración para login"
   ```
 
 - **`chore:`** - Tareas de mantenimiento
+
   ```bash
   git commit -m "chore: actualizar dependencias a última versión"
   git commit -m "chore(ci): configurar pipeline de CI/CD"
   ```
 
 - **`perf:`** - Mejoras de rendimiento
+
   ```bash
   git commit -m "perf: optimizar carga de imágenes con next/image"
   git commit -m "perf(dashboard): reducir tiempo de carga de métricas"
   ```
 
 - **`style:`** - Cambios de formato (espacios, comas, etc.)
+
   ```bash
   git commit -m "style: corregir formato según Biome"
   ```
 
 - **`ci:`** - Cambios en CI/CD
+
   ```bash
   git commit -m "ci: agregar test de build en GitHub Actions"
   ```
@@ -294,6 +325,7 @@ refactor(components): reorganizar estructura
 #### Ejemplos de Commits Completos
 
 ✅ **Buenos commits:**
+
 ```bash
 feat(search): agregar filtro por rango salarial
 
@@ -330,6 +362,7 @@ BREAKING CHANGE: Los componentes ahora requieren pasar ref al hook
 ```
 
 ❌ **Commits a evitar:**
+
 ```bash
 git commit -m "cambios"                    # Muy vago
 git commit -m "fix bug"                    # Sin contexto

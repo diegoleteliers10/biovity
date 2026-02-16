@@ -93,6 +93,12 @@ export const metadata: Metadata = {
         height: 630,
         alt: "Biovity - Portal de Empleo en Biotecnología y Ciencias",
       },
+      {
+        url: `${siteUrl}/api/og`,
+        width: 400, // WhatsApp max 600KB
+        height: 400,
+        alt: "Biovity - Portal de Empleo en Biotecnología y Ciencias",
+      }
     ],
     creator: "@biovity",
     site: "@biovity",
