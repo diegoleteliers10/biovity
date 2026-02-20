@@ -1,16 +1,10 @@
-import { NextResponse } from "next/server";
-import { Pool } from "pg";
+import { NextResponse } from "next/server"
+import { pool } from "@/lib/db"
 
 export async function GET() {
   try {
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-    });
-
-    // Simple ping query to keep Supabase database alive
-    await pool.query("SELECT 1");
-
-    await pool.end();
+    // Simple ping query to keep database alive (uses shared pool, no create/destroy)
+    await pool.query("SELECT 1")
 
     return NextResponse.json({
       success: true,

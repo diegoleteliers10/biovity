@@ -1,0 +1,16 @@
+{
+  "plugins": {
+    "linear": {
+      "enabled": true
+    },
+    "convex": {
+      "enabled": true
+    },
+    "supabase": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    }
+  }
+}
