@@ -1,21 +1,21 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Calendar04Icon,
+  Cancel01Icon,
+  CheckmarkCircle02Icon,
   File02Icon,
   IdeaIcon,
   Message01Icon,
   Share05Icon,
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
 } from "@hugeicons/core-free-icons"
-import { useMemo, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { HugeiconsIcon } from "@hugeicons/react"
+import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DATA } from "@/lib/data/data-test"
-import { motion } from "motion/react"
 
 type ApplicationItem = {
   jobTitle: string
@@ -166,7 +166,7 @@ export const ApplicationsContent = () => {
                                   className={`relative mx-2 h-[2px] flex-1 rounded ${idx < current ? "bg-primary" : "bg-muted"}`}
                                 >
                                   {isNext && (
-                                    <motion.div
+                                    <m.div
                                       className="absolute inset-y-0 left-0 h-full rounded bg-primary"
                                       initial={{ width: "50%" }}
                                       animate={{ width: ["50%", "70%", "50%"] }}

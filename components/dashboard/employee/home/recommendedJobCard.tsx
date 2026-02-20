@@ -1,6 +1,5 @@
 "use client"
 
-import { memo } from "react"
 import {
   Bookmark02Icon,
   Cash02Icon,
@@ -10,6 +9,7 @@ import {
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { memo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Job } from "@/lib/types/dashboard"
@@ -103,9 +103,9 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1">
-          {job.tags.slice(0, 2).map((tag, index) => (
+          {job.tags.slice(0, 2).map((tag) => (
             <span
-              key={`${job.jobTitle}-tag-${index}`}
+              key={`${job.jobTitle}-tag-${tag}`}
               className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground truncate"
             >
               {tag}

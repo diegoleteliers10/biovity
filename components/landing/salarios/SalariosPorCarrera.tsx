@@ -1,11 +1,11 @@
 "use client"
 
-import { Bar, BarChart, XAxis, YAxis } from "recharts"
+import { ArrowUpRight01Icon, Award01Icon, TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { TradeUpIcon, Award01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -141,8 +141,11 @@ export function SalariosPorCarrera() {
                         return (
                           <div className="rounded-lg border bg-background p-2 shadow-sm">
                             <div className="grid gap-2">
-                              {payload.map((item, index) => (
-                                <div key={index} className="grid grid-cols-[auto_1fr_auto] gap-2">
+                              {payload.map((item) => (
+                                <div
+                                  key={item.name}
+                                  className="grid grid-cols-[auto_1fr_auto] gap-2"
+                                >
                                   <div
                                     className="h-2 w-2 rounded-full mt-1.5"
                                     style={{ backgroundColor: item.color }}
@@ -188,14 +191,22 @@ export function SalariosPorCarrera() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-[auto_1fr] gap-3">
-                  <HugeiconsIcon icon={Award01Icon} size={20} className="text-blue-600 mt-0.5 shrink-0" />
+                  <HugeiconsIcon
+                    icon={Award01Icon}
+                    size={20}
+                    className="text-blue-600 mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="font-semibold text-sm">Bioinformática lidera</p>
                     <p className="text-xs text-gray-600">Mayor sueldo senior: $3.2M</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-3">
-                  <HugeiconsIcon icon={ArrowUpRight01Icon} size={20} className="text-green-600 mt-0.5 shrink-0" />
+                  <HugeiconsIcon
+                    icon={ArrowUpRight01Icon}
+                    size={20}
+                    className="text-green-600 mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="font-semibold text-sm">Mayor crecimiento</p>
                     <p className="text-xs text-gray-600">Brecha de $1.7M en Bioinformática</p>

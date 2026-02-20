@@ -1,16 +1,15 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
-import { Bar, BarChart, Cell, XAxis, ReferenceLine } from "recharts"
-import React from "react"
-import { AnimatePresence } from "motion/react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { AnimatePresence, useMotionValueEvent, useSpring } from "motion/react"
 import { JetBrains_Mono } from "next/font/google"
-import { useMotionValueEvent, useSpring } from "framer-motion"
+import React from "react"
+import { Bar, BarChart, Cell, ReferenceLine, XAxis } from "recharts"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { type ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { cn } from "@/lib/utils"
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -20,22 +19,22 @@ const jetBrainsMono = JetBrains_Mono({
 const CHART_MARGIN = 35
 
 const chartData = [
-  { month: "January", desktop: 342 },
-  { month: "February", desktop: 676 },
-  { month: "March", desktop: 512 },
-  { month: "April", desktop: 629 },
-  { month: "May", desktop: 458 },
-  { month: "June", desktop: 781 },
-  { month: "July", desktop: 394 },
-  { month: "August", desktop: 924 },
-  { month: "September", desktop: 647 },
-  { month: "October", desktop: 532 },
-  { month: "November", desktop: 803 },
-  { month: "December", desktop: 271 },
-  { month: "January", desktop: 342 },
-  { month: "February", desktop: 876 },
-  { month: "March", desktop: 512 },
-  { month: "April", desktop: 629 },
+  { id: "jan-1", month: "January", desktop: 342 },
+  { id: "feb-1", month: "February", desktop: 676 },
+  { id: "mar-1", month: "March", desktop: 512 },
+  { id: "apr-1", month: "April", desktop: 629 },
+  { id: "may-1", month: "May", desktop: 458 },
+  { id: "jun-1", month: "June", desktop: 781 },
+  { id: "jul-1", month: "July", desktop: 394 },
+  { id: "aug-1", month: "August", desktop: 924 },
+  { id: "sep-1", month: "September", desktop: 647 },
+  { id: "oct-1", month: "October", desktop: 532 },
+  { id: "nov-1", month: "November", desktop: 803 },
+  { id: "dec-1", month: "December", desktop: 271 },
+  { id: "jan-2", month: "January", desktop: 342 },
+  { id: "feb-2", month: "February", desktop: 876 },
+  { id: "mar-2", month: "March", desktop: 512 },
+  { id: "apr-2", month: "April", desktop: 629 },
 ]
 
 const chartConfig = {
@@ -110,11 +109,11 @@ export function ValueLineBarChart() {
                 tickFormatter={(value) => value.slice(0, 3)}
               />
               <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4}>
-                {chartData.map((_, index) => (
+                {chartData.map((item, index) => (
                   <Cell
                     className="duration-200"
                     opacity={index === maxValueIndex.index ? 1 : 0.2}
-                    key={index}
+                    key={item.id}
                     onMouseEnter={() => setActiveIndex(index)}
                   />
                 ))}

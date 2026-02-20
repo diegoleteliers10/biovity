@@ -1,3 +1,9 @@
+import {
+  Building02Icon,
+  GraduationScrollIcon,
+  Location05Icon,
+  TradeUpIcon,
+} from "@hugeicons/core-free-icons"
 import type {
   CarreraChartItem,
   ConclusionItem,
@@ -6,12 +12,6 @@ import type {
   RegionChartItem,
   SalariosHeroStatItem,
 } from "@/lib/types/salarios"
-import {
-  Building02Icon,
-  GraduationScrollIcon,
-  Location05Icon,
-  TradeUpIcon,
-} from "@hugeicons/core-free-icons"
 
 export const EDUCACION_CHART_DATA: EducacionChartItem[] = [
   { nivel: "Magíster", promedio: 2550, porcentaje: 34 },

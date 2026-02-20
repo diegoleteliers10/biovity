@@ -1,7 +1,7 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { UserAdd01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import type { ButtonProps as AriaButtonProps } from "react-aria-components"
 import {
   Tooltip as AriaTooltip,
@@ -37,7 +37,10 @@ export const AvatarAddButton = ({
         className
       )}
     >
-      <HugeiconsIcon icon={UserAdd01Icon} className={cx("text-current transition-inherit-all", sizes[size].icon)} />
+      <HugeiconsIcon
+        icon={UserAdd01Icon}
+        className={cx("text-current transition-inherit-all", sizes[size].icon)}
+      />
     </AriaTooltipTrigger>
   </AriaTooltip>
 )

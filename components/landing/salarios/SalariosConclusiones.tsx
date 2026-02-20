@@ -29,9 +29,9 @@ export function SalariosConclusiones() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {CONCLUSIONES_SALARIOS.map((conclusionItem, index) => (
+          {CONCLUSIONES_SALARIOS.map((conclusionItem) => (
             <Card
-              key={index}
+              key={conclusionItem.title}
               className={`border-0 shadow-lg ${conclusionItem.bgColor} hover:shadow-xl transition-shadow`}
             >
               <CardHeader>
@@ -39,15 +39,19 @@ export function SalariosConclusiones() {
                   <div
                     className={`p-3 rounded-lg ${conclusionItem.bgColor} ${conclusionItem.color}`}
                   >
-                    <HugeiconsIcon icon={conclusionItem.icon} size={24} className={conclusionItem.color} />
-                    </div>
-                    <CardTitle className={conclusionItem.color}>{conclusionItem.title}</CardTitle>
+                    <HugeiconsIcon
+                      icon={conclusionItem.icon}
+                      size={24}
+                      className={conclusionItem.color}
+                    />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 leading-relaxed">{conclusionItem.description}</p>
-                </CardContent>
-              </Card>
+                  <CardTitle className={conclusionItem.color}>{conclusionItem.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 leading-relaxed">{conclusionItem.description}</p>
+              </CardContent>
+            </Card>
           ))}
         </div>
 

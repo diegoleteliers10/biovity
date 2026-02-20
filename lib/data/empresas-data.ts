@@ -1,11 +1,3 @@
-import type {
-  FAQItem,
-  FeatureATSItem,
-  HeroStatEmpresaItem,
-  PlanItem,
-  PasoEmpresaItem,
-} from "@/lib/types/empresas"
-import type { IconTitleDescription } from "@/lib/types/landing"
 import {
   BarChartIcon,
   BrainIcon,
@@ -15,15 +7,23 @@ import {
   Clock01Icon,
   FileSearchIcon,
   FilterIcon,
+  MailSend01Icon,
   Message01Icon,
   Search01Icon,
-  MailSend01Icon,
   Shield01Icon,
   SparklesIcon,
   Target01Icon,
   Tick02Icon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
+import type {
+  FAQItem,
+  FeatureATSItem,
+  HeroStatEmpresaItem,
+  PasoEmpresaItem,
+  PlanItem,
+} from "@/lib/types/empresas"
+import type { IconTitleDescription } from "@/lib/types/landing"
 
 export const FAQS_EMPRESAS: FAQItem[] = [
   {

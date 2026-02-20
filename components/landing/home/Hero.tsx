@@ -2,8 +2,9 @@
 
 import { Briefcase01Icon, Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import { Input } from "../../ui/input"
@@ -30,7 +31,7 @@ export function Hero() {
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(0)}
@@ -42,9 +43,9 @@ export function Hero() {
               ciencia{" "}
             </span>
             se encuentran
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay)}
@@ -52,9 +53,9 @@ export function Hero() {
           >
             Ayudamos a profesionales y estudiantes a encontrar trabajo y oportunidades en
             biotecnología, bioquímica, química, ingeniería química y salud.
-          </motion.p>
+          </m.p>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
@@ -62,14 +63,20 @@ export function Hero() {
             <Card className="p-4 sm:p-6 max-w-4xl mx-auto shadow-lg border-0 bg-white/80 backdrop-blur-sm w-full px-4 sm:px-6">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="flex-1 relative">
-                  <HugeiconsIcon icon={Briefcase01Icon} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <HugeiconsIcon
+                    icon={Briefcase01Icon}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                  />
                   <Input
                     placeholder="¿Qué puesto buscas?"
                     className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white transition-colors"
                   />
                 </div>
                 <div className="flex-1 relative">
-                  <HugeiconsIcon icon={Location05Icon} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <HugeiconsIcon
+                    icon={Location05Icon}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                  />
                   <Input
                     placeholder="¿Dónde?"
                     className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white transition-colors"
@@ -103,7 +110,7 @@ export function Hero() {
                 Para Empresas
               </Button>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

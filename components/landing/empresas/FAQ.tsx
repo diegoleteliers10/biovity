@@ -1,14 +1,15 @@
 "use client"
 
-import { motion, useReducedMotion } from "motion/react"
-import { FAQS_EMPRESAS } from "@/lib/data/empresas-data"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/animate-ui/components/radix/accordion"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { FAQS_EMPRESAS } from "@/lib/data/empresas-data"
 
 export function FAQ() {
   const reducedMotion = useReducedMotion()
@@ -18,14 +19,14 @@ export function FAQ() {
   return (
     <section id="faq" className="py-24 bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
           className="text-center mb-12"
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -33,8 +34,8 @@ export function FAQ() {
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
           >
             Preguntas frecuentes
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -42,20 +43,16 @@ export function FAQ() {
             className="text-xl text-gray-500 text-pretty"
           >
             Todo lo que necesitas saber sobre Biovity para empresas.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
         >
-          <Accordion
-            type="single"
-            collapsible
-            className="space-y-4"
-          >
+          <Accordion type="single" collapsible className="space-y-4">
             {FAQS_EMPRESAS.map((faq) => (
               <AccordionItem
                 key={faq.question}
@@ -78,7 +75,7 @@ export function FAQ() {
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

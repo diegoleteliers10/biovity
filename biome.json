@@ -7,15 +7,36 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "**/*.json"
+    ]
   },
   "overrides": [
     {
-      "includes": ["**/components/seo/**"],
+      "includes": [
+        "**/components/seo/**"
+      ],
       "linter": {
         "rules": {
           "security": {
             "noDangerouslySetInnerHtml": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "**/components/ui/chart.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "security": {
+            "noDangerouslySetInnerHtml": "off",
+            "noDangerouslySetInnerHtmlWithChildren": "off"
           }
         }
       }

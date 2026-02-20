@@ -3,8 +3,8 @@
 import type React from "react"
 
 import { useState } from "react"
-import { EventTooltip } from "./event-tooltip"
 import { DayModal } from "./day-modal"
+import { EventTooltip } from "./event-tooltip"
 
 type Event = {
   readonly id: string
@@ -180,13 +180,25 @@ export function Calendar({ currentDate }: CalendarProps) {
 
           return (
             <div
-              key={index}
+              key={dateKey ?? `empty-${index}`}
+              role={day ? "button" : "presentation"}
+              tabIndex={day ? 0 : undefined}
               className={`
                 min-h-[120px] bg-card p-2 flex flex-col
                 ${day ? "hover:bg-muted/50 transition-colors cursor-pointer" : ""}
                 ${isToday ? "ring-2 ring-primary ring-inset" : ""}
               `}
-              onClick={() => day && handleDayClick(day)}
+              onClick={day ? () => handleDayClick(day) : undefined}
+              onKeyDown={
+                day
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        handleDayClick(day)
+                      }
+                    }
+                  : undefined
+              }
             >
               {day && (
                 <>
@@ -207,6 +219,8 @@ export function Calendar({ currentDate }: CalendarProps) {
                     {dayEvents.slice(0, 2).map((event) => (
                       <div
                         key={event.id}
+                        role="button"
+                        tabIndex={0}
                         className={`
                           text-xs px-2 py-1 rounded-md cursor-pointer
                           transition-all duration-200 hover:scale-105
@@ -215,6 +229,11 @@ export function Calendar({ currentDate }: CalendarProps) {
                         onMouseEnter={(e) => handleEventHover(event, e)}
                         onMouseLeave={handleEventLeave}
                         onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.stopPropagation()
+                          }
+                        }}
                       >
                         <div className="font-medium truncate">{event.title}</div>
                         <div className="opacity-80">{event.time}</div>

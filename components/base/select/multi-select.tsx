@@ -1,7 +1,7 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { Search01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import type {
   FocusEventHandler,
   KeyboardEvent,
@@ -320,7 +320,7 @@ export const MultiSelectTagsValue = ({
       {({ isDisabled }) => (
         <>
           {Icon && <Icon className="pointer-events-none size-5 text-fg-quaternary" />}
-          <FocusScope contain={false} autoFocus={false} restoreFocus={false}>
+          <FocusScope contain={false} restoreFocus={false}>
             <InnerMultiSelect
               isDisabled={isDisabled}
               size={size}

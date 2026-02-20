@@ -1,9 +1,10 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { Linkedin02Icon } from "@hugeicons/core-free-icons"
-import { motion, useReducedMotion } from "motion/react"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import { HugeiconsIcon } from "@hugeicons/react"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
 export function Equipo() {
   const reducedMotion = useReducedMotion()
@@ -12,14 +13,14 @@ export function Equipo() {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
           className="text-center mb-16"
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -30,8 +31,8 @@ export function Equipo() {
             <span className="bg-linear-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Equipo
             </span>
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -39,10 +40,10 @@ export function Equipo() {
             className="text-xl text-gray-600 text-pretty"
           >
             Conecta con nosotros
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 32, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -56,7 +57,7 @@ export function Equipo() {
             </div>
 
             {/* Name and Role */}
-            <motion.h3
+            <m.h3
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -64,13 +65,13 @@ export function Equipo() {
               className="text-2xl font-bold text-gray-900 mb-1"
             >
               Diego Letelier
-            </motion.h3>
+            </m.h3>
             <p className="text-base text-blue-600 mb-4 font-semibold">CEO/CTO & Fundador</p>
 
             {/* Brief Description */}
             <p className="text-gray-600 leading-relaxed mb-6 text-pretty">
-              Apasionado por conectar talento científico con oportunidades significativas en el sector
-              de biociencias en Chile.
+              Apasionado por conectar talento científico con oportunidades significativas en el
+              sector de biociencias en Chile.
             </p>
 
             {/* LinkedIn Link */}
@@ -84,7 +85,7 @@ export function Equipo() {
               <HugeiconsIcon icon={Linkedin02Icon} className="w-4 h-4" />
             </a>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

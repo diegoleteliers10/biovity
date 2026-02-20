@@ -1,17 +1,16 @@
 "use client"
 
+import { TradeUpIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { LabelList, Pie, PieChart } from "recharts"
-
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { TradeUpIcon } from "@hugeicons/core-free-icons"
 
 export const description = "A pie chart with a label list"
 

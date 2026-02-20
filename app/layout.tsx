@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
 import "./globals.css"
+import { MotionProvider } from "@/components/providers/MotionProvider"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
@@ -98,7 +99,7 @@ export const metadata: Metadata = {
         width: 400, // WhatsApp max 600KB
         height: 400,
         alt: "Biovity - Portal de Empleo en Biotecnología y Ciencias",
-      }
+      },
     ],
     creator: "@biovity",
     site: "@biovity",
@@ -157,7 +158,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistMono.variable} antialiased`}>
+        <MotionProvider>{children}</MotionProvider>
+      </body>
       <Analytics />
       <SpeedInsights />
     </html>

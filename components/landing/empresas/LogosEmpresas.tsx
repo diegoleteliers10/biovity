@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "motion/react"
+import * as m from "motion/react-m"
 
 // TODO: Reemplazar con logos reales de empresas clientes
 const placeholderLogos = [
@@ -16,16 +16,16 @@ export function LogosEmpresas() {
   return (
     <section className="py-16 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.p
+        <m.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="text-center text-sm font-medium text-gray-500 mb-8 uppercase tracking-wider"
         >
           Empresas que confían en nosotros
-        </motion.p>
+        </m.p>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
@@ -34,7 +34,7 @@ export function LogosEmpresas() {
         >
           {placeholderLogos.map((company, index) => {
             return (
-              <motion.div
+              <m.div
                 key={company.name}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -44,10 +44,10 @@ export function LogosEmpresas() {
               >
                 {/* TODO: Reemplazar con <Image src={company.logo} alt={company.name} /> */}
                 <span className="text-xs text-gray-400 font-medium">{company.name}</span>
-              </motion.div>
+              </m.div>
             )
           })}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

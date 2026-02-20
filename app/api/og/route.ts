@@ -11,9 +11,7 @@ export async function GET() {
     const pngResponse = await generateOgImage()
     const pngBuffer = Buffer.from(await pngResponse.arrayBuffer())
 
-    const jpegBuffer = await sharp(pngBuffer)
-      .jpeg({ quality: 80, mozjpeg: true })
-      .toBuffer()
+    const jpegBuffer = await sharp(pngBuffer).jpeg({ quality: 80, mozjpeg: true }).toBuffer()
 
     return new NextResponse(new Uint8Array(jpegBuffer), {
       headers: {

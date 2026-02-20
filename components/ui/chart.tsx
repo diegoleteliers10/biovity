@@ -2,9 +2,8 @@
 
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-
-import { cn } from "@/lib/utils"
 import { createChartError } from "@/lib/errors"
+import { cn } from "@/lib/utils"
 
 const THEMES = { light: "", dark: ".dark" } as const
 
@@ -72,6 +71,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: Chart config CSS from theme - no user input
   return (
     <style
       dangerouslySetInnerHTML={{

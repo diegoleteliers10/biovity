@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { TrabajosHero } from "./TrabajosHero"
-import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
-import { TrabajosList } from "./TrabajosList"
+import { useMemo, useState } from "react"
 import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
 import type { FiltrosTrabajos } from "@/lib/types/trabajos"
+import { TrabajosHero } from "./TrabajosHero"
+import { TrabajosList } from "./TrabajosList"
+import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
 
 const initialFiltros: FiltrosTrabajos = {
   query: "",

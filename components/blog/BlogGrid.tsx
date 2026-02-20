@@ -1,11 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useMemo, useState } from "react"
 import type { Post } from "@/lib/types/posts"
-import { PostCard } from "./PostCard"
 import { Input } from "../ui/input"
+import { PostCard } from "./PostCard"
 
 interface BlogGridProps {
   posts: Post[]

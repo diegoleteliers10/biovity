@@ -145,7 +145,7 @@ export const phoneSchema = z
   .refine((val) => {
     if (!val) return true
     // Accept common phone formats
-    return /^[\d\s+()\-]{8,20}$/.test(val)
+    return /^[\d\s+()-]{8,20}$/.test(val)
   }, "El número de teléfono no es válido")
 
 // =====================

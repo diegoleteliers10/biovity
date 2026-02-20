@@ -2,11 +2,12 @@
 
 import { ArrowRight01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
 import { useState } from "react"
-import { Button } from "../../ui/button"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { PLANES_EMPRESAS } from "@/lib/data/empresas-data"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import { Button } from "../../ui/button"
 
 export function Pricing() {
   const [isAnual, setIsAnual] = useState(false)
@@ -27,14 +28,14 @@ export function Pricing() {
   return (
     <section className="py-24 bg-white" id="pricing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
           className="text-center mb-8"
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -42,8 +43,8 @@ export function Pricing() {
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
           >
             Planes simples y transparentes
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -51,10 +52,10 @@ export function Pricing() {
             className="text-xl text-gray-500 max-w-3xl mx-auto"
           >
             Elige el plan que mejor se adapte a las necesidades de tu empresa.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -88,11 +89,11 @@ export function Pricing() {
           >
             Ahorra 20%
           </span>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {PLANES_EMPRESAS.map((plan, index) => (
-            <motion.div
+            <m.div
               key={plan.name}
               initial={{ opacity: 0, y: 36, scale: 0.96 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -181,7 +182,7 @@ export function Pricing() {
                   <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
                 </a>
               </Button>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 

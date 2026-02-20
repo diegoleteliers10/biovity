@@ -1,7 +1,7 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { IdeaIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import type { ReactNode, Ref } from "react"
 import type { LabelProps as AriaLabelProps } from "react-aria-components"
 import { Label as AriaLabel } from "react-aria-components"

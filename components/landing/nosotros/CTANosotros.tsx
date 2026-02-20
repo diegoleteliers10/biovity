@@ -2,10 +2,11 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
 import Link from "next/link"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { Button } from "../../ui/button"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
 export function CTANosotros() {
   const reducedMotion = useReducedMotion()
@@ -14,13 +15,13 @@ export function CTANosotros() {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -32,8 +33,8 @@ export function CTANosotros() {
               unirte
             </span>
             ?
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -41,10 +42,10 @@ export function CTANosotros() {
             className="text-xl text-gray-600 mb-12 leading-relaxed max-w-2xl mx-auto text-pretty"
           >
             Ya seas un profesional buscando oportunidades o una empresa buscando talento.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -66,12 +67,15 @@ export function CTANosotros() {
             className="h-14 px-8 bg-white border-gray-200 text-gray-900 hover:bg-gray-50 w-full sm:w-auto"
             asChild
           >
-            <Link href="/register/organization" className="inline-flex items-center justify-center gap-2">
+            <Link
+              href="/register/organization"
+              className="inline-flex items-center justify-center gap-2"
+            >
               Soy empresa
               <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 shrink-0" />
             </Link>
           </Button>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

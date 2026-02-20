@@ -1,9 +1,9 @@
 "use client"
 
-import { memo } from "react"
-import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
+import { memo } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Metric } from "@/lib/types/dashboard"
 
 interface MetricCardProps {

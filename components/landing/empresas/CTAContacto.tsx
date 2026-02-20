@@ -9,12 +9,14 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import Link from "next/link"
 import { useRef, useState } from "react"
+import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { validateOrganizationContact } from "@/lib/validations"
 import { Button } from "../../ui/button"
 import { Input } from "../../ui/input"
-import { LANDING_ANIMATION, getSpringTransition } from "@/lib/animations"
 
 export function CTAContacto() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -61,7 +63,7 @@ export function CTAContacto() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -81,15 +83,15 @@ export function CTAContacto() {
                 className="h-14 px-8 bg-white text-gray-900 hover:bg-gray-100 text-lg"
                 asChild
               >
-                <a href="/register/organization">
+                <Link href="/register/organization">
                   Comienza gratis
                   <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
-                </a>
+                </Link>
               </Button>
             </div>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 40, scale: 0.98 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -105,7 +107,7 @@ export function CTAContacto() {
               <span>+56 9 1234 5678</span>
             </div>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -114,7 +116,10 @@ export function CTAContacto() {
               {isSubmitted ? (
                 <div className="bg-white rounded-2xl p-8 text-center">
                   <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-8 h-8 text-green-600" />
+                    <HugeiconsIcon
+                      icon={CheckmarkCircle02Icon}
+                      className="w-8 h-8 text-green-600"
+                    />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">¡Mensaje enviado!</h3>
                   <p className="text-gray-500 text-pretty">
@@ -145,7 +150,10 @@ export function CTAContacto() {
                           Nombre
                         </label>
                         <div className="relative">
-                          <HugeiconsIcon icon={UserIcon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <HugeiconsIcon
+                            icon={UserIcon}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                          />
                           <Input
                             id="nombre"
                             name="nombre"
@@ -180,7 +188,10 @@ export function CTAContacto() {
                         Email corporativo
                       </label>
                       <div className="relative">
-                        <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <HugeiconsIcon
+                          icon={Mail01Icon}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                        />
                         <Input
                           id="email"
                           name="email"
@@ -200,7 +211,10 @@ export function CTAContacto() {
                         Empresa
                       </label>
                       <div className="relative">
-                        <HugeiconsIcon icon={Building02Icon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <HugeiconsIcon
+                          icon={Building02Icon}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                        />
                         <Input
                           id="empresa"
                           name="empresa"
@@ -219,7 +233,10 @@ export function CTAContacto() {
                         Teléfono (opcional)
                       </label>
                       <div className="relative">
-                        <HugeiconsIcon icon={CallIcon} className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <HugeiconsIcon
+                          icon={CallIcon}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                        />
                         <Input
                           id="telefono"
                           name="telefono"
@@ -266,8 +283,8 @@ export function CTAContacto() {
                   </div>
                 </form>
               )}
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </div>
       </div>
     </section>

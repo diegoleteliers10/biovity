@@ -1,9 +1,9 @@
 "use client"
 
+import { Clock01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Clock01Icon } from "@hugeicons/core-free-icons"
 
 type Event = {
   readonly id: string
@@ -19,7 +19,8 @@ type EventTooltipProps = {
 }
 
 export function EventTooltip({ event, position }: EventTooltipProps) {
-  const [tooltipPosition, setTooltipPosition] = useState(position)
+  const [adjustedPosition, setAdjustedPosition] = useState<{ x: number; y: number } | null>(null)
+  const tooltipPosition = adjustedPosition ?? position
 
   useEffect(() => {
     const updatePosition = () => {
@@ -45,7 +46,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
         y = position.y - rect.height - 10 // Position above the event
       }
 
-      setTooltipPosition({ x, y })
+      setAdjustedPosition({ x, y })
     }
 
     updatePosition()

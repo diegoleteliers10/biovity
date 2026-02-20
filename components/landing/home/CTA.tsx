@@ -2,9 +2,10 @@
 
 import { ArrowRight01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { Button } from "../../ui/button"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
 export function CTA() {
   const reducedMotion = useReducedMotion()
@@ -20,13 +21,13 @@ export function CTA() {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -34,8 +35,8 @@ export function CTA() {
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight text-balance"
           >
             ¿Listo para dar el siguiente paso?
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -43,10 +44,10 @@ export function CTA() {
             className="text-xl text-gray-500 mb-12 leading-relaxed max-w-2xl mx-auto text-pretty"
           >
             Únete a miles de profesionales que ya encontraron su camino en la ciencia
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -67,9 +68,9 @@ export function CTA() {
           >
             Soy empresa
           </Button>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -77,7 +78,7 @@ export function CTA() {
           className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm"
         >
           {benefits.map((benefit, index) => (
-            <motion.div
+            <m.div
               key={benefit}
               initial={{ opacity: 0, y: 8 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -87,9 +88,9 @@ export function CTA() {
             >
               <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2 text-green-500" />
               {benefit}
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

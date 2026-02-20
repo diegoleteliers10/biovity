@@ -13,20 +13,15 @@
  * ```
  */
 
-// Primitive schemas
-export * from "./primitives"
-
 // Authentication schemas
 export * from "./auth"
-
-// Waitlist schemas
-export * from "./waitlist"
-
-// Profile schemas
-export * from "./profile"
-
-// Job schemas
-export * from "./job"
-
 // Contact schemas
 export * from "./contact"
+// Job schemas
+export * from "./job"
+// Primitive schemas
+export * from "./primitives"
+// Profile schemas
+export * from "./profile"
+// Waitlist schemas
+export * from "./waitlist"

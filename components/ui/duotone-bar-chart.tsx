@@ -1,16 +1,16 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { Bar, BarChart, XAxis } from "recharts"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
 
 const chartData = [
   { month: "January", desktop: 342 },
