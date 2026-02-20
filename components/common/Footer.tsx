@@ -8,43 +8,44 @@ import {
   TwitterIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { Logo } from "@/components/ui/logo"
 
-export function Footer() {
-  const footerSections = [
-    {
-      title: "Para Profesionales",
-      links: [
-        "Buscar Empleos",
-        "Subir CV",
-        "Alertas de Empleo",
-        "Consejos de Carrera",
-        "Salarios",
-        "Blog",
-      ],
-    },
-    {
-      title: "Para Empresas",
-      links: [
-        "Publicar Empleo",
-        "Buscar Candidatos",
-        "Planes y Precios",
-        "Herramientas de Reclutamiento",
-        "Contactar Ventas",
-      ],
-    },
-    {
-      title: "Soporte",
-      links: [
-        "Centro de Ayuda",
-        "Contacto",
-        "Términos de Servicio",
-        "Política de Privacidad",
-        "Política de Cookies",
-      ],
-    },
-  ]
+const FOOTER_SECTIONS = [
+  {
+    title: "Para Profesionales",
+    links: [
+      { label: "Buscar Empleos", href: "/trabajos" },
+      { label: "Subir CV", href: "/register" },
+      { label: "Alertas de Empleo", href: "/trabajos" },
+      { label: "Consejos de Carrera", href: "/blog" },
+      { label: "Salarios", href: "/salarios" },
+      { label: "Blog", href: "/blog" },
+    ],
+  },
+  {
+    title: "Para Empresas",
+    links: [
+      { label: "Publicar Empleo", href: "/empresas" },
+      { label: "Buscar Candidatos", href: "/empresas" },
+      { label: "Planes y Precios", href: "/empresas" },
+      { label: "Herramientas de Reclutamiento", href: "/empresas" },
+      { label: "Contactar Ventas", href: "/empresas#contacto" },
+    ],
+  },
+  {
+    title: "Soporte",
+    links: [
+      { label: "Centro de Ayuda", href: "/nosotros" },
+      { label: "Contacto", href: "/empresas#contacto" },
+      { label: "Términos de Servicio", href: "/" },
+      { label: "Política de Privacidad", href: "/" },
+      { label: "Política de Cookies", href: "/" },
+    ],
+  },
+] as const
 
+export function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -78,15 +79,18 @@ export function Footer() {
           </div>
 
           {/* Footer sections */}
-          {footerSections.map((section) => (
+          {FOOTER_SECTIONS.map((section) => (
             <div key={section.title}>
               <h3 className="font-semibold mb-4">{section.title}</h3>
               <ul className="space-y-3">
                 {section.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                      {link}
-                    </a>
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -101,24 +105,44 @@ export function Footer() {
               © 2024 Biovity. Todos los derechos reservados.
             </div>
 
-            {/* Social links */}
+            {/* Social links - placeholder until social URLs are configured */}
             <div className="flex items-center space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Facebook"
+              >
                 <HugeiconsIcon icon={Facebook01Icon} className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
                 aria-label="X (formerly Twitter)"
               >
                 <HugeiconsIcon icon={TwitterIcon} className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              </Link>
+              <Link
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="LinkedIn"
+              >
                 <HugeiconsIcon icon={Linkedin02Icon} className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              </Link>
+              <Link
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Instagram"
+              >
                 <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

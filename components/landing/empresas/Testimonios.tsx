@@ -2,7 +2,7 @@
 
 import { QuoteDownIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion } from "motion/react"
+import * as m from "motion/react-m"
 
 // TODO: Reemplazar con testimonios reales de clientes
 const testimonios = [
@@ -36,14 +36,14 @@ export function Testimonios() {
   return (
     <section className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="text-center mb-16"
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -51,8 +51,8 @@ export function Testimonios() {
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight font-serif text-balance"
           >
             Lo que dicen nuestros clientes
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -60,10 +60,10 @@ export function Testimonios() {
             className="text-xl text-gray-500 max-w-3xl mx-auto text-pretty"
           >
             Empresas que ya confían en Biovity para encontrar talento científico.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
@@ -72,7 +72,7 @@ export function Testimonios() {
         >
           {testimonios.map((testimonio, index) => {
             return (
-              <motion.div
+              <m.div
                 key={testimonio.author}
                 initial={{ opacity: 0, y: 40, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -80,7 +80,10 @@ export function Testimonios() {
                 transition={{ delay: index * 0.03, duration: 0.2, ease: "easeOut" }}
                 className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 relative"
               >
-                <HugeiconsIcon icon={QuoteDownIcon} className="absolute top-6 right-6 w-10 h-10 text-blue-100" />
+                <HugeiconsIcon
+                  icon={QuoteDownIcon}
+                  className="absolute top-6 right-6 w-10 h-10 text-blue-100"
+                />
                 <p className="text-gray-600 leading-relaxed relative z-10 mb-6">
                   &ldquo;{testimonio.quote}&rdquo;
                 </p>
@@ -96,10 +99,10 @@ export function Testimonios() {
                     {testimonio.author.charAt(0)}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             )
           })}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

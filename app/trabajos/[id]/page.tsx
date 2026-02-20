@@ -1,6 +1,19 @@
+import {
+  AirplaneLanding01Icon,
+  Briefcase01Icon,
+  Cash02Icon,
+  Clock01Icon,
+  GraduationScrollIcon,
+  HeartAddIcon,
+  LaptopIcon,
+  Location05Icon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import Link from "next/link"
+import { notFound } from "next/navigation"
+import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,19 +24,6 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import {
-  Location05Icon,
-  Cash02Icon,
-  Clock01Icon,
-  Briefcase01Icon,
-  HeartAddIcon,
-  AirplaneLanding01Icon,
-  GraduationScrollIcon,
-  LaptopIcon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
 import type { TipoBeneficio } from "@/lib/types/trabajos"
 import {
@@ -132,9 +132,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Empresa</p>
-                <p className="text-lg font-semibold text-foreground">
-                  {trabajo.empresa}
-                </p>
+                <p className="text-lg font-semibold text-foreground">{trabajo.empresa}</p>
               </div>
             </div>
 
@@ -190,8 +188,8 @@ export default async function TrabajoDetailPage({ params }: Props) {
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Requisitos</h2>
                 <ul className="list-disc list-inside space-y-2 text-gray-700">
-                  {trabajo.requisitos.map((req, index) => (
-                    <li key={index}>{req}</li>
+                  {trabajo.requisitos.map((req) => (
+                    <li key={req}>{req}</li>
                   ))}
                 </ul>
               </section>
@@ -200,8 +198,8 @@ export default async function TrabajoDetailPage({ params }: Props) {
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Responsabilidades</h2>
                 <ul className="list-disc list-inside space-y-2 text-gray-700">
-                  {trabajo.responsabilidades.map((resp, index) => (
-                    <li key={index}>{resp}</li>
+                  {trabajo.responsabilidades.map((resp) => (
+                    <li key={resp}>{resp}</li>
                   ))}
                 </ul>
               </section>
@@ -211,12 +209,12 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <section>
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Beneficios</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {trabajo.beneficios.map((beneficio, index) => {
+                    {trabajo.beneficios.map((beneficio) => {
                       const IconComponent = getBeneficioIcon(beneficio.tipo)
                       if (!IconComponent) return null
                       return (
                         <div
-                          key={index}
+                          key={`${beneficio.tipo}-${beneficio.label}`}
                           className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                         >
                           <HugeiconsIcon icon={IconComponent} className="h-5 w-5 text-primary" />

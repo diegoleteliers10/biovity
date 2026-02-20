@@ -1,22 +1,23 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Edit01Icon,
-  FloppyDiskIcon,
-  Cancel01Icon,
-  UserIcon,
-  Mail01Icon,
-  SmartPhone01Icon,
-  Location01Icon,
   Briefcase01Icon,
   Calendar01Icon,
   Camera01Icon,
+  Cancel01Icon,
+  Edit01Icon,
+  FloppyDiskIcon,
+  Location01Icon,
+  Mail01Icon,
+  SmartPhone01Icon,
+  UserIcon,
 } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useCallback, useEffect, useState } from "react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
 
@@ -74,9 +75,12 @@ const EmployeeProfile = () => {
     }))
   }, [session])
 
-  useEffect(() => {
-    setFormData(profileData)
-  }, [profileData])
+  const handleEditToggle = useCallback(() => {
+    if (!isEditing) {
+      setFormData(profileData)
+    }
+    setIsEditing((prev) => !prev)
+  }, [isEditing, profileData])
 
   const handleInputChange = useCallback(
     (field: keyof ProfileData, value: string | readonly string[]) => {
@@ -138,7 +142,7 @@ const EmployeeProfile = () => {
         </div>
         <Button
           variant={isEditing ? "outline" : "default"}
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={handleEditToggle}
           className="gap-2"
         >
           <HugeiconsIcon icon={isEditing ? Cancel01Icon : Edit01Icon} size={16} />
@@ -153,10 +157,13 @@ const EmployeeProfile = () => {
             <div className="relative inline-block">
               <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 {profileData.avatar ? (
-                  <img
+                  <Image
                     src={profileData.avatar}
                     alt="Avatar"
+                    width={96}
+                    height={96}
                     className="w-24 h-24 rounded-full object-cover"
+                    unoptimized
                   />
                 ) : (
                   <HugeiconsIcon icon={UserIcon} size={32} className="text-primary" />
@@ -206,7 +213,9 @@ const EmployeeProfile = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Nombre completo</label>
+                  <label htmlFor="profile-name" className="text-sm font-medium text-foreground">
+                    Nombre completo
+                  </label>
                   {isEditing ? (
                     <div className="relative">
                       <HugeiconsIcon
@@ -215,6 +224,7 @@ const EmployeeProfile = () => {
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                       />
                       <Input
+                        id="profile-name"
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
                         className={`pl-10 ${errors.name ? "border-destructive" : ""}`}
@@ -228,7 +238,9 @@ const EmployeeProfile = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Email</label>
+                  <label htmlFor="profile-email" className="text-sm font-medium text-foreground">
+                    Email
+                  </label>
                   {isEditing ? (
                     <div className="relative">
                       <HugeiconsIcon
@@ -237,6 +249,7 @@ const EmployeeProfile = () => {
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                       />
                       <Input
+                        id="profile-email"
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
@@ -251,7 +264,9 @@ const EmployeeProfile = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Teléfono</label>
+                  <label htmlFor="profile-phone" className="text-sm font-medium text-foreground">
+                    Teléfono
+                  </label>
                   {isEditing ? (
                     <div className="relative">
                       <HugeiconsIcon
@@ -260,6 +275,7 @@ const EmployeeProfile = () => {
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                       />
                       <Input
+                        id="profile-phone"
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
                         className="pl-10"
@@ -272,7 +288,9 @@ const EmployeeProfile = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Ubicación</label>
+                  <label htmlFor="profile-location" className="text-sm font-medium text-foreground">
+                    Ubicación
+                  </label>
                   {isEditing ? (
                     <div className="relative">
                       <HugeiconsIcon
@@ -281,6 +299,7 @@ const EmployeeProfile = () => {
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                       />
                       <Input
+                        id="profile-location"
                         value={formData.location}
                         onChange={(e) => handleInputChange("location", e.target.value)}
                         className="pl-10"
@@ -305,7 +324,9 @@ const EmployeeProfile = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Profesión</label>
+                <label htmlFor="profile-profession" className="text-sm font-medium text-foreground">
+                  Profesión
+                </label>
                 {isEditing ? (
                   <div className="relative">
                     <HugeiconsIcon
@@ -314,6 +335,7 @@ const EmployeeProfile = () => {
                       className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
+                      id="profile-profession"
                       value={formData.profession}
                       onChange={(e) => handleInputChange("profession", e.target.value)}
                       className={`pl-10 ${errors.profession ? "border-destructive" : ""}`}
@@ -329,9 +351,12 @@ const EmployeeProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Biografía</label>
+                <label htmlFor="profile-bio" className="text-sm font-medium text-foreground">
+                  Biografía
+                </label>
                 {isEditing ? (
                   <textarea
+                    id="profile-bio"
                     value={formData.bio}
                     onChange={(e) => handleInputChange("bio", e.target.value)}
                     className="w-full min-h-[100px] px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring resize-none"
@@ -343,9 +368,12 @@ const EmployeeProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Años de experiencia</label>
+                <label htmlFor="profile-experience" className="text-sm font-medium text-foreground">
+                  Años de experiencia
+                </label>
                 {isEditing ? (
                   <Input
+                    id="profile-experience"
                     value={formData.experience}
                     onChange={(e) => handleInputChange("experience", e.target.value)}
                     placeholder="Ej: 5 años"
@@ -356,18 +384,21 @@ const EmployeeProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Habilidades</label>
+                <label htmlFor="profile-skills" className="text-sm font-medium text-foreground">
+                  Habilidades
+                </label>
                 {isEditing ? (
                   <Input
+                    id="profile-skills"
                     value={formData.skills.join(", ")}
                     onChange={(e) => handleInputChange("skills", e.target.value.split(", "))}
                     placeholder="Habilidad 1, Habilidad 2, Habilidad 3"
                   />
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {profileData.skills.map((skill, index) => (
+                    {profileData.skills.map((skill) => (
                       <span
-                        key={index}
+                        key={skill}
                         className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-mono"
                       >
                         {skill}

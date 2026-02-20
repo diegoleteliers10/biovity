@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { BlogGrid } from "@/components/blog/BlogGrid"
 import { BlogHeader } from "@/components/blog/BlogHeader"
-import { getAllPosts } from "@/lib/posts"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
+import { getAllPosts } from "@/lib/posts"
 
 export const metadata: Metadata = {
   title: "Blog",

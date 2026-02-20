@@ -46,3 +46,8 @@ next-env.d.ts
 
 # docs
 /docs/
+
+# claude & cursor & agents settings
+.claude/
+.cursor/
+.agents/

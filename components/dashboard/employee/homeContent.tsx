@@ -1,16 +1,16 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import { useCallback, useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
+import type { Notification } from "@/lib/types/dashboard"
 import { HomeHeader } from "./home/homeHeader"
+import { JobAlertsCard } from "./home/jobAlertsCard"
 import { MetricCard } from "./home/metricCard"
-import { RecommendedJobCard } from "./home/recommendedJobCard"
 import { RecentApplicationsCard } from "./home/recentApplicationsCard"
 import { RecentMessagesCard } from "./home/recentMessagesCard"
-import { JobAlertsCard } from "./home/jobAlertsCard"
-import type { Notification } from "@/lib/types/dashboard"
+import { RecommendedJobCard } from "./home/recommendedJobCard"
 
 export const HomeContent = () => {
   const router = useRouter()
@@ -44,7 +44,7 @@ export const HomeContent = () => {
     },
   ])
 
-  const unreadCount = useMemo(() => notifications.filter((n) => !n.isRead).length, [notifications])
+  const unreadCount = notifications.filter((n) => !n.isRead).length
 
   const toSlug = useCallback((value: string): string => {
     return value

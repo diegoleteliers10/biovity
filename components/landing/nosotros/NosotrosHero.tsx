@@ -1,7 +1,8 @@
 "use client"
 
-import { motion, useReducedMotion } from "motion/react"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
 export function NosotrosHero() {
   const reducedMotion = useReducedMotion()
@@ -26,7 +27,7 @@ export function NosotrosHero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(0)}
@@ -37,9 +38,9 @@ export function NosotrosHero() {
               Talento Científico
             </span>{" "}
             de Chile
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay)}
@@ -47,15 +48,15 @@ export function NosotrosHero() {
           >
             Creamos una comunidad que conecta profesionales y estudiantes en biociencias con
             oportunidades significativas en Chile.
-          </motion.p>
+          </m.p>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
             className="flex flex-wrap justify-center gap-8 md:gap-12 max-w-4xl mx-auto"
           >
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
@@ -63,8 +64,8 @@ export function NosotrosHero() {
             >
               <p className="text-3xl font-bold text-gray-900 mb-1">+500</p>
               <p className="text-sm text-gray-500">profesionales activos</p>
-            </motion.div>
-            <motion.div
+            </m.div>
+            <m.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={ts(LANDING_ANIMATION.sequenceDelay * 3 + LANDING_ANIMATION.stagger)}
@@ -72,8 +73,8 @@ export function NosotrosHero() {
             >
               <p className="text-3xl font-bold text-gray-900 mb-1">2026</p>
               <p className="text-sm text-gray-500">fundada</p>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </div>
       </div>
     </section>

@@ -4,6 +4,8 @@ import {
   AiPhone01Icon,
   Attachment01Icon,
   Briefcase01Icon,
+  BubbleChatIcon,
+  Calendar04Icon,
   CheckmarkCircle02Icon,
   Clock01Icon,
   Image01Icon,
@@ -11,8 +13,6 @@ import {
   Search01Icon,
   Sent02Icon,
   Video01Icon,
-  Calendar04Icon,
-  BubbleChatIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type * as React from "react"
@@ -110,6 +110,8 @@ export const MessagesContent = () => {
           {MESSAGES_DATA.conversations.map((conversation) => (
             <div
               key={conversation.id}
+              role="button"
+              tabIndex={0}
               className={`p-4 border-b border-border cursor-pointer hover:bg-muted/50 transition-colors ${
                 selectedConversation?.id === conversation.id ? "bg-muted" : ""
               }`}
@@ -122,6 +124,20 @@ export const MessagesContent = () => {
                     ...fullConversation,
                     messages: MESSAGES_DATA.activeConversation.messages,
                   })
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  const fullConversation = MESSAGES_DATA.conversations.find(
+                    (c) => c.id === conversation.id
+                  )
+                  if (fullConversation) {
+                    setSelectedConversation({
+                      ...fullConversation,
+                      messages: MESSAGES_DATA.activeConversation.messages,
+                    })
+                  }
                 }
               }}
             >

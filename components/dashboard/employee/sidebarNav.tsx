@@ -1,21 +1,8 @@
 "use client"
 
+import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { usePathname, useRouter } from "next/navigation"
-import { authClient } from "@/lib/auth-client"
-import {
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/animate-ui/components/radix/sidebar"
 import {
   Tooltip,
   TooltipContent,
@@ -28,10 +15,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/animate-ui/components/radix/dropdown-menu"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/animate-ui/components/radix/sidebar"
 import { Avatar } from "@/components/ui/avatar"
 import { Logo } from "@/components/ui/logo"
+import { authClient } from "@/lib/auth-client"
 import { NAV_DATA } from "@/lib/data/nav-data"
-import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-free-icons"
 
 // pega aquí el contenido de tu SidebarComponent original, sin modificar lógica
 export const SidebarComponent = () => {

@@ -1,26 +1,24 @@
 "use client"
 
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Location05Icon,
+  AirplaneLanding01Icon,
+  Bookmark02Icon,
+  Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
-  Briefcase01Icon,
-  Bookmark02Icon,
-  Share05Icon,
-  Link04Icon,
-  Linkedin02Icon,
-  Mail01Icon,
-  WhatsappIcon,
+  GraduationScrollIcon,
   HeartAddIcon,
   LaptopIcon,
-  AirplaneLanding01Icon,
-  GraduationScrollIcon,
+  Link04Icon,
+  Linkedin02Icon,
+  Location05Icon,
+  Mail01Icon,
+  Share05Icon,
+  WhatsappIcon,
 } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +27,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/animate-ui/components/radix/dropdown-menu"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 const toTitle = (slug: string | undefined) => {
   if (!slug) return "Vacante"
@@ -282,7 +281,11 @@ export default function JobDetailPage() {
                       key={b.id}
                       className="flex items-center gap-2 text-sm text-muted-foreground"
                     >
-                      <HugeiconsIcon icon={Icon} className="h-4 w-4 text-foreground/80" aria-hidden />
+                      <HugeiconsIcon
+                        icon={Icon}
+                        className="h-4 w-4 text-foreground/80"
+                        aria-hidden
+                      />
                       <span>{b.label}</span>
                     </div>
                   )

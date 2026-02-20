@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { insertWaitlistEntry } from "@/lib/db/waitlist"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { waitlistSchema } from "@/lib/validations"

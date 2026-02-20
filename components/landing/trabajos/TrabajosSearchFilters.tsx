@@ -1,11 +1,11 @@
 "use client"
 
-import { useCallback, useState } from "react"
-import { Search01Icon, Location05Icon } from "@hugeicons/core-free-icons"
+import { Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,

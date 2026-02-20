@@ -1,10 +1,10 @@
 "use client"
 
-import { AnimatePresence, motion, type Transition } from "motion/react"
+import { AnimatePresence, type Transition } from "motion/react"
+import * as m from "motion/react-m"
 import * as React from "react"
-
-import { cn } from "@/lib/utils"
 import { createHighlightError } from "@/lib/errors"
+import { cn } from "@/lib/utils"
 
 type HighlightMode = "children" | "parent"
 
@@ -216,7 +216,7 @@ function Highlight<T extends React.ElementType = "div">({ ref, ...props }: Highl
           >
             <AnimatePresence initial={false} mode="wait">
               {boundsState && (
-                <motion.div
+                <m.div
                   data-slot="motion-highlight"
                   animate={{
                     top: boundsState.top,
@@ -481,7 +481,7 @@ function HighlightItem<T extends React.ElementType>({
         <>
           <AnimatePresence initial={false} mode="wait">
             {isActive && !isDisabled && (
-              <motion.div
+              <m.div
                 layoutId={`transition-background-${contextId}`}
                 data-slot="motion-highlight"
                 style={{
@@ -542,7 +542,7 @@ function HighlightItem<T extends React.ElementType>({
       {mode === "children" && (
         <AnimatePresence initial={false} mode="wait">
           {isActive && !isDisabled && (
-            <motion.div
+            <m.div
               layoutId={`transition-background-${contextId}`}
               data-slot="motion-highlight"
               style={{

@@ -1,7 +1,8 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
+import Image from "next/image"
 import { UserIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { type FC, type ReactNode, useState } from "react"
 import { cx } from "@/lib/utils/cx"
 import { AvatarOnlineIndicator, VerifiedTick } from "./base-components"
@@ -52,6 +53,79 @@ export interface AvatarProps {
    * @default false
    */
   focusable?: boolean
+}
+
+type AvatarMainContentProps = {
+  src?: string | null
+  alt?: string
+  initials?: string
+  placeholder?: ReactNode
+  placeholderIcon?: FC<{ className?: string }>
+  size: AvatarSize
+  isFailed: boolean
+  onImageError: () => void
+}
+
+const AvatarMainContent = ({
+  src,
+  alt,
+  initials,
+  placeholder,
+  placeholderIcon: PlaceholderIcon,
+  size,
+  isFailed,
+  onImageError,
+}: AvatarMainContentProps) => {
+  if (src && !isFailed) {
+    return (
+      <Image
+        data-avatar-img
+        src={src}
+        alt={alt ?? ""}
+        width={256}
+        height={256}
+        className="size-full rounded-full object-cover"
+        onError={onImageError}
+        unoptimized
+      />
+    )
+  }
+  if (initials) {
+    return <span className={cx("text-quaternary", styles[size].initials)}>{initials}</span>
+  }
+  if (PlaceholderIcon) {
+    return <PlaceholderIcon className={cx("text-fg-quaternary", styles[size].icon)} />
+  }
+  return (
+    placeholder || (
+      <HugeiconsIcon icon={UserIcon} className={cx("text-fg-quaternary", styles[size].icon)} />
+    )
+  )
+}
+
+type AvatarBadgeContentProps = {
+  status?: "online" | "offline"
+  verified?: boolean
+  badge?: ReactNode
+  size: AvatarSize
+}
+
+const AvatarBadgeContent = ({ status, verified, badge, size }: AvatarBadgeContentProps) => {
+  if (status) {
+    return <AvatarOnlineIndicator status={status} size={size === "xxs" ? "xs" : size} />
+  }
+  if (verified) {
+    return (
+      <VerifiedTick
+        size={size === "xxs" ? "xs" : size}
+        className={cx(
+          "absolute right-0 bottom-0",
+          (size === "xxs" || size === "xs") && "-right-px -bottom-px"
+        )}
+      />
+    )
+  }
+  return badge
 }
 
 const styles = {
@@ -108,50 +182,6 @@ export const Avatar = ({
 }: AvatarProps) => {
   const [isFailed, setIsFailed] = useState(false)
 
-  const renderMainContent = () => {
-    if (src && !isFailed) {
-      return (
-        <img
-          data-avatar-img
-          className="size-full rounded-full object-cover"
-          src={src}
-          alt={alt}
-          onError={() => setIsFailed(true)}
-        />
-      )
-    }
-
-    if (initials) {
-      return <span className={cx("text-quaternary", styles[size].initials)}>{initials}</span>
-    }
-
-    if (PlaceholderIcon) {
-      return <PlaceholderIcon className={cx("text-fg-quaternary", styles[size].icon)} />
-    }
-
-    return placeholder || <HugeiconsIcon icon={UserIcon} className={cx("text-fg-quaternary", styles[size].icon)} />
-  }
-
-  const renderBadgeContent = () => {
-    if (status) {
-      return <AvatarOnlineIndicator status={status} size={size === "xxs" ? "xs" : size} />
-    }
-
-    if (verified) {
-      return (
-        <VerifiedTick
-          size={size === "xxs" ? "xs" : size}
-          className={cx(
-            "absolute right-0 bottom-0",
-            (size === "xxs" || size === "xs") && "-right-px -bottom-px"
-          )}
-        />
-      )
-    }
-
-    return badge
-  }
-
   return (
     <div
       data-avatar
@@ -165,8 +195,17 @@ export const Avatar = ({
         className
       )}
     >
-      {renderMainContent()}
-      {renderBadgeContent()}
+      <AvatarMainContent
+        src={src}
+        alt={alt}
+        initials={initials}
+        placeholder={placeholder}
+        placeholderIcon={PlaceholderIcon}
+        size={size}
+        isFailed={isFailed}
+        onImageError={() => setIsFailed(true)}
+      />
+      <AvatarBadgeContent status={status} verified={verified} badge={badge} size={size} />
     </div>
   )
 }

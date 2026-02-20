@@ -1,17 +1,17 @@
 "use client"
 
 import {
+  Bookmark02Icon,
   Cash02Icon,
   Clock01Icon,
   Location05Icon,
   StarIcon,
-  Bookmark02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { DATA } from "@/lib/data/data-test"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DATA } from "@/lib/data/data-test"
 
 type JobItem = {
   id: number

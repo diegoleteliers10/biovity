@@ -1,11 +1,11 @@
 "use client"
 
-import { BarChart, Bar, XAxis, YAxis, Cell } from "recharts"
+import { Award01Icon, GraduationScrollIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { GraduationScrollIcon, Award01Icon } from "@hugeicons/core-free-icons"
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -148,9 +148,9 @@ export function SalariosPorEducacion() {
                     shape={<CustomDuotoneBar />}
                     radius={8}
                   >
-                    {EDUCACION_CHART_DATA.map((_entry, index) => (
+                    {EDUCACION_CHART_DATA.map((entry, index) => (
                       <Cell
-                        key={`cell-${index}`}
+                        key={`cell-${entry.nivel}`}
                         fill={EDUCACION_CHART_COLORS[index % EDUCACION_CHART_COLORS.length]}
                       />
                     ))}
@@ -170,14 +170,21 @@ export function SalariosPorEducacion() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-[auto_1fr] gap-3">
-                  <HugeiconsIcon icon={Award01Icon} size={20} className="text-blue-600 mt-0.5 shrink-0" />
+                  <HugeiconsIcon
+                    icon={Award01Icon}
+                    size={20}
+                    className="text-blue-600 mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="font-semibold text-sm">Magíster lidera</p>
                     <p className="text-xs text-gray-600">$2.55M promedio, orientado a industria</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-3">
-                  <HugeiconsIcon icon={GraduationScrollIcon} className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
+                  <HugeiconsIcon
+                    icon={GraduationScrollIcon}
+                    className="w-5 h-5 text-green-600 mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="font-semibold text-sm">Postgrado marca diferencia</p>
                     <p className="text-xs text-gray-600">+$1M sobre sin postgrado</p>

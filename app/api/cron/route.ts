@@ -9,16 +9,16 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       message: "Database ping successful",
-    });
+    })
   } catch (error) {
-    console.error("Database ping failed:", error);
+    console.error("Database ping failed:", error)
     return NextResponse.json(
       {
         success: false,
         message: "Database ping failed",
         error: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
-    );
+      { status: 500 }
+    )
   }
 }

@@ -1,9 +1,9 @@
 "use client"
 
-import { Bar, BarChart, XAxis, YAxis, Cell } from "recharts"
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -91,9 +91,9 @@ export function SalariosPorRegion() {
                     }}
                   />
                   <Bar dataKey="promedio" fill="var(--color-promedio)" radius={[12, 12, 0, 0]}>
-                    {REGION_CHART_DATA.map((_entry, index) => (
+                    {REGION_CHART_DATA.map((entry, index) => (
                       <Cell
-                        key={`cell-${index}`}
+                        key={`cell-${entry.region.replace(/\s/g, "-")}`}
                         fill={REGION_CHART_COLORS[index % REGION_CHART_COLORS.length]}
                       />
                     ))}

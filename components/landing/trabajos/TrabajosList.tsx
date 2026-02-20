@@ -11,9 +11,9 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { Trabajo, TipoBeneficio } from "@/lib/types/trabajos"
+import { Card, CardContent } from "@/components/ui/card"
+import type { TipoBeneficio, Trabajo } from "@/lib/types/trabajos"
 import {
   formatFechaRelativa,
   formatSalarioRango,
@@ -105,12 +105,20 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                       {/* Beneficios */}
                       {trabajo.beneficios && trabajo.beneficios.length > 0 && (
                         <div className="flex items-center gap-2 sm:mr-20">
-                          {trabajo.beneficios.map((beneficio, index) => {
+                          {trabajo.beneficios.map((beneficio) => {
                             const icon = getBeneficioIcon(beneficio.tipo)
                             if (!icon) return null
                             return (
-                              <div key={index} className="text-gray-600" title={beneficio.label}>
-                                <HugeiconsIcon icon={icon} size={16} className="text-muted-foreground" />
+                              <div
+                                key={`${beneficio.tipo}-${beneficio.label}`}
+                                className="text-gray-600"
+                                title={beneficio.label}
+                              >
+                                <HugeiconsIcon
+                                  icon={icon}
+                                  size={16}
+                                  className="text-muted-foreground"
+                                />
                               </div>
                             )
                           })}

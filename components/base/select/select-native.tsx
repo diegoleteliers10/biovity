@@ -1,7 +1,7 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { type SelectHTMLAttributes, useId } from "react"
 import { HintText } from "@/components/base/input/hint-text"
 import { Label } from "@/components/base/input/label"

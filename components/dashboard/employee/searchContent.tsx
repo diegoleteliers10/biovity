@@ -1,24 +1,25 @@
 "use client"
 
 import {
+  Bookmark02Icon,
   Cash02Icon,
   Clock01Icon,
   FilterHorizontalIcon,
   Location05Icon,
   Search01Icon,
   StarIcon,
-  Bookmark02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useMemo, useState, useCallback } from "react"
+import { AnimatePresence } from "motion/react"
+import * as m from "motion/react-m"
+import { useCallback, useMemo, useState } from "react"
+import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Select } from "@/components/base/select/select"
+import { Input } from "@/components/ui/input"
 import { DATA } from "@/lib/data/data-test"
 import { validateJobSearch } from "@/lib/validations"
-import { AnimatePresence, motion } from "motion/react"
 
 type JobItem = {
   id: number
@@ -214,7 +215,7 @@ export const SearchContent = () => {
 
           <AnimatePresence initial={false}>
             {showAdvanced && (
-              <motion.div
+              <m.div
                 key="advanced-filters"
                 initial={{
                   opacity: 0,
@@ -310,7 +311,7 @@ export const SearchContent = () => {
                     />
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 

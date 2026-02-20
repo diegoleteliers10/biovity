@@ -1,7 +1,7 @@
 "use client"
 
-import { type ReactNode } from "react"
-import { SidebarProvider, SidebarInset } from "@/components/animate-ui/components/radix/sidebar"
+import type { ReactNode } from "react"
+import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
 import { SidebarComponent } from "./sidebarNav" // ver paso 3
 
 type DashboardShellProps = {

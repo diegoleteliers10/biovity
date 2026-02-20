@@ -1,8 +1,9 @@
 "use client"
 
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
 import { useRef } from "react"
-import { motion, useReducedMotion } from "motion/react"
-import { LANDING_ANIMATION, getTransition } from "@/lib/animations"
+import { getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
 type UseScrollAnimationOptions = {
   readonly trigger?: string | React.RefObject<HTMLElement>
@@ -22,7 +23,7 @@ export const useScrollAnimation = ({
   return {
     containerRef,
     AnimationWrapper: ({ children }: { children: React.ReactNode }) => (
-      <motion.div
+      <m.div
         ref={containerRef}
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -30,7 +31,7 @@ export const useScrollAnimation = ({
         transition={t(delay)}
       >
         {children}
-      </motion.div>
+      </m.div>
     ),
   }
 }
@@ -42,7 +43,7 @@ export const useFadeInUp = (delay = 0) => {
 
   return {
     ref,
-    MotionElement: motion.div,
+    MotionElement: m.div,
     motionProps: {
       initial: { opacity: 0, y: 60 },
       whileInView: { opacity: 1, y: 0 },
@@ -60,14 +61,14 @@ export const useStaggerCards = (delay = 0) => {
   return {
     containerRef,
     CardMotionWrapper: ({ children, index }: { children: React.ReactNode; index: number }) => (
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
         transition={t(delay + index * LANDING_ANIMATION.stagger)}
       >
         {children}
-      </motion.div>
+      </m.div>
     ),
   }
 }

@@ -1,13 +1,13 @@
 "use client"
 
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { TradeDownIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useMotionValueEvent, useSpring } from "motion/react"
 import { useRef, useState } from "react"
-import { useSpring, useMotionValueEvent } from "motion/react"
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { type ChartConfig, ChartContainer } from "@/components/ui/chart"
 
 const chartData = [
   { month: "January", mobile: 245 },

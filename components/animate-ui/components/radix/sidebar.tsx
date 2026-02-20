@@ -1,8 +1,8 @@
 "use client"
 
-import { cva, type VariantProps } from "class-variance-authority"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { SidebarLeft01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { cva, type VariantProps } from "class-variance-authority"
 import type { Transition } from "motion/react"
 import { Slot } from "radix-ui"
 import * as React from "react"

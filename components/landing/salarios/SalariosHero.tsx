@@ -2,7 +2,7 @@
 
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion } from "motion/react"
+import * as m from "motion/react-m"
 import { SALARIOS_HERO_STATS } from "@/lib/data/salarios-data"
 
 export function SalariosHero() {
@@ -10,7 +10,7 @@ export function SalariosHero() {
     <section className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
@@ -20,9 +20,9 @@ export function SalariosHero() {
             <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Salarios en Biociencias
             </span>
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
@@ -30,9 +30,9 @@ export function SalariosHero() {
           >
             Análisis completo de remuneraciones en el sector de biociencias en Chile. Datos
             segmentados por carrera, industria, región y nivel educativo (2024-2025).
-          </motion.p>
+          </m.p>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
@@ -40,16 +40,16 @@ export function SalariosHero() {
           >
             <HugeiconsIcon icon={TradeUpIcon} className="w-5 h-5 text-blue-600 inline-block mr-2" />
             <span>Datos actualizados 2024-2025</span>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
             className="grid grid-cols-3 gap-8 md:gap-12 max-w-4xl mx-auto"
           >
             {SALARIOS_HERO_STATS.map((stat, index) => (
-              <motion.div
+              <m.div
                 key={stat.label}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -58,12 +58,12 @@ export function SalariosHero() {
               >
                 <div className="mx-auto mb-3 flex justify-center">
                   <HugeiconsIcon icon={stat.icon} size={40} style={{ color: stat.color }} />
-                  </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
-                </motion.div>
+                </div>
+                <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
+                <p className="text-sm text-gray-500">{stat.label}</p>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

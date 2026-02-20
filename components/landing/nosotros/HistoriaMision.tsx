@@ -1,9 +1,10 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { VALUES_DATA } from "@/lib/data/nosotros-data"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
 
 export function HistoriaMision() {
   const reducedMotion = useReducedMotion()
@@ -13,14 +14,14 @@ export function HistoriaMision() {
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Historia Section */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
           className="mb-16 max-w-4xl mx-auto"
         >
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -31,8 +32,8 @@ export function HistoriaMision() {
             <span className="bg-linear-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
               Historia
             </span>
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -43,11 +44,11 @@ export function HistoriaMision() {
             mercado laboral de ciencias. Vimos que profesionales y estudiantes altamente capacitados
             luchaban por encontrar oportunidades, mientras empresas en biotecnología, química y
             farmacia enfrentaban dificultades para encontrar talento especializado.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         {/* Values Grid */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
@@ -58,7 +59,7 @@ export function HistoriaMision() {
             const iconColors = ["text-blue-600", "text-green-600", "text-purple-600"] as const
             const iconColor = iconColors[index % iconColors.length]
             return (
-              <motion.div
+              <m.div
                 key={item.title}
                 initial={{ opacity: 0, y: 36, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -73,10 +74,10 @@ export function HistoriaMision() {
                 />
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{item.description}</p>
-              </motion.div>
+              </m.div>
             )
           })}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

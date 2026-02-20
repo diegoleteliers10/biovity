@@ -1,8 +1,8 @@
 "use client"
 
-import { Card } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { Calendar01Icon, Clock01Icon, Location05Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Card } from "@/components/ui/card"
 
 type Event = {
   readonly id: string

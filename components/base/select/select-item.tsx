@@ -1,7 +1,7 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { Tick02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { isValidElement, useContext } from "react"
 import type { ListBoxItemProps as AriaListBoxItemProps } from "react-aria-components"
 import { ListBoxItem as AriaListBoxItem, Text as AriaText } from "react-aria-components"

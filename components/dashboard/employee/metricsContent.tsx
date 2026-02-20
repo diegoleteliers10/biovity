@@ -4,38 +4,39 @@ import {
   Analytics01Icon,
   Calendar03Icon,
   CheckmarkCircle02Icon,
+  Clock01Icon,
   DashboardSquare02Icon,
   File02Icon,
   FlashIcon,
   Pulse01Icon,
-  Clock01Icon,
+  TradeDownIcon,
+  TradeUpIcon,
   User02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useMemo, useState, useRef } from "react"
-import { useSpring, useMotionValueEvent } from "motion/react"
+import { useMotionValueEvent, useSpring } from "motion/react"
+import { useMemo, useRef, useState } from "react"
 import {
   Area,
   AreaChart,
-  CartesianGrid,
-  XAxis,
   Bar,
   BarChart,
+  CartesianGrid,
+  LabelList,
   Pie,
   PieChart,
-  LabelList,
+  XAxis,
 } from "recharts"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
-import { TradeUpIcon, TradeDownIcon } from "@hugeicons/core-free-icons"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 type TimeRange = "3m" | "6m" | "12m"

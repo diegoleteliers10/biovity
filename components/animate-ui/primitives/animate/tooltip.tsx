@@ -15,9 +15,9 @@ import {
   AnimatePresence,
   type HTMLMotionProps,
   LayoutGroup,
-  motion,
   type Transition,
 } from "motion/react"
+import * as m from "motion/react-m"
 import * as React from "react"
 import { Slot, type WithAsChild } from "@/components/animate-ui/primitives/animate/slot"
 import { getStrictContext } from "@/lib/get-strict-context"
@@ -139,11 +139,11 @@ function TooltipProvider({
       if (e.key === "Escape") hideImmediate()
     }
     window.addEventListener("keydown", onKeyDown, true)
-    window.addEventListener("scroll", hideImmediate, true)
+    window.addEventListener("scroll", hideImmediate, { passive: true, capture: true })
     window.addEventListener("resize", hideImmediate, true)
     return () => {
       window.removeEventListener("keydown", onKeyDown, true)
-      window.removeEventListener("scroll", hideImmediate, true)
+      window.removeEventListener("scroll", hideImmediate, { capture: true })
       window.removeEventListener("resize", hideImmediate, true)
     }
   }, [hideImmediate])
@@ -184,7 +184,7 @@ type FloatingContextType = {
 const [FloatingProvider, useFloatingContext] =
   getStrictContext<FloatingContextType>("FloatingContext")
 
-const MotionTooltipArrow = motion.create(FloatingArrow)
+const MotionTooltipArrow = m.create(FloatingArrow)
 
 type TooltipArrowProps = Omit<React.ComponentProps<typeof MotionTooltipArrow>, "context"> & {
   withTransition?: boolean
@@ -263,7 +263,7 @@ function TooltipOverlay() {
   }, [referenceElRef, refs, update, rendered.data])
 
   const ready = x != null && y != null
-  const Component = rendered.data?.contentAsChild ? Slot : motion.div
+  const Component = rendered.data?.contentAsChild ? Slot : m.div
   const resolvedSide = getResolvedSide(context.placement)
 
   return (
@@ -300,7 +300,7 @@ function TooltipOverlay() {
                   layoutId={`tooltip-content-${globalId}`}
                   initial={{
                     opacity: 0,
-                    scale: 0,
+                    scale: 0.95,
                     ...initialFromSide(rendered.data.side),
                   }}
                   animate={
@@ -308,13 +308,13 @@ function TooltipOverlay() {
                       ? { opacity: 1, scale: 1, x: 0, y: 0 }
                       : {
                           opacity: 0,
-                          scale: 0,
+                          scale: 0.95,
                           ...initialFromSide(rendered.data.side),
                         }
                   }
                   exit={{
                     opacity: 0,
-                    scale: 0,
+                    scale: 0.95,
                     ...initialFromSide(rendered.data.side),
                   }}
                   onAnimationComplete={() => {
@@ -509,7 +509,7 @@ function TooltipTrigger({
     [hideTooltip, onBlur]
   )
 
-  const Component = asChild ? Slot : motion.div
+  const Component = asChild ? Slot : m.div
 
   return (
     <Component

@@ -1,9 +1,3 @@
-import type {
-  BenefitHomeItem,
-  CategoryHomeItem,
-  StepHomeItem,
-  TransparencyFeatureItem,
-} from "@/lib/types/home"
 import {
   Agreement01Icon,
   Atom01Icon,
@@ -24,6 +18,12 @@ import {
   UserAdd01Icon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
+import type {
+  BenefitHomeItem,
+  CategoryHomeItem,
+  StepHomeItem,
+  TransparencyFeatureItem,
+} from "@/lib/types/home"
 
 export const STEPS_HOME: StepHomeItem[] = [
   {

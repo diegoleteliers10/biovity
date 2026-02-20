@@ -2,10 +2,12 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion, useReducedMotion } from "motion/react"
-import { Button } from "../../ui/button"
+import * as m from "motion/react-m"
+import { useReducedMotion } from "motion/react"
+import Link from "next/link"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { HERO_STATS_EMPRESAS } from "@/lib/data/empresas-data"
-import { LANDING_ANIMATION, getSpringTransition, getTransition } from "@/lib/animations"
+import { Button } from "../../ui/button"
 
 const ICON_COLOR_CLASSES = ["text-violet-500", "text-emerald-500", "text-blue-500"] as const
 
@@ -40,7 +42,7 @@ export function HeroEmpresas() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(0)}
@@ -52,9 +54,9 @@ export function HeroEmpresas() {
               talento científico{" "}
             </span>
             de Chile
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay)}
@@ -62,9 +64,9 @@ export function HeroEmpresas() {
           >
             Simplifica tu proceso de reclutamiento y accede a profesionales cualificados en
             biotecnología, bioquímica, química e ingeniería química.
-          </motion.p>
+          </m.p>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
@@ -75,10 +77,10 @@ export function HeroEmpresas() {
               className="h-14 px-8 bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-lg hover:shadow-xl transition-all text-lg"
               asChild
             >
-              <a href="/register/organization">
+              <Link href="/register/organization">
                 Comienza gratis
                 <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
-              </a>
+              </Link>
             </Button>
             <Button
               size="lg"
@@ -88,9 +90,9 @@ export function HeroEmpresas() {
             >
               Hablar con ventas
             </Button>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
@@ -99,7 +101,7 @@ export function HeroEmpresas() {
             {HERO_STATS_EMPRESAS.map((stat, index) => {
               const iconColor = ICON_COLOR_CLASSES[index % 3]
               return (
-                <motion.div
+                <m.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -115,10 +117,10 @@ export function HeroEmpresas() {
                     <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                     <p className="text-sm text-gray-500">{stat.label}</p>
                   </div>
-                </motion.div>
+                </m.div>
               )
             })}
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

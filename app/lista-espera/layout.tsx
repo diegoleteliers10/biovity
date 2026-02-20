@@ -1,15 +1,11 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Lista de espera | Biovity",
+  title: "Lista de Espera",
   description:
-    "Únete a la lista de espera de Biovity, el portal de empleo para biotecnología, bioquímica y ciencias en Chile.",
-  robots: {
-    index: true,
-    follow: true,
-  },
+    "Únete a la lista de espera de Biovity y sé el primero en conocer las nuevas oportunidades en biotecnología y ciencias en Chile.",
 }
 
 export default function ListaEsperaLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <>{children}</>
+  return children
 }
