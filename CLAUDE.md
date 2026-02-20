@@ -145,6 +145,11 @@ Example: `feat/user-dashboard-metrics`
 - TypeScript interfaces in `lib/types/` matching data structure
 - Utility functions for formatting (currency CLP, dates, badge colors)
 
+### Database (Postgres)
+- Shared connection pool in `lib/db/index.ts` (conn-pooling, conn-limits, conn-idle-timeout)
+- Migrations in `lib/db/migrations/`
+- Best practices: `docs/POSTGRES-BEST-PRACTICES.md`
+
 ### Styling Approach
 - Tailwind-first (no CSS modules or inline styles)
 - Utility classes for all styling

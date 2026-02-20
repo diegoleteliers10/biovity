@@ -1,10 +1,8 @@
 import { betterAuth } from "better-auth"
-import { Pool } from "pg"
+import { pool } from "@/lib/db"
 
 export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
+  database: pool,
   // Rate limiting for security
   rateLimit: {
     enabled: true,
