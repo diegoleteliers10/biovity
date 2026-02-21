@@ -15,15 +15,15 @@ import {
   Target01Icon,
   Tick02Icon,
   UserMultiple02Icon,
-} from "@hugeicons/core-free-icons"
+} from "@hugeicons/core-free-icons";
 import type {
   FAQItem,
   FeatureATSItem,
   HeroStatEmpresaItem,
   PasoEmpresaItem,
   PlanItem,
-} from "@/lib/types/empresas"
-import type { IconTitleDescription } from "@/lib/types/landing"
+} from "@/lib/types/empresas";
+import type { IconTitleDescription } from "@/lib/types/landing";
 
 export const FAQS_EMPRESAS: FAQItem[] = [
   {
@@ -66,7 +66,7 @@ export const FAQS_EMPRESAS: FAQItem[] = [
     answer:
       "Sí, tenemos programas especiales para startups en etapa temprana e instituciones académicas. Contáctanos para más información sobre nuestros descuentos.",
   },
-]
+];
 
 export const PLANES_EMPRESAS: PlanItem[] = [
   {
@@ -143,7 +143,7 @@ export const PLANES_EMPRESAS: PlanItem[] = [
     highlighted: false,
     isEnterprise: true,
   },
-]
+];
 
 export const FEATURES_ATS: FeatureATSItem[] = [
   {
@@ -155,12 +155,14 @@ export const FEATURES_ATS: FeatureATSItem[] = [
   {
     icon: UserMultiple02Icon,
     title: "Base de candidatos",
-    description: "Accede a perfiles verificados de profesionales en biotecnología, química y más.",
+    description:
+      "Accede a perfiles verificados de profesionales en biotecnología, química y más.",
   },
   {
     icon: FilterIcon,
     title: "Filtros avanzados",
-    description: "Encuentra candidatos por especialidad, experiencia, ubicación y disponibilidad.",
+    description:
+      "Encuentra candidatos por especialidad, experiencia, ubicación y disponibilidad.",
   },
   {
     icon: BarChartIcon,
@@ -171,25 +173,29 @@ export const FEATURES_ATS: FeatureATSItem[] = [
   {
     icon: Message01Icon,
     title: "Comunicación integrada",
-    description: "Envía mensajes y programa entrevistas directamente desde la plataforma.",
+    description:
+      "Envía mensajes y programa entrevistas directamente desde la plataforma.",
   },
   {
     icon: Building02Icon,
     title: "Página de empresa",
-    description: "Crea tu perfil de empresa para mostrar tu cultura, beneficios y ofertas activas.",
+    description:
+      "Crea tu perfil de empresa para mostrar tu cultura, beneficios y ofertas activas.",
   },
   {
     icon: SparklesIcon,
     title: "Ofertas destacadas",
-    description: "Aumenta la visibilidad de tus ofertas y aparece primero en las búsquedas.",
+    description:
+      "Aumenta la visibilidad de tus ofertas y aparece primero en las búsquedas.",
   },
   {
     icon: BrainIcon,
     title: "AI Matching",
-    description: "Sugerencias inteligentes de candidatos basadas en los requisitos de tus ofertas.",
+    description:
+      "Sugerencias inteligentes de candidatos basadas en los requisitos de tus ofertas.",
     badge: "Pro",
   },
-]
+];
 
 export const PASOS_EMPRESAS: PasoEmpresaItem[] = [
   {
@@ -220,9 +226,9 @@ export const PASOS_EMPRESAS: PasoEmpresaItem[] = [
       "Conecta con los candidatos ideales, agenda entrevistas y realiza la contratación perfecta.",
     number: "04",
   },
-]
+];
 
-export type BeneficioEmpresaItem = IconTitleDescription
+export type BeneficioEmpresaItem = IconTitleDescription;
 
 export const BENEFICIOS_EMPRESAS: BeneficioEmpresaItem[] = [
   {
@@ -249,10 +255,10 @@ export const BENEFICIOS_EMPRESAS: BeneficioEmpresaItem[] = [
     description:
       "Perfiles verificados y enfocados 100% en el sector científico. Sin ruido, solo talento relevante.",
   },
-]
+];
 
 export const HERO_STATS_EMPRESAS: HeroStatEmpresaItem[] = [
-  { icon: UserMultiple02Icon, value: "+500", label: "profesionales activos" },
   { icon: Chemistry01Icon, value: "+50", label: "especialidades" },
   { icon: Target01Icon, value: "100%", label: "enfocado en ciencias" },
-]
+  { icon: Building03Icon, value: "+120", label: "empresas registradas" },
+];

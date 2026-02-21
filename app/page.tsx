@@ -46,6 +46,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 }
+import { ConexionTalento } from "@/components/landing/home/BeamSection";
 
 export default function Home() {
   return (
@@ -56,6 +57,7 @@ export default function Home() {
       <main className="flex flex-col relative">
         <Hero />
         <TransparencyGuarantee />
+        <ConexionTalento />
         <HowItWorks />
         <ForStudents />
         <Categories />
