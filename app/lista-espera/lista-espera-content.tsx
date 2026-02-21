@@ -7,7 +7,7 @@ import {
   Loading01Icon,
   Mail01Icon,
 } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
 import Image from "next/image"
@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 
 type Role = "professional" | "empresa"
 
-const ROLE_OPTIONS: { value: Role; label: string; icon: any }[] = [
+const ROLE_OPTIONS: { value: Role; label: string; icon: IconSvgElement }[] = [
   { value: "professional", label: "Profesional", icon: Briefcase01Icon },
   { value: "empresa", label: "Empresa", icon: Building06Icon },
 ]

@@ -1,5 +1,7 @@
 "use client"
 
+import { AlertCircleIcon, Target01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
@@ -54,7 +56,7 @@ export function ProblemaSolucion() {
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-lg">😔</span>
+                <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-red-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900">El Problema</h3>
             </div>
@@ -75,7 +77,7 @@ export function ProblemaSolucion() {
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-                <span className="text-lg">🎯</span>
+                <HugeiconsIcon icon={Target01Icon} size={20} className="text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900">Nuestra Solución</h3>
             </div>
