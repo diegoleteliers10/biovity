@@ -31,7 +31,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   fromRef,
   toRef,
   curvature = 0,
-  reverse = false, // Include the reverse prop
+  reverse = false,
   duration = Math.random() * 3 + 4,
   delay = 0,
   pathColor = "gray",
@@ -48,7 +48,6 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   const [pathD, setPathD] = useState("")
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 })
 
-  // Calculate the gradient coordinates based on the reverse prop
   const gradientCoordinates = reverse
     ? {
         x1: ["90%", "-10%"],
@@ -86,15 +85,12 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         const midX = (startX + endX) / 2
         const midY = (startY + endY) / 2
 
-        // Cubic Bezier: S-curve with control points on OPPOSITE sides of the line
-        // so the curve crosses the center (DNA double helix effect)
         const dx = endX - startX
         const dy = endY - startY
         const len = Math.sqrt(dx * dx + dy * dy) || 1
         const perpX = (-dy / len) * Math.abs(curvature)
         const perpY = (dx / len) * Math.abs(curvature)
 
-        // c1 and c2 on opposite sides: creates S-curve that crosses at center
         const sign = curvature >= 0 ? 1 : -1
         const c1x = midX - dx * 0.25 + perpX * sign
         const c1y = midY - dy * 0.25 + perpY * sign
@@ -106,20 +102,11 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       }
     }
 
-    // Initialize ResizeObserver
-    const resizeObserver = new ResizeObserver(() => {
-      updatePath()
-    })
-
-    // Observe the container element
+    const resizeObserver = new ResizeObserver(() => updatePath())
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current)
     }
-
-    // Call the updatePath initially to set the initial path
     updatePath()
-
-    // Clean up the observer on component unmount
     return () => {
       resizeObserver.disconnect()
     }
