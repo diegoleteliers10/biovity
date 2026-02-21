@@ -1,21 +1,21 @@
-import type { Metadata } from "next"
-import { ComoFuncionaEmpresas } from "@/components/landing/empresas/ComoFuncionaEmpresas"
-import { CTAContacto } from "@/components/landing/empresas/CTAContacto"
-import { FAQ } from "@/components/landing/empresas/FAQ"
-import { FeaturesATS } from "@/components/landing/empresas/FeaturesATS"
-import { HeroEmpresas } from "@/components/landing/empresas/HeroEmpresas"
+import type { Metadata } from "next";
+import { ComoFuncionaEmpresas } from "@/components/landing/empresas/ComoFuncionaEmpresas";
+import { CTAContacto } from "@/components/landing/empresas/CTAContacto";
+import { FAQ } from "@/components/landing/empresas/FAQ";
+import { FeaturesATS } from "@/components/landing/empresas/FeaturesATS";
+import { HeroEmpresas } from "@/components/landing/empresas/HeroEmpresas";
 // import { LogosEmpresas } from "@/components/landing/empresas/LogosEmpresas"
-import { Pricing } from "@/components/landing/empresas/Pricing"
-import { PropuestaValor } from "@/components/landing/empresas/PropuestaValor"
+import { Pricing } from "@/components/landing/empresas/Pricing";
+import { PropuestaValor } from "@/components/landing/empresas/PropuestaValor";
 // import { Testimonios } from "@/components/landing/empresas/Testimonios"
-import { LandingLayout } from "@/components/layouts/LandingLayout"
+import { LandingLayout } from "@/components/layouts/LandingLayout";
 import {
   BreadcrumbJsonLd,
   FAQJsonLd,
   OrganizationJsonLd,
   SoftwareApplicationJsonLd,
-} from "../../components/seo/JsonLd"
-import { FAQS_EMPRESAS } from "../../lib/data/empresas-data"
+} from "../../components/seo/JsonLd";
+import { FAQS_EMPRESAS } from "../../lib/data/empresas-data";
 
 export const metadata: Metadata = {
   title: "Para Empresas | Recluta Talento Científico con Biovity",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/empresas",
   },
-}
+};
 
 export default function EmpresasPage() {
   return (
@@ -82,5 +82,5 @@ export default function EmpresasPage() {
         <CTAContacto />
       </main>
     </LandingLayout>
-  )
+  );
 }
