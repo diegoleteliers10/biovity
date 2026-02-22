@@ -84,7 +84,7 @@ export default function OrganizationRegisterPage() {
       email: formData.contactEmail,
       password: formData.contactPassword,
       name: formData.contactName,
-      type: "organización",
+      type: "organization",
       profession: formData.contactPosition || "Representante",
       avatar: "",
     })
@@ -94,7 +94,7 @@ export default function OrganizationRegisterPage() {
         general: "Error al crear la cuenta organizacional. Inténtalo de nuevo.",
       })
     } else {
-      router.push("/dashboard/organization")
+      router.push("/dashboard")
     }
 
     setIsLoading(false)
@@ -409,7 +409,7 @@ export default function OrganizationRegisterPage() {
               <p className="text-sm text-gray-600">
                 ¿Eres usuario individual?{" "}
                 <Link
-                  href="/register/user"
+                  href="/register/professional"
                   className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 >
                   Crear cuenta de usuario

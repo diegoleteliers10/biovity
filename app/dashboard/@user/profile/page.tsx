@@ -1,8 +1,8 @@
 "use client"
 
 import {
+  BirthdayCakeIcon,
   Briefcase01Icon,
-  Calendar01Icon,
   Camera01Icon,
   Cancel01Icon,
   Edit01Icon,
@@ -14,10 +14,13 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useState } from "react"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { DatePicker } from "@/components/common/DatePicker"
 import { authClient } from "@/lib/auth-client"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
 
@@ -31,6 +34,7 @@ type ProfileData = {
   readonly experience: string
   readonly skills: readonly string[]
   readonly avatar: string
+  readonly dateOfBirth: string
 }
 
 type SessionUser = {
@@ -38,24 +42,29 @@ type SessionUser = {
   readonly email?: string
   readonly image?: string
   readonly location?: string
-  readonly title?: string
+  readonly profession?: string
 }
+
+const EMPTY_PLACEHOLDER = "No especificado"
+
+const createEmptyProfile = (): ProfileData => ({
+  name: "",
+  email: "",
+  phone: "",
+  location: "",
+  profession: "",
+  bio: "",
+  experience: "",
+  skills: [],
+  avatar: "",
+  dateOfBirth: "",
+})
 
 const EmployeeProfile = () => {
   const [isEditing, setIsEditing] = useState(false)
-  const [profileData, setProfileData] = useState<ProfileData>({
-    name: "Aline Larroucau",
-    email: "aline.larroucau@email.com",
-    phone: "+1 (555) 123-4567",
-    location: "Madrid, España",
-    profession: "Biotecnóloga",
-    bio: "Especialista en biotecnología con más de 5 años de experiencia en investigación y desarrollo de productos farmacéuticos. Apasionada por la innovación y el impacto positivo en la salud.",
-    experience: "5 años",
-    skills: ["Biotecnología", "Investigación", "Desarrollo", "Análisis"],
-    avatar: "",
-  })
+  const [profileData, setProfileData] = useState<ProfileData>(createEmptyProfile())
 
-  const [formData, setFormData] = useState<ProfileData>(profileData)
+  const [formData, setFormData] = useState<ProfileData>(createEmptyProfile())
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const { useSession } = authClient
@@ -67,11 +76,11 @@ const EmployeeProfile = () => {
 
     setProfileData((prev) => ({
       ...prev,
-      name: user.name ?? prev.name,
-      email: user.email ?? prev.email,
-      avatar: user.image ?? prev.avatar,
-      location: user.location ?? prev.location,
-      profession: user.title ?? prev.profession,
+      name: user.name ?? "",
+      email: user.email ?? "",
+      avatar: user.image ?? "",
+      location: user.location ?? "",
+      profession: user.profession ?? "",
     }))
   }, [session])
 
@@ -181,21 +190,82 @@ const EmployeeProfile = () => {
                 </label>
               )}
             </div>
-            <CardTitle className="text-xl">{profileData.name}</CardTitle>
-            <p className="text-muted-foreground">{profileData.profession}</p>
+            {isEditing ? (
+              <>
+                <Input
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  placeholder="Nombre completo"
+                  className="text-center text-xl font-semibold h-auto py-2"
+                />
+                <Input
+                  value={formData.profession}
+                  onChange={(e) => handleInputChange("profession", e.target.value)}
+                  placeholder="Profesión"
+                  className="text-center text-muted-foreground"
+                />
+              </>
+            ) : (
+              <>
+                <CardTitle className="text-xl">
+                  {profileData.name || EMPTY_PLACEHOLDER}
+                </CardTitle>
+                <p className="text-muted-foreground">
+                  {profileData.profession || EMPTY_PLACEHOLDER}
+                </p>
+              </>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3 text-sm">
-              <HugeiconsIcon icon={Location01Icon} size={16} className="text-muted-foreground" />
-              <span>{profileData.location}</span>
+              <HugeiconsIcon icon={Location01Icon} size={16} className="text-muted-foreground shrink-0" />
+              {isEditing ? (
+                <Input
+                  value={formData.location}
+                  onChange={(e) => handleInputChange("location", e.target.value)}
+                  placeholder="Ciudad, País"
+                  className="h-8 text-sm"
+                />
+              ) : (
+                <span>{profileData.location || EMPTY_PLACEHOLDER}</span>
+              )}
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <HugeiconsIcon icon={Briefcase01Icon} size={16} className="text-muted-foreground" />
-              <span>{profileData.experience} de experiencia</span>
+              <HugeiconsIcon icon={Briefcase01Icon} size={16} className="text-muted-foreground shrink-0" />
+              {isEditing ? (
+                <Input
+                  value={formData.experience}
+                  onChange={(e) => handleInputChange("experience", e.target.value)}
+                  placeholder="Ej: 5 años"
+                  className="h-8 text-sm"
+                />
+              ) : (
+                <span>
+                  {profileData.experience
+                    ? `${profileData.experience} de experiencia`
+                    : EMPTY_PLACEHOLDER}
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <HugeiconsIcon icon={Calendar01Icon} size={16} className="text-muted-foreground" />
-              <span>Miembro desde 2023</span>
+              <HugeiconsIcon icon={BirthdayCakeIcon} size={16} className="text-muted-foreground shrink-0" aria-hidden />
+              {isEditing ? (
+                <DatePicker
+                  date={formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined}
+                  setDate={(d) =>
+                    handleInputChange("dateOfBirth", d ? d.toISOString() : "")
+                  }
+                  className="w-full max-w-[212px] h-8 text-sm"
+                />
+              ) : (
+                <span>
+                  {profileData.dateOfBirth
+                    ? format(new Date(profileData.dateOfBirth), "d MMMM yyyy", {
+                        locale: es,
+                      })
+                    : EMPTY_PLACEHOLDER}
+                </span>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -233,7 +303,9 @@ const EmployeeProfile = () => {
                       {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">{profileData.name}</p>
+                    <p className="text-muted-foreground">
+                      {profileData.name || EMPTY_PLACEHOLDER}
+                    </p>
                   )}
                 </div>
 
@@ -259,7 +331,9 @@ const EmployeeProfile = () => {
                       {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">{profileData.email}</p>
+                    <p className="text-muted-foreground">
+                      {profileData.email || EMPTY_PLACEHOLDER}
+                    </p>
                   )}
                 </div>
 
@@ -283,7 +357,9 @@ const EmployeeProfile = () => {
                       />
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">{profileData.phone}</p>
+                    <p className="text-muted-foreground">
+                      {profileData.phone || EMPTY_PLACEHOLDER}
+                    </p>
                   )}
                 </div>
 
@@ -307,7 +383,9 @@ const EmployeeProfile = () => {
                       />
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">{profileData.location}</p>
+                    <p className="text-muted-foreground">
+                      {profileData.location || EMPTY_PLACEHOLDER}
+                    </p>
                   )}
                 </div>
               </div>
@@ -346,7 +424,9 @@ const EmployeeProfile = () => {
                     )}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground">{profileData.profession}</p>
+                  <p className="text-muted-foreground">
+                    {profileData.profession || EMPTY_PLACEHOLDER}
+                  </p>
                 )}
               </div>
 
@@ -363,7 +443,9 @@ const EmployeeProfile = () => {
                     placeholder="Cuéntanos sobre ti..."
                   />
                 ) : (
-                  <p className="text-muted-foreground leading-relaxed">{profileData.bio}</p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {profileData.bio || EMPTY_PLACEHOLDER}
+                  </p>
                 )}
               </div>
 
@@ -379,7 +461,9 @@ const EmployeeProfile = () => {
                     placeholder="Ej: 5 años"
                   />
                 ) : (
-                  <p className="text-muted-foreground">{profileData.experience}</p>
+                  <p className="text-muted-foreground">
+                    {profileData.experience || EMPTY_PLACEHOLDER}
+                  </p>
                 )}
               </div>
 
@@ -391,10 +475,15 @@ const EmployeeProfile = () => {
                   <Input
                     id="profile-skills"
                     value={formData.skills.join(", ")}
-                    onChange={(e) => handleInputChange("skills", e.target.value.split(", "))}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "skills",
+                        e.target.value.split(",").map((s) => s.trim()).filter(Boolean)
+                      )
+                    }
                     placeholder="Habilidad 1, Habilidad 2, Habilidad 3"
                   />
-                ) : (
+                ) : profileData.skills.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {profileData.skills.map((skill) => (
                       <span
@@ -405,6 +494,8 @@ const EmployeeProfile = () => {
                       </span>
                     ))}
                   </div>
+                ) : (
+                  <p className="text-muted-foreground">{EMPTY_PLACEHOLDER}</p>
                 )}
               </div>
             </CardContent>

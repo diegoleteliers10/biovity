@@ -63,7 +63,7 @@ export const SidebarComponent = () => {
   }
 
   const handleViewProfile = () => {
-    router.push("/dashboard/employee/profile")
+    router.push("/dashboard/profile")
   }
 
   return (
@@ -198,7 +198,7 @@ export const SidebarComponent = () => {
           <button
             className="w-full text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-1"
             type="button"
-            onClick={() => router.push("/dashboard/employee/profile")}
+            onClick={() => router.push("/dashboard/profile")}
             tabIndex={0}
             aria-label={`${NAV_DATA.profileProgress.actionText} - Perfil ${NAV_DATA.profileProgress.percentage}% completo`}
           >
@@ -212,7 +212,7 @@ export const SidebarComponent = () => {
           <TooltipTrigger asChild>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="/dashboard/employee/settings">
+                <a href="/dashboard/settings">
                   <HugeiconsIcon icon={Settings01Icon} size={24} strokeWidth={1.5} />
                   <span>Configuración</span>
                 </a>

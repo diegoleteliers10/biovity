@@ -18,10 +18,10 @@ export function RegisterContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "persona") {
-        router.push("/dashboard/employee")
-      } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization")
+      if (session.user.type === "professional") {
+        router.push("/dashboard")
+      } else if (session.user.type === "organization") {
+        router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
@@ -98,7 +98,7 @@ export function RegisterContent() {
         </CardHeader>
         <CardContent className="flex gap-6">
           <div>
-            <Link href="/register/user">
+            <Link href="/register/professional">
               <Card className="cursor-pointer hover:shadow-md transition-all duration-200 border-2 hover:border-blue-300 hover:bg-blue-50/30">
                 <CardContent className="py-1 px-6">
                   <div className="flex items-center space-x-4">
@@ -189,7 +189,7 @@ export function RegisterContent() {
                 variant="outline"
                 className="w-full h-11 border-blue-200 hover:bg-blue-50"
               >
-                <Link href="/login/user">
+                <Link href="/login/professional">
                   <HugeiconsIcon icon={UserIcon} size={24} strokeWidth={1.5} />
                   Iniciar sesión como usuario
                 </Link>

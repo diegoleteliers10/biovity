@@ -65,10 +65,10 @@ export function UserRegisterContent() {
   // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "persona") {
-        router.push("/dashboard/employee")
-      } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization")
+      if (session.user.type === "professional") {
+        router.push("/dashboard")
+      } else if (session.user.type === "organization") {
+        router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
@@ -137,7 +137,7 @@ export function UserRegisterContent() {
       email: formData.email,
       password: formData.password,
       name: formData.name,
-      type: "persona",
+      type: "professional",
       profession: formData.profession,
       avatar: "",
     })
@@ -147,7 +147,7 @@ export function UserRegisterContent() {
         general: "Error al crear la cuenta. Inténtalo de nuevo.",
       })
     } else {
-      router.push("/dashboard/employee")
+      router.push("/dashboard")
     }
 
     setIsLoading(false)
@@ -384,7 +384,7 @@ export function UserRegisterContent() {
               <p className="text-sm text-gray-600">
                 ¿Ya tienes una cuenta?{" "}
                 <Link
-                  href="/login/user"
+                  href="/login/professional"
                   className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 >
                   Inicia sesión aquí
