@@ -213,17 +213,17 @@ export const messageSchema = z
 // =====================
 
 /**
- * User type enum for Better Auth
+ * User type enum for Better Auth (standardized across auth and waitlist)
  */
-export const userTypeSchema = z.enum(["persona", "organización"], {
-  error: () => ({ message: "El tipo de usuario debe ser 'persona' u 'organización'" }),
+export const userTypeSchema = z.enum(["professional", "organization"], {
+  error: () => ({ message: "El tipo debe ser 'professional' u 'organization'" }),
 })
 
 /**
- * Waitlist role enum
+ * Waitlist role enum (matches userTypeSchema for consistency)
  */
-export const waitlistRoleSchema = z.enum(["professional", "empresa"], {
-  error: () => ({ message: "El rol debe ser 'professional' o 'empresa'" }),
+export const waitlistRoleSchema = z.enum(["professional", "organization"], {
+  error: () => ({ message: "El rol debe ser 'professional' u 'organization'" }),
 })
 
 /**

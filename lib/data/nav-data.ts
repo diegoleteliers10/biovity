@@ -17,41 +17,41 @@ export const NAV_DATA = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard/employee",
+      url: "/dashboard",
       icon: DashboardSquare02Icon,
     },
     {
       title: "Mensajes",
-      url: "/dashboard/employee/messages",
+      url: "/dashboard/messages",
       icon: BubbleChatIcon,
     },
     {
       title: "Metricas",
-      url: "/dashboard/employee/metrics",
+      url: "/dashboard/metrics",
       icon: Analytics01Icon,
     },
     {
       title: "Mis Aplicaciones",
-      url: "/dashboard/employee/applications",
+      url: "/dashboard/applications",
       icon: File02Icon,
       badge: 1,
     },
     {
       title: "Empleos Guardados",
-      url: "/dashboard/employee/saved",
+      url: "/dashboard/saved",
       icon: Bookmark02Icon,
       badge: 4,
     },
     {
       title: "Calendario",
-      url: "/dashboard/employee/calendar",
+      url: "/dashboard/calendar",
       icon: Calendar03Icon,
     },
   ],
   explore: [
     {
       title: "Buscar Empleos",
-      url: "/dashboard/employee/search",
+      url: "/dashboard/search",
       icon: Search01Icon,
     },
   ],

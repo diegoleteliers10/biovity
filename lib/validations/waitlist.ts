@@ -13,7 +13,7 @@ import { emailSchema, waitlistRoleSchema } from "./primitives"
 /**
  * Waitlist API request schema
  * - Email address (validated and normalized)
- * - Role (professional or empresa)
+ * - Role (professional or organization)
  */
 export const waitlistSchema = z.object({
   email: emailSchema,

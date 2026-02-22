@@ -17,11 +17,11 @@ import { Input } from "@/components/ui/input"
 import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
-type Role = "professional" | "empresa"
+type Role = "professional" | "organization"
 
 const ROLE_OPTIONS: { value: Role; label: string; icon: IconSvgElement }[] = [
   { value: "professional", label: "Profesional", icon: Briefcase01Icon },
-  { value: "empresa", label: "Empresa", icon: Building06Icon },
+  { value: "organization", label: "Empresa", icon: Building06Icon },
 ]
 
 export function ListaEsperaContent() {
@@ -33,8 +33,8 @@ export function ListaEsperaContent() {
   const reducedMotion = useReducedMotion()
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
-  const emailLabel = role === "empresa" ? "Correo corporativo" : "Correo personal"
-  const emailPlaceholder = role === "empresa" ? "contacto@empresa.cl" : "tu@email.com"
+  const emailLabel = role === "organization" ? "Correo corporativo" : "Correo personal"
+  const emailPlaceholder = role === "organization" ? "contacto@empresa.cl" : "tu@email.com"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -112,7 +112,7 @@ export const ApplicationsContent = () => {
                               .toLowerCase()
                               .replace(/[^\p{L}\p{N}]+/gu, "-")
                               .replace(/^-+|-+$/g, "")
-                            router.push(`/dashboard/employee/job/${slug}`)
+                            router.push(`/dashboard/job/${slug}`)
                           }}
                         >
                           <HugeiconsIcon

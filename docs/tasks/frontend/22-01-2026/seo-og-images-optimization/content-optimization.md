@@ -94,9 +94,9 @@ H1: "Conecta con el nuevo talento cientifico de Chile"
 ```
 Homepage (/)
   |-- /empresas (For Companies)
-  |-- /login/user (Candidate Login)
+  |-- /login/professional (Candidate Login)
   |-- /login/organization (Company Login)
-  |-- /register/user (Candidate Registration)
+  |-- /register/professional (Candidate Registration)
   |-- /register/organization (Company Registration)
 
 /empresas

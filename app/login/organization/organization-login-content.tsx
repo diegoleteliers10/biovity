@@ -23,7 +23,7 @@ const { signIn } = authClient
 export function OrganizationLoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get("redirect") || "/dashboard/organization"
+  const redirectTo = searchParams.get("redirect") || "/dashboard"
   const { useSession } = authClient
   const { data: session, isPending } = useSession()
 
@@ -40,10 +40,10 @@ export function OrganizationLoginContent() {
   // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "persona") {
-        router.push("/dashboard/employee")
-      } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization")
+      if (session.user.type === "professional") {
+        router.push("/dashboard")
+      } else if (session.user.type === "organization") {
+        router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
@@ -268,7 +268,7 @@ export function OrganizationLoginContent() {
               <p className="text-sm text-gray-600">
                 ¿Eres usuario individual?{" "}
                 <Link
-                  href="/login/user"
+                  href="/login/professional"
                   className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 >
                   Acceso de usuario

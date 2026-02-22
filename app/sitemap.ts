@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/login/user`,
+      url: `${siteUrl}/login/professional`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
@@ -30,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: `${siteUrl}/register/user`,
+      url: `${siteUrl}/register/professional`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,

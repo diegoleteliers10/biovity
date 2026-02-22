@@ -22,7 +22,7 @@ const { signIn } = authClient
 export function UserLoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get("redirect") || "/dashboard/employee"
+  const redirectTo = searchParams.get("redirect") || "/dashboard"
   const { useSession } = authClient
   const { data: session, isPending } = useSession()
 
@@ -38,10 +38,10 @@ export function UserLoginContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "persona") {
-        router.push("/dashboard/employee")
-      } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization")
+      if (session.user.type === "professional") {
+        router.push("/dashboard")
+      } else if (session.user.type === "organization") {
+        router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
@@ -197,7 +197,7 @@ export function UserLoginContent() {
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 ¿No tienes una cuenta?{" "}
-                <Link href="/register/user" className="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+                <Link href="/register/professional" className="text-blue-600 hover:text-blue-800 hover:underline font-medium">
                   Regístrate como usuario
                 </Link>
               </p>

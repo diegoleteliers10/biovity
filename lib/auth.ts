@@ -1,3 +1,4 @@
+import { headers } from "next/headers"
 import { betterAuth } from "better-auth"
 import { pool } from "@/lib/db"
 
@@ -106,3 +107,23 @@ export const auth = betterAuth({
     level: process.env.NODE_ENV === "production" ? "error" : "debug",
   },
 })
+
+export type UserRole = "admin" | "professional" | "organization"
+
+/**
+ * Server-side role check for conditional routing (e.g. Parallel Routes).
+ * Returns user role from session; admin if email is in ADMIN_EMAILS env.
+ */
+export async function checkUserRole(): Promise<UserRole | null> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+  if (!session?.user) return null
+
+  const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
+  if (adminEmails.includes(session.user.email)) return "admin"
+
+  const type = session.user.type as string
+  if (type === "professional" || type === "organization") return type
+  return "professional"
+}

@@ -18,10 +18,10 @@ export function LoginContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "persona") {
-        router.push("/dashboard/employee")
-      } else if (session.user.type === "organización") {
-        router.push("/dashboard/organization")
+      if (session.user.type === "professional") {
+        router.push("/dashboard")
+      } else if (session.user.type === "organization") {
+        router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
@@ -84,7 +84,7 @@ export function LoginContent() {
         </CardHeader>
         <CardContent className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1 space-y-4">
-            <Link href="/login/user">
+            <Link href="/login/professional">
               <Card className="cursor-pointer hover:shadow-md transition-all duration-200 border-2 hover:border-blue-300 hover:bg-blue-50/30">
                 <CardContent className="py-1 px-6">
                   <div className="flex items-center space-x-4">
@@ -127,7 +127,7 @@ export function LoginContent() {
             </div>
             <div className="space-y-3">
               <Button asChild variant="outline" className="w-full h-12 border-blue-200 hover:bg-blue-50 text-base">
-                <Link href="/register/user">
+                <Link href="/register/professional">
                   <HugeiconsIcon icon={UserIcon} size={20} strokeWidth={1.5} className="mr-2" />
                   Crear cuenta de usuario
                 </Link>

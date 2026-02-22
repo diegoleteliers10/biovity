@@ -56,7 +56,7 @@ export const HomeContent = () => {
   const handleJobClick = useCallback(
     (jobTitle: string, _company: string) => {
       const slug = toSlug(jobTitle)
-      router.push(`/dashboard/employee/job/${slug}`)
+      router.push(`/dashboard/job/${slug}`)
     },
     [toSlug, router]
   )
