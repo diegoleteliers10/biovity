@@ -2,20 +2,32 @@ import { headers } from "next/headers"
 import { betterAuth } from "better-auth"
 import { pool } from "@/lib/db"
 import { dash } from "@better-auth/infra";
+import { admin } from "better-auth/plugins"
 
 export const auth = betterAuth({
+  appName: "Biovity", // Define your application name
   database: pool,
+  cookieCache: {
+    enabled: true,
+    strategy: "jwe", // Use JWE strategy for best security
+  },
   // Rate limiting for security
   rateLimit: {
     enabled: true,
     window: 60, // 1 minute
     max: 10, // 10 requests per minute per IP
   },
+    experimental: {
+    joins: true, // Enable database joins for better performance
+  },
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
     },
     useSecureCookies: process.env.NODE_ENV === "production",
+    ipAddress: {
+      ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for", "x-vercel-forwarded-for"],
+    },
   },
   account: {
     modelName: "account",
@@ -86,10 +98,6 @@ export const auth = betterAuth({
     },
     expiresIn: 604800, // 7 days
     updateAge: 86400, // 1 day - sessions refresh after 1 day of activity
-    cookieCache: {
-      enabled: true,
-      maxAge: 300, // 5 minutes
-    },
   },
   verification: {
     modelName: "verification",
@@ -110,7 +118,8 @@ export const auth = betterAuth({
   plugins: [
     dash({
       apiKey: process.env.BETTER_AUTH_API_KEY as string,
-    })
+    }),
+    admin()
   ]
 })
 
