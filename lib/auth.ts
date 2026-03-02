@@ -1,8 +1,8 @@
-import { headers } from "next/headers"
+import { dash } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
-import { pool } from "@/lib/db"
-import { dash } from "@better-auth/infra";
 import { admin } from "better-auth/plugins"
+import { headers } from "next/headers"
+import { pool } from "@/lib/db"
 
 export const auth = betterAuth({
   appName: "Biovity", // Define your application name
@@ -19,7 +19,7 @@ export const auth = betterAuth({
     max: 10, // 10 requests per minute per IP
   },
   experimental: {
-    joins: true, // Enable database joins for better performance
+    joins: process.env.BETTER_AUTH_EXPERIMENTAL_JOINS === "true", // Enable database joins conditionally via env flag
   },
   advanced: {
     database: {
@@ -120,8 +120,8 @@ export const auth = betterAuth({
     dash({
       apiKey: process.env.BETTER_AUTH_API_KEY as string,
     }),
-    ...(process.env.NODE_ENV !== "production" ? [admin()] : [])
-  ]
+    ...(process.env.NODE_ENV !== "production" ? [admin()] : []),
+  ],
 })
 
 export type UserRole = "admin" | "professional" | "organization"
