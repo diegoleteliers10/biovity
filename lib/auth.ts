@@ -1,6 +1,7 @@
 import { headers } from "next/headers"
 import { betterAuth } from "better-auth"
 import { pool } from "@/lib/db"
+import { dash } from "@better-auth/infra";
 
 export const auth = betterAuth({
   database: pool,
@@ -106,6 +107,11 @@ export const auth = betterAuth({
   logger: {
     level: process.env.NODE_ENV === "production" ? "error" : "debug",
   },
+  plugins: [
+    dash({
+      apiKey: process.env.BETTER_AUTH_API_KEY as string,
+    })
+  ]
 })
 
 export type UserRole = "admin" | "professional" | "organization"
@@ -123,7 +129,7 @@ export async function checkUserRole(): Promise<UserRole | null> {
   const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
   if (adminEmails.includes(session.user.email)) return "admin"
 
-  const type = session.user.type as string
-  if (type === "professional" || type === "organization") return type
+  const userType = (session.user as { type?: string }).type
+  if (userType === "professional" || userType === "organization") return userType
   return "professional"
 }

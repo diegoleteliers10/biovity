@@ -4,6 +4,8 @@
     "supabase@claude-plugins-official": true,
     "glm-plan-usage@zai-coding-plugins": true,
     "interface-design@interface-design": true,
-    "expo-app-design@expo-plugins": true
+    "expo-app-design@expo-plugins": true,
+    "claude-md-management@claude-plugins-official": true,
+    "claude-mem@thedotmack": true
   }
 }
