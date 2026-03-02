@@ -1,21 +1,39 @@
-import { headers } from "next/headers"
+import { dash } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
+import { admin } from "better-auth/plugins"
+import { headers } from "next/headers"
 import { pool } from "@/lib/db"
-import { dash } from "@better-auth/infra";
 
 export const auth = betterAuth({
+  appName: "Biovity", // Define your application name
   database: pool,
+  cookieCache: {
+    enabled: true,
+    strategy: "jwe", // Use JWE to encrypt cookie contents; ensure encryption keys are managed securely
+    maxAge: 60 * 5, // Explicitly cache session cookies for 5 minutes
+  },
   // Rate limiting for security
   rateLimit: {
     enabled: true,
     window: 60, // 1 minute
     max: 10, // 10 requests per minute per IP
   },
+  experimental: {
+    joins: process.env.BETTER_AUTH_EXPERIMENTAL_JOINS === "true", // Enable database joins conditionally via env flag
+  },
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
     },
     useSecureCookies: process.env.NODE_ENV === "production",
+    ipAddress: {
+      ipAddressHeaders: [
+        "cf-connecting-ip",
+        "x-vercel-forwarded-for",
+        "x-forwarded-for",
+        "x-real-ip",
+      ],
+    },
   },
   account: {
     modelName: "account",
@@ -86,10 +104,6 @@ export const auth = betterAuth({
     },
     expiresIn: 604800, // 7 days
     updateAge: 86400, // 1 day - sessions refresh after 1 day of activity
-    cookieCache: {
-      enabled: true,
-      maxAge: 300, // 5 minutes
-    },
   },
   verification: {
     modelName: "verification",
@@ -110,8 +124,9 @@ export const auth = betterAuth({
   plugins: [
     dash({
       apiKey: process.env.BETTER_AUTH_API_KEY as string,
-    })
-  ]
+    }),
+    ...(process.env.NODE_ENV !== "production" ? [admin()] : []),
+  ],
 })
 
 export type UserRole = "admin" | "professional" | "organization"
