@@ -125,7 +125,7 @@ export const auth = betterAuth({
     dash({
       apiKey: process.env.BETTER_AUTH_API_KEY as string,
     }),
-    ...(process.env.NODE_ENV !== "production" ? [admin()] : []),
+    admin(),
   ],
 })
 
