@@ -27,7 +27,12 @@ export const auth = betterAuth({
     },
     useSecureCookies: process.env.NODE_ENV === "production",
     ipAddress: {
-      ipAddressHeaders: ["cf-connecting-ip", "x-vercel-forwarded-for"],
+      ipAddressHeaders: [
+        "cf-connecting-ip",
+        "x-vercel-forwarded-for",
+        "x-forwarded-for",
+        "x-real-ip",
+      ],
     },
   },
   account: {
