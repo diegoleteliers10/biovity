@@ -19,7 +19,7 @@ export const auth = betterAuth({
     max: 10, // 10 requests per minute per IP
   },
   experimental: {
-    joins: process.env.BETTER_AUTH_EXPERIMENTAL_JOINS === "true", // Enable database joins conditionally via env flag
+    joins: true, // Enable database joins for better performance
   },
   advanced: {
     database: {
