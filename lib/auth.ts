@@ -9,7 +9,8 @@ export const auth = betterAuth({
   database: pool,
   cookieCache: {
     enabled: true,
-    strategy: "jwe", // Use JWE strategy for best security
+    strategy: "jwe", // Use JWE to encrypt cookie contents; ensure encryption keys are managed securely
+    maxAge: 60 * 5, // Explicitly cache session cookies for 5 minutes
   },
   // Rate limiting for security
   rateLimit: {
@@ -17,7 +18,7 @@ export const auth = betterAuth({
     window: 60, // 1 minute
     max: 10, // 10 requests per minute per IP
   },
-    experimental: {
+  experimental: {
     joins: true, // Enable database joins for better performance
   },
   advanced: {
@@ -26,7 +27,7 @@ export const auth = betterAuth({
     },
     useSecureCookies: process.env.NODE_ENV === "production",
     ipAddress: {
-      ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for", "x-vercel-forwarded-for"],
+      ipAddressHeaders: ["cf-connecting-ip", "x-vercel-forwarded-for"],
     },
   },
   account: {
@@ -119,7 +120,7 @@ export const auth = betterAuth({
     dash({
       apiKey: process.env.BETTER_AUTH_API_KEY as string,
     }),
-    admin()
+    ...(process.env.NODE_ENV !== "production" ? [admin()] : [])
   ]
 })
 
