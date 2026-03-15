@@ -9,10 +9,12 @@ import {
   Location01Icon,
   Mail01Icon,
   Search01Icon,
+  Sent02Icon,
   SmartPhone01Icon,
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useRouter } from "next/navigation"
 import { useQueryStates } from "nuqs"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
@@ -21,6 +23,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Avatar } from "@/components/base/avatar/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,12 +40,20 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { ResumeEducation, ResumeExperience } from "@/lib/api/resumes"
+import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { useProfessionalUsers } from "@/lib/api/use-talent"
+import { authClient } from "@/lib/auth-client"
 import { formatUserLocation } from "@/lib/api/users"
 import { talentParsers } from "@/lib/parsers/talent"
 
 const EMPTY_PLACEHOLDER = "No especificado"
+
+const getInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  return name.slice(0, 2).toUpperCase()
+}
 
 const getExpDisplay = (exp: ResumeExperience) => ({
   title: exp.title ?? exp.position ?? "",
@@ -309,9 +324,27 @@ export function TalentContent() {
     [fetchSearch]
   )
 
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const recruiterId = (session?.user as { id?: string })?.id
+  const createChatMutation = useCreateOrFindChatMutation(recruiterId)
+  const router = useRouter()
+
   const { data: paginated, isLoading, error } = useProfessionalUsers(page, search)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [sheetOpen, setSheetOpen] = useState(false)
+
+  const handleSendMessage = useCallback(
+    (professionalId: string) => (e: React.MouseEvent) => {
+      e.stopPropagation()
+      createChatMutation.mutate(professionalId, {
+        onSuccess: (chat) => {
+          router.push(`/dashboard/messages?chat=${chat.id}`)
+        },
+      })
+    },
+    [createChatMutation, router]
+  )
 
   const users = paginated?.data ?? []
   const total = paginated?.total ?? 0
@@ -405,7 +438,106 @@ export function TalentContent() {
                     role="button"
                     aria-label={`Ver perfil de ${user.name}`}
                   >
-                    <TableCell className="font-medium">{user.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <HoverCard openDelay={100} closeDelay={200}>
+                        <HoverCardTrigger asChild>
+                          <span
+                            className="inline-block cursor-pointer font-medium text-foreground transition-colors hover:text-primary hover:underline"
+                            tabIndex={0}
+                          >
+                            {user.name}
+                          </span>
+                        </HoverCardTrigger>
+                        <HoverCardContent
+                          side="bottom"
+                          align="start"
+                          sideOffset={10}
+                          className="w-80 overflow-hidden rounded-xl border-0 bg-background p-0 shadow-xl ring-1 ring-border/50"
+                        >
+                          <div className="bg-muted/30 px-4 py-4">
+                            <div className="flex items-center gap-4">
+                              <Avatar
+                                src={user.avatar}
+                                alt={user.name}
+                                initials={getInitials(user.name)}
+                                size="xl"
+                                className="ring-2 ring-background"
+                              />
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-semibold text-foreground">
+                                  {user.name}
+                                </p>
+                                {user.profession && (
+                                  <p className="mt-0.5 truncate text-muted-foreground text-sm">
+                                    {user.profession}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-px px-4 py-3">
+                            <a
+                              href={`mailto:${user.email}`}
+                              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                                <HugeiconsIcon
+                                  icon={Mail01Icon}
+                                  size={16}
+                                  className="text-primary"
+                                />
+                              </div>
+                              <span className="min-w-0 truncate">{user.email}</span>
+                            </a>
+                            {user.phone && (
+                              <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground text-sm">
+                                <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                                  <HugeiconsIcon
+                                    icon={SmartPhone01Icon}
+                                    size={16}
+                                    className="text-primary"
+                                  />
+                                </div>
+                                <span>{user.phone}</span>
+                              </div>
+                            )}
+                            {formatUserLocation(user.location) && (
+                              <div className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground text-sm">
+                                <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                                  <HugeiconsIcon
+                                    icon={Location01Icon}
+                                    size={16}
+                                    className="text-primary"
+                                  />
+                                </div>
+                                <span>
+                                  {formatUserLocation(user.location)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="border-t border-border/50 px-4 py-3">
+                            <Button
+                              size="sm"
+                              className="w-full gap-2"
+                              onClick={handleSendMessage(user.id)}
+                              disabled={!recruiterId || createChatMutation.isPending}
+                              aria-label={`Enviar mensaje a ${user.name}`}
+                            >
+                              <HugeiconsIcon icon={Sent02Icon} size={16} />
+                              {createChatMutation.isPending &&
+                              createChatMutation.variables === user.id
+                                ? "Creando..."
+                                : "Enviar mensaje"}
+                            </Button>
+                            <p className="mt-2 text-center text-muted-foreground text-xs">
+                              Haz clic en la fila para ver el perfil completo
+                            </p>
+                          </div>
+                        </HoverCardContent>
+                      </HoverCard>
+                    </TableCell>
                     <TableCell className="text-muted-foreground">
                       {user.profession ?? "—"}
                     </TableCell>

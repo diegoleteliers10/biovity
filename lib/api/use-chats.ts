@@ -1,10 +1,10 @@
 "use client"
 
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useMemo } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import type { Chat } from "./chats"
-import { getChatsByProfessional, getChatsByRecruiter } from "./chats"
+import { createOrFindChat, getChatsByProfessional, getChatsByRecruiter } from "./chats"
 
 export const chatsKeys = {
   byRecruiter: (recruiterId: string) => ["chats", "recruiter", recruiterId] as const,
@@ -34,6 +34,25 @@ export function useChatsByProfessional(professionalId: string | undefined) {
       return result.data
     },
     enabled: Boolean(professionalId),
+  })
+}
+
+export function useCreateOrFindChatMutation(recruiterId: string | undefined) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (professionalId: string) => {
+      const result = await createOrFindChat(professionalId)
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: () => {
+      if (recruiterId) {
+        void queryClient.invalidateQueries({
+          queryKey: chatsKeys.byRecruiter(recruiterId),
+        })
+      }
+    },
   })
 }
 

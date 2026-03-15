@@ -14,6 +14,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import { useSearchParams } from "next/navigation"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -26,7 +27,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { Chat } from "@/lib/api/chats"
+import { getChatById, type Chat } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
 import { useInfiniteMessages, useSendMessageMutation } from "@/lib/api/use-messages"
@@ -34,6 +35,9 @@ import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 
 export function OrganizationMessagesContent() {
+  const searchParams = useSearchParams()
+  const chatIdFromUrl = searchParams.get("chat")
+
   const { useSession } = authClient
   const { data: session } = useSession()
   const recruiterId = (session?.user as { id?: string })?.id
@@ -41,6 +45,24 @@ export function OrganizationMessagesContent() {
   const { data: chats = [], isLoading: chatsLoading } = useChatsByRecruiter(recruiterId)
   useChatListRealtime(chats)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
+
+  useEffect(() => {
+    if (!chatIdFromUrl) return
+
+    const found = chats.find((c) => c.id === chatIdFromUrl)
+    if (found) {
+      setSelectedChat(found)
+      return
+    }
+
+    const loadChat = async () => {
+      const result = await getChatById(chatIdFromUrl)
+      if ("data" in result) {
+        setSelectedChat(result.data)
+      }
+    }
+    void loadChat()
+  }, [chatIdFromUrl, chats])
   const [messageInput, setMessageInput] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)

@@ -66,6 +66,39 @@ export async function getChatsByProfessional(
   return { data: chats }
 }
 
+export async function createOrFindChat(
+  professionalId: string
+): Promise<{ data: Chat } | { error: string }> {
+  const base =
+    typeof window !== "undefined"
+      ? ""
+      : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
+
+  let res: Response
+  try {
+    res = await fetch(`${base}/api/chats/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ professionalId }),
+    })
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error de red" }
+  }
+
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    return { error: getErrorMessage(data, "Error al crear el chat") }
+  }
+
+  const chat = data?.data ?? data
+  if (!chat?.id) {
+    return { error: "Respuesta inválida" }
+  }
+
+  return { data: chat as Chat }
+}
+
 export async function getChatById(chatId: string): Promise<{ data: Chat } | { error: string }> {
   const url = `${API_BASE}/api/v1/chats/${chatId}`
 
