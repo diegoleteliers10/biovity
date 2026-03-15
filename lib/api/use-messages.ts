@@ -1,36 +1,56 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useEffect } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
-import { getMessagesByChatId, sendMessage, type Message } from "./messages"
+import { getMessagesByChatId, type Message, sendMessage } from "./messages"
+
+const MESSAGES_PAGE_SIZE = 30
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
 }
 
-export function useMessages(chatId: string | undefined) {
+export function useInfiniteMessages(chatId: string | undefined) {
   const queryClient = useQueryClient()
+  const effectiveChatId = chatId && chatId.trim() ? chatId : ""
 
-  const query = useQuery({
-    queryKey: messagesKeys.byChat(chatId ?? ""),
-    queryFn: async () => {
-      if (!chatId) throw new Error("Chat ID required")
-      const result = await getMessagesByChatId(chatId)
+  const query = useInfiniteQuery({
+    queryKey: messagesKeys.byChat(effectiveChatId),
+    queryFn: async ({ pageParam }) => {
+      if (!effectiveChatId) throw new Error("Chat ID required")
+      const result = await getMessagesByChatId(effectiveChatId, {
+        limit: MESSAGES_PAGE_SIZE,
+        cursor: pageParam,
+      })
       if ("error" in result) throw new Error(result.error)
-      return result.data
+      return {
+        data: result.data ?? [],
+        nextCursor: result.nextCursor ?? null,
+      }
     },
-    enabled: Boolean(chatId),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: () => undefined,
+    getPreviousPageParam: (firstPage) => firstPage?.nextCursor ?? undefined,
+    enabled: Boolean(effectiveChatId),
   })
 
+  const messages = Array.isArray(query.data?.pages)
+    ? [...query.data.pages].reverse().flatMap((p) => (p?.data ?? []))
+    : []
+
   useEffect(() => {
-    if (!chatId) return
+    if (!effectiveChatId) return
 
     const supabase = createClientBrowser()
     if (!supabase) return
 
     const channel = supabase
-      .channel(`chat:${chatId}`)
+      .channel(`chat:${effectiveChatId}`)
       .on(
         "postgres_changes",
         {
@@ -41,36 +61,43 @@ export function useMessages(chatId: string | undefined) {
         (payload) => {
           const row = payload.new as Record<string, unknown>
           if (!row?.id) return
-          if (String(row.chatId ?? "") !== chatId) return
+          const r = (k: string) =>
+            (row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]) as string | boolean | undefined
+          const chatIdVal = String(r("chatId") ?? r("chat_id") ?? "")
+          if (chatIdVal !== effectiveChatId) return
           const msg: Message = {
             id: row.id as string,
-            chatId: (row.chatId as string) ?? chatId,
-            senderId: (row.senderId as string) ?? "",
-            content: (row.content as string) ?? "",
-            isRead: (row.isRead as boolean) ?? false,
-            createdAt: (row.createdAt as string) ?? new Date().toISOString(),
+            chatId: chatIdVal || effectiveChatId,
+            senderId: String(r("senderId") ?? r("sender_id") ?? ""),
+            content: String(r("content") ?? ""),
+            isRead: Boolean(r("isRead") ?? r("is_read") ?? false),
+            createdAt: String(r("createdAt") ?? r("created_at") ?? new Date().toISOString()),
           }
-          queryClient.setQueryData<Message[]>(messagesKeys.byChat(chatId), (prev) => {
-            const list = prev ?? []
-            if (list.some((m) => m.id === msg.id)) return prev
-            return [...list, msg]
-          })
+          queryClient.setQueryData(
+            messagesKeys.byChat(effectiveChatId),
+            (old: { pages: { data?: Message[] }[]; pageParams: unknown[] } | undefined) => {
+              if (!old?.pages?.length) return old
+              const firstPage = old.pages[0]
+              const firstData = firstPage?.data ?? []
+              if (firstData.some((m) => m.id === msg.id)) return old
+              return {
+                ...old,
+                pages: old.pages.map((p, i) =>
+                  i === 0 ? { ...p, data: [...(p.data ?? []), msg] } : p
+                ),
+              }
+            }
+          )
         }
       )
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          console.log("[Realtime] Subscribed to postgres_changes for chat:", chatId)
-        } else if (status === "CHANNEL_ERROR") {
-          console.error("[Realtime] Channel error for chat:", chatId)
-        }
-      })
+      .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [chatId, queryClient])
+  }, [effectiveChatId, queryClient])
 
-  return query
+  return { ...query, messages }
 }
 
 export function useSendMessageMutation(chatId: string, senderId: string) {
@@ -82,23 +109,75 @@ export function useSendMessageMutation(chatId: string, senderId: string) {
       if ("error" in result) throw new Error(result.error)
       return result.data
     },
-    onSuccess: (newMessage) => {
-      queryClient.setQueryData<Message[]>(messagesKeys.byChat(chatId), (prev) => {
-        const list = prev ?? []
-        if (list.some((m) => m.id === newMessage.id)) return prev
-        return [...list, newMessage]
-      })
-      queryClient.setQueriesData<Record<string, unknown>[]>(
-        { queryKey: ["chats"] },
-        (prev) => {
-          if (!prev) return prev
-          return prev.map((chat) =>
-            chat.id === chatId
-              ? { ...chat, lastMessage: newMessage.content, updatedAt: newMessage.createdAt }
-              : chat
-          )
+    onMutate: async (content) => {
+      if (!chatId) return
+      await queryClient.cancelQueries({ queryKey: messagesKeys.byChat(chatId) })
+      const previous = queryClient.getQueryData(messagesKeys.byChat(chatId))
+      const tempMessage: Message = {
+        id: `temp-${Date.now()}`,
+        chatId,
+        senderId,
+        content,
+        isRead: false,
+        createdAt: new Date().toISOString(),
+      }
+      queryClient.setQueryData(
+        messagesKeys.byChat(chatId),
+        (old: { pages: { data?: Message[] }[]; pageParams: unknown[] } | undefined) => {
+          if (!old?.pages?.length) return old
+          return {
+            ...old,
+            pages: old.pages.map((p, i) =>
+              i === 0 ? { ...p, data: [...(p.data ?? []), tempMessage] } : p
+            ),
+          }
         }
       )
+      return { previous }
+    },
+    onError: (_err, _content, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(messagesKeys.byChat(chatId), context.previous)
+      }
+    },
+    onSuccess: (newMessage) => {
+      queryClient.setQueryData(
+        messagesKeys.byChat(chatId),
+        (old: { pages: { data?: Message[] }[]; pageParams: unknown[] } | undefined) => {
+          if (!old?.pages?.length) return old
+          const firstData = old.pages[0]?.data ?? []
+          const tempIndex = firstData.findIndex((m) => m.id.startsWith("temp-"))
+          if (tempIndex >= 0) {
+            const next = [...firstData]
+            next[tempIndex] = newMessage
+            return {
+              ...old,
+              pages: old.pages.map((p, i) =>
+                i === 0 ? { ...p, data: next } : p
+              ),
+            }
+          }
+          if (firstData.some((m) => m.id === newMessage.id)) return old
+          return {
+            ...old,
+            pages: old.pages.map((p, i) =>
+              i === 0 ? { ...p, data: [...(p.data ?? []), newMessage] } : p
+            ),
+          }
+        }
+      )
+      queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {
+        if (!prev) return prev
+        return prev.map((chat) =>
+          (chat as { id?: string }).id === chatId
+            ? {
+                ...chat,
+                lastMessage: newMessage.content,
+                updatedAt: newMessage.createdAt,
+              }
+            : chat
+        )
+      })
     },
   })
 }

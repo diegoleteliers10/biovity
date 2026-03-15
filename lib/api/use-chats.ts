@@ -8,8 +8,7 @@ import { getChatsByProfessional, getChatsByRecruiter } from "./chats"
 
 export const chatsKeys = {
   byRecruiter: (recruiterId: string) => ["chats", "recruiter", recruiterId] as const,
-  byProfessional: (professionalId: string) =>
-    ["chats", "professional", professionalId] as const,
+  byProfessional: (professionalId: string) => ["chats", "professional", professionalId] as const,
 }
 
 export function useChatsByRecruiter(recruiterId: string | undefined) {
@@ -55,18 +54,18 @@ export function useChatListRealtime(chats: Chat[]) {
         { event: "INSERT", schema: "public", table: "message" },
         (payload) => {
           const row = payload.new as Record<string, unknown>
-          const msgChatId = String(row?.chatId ?? "")
+          const r = (k: string) =>
+            row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]
+          const msgChatId = String(r("chatId") ?? r("chat_id") ?? "")
           if (!chatIds.has(msgChatId)) return
 
-          const content = (row.content as string) ?? ""
-          const createdAt = (row.createdAt as string) ?? new Date().toISOString()
+          const content = String(r("content") ?? "")
+          const createdAt = String(r("createdAt") ?? r("created_at") ?? new Date().toISOString())
 
           queryClient.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (prev) => {
             if (!prev) return prev
             return prev.map((chat) =>
-              chat.id === msgChatId
-                ? { ...chat, lastMessage: content, updatedAt: createdAt }
-                : chat
+              chat.id === msgChatId ? { ...chat, lastMessage: content, updatedAt: createdAt } : chat
             )
           })
         }

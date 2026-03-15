@@ -12,6 +12,8 @@ import {
   Sent02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -24,14 +26,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { authClient } from "@/lib/auth-client"
-import { useUser } from "@/lib/api/use-profile"
-import { useChatsByProfessional, useChatListRealtime } from "@/lib/api/use-chats"
-import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import type { Chat } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
+import { useChatListRealtime, useChatsByProfessional } from "@/lib/api/use-chats"
+import { useInfiniteMessages, useSendMessageMutation } from "@/lib/api/use-messages"
+import { useUser } from "@/lib/api/use-profile"
+import { authClient } from "@/lib/auth-client"
 
 export function UserMessagesContent() {
   const { useSession } = authClient
@@ -48,12 +48,15 @@ export function UserMessagesContent() {
 
   const { data: recruiter } = useUser(selectedChat?.recruiterId)
   const {
-    data: messages = [],
+    messages,
     isLoading: messagesLoading,
     isError: messagesError,
     error: messagesErrorDetail,
     refetch: refetchMessages,
-  } = useMessages(selectedChat?.id)
+    fetchPreviousPage,
+    hasPreviousPage,
+    isFetchingPreviousPage,
+  } = useInfiniteMessages(selectedChat?.id)
   const sendMutation = useSendMessageMutation(selectedChat?.id ?? "", professionalId ?? "")
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
@@ -62,17 +65,35 @@ export function UserMessagesContent() {
     })
   }
 
+  const lastMessageId = messages[messages.length - 1]?.id
+
   useEffect(() => {
-    if (messages.length > 0) {
+    if (selectedChat?.id && !messagesLoading && messages.length > 0 && lastMessageId) {
       scrollToBottom()
     }
-  }, [messages.length])
+  }, [selectedChat?.id, messagesLoading, lastMessageId])
+
+  const handleMessagesScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget
+    const threshold = 80
+    if (el.scrollTop <= threshold && hasPreviousPage && !isFetchingPreviousPage) {
+      const prevScrollHeight = el.scrollHeight
+      const prevScrollTop = el.scrollTop
+      fetchPreviousPage().then(() => {
+        requestAnimationFrame(() => {
+          const newScrollHeight = el.scrollHeight
+          el.scrollTop = prevScrollTop + (newScrollHeight - prevScrollHeight)
+        })
+      })
+    }
+  }
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !professionalId) return
     sendMutation.mutate(messageInput.trim(), {
       onSuccess: () => {
         setMessageInput("")
+        scrollToBottom()
       },
     })
   }
@@ -173,9 +194,7 @@ export function UserMessagesContent() {
               <div className="flex items-start justify-between">
                 <div className="flex flex-1 items-start gap-3">
                   <Avatar className="size-12">
-                    {recruiter?.avatar && (
-                      <AvatarImage src={recruiter.avatar} alt="" />
-                    )}
+                    {recruiter?.avatar && <AvatarImage src={recruiter.avatar} alt="" />}
                     <AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
                       {recruiterInitials}
                     </AvatarFallback>
@@ -197,7 +216,10 @@ export function UserMessagesContent() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0">
+            <div
+              className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0"
+              onScroll={handleMessagesScroll}
+            >
               {messagesLoading ? (
                 <div className="flex justify-center py-8">
                   <p className="text-muted-foreground text-sm">Cargando mensajes...</p>
@@ -215,14 +237,19 @@ export function UserMessagesContent() {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {isFetchingPreviousPage && (
+                    <div className="flex justify-center py-2">
+                      <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    </div>
+                  )}
                   {messages.map((msg) => (
                     <MessageBubble
                       key={msg.id}
                       message={msg}
                       isOwn={msg.senderId === professionalId}
-                      senderInitials={
-                        msg.senderId === professionalId ? "Tú" : recruiterInitials
-                      }
+                      senderName={msg.senderId === professionalId ? "Tú" : recruiterName}
+                      senderInitials={msg.senderId === professionalId ? "Tú" : recruiterInitials}
+                      senderAvatar={msg.senderId === professionalId ? undefined : recruiter?.avatar}
                       formatTime={formatMessageTime}
                     />
                   ))}
@@ -388,47 +415,42 @@ function UserChatListItem({
 function MessageBubble({
   message,
   isOwn,
+  senderName,
   senderInitials,
+  senderAvatar,
   formatTime,
 }: {
   message: Message
   isOwn: boolean
+  senderName: string
   senderInitials: string
+  senderAvatar?: string
   formatTime: (iso: string) => string
 }) {
+  const chatAlign = isOwn ? "chat-end" : "chat-start"
+  const bubbleColor = isOwn ? "chat-bubble-primary" : "chat-bubble-neutral"
+
   return (
-    <div className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`flex max-w-[70%] gap-2 ${isOwn ? "flex-row-reverse" : "flex-row"}`}
-      >
-        {!isOwn && (
-          <Avatar className="size-8 shrink-0">
-            <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
-              {senderInitials}
-            </AvatarFallback>
-          </Avatar>
-        )}
-        <div
-          className={`rounded-2xl px-4 py-3 ${
-            isOwn ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-          }`}
-        >
-          <p className="text-sm leading-relaxed">{message.content}</p>
-          <div
-            className={`mt-2 flex items-center gap-1 ${
-              isOwn ? "justify-end" : "justify-start"
-            }`}
-          >
-            <span className="text-xs opacity-70">{formatTime(message.createdAt)}</span>
-            {isOwn && (
-              <HugeiconsIcon
-                icon={CheckmarkCircle02Icon}
-                size={12}
-                className="opacity-70"
-              />
-            )}
+    <div className={`chat ${chatAlign}`}>
+      <div className="chat-image avatar">
+        <Avatar className="size-10 rounded-full">
+          {senderAvatar && <AvatarImage src={senderAvatar} alt="" />}
+          <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
+            {senderInitials}
+          </AvatarFallback>
+        </Avatar>
+      </div>
+      <div className="chat-header">
+        {senderName}
+        <time className="text-xs opacity-50">{formatTime(message.createdAt)}</time>
+      </div>
+      <div className={`chat-bubble ${bubbleColor}`}>
+        <p className="text-sm leading-relaxed">{message.content}</p>
+        {isOwn && (
+          <div className="mt-1 flex justify-end">
+            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} className="opacity-70" />
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

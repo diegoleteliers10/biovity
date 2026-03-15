@@ -9,27 +9,45 @@ export type Message = {
 
 /** Base URL for API calls. Empty string on client (relative URLs). */
 const getBaseUrl = () =>
-  typeof window !== "undefined" ? "" : process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+  typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
+
+export type GetMessagesParams = {
+  limit?: number
+  cursor?: string
+}
+
+export type GetMessagesResponse = {
+  data: Message[]
+  nextCursor: string | null
+}
 
 export async function getMessagesByChatId(
-  chatId: string
-): Promise<{ data: Message[] } | { error: string }> {
+  chatId: string,
+  params?: GetMessagesParams
+): Promise<{ data: Message[]; nextCursor: string | null } | { error: string }> {
   try {
     const base = getBaseUrl()
-    const res = await fetch(`${base}/api/messages/${chatId}`, {
-      credentials: "include",
-    })
-    const data = await res.json().catch(() => null)
+    const searchParams = new URLSearchParams()
+    if (params?.limit != null) searchParams.set("limit", String(params.limit))
+    if (params?.cursor) searchParams.set("cursor", params.cursor)
+    const query = searchParams.toString()
+    const url = `${base}/api/messages/${chatId}${query ? `?${query}` : ""}`
+
+    const res = await fetch(url, { credentials: "include" })
+    const json = await res.json().catch(() => null)
 
     if (!res.ok) {
-      return { error: data?.error ?? "Error al obtener mensajes" }
+      return { error: json?.error ?? "Error al obtener mensajes" }
     }
 
-    if (!Array.isArray(data)) {
+    if (!json || typeof json !== "object" || !Array.isArray(json.data)) {
       return { error: "Respuesta inválida" }
     }
 
-    return { data: data as Message[] }
+    return {
+      data: json.data as Message[],
+      nextCursor: typeof json.nextCursor === "string" ? json.nextCursor : null,
+    }
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Error al obtener mensajes" }
   }

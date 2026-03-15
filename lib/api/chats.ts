@@ -41,7 +41,7 @@ export async function getChatsByRecruiter(
     return { error: getErrorMessage(data, "Error al obtener los chats") }
   }
 
-  const chats = Array.isArray(data) ? data : data?.data ?? []
+  const chats = Array.isArray(data) ? data : (data?.data ?? [])
   return { data: chats }
 }
 
@@ -62,7 +62,7 @@ export async function getChatsByProfessional(
     return { error: getErrorMessage(data, "Error al obtener los chats") }
   }
 
-  const chats = Array.isArray(data) ? data : data?.data ?? []
+  const chats = Array.isArray(data) ? data : (data?.data ?? [])
   return { data: chats }
 }
 

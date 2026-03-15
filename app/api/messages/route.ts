@@ -14,10 +14,7 @@ export async function POST(request: Request) {
   const content = body?.content as string | undefined
 
   if (!chatId || typeof content !== "string" || !content.trim()) {
-    return NextResponse.json(
-      { error: "chatId y content son requeridos" },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: "chatId y content son requeridos" }, { status: 400 })
   }
 
   const senderId = session.user.id
@@ -34,7 +31,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    const apiBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+    const apiBase =
+      process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
     fetch(`${apiBase}/api/v1/chats/${chatId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
