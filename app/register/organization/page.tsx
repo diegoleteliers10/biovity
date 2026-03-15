@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  ArrowLeft01Icon,
   Building06Icon,
   Globe02Icon,
   Mail01Icon,
@@ -10,11 +11,11 @@ import {
   ViewOffSlashIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
@@ -101,36 +102,47 @@ export default function OrganizationRegisterPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader className="text-center space-y-4">
-          {/* Logo */}
-          <div className="mx-auto">
-            <Logo size="lg" />
-          </div>
+    <div className="flex h-dvh">
+      {/* Left: Illustration */}
+      <div className="relative hidden w-1/2 overflow-hidden lg:block">
+        <Image
+          src="/ilustracionRegistroOrganization.png"
+          alt="Biovity - Gestión empresarial y colaboración"
+          fill
+          className="object-cover object-center p-2.5 rounded-[20px]"
+          priority
+          sizes="50vw"
+        />
+      </div>
 
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold text-gray-800">
-              <h2>Registrar Organización</h2>
-            </CardTitle>
-            <CardDescription className="text-gray-600">
+      {/* Right: Registration form */}
+      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
+        <div className="mx-auto w-full max-w-lg space-y-8">
+          <div className="space-y-2 text-center">
+            <Logo size="lg" className="justify-center" />
+            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+              Registrar Organización
+            </h1>
+            <p className="text-center text-muted-foreground">
               Únete a la red de organizaciones en biociencias
-            </CardDescription>
+            </p>
           </div>
-        </CardHeader>
 
-        <CardContent>
           <form onSubmit={handleSignUp} className="space-y-8">
             {/* Información del Contacto Principal */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 pb-2">
+              <h3 className="pb-2 text-lg font-semibold text-foreground">
                 Información del Contacto Principal
               </h3>
 
+<<<<<<< HEAD
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Contact Name */}
+=======
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+>>>>>>> 6e2ae34 (feat(auth): improve login and register UI with AuthLoader and illustrations)
                 <div className="space-y-2">
-                  <label htmlFor="contactName" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="contactName" className="text-sm font-medium text-foreground">
                     Nombre completo
                   </label>
                   <div className="relative">
@@ -138,7 +150,7 @@ export default function OrganizationRegisterPage() {
                       icon={UserIcon}
                       size={16}
                       strokeWidth={1.5}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
                       id="contactName"
@@ -146,18 +158,18 @@ export default function OrganizationRegisterPage() {
                       placeholder="Nombre del representante"
                       value={formData.contactName}
                       onChange={(e) => handleInputChange("contactName", e.target.value)}
-                      className={`pl-10 ${errors.contactName ? "border-red-500" : ""}`}
+                      className={`pl-10 ${errors.contactName ? "border-destructive" : ""}`}
                       required
                     />
                   </div>
                   {errors.contactName && (
-                    <p className="text-sm text-red-500">{errors.contactName}</p>
+                    <p className="text-sm text-destructive">{errors.contactName}</p>
                   )}
                 </div>
 
                 {/* Contact Position */}
                 <div className="space-y-2">
-                  <label htmlFor="contactPosition" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="contactPosition" className="text-sm font-medium text-foreground">
                     Cargo/Posición
                   </label>
                   <Input
@@ -166,17 +178,17 @@ export default function OrganizationRegisterPage() {
                     placeholder="Director, Gerente, CEO, etc."
                     value={formData.contactPosition}
                     onChange={(e) => handleInputChange("contactPosition", e.target.value)}
-                    className={errors.contactPosition ? "border-red-500" : ""}
+                    className={errors.contactPosition ? "border-destructive" : ""}
                   />
                   {errors.contactPosition && (
-                    <p className="text-sm text-red-500">{errors.contactPosition}</p>
+                    <p className="text-sm text-destructive">{errors.contactPosition}</p>
                   )}
                 </div>
               </div>
 
               {/* Contact Email */}
               <div className="space-y-2">
-                <label htmlFor="contactEmail" className="text-sm font-medium text-gray-700">
+                <label htmlFor="contactEmail" className="text-sm font-medium text-foreground">
                   Correo electrónico corporativo
                 </label>
                 <div className="relative">
@@ -184,7 +196,7 @@ export default function OrganizationRegisterPage() {
                     icon={Mail01Icon}
                     size={16}
                     strokeWidth={1.5}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   />
                   <Input
                     id="contactEmail"
@@ -192,20 +204,19 @@ export default function OrganizationRegisterPage() {
                     placeholder="contacto@tuorganizacion.com"
                     value={formData.contactEmail}
                     onChange={(e) => handleInputChange("contactEmail", e.target.value)}
-                    className={`pl-10 ${errors.contactEmail ? "border-red-500" : ""}`}
+                    className={`pl-10 ${errors.contactEmail ? "border-destructive" : ""}`}
                     required
                     autoComplete="email"
                   />
                 </div>
                 {errors.contactEmail && (
-                  <p className="text-sm text-red-500">{errors.contactEmail}</p>
+                  <p className="text-sm text-destructive">{errors.contactEmail}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Password */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label htmlFor="contactPassword" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="contactPassword" className="text-sm font-medium text-foreground">
                     Contraseña
                   </label>
                   <div className="relative">
@@ -213,7 +224,7 @@ export default function OrganizationRegisterPage() {
                       icon={SquareLock02Icon}
                       size={16}
                       strokeWidth={1.5}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
                       id="contactPassword"
@@ -221,7 +232,7 @@ export default function OrganizationRegisterPage() {
                       placeholder="••••••••"
                       value={formData.contactPassword}
                       onChange={(e) => handleInputChange("contactPassword", e.target.value)}
-                      className={`pl-10 pr-10 ${errors.contactPassword ? "border-red-500" : ""}`}
+                      className={`pl-10 pr-10 ${errors.contactPassword ? "border-destructive" : ""}`}
                       required
                     />
                     <button
@@ -229,7 +240,7 @@ export default function OrganizationRegisterPage() {
                       aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
                       aria-pressed={isPasswordVisible}
                       onClick={() => setIsPasswordVisible((v) => !v)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                     >
                       <HugeiconsIcon
                         icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
@@ -239,13 +250,13 @@ export default function OrganizationRegisterPage() {
                     </button>
                   </div>
                   {errors.contactPassword && (
-                    <p className="text-sm text-red-500">{errors.contactPassword}</p>
+                    <p className="text-sm text-destructive">{errors.contactPassword}</p>
                   )}
                 </div>
 
                 {/* Confirm Password */}
                 <div className="space-y-2">
-                  <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
                     Confirmar contraseña
                   </label>
                   <div className="relative">
@@ -253,7 +264,7 @@ export default function OrganizationRegisterPage() {
                       icon={SquareLock02Icon}
                       size={16}
                       strokeWidth={1.5}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
                       id="confirmPassword"
@@ -261,7 +272,7 @@ export default function OrganizationRegisterPage() {
                       placeholder="••••••••"
                       value={formData.confirmPassword}
                       onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                      className={`pl-10 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
+                      className={`pl-10 pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
                       required
                     />
                     <button
@@ -269,7 +280,7 @@ export default function OrganizationRegisterPage() {
                       aria-label={isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
                       aria-pressed={isConfirmVisible}
                       onClick={() => setIsConfirmVisible((v) => !v)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                     >
                       <HugeiconsIcon
                         icon={isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
@@ -279,7 +290,7 @@ export default function OrganizationRegisterPage() {
                     </button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                    <p className="text-sm text-destructive">{errors.confirmPassword}</p>
                   )}
                 </div>
               </div>
@@ -287,13 +298,13 @@ export default function OrganizationRegisterPage() {
 
             {/* Información de la Organización */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 pb-2">
+              <h3 className="pb-2 text-lg font-semibold text-foreground">
                 Información de la Organización
               </h3>
 
               {/* Organization Name */}
               <div className="space-y-2">
-                <label htmlFor="organizationName" className="text-sm font-medium text-gray-700">
+                <label htmlFor="organizationName" className="text-sm font-medium text-foreground">
                   Nombre de la organización
                 </label>
                 <div className="relative">
@@ -301,7 +312,7 @@ export default function OrganizationRegisterPage() {
                     icon={Building06Icon}
                     size={16}
                     strokeWidth={1.5}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   />
                   <Input
                     id="organizationName"
@@ -309,18 +320,21 @@ export default function OrganizationRegisterPage() {
                     placeholder="Nombre oficial de la organización"
                     value={formData.organizationName}
                     onChange={(e) => handleInputChange("organizationName", e.target.value)}
-                    className={`pl-10 ${errors.organizationName ? "border-red-500" : ""}`}
+                    className={`pl-10 ${errors.organizationName ? "border-destructive" : ""}`}
                     required
                   />
                 </div>
                 {errors.organizationName && (
-                  <p className="text-sm text-red-500">{errors.organizationName}</p>
+                  <p className="text-sm text-destructive">{errors.organizationName}</p>
                 )}
               </div>
 
               {/* Website */}
               <div className="space-y-2">
-                <label htmlFor="organizationWebsite" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="organizationWebsite"
+                  className="text-sm font-medium text-foreground"
+                >
                   Sitio web
                 </label>
                 <div className="relative">
@@ -328,7 +342,7 @@ export default function OrganizationRegisterPage() {
                     icon={Globe02Icon}
                     size={16}
                     strokeWidth={1.5}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   />
                   <Input
                     id="organizationWebsite"
@@ -336,12 +350,12 @@ export default function OrganizationRegisterPage() {
                     placeholder="https://tuorganizacion.com"
                     value={formData.organizationWebsite}
                     onChange={(e) => handleInputChange("organizationWebsite", e.target.value)}
-                    className={`pl-10 ${errors.organizationWebsite ? "border-red-500" : ""}`}
+                    className={`pl-10 ${errors.organizationWebsite ? "border-destructive" : ""}`}
                     required
                   />
                 </div>
                 {errors.organizationWebsite && (
-                  <p className="text-sm text-red-500">{errors.organizationWebsite}</p>
+                  <p className="text-sm text-destructive">{errors.organizationWebsite}</p>
                 )}
               </div>
             </div>
@@ -353,30 +367,32 @@ export default function OrganizationRegisterPage() {
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
                 label={
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-foreground">
                     En nombre de la organización, acepto los{" "}
                     <button
                       type="button"
-                      className="text-purple-600 hover:text-purple-800 hover:underline"
+                      className="text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
                     >
                       términos y condiciones empresariales
                     </button>{" "}
                     y la{" "}
                     <button
                       type="button"
-                      className="text-purple-600 hover:text-purple-800 hover:underline"
+                      className="text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
                     >
                       política de privacidad
                     </button>
                   </span>
                 }
               />
-              {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
+              {errors.acceptTerms && (
+                <p className="text-sm text-destructive">{errors.acceptTerms}</p>
+              )}
             </div>
 
             {/* General Error */}
             {errors.general && (
-              <div className="text-sm text-red-500 text-center p-3 bg-red-50 rounded-md">
+              <div className="rounded-md bg-destructive/10 p-3 text-center text-sm text-destructive">
                 {errors.general}
               </div>
             )}
@@ -384,41 +400,58 @@ export default function OrganizationRegisterPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-purple-600 text-white hover:bg-purple-700 h-11"
+              className="h-11 w-full bg-fuchsia-600 text-white hover:bg-fuchsia-700"
               disabled={isLoading}
             >
               {isLoading ? "Registrando organización..." : "Registrar Organización"}
             </Button>
           </form>
 
-          {/* Navigation Links */}
-          <div className="mt-6 space-y-4">
+          <div className="space-y-4 border-t pt-6">
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+              >
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
+                Volver a selección de registro
+              </Link>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
                 ¿Tu organización ya está registrada?{" "}
                 <Link
                   href="/login/organization"
-                  className="text-purple-600 hover:text-purple-800 hover:underline font-medium"
+                  className="font-medium text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
                 >
                   Acceder al portal
                 </Link>
               </p>
             </div>
-
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 ¿Eres usuario individual?{" "}
                 <Link
                   href="/register/professional"
-                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
                 >
                   Crear cuenta de usuario
                 </Link>
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <p className="text-center text-sm text-muted-foreground">
+            ¿Necesitas ayuda?{" "}
+            <a
+              href="mailto:support@biovity.com"
+              className="font-medium text-primary hover:underline"
+            >
+              Contactar soporte
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
