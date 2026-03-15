@@ -35,10 +35,10 @@ export interface Trabajo {
 export interface FiltrosTrabajos {
   query: string
   ubicacion: string
-  modalidad: "todas" | ModalidadTrabajo
-  formato: "todas" | FormatoTrabajo
+  modalidad: "Modalidad" | ModalidadTrabajo
+  formato: "Formato" | FormatoTrabajo
   salarioMin: number | null
   salarioMax: number | null
-  experiencia: "todas" | NivelExperiencia
+  experiencia: "Experiencia" | NivelExperiencia
   categoria: string | null
 }

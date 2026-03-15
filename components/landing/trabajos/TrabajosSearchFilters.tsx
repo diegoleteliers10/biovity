@@ -35,7 +35,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   const [salarioMin, setSalarioMin] = useState(filtros.salarioMin?.toString() || "")
   const [salarioMax, setSalarioMax] = useState(filtros.salarioMax?.toString() || "")
   const [experiencia, setExperiencia] = useState(filtros.experiencia)
-  const [categoria, setCategoria] = useState(filtros.categoria || "todas")
+  const [categoria, setCategoria] = useState(filtros.categoria || "Categoría")
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
@@ -63,20 +63,20 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   const handleLimpiar = useCallback(() => {
     setQuery("")
     setUbicacion("")
-    setModalidad("todas")
-    setFormato("todas")
+    setModalidad("Modalidad")
+    setFormato("Formato")
     setSalarioMin("")
     setSalarioMax("")
-    setExperiencia("todas")
-    setCategoria("todas")
+    setExperiencia("Experiencia")
+    setCategoria("Categoría")
     onFiltrosChange({
       query: "",
       ubicacion: "",
-      modalidad: "todas",
-      formato: "todas",
+      modalidad: "Modalidad",
+      formato: "Formato",
       salarioMin: null,
       salarioMax: null,
-      experiencia: "todas",
+      experiencia: "Experiencia",
       categoria: null,
     })
   }, [onFiltrosChange])
@@ -168,6 +168,8 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 placeholder="Salario mínimo (CLP)"
                 value={salarioMin}
                 onChange={(e) => setSalarioMin(e.target.value)}
+                className="placeholder:text-muted-foreground"
+                aria-label="Salario mínimo en pesos chilenos"
               />
 
               {/* Salario máximo */}
@@ -177,6 +179,8 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 placeholder="Salario máximo (CLP)"
                 value={salarioMax}
                 onChange={(e) => setSalarioMax(e.target.value)}
+                className="placeholder:text-muted-foreground"
+                aria-label="Salario máximo en pesos chilenos"
               />
 
               {/* Experiencia */}

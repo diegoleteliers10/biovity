@@ -46,7 +46,8 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 }
-import { ConexionTalento } from "@/components/landing/home/BeamSection";
+
+import { ConexionTalento } from "@/components/landing/home/BeamSection"
 
 export default function Home() {
   return (

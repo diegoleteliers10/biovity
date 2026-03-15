@@ -34,6 +34,28 @@ export function formatFechaRelativa(fecha: Date): string {
   return `hace ${Math.floor(diffDays / 30)} meses`
 }
 
+/** Formats YYYY-MM as "ene 2020" for resume dates. */
+export function formatMonthYear(dateStr: string): string {
+  const [y, m] = dateStr.split("-").map(Number)
+  if (!y || !m) return dateStr
+  const date = new Date(y, m - 1, 1)
+  return date.toLocaleDateString("es-CL", { month: "short", year: "numeric" })
+}
+
+/** Parses YYYY-MM-DD as local date (avoids timezone off-by-one). */
+export function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("T")[0].split("-").map(Number)
+  return new Date(y, (m ?? 1) - 1, d ?? 1)
+}
+
+/** Converts a Date to YYYY-MM-DD for date-only fields. react-day-picker returns UTC midnight. */
+export function dateToDateString(d: Date): string {
+  const y = d.getUTCFullYear()
+  const m = d.getUTCMonth() + 1
+  const day = d.getUTCDate()
+  return `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+}
+
 /** Long locale date for detail pages (e.g. "25 de enero de 2025"). */
 export function formatFechaLarga(fecha: Date): string {
   return new Date(fecha).toLocaleDateString("es-CL", {

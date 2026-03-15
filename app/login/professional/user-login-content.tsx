@@ -38,9 +38,8 @@ export function UserLoginContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "professional") {
-        router.push("/dashboard")
-      } else if (session.user.type === "organization") {
+      const type = (session.user as { type?: string }).type
+      if (type === "professional" || type === "organization" || type === "admin") {
         router.push("/dashboard")
       }
     }
@@ -79,9 +78,10 @@ export function UserLoginContent() {
         rememberMe,
       })
       if (result.error) {
-        setErrors({
-          general: "Credenciales inválidas. Por favor verifica tu email y contraseña.",
-        })
+        const msg =
+          (result.error as { message?: string })?.message ??
+          "Credenciales inválidas. Por favor verifica tu email y contraseña."
+        setErrors({ general: msg })
       } else {
         router.push(redirectTo)
       }
@@ -178,7 +178,10 @@ export function UserLoginContent() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 label="Recordarme"
               />
-              <button type="button" className="text-sm text-blue-600 hover:text-blue-800 hover:underline">
+              <button
+                type="button"
+                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              >
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
@@ -197,7 +200,10 @@ export function UserLoginContent() {
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 ¿No tienes una cuenta?{" "}
-                <Link href="/register/professional" className="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+                <Link
+                  href="/register/professional"
+                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                >
                   Regístrate como usuario
                 </Link>
               </p>
@@ -205,7 +211,10 @@ export function UserLoginContent() {
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 ¿Eres una organización?{" "}
-                <Link href="/login/organization" className="text-purple-600 hover:text-purple-800 hover:underline font-medium">
+                <Link
+                  href="/login/organization"
+                  className="text-purple-600 hover:text-purple-800 hover:underline font-medium"
+                >
                   Acceso organizacional
                 </Link>
               </p>

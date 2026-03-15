@@ -18,9 +18,8 @@ export function LoginContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "professional") {
-        router.push("/dashboard")
-      } else if (session.user.type === "organization") {
+      const type = (session.user as { type?: string }).type
+      if (type === "professional" || type === "organization" || type === "admin") {
         router.push("/dashboard")
       }
     }
@@ -89,7 +88,12 @@ export function LoginContent() {
                 <CardContent className="py-1 px-6">
                   <div className="flex items-center space-x-4">
                     <div className="p-3 bg-blue-100 rounded-full">
-                      <HugeiconsIcon icon={UserIcon} size={24} strokeWidth={1.5} className="text-blue-600" />
+                      <HugeiconsIcon
+                        icon={UserIcon}
+                        size={24}
+                        strokeWidth={1.5}
+                        className="text-blue-600"
+                      />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-800">Usuario Individual</h3>
@@ -97,7 +101,12 @@ export function LoginContent() {
                         Acceso para profesionales, investigadores y estudiantes
                       </p>
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={20} strokeWidth={1.5} className="text-blue-600" />
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-blue-600"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -107,7 +116,12 @@ export function LoginContent() {
                 <CardContent className="py-1 px-6">
                   <div className="flex items-center space-x-4">
                     <div className="p-3 bg-purple-100 rounded-full">
-                      <HugeiconsIcon icon={Building06Icon} size={24} strokeWidth={1.5} className="text-purple-600" />
+                      <HugeiconsIcon
+                        icon={Building06Icon}
+                        size={24}
+                        strokeWidth={1.5}
+                        className="text-purple-600"
+                      />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-800">Organización</h3>
@@ -115,7 +129,12 @@ export function LoginContent() {
                         Portal para empresas, instituciones y laboratorios
                       </p>
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={20} strokeWidth={1.5} className="text-purple-600" />
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-purple-600"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -126,15 +145,28 @@ export function LoginContent() {
               <h3 className="text-sm font-semibold text-gray-800 mb-4">¿Eres Nuevo en Biovity?</h3>
             </div>
             <div className="space-y-3">
-              <Button asChild variant="outline" className="w-full h-12 border-blue-200 hover:bg-blue-50 text-base">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-12 border-blue-200 hover:bg-blue-50 text-base"
+              >
                 <Link href="/register/professional">
                   <HugeiconsIcon icon={UserIcon} size={20} strokeWidth={1.5} className="mr-2" />
                   Crear cuenta de usuario
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="w-full h-12 border-purple-200 hover:bg-purple-50 text-base">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-12 border-purple-200 hover:bg-purple-50 text-base"
+              >
                 <Link href="/register/organization">
-                  <HugeiconsIcon icon={Building06Icon} size={20} strokeWidth={1.5} className="mr-2" />
+                  <HugeiconsIcon
+                    icon={Building06Icon}
+                    size={20}
+                    strokeWidth={1.5}
+                    className="mr-2"
+                  />
                   Registrar organización
                 </Link>
               </Button>

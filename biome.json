@@ -7,19 +7,11 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.js",
-      "**/*.jsx",
-      "**/*.json"
-    ]
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.json"]
   },
   "overrides": [
     {
-      "includes": [
-        "**/components/seo/**"
-      ],
+      "includes": ["**/components/seo/**"],
       "linter": {
         "rules": {
           "security": {
@@ -29,9 +21,7 @@
       }
     },
     {
-      "includes": [
-        "**/components/ui/chart.tsx"
-      ],
+      "includes": ["**/components/ui/chart.tsx"],
       "linter": {
         "rules": {
           "security": {

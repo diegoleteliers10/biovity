@@ -1,8 +1,8 @@
 "use client"
 
-import Image from "next/image"
 import { UserIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Image from "next/image"
 import { type FC, type ReactNode, useState } from "react"
 import { cx } from "@/lib/utils/cx"
 import { AvatarOnlineIndicator, VerifiedTick } from "./base-components"

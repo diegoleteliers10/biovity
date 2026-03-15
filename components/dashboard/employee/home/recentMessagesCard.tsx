@@ -7,17 +7,24 @@ import type { RecentMessage } from "@/lib/types/dashboard"
 
 interface RecentMessagesCardProps {
   messages: RecentMessage[]
+  onViewAll?: () => void
 }
 
 export const RecentMessagesCard = memo(function RecentMessagesCard({
   messages,
+  onViewAll,
 }: RecentMessagesCardProps) {
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Mensajes Recientes</CardTitle>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={onViewAll}
+          >
             Ver Todo
           </Button>
         </div>
