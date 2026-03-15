@@ -47,6 +47,7 @@ export function UserMessagesContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const { data: recruiter } = useUser(selectedChat?.recruiterId)
+  const { data: professionalProfile } = useUser(professionalId)
   const {
     messages,
     isLoading: messagesLoading,
@@ -248,8 +249,17 @@ export function UserMessagesContent() {
                       message={msg}
                       isOwn={msg.senderId === professionalId}
                       senderName={msg.senderId === professionalId ? "Tú" : recruiterName}
-                      senderInitials={msg.senderId === professionalId ? "Tú" : recruiterInitials}
-                      senderAvatar={msg.senderId === professionalId ? undefined : recruiter?.avatar}
+                      senderInitials={
+                        msg.senderId === professionalId
+                          ? (professionalProfile?.name ?? "Tú")
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()
+                          : recruiterInitials
+                      }
+                      senderAvatar={msg.senderId === professionalId ? professionalProfile?.avatar : recruiter?.avatar}
                       formatTime={formatMessageTime}
                     />
                   ))}
@@ -433,12 +443,14 @@ function MessageBubble({
   return (
     <div className={`chat ${chatAlign}`}>
       <div className="chat-image avatar">
-        <Avatar className="size-10 rounded-full">
-          {senderAvatar && <AvatarImage src={senderAvatar} alt="" />}
-          <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
-            {senderInitials}
-          </AvatarFallback>
-        </Avatar>
+        <div className="size-10 overflow-hidden rounded-full">
+          <Avatar className="size-10 rounded-full">
+            {senderAvatar && <AvatarImage src={senderAvatar} alt="" />}
+            <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
+              {senderInitials}
+            </AvatarFallback>
+          </Avatar>
+        </div>
       </div>
       <div className="chat-header">
         {senderName}

@@ -79,6 +79,16 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    /* daisyUI chat compatibility */
+    --color-base-100: var(--background);
+    --color-base-200: var(--secondary);
+    --color-base-300: var(--muted);
+    --color-base-content: var(--foreground);
+    --color-primary: var(--primary);
+    --color-primary-content: var(--primary-foreground);
+    --color-neutral: var(--muted);
+    --color-neutral-content: var(--foreground);
+    --radius-field: var(--radius);
 }
 
 .dark {
@@ -113,6 +123,16 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    /* daisyUI chat compatibility */
+    --color-base-100: var(--background);
+    --color-base-200: var(--secondary);
+    --color-base-300: var(--muted);
+    --color-base-content: var(--foreground);
+    --color-primary: var(--primary);
+    --color-primary-content: var(--primary-foreground);
+    --color-neutral: var(--muted);
+    --color-neutral-content: var(--foreground);
+    --radius-field: var(--radius);
 }
 
 @layer base {
