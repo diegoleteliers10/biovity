@@ -39,9 +39,8 @@ export function OrganizationLoginContent() {
   // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "professional") {
-        router.push("/dashboard")
-      } else if (session.user.type === "organization") {
+      const type = (session.user as { type?: string }).type
+      if (type === "professional" || type === "organization" || type === "admin") {
         router.push("/dashboard")
       }
     }
@@ -100,9 +99,10 @@ export function OrganizationLoginContent() {
       })
 
       if (result.error) {
-        setErrors({
-          general: "Credenciales inválidas. Por favor verifica tu email y contraseña.",
-        })
+        const msg =
+          (result.error as { message?: string })?.message ??
+          "Credenciales inválidas. Por favor verifica tu email y contraseña."
+        setErrors({ general: msg })
       } else {
         router.push(redirectTo)
       }

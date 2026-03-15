@@ -60,7 +60,7 @@ export const SavedContent = () => {
             </div>
             <button
               type="button"
-              onClick={() => router.push("/dashboard/search")}
+              onClick={() => router.push("/dashboard/jobs")}
               className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-md shadow transition-colors hover:bg-primary/90"
             >
               Ver todos los empleos

@@ -189,6 +189,129 @@ Types: feat, fix, hotfix, design, refactor, docs, test, chore
 
 Example: `feat/user-dashboard-metrics`
 
+## MCP-Driven Development Workflow
+
+Every implementation task MUST follow this three-phase workflow using the available MCP servers. No code should be written without completing phases 1 and 2 first.
+
+### Phase 1: Research with DeepWiki (`user-deepwiki`)
+
+Before writing any code, use DeepWiki to find reference implementations in relevant GitHub repositories. This provides real-world patterns and avoids reinventing solutions.
+
+**When to use:**
+- Implementing a new feature, API route, or component pattern
+- Integrating a library you haven't used before in this project
+- Solving an architectural decision (e.g. auth flow, data fetching strategy)
+
+**How to use:**
+
+1. `ask_question` — Ask implementation questions against repos from the tech stack:
+   - `better-auth/better-auth` — auth flows, plugins, session management
+   - `vercel/next.js` — App Router patterns, API routes, middleware
+   - `colinhacks/zod` — validation schemas, transforms, branded types
+   - `shadcn-ui/ui` — component patterns, Radix integration
+   - `TanStack/query` — data fetching, mutations, cache invalidation
+   - `supabase/supabase` — Postgres, storage, realtime
+   - `recharts/recharts` — chart implementations
+
+2. `read_wiki_structure` — Get the documentation topic tree before diving deep.
+
+3. `read_wiki_contents` — Read full documentation for specific patterns.
+
+**Example flow:**
+```
+# Before implementing password reset:
+ask_question("better-auth/better-auth", "How to implement password reset flow with email verification?")
+
+# Before building a Kanban board:
+ask_question("vercel/next.js", "How to implement drag and drop with server actions in App Router?")
+```
+
+### Phase 2: Inspect Source Code with OpenSrc (`user-opensrc`)
+
+After researching patterns, use OpenSrc to read the actual source code of dependencies used in this project. This ensures implementations align with how the library actually works, not how you think it works.
+
+**When to use:**
+- Before calling any library API for the first time in a feature
+- When DeepWiki gives you a pattern but you need to verify exact function signatures
+- When debugging unexpected behavior from a dependency
+- When you need to understand internal types or exports
+
+**How to use (via `execute` tool):**
+
+1. **Fetch the dependency source:**
+   ```js
+   async () => {
+     const [{ source }] = await opensrc.fetch("better-auth");
+     return await opensrc.tree(source.name, { depth: 2 });
+   }
+   ```
+
+2. **Search for specific patterns:**
+   ```js
+   async () => {
+     return await opensrc.grep("forgetPassword", {
+       sources: ["better-auth"],
+       include: "*.ts"
+     });
+   }
+   ```
+
+3. **Read the actual implementation:**
+   ```js
+   async () => {
+     return await opensrc.read("better-auth", "src/plugins/email-password/routes.ts");
+   }
+   ```
+
+**Key dependencies to inspect when relevant:**
+- `better-auth` — auth config, plugins, client methods
+- `zod` — schema internals, error types
+- `@tanstack/react-query` — hook signatures, mutation patterns
+- `@radix-ui/*` — component props, accessibility internals
+- `recharts` — chart component APIs, data shapes
+- `motion` — animation API, variants
+
+### Phase 3: Plan and Execute with Sequential Thinking (`user-sequential-thinking`)
+
+Use Sequential Thinking to break down every non-trivial task into structured steps before writing code. This prevents half-baked implementations and ensures nothing is missed.
+
+**When to use:**
+- ANY task that involves more than a single file change
+- Feature implementation, bug fixes with multiple causes, refactors
+- When the solution path is not immediately obvious
+
+**How to use (via `sequentialthinking` tool):**
+
+1. **Start with problem decomposition** — Break the task into numbered steps.
+2. **Plan each step** — Define what files to touch, what to change, dependencies.
+3. **Revise if needed** — Use `isRevision: true` to correct course mid-plan.
+4. **Verify hypothesis** — Before finishing, validate the plan covers all edge cases.
+
+**Required parameters:**
+- `thought`: Current reasoning step
+- `thoughtNumber`: Step number (1, 2, 3...)
+- `totalThoughts`: Estimated total steps (adjust as you go)
+- `nextThoughtNeeded`: `true` until the final step
+
+**Example flow for implementing a feature:**
+```
+Thought 1: Identify all files that need changes and their dependencies
+Thought 2: Define the data model / types needed
+Thought 3: Plan the API layer (endpoints, validation)
+Thought 4: Plan the UI components and their state management
+Thought 5: Define error handling and edge cases
+Thought 6: Verify the plan covers the full requirement
+```
+
+### Complete Workflow Example
+
+> Task: "Implement password reset flow"
+
+1. **DeepWiki** → `ask_question("better-auth/better-auth", "How does password reset work? What routes and methods are needed?")`
+2. **OpenSrc** → Fetch `better-auth`, grep for `forgetPassword`, read the actual route handler and client methods
+3. **Sequential Thinking** → Plan: (1) add auth config, (2) create forgot-password page, (3) create reset-password page, (4) add email sending, (5) wire login page links, (6) add validation schemas, (7) test flow
+4. **Implement** → Write code following the plan with full context from phases 1-2
+
 ## Important Patterns
 
 ### Dashboard Layout

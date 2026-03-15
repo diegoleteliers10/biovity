@@ -1,9 +1,29 @@
 import { dash } from "@better-auth/infra"
+import { APIError, createAuthMiddleware } from "better-auth/api"
 import { betterAuth } from "better-auth"
 import { headers } from "next/headers"
 import { pool } from "@/lib/db"
 
 export const auth = betterAuth({
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/sign-in/email") return
+
+      const email = (ctx.body as { email?: string })?.email
+      if (!email?.trim()) return
+
+      const result = await pool.query<{ id: string; isActive: boolean | null }>(
+        `SELECT id, "isActive" FROM "user" WHERE LOWER(email) = LOWER($1)`,
+        [email.trim()],
+      )
+      const row = result.rows[0]
+      if (row && row.isActive === false) {
+        throw new APIError("UNAUTHORIZED", {
+          message: "Tu cuenta está desactivada. Contacta al administrador.",
+        })
+      }
+    }),
+  },
   appName: "Biovity", // Define your application name
   database: pool,
   cookieCache: {
@@ -130,9 +150,18 @@ export const auth = betterAuth({
 
 export type UserRole = "admin" | "professional" | "organization"
 
+/** Returns true if session user is admin (ADMIN_EMAILS or user.type === "admin"). */
+export function isAdminSession(session: { user: { email?: string } } | null): boolean {
+  if (!session?.user?.email) return false
+  const user = session.user as { type?: string }
+  const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
+  return adminEmails.includes(session.user.email) || user.type === "admin"
+}
+
 /**
  * Server-side role check for conditional routing (e.g. Parallel Routes).
  * Returns user role from session; admin if email is in ADMIN_EMAILS env.
+ * Inactive users (isActive === false) are treated as unauthenticated.
  */
 export async function checkUserRole(): Promise<UserRole | null> {
   const session = await auth.api.getSession({
@@ -140,10 +169,14 @@ export async function checkUserRole(): Promise<UserRole | null> {
   })
   if (!session?.user) return null
 
+  const user = session.user as { type?: string; isActive?: boolean }
+  if (user.isActive === false) return null
+
   const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
   if (adminEmails.includes(session.user.email)) return "admin"
+  if (user.type === "admin") return "admin"
 
-  const userType = (session.user as { type?: string }).type
+  const userType = user.type
   if (userType === "professional" || userType === "organization") return userType
   return "professional"
 }

@@ -1,7 +1,7 @@
 const API_BASE =
   typeof window !== "undefined"
-    ? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
-    : process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+    ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
+    : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
 export type OrganizationAddress = {
   street?: string
@@ -13,6 +13,13 @@ export type OrganizationAddress = {
 
 export type CreateOrganizationInput = {
   name: string
+  website?: string
+  phone?: string
+  address?: OrganizationAddress
+}
+
+export type UpdateOrganizationInput = {
+  name?: string
   website?: string
   phone?: string
   address?: OrganizationAddress
@@ -39,6 +46,23 @@ function getErrorMessage(data: unknown, fallback: string): string {
   return fallback
 }
 
+export async function getOrganization(
+  id: string
+): Promise<{ data: Organization } | { error: string }> {
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/api/v1/organizations/${id}`)
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error de red" }
+  }
+
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    return { error: getErrorMessage(data, "Error al obtener la organización") }
+  }
+  return { data: data as Organization }
+}
+
 export async function createOrganization(
   input: CreateOrganizationInput
 ): Promise<{ data: Organization } | { error: string }> {
@@ -56,6 +80,28 @@ export async function createOrganization(
   const data = await res.json().catch(() => null)
   if (!res.ok) {
     return { error: getErrorMessage(data, "Error al crear la organización") }
+  }
+  return { data: data as Organization }
+}
+
+export async function updateOrganization(
+  id: string,
+  input: UpdateOrganizationInput
+): Promise<{ data: Organization } | { error: string }> {
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/api/v1/organizations/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    })
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error de red" }
+  }
+
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    return { error: getErrorMessage(data, "Error al actualizar la organización") }
   }
   return { data: data as Organization }
 }

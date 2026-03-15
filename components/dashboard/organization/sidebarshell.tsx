@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
-import { DashboardSidebar } from "../shared/DashboardSidebar"
 import { NAV_DATA_ORGANIZATION } from "@/lib/data/nav-data"
+import { DashboardSidebar } from "../shared/DashboardSidebar"
 
 type DashboardShellProps = {
   children: ReactNode

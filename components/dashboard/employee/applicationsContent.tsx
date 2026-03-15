@@ -5,24 +5,23 @@ import {
   Cancel01Icon,
   CheckmarkCircle02Icon,
   File02Icon,
-  IdeaIcon,
   Message01Icon,
   Share05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
-import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DATA } from "@/lib/data/data-test"
+import { useApplicationsByCandidate } from "@/lib/api/use-applications"
+import { authClient } from "@/lib/auth-client"
 
-type ApplicationItem = {
-  jobTitle: string
-  company: string
-  dateApplied: string
-  status: string
-  statusColor: string
+function formatDateApplied(isoDate: string): string {
+  return new Date(isoDate).toLocaleDateString("es-CL", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
 }
 
 const STAGES = [
@@ -33,26 +32,17 @@ const STAGES = [
   { id: "rechazado", label: "Rechazado", icon: Cancel01Icon },
 ]
 
-const getCurrentStageIndex = (status: string) => {
-  const s = status.toLowerCase()
-  if (s.includes("contrat") || s.includes("hired"))
-    return STAGES.findIndex((x) => x.id === "contratado")
-  if (s.includes("reject") || s.includes("no seleccionado") || s.includes("rechaz"))
-    return STAGES.findIndex((x) => x.id === "rechazado")
-  if (s.includes("offer") || s.includes("oferta")) return STAGES.findIndex((x) => x.id === "oferta")
-  if (s.includes("interview") || s.includes("entrevista"))
-    return STAGES.findIndex((x) => x.id === "entrevista")
-  // Under review, applied, submitted -> pendiente
-  return STAGES.findIndex((x) => x.id === "pendiente")
+const getCurrentStageIndex = (status: string): number => {
+  const idx = STAGES.findIndex((x) => x.id === status.toLowerCase())
+  return idx >= 0 ? idx : 0
 }
 
 export const ApplicationsContent = () => {
   const router = useRouter()
-  const applications: ApplicationItem[] = useMemo(
-    () => DATA.recentApplications as unknown as ApplicationItem[],
-    []
-  )
-  const [hovered, setHovered] = useState<string | null>(null)
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const userId = (session?.user as { id?: string })?.id
+  const { data: applications = [], isLoading, error } = useApplicationsByCandidate(userId)
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -65,7 +55,15 @@ export const ApplicationsContent = () => {
         </div>
       </div>
 
-      {applications.length === 0 ? (
+      {error ? (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <p className="text-destructive text-sm">{error.message}</p>
+        </div>
+      ) : isLoading ? (
+        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12">
+          <p className="text-muted-foreground text-sm">Cargando postulaciones...</p>
+        </div>
+      ) : applications.length === 0 ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
           <div className="flex flex-col items-center justify-center text-center gap-3 py-12">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
@@ -87,33 +85,28 @@ export const ApplicationsContent = () => {
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {applications.map((app) => {
-            const key = `${app.company}-${app.jobTitle}`
+            const jobTitle = app.job?.title ?? "Trabajo"
+            const company = "Organización"
             const current = getCurrentStageIndex(app.status)
 
             return (
-              <div key={key} className="relative">
+              <div key={app.id} className="relative">
                 <Card className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group">
                   <CardHeader className="pb-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 space-y-0.5">
                         <CardTitle className="text-[15px] md:text-base font-semibold leading-tight line-clamp-2">
-                          {app.jobTitle}
+                          {jobTitle}
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground truncate">{app.company}</p>
+                        <p className="text-sm text-muted-foreground truncate">{company}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
                           size="icon-sm"
                           className="rounded-md bg-muted hover:bg-muted/80 text-foreground hover:text-primary transition-colors duration-200"
-                          title="Compartir detalle"
-                          onClick={() => {
-                            const slug = app.jobTitle
-                              .toLowerCase()
-                              .replace(/[^\p{L}\p{N}]+/gu, "-")
-                              .replace(/^-+|-+$/g, "")
-                            router.push(`/dashboard/job/${slug}`)
-                          }}
+                          title="Ver detalle del trabajo"
+                          onClick={() => router.push(`/dashboard/job/${app.jobId}`)}
                         >
                           <HugeiconsIcon
                             icon={Share05Icon}
@@ -127,7 +120,7 @@ export const ApplicationsContent = () => {
                   </CardHeader>
                   <CardContent className="pt-3">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>Aplicado: {app.dateApplied}</span>
+                      <span>Aplicado: {formatDateApplied(app.createdAt)}</span>
                     </div>
 
                     {/* Timeline inline */}

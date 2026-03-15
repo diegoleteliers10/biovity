@@ -121,8 +121,7 @@ export default function OrganizationRegisterPage() {
       router.push("/dashboard")
     } catch (err) {
       setErrors({
-        general:
-          err instanceof Error ? err.message : "Error al registrar. Inténtalo de nuevo.",
+        general: err instanceof Error ? err.message : "Error al registrar. Inténtalo de nuevo.",
       })
     } finally {
       setIsLoading(false)
@@ -336,7 +335,7 @@ export default function OrganizationRegisterPage() {
                 {errors.organizationName && (
                   <p className="text-sm text-red-500">{errors.organizationName}</p>
                 )}
-                </div>
+              </div>
 
               <div className="space-y-2">
                 <label htmlFor="organizationWebsite" className="text-sm font-medium text-gray-700">
@@ -402,14 +401,10 @@ export default function OrganizationRegisterPage() {
               type="submit"
               className="w-full bg-purple-600 text-white hover:bg-purple-700 h-11"
               disabled={
-                isLoading ||
-                createOrganizationMutation.isPending ||
-                linkUserMutation.isPending
+                isLoading || createOrganizationMutation.isPending || linkUserMutation.isPending
               }
             >
-              {isLoading ||
-              createOrganizationMutation.isPending ||
-              linkUserMutation.isPending
+              {isLoading || createOrganizationMutation.isPending || linkUserMutation.isPending
                 ? "Registrando organización..."
                 : "Registrar Organización"}
             </Button>

@@ -1,4 +1,3 @@
-import type { NavData } from "@/lib/types/nav"
 import {
   Analytics01Icon,
   Bookmark02Icon,
@@ -9,7 +8,9 @@ import {
   File02Icon,
   FileAddIcon,
   Search01Icon,
+  User02Icon,
 } from "@hugeicons/core-free-icons"
+import type { NavData } from "@/lib/types/nav"
 
 export const NAV_DATA: NavData = {
   user: {
@@ -54,16 +55,12 @@ export const NAV_DATA: NavData = {
   explore: [
     {
       title: "Buscar Empleos",
-      url: "/dashboard/search",
+      url: "/dashboard/jobs",
       icon: Search01Icon,
+      tooltipCollapsed: "Trabajos",
     },
   ],
-  profileProgress: {
-    percentage: 75,
-    title: "Progreso del Perfil",
-    subtitle: "Completitud",
-    actionText: "Completar Perfil",
-  },
+  profileProgress: null,
 }
 
 export const NAV_DATA_ORGANIZATION: NavData = {
@@ -80,13 +77,26 @@ export const NAV_DATA_ORGANIZATION: NavData = {
     { title: "Mensajes", url: "/dashboard/messages", icon: BubbleChatIcon },
     { title: "Métricas", url: "/dashboard/metrics", icon: Analytics01Icon },
   ],
-  explore: [
-    { title: "Explorar Talento", url: "/dashboard/talent", icon: Search01Icon },
-  ],
+  explore: [{ title: "Explorar Talento", url: "/dashboard/talent", icon: Search01Icon }],
   profileProgress: {
     percentage: 60,
     title: "Perfil Organización",
     subtitle: "Completitud",
     actionText: "Completar Perfil",
   },
+}
+
+export const NAV_DATA_ADMIN: NavData = {
+  user: {
+    name: "Admin",
+    title: "Administrador",
+    avatar: "",
+  },
+  navMain: [
+    { title: "Dashboard", url: "/dashboard", icon: DashboardSquare02Icon },
+    { title: "Usuarios", url: "/dashboard/users", icon: User02Icon },
+    { title: "Organizaciones", url: "/dashboard/organizations", icon: Building02Icon },
+  ],
+  explore: [],
+  profileProgress: null,
 }

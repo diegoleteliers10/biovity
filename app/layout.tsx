@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
 import "./globals.css"
-import { MotionProvider } from "@/components/providers/MotionProvider"
-import { QueryProvider } from "@/components/providers/QueryProvider"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { MotionProvider } from "@/components/providers/MotionProvider"
+import { QueryProvider } from "@/components/providers/QueryProvider"
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",

@@ -17,40 +17,107 @@ import {
   WhatsappIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/animate-ui/components/radix/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
+import { useOrganization } from "@/lib/api/use-organization-mutations"
+import { useJob } from "@/lib/api/use-jobs"
+import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
 
-const toTitle = (slug: string | undefined) => {
-  if (!slug) return "Vacante"
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+function getJobModalidad(loc: JobLocation | null | undefined): string {
+  if (!loc) return "Presencial"
+  if (loc.isRemote) return "Remoto"
+  if (loc.isHybrid) return "Híbrido"
+  return "Presencial"
+}
+
+function formatJobSalary(job: Job): string {
+  const s = job.salary
+  if (!s) return "A convenir"
+  if (s.min != null && s.max != null) {
+    const currency = s.currency === "USD" ? "USD" : "CLP"
+    const period = s.period === "monthly" ? "mes" : (s.period ?? "")
+    return `$${s.min.toLocaleString("es-CL")} - ${s.max.toLocaleString("es-CL")} ${currency}/${period}`
+  }
+  if (s.isNegotiable) return "A convenir"
+  return "A convenir"
+}
+
+function formatDateShort(isoDate: string | undefined | null): string {
+  if (!isoDate) return "—"
+  const date = new Date(isoDate)
+  if (Number.isNaN(date.getTime())) return "—"
+  return date.toLocaleDateString("es-CL", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+}
+
+function getBenefitIcon(benefit: JobBenefit) {
+  const t = benefit.title.toLowerCase()
+  if (/salud|médico|medico|dental|seguro/.test(t)) return HeartAddIcon
+  if (/vacacion|vacation/.test(t)) return AirplaneLanding01Icon
+  if (/formación|formacion|capacitación|aprendizaje|learning|formación/.test(t))
+    return GraduationScrollIcon
+  if (/equipo|laptop|remoto|equipment|teletrabajo|computador/.test(t)) return LaptopIcon
+  return LaptopIcon
 }
 
 export default function JobDetailPage() {
   const router = useRouter()
   const params = useParams<{ id: string }>()
-  const jobId = params?.id
-  const jobTitle = toTitle(jobId)
+  const jobId = params?.id ?? undefined
+  const { data: job, isLoading, error } = useJob(jobId)
+  const { data: organization } = useOrganization(
+    job && !job.organization && job.organizationId ? job.organizationId : undefined
+  )
 
-  const benefits: {
-    id: string
-    label: string
-    type: "health" | "vacation" | "learning" | "equipment"
-  }[] = [
-    { id: "b1", label: "Seguro de salud y dental", type: "health" },
-    { id: "b2", label: "Vacaciones pagadas y días personales", type: "vacation" },
-    { id: "b3", label: "Presupuesto anual para formación", type: "learning" },
-    { id: "b4", label: "Equipo (computador) y trabajo híbrido", type: "equipment" },
-  ]
+  if (!jobId) {
+    return (
+      <div className="flex flex-1 items-center justify-center p-8">
+        <p className="text-muted-foreground text-sm">ID de trabajo no válido.</p>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center p-8">
+        <p className="text-muted-foreground text-sm">Cargando vacante...</p>
+      </div>
+    )
+  }
+
+  if (error || !job) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
+        <p className="text-destructive text-sm">{error?.message ?? "No se encontró la vacante."}</p>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="text-primary text-sm hover:underline bg-transparent border-none p-0 font-inherit cursor-pointer"
+          aria-label="Volver"
+        >
+          ← Volver
+        </button>
+      </div>
+    )
+  }
+
+  const organizationName = job.organization?.name ?? organization?.name ?? "Organización"
+  const locationStr = formatJobLocation(job.location) || "Sin especificar"
+  const modalidad = getJobModalidad(job.location)
+  const salaryStr = formatJobSalary(job)
+  const benefits = job.benefits ?? []
 
   return (
     <div className="flex flex-1 flex-col">
@@ -64,12 +131,13 @@ export default function JobDetailPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="hover:text-foreground cursor-pointer"
+              className="hover:text-foreground cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit"
+              aria-label="Volver"
             >
-              ← Volver a empleos
+              ← Volver
             </button>
             <span className="text-muted-foreground/60">/</span>
-            <span>{jobId}</span>
+            <span className="truncate">{job.title}</span>
           </div>
 
           <div className="mt-4 flex items-center gap-3">
@@ -85,12 +153,12 @@ export default function JobDetailPage() {
               />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Empresa</p>
-              <p className="text-sm font-medium text-foreground">Compañía Ejemplo</p>
+              <p className="text-xs font-mono text-muted-foreground">{job.id}</p>
+              <p className="text-sm font-medium text-foreground">{organizationName}</p>
             </div>
           </div>
 
-          <h1 className="mt-3 text-2xl md:text-3xl font-bold tracking-tight">{jobTitle}</h1>
+          <h1 className="mt-3 text-2xl md:text-3xl font-bold tracking-tight">{job.title}</h1>
 
           {/* Meta */}
           <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -101,19 +169,20 @@ export default function JobDetailPage() {
                 strokeWidth={1.5}
                 className="h-4 w-4"
               />
-              Buenos Aires · Híbrido
+              {locationStr} · {modalidad}
             </span>
-            <span className="inline-flex items-center gap-1">Senior · Full time</span>
-            <span className="inline-flex items-center gap-1">Programación</span>
+            <span className="inline-flex items-center gap-1">
+              {job.experienceLevel} · {job.employmentType}
+            </span>
             <span className="inline-flex items-center gap-1 font-semibold text-foreground">
               <HugeiconsIcon icon={Cash02Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
-              $2,500 - 3,000 USD/mes
+              {salaryStr}
             </span>
           </div>
 
           {/* Actions */}
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <Button className="px-6">Postular</Button>
+            <ApplyJobButton jobId={job.id} compact />
             <Button variant="outline" className="px-3" aria-label="Guardar">
               <HugeiconsIcon
                 icon={Bookmark02Icon}
@@ -175,7 +244,7 @@ export default function JobDetailPage() {
                     className="cursor-pointer"
                     onClick={() => {
                       const url = encodeURIComponent(window.location.href)
-                      window.location.href = `mailto:?subject=${encodeURIComponent(jobTitle)}&body=${url}`
+                      window.location.href = `mailto:?subject=${encodeURIComponent(job.title)}&body=${url}`
                     }}
                   >
                     <HugeiconsIcon
@@ -214,24 +283,29 @@ export default function JobDetailPage() {
         <Card className="lg:col-span-2">
           <CardContent className="prose prose-sm max-w-none p-4 md:p-6 text-foreground">
             <h2 className="text-base font-semibold">Descripción</h2>
-            <p className="text-sm text-muted-foreground">
-              Únete al equipo para construir productos de alto impacto. Esta es una maqueta con el
-              diseño adaptado al sistema visual del proyecto. Sustituye este texto con contenido
-              real cuando conectemos la fuente de datos.
+            <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+              {job.description || "Sin descripción."}
             </p>
 
-            <h3 className="mt-4 text-sm font-semibold">Requisitos</h3>
-            <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
-              <li>Experiencia con TypeScript y React.</li>
-              <li>Conocimiento de buenas prácticas y testing.</li>
-              <li>Trabajo colaborativo y comunicación efectiva.</li>
-            </ul>
+            {job.benefits && job.benefits.length > 0 && (
+              <>
+                <h3 className="mt-4 text-sm font-semibold">Beneficios incluidos</h3>
+                <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
+                  {job.benefits.map((b) => (
+                    <li key={b.title}>
+                      {b.title}
+                      {b.description ? ` — ${b.description}` : ""}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
             <h3 className="mt-4 text-sm font-semibold">Detalles</h3>
             <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
-              <li>Modalidad: Híbrido (2 días remoto).</li>
-              <li>Horario: Tiempo completo.</li>
-              <li>Equipo: Producto multidisciplinario.</li>
+              <li>Modalidad: {modalidad}</li>
+              <li>Horario: {job.employmentType}</li>
+              <li>Nivel: {job.experienceLevel}</li>
             </ul>
           </CardContent>
         </Card>
@@ -249,12 +323,12 @@ export default function JobDetailPage() {
                     strokeWidth={1.5}
                     className="h-4 w-4"
                   />
-                  21 Oct 2025
+                  {formatDateShort(job.createdAt)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Postulaciones</span>
-                <span className="font-medium">36</span>
+                <span className="font-medium">{job.applicationsCount ?? "—"}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Respuesta</span>
@@ -263,36 +337,31 @@ export default function JobDetailPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <h3 className="text-sm font-semibold">Beneficios</h3>
-              <div className="space-y-2">
-                {benefits.map((b) => {
-                  const Icon =
-                    b.type === "health"
-                      ? HeartAddIcon
-                      : b.type === "vacation"
-                        ? AirplaneLanding01Icon
-                        : b.type === "learning"
-                          ? GraduationScrollIcon
-                          : LaptopIcon
-                  return (
-                    <div
-                      key={b.id}
-                      className="flex items-center gap-2 text-sm text-muted-foreground"
-                    >
-                      <HugeiconsIcon
-                        icon={Icon}
-                        className="h-4 w-4 text-foreground/80"
-                        aria-hidden
-                      />
-                      <span>{b.label}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
+          {benefits.length > 0 && (
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                <h3 className="text-sm font-semibold">Beneficios</h3>
+                <div className="space-y-2">
+                  {benefits.map((b) => {
+                    const Icon = getBenefitIcon(b)
+                    return (
+                      <div
+                        key={b.title}
+                        className="flex items-center gap-2 text-sm text-muted-foreground"
+                      >
+                        <HugeiconsIcon
+                          icon={Icon}
+                          className="h-4 w-4 text-foreground/80 shrink-0"
+                          aria-hidden
+                        />
+                        <span>{b.title}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </main>
     </div>

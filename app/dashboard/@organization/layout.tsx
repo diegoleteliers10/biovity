@@ -6,5 +6,7 @@ export default async function OrganizationLayout({ children }: { children: React
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
-  return <DashboardShellOrganization defaultOpen={defaultOpen}>{children}</DashboardShellOrganization>
+  return (
+    <DashboardShellOrganization defaultOpen={defaultOpen}>{children}</DashboardShellOrganization>
+  )
 }

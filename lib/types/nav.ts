@@ -17,6 +17,8 @@ export interface NavExploreItem {
   title: string
   url: string
   icon: IconSvgElement
+  /** Tooltip text when sidebar is collapsed (icon mode) */
+  tooltipCollapsed?: string
 }
 
 export interface ProfileProgress {
@@ -30,5 +32,5 @@ export interface NavData {
   user: NavUser
   navMain: NavItem[]
   explore?: NavExploreItem[]
-  profileProgress: ProfileProgress
+  profileProgress: ProfileProgress | null
 }

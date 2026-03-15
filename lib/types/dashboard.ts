@@ -32,6 +32,33 @@ export interface RecentApplication {
   statusColor: string
 }
 
+export interface OrganizationRecentApplication {
+  candidateName: string
+  position: string
+  dateApplied: string
+  status: string
+  statusColor: string
+}
+
+export type ApplicationStage = "pendiente" | "entrevista" | "oferta" | "contratado" | "rechazado"
+
+export interface Applicant {
+  id: string
+  candidateName: string
+  position: string
+  dateApplied: string
+  stage: ApplicationStage
+}
+
+export interface OfferWithApplicants {
+  id: string
+  title: string
+  location: string
+  status: "activa" | "cerrada" | "borrador"
+  publishedAt: string
+  applicants: Applicant[]
+}
+
 export interface RecentMessage {
   sender: string
   time: string

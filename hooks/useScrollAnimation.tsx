@@ -1,7 +1,7 @@
 "use client"
 
-import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
 import { useRef } from "react"
 import { getTransition, LANDING_ANIMATION } from "@/lib/animations"
 

@@ -53,14 +53,11 @@ const PERSONAL_EMAIL_DOMAINS = [
 /**
  * Organization login email - rejects personal email domains
  */
-export const organizationLoginEmailSchema = emailSchema.refine(
-  (val) => {
-    const domain = val.split("@")[1]?.toLowerCase()
-    if (!domain) return false
-    return !PERSONAL_EMAIL_DOMAINS.includes(domain)
-  },
-  "Usa tu correo corporativo. No se permiten Gmail, Hotmail, Yahoo, Outlook, etc."
-)
+export const organizationLoginEmailSchema = emailSchema.refine((val) => {
+  const domain = val.split("@")[1]?.toLowerCase()
+  if (!domain) return false
+  return !PERSONAL_EMAIL_DOMAINS.includes(domain)
+}, "Usa tu correo corporativo. No se permiten Gmail, Hotmail, Yahoo, Outlook, etc.")
 
 // =====================
 // Password Validation

@@ -175,7 +175,7 @@ export const sessionSchema = z.object({
     name: z.string().optional(),
     email: z.string().email(),
     image: z.string().url().optional(),
-    type: z.enum(["professional", "organization"]),
+    type: z.enum(["professional", "organization", "admin"]),
     profession: z.string().optional(),
     location: z.string().optional(),
     title: z.string().optional(),

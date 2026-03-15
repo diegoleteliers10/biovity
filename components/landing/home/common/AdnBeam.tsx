@@ -1,16 +1,15 @@
-"use client";
+"use client"
 
-import { useRef } from "react";
-
-import { AnimatedBeam } from "@/components/ui/animated-beam";
-import { Circle } from "@/components/common/Circle";
-import { UserIcon, Building05Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Building05Icon, UserIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useRef } from "react"
+import { Circle } from "@/components/common/Circle"
+import { AnimatedBeam } from "@/components/ui/animated-beam"
 
 export function AdnBeam() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const div1Ref = useRef<HTMLDivElement>(null);
-  const div2Ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const div1Ref = useRef<HTMLDivElement>(null)
+  const div2Ref = useRef<HTMLDivElement>(null)
 
   return (
     <div
@@ -46,5 +45,5 @@ export function AdnBeam() {
         reverse
       />
     </div>
-  );
+  )
 }
