@@ -1,17 +1,19 @@
 "use client"
 
 import {
+  ArrowLeft01Icon,
   Mail01Icon,
   SquareLock02Icon,
   ViewIcon,
   ViewOffSlashIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
@@ -36,7 +38,6 @@ export function OrganizationLoginContent() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
-  // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
       const type = (session.user as { type?: string }).type
@@ -46,33 +47,15 @@ export function OrganizationLoginContent() {
     }
   }, [session, isPending, router])
 
-  // Mostrar loading mientras se verifica la sesión
   if (isPending) {
-    return (
-      <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-              <p className="text-sm text-gray-600">Verificando sesión...</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <AuthLoader />
   }
 
-  // Si hay sesión, no mostrar nada (se está redirigiendo)
-  if (session?.user) {
-    return null
-  }
+  if (session?.user) return null
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }))
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
   }
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -114,31 +97,38 @@ export function OrganizationLoginContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-4">
-          {/* Logo */}
-          <div className="mx-auto">
-            <Logo size="lg" />
+    <div className="flex h-dvh">
+      {/* Left: Illustration */}
+      <div className="relative hidden w-1/2 overflow-hidden lg:block">
+        <Image
+          src="/images/ilustrationOG.png"
+          alt="Biovity - Colaboración en ciencias y biotecnología"
+          fill
+          className="object-cover object-center p-2.5 rounded-[20px]"
+          priority
+          sizes="50vw"
+        />
+      </div>
+
+      {/* Right: Login form */}
+      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
+        <div className="mx-auto w-full max-w-sm space-y-8">
+          <div className="space-y-2 text-center">
+            <Logo size="lg" className="justify-center" />
+            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+              Iniciar sesión
+            </h1>
+            <p className="text-center text-muted-foreground">
+              Acceso para empresas, instituciones y laboratorios
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold text-gray-800">
-              <h2>Portal Organizacional</h2>
-            </CardTitle>
-            <CardDescription className="text-gray-600">
-              Acceso para empresas y organizaciones
-            </CardDescription>
-          </div>
-        </CardHeader>
-
-        <CardContent>
           <form onSubmit={handleSignIn} className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="text-sm font-medium text-foreground">
                 Correo electrónico corporativo
               </label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Usa el correo de tu organización (no Gmail, Hotmail, Yahoo, etc.)
               </p>
               <div className="relative">
@@ -146,7 +136,7 @@ export function OrganizationLoginContent() {
                   icon={Mail01Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="email"
@@ -154,17 +144,15 @@ export function OrganizationLoginContent() {
                   placeholder="admin@tuorganizacion.com"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
+                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
                   required
                   autoComplete="email"
                 />
               </div>
-              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
-
-            {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="text-sm font-medium text-foreground">
                 Contraseña
               </label>
               <div className="relative">
@@ -172,7 +160,7 @@ export function OrganizationLoginContent() {
                   icon={SquareLock02Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="password"
@@ -180,7 +168,7 @@ export function OrganizationLoginContent() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
+                  className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
                   required
                   autoComplete="current-password"
                 />
@@ -189,7 +177,7 @@ export function OrganizationLoginContent() {
                   aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
                   aria-pressed={isPasswordVisible}
                   onClick={() => setIsPasswordVisible((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                 >
                   <HugeiconsIcon
                     icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
@@ -198,10 +186,8 @@ export function OrganizationLoginContent() {
                   />
                 </button>
               </div>
-              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
-
-            {/* Remember Me and Forgot Password */}
             <div className="flex items-center justify-between">
               <Checkbox
                 id="remember"
@@ -211,55 +197,68 @@ export function OrganizationLoginContent() {
               />
               <button
                 type="button"
-                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                className="text-sm text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
               >
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
-
-            {/* General Error */}
             {errors.general && (
-              <div className="text-sm text-red-500 text-center">{errors.general}</div>
+              <div className="text-center text-sm text-destructive">{errors.general}</div>
             )}
-
-            {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-purple-600 text-white hover:bg-purple-700 h-11"
+              className="h-11 w-full bg-fuchsia-600 text-white hover:bg-fuchsia-700"
               disabled={isLoading}
             >
               {isLoading ? "Cargando..." : "Acceder al portal"}
             </Button>
           </form>
 
-          {/* Navigation Links */}
-          <div className="mt-6 space-y-4">
+          <div className="space-y-4 border-t pt-6">
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+              >
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
+                Volver a selección de acceso
+              </Link>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
                 ¿Tu organización no está registrada?{" "}
                 <Link
                   href="/register/organization"
-                  className="text-purple-600 hover:text-purple-800 hover:underline font-medium"
+                  className="font-medium text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
                 >
                   Registrar organización
                 </Link>
               </p>
             </div>
-
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 ¿Eres usuario individual?{" "}
                 <Link
                   href="/login/professional"
-                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
                 >
                   Acceso de usuario
                 </Link>
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <p className="text-center text-sm text-muted-foreground">
+            ¿Necesitas ayuda?{" "}
+            <a
+              href="mailto:support@biovity.com"
+              className="font-medium text-primary hover:underline"
+            >
+              Contactar soporte
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

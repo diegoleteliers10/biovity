@@ -1,7 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useQueryStates } from "nuqs"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -10,9 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
 import { setUserActive } from "@/lib/api/users"
+import { adminOrganizationsParsers } from "@/lib/parsers/admin-organizations"
 
 type AdminUser = {
   id: string
@@ -37,14 +41,26 @@ function formatDate(iso: string): string {
   }
 }
 
+const SEARCH_DEBOUNCE_MS = 400
+
 export function AdminOrganizationsContent() {
   const [users, setUsers] = useState<AdminUser[]>([])
   const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState("")
-  const [appliedFilters, setAppliedFilters] = useState({ search: "" })
   const [togglingId, setTogglingId] = useState<string | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const [urlState, setUrlState] = useQueryStates(adminOrganizationsParsers, {
+    history: "push",
+    shallow: false,
+  })
+  const { page, search } = urlState
+
+  const [inputSearch, setInputSearch] = useState(search)
+
+  useEffect(() => {
+    setInputSearch(search)
+  }, [search])
 
   const fetchOrganizations = useCallback(async () => {
     setLoading(true)
@@ -53,7 +69,7 @@ export function AdminOrganizationsContent() {
       params.set("page", String(page))
       params.set("limit", "20")
       params.set("type", "organization")
-      if (appliedFilters.search.trim()) params.set("search", appliedFilters.search.trim())
+      if (search.trim()) params.set("search", search.trim())
 
       const res = await fetch(`/api/admin/users?${params}`)
       const data = await res.json().catch(() => null)
@@ -69,19 +85,29 @@ export function AdminOrganizationsContent() {
     } finally {
       setLoading(false)
     }
-  }, [page, appliedFilters])
+  }, [page, search])
 
   useEffect(() => {
     fetchOrganizations()
   }, [fetchOrganizations])
 
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setInputSearch(value)
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => {
+        setUrlState({ search: value, page: 1 })
+        debounceRef.current = null
+      }, SEARCH_DEBOUNCE_MS)
+    },
+    [setUrlState]
+  )
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAppliedFilters((prev) => ({ ...prev, search }))
-      setPage(1)
-    }, 400)
-    return () => clearTimeout(timer)
-  }, [search])
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
 
   const handleToggleActive = async (user: AdminUser) => {
     setTogglingId(user.id)
@@ -113,8 +139,8 @@ export function AdminOrganizationsContent() {
       <div className="flex flex-wrap gap-4">
         <Input
           placeholder="Buscar por email o nombre..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={inputSearch}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="max-w-sm"
           aria-label="Buscar organizaciones"
         />
@@ -182,18 +208,20 @@ export function AdminOrganizationsContent() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={() => setUrlState({ page: Math.max(1, page - 1) })}
               disabled={page <= 1}
+              aria-label="Página anterior"
             >
-              Anterior
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() => setUrlState({ page: Math.min(totalPages, page + 1) })}
               disabled={page >= totalPages}
+              aria-label="Página siguiente"
             >
-              Siguiente
+              <HugeiconsIcon icon={ArrowRight01Icon} size={18} />
             </Button>
           </div>
         </div>

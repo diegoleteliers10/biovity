@@ -13,16 +13,17 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useMemo, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar } from "@/components/base/avatar/avatar"
+import { useQueryStates } from "nuqs"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+import { Avatar } from "@/components/base/avatar/avatar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -31,10 +32,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useProfessionalUsers } from "@/lib/api/use-talent"
-import { useResumeByUser, useUser } from "@/lib/api/use-profile"
-import { formatUserLocation } from "@/lib/api/users"
 import type { ResumeEducation, ResumeExperience } from "@/lib/api/resumes"
+import { useResumeByUser, useUser } from "@/lib/api/use-profile"
+import { useProfessionalUsers } from "@/lib/api/use-talent"
+import { formatUserLocation } from "@/lib/api/users"
+import { talentParsers } from "@/lib/parsers/talent"
 
 const EMPTY_PLACEHOLDER = "No especificado"
 
@@ -266,10 +268,46 @@ function TalentDetailSheet({
   )
 }
 
+const SEARCH_DEBOUNCE_MS = 400
+
 export function TalentContent() {
-  const [page, setPage] = useState(1)
-  const [searchInput, setSearchInput] = useState("")
-  const [search, setSearch] = useState("")
+  const [urlState, setUrlState] = useQueryStates(talentParsers, {
+    history: "push",
+    shallow: false,
+  })
+  const { page, search } = urlState
+
+  const [inputSearch, setInputSearch] = useState(search)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    setInputSearch(search)
+  }, [search])
+
+  const fetchSearch = useCallback(
+    (value: string) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => {
+        setUrlState({ search: value, page: 1 })
+        debounceRef.current = null
+      }, SEARCH_DEBOUNCE_MS)
+    },
+    [setUrlState]
+  )
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setInputSearch(value)
+      fetchSearch(value)
+    },
+    [fetchSearch]
+  )
 
   const { data: paginated, isLoading, error } = useProfessionalUsers(page, search)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
@@ -289,19 +327,13 @@ export function TalentContent() {
     setSheetOpen(true)
   }
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setSearch(searchInput.trim())
-    setPage(1)
-  }
+  const handlePrevPage = useCallback(() => {
+    setUrlState({ page: Math.max(1, page - 1) })
+  }, [page, setUrlState])
 
-  const handlePrevPage = () => {
-    setPage((p) => Math.max(1, p - 1))
-  }
-
-  const handleNextPage = () => {
-    setPage((p) => Math.min(totalPages, p + 1))
-  }
+  const handleNextPage = useCallback(() => {
+    setUrlState({ page: Math.min(totalPages, page + 1) })
+  }, [page, totalPages, setUrlState])
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -312,26 +344,21 @@ export function TalentContent() {
             Busca y revisa perfiles de profesionales en la plataforma.
           </p>
         </div>
-        <form onSubmit={handleSearchSubmit} className="flex w-full gap-2 sm:w-72">
-          <div className="relative flex-1">
-            <HugeiconsIcon
-              icon={Search01Icon}
-              size={18}
-              className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
-            />
-            <Input
-              type="search"
-              placeholder="Buscar por nombre o email..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="pl-9"
-              aria-label="Buscar profesionales"
-            />
-          </div>
-          <Button type="submit" variant="secondary" size="sm">
-            Buscar
-          </Button>
-        </form>
+        <div className="relative w-full sm:w-72">
+          <HugeiconsIcon
+            icon={Search01Icon}
+            size={18}
+            className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            type="search"
+            placeholder="Buscar por nombre o email..."
+            value={inputSearch}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9"
+            aria-label="Buscar profesionales"
+          />
+        </div>
       </div>
 
       {isLoading ? (
@@ -407,7 +434,6 @@ export function TalentContent() {
                 aria-label="Página anterior"
               >
                 <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
-                Anterior
               </Button>
               <span className="tabular-nums text-muted-foreground text-sm">
                 Página {currentPage} de {totalPages}
@@ -419,7 +445,6 @@ export function TalentContent() {
                 disabled={currentPage >= totalPages}
                 aria-label="Página siguiente"
               >
-                Siguiente
                 <HugeiconsIcon icon={ArrowRight01Icon} size={18} />
               </Button>
             </div>

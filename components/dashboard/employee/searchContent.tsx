@@ -18,6 +18,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { AnimatePresence } from "motion/react"
 import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
+import { useQueryStates } from "nuqs"
 import { useCallback, useMemo, useState } from "react"
 import { Select } from "@/components/base/select/select"
 import { Badge } from "@/components/ui/badge"
@@ -25,8 +26,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { useJobsSearch } from "@/lib/api/use-jobs"
 import { formatJobLocation, type Job, type JobBenefit } from "@/lib/api/jobs"
+import { useJobsSearch } from "@/lib/api/use-jobs"
+import { employeeSearchParsers } from "@/lib/parsers/employee-search"
 import {
   formatFechaRelativa,
   formatSalarioRango,
@@ -70,11 +72,11 @@ const EXPERIENCE_LEVELS = [
 
 export const SearchContent = () => {
   const router = useRouter()
-  const [query, setQuery] = useState("")
-  const [location, setLocation] = useState("")
-  const [remoteOnly, setRemoteOnly] = useState(false)
-  const [jobType, setJobType] = useState<string>("any")
-  const [experience, setExperience] = useState<string>("any")
+  const [urlState, setUrlState] = useQueryStates(employeeSearchParsers, {
+    history: "push",
+    shallow: false,
+  })
+  const { q: query, location, jobType, experience, remoteOnly } = urlState
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   const { data: jobs, isLoading, error } = useJobsSearch(query.trim() || undefined)
@@ -105,12 +107,14 @@ export const SearchContent = () => {
   const handleSearch = useCallback(() => {}, [])
 
   const handleClear = useCallback(() => {
-    setQuery("")
-    setLocation("")
-    setRemoteOnly(false)
-    setJobType("any")
-    setExperience("any")
-  }, [])
+    setUrlState({
+      q: "",
+      location: "",
+      jobType: "any",
+      experience: "any",
+      remoteOnly: false,
+    })
+  }, [setUrlState])
 
   const handleSave = useCallback((_jobId: string) => {}, [])
 
@@ -151,7 +155,7 @@ export const SearchContent = () => {
                 <Input
                   placeholder="Título, empresa o palabra clave"
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={(e) => setUrlState({ q: e.target.value })}
                   aria-label="Buscar por palabra clave"
                 />
                 <HugeiconsIcon
@@ -167,7 +171,7 @@ export const SearchContent = () => {
               <Input
                 placeholder="Ubicación (ciudad, país o remoto)"
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={(e) => setUrlState({ location: e.target.value })}
                 aria-label="Filtrar por ubicación"
               />
             </div>
@@ -222,7 +226,7 @@ export const SearchContent = () => {
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
                   <Select
                     selectedKey={jobType}
-                    onSelectionChange={(key) => setJobType(String(key))}
+                    onSelectionChange={(key) => setUrlState({ jobType: String(key) })}
                     items={JOB_TYPES}
                     placeholder="Tipo de empleo"
                     size="md"
@@ -236,7 +240,7 @@ export const SearchContent = () => {
 
                   <Select
                     selectedKey={experience}
-                    onSelectionChange={(key) => setExperience(String(key))}
+                    onSelectionChange={(key) => setUrlState({ experience: String(key) })}
                     items={EXPERIENCE_LEVELS}
                     placeholder="Experiencia"
                     size="md"
@@ -253,7 +257,7 @@ export const SearchContent = () => {
                     <Checkbox
                       aria-label="Solo remoto"
                       checked={remoteOnly}
-                      onChange={(e) => setRemoteOnly(e.currentTarget.checked)}
+                      onChange={(e) => setUrlState({ remoteOnly: e.currentTarget.checked })}
                     />
                   </div>
                 </div>
