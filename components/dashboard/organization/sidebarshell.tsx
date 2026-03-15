@@ -3,21 +3,21 @@
 import type { ReactNode } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
 import { DashboardSidebar } from "../shared/DashboardSidebar"
-import { NAV_DATA } from "@/lib/data/nav-data"
+import { NAV_DATA_ORGANIZATION } from "@/lib/data/nav-data"
 
 type DashboardShellProps = {
   children: ReactNode
   defaultOpen: boolean
 }
 
-export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
+export function DashboardShellOrganization({ children, defaultOpen }: DashboardShellProps) {
   return (
     <SidebarProvider className="pt-2 pl-2 bg-sidebar" defaultOpen={defaultOpen}>
       <DashboardSidebar
-        navData={NAV_DATA}
-        logoutRedirect="/login"
+        navData={NAV_DATA_ORGANIZATION}
+        logoutRedirect="/login/organization"
         profileUrl="/dashboard/profile"
-        avatarGradient={{ from: "blue-500", to: "purple-600" }}
+        avatarGradient={{ from: "purple-500", to: "blue-600" }}
       />
       <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
     </SidebarProvider>

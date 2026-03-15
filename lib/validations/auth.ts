@@ -6,9 +6,9 @@
 import { z } from "zod"
 import {
   corporateEmailSchema,
-  domainSchema,
   emailSchema,
   nameSchema,
+  organizationLoginEmailSchema,
   organizationPasswordSchema,
   urlSchema,
   userPasswordSchema,
@@ -35,12 +35,10 @@ export const userLoginSchema = z.object({
 
 /**
  * Organization login form schema
- * - Domain, email and password for organizations
- * - Optional remember me checkbox
+ * - Email (corporate only, no personal domains) and password
  */
 export const organizationLoginSchema = z.object({
-  organizationDomain: domainSchema,
-  email: corporateEmailSchema,
+  email: organizationLoginEmailSchema,
   password: z
     .string({
       error: () => "La contraseña es requerida",

@@ -31,6 +31,37 @@ export const emailSchema = z
  */
 export const corporateEmailSchema = emailSchema
 
+const PERSONAL_EMAIL_DOMAINS = [
+  "gmail.com",
+  "googlemail.com",
+  "hotmail.com",
+  "hotmail.es",
+  "hotmail.cl",
+  "live.com",
+  "outlook.com",
+  "outlook.es",
+  "msn.com",
+  "yahoo.com",
+  "yahoo.es",
+  "yahoo.cl",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "aol.com",
+]
+
+/**
+ * Organization login email - rejects personal email domains
+ */
+export const organizationLoginEmailSchema = emailSchema.refine(
+  (val) => {
+    const domain = val.split("@")[1]?.toLowerCase()
+    if (!domain) return false
+    return !PERSONAL_EMAIL_DOMAINS.includes(domain)
+  },
+  "Usa tu correo corporativo. No se permiten Gmail, Hotmail, Yahoo, Outlook, etc."
+)
+
 // =====================
 // Password Validation
 // =====================

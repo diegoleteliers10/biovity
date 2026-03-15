@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  Globe02Icon,
   Mail01Icon,
   SquareLock02Icon,
   ViewIcon,
@@ -17,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
+import { organizationLoginSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signIn } = authClient
 
@@ -30,7 +30,6 @@ export function OrganizationLoginContent() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    organizationDomain: "",
   })
   const [rememberMe, setRememberMe] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -79,6 +78,17 @@ export function OrganizationLoginContent() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const result = validateFormZod(organizationLoginSchema, {
+      email: formData.email,
+      password: formData.password,
+      rememberMe: rememberMe,
+    })
+    if (!result.success) {
+      setErrors(result.errors)
+      return
+    }
+
     setIsLoading(true)
     setErrors({})
 
@@ -124,41 +134,13 @@ export function OrganizationLoginContent() {
 
         <CardContent>
           <form onSubmit={handleSignIn} className="space-y-6">
-            {/* Organization Domain Field */}
-            <div className="space-y-2">
-              <label htmlFor="organizationDomain" className="text-sm font-medium text-gray-700">
-                Dominio de la organización
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={Globe02Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                />
-                <Input
-                  id="organizationDomain"
-                  type="text"
-                  placeholder="tuorganizacion.com"
-                  value={formData.organizationDomain}
-                  onChange={(e) => handleInputChange("organizationDomain", e.target.value)}
-                  className={`pl-10 ${errors.organizationDomain ? "border-red-500" : ""}`}
-                  required
-                />
-              </div>
-              <p className="text-xs text-gray-500">
-                Ingresa el dominio de tu organización sin http://
-              </p>
-              {errors.organizationDomain && (
-                <p className="text-sm text-red-500">{errors.organizationDomain}</p>
-              )}
-            </div>
-
-            {/* Email Field */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-gray-700">
                 Correo electrónico corporativo
               </label>
+              <p className="text-xs text-gray-500">
+                Usa el correo de tu organización (no Gmail, Hotmail, Yahoo, etc.)
+              </p>
               <div className="relative">
                 <HugeiconsIcon
                   icon={Mail01Icon}
@@ -225,7 +207,7 @@ export function OrganizationLoginContent() {
                 id="remember"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                label="Recordar organización"
+                label="Recordar sesión"
               />
               <button
                 type="button"

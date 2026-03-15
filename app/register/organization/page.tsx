@@ -18,6 +18,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
+import {
+  useCreateOrganizationMutation,
+  useLinkUserToOrganizationMutation,
+} from "@/lib/api/use-organization-mutations"
 import { authClient } from "@/lib/auth-client"
 import { organizationRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
@@ -25,15 +29,14 @@ const { signUp } = authClient
 
 export default function OrganizationRegisterPage() {
   const router = useRouter()
+  const createOrganizationMutation = useCreateOrganizationMutation()
+  const linkUserMutation = useLinkUserToOrganizationMutation()
   const [formData, setFormData] = useState({
-    // Información del contacto principal
     contactName: "",
     contactEmail: "",
     contactPassword: "",
     confirmPassword: "",
     contactPosition: "",
-
-    // Información de la organización
     organizationName: "",
     organizationWebsite: "",
   })
@@ -45,7 +48,6 @@ export default function OrganizationRegisterPage() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }))
     }
@@ -79,32 +81,58 @@ export default function OrganizationRegisterPage() {
     }
 
     setIsLoading(true)
+    setErrors((prev) => ({ ...prev, general: "" }))
 
-    const result = await signUp.email({
-      email: formData.contactEmail,
-      password: formData.contactPassword,
-      name: formData.contactName,
-      type: "organization",
-      profession: formData.contactPosition || "Representante",
-      avatar: "",
-    })
-
-    if (result.error) {
-      setErrors({
-        general: "Error al crear la cuenta organizacional. Inténtalo de nuevo.",
+    try {
+      const signUpResult = await signUp.email({
+        email: formData.contactEmail,
+        password: formData.contactPassword,
+        name: formData.contactName,
+        type: "organization",
+        profession: formData.contactPosition || "Representante",
+        avatar: "",
       })
-    } else {
-      router.push("/dashboard")
-    }
 
-    setIsLoading(false)
+      if (signUpResult.error) {
+        setErrors({
+          general: "Error al crear la cuenta organizacional. Inténtalo de nuevo.",
+        })
+        return
+      }
+
+      const userId = signUpResult.data?.user?.id
+      if (!userId) {
+        setErrors({ general: "Error al obtener el usuario. Inténtalo de nuevo." })
+        return
+      }
+
+      // 2. Create organization via backend API (TanStack Query mutation)
+
+      const organization = await createOrganizationMutation.mutateAsync({
+        name: formData.organizationName,
+        website: formData.organizationWebsite,
+      })
+
+      await linkUserMutation.mutateAsync({
+        userId,
+        organizationId: organization.id,
+      })
+
+      router.push("/dashboard")
+    } catch (err) {
+      setErrors({
+        general:
+          err instanceof Error ? err.message : "Error al registrar. Inténtalo de nuevo.",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className="min-h-dvh bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center space-y-4">
-          {/* Logo */}
           <div className="mx-auto">
             <Logo size="lg" />
           </div>
@@ -121,14 +149,12 @@ export default function OrganizationRegisterPage() {
 
         <CardContent>
           <form onSubmit={handleSignUp} className="space-y-8">
-            {/* Información del Contacto Principal */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 pb-2">
                 Información del Contacto Principal
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Contact Name */}
                 <div className="space-y-2">
                   <label htmlFor="contactName" className="text-sm font-medium text-gray-700">
                     Nombre completo
@@ -155,7 +181,6 @@ export default function OrganizationRegisterPage() {
                   )}
                 </div>
 
-                {/* Contact Position */}
                 <div className="space-y-2">
                   <label htmlFor="contactPosition" className="text-sm font-medium text-gray-700">
                     Cargo/Posición
@@ -174,7 +199,6 @@ export default function OrganizationRegisterPage() {
                 </div>
               </div>
 
-              {/* Contact Email */}
               <div className="space-y-2">
                 <label htmlFor="contactEmail" className="text-sm font-medium text-gray-700">
                   Correo electrónico corporativo
@@ -203,7 +227,6 @@ export default function OrganizationRegisterPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Password */}
                 <div className="space-y-2">
                   <label htmlFor="contactPassword" className="text-sm font-medium text-gray-700">
                     Contraseña
@@ -243,7 +266,6 @@ export default function OrganizationRegisterPage() {
                   )}
                 </div>
 
-                {/* Confirm Password */}
                 <div className="space-y-2">
                   <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
                     Confirmar contraseña
@@ -285,13 +307,11 @@ export default function OrganizationRegisterPage() {
               </div>
             </div>
 
-            {/* Información de la Organización */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 pb-2">
                 Información de la Organización
               </h3>
 
-              {/* Organization Name */}
               <div className="space-y-2">
                 <label htmlFor="organizationName" className="text-sm font-medium text-gray-700">
                   Nombre de la organización
@@ -316,9 +336,8 @@ export default function OrganizationRegisterPage() {
                 {errors.organizationName && (
                   <p className="text-sm text-red-500">{errors.organizationName}</p>
                 )}
-              </div>
+                </div>
 
-              {/* Website */}
               <div className="space-y-2">
                 <label htmlFor="organizationWebsite" className="text-sm font-medium text-gray-700">
                   Sitio web
@@ -346,7 +365,6 @@ export default function OrganizationRegisterPage() {
               </div>
             </div>
 
-            {/* Terms and Conditions */}
             <div className="space-y-2">
               <Checkbox
                 id="terms"
@@ -374,24 +392,29 @@ export default function OrganizationRegisterPage() {
               {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
             </div>
 
-            {/* General Error */}
             {errors.general && (
               <div className="text-sm text-red-500 text-center p-3 bg-red-50 rounded-md">
                 {errors.general}
               </div>
             )}
 
-            {/* Submit Button */}
             <Button
               type="submit"
               className="w-full bg-purple-600 text-white hover:bg-purple-700 h-11"
-              disabled={isLoading}
+              disabled={
+                isLoading ||
+                createOrganizationMutation.isPending ||
+                linkUserMutation.isPending
+              }
             >
-              {isLoading ? "Registrando organización..." : "Registrar Organización"}
+              {isLoading ||
+              createOrganizationMutation.isPending ||
+              linkUserMutation.isPending
+                ? "Registrando organización..."
+                : "Registrar Organización"}
             </Button>
           </form>
 
-          {/* Navigation Links */}
           <div className="mt-6 space-y-4">
             <div className="text-center">
               <p className="text-sm text-gray-600">

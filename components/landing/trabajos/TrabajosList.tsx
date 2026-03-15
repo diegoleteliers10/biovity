@@ -47,6 +47,9 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
     return (
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-end mb-4">
+            <p className="text-sm text-muted-foreground">0 trabajos encontrados</p>
+          </div>
           <div className="text-center py-12">
             <p className="text-lg text-gray-600">
               No se encontraron trabajos con los filtros seleccionados.
@@ -58,9 +61,16 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
     )
   }
 
+  const count = trabajos.length
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-end mb-4">
+          <p className="text-sm text-muted-foreground">
+            {count === 1 ? "1 trabajo encontrado" : `${count} trabajos encontrados`}
+          </p>
+        </div>
         <div className="space-y-6">
           {trabajos.map((trabajo) => (
             <Card

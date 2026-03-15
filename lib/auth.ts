@@ -1,6 +1,5 @@
 import { dash } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
-import { admin } from "better-auth/plugins"
 import { headers } from "next/headers"
 import { pool } from "@/lib/db"
 
@@ -57,6 +56,7 @@ export const auth = betterAuth({
       emailVerified: "isEmailVerified",
       createdAt: "createdAt",
       updatedAt: "updatedAt",
+      image: "avatar",
     },
     additionalFields: {
       isActive: {
@@ -125,7 +125,6 @@ export const auth = betterAuth({
     dash({
       apiKey: process.env.BETTER_AUTH_API_KEY as string,
     }),
-    admin(),
   ],
 })
 

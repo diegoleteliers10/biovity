@@ -10,11 +10,11 @@ import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
 const initialFiltros: FiltrosTrabajos = {
   query: "",
   ubicacion: "",
-  modalidad: "todas",
-  formato: "todas",
+  modalidad: "Modalidad",
+  formato: "Formato",
   salarioMin: null,
   salarioMax: null,
-  experiencia: "todas",
+  experiencia: "Experiencia",
   categoria: null,
 }
 
@@ -42,14 +42,14 @@ export function TrabajosPageContent() {
       }
 
       // Filtro por modalidad
-      if (filtros.modalidad !== "todas") {
+      if (filtros.modalidad !== "Modalidad") {
         if (trabajo.modalidad !== filtros.modalidad) {
           return false
         }
       }
 
       // Filtro por formato
-      if (filtros.formato !== "todas") {
+      if (filtros.formato !== "Formato") {
         if (trabajo.formato !== filtros.formato) {
           return false
         }
@@ -68,7 +68,7 @@ export function TrabajosPageContent() {
       }
 
       // Filtro por experiencia
-      if (filtros.experiencia !== "todas") {
+      if (filtros.experiencia !== "Experiencia") {
         if (trabajo.experiencia !== filtros.experiencia) {
           return false
         }

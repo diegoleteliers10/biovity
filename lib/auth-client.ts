@@ -1,7 +1,6 @@
 import { inferAdditionalFields } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
-import { sentinelClient } from "@better-auth/infra/client";
-import { adminClient } from "better-auth/client/plugins"
+import { sentinelClient } from "@better-auth/infra/client"
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
@@ -31,7 +30,6 @@ export const authClient = createAuthClient({
       },
     }),
     sentinelClient(),
-    adminClient()
   ],
 })
 
