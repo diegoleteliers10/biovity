@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { TrabajosPageContent } from "@/components/landing/trabajos/TrabajosPageContent"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
@@ -53,7 +54,9 @@ export default function TrabajosPage() {
         ]}
       />
       <main className="flex flex-col relative">
-        <TrabajosPageContent />
+        <Suspense>
+          <TrabajosPageContent />
+        </Suspense>
       </main>
     </LandingLayout>
   )

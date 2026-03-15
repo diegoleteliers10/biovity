@@ -26,12 +26,6 @@ export const auth = betterAuth({
   },
   appName: "Biovity", // Define your application name
   database: pool,
-  cookieCache: {
-    enabled: true,
-    strategy: "jwe", // Use JWE to encrypt cookie contents; ensure encryption keys are managed securely
-    maxAge: 60 * 5, // Explicitly cache session cookies for 5 minutes
-  },
-  // Rate limiting for security
   rateLimit: {
     enabled: true,
     window: 60, // 1 minute

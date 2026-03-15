@@ -97,7 +97,7 @@ function normalizeUser(raw: unknown): User | null {
     name: String(u.name ?? ""),
     type: String(u.type ?? "professional"),
     isEmailVerified: Boolean(u.isEmailVerified ?? u.is_email_verified ?? false),
-    isActive: u.isActive ?? u.is_active !== false,
+    isActive: Boolean(u.isActive ?? u.is_active ?? true),
     organizationId:
       u.organizationId ?? u.organization_id
         ? String(u.organizationId ?? u.organization_id)
