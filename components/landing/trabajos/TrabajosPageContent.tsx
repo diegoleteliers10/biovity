@@ -1,29 +1,88 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useQueryStates } from "nuqs"
+import { useMemo } from "react"
 import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
+import { trabajosParsers } from "@/lib/parsers/trabajos"
 import type { FiltrosTrabajos } from "@/lib/types/trabajos"
 import { TrabajosHero } from "./TrabajosHero"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
 
-const initialFiltros: FiltrosTrabajos = {
-  query: "",
-  ubicacion: "",
-  modalidad: "todas",
-  formato: "todas",
-  salarioMin: null,
-  salarioMax: null,
-  experiencia: "todas",
-  categoria: null,
+function urlStateToFiltros(state: {
+  q: string
+  ubicacion: string
+  modalidad: string
+  formato: string
+  salarioMin: number | null
+  salarioMax: number | null
+  experiencia: string
+  categoria: string | null
+}): FiltrosTrabajos {
+  const toModalidad = (v: string): FiltrosTrabajos["modalidad"] => {
+    if (!v || v === "todas") return "Modalidad"
+    return v as FiltrosTrabajos["modalidad"]
+  }
+  const toFormato = (v: string): FiltrosTrabajos["formato"] => {
+    if (!v || v === "todas") return "Formato"
+    return v as FiltrosTrabajos["formato"]
+  }
+  const toExperiencia = (v: string): FiltrosTrabajos["experiencia"] => {
+    if (!v || v === "todas") return "Experiencia"
+    return v as FiltrosTrabajos["experiencia"]
+  }
+  return {
+    query: state.q,
+    ubicacion: state.ubicacion,
+    modalidad: toModalidad(state.modalidad),
+    formato: toFormato(state.formato),
+    salarioMin: state.salarioMin,
+    salarioMax: state.salarioMax,
+    experiencia: toExperiencia(state.experiencia),
+    categoria: state.categoria && state.categoria !== "todas" ? state.categoria : null,
+  }
+}
+
+function filtrosToUrlState(filtros: FiltrosTrabajos) {
+  const toModalidad = (v: FiltrosTrabajos["modalidad"]): string => {
+    if (v === "Modalidad") return ""
+    return v
+  }
+  const toFormato = (v: FiltrosTrabajos["formato"]): string => {
+    if (v === "Formato") return ""
+    return v
+  }
+  const toExperiencia = (v: FiltrosTrabajos["experiencia"]): string => {
+    if (v === "Experiencia") return ""
+    return v
+  }
+  return {
+    q: filtros.query,
+    ubicacion: filtros.ubicacion,
+    modalidad: toModalidad(filtros.modalidad),
+    formato: toFormato(filtros.formato),
+    salarioMin: filtros.salarioMin,
+    salarioMax: filtros.salarioMax,
+    experiencia: toExperiencia(filtros.experiencia),
+    categoria: filtros.categoria,
+  }
+>>>>>>> a9c02aa (feat(nuqs): migrate URL filters and search params to nuqs)
 }
 
 export function TrabajosPageContent() {
-  const [filtros, setFiltros] = useState<FiltrosTrabajos>(initialFiltros)
+  const [urlState, setUrlState] = useQueryStates(trabajosParsers, {
+    history: "push",
+    shallow: false,
+  })
+
+  const filtros = useMemo(() => urlStateToFiltros(urlState), [urlState])
+
+  const handleFiltrosChange = (newFiltros: FiltrosTrabajos) => {
+    setUrlState(filtrosToUrlState(newFiltros))
+  }
 
   const trabajosFiltrados = useMemo(() => {
     return TRABAJOS_MOCK.filter((trabajo) => {
-      // Filtro por query (título o empresa)
       if (filtros.query) {
         const queryLower = filtros.query.toLowerCase()
         if (
@@ -34,28 +93,24 @@ export function TrabajosPageContent() {
         }
       }
 
-      // Filtro por ubicación
       if (filtros.ubicacion) {
         if (!trabajo.ubicacion.toLowerCase().includes(filtros.ubicacion.toLowerCase())) {
           return false
         }
       }
 
-      // Filtro por modalidad
-      if (filtros.modalidad !== "todas") {
+      if (filtros.modalidad !== "Modalidad") {
         if (trabajo.modalidad !== filtros.modalidad) {
           return false
         }
       }
 
-      // Filtro por formato
-      if (filtros.formato !== "todas") {
+      if (filtros.formato !== "Formato") {
         if (trabajo.formato !== filtros.formato) {
           return false
         }
       }
 
-      // Filtro por rango salarial
       if (filtros.salarioMin !== null) {
         if (trabajo.rangoSalarial.max < filtros.salarioMin) {
           return false
@@ -67,14 +122,12 @@ export function TrabajosPageContent() {
         }
       }
 
-      // Filtro por experiencia
-      if (filtros.experiencia !== "todas") {
+      if (filtros.experiencia !== "Experiencia") {
         if (trabajo.experiencia !== filtros.experiencia) {
           return false
         }
       }
 
-      // Filtro por categoría
       if (filtros.categoria) {
         if (trabajo.categoria !== filtros.categoria) {
           return false
@@ -88,7 +141,7 @@ export function TrabajosPageContent() {
   return (
     <>
       <TrabajosHero />
-      <TrabajosSearchFilters filtros={filtros} onFiltrosChange={setFiltros} />
+      <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
       <TrabajosList trabajos={trabajosFiltrados} />
     </>
   )

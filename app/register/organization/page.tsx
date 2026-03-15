@@ -135,12 +135,7 @@ export default function OrganizationRegisterPage() {
                 Información del Contacto Principal
               </h3>
 
-<<<<<<< HEAD
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Contact Name */}
-=======
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
->>>>>>> 6e2ae34 (feat(auth): improve login and register UI with AuthLoader and illustrations)
                 <div className="space-y-2">
                   <label htmlFor="contactName" className="text-sm font-medium text-foreground">
                     Nombre completo

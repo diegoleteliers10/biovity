@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
 import { MotionProvider } from "@/components/providers/MotionProvider"
+import { QueryProvider } from "@/components/providers/QueryProvider"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
@@ -162,7 +164,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistMono.variable} antialiased`}>
-        <MotionProvider>{children}</MotionProvider>
+        <NuqsAdapter>
+          <QueryProvider>
+            <MotionProvider>{children}</MotionProvider>
+          </QueryProvider>
+        </NuqsAdapter>
       </body>
       <Analytics />
       <SpeedInsights />

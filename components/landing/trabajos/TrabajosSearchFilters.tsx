@@ -2,7 +2,7 @@
 
 import { Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -37,6 +37,17 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   const [experiencia, setExperiencia] = useState(filtros.experiencia)
   const [categoria, setCategoria] = useState(filtros.categoria || "todas")
 
+  useEffect(() => {
+    setQuery(filtros.query)
+    setUbicacion(filtros.ubicacion)
+    setModalidad(filtros.modalidad)
+    setFormato(filtros.formato)
+    setSalarioMin(filtros.salarioMin?.toString() || "")
+    setSalarioMax(filtros.salarioMax?.toString() || "")
+    setExperiencia(filtros.experiencia)
+    setCategoria(filtros.categoria || "Categoría")
+  }, [filtros])
+
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
       query,
@@ -46,7 +57,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
       salarioMin: salarioMin ? Number(salarioMin.replace(/[^0-9]/g, "")) : null,
       salarioMax: salarioMax ? Number(salarioMax.replace(/[^0-9]/g, "")) : null,
       experiencia: experiencia as FiltrosTrabajos["experiencia"],
-      categoria: categoria === "todas" ? null : categoria,
+      categoria: categoria === "todas" || categoria === "Categoría" ? null : categoria,
     })
   }, [
     query,
