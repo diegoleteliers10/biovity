@@ -166,6 +166,15 @@ From `.cursor/rules/` - follow these patterns:
 - **Accessibility**: Include `aria-label`, `tabindex`, keyboard handlers
 - **TypeScript strict**: Define types for all functions/components
 
+### Post-implementation: `/remove-ai-slop`
+
+After every code generation or modification, run the `/remove-ai-slop` skill to audit the touched files. Remove:
+- Comments a human wouldn't write or that are inconsistent with the rest of the file
+- Unnecessary defensive checks or try/catch blocks in trusted/validated codepaths
+- Casts to `any` used to work around type issues
+- Style inconsistencies with the surrounding code
+- Unnecessary emoji usage
+
 ## Commit Convention
 
 Follow Conventional Commits format:

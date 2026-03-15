@@ -259,7 +259,7 @@ export function UserMessagesContent() {
                               .toUpperCase()
                           : recruiterInitials
                       }
-                      senderAvatar={msg.senderId === professionalId ? professionalProfile?.avatar : recruiter?.avatar}
+                      senderAvatar={(msg.senderId === professionalId ? professionalProfile?.avatar : recruiter?.avatar) ?? undefined}
                       formatTime={formatMessageTime}
                     />
                   ))}
