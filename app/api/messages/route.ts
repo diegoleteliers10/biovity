@@ -19,8 +19,22 @@ export async function POST(request: Request) {
 
   const senderId = session.user.id
 
+  const supabase = getSupabaseAdmin()
+  const { data: chat, error: chatError } = await supabase
+    .from("chat")
+    .select("recruiterId, professionalId")
+    .eq("id", chatId)
+    .single()
+
+  if (chatError || !chat) {
+    return NextResponse.json({ error: "Chat no encontrado" }, { status: 404 })
+  }
+
+  if (chat.recruiterId !== senderId && chat.professionalId !== senderId) {
+    return NextResponse.json({ error: "No tienes acceso a este chat" }, { status: 403 })
+  }
+
   try {
-    const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from("message")
       .insert({ chatId, senderId, content: content.trim() })
