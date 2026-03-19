@@ -57,19 +57,19 @@ export function formatUserLocation(loc: UserLocation | null): string {
   return parts.join(", ")
 }
 
-/**
- * Normalizes API response to ensure User shape.
- * API returns: { data: { id, email, name, phone, birthday, location?, ... }, timestamp, path }
- * Handles wrapped ({ data } | { user }) and snake_case (phone_number, date_of_birth).
- */
 function normalizeUser(raw: unknown): User | null {
   if (!raw || typeof raw !== "object") return null
   const obj = raw as Record<string, unknown>
 
-  const userObj =
+  let userObj: unknown =
     (obj.data as Record<string, unknown>) ??
     (obj.user as Record<string, unknown>) ??
     obj
+
+  if (userObj && typeof userObj === "object") {
+    const u = userObj as Record<string, unknown>
+    if (u.data && typeof u.data === "object") userObj = u.data
+  }
 
   if (!userObj || typeof userObj !== "object") return null
 

@@ -46,6 +46,27 @@ function getErrorMessage(data: unknown, fallback: string): string {
   return fallback
 }
 
+function normalizeOrganization(raw: unknown): Organization | null {
+  if (!raw || typeof raw !== "object") return null
+  const obj = raw as Record<string, unknown>
+
+  // Backend can wrap like:
+  // - { data: organization }
+  // - { data: { data: organization } }
+  const level1: unknown = obj.data ?? obj
+  if (!level1 || typeof level1 !== "object") return null
+  const level1Obj = level1 as Record<string, unknown>
+
+  const level2: unknown = level1Obj.data ?? level1Obj
+  if (!level2 || typeof level2 !== "object") return null
+  const level2Obj = level2 as Record<string, unknown>
+
+  const id = String(level2Obj.id ?? "")
+  if (!id) return null
+
+  return level2 as Organization
+}
+
 export async function getOrganization(
   id: string
 ): Promise<{ data: Organization } | { error: string }> {
@@ -60,7 +81,10 @@ export async function getOrganization(
   if (!res.ok) {
     return { error: getErrorMessage(data, "Error al obtener la organización") }
   }
-  return { data: data as Organization }
+
+  const organization = normalizeOrganization(data)
+  if (!organization) return { error: "Formato de respuesta inválido" }
+  return { data: organization }
 }
 
 export async function createOrganization(

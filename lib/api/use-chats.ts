@@ -58,7 +58,10 @@ export function useCreateOrFindChatMutation(recruiterId: string | undefined) {
 
 export function useChatListRealtime(chats: Chat[]) {
   const queryClient = useQueryClient()
-  const chatIds = useMemo(() => new Set(chats.map((c) => c.id)), [chats])
+  const chatIds = useMemo(() => {
+    if (!Array.isArray(chats)) return new Set<string>()
+    return new Set(chats.map((c) => c.id))
+  }, [chats])
 
   useEffect(() => {
     if (chatIds.size === 0) return
@@ -82,7 +85,7 @@ export function useChatListRealtime(chats: Chat[]) {
           const createdAt = String(r("createdAt") ?? r("created_at") ?? new Date().toISOString())
 
           queryClient.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (prev) => {
-            if (!prev) return prev
+            if (!Array.isArray(prev)) return prev
             return prev.map((chat) =>
               chat.id === msgChatId ? { ...chat, lastMessage: content, updatedAt: createdAt } : chat
             )

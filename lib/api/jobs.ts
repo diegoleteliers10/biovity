@@ -159,9 +159,23 @@ export async function getJobs(
 function normalizeJobResponse(raw: unknown): Job | null {
   if (!raw || typeof raw !== "object") return null
   const obj = raw as Record<string, unknown>
-  const job = (obj.data as Job) ?? (obj as Job)
-  if (!job || typeof job !== "object" || !job.id) return null
-  return job
+
+  // Backend can wrap like:
+  // - { data: job }
+  // - { data: { data: job } }
+  // - job (direct)
+  const level1: unknown = obj.data ?? obj
+  if (!level1 || typeof level1 !== "object") return null
+
+  const level1Obj = level1 as Record<string, unknown>
+  const level2: unknown = level1Obj.data ?? level1Obj
+  if (!level2 || typeof level2 !== "object") return null
+
+  const level2Obj = level2 as Record<string, unknown>
+  const id = String(level2Obj.id ?? "")
+  if (!id) return null
+
+  return level2 as Job
 }
 
 export async function getJob(id: string): Promise<{ data: Job } | { error: string }> {

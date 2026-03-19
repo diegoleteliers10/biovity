@@ -35,6 +35,8 @@ import {
   getFormatoBadgeColor,
   getModalidadBadgeColor,
 } from "@/lib/utils"
+import { authClient } from "@/lib/auth-client"
+import { useRemoveSavedJobMutation, useSavedJobsByUser, useSaveJobMutation } from "@/lib/api/use-saved-jobs"
 
 function getJobModalidad(job: Job): string {
   const loc = job.location
@@ -106,6 +108,22 @@ export const SearchContent = () => {
 
   const handleSearch = useCallback(() => {}, [])
 
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const userId = (session?.user as { id?: string })?.id ?? ""
+
+  const { data: savedJobs, isLoading: savedJobsLoading } = useSavedJobsByUser(userId, {
+    page: 1,
+    limit: 200,
+  })
+
+  const savedJobIds = useMemo(() => {
+    return new Set((savedJobs?.data ?? []).map((j) => j.jobId))
+  }, [savedJobs])
+
+  const saveMutation = useSaveJobMutation()
+  const removeMutation = useRemoveSavedJobMutation()
+
   const handleClear = useCallback(() => {
     setUrlState({
       q: "",
@@ -116,7 +134,19 @@ export const SearchContent = () => {
     })
   }, [setUrlState])
 
-  const handleSave = useCallback((_jobId: string) => {}, [])
+  const handleSave = useCallback(
+    (jobId: string) => {
+      if (!userId) return
+
+      const nextIsSaved = savedJobIds.has(jobId)
+      if (nextIsSaved) {
+        removeMutation.mutate({ userId, jobId })
+      } else {
+        saveMutation.mutate({ userId, jobId })
+      }
+    },
+    [removeMutation, saveMutation, savedJobIds, userId]
+  )
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -290,12 +320,13 @@ export const SearchContent = () => {
             const postedStr = job.createdAt ? formatFechaRelativa(new Date(job.createdAt)) : "—"
             const modalidad = getJobModalidad(job)
             const employmentTypeKey = job.employmentType.toLowerCase()
+            const isSaved = savedJobIds.has(job.id)
 
             return (
               <Card
                 key={job.id}
                 onClick={() => router.push(`/dashboard/job/${job.id}`)}
-                className="group relative cursor-pointer overflow-hidden rounded-xl border-0 py-4 shadow-md"
+                className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/60 hover:border-border transition-colors duration-200 py-4"
                 role="link"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -329,13 +360,15 @@ export const SearchContent = () => {
                             e.stopPropagation()
                             handleSave(job.id)
                           }}
-                          aria-label={`Guardar ${job.title}`}
+                          aria-label={isSaved ? `Quitar ${job.title} de guardados` : `Guardar ${job.title}`}
+                          aria-pressed={isSaved}
+                          disabled={!userId || saveMutation.isPending || removeMutation.isPending}
                         >
                           <HugeiconsIcon
                             icon={Bookmark02Icon}
                             size={24}
                             strokeWidth={1.5}
-                            className="h-4 w-4"
+                            className={`h-4 w-4 ${isSaved ? "fill-current text-primary" : ""}`}
                           />
                         </Button>
                       </div>

@@ -24,6 +24,22 @@ function getErrorMessage(data: unknown, fallback: string): string {
   return fallback
 }
 
+function extractChats(payload: unknown): Chat[] {
+  if (Array.isArray(payload)) return payload as Chat[]
+  if (!payload || typeof payload !== "object") return []
+
+  const p = payload as Record<string, unknown>
+  const directData = p.data
+  if (Array.isArray(directData)) return directData as Chat[]
+
+  if (!directData || typeof directData !== "object") return []
+  const nested = directData as Record<string, unknown>
+  const nestedData = nested.data
+  if (Array.isArray(nestedData)) return nestedData as Chat[]
+
+  return []
+}
+
 export async function getChatsByRecruiter(
   recruiterId: string
 ): Promise<{ data: Chat[] } | { error: string }> {
@@ -36,12 +52,12 @@ export async function getChatsByRecruiter(
     return { error: err instanceof Error ? err.message : "Error de red" }
   }
 
-  const data = await res.json().catch(() => null)
+  const data: unknown = await res.json().catch(() => null)
   if (!res.ok) {
     return { error: getErrorMessage(data, "Error al obtener los chats") }
   }
 
-  const chats = Array.isArray(data) ? data : (data?.data ?? [])
+  const chats = extractChats(data)
   return { data: chats }
 }
 
@@ -57,12 +73,12 @@ export async function getChatsByProfessional(
     return { error: err instanceof Error ? err.message : "Error de red" }
   }
 
-  const data = await res.json().catch(() => null)
+  const data: unknown = await res.json().catch(() => null)
   if (!res.ok) {
     return { error: getErrorMessage(data, "Error al obtener los chats") }
   }
 
-  const chats = Array.isArray(data) ? data : (data?.data ?? [])
+  const chats = extractChats(data)
   return { data: chats }
 }
 

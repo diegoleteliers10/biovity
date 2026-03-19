@@ -4,6 +4,7 @@ import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-
 import { HugeiconsIcon } from "@hugeicons/react"
 import { usePathname, useRouter } from "next/navigation"
 import type { ReactNode } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import {
   Tooltip,
   TooltipContent,
@@ -57,7 +58,14 @@ export function DashboardSidebar({
   const router = useRouter()
   const { signOut, useSession } = authClient
   const { data } = useSession()
-  const sessionUser = data?.user as { name?: string; image?: string; avatar?: string } | undefined
+  const sessionUser = data?.user as {
+    id?: string
+    name?: string
+    image?: string
+    avatar?: string
+  } | undefined
+  const userId = sessionUser?.id
+  const queryClient = useQueryClient()
   const avatarUrl = avatarUrlProp ?? sessionUser?.avatar ?? sessionUser?.image
   const initials =
     sessionUser?.name

@@ -28,9 +28,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
+import { authClient } from "@/lib/auth-client"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { useJob } from "@/lib/api/use-jobs"
 import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
+import { useCheckSavedJob, useRemoveSavedJobMutation, useSaveJobMutation } from "@/lib/api/use-saved-jobs"
 
 function getJobModalidad(loc: JobLocation | null | undefined): string {
   if (!loc) return "Presencial"
@@ -77,6 +79,32 @@ export default function JobDetailPage() {
   const params = useParams<{ id: string }>()
   const jobId = params?.id ?? undefined
   const { data: job, isLoading, error } = useJob(jobId)
+
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const professionalId = (
+    (session?.user as { id?: string; userId?: string; sub?: string } | undefined)?.id ??
+    (session?.user as { userId?: string } | undefined)?.userId ??
+    (session?.user as { sub?: string } | undefined)?.sub ??
+    ""
+  )
+
+  const { data: savedCheck, isLoading: savedCheckLoading } = useCheckSavedJob(
+    professionalId,
+    jobId
+  )
+  const isSaved = savedCheck?.isSaved ?? false
+
+  const saveMutation = useSaveJobMutation()
+  const removeMutation = useRemoveSavedJobMutation()
+
+  const handleToggleSaved = () => {
+    if (!professionalId) return
+    if (!jobId) return
+    if (isSaved) removeMutation.mutate({ userId: professionalId, jobId })
+    else saveMutation.mutate({ userId: professionalId, jobId })
+  }
+
   const { data: organization } = useOrganization(
     job && !job.organization && job.organizationId ? job.organizationId : undefined
   )
@@ -183,12 +211,22 @@ export default function JobDetailPage() {
           {/* Actions */}
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <ApplyJobButton jobId={job.id} compact />
-            <Button variant="outline" className="px-3" aria-label="Guardar">
+            <Button
+              variant="outline"
+              className="px-3"
+              type="button"
+              onClick={handleToggleSaved}
+              disabled={
+                savedCheckLoading || saveMutation.isPending || removeMutation.isPending
+              }
+              aria-label={isSaved ? "Quitar de guardados" : "Guardar vacante"}
+              aria-pressed={isSaved}
+            >
               <HugeiconsIcon
                 icon={Bookmark02Icon}
                 size={24}
                 strokeWidth={1.5}
-                className="h-4 w-4"
+                className={`h-4 w-4 ${isSaved ? "fill-current text-primary" : ""}`}
               />
             </Button>
             <div className="ml-auto flex items-center gap-2 text-sm">

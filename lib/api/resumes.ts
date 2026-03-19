@@ -105,11 +105,15 @@ function normalizeResume(raw: unknown): Resume | null {
   if (!raw || typeof raw !== "object") return null
   const obj = raw as Record<string, unknown>
 
-  // Handle wrapped responses: { data: resume } or { resume: resume }
-  const resumeObj =
-    (obj.data as Record<string, unknown>) ??
-    (obj.resume as Record<string, unknown>) ??
+  let resumeObj: unknown =
+    (obj.data as Record<string, unknown> | undefined) ??
+    (obj.resume as Record<string, unknown> | undefined) ??
     obj
+
+  if (resumeObj && typeof resumeObj === "object") {
+    const r0 = resumeObj as Record<string, unknown>
+    if (r0.data && typeof r0.data === "object") resumeObj = r0.data
+  }
 
   if (!resumeObj || typeof resumeObj !== "object") return null
 
