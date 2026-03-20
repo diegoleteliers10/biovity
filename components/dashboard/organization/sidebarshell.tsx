@@ -18,6 +18,7 @@ export function DashboardShellOrganization({ children, defaultOpen }: DashboardS
         logoutRedirect="/login/organization"
         profileUrl="/dashboard/profile"
         avatarGradient={{ from: "purple-500", to: "blue-600" }}
+        logoutHoverContrastOnAccent
       />
       <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
     </SidebarProvider>

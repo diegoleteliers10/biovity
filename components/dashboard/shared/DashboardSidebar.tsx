@@ -3,7 +3,7 @@
 import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { usePathname, useRouter } from "next/navigation"
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   Tooltip,
@@ -44,6 +44,7 @@ export interface DashboardSidebarProps {
     from: string
     to: string
   }
+  logoutHoverContrastOnAccent?: boolean
 }
 
 export function DashboardSidebar({
@@ -52,12 +53,14 @@ export function DashboardSidebar({
   profileUrl = "/dashboard/profile",
   avatarUrl: avatarUrlProp,
   avatarGradient = { from: "blue-500", to: "purple-600" },
+  logoutHoverContrastOnAccent = false,
 }: DashboardSidebarProps) {
   const { state, setOpen, open } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
   const { signOut, useSession } = authClient
   const { data } = useSession()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const sessionUser = data?.user as {
     id?: string
     name?: string
@@ -76,7 +79,9 @@ export function DashboardSidebar({
       .toUpperCase() ?? navData.user.title.slice(0, 2).toUpperCase()
 
   const handleLogout = async () => {
+    if (isLoggingOut) return
     try {
+      setIsLoggingOut(true)
       await signOut({
         fetchOptions: {
           onSuccess: () => {
@@ -91,12 +96,18 @@ export function DashboardSidebar({
     } catch (error) {
       console.error("Unexpected logout error:", error)
       router.push(logoutRedirect)
+    } finally {
+      setIsLoggingOut(false)
     }
   }
 
   const handleViewProfile = () => {
     router.push(profileUrl)
   }
+
+  const logoutItemClassName = logoutHoverContrastOnAccent
+    ? "cursor-pointer text-red-600 hover:text-accent-foreground focus:text-accent-foreground"
+    : "cursor-pointer text-red-600 focus:text-red-600"
 
   return (
     <Sidebar collapsible="icon" className="border-none">
@@ -283,6 +294,7 @@ export function DashboardSidebar({
                         src={avatarUrl}
                         alt={sessionUser?.name ?? "Avatar"}
                         className="rounded-lg object-cover"
+                        loading="eager"
                       />
                     ) : null}
                     <AvatarFallback
@@ -311,15 +323,22 @@ export function DashboardSidebar({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="cursor-pointer text-red-600 focus:text-red-600"
+                  className={logoutItemClassName}
+                  aria-busy={isLoggingOut}
                 >
-                  <HugeiconsIcon
-                    icon={TransitionRightIcon}
-                    size={16}
-                    strokeWidth={1.5}
-                    className="mr-2 text-red-600"
-                  />
-                  Cerrar Sesión
+                  {isLoggingOut ? (
+                    <span className="mr-2 inline-flex size-4 items-center justify-center">
+                      <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    </span>
+                  ) : (
+                    <HugeiconsIcon
+                      icon={TransitionRightIcon}
+                      size={16}
+                      strokeWidth={1.5}
+                      className="mr-2 text-current"
+                    />
+                  )}
+                  {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

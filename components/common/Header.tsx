@@ -79,7 +79,7 @@ export const Header = () => {
                       <Link
                         href={item.href}
                         className={cn(
-                          "block duration-150 hover:text-accent-foreground",
+                          "block duration-150 hover:text-primary",
                           isActive ? "font-bold text-foreground" : "text-muted-foreground"
                         )}
                       >
@@ -101,7 +101,7 @@ export const Header = () => {
                         <Link
                           href={item.href}
                           className={cn(
-                            "block duration-150 hover:text-accent-foreground",
+                            "block duration-150 hover:text-primary",
                             isActive ? "font-bold text-foreground" : "text-muted-foreground"
                           )}
                         >

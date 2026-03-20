@@ -72,16 +72,16 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
           handleOpenJob()
         }
       }}
-      className="cursor-pointer relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="cursor-pointer relative overflow-hidden flex flex-col rounded-xl border border-border/30 bg-muted/20 transition-colors duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label="Ver vacante guardada"
     >
       <CardHeader className="pb-0">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 space-y-0.5">
-            <CardTitle className="text-[15px] md:text-base font-semibold leading-tight line-clamp-2">
+            <CardTitle className="text-[15px] md:text-base font-semibold leading-tight line-clamp-2 text-foreground tracking-tight">
               {jobLoading ? "Cargando..." : job?.title ?? "Vacante"}
             </CardTitle>
-            <p className="text-sm text-muted-foreground truncate">{organizationName}</p>
+            <p className="text-sm text-muted-foreground/90 truncate">{organizationName}</p>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -101,18 +101,33 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
       </CardHeader>
 
       <CardContent className="space-y-3 pt-3 flex-1 flex flex-col">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted-foreground/90">
           <div className="flex items-center gap-1.5">
-            <HugeiconsIcon icon={Location05Icon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
+            <HugeiconsIcon
+              icon={Location05Icon}
+              size={24}
+              strokeWidth={1.5}
+              className="h-3.5 w-3.5 text-muted-foreground/80"
+            />
             <span className="truncate">{locationStr}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <HugeiconsIcon icon={Clock01Icon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
+            <HugeiconsIcon
+              icon={Clock01Icon}
+              size={24}
+              strokeWidth={1.5}
+              className="h-3.5 w-3.5 text-muted-foreground/80"
+            />
             <span className="truncate">{postedStr}</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <HugeiconsIcon icon={Cash02Icon} size={24} strokeWidth={1.5} className="h-3.5 w-3.5" />
-            <span className="truncate">{salaryStr}</span>
+          <div className="flex items-center gap-1.5 text-foreground">
+            <HugeiconsIcon
+              icon={Cash02Icon}
+              size={24}
+              strokeWidth={1.5}
+              className="h-3.5 w-3.5 text-secondary"
+            />
+            <span className="truncate font-medium">{salaryStr}</span>
           </div>
         </div>
       </CardContent>

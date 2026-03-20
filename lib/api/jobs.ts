@@ -175,15 +175,53 @@ function normalizeJobResponse(raw: unknown): Job | null {
   const id = String(level2Obj.id ?? "")
   if (!id) return null
 
-  return level2 as Job
+  const numberCandidates: unknown[] = [
+    level2Obj.applicationsCount,
+    level2Obj.applications_count,
+    level2Obj.postulationsCount,
+    level2Obj.postulacionesCount,
+    level2Obj.totalApplications,
+    level2Obj.totalPostulaciones,
+  ]
+
+  let normalizedApplicationsCount: number | undefined
+  for (const candidate of numberCandidates) {
+    if (typeof candidate === "number" && Number.isFinite(candidate)) {
+      normalizedApplicationsCount = candidate
+      break
+    }
+    if (typeof candidate === "string") {
+      const parsed = Number(candidate)
+      if (Number.isFinite(parsed)) {
+        normalizedApplicationsCount = parsed
+        break
+      }
+    }
+  }
+
+  if (normalizedApplicationsCount == null && Array.isArray(level2Obj.applications)) {
+    normalizedApplicationsCount = level2Obj.applications.length
+  }
+  if (normalizedApplicationsCount == null && Array.isArray(level2Obj.postulaciones)) {
+    normalizedApplicationsCount = level2Obj.postulaciones.length
+  }
+
+  return {
+    ...(level2 as Job),
+    applicationsCount: normalizedApplicationsCount ?? (level2 as Job).applicationsCount,
+  }
 }
 
 export async function getJob(id: string): Promise<{ data: Job } | { error: string }> {
-  const url = `${API_BASE}/api/v1/jobs/${id}`
+  const withApplicationsUrl = `${API_BASE}/api/v1/jobs/${id}/with-applications`
+  const fallbackUrl = `${API_BASE}/api/v1/jobs/${id}`
 
   let res: Response
   try {
-    res = await fetch(url)
+    res = await fetch(withApplicationsUrl)
+    if (!res.ok) {
+      res = await fetch(fallbackUrl)
+    }
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Error de red" }
   }
