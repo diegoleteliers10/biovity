@@ -96,74 +96,81 @@ function TalentDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full overflow-y-auto px-8 py-8 sm:max-w-lg"
+        className="w-full overflow-y-auto px-6 py-6 sm:max-w-xl md:px-7"
         aria-describedby={undefined}
       >
         <SheetHeader className="px-0 pt-0">
-          <SheetTitle>Perfil del candidato</SheetTitle>
+          <SheetTitle className="text-lg font-semibold tracking-tight text-foreground">
+            Perfil del candidato
+          </SheetTitle>
         </SheetHeader>
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         ) : user ? (
-          <div className="mt-8 space-y-8">
-            <div className="flex items-center gap-5">
-              <Avatar src={user.avatar} alt={user.name} initials={initials} size="xl" />
-              <div className="min-w-0 flex-1">
-                <h2 className="font-semibold text-lg">{user.name}</h2>
-                {user.profession && (
-                  <p className="text-muted-foreground text-sm">{user.profession}</p>
-                )}
+          <div className="mt-7 space-y-6">
+            <div className="rounded-2xl border border-[#1d4e63]/70 bg-[#1d4e63] p-5">
+              <div className="flex items-center gap-4">
+                <Avatar src={user.avatar} alt={user.name} initials={initials} size="xl" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/90">
+                    Candidato
+                  </p>
+                  <h2 className="font-semibold text-lg tracking-tight text-white">{user.name}</h2>
+                  {user.profession && (
+                    <p className="text-white/85 text-sm">{user.profession}</p>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-start gap-4">
+            <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
+              <div className="flex items-start gap-3 rounded-lg border border-border/30 bg-muted/20 px-3 py-2.5">
                 <HugeiconsIcon
                   icon={Mail01Icon}
                   size={18}
-                  className="mt-0.5 shrink-0 text-muted-foreground"
+                  className="mt-0.5 shrink-0 text-secondary"
                 />
                 <div>
                   <p className="text-muted-foreground text-xs">Email</p>
-                  <a href={`mailto:${user.email}`} className="text-sm hover:underline">
+                  <a href={`mailto:${user.email}`} className="text-sm text-foreground hover:underline">
                     {user.email}
                   </a>
                 </div>
               </div>
               {user.phone && (
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3 rounded-lg border border-border/30 bg-muted/20 px-3 py-2.5">
                   <HugeiconsIcon
                     icon={SmartPhone01Icon}
                     size={18}
-                    className="mt-0.5 shrink-0 text-muted-foreground"
+                    className="mt-0.5 shrink-0 text-secondary"
                   />
                   <div>
-                    <p className="text-muted-foreground text-xs">Teléfono</p>
-                    <p className="text-sm">{user.phone}</p>
+                    <p className="text-muted-foreground text-xs">Telefono</p>
+                    <p className="text-sm text-foreground">{user.phone}</p>
                   </div>
                 </div>
               )}
               {user.location && (user.location.city || user.location.country) && (
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3 rounded-lg border border-border/30 bg-muted/20 px-3 py-2.5">
                   <HugeiconsIcon
                     icon={Location01Icon}
                     size={18}
-                    className="mt-0.5 shrink-0 text-muted-foreground"
+                    className="mt-0.5 shrink-0 text-secondary"
                   />
                   <div>
-                    <p className="text-muted-foreground text-xs">Ubicación</p>
-                    <p className="text-sm">{formatUserLocation(user.location)}</p>
+                    <p className="text-muted-foreground text-xs">Ubicacion</p>
+                    <p className="text-sm text-foreground">{formatUserLocation(user.location)}</p>
                   </div>
                 </div>
               )}
             </div>
 
             {resume?.summary && (
-              <div>
-                <h3 className="mb-3 flex items-center gap-3 font-medium text-sm">
-                  <HugeiconsIcon icon={UserIcon} size={18} />
+              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
+                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
+                  <HugeiconsIcon icon={UserIcon} size={18} className="text-secondary" />
                   Resumen
                 </h3>
                 <p className="text-muted-foreground text-pretty text-sm leading-relaxed">
@@ -173,17 +180,17 @@ function TalentDetailSheet({
             )}
 
             {resume && resume.experiences.length > 0 && (
-              <div>
-                <h3 className="mb-3 flex items-center gap-3 font-medium text-sm">
-                  <HugeiconsIcon icon={Briefcase01Icon} size={18} />
+              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
+                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
+                  <HugeiconsIcon icon={Briefcase01Icon} size={18} className="text-secondary" />
                   Experiencia
                 </h3>
                 <ul className="space-y-5">
                   {resume.experiences.map((exp, i) => {
                     const d = getExpDisplay(exp)
                     return (
-                      <li key={`exp-${i}`} className="relative border-l-2 border-border pl-5">
-                        <p className="font-medium text-sm">
+                      <li key={`exp-${i}`} className="relative border-l-2 border-border/60 pl-4">
+                        <p className="font-medium text-foreground text-sm">
                           {d.title || d.company || EMPTY_PLACEHOLDER}
                         </p>
                         {d.company && d.title && (
@@ -205,17 +212,17 @@ function TalentDetailSheet({
             )}
 
             {resume && resume.education.length > 0 && (
-              <div>
-                <h3 className="mb-3 flex items-center gap-3 font-medium text-sm">
-                  <HugeiconsIcon icon={GraduationScrollIcon} size={18} />
-                  Educación
+              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
+                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
+                  <HugeiconsIcon icon={GraduationScrollIcon} size={18} className="text-secondary" />
+                  Educacion
                 </h3>
                 <ul className="space-y-5">
                   {resume.education.map((edu, i) => {
                     const d = getEduDisplay(edu)
                     return (
-                      <li key={`edu-${i}`} className="relative border-l-2 border-border pl-5">
-                        <p className="font-medium text-sm">
+                      <li key={`edu-${i}`} className="relative border-l-2 border-border/60 pl-4">
+                        <p className="font-medium text-foreground text-sm">
                           {d.title || d.institute || EMPTY_PLACEHOLDER}
                         </p>
                         {d.institute && d.title && (
@@ -232,16 +239,16 @@ function TalentDetailSheet({
             )}
 
             {resume && (resume.skills?.length ?? 0) > 0 && (
-              <div>
-                <h3 className="mb-3 font-medium text-sm">Habilidades</h3>
-                <div className="flex flex-wrap gap-3">
+              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
+                <h3 className="font-medium text-sm text-foreground">Habilidades</h3>
+                <div className="flex flex-wrap gap-2.5">
                   {(resume.skills ?? []).map((skill, i) => {
                     const name = typeof skill === "string" ? skill : skill.name
                     const level = typeof skill === "string" ? undefined : skill.level
                     return (
                       <span
                         key={`skill-${i}`}
-                        className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
                       >
                         {name}
                         {level && <span className="ml-1 text-muted-foreground">({level})</span>}
@@ -253,9 +260,9 @@ function TalentDetailSheet({
             )}
 
             {resume && resume.links.length > 0 && (
-              <div>
-                <h3 className="mb-3 flex items-center gap-3 font-medium text-sm">
-                  <HugeiconsIcon icon={Link01Icon} size={18} />
+              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
+                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
+                  <HugeiconsIcon icon={Link01Icon} size={18} className="text-secondary" />
                   Enlaces
                 </h3>
                 <ul className="space-y-2">
@@ -265,7 +272,7 @@ function TalentDetailSheet({
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary text-sm hover:underline"
+                        className="text-primary break-all text-sm hover:underline"
                       >
                         {link.url}
                       </a>

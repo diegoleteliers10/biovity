@@ -195,17 +195,20 @@ export function OrganizationMessagesContent() {
       <div className="flex flex-1 flex-col overflow-hidden max-h-dvh">
         {!selectedChat ? (
           <div className="flex flex-1 items-center justify-center">
-            <div className="max-w-md px-6 text-center">
-              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
+            <div className="max-w-md rounded-2xl bg-transparent px-6 py-7 text-center">
+              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full border border-secondary/30 bg-secondary/10">
                 <HugeiconsIcon
                   icon={BubbleChatIcon}
                   size={24}
                   strokeWidth={1.5}
-                  className="size-8 text-muted-foreground"
+                  className="size-8 text-secondary-foreground"
                 />
               </div>
-              <h2 className="text-lg font-semibold">Tus mensajes</h2>
-              <p className="mt-1 text-muted-foreground text-sm">
+              <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Mensajeria
+              </p>
+              <h2 className="text-lg font-semibold tracking-tight text-foreground">Tus mensajes</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
                 Selecciona una conversación en la izquierda para comenzar.
               </p>
             </div>
@@ -407,8 +410,8 @@ function ChatListItem({
     <div
       role="button"
       tabIndex={0}
-      className={`cursor-pointer border-b border-border p-4 transition-colors hover:bg-muted/50 ${
-        isSelected ? "bg-muted" : ""
+      className={`cursor-pointer border-b border-border p-4 transition-colors hover:bg-muted/30 focus-visible:bg-muted/50 ${
+        isSelected ? "bg-muted/50" : ""
       }`}
       onClick={onSelect}
       onKeyDown={(e) => {

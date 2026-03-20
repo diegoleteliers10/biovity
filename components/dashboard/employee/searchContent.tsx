@@ -19,7 +19,7 @@ import { AnimatePresence } from "motion/react"
 import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
 import { useQueryStates } from "nuqs"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Select } from "@/components/base/select/select"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -116,13 +116,37 @@ export const SearchContent = () => {
     page: 1,
     limit: 200,
   })
+  const [optimisticSavedMap, setOptimisticSavedMap] = useState<Record<string, boolean>>({})
 
   const savedJobIds = useMemo(() => {
     return new Set((savedJobs?.data ?? []).map((j) => j.jobId))
   }, [savedJobs])
 
+  const isJobSaved = useCallback(
+    (jobId: string) => {
+      const optimisticValue = optimisticSavedMap[jobId]
+      if (typeof optimisticValue === "boolean") return optimisticValue
+      return savedJobIds.has(jobId)
+    },
+    [optimisticSavedMap, savedJobIds]
+  )
+
   const saveMutation = useSaveJobMutation()
   const removeMutation = useRemoveSavedJobMutation()
+
+  useEffect(() => {
+    setOptimisticSavedMap((prev) => {
+      const next: Record<string, boolean> = { ...prev }
+      let changed = false
+      for (const [jobId, optimisticValue] of Object.entries(prev)) {
+        if (savedJobIds.has(jobId) === optimisticValue) {
+          delete next[jobId]
+          changed = true
+        }
+      }
+      return changed ? next : prev
+    })
+  }, [savedJobIds])
 
   const handleClear = useCallback(() => {
     setUrlState({
@@ -138,14 +162,32 @@ export const SearchContent = () => {
     (jobId: string) => {
       if (!userId) return
 
-      const nextIsSaved = savedJobIds.has(jobId)
-      if (nextIsSaved) {
-        removeMutation.mutate({ userId, jobId })
+      const currentlySaved = isJobSaved(jobId)
+      const nextSaved = !currentlySaved
+
+      setOptimisticSavedMap((prev) => ({ ...prev, [jobId]: nextSaved }))
+
+      if (currentlySaved) {
+        removeMutation.mutate(
+          { userId, jobId },
+          {
+            onError: () => {
+              setOptimisticSavedMap((prev) => ({ ...prev, [jobId]: currentlySaved }))
+            },
+          }
+        )
       } else {
-        saveMutation.mutate({ userId, jobId })
+        saveMutation.mutate(
+          { userId, jobId },
+          {
+            onError: () => {
+              setOptimisticSavedMap((prev) => ({ ...prev, [jobId]: currentlySaved }))
+            },
+          }
+        )
       }
     },
-    [removeMutation, saveMutation, savedJobIds, userId]
+    [isJobSaved, removeMutation, saveMutation, userId]
   )
 
   return (
@@ -172,7 +214,7 @@ export const SearchContent = () => {
               variant="ghost"
               size="sm"
               onClick={handleClear}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-primary-foreground"
             >
               Limpiar
             </Button>
@@ -259,6 +301,7 @@ export const SearchContent = () => {
                     onSelectionChange={(key) => setUrlState({ jobType: String(key) })}
                     items={JOB_TYPES}
                     placeholder="Tipo de empleo"
+                    aria-label="Tipo de empleo"
                     size="md"
                   >
                     {(item) => (
@@ -273,6 +316,7 @@ export const SearchContent = () => {
                     onSelectionChange={(key) => setUrlState({ experience: String(key) })}
                     items={EXPERIENCE_LEVELS}
                     placeholder="Experiencia"
+                    aria-label="Experiencia"
                     size="md"
                   >
                     {(item) => (
@@ -320,13 +364,13 @@ export const SearchContent = () => {
             const postedStr = job.createdAt ? formatFechaRelativa(new Date(job.createdAt)) : "—"
             const modalidad = getJobModalidad(job)
             const employmentTypeKey = job.employmentType.toLowerCase()
-            const isSaved = savedJobIds.has(job.id)
+            const isSaved = isJobSaved(job.id)
 
             return (
               <Card
                 key={job.id}
                 onClick={() => router.push(`/dashboard/job/${job.id}`)}
-                className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/60 hover:border-border transition-colors duration-200 py-4"
+                className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 role="link"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -341,13 +385,15 @@ export const SearchContent = () => {
                   <div className="flex flex-col gap-1.5">
                     {/* Header: Título y Fecha */}
                     <div className="flex items-start justify-between gap-4">
-                      <h2 className="text-xl flex-1 font-bold text-gray-900">{job.title}</h2>
+                      <h2 className="text-xl flex-1 font-bold text-foreground tracking-tight">
+                        {job.title}
+                      </h2>
                       <div className="flex shrink-0 items-center gap-2">
-                        <div className="flex items-center gap-1.5 text-xs text-gray-700">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground/90">
                           <HugeiconsIcon
                             icon={Clock01Icon}
                             size={16}
-                            className="shrink-0 text-muted-foreground"
+                            className="shrink-0 text-muted-foreground/80"
                           />
                           <span>{postedStr}</span>
                         </div>
@@ -376,14 +422,14 @@ export const SearchContent = () => {
 
                     {/* Segunda fila: Empresa | Ubicación, Beneficios, Salario */}
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                      <div className="flex min-w-0 shrink-0 items-center gap-2 text-sm text-gray-600">
+                      <div className="flex min-w-0 shrink-0 items-center gap-2 text-sm text-muted-foreground/90">
                         <span className="truncate">{job.organization?.name ?? "Organización"}</span>
-                        <span className="shrink-0 text-gray-400">|</span>
-                        <div className="flex min-w-0 items-center gap-1.5 text-gray-700">
+                        <span className="shrink-0 text-muted-foreground/60">|</span>
+                        <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground/90">
                           <HugeiconsIcon
                             icon={Location05Icon}
                             size={18}
-                            className="shrink-0 text-muted-foreground"
+                            className="shrink-0 text-muted-foreground/80"
                           />
                           <span className="truncate">{locationStr}</span>
                         </div>
@@ -398,13 +444,13 @@ export const SearchContent = () => {
                               return (
                                 <div
                                   key={beneficio.title}
-                                  className="text-gray-600"
+                                  className="text-muted-foreground/90"
                                   title={beneficio.description ?? beneficio.title}
                                 >
                                   <HugeiconsIcon
                                     icon={icon}
                                     size={16}
-                                    className="text-muted-foreground"
+                                    className="text-muted-foreground/80"
                                   />
                                 </div>
                               )
@@ -412,11 +458,11 @@ export const SearchContent = () => {
                           </div>
                         )}
 
-                        <div className="flex min-w-0 items-center gap-1.5 font-semibold text-gray-900 text-sm mt-1.5 sm:mt-0">
+                        <div className="mt-1.5 flex min-w-0 items-center gap-1.5 font-semibold text-foreground text-sm sm:mt-0">
                           <HugeiconsIcon
                             icon={Cash02Icon}
                             size={18}
-                            className="shrink-0 text-muted-foreground"
+                            className="shrink-0 text-secondary"
                           />
                           <span className="min-w-0 break-words">{salaryStr}</span>
                         </div>
@@ -425,12 +471,10 @@ export const SearchContent = () => {
 
                     {/* Tercera fila: Modalidad y Formato */}
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:mt-0">
-                      <Badge className={`${getModalidadBadgeColor(modalidad)} shrink-0 capitalize`}>
+                      <Badge className="shrink-0 border border-border/40 bg-muted/30 text-foreground/90 capitalize">
                         {modalidad === "hibrido" ? "Híbrido" : modalidad}
                       </Badge>
-                      <Badge
-                        className={`${getFormatoBadgeColor(employmentTypeKey)} shrink-0 capitalize`}
-                      >
+                      <Badge className="shrink-0 border border-border/40 bg-card text-muted-foreground capitalize">
                         {job.employmentType === "Full-time"
                           ? "Full Time"
                           : job.employmentType === "Part-time"
