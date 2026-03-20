@@ -18,7 +18,8 @@ The palette is a sophisticated interplay of deep aquatic teals and vibrant biolo
 ### Color Tokens
 *   **Primary (Teal):** `#00374a` — Use for core brand moments and high-authority headers.
 *   **Secondary (Emerald):** `#006b5e` — Use for success states, growth indicators, and primary CTAs.
-*   **Tertiary (Violet):** `#2e2d5e` — Reserved for deep-level insights, accents, and high-end interactive elements.
+*   **Tertiary (Dark Gray):** `#111827` — Use for footer, dark sections, and high-contrast areas.
+*   **Accent (Violet):** `#8483d4` — Reserved for deep-level insights, accents, and high-end interactive elements.
 *   **Surface Hierarchy:** From `surface-container-lowest` (`#ffffff`) to `surface-container-highest` (`#e2e2e4`).
 
 ### Core Color Rules

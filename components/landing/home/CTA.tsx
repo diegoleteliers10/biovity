@@ -32,7 +32,7 @@ export function CTA() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight text-balance"
+            className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight text-balance"
           >
             ¿Listo para dar el siguiente paso?
           </m.h2>
@@ -41,7 +41,7 @@ export function CTA() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-500 mb-12 leading-relaxed max-w-2xl mx-auto text-pretty"
+            className="text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto text-pretty"
           >
             Únete a miles de profesionales que ya encontraron su camino en la ciencia
           </m.p>
@@ -56,15 +56,18 @@ export function CTA() {
         >
           <Button
             type="button"
-            className="inline-flex items-center px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+            variant="secondary"
+            size="lg"
+            className="px-8 py-4"
           >
             Crear cuenta gratis
             <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>
           <Button
             type="button"
-            variant="outline"
-            className="inline-flex items-center px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 rounded-full font-semibold text-lg hover:border-gray-300 hover:bg-gray-50 transition-all"
+            variant="ghost"
+            size="lg"
+            className="px-8 py-4"
           >
             Soy empresa
           </Button>
@@ -84,9 +87,9 @@ export function CTA() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger * 0.5)}
-              className="flex items-center text-gray-500"
+              className="flex items-center text-muted-foreground"
             >
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2 text-green-500" />
+              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2 text-secondary" />
               {benefit}
             </m.div>
           ))}

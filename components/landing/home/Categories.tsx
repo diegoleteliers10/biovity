@@ -14,7 +14,7 @@ export function Categories() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 bg-[#f3f3f5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 40 }}
@@ -28,7 +28,7 @@ export function Categories() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 text-balance"
+            className="text-3xl md:text-5xl font-bold text-foreground mb-4 text-balance"
           >
             Explora Oportunidades
           </m.h2>
@@ -37,7 +37,7 @@ export function Categories() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-500 max-w-2xl mx-auto text-pretty"
+            className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty"
           >
             Encuentra tu próximo desafío profesional en las áreas más innovadoras de la ciencia
           </m.p>
@@ -52,22 +52,20 @@ export function Categories() {
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
             >
-              <Card className="group p-6 cursor-pointer border-0 bg-white">
+              <Card className="group p-6 cursor-pointer border border-border/15 bg-white hover:border-border/30 transition-colors">
                 <div className="flex items-center space-x-4">
-                  <div
-                    className={`flex-shrink-0 w-12 h-12 bg-gradient-to-r ${category.color} rounded-xl flex items-center justify-center shadow-lg`}
-                  >
-                    <HugeiconsIcon icon={category.icon} size={24} className="text-white" />
+                  <div className="flex-shrink-0 w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <HugeiconsIcon icon={category.icon} size={24} className="text-accent" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">{category.title}</h3>
+                    <h3 className="font-semibold text-foreground text-lg mb-1">{category.title}</h3>
                     <div className="flex items-center">
-                      <span className="text-gray-500 text-sm">{category.positions}</span>
+                      <span className="text-muted-foreground text-sm">{category.positions}</span>
                     </div>
                   </div>
                   <HugeiconsIcon
                     icon={ArrowRight01Icon}
-                    className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0"
+                    className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all flex-shrink-0"
                   />
                 </div>
               </Card>
@@ -79,7 +77,7 @@ export function Categories() {
           <Button
             size="lg"
             variant="outline"
-            className="border-gray-300 hover:border-gray-400 hover:bg-gray-100 transition-all px-8 py-3"
+            className="px-8 py-3"
           >
             Ver todas las especialidades
             <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />

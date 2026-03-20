@@ -31,14 +31,14 @@ const StepCard = ({
         <div className="transform transition-transform duration-500 group-hover:scale-105 bg-[#f3f3f5] p-6 rounded-xl">
           {/* Mobile step indicator */}
           <div className="flex items-center mb-4 md:hidden">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md ring-2 ring-white mr-3">
-              <HugeiconsIcon icon={step.icon} size={20} className="text-white" />
+            <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shadow-md ring-2 ring-white mr-3">
+              <HugeiconsIcon icon={step.icon} size={20} className="text-secondary" />
             </div>
             <span className="text-sm font-semibold text-secondary bg-secondary/10 px-3 py-1 rounded-full">
               Paso {step.number}
             </span>
           </div>
-          <h3 className="text-xl font-bold text-foreground mb-2">{step.title}</h3>
+          <h3 className="text-xl font-bold text-primary mb-2">{step.title}</h3>
           <p className="text-muted-foreground">{step.description}</p>
         </div>
       </div>
@@ -86,7 +86,7 @@ const RoadmapLine = () => (
           y2="1200"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#00374a" />
+          <stop offset="0%" stopColor="#006b5e" />
           <stop offset="100%" stopColor="#006b5e" />
         </linearGradient>
       </defs>
@@ -113,8 +113,8 @@ const StepMarker = ({
       viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
       transition={ts(markerDelay)}
     >
-      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-ambient ring-4 ring-white">
-        <HugeiconsIcon icon={STEPS_HOME[index].icon} size={32} className="text-primary-foreground" />
+      <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center shadow-ambient ring-4 ring-white">
+        <HugeiconsIcon icon={STEPS_HOME[index].icon} size={32} className="text-secondary-foreground" />
       </div>
     </m.div>
   )

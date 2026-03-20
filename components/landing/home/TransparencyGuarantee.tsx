@@ -63,9 +63,9 @@ export function TransparencyGuarantee() {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="mb-6">
-                  <HugeiconsIcon icon={feature.icon} size={48} className={feature.iconColor} />
+                  <HugeiconsIcon icon={feature.icon} size={48} className="text-accent" />
                 </div>
-                <h3 className="text-foreground text-lg mb-3">{feature.title}</h3>
+                <h3 className="text-primary text-lg mb-3">{feature.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
               </div>
             </m.div>
