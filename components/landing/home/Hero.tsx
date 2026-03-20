@@ -83,10 +83,11 @@ export function Hero() {
                   />
                 </div>
                 <Button
+                  variant="secondary"
                   size="lg"
-                  className="h-12 px-6 sm:px-8 bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-sm hover:shadow-md transition-all w-full sm:w-auto"
+                  className="h-12 px-8 w-full sm:w-auto"
                 >
-                  <HugeiconsIcon icon={Search01Icon} className="w-5 h-5 mr-2" />
+                  <HugeiconsIcon icon={Search01Icon} className="w-5 h-5" />
                   Buscar
                 </Button>
               </div>
@@ -94,17 +95,17 @@ export function Hero() {
 
             <div className="flex flex-wrap justify-center gap-3 mt-6 md:mt-8 px-4">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                className="bg-white/50 hover:bg-white text-xs sm:text-sm"
+                className="text-xs sm:text-sm"
               >
                 <HugeiconsIcon icon={Briefcase01Icon} className="w-4 h-4 mr-2" />
                 Para Profesionales
               </Button>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                className="bg-white/50 hover:bg-white text-xs sm:text-sm"
+                className="text-xs sm:text-sm"
               >
                 <HugeiconsIcon icon={Search01Icon} className="w-4 h-4 mr-2" />
                 Para Empresas

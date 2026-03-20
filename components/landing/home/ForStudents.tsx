@@ -6,6 +6,7 @@ import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { BENEFITS_FOR_STUDENTS } from "@/lib/data/home-data"
+import { Badge } from "@/components/ui/badge"
 
 export function ForStudents() {
   const reducedMotion = useReducedMotion()
@@ -26,9 +27,9 @@ export function ForStudents() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={t(0)}
-              className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6"
+              className="mb-6"
             >
-              Para estudiantes y graduados
+              <Badge variant="accent">Para estudiantes y graduados</Badge>
             </m.div>
             <m.h2
               initial={{ opacity: 0 }}
