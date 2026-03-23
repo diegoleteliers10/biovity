@@ -15,14 +15,14 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
   onViewAll,
 }: RecentMessagesCardProps) {
   return (
-    <Card>
+    <Card className="border border-border/80 bg-white">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Mensajes Recientes</CardTitle>
+          <CardTitle className="text-foreground">Mensajes Recientes</CardTitle>
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-primary"
             onClick={onViewAll}
           >
             Ver Todo
@@ -34,7 +34,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
           {messages.map((message) => (
             <div key={message.sender} className="space-y-1">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">{message.sender}</p>
+                <p className="text-sm font-medium text-foreground">{message.sender}</p>
                 <p className="text-xs text-muted-foreground">{message.time}</p>
               </div>
               <p className="text-xs text-muted-foreground">{message.preview}</p>

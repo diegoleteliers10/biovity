@@ -43,24 +43,24 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
 
   return (
     <Card
-      className="relative overflow-hidden flex flex-col cursor-pointer transition-colors duration-300"
+      className="relative overflow-hidden flex flex-col cursor-pointer transition-colors duration-300 border border-border/80 bg-white hover:border-border"
       onClick={handleCardClick}
       aria-label={`Ver detalles del trabajo ${job.jobTitle} en ${job.company}`}
     >
       <CardHeader className="relative">
         <div className="space-y-8">
           <div className="flex items-start justify-start">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20">
               {job.compatibility}% compatibilidad
             </span>
           </div>
 
           <div className="flex items-start gap-2">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-secondary/10 text-secondary flex-shrink-0">
               <HugeiconsIcon icon={File02Icon} size={24} strokeWidth={1.5} />
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-sm font-semibold leading-tight line-clamp-2">
+              <CardTitle className="text-sm font-semibold leading-tight line-clamp-2 text-foreground">
                 {job.jobTitle}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1 truncate">{job.company}</p>
@@ -77,7 +77,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Location05Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 flex-shrink-0"
+              className="h-3 w-3 flex-shrink-0 text-secondary"
             />
             <span className="truncate">{job.location}</span>
           </div>
@@ -86,7 +86,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Cash02Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 flex-shrink-0"
+              className="h-3 w-3 flex-shrink-0 text-secondary"
             />
             <span className="truncate">{job.salary}</span>
           </div>
@@ -106,12 +106,12 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
           {job.tags.slice(0, 2).map((tag) => (
             <span
               key={`${job.jobTitle}-tag-${tag}`}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground truncate"
+              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted/50 text-muted-foreground border border-border truncate"
             >
               {tag}
             </span>
           ))}
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-muted/50 text-muted-foreground border border-border">
             +{job.additionalTags}
           </span>
         </div>
@@ -119,7 +119,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
         {/* Action Buttons - pushed to bottom */}
         <div className="pt-4 mt-auto">
           <div className="flex gap-2">
-            <Button size="sm" className="flex-1 text-xs" onClick={handleApply}>
+            <Button variant="secondary" size="sm" className="flex-1 text-xs" onClick={handleApply}>
               <HugeiconsIcon
                 icon={CheckmarkCircle02Icon}
                 size={24}

@@ -197,7 +197,7 @@ export function OrganizationLoginContent() {
               />
               <button
                 type="button"
-                className="text-sm text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
+                className="text-sm text-accent hover:text-accent/80 hover:underline"
               >
                 ¿Olvidaste tu contraseña?
               </button>
@@ -207,14 +207,15 @@ export function OrganizationLoginContent() {
             )}
             <Button
               type="submit"
-              className="h-11 w-full bg-fuchsia-600 text-white hover:bg-fuchsia-700"
+              variant="accent"
+              className="h-11 w-full"
               disabled={isLoading}
             >
               {isLoading ? "Cargando..." : "Acceder al portal"}
             </Button>
           </form>
 
-          <div className="space-y-4 border-t pt-6">
+          <div className="space-y-4 border-t border-border/15 pt-6">
             <div className="text-center">
               <Link
                 href="/login"
@@ -229,7 +230,7 @@ export function OrganizationLoginContent() {
                 ¿Tu organización no está registrada?{" "}
                 <Link
                   href="/register/organization"
-                  className="font-medium text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
+                  className="font-medium text-accent hover:text-accent/80 hover:underline"
                 >
                   Registrar organización
                 </Link>
@@ -240,7 +241,7 @@ export function OrganizationLoginContent() {
                 ¿Eres usuario individual?{" "}
                 <Link
                   href="/login/professional"
-                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
+                  className="font-medium text-secondary hover:text-secondary/80 hover:underline"
                 >
                   Acceso de usuario
                 </Link>

@@ -386,14 +386,14 @@ export default function OrganizationRegisterPage() {
                     En nombre de la organización, acepto los{" "}
                     <button
                       type="button"
-                      className="text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
+                      className="text-accent hover:text-accent/80 hover:underline"
                     >
                       términos y condiciones empresariales
                     </button>{" "}
                     y la{" "}
                     <button
                       type="button"
-                      className="text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
+                      className="text-accent hover:text-accent/80 hover:underline"
                     >
                       política de privacidad
                     </button>
@@ -413,7 +413,8 @@ export default function OrganizationRegisterPage() {
 
             <Button
               type="submit"
-              className="h-11 w-full bg-fuchsia-600 text-white hover:bg-fuchsia-700"
+              variant="accent"
+              className="h-11 w-full"
               disabled={
                 isLoading || createOrganizationMutation.isPending || linkUserMutation.isPending
               }
@@ -424,7 +425,7 @@ export default function OrganizationRegisterPage() {
             </Button>
           </form>
 
-          <div className="space-y-4 border-t pt-6">
+          <div className="space-y-4 border-t border-border/15 pt-6">
             <div className="text-center">
               <Link
                 href="/register"
@@ -439,7 +440,7 @@ export default function OrganizationRegisterPage() {
                 ¿Tu organización ya está registrada?{" "}
                 <Link
                   href="/login/organization"
-                  className="font-medium text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
+                  className="font-medium text-accent hover:text-accent/80 hover:underline"
                 >
                   Acceder al portal
                 </Link>
@@ -450,7 +451,7 @@ export default function OrganizationRegisterPage() {
                 ¿Eres usuario individual?{" "}
                 <Link
                   href="/register/professional"
-                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
+                  className="font-medium text-secondary hover:text-secondary/80 hover:underline"
                 >
                   Crear cuenta de usuario
                 </Link>
