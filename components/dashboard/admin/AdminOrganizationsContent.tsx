@@ -27,15 +27,11 @@ type AdminUser = {
   createdAt: string
 }
 
+import { formatDateChilean } from "@/lib/utils"
+
 function formatDate(iso: string): string {
   try {
-    const d = new Date(iso)
-    if (Number.isNaN(d.getTime())) return iso
-    return d.toLocaleDateString("es-CL", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    })
+    return formatDateChilean(iso, "d MMM yyyy")
   } catch {
     return iso
   }

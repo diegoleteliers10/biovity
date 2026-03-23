@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getOrganization, updateOrganization, type UpdateOrganizationInput } from "./organizations"
+import { getOrganization, type UpdateOrganizationInput, updateOrganization } from "./organizations"
 
 export const organizationKeys = {
   detail: (id: string) => ["organization", id] as const,

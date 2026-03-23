@@ -7,13 +7,13 @@ import {
   MoreHorizontalIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 import { useState } from "react"
-import { authClient } from "@/lib/auth-client"
-import { useJobsByOrganization, useDeleteJobMutation } from "@/lib/api/use-jobs"
-import type { Job } from "@/lib/api/jobs"
-import { formatJobLocation } from "@/lib/api/jobs"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/animate-ui/components/radix/dropdown-menu"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,14 +24,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { Job } from "@/lib/api/jobs"
+import { formatJobLocation } from "@/lib/api/jobs"
+import { useDeleteJobMutation, useJobsByOrganization } from "@/lib/api/use-jobs"
+import { authClient } from "@/lib/auth-client"
+import { formatDateChilean } from "@/lib/utils"
 import { CreateJobDialog } from "./CreateJobDialog"
 
 const statusColors: Record<string, string> = {
@@ -254,9 +253,7 @@ export function OfertasContent() {
                 <div className="flex items-center justify-between text-muted-foreground text-xs">
                   <span>
                     Publicada:{" "}
-                    {job.createdAt
-                      ? format(new Date(job.createdAt), "d MMM yyyy", { locale: es })
-                      : "—"}
+                    {job.createdAt ? formatDateChilean(job.createdAt, "d MMM yyyy") : "—"}
                   </span>
                   <span>{formatApplicationsCount(getApplicationsCount(job))}</span>
                 </div>

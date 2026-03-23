@@ -74,11 +74,7 @@ export function Categories() {
         </div>
 
         <div className="text-center">
-          <Button
-            size="lg"
-            variant="outline"
-            className="px-8 py-3"
-          >
+          <Button size="lg" variant="outline" className="px-8 py-3">
             Ver todas las especialidades
             <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>

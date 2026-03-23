@@ -82,11 +82,7 @@ export function Hero() {
                     className="pl-10 h-12 border-0 bg-gray-50 focus:bg-white transition-colors"
                   />
                 </div>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="h-12 px-8 w-full sm:w-auto"
-                >
+                <Button variant="secondary" size="lg" className="h-12 px-8 w-full sm:w-auto">
                   <HugeiconsIcon icon={Search01Icon} className="w-5 h-5" />
                   Buscar
                 </Button>
@@ -94,19 +90,11 @@ export function Hero() {
             </Card>
 
             <div className="flex flex-wrap justify-center gap-3 mt-6 md:mt-8 px-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm"
-              >
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
                 <HugeiconsIcon icon={Briefcase01Icon} className="w-4 h-4 mr-2" />
                 Para Profesionales
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm"
-              >
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
                 <HugeiconsIcon icon={Search01Icon} className="w-4 h-4 mr-2" />
                 Para Empresas
               </Button>

@@ -15,16 +15,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import { useCallback, useEffect, useState } from "react"
-import { authClient } from "@/lib/auth-client"
-import {
-  formatUserLocation,
-  parseLocationString,
-  useUploadAvatarMutation,
-  useUser,
-  useUpdateUserMutation,
-} from "@/lib/api/use-profile"
-import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
-import type { OrganizationAddress } from "@/lib/api/organizations"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -37,6 +27,16 @@ import {
 } from "@/components/ui/card"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import type { OrganizationAddress } from "@/lib/api/organizations"
+import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
+import {
+  formatUserLocation,
+  parseLocationString,
+  useUpdateUserMutation,
+  useUploadAvatarMutation,
+  useUser,
+} from "@/lib/api/use-profile"
+import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
 const EMPTY_PLACEHOLDER = "No especificado"
@@ -301,9 +301,7 @@ export function OrganizationProfileContent() {
     return (
       <div className="flex flex-1 flex-col gap-8 p-6 md:p-8">
         <header>
-          <h1 className="text-2xl font-bold text-foreground text-balance md:text-3xl">
-            Mi Perfil
-          </h1>
+          <h1 className="text-2xl font-bold text-foreground text-balance md:text-3xl">Mi Perfil</h1>
           <p className="text-muted-foreground text-pretty text-sm mt-1">
             Inicia sesión para ver tu perfil.
           </p>
@@ -323,9 +321,7 @@ export function OrganizationProfileContent() {
   return (
     <div className="flex flex-1 flex-col gap-6 p-6 md:p-8">
       <header>
-        <h1 className="text-2xl font-bold text-foreground text-balance md:text-3xl">
-          Mi Perfil
-        </h1>
+        <h1 className="text-2xl font-bold text-foreground text-balance md:text-3xl">Mi Perfil</h1>
         <p className="text-muted-foreground text-pretty text-sm mt-1">
           Gestiona tu información personal y de la organización
         </p>
@@ -440,11 +436,7 @@ export function OrganizationProfileContent() {
                 }
               />
               {organization?.name && (
-                <InfoRow
-                  icon={Building06Icon}
-                  label="Organización"
-                  value={organization.name}
-                />
+                <InfoRow icon={Building06Icon} label="Organización" value={organization.name} />
               )}
               <InfoRow
                 icon={Location01Icon}
@@ -469,155 +461,159 @@ export function OrganizationProfileContent() {
         <div className="min-w-0 flex-1">
           <Card className="flex h-full min-h-0 flex-col overflow-hidden border shadow-sm">
             <CardHeader className="border-b border-border/60 bg-muted/20 px-6 py-5">
-                  <div>
-                    <CardTitle className="text-lg font-semibold text-balance">
-                      Información de la organización
-                    </CardTitle>
-                    <CardDescription className="mt-1 text-pretty">
-                      Datos de tu empresa u organización.
-                    </CardDescription>
+              <div>
+                <CardTitle className="text-lg font-semibold text-balance">
+                  Información de la organización
+                </CardTitle>
+                <CardDescription className="mt-1 text-pretty">
+                  Datos de tu empresa u organización.
+                </CardDescription>
+              </div>
+              {!editingOrg && organizationId && (
+                <CardAction>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5"
+                    onClick={() => setEditingOrg(true)}
+                    aria-label="Editar organización"
+                  >
+                    <HugeiconsIcon icon={Edit01Icon} size={14} />
+                    Editar
+                  </Button>
+                </CardAction>
+              )}
+            </CardHeader>
+            <CardContent className="pt-6">
+              {!organizationId ? (
+                <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 py-16 text-center">
+                  <div className="flex size-16 items-center justify-center rounded-full bg-muted ring-2 ring-border/60">
+                    <HugeiconsIcon
+                      icon={Building06Icon}
+                      size={32}
+                      className="text-muted-foreground"
+                    />
                   </div>
-                  {!editingOrg && organizationId && (
-                    <CardAction>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1.5"
-                        onClick={() => setEditingOrg(true)}
-                        aria-label="Editar organización"
-                      >
-                        <HugeiconsIcon icon={Edit01Icon} size={14} />
-                        Editar
-                      </Button>
-                    </CardAction>
-                  )}
-                </CardHeader>
-                <CardContent className="pt-6">
-                  {!organizationId ? (
-                    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 py-16 text-center">
-                      <div className="flex size-16 items-center justify-center rounded-full bg-muted ring-2 ring-border/60">
-                        <HugeiconsIcon
-                          icon={Building06Icon}
-                          size={32}
-                          className="text-muted-foreground"
-                        />
-                      </div>
-                      <div className="space-y-1 px-4">
-                        <p className="font-medium text-foreground">Sin organización</p>
-                        <p className="text-muted-foreground text-pretty text-sm max-w-sm">
-                          No tienes una organización asociada. Completa tu perfil para vincular una.
-                        </p>
-                      </div>
-                    </div>
-                  ) : orgError ? (
-                    <p className="rounded-lg bg-destructive/10 px-4 py-3 text-destructive text-sm">
-                      {orgError.message}
+                  <div className="space-y-1 px-4">
+                    <p className="font-medium text-foreground">Sin organización</p>
+                    <p className="text-muted-foreground text-pretty text-sm max-w-sm">
+                      No tienes una organización asociada. Completa tu perfil para vincular una.
                     </p>
-                  ) : editingOrg ? (
-                    <div className="space-y-5">
-                      <div className="grid gap-5 sm:grid-cols-2">
-                        <Field>
-                          <FieldLabel>Nombre</FieldLabel>
-                          <Input
-                            value={orgForm.name}
-                            onChange={(e) => setOrgForm((p) => ({ ...p, name: e.target.value }))}
-                            placeholder="Nombre de la organización"
-                            className="h-10"
-                          />
-                        </Field>
-                        <Field>
-                          <FieldLabel>Sitio web</FieldLabel>
-                          <Input
-                            value={orgForm.website}
-                            onChange={(e) => setOrgForm((p) => ({ ...p, website: e.target.value }))}
-                            placeholder="https://..."
-                            className="h-10"
-                          />
-                        </Field>
-                        <Field>
-                          <FieldLabel>Teléfono</FieldLabel>
-                          <Input
-                            value={orgForm.phone}
-                            onChange={(e) => setOrgForm((p) => ({ ...p, phone: e.target.value }))}
-                            placeholder="+56 9 1234 5678"
-                            className="h-10"
-                          />
-                        </Field>
-                        <Field className="sm:col-span-2">
-                          <FieldLabel>Dirección</FieldLabel>
-                          <Input
-                            value={orgForm.address}
-                            onChange={(e) => setOrgForm((p) => ({ ...p, address: e.target.value }))}
-                            placeholder="Calle, Ciudad, Región, País, Código postal"
-                            className="h-10"
-                          />
-                        </Field>
-                      </div>
-                      <div className="flex gap-3 pt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleCancelOrg}
-                          disabled={updateOrgMutation.isPending}
-                        >
-                          Cancelar
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={handleSaveOrg}
-                          disabled={updateOrgMutation.isPending}
-                        >
-                          {updateOrgMutation.isPending ? "Guardando..." : "Guardar cambios"}
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
-                        <InfoRow
-                          icon={Building06Icon}
-                          label="Nombre"
-                          value={organization?.name}
-                          variant="stack"
-                        />
-                      </div>
-                      <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
-                        <InfoRow
-                          icon={Globe02Icon}
-                          label="Sitio web"
-                          value={
-                            organization?.website ? (
-                              <a
-                                href={organization.website.startsWith("http") ? organization.website : `https://${organization.website}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-primary hover:underline break-all"
-                              >
-                                {organization.website}
-                              </a>
-                            ) : undefined
-                          }
-                          variant="stack"
-                        />
-                      </div>
-                      <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
-                        <InfoRow
-                          icon={SmartPhone01Icon}
-                          label="Teléfono"
-                          value={organization?.phone}
-                          variant="stack"
-                        />
-                      </div>
-                      <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4 sm:col-span-2">
-                        <InfoRow
-                          icon={Location01Icon}
-                          label="Dirección"
-                          value={formatAddress(organization?.address ?? null)}
-                          variant="stack"
-                        />
-                      </div>
-                    </div>
-                  )}
+                  </div>
+                </div>
+              ) : orgError ? (
+                <p className="rounded-lg bg-destructive/10 px-4 py-3 text-destructive text-sm">
+                  {orgError.message}
+                </p>
+              ) : editingOrg ? (
+                <div className="space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field>
+                      <FieldLabel>Nombre</FieldLabel>
+                      <Input
+                        value={orgForm.name}
+                        onChange={(e) => setOrgForm((p) => ({ ...p, name: e.target.value }))}
+                        placeholder="Nombre de la organización"
+                        className="h-10"
+                      />
+                    </Field>
+                    <Field>
+                      <FieldLabel>Sitio web</FieldLabel>
+                      <Input
+                        value={orgForm.website}
+                        onChange={(e) => setOrgForm((p) => ({ ...p, website: e.target.value }))}
+                        placeholder="https://..."
+                        className="h-10"
+                      />
+                    </Field>
+                    <Field>
+                      <FieldLabel>Teléfono</FieldLabel>
+                      <Input
+                        value={orgForm.phone}
+                        onChange={(e) => setOrgForm((p) => ({ ...p, phone: e.target.value }))}
+                        placeholder="+56 9 1234 5678"
+                        className="h-10"
+                      />
+                    </Field>
+                    <Field className="sm:col-span-2">
+                      <FieldLabel>Dirección</FieldLabel>
+                      <Input
+                        value={orgForm.address}
+                        onChange={(e) => setOrgForm((p) => ({ ...p, address: e.target.value }))}
+                        placeholder="Calle, Ciudad, Región, País, Código postal"
+                        className="h-10"
+                      />
+                    </Field>
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCancelOrg}
+                      disabled={updateOrgMutation.isPending}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSaveOrg}
+                      disabled={updateOrgMutation.isPending}
+                    >
+                      {updateOrgMutation.isPending ? "Guardando..." : "Guardar cambios"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                    <InfoRow
+                      icon={Building06Icon}
+                      label="Nombre"
+                      value={organization?.name}
+                      variant="stack"
+                    />
+                  </div>
+                  <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                    <InfoRow
+                      icon={Globe02Icon}
+                      label="Sitio web"
+                      value={
+                        organization?.website ? (
+                          <a
+                            href={
+                              organization.website.startsWith("http")
+                                ? organization.website
+                                : `https://${organization.website}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline break-all"
+                          >
+                            {organization.website}
+                          </a>
+                        ) : undefined
+                      }
+                      variant="stack"
+                    />
+                  </div>
+                  <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                    <InfoRow
+                      icon={SmartPhone01Icon}
+                      label="Teléfono"
+                      value={organization?.phone}
+                      variant="stack"
+                    />
+                  </div>
+                  <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4 sm:col-span-2">
+                    <InfoRow
+                      icon={Location01Icon}
+                      label="Dirección"
+                      value={formatAddress(organization?.address ?? null)}
+                      variant="stack"
+                    />
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

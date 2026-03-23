@@ -131,10 +131,7 @@ function normalizeResume(raw: unknown): Resume | null {
     certifications: Array.isArray(r.certifications) ? r.certifications : [],
     languages: Array.isArray(r.languages) ? r.languages : [],
     links: Array.isArray(r.links) ? r.links : [],
-    cvFile:
-      r.cvFile ?? r.cv_file
-        ? ((r.cvFile ?? r.cv_file) as ResumeCvFile)
-        : null,
+    cvFile: (r.cvFile ?? r.cv_file) ? ((r.cvFile ?? r.cv_file) as ResumeCvFile) : null,
     createdAt: String(r.createdAt ?? r.created_at ?? ""),
     updatedAt: String(r.updatedAt ?? r.updated_at ?? ""),
   }

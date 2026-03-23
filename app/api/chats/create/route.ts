@@ -2,8 +2,7 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 
-const API_BASE =
-  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 function getErrorMessage(data: unknown, fallback: string): string {
   if (!data || typeof data !== "object") return fallback
@@ -25,21 +24,18 @@ export async function POST(request: Request) {
   const professionalId = body?.professionalId as string | undefined
 
   if (!professionalId || typeof professionalId !== "string" || !professionalId.trim()) {
-    return NextResponse.json(
-      { error: "professionalId es requerido" },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: "professionalId es requerido" }, { status: 400 })
   }
 
   const recruiterId = session.user.id
 
   try {
-    const existingRes = await fetch(
-      `${API_BASE}/api/v1/chats/recruiter/${recruiterId}`
-    )
+    const existingRes = await fetch(`${API_BASE}/api/v1/chats/recruiter/${recruiterId}`)
     const existingData = await existingRes.json().catch(() => null)
     const chats = existingRes.ok
-      ? (Array.isArray(existingData) ? existingData : existingData?.data ?? [])
+      ? Array.isArray(existingData)
+        ? existingData
+        : (existingData?.data ?? [])
       : []
 
     const existing = chats.find(
@@ -65,10 +61,7 @@ export async function POST(request: Request) {
 
     const chat = createData?.data ?? createData
     if (!chat?.id) {
-      return NextResponse.json(
-        { error: "Respuesta inválida del servidor" },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: "Respuesta inválida del servidor" }, { status: 500 })
     }
 
     return NextResponse.json(chat)

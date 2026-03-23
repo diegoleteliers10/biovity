@@ -1,17 +1,17 @@
 "use client"
 
+import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
 import { useRouter } from "next/navigation"
 import { useCallback, useState } from "react"
+import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
+import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
 import { authClient } from "@/lib/auth-client"
 import { ORGANIZATION_DATA } from "@/lib/data/organization-dashboard-data"
 import type { Notification } from "@/lib/types/dashboard"
-import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
-import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
-import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
 import { CreateOfferCard } from "./home/createOfferCard"
+import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
 import { OrganizationRecentApplicationsCard } from "./home/organizationRecentApplicationsCard"
 import { PlaceholderCard } from "./home/placeholderCard"
-import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
 
 export function OrganizationHomeContent() {
   const router = useRouter()

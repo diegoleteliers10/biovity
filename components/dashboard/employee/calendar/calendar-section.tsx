@@ -4,6 +4,7 @@ import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { getChileanDate } from "@/lib/utils"
 import { Calendar } from "./calendar"
 import { UpcomingEvents } from "./upcoming-events"
 
@@ -23,7 +24,7 @@ const months = [
 ]
 
 export function CalendarSection() {
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState(getChileanDate())
 
   const navigateMonth = (direction: "prev" | "next") => {
     setCurrentDate((prev) => {
@@ -59,7 +60,7 @@ export function CalendarSection() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentDate(new Date())}
+                onClick={() => setCurrentDate(getChileanDate())}
                 className="text-sm px-3"
               >
                 Hoy

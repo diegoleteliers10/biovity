@@ -2,10 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth.api.getSession({
       headers: request.headers,
@@ -19,10 +16,7 @@ export async function PATCH(
     const isActive = typeof body.isActive === "boolean" ? body.isActive : undefined
 
     if (isActive === undefined) {
-      return NextResponse.json(
-        { error: "isActive debe ser un booleano" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "isActive debe ser un booleano" }, { status: 400 })
     }
 
     const result = await pool.query<{ id: string }>(

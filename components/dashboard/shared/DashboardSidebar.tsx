@@ -2,21 +2,14 @@
 
 import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { usePathname, useRouter } from "next/navigation"
-import { useState, type ReactNode } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { usePathname, useRouter } from "next/navigation"
+import { type ReactNode, useState } from "react"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/animate-ui/components/animate/tooltip"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu"
 import {
   Sidebar,
   SidebarContent,
@@ -31,6 +24,13 @@ import {
   useSidebar,
 } from "@/components/animate-ui/components/radix/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
@@ -60,13 +60,14 @@ export function DashboardSidebar({
   const router = useRouter()
   const { signOut, useSession } = authClient
   const { data } = useSession()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const sessionUser = data?.user as {
-    id?: string
-    name?: string
-    image?: string
-    avatar?: string
-  } | undefined
+  const sessionUser = data?.user as
+    | {
+        id?: string
+        name?: string
+        image?: string
+        avatar?: string
+      }
+    | undefined
   const userId = sessionUser?.id
   const queryClient = useQueryClient()
   const avatarUrl = avatarUrlProp ?? sessionUser?.avatar ?? sessionUser?.image
@@ -79,9 +80,7 @@ export function DashboardSidebar({
       .toUpperCase() ?? navData.user.title.slice(0, 2).toUpperCase()
 
   const handleLogout = async () => {
-    if (isLoggingOut) return
     try {
-      setIsLoggingOut(true)
       await signOut({
         fetchOptions: {
           onSuccess: () => {
@@ -96,8 +95,6 @@ export function DashboardSidebar({
     } catch (error) {
       console.error("Unexpected logout error:", error)
       router.push(logoutRedirect)
-    } finally {
-      setIsLoggingOut(false)
     }
   }
 
@@ -321,24 +318,14 @@ export function DashboardSidebar({
                   <HugeiconsIcon icon={User02Icon} size={16} strokeWidth={1.5} className="mr-2" />
                   Ver Perfil
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleLogout}
-                  className={logoutItemClassName}
-                  aria-busy={isLoggingOut}
-                >
-                  {isLoggingOut ? (
-                    <span className="mr-2 inline-flex size-4 items-center justify-center">
-                      <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    </span>
-                  ) : (
-                    <HugeiconsIcon
-                      icon={TransitionRightIcon}
-                      size={16}
-                      strokeWidth={1.5}
-                      className="mr-2 text-current"
-                    />
-                  )}
-                  {isLoggingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
+                <DropdownMenuItem onClick={handleLogout} className={logoutItemClassName}>
+                  <HugeiconsIcon
+                    icon={TransitionRightIcon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="mr-2 text-current"
+                  />
+                  Cerrar Sesión
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

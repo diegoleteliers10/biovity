@@ -114,7 +114,11 @@ const StepMarker = ({
       transition={ts(markerDelay)}
     >
       <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center shadow-ambient ring-4 ring-white">
-        <HugeiconsIcon icon={STEPS_HOME[index].icon} size={32} className="text-secondary-foreground" />
+        <HugeiconsIcon
+          icon={STEPS_HOME[index].icon}
+          size={32}
+          className="text-secondary-foreground"
+        />
       </div>
     </m.div>
   )

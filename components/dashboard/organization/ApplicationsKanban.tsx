@@ -4,10 +4,10 @@ import {
   DndContext,
   type DragEndEvent,
   PointerSensor,
-  useSensor,
-  useSensors,
   useDraggable,
   useDroppable,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 import {
@@ -21,16 +21,16 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
+import { cn } from "@/lib/utils"
 
 const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[] = [
   { id: "pendiente", label: "Pendiente", icon: File02Icon },

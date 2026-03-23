@@ -56,7 +56,9 @@ function normalizeSavedJobItem(raw: unknown): SavedJob | null {
   // - { job: { id } }
   const jobId =
     jobIdCandidateFromId ??
-    (obj.job && typeof obj.job === "object" ? extractString((obj.job as Record<string, unknown>).id) : null) ??
+    (obj.job && typeof obj.job === "object"
+      ? extractString((obj.job as Record<string, unknown>).id)
+      : null) ??
     null
 
   if (!jobId) return null
@@ -88,8 +90,11 @@ function extractSavedJobsList(payload: unknown): {
   const maybeData = p.data
 
   // Some endpoints use { data: [...] }, others use { data: { data: [...] } }
-  const listCandidate =
-    Array.isArray(maybeData) ? maybeData : maybeData && typeof maybeData === "object" ? (maybeData as Record<string, unknown>).data : null
+  const listCandidate = Array.isArray(maybeData)
+    ? maybeData
+    : maybeData && typeof maybeData === "object"
+      ? (maybeData as Record<string, unknown>).data
+      : null
 
   const itemsArray = Array.isArray(listCandidate) ? listCandidate : []
   const items = itemsArray.map(normalizeSavedJobItem).filter((x): x is SavedJob => Boolean(x))
@@ -99,7 +104,7 @@ function extractSavedJobsList(payload: unknown): {
 
 export async function checkSavedJob(
   userId: string,
-  jobId: string,
+  jobId: string
 ): Promise<{ data: CheckSavedJobResponse } | { error: string }> {
   const url = `${API_BASE}/api/v1/saved-jobs/check/${userId}/${jobId}`
 
@@ -130,7 +135,7 @@ export async function checkSavedJob(
 
 export async function getSavedJobsByUserId(
   userId: string,
-  params?: { page?: number; limit?: number },
+  params?: { page?: number; limit?: number }
 ): Promise<{ data: SavedJobsByUserResponse } | { error: string }> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
@@ -153,7 +158,10 @@ export async function getSavedJobsByUserId(
   return { data: extracted }
 }
 
-export async function saveJob(userId: string, jobId: string): Promise<{ data: SavedJob } | { error: string }> {
+export async function saveJob(
+  userId: string,
+  jobId: string
+): Promise<{ data: SavedJob } | { error: string }> {
   const url = `${API_BASE}/api/v1/saved-jobs`
 
   let res: Response
@@ -173,13 +181,19 @@ export async function saveJob(userId: string, jobId: string): Promise<{ data: Sa
   const dataLevel1 = unwrapData(json)
   const dataLevel2 = unwrapData(dataLevel1)
 
-  const saved = normalizeSavedJobItem(dataLevel2) ?? normalizeSavedJobItem(dataLevel1) ?? normalizeSavedJobItem(json)
+  const saved =
+    normalizeSavedJobItem(dataLevel2) ??
+    normalizeSavedJobItem(dataLevel1) ??
+    normalizeSavedJobItem(json)
   if (!saved) return { error: "Respuesta inválida" }
 
   return { data: saved }
 }
 
-export async function removeSavedJob(userId: string, jobId: string): Promise<{ success: true } | { error: string }> {
+export async function removeSavedJob(
+  userId: string,
+  jobId: string
+): Promise<{ success: true } | { error: string }> {
   const url = `${API_BASE}/api/v1/saved-jobs/user/${userId}/job/${jobId}`
 
   let res: Response
@@ -194,4 +208,3 @@ export async function removeSavedJob(userId: string, jobId: string): Promise<{ s
 
   return { success: true }
 }
-

@@ -1,10 +1,6 @@
 "use client"
 
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import { getMessagesByChatId, type Message, sendMessage } from "./messages"
@@ -40,7 +36,9 @@ export function useInfiniteMessages(chatId: string | undefined) {
   })
 
   const messages = Array.isArray(query.data?.pages)
-    ? [...query.data.pages].reverse().flatMap((p) => (p?.data ?? []))
+    ? query.data.pages
+        .flatMap((p) => p?.data ?? [])
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     : []
 
   useEffect(() => {
@@ -62,7 +60,10 @@ export function useInfiniteMessages(chatId: string | undefined) {
           const row = payload.new as Record<string, unknown>
           if (!row?.id) return
           const r = (k: string) =>
-            (row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]) as string | boolean | undefined
+            (row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]) as
+              | string
+              | boolean
+              | undefined
           const chatIdVal = String(r("chatId") ?? r("chat_id") ?? "")
           if (chatIdVal !== effectiveChatId) return
           const msg: Message = {
@@ -111,7 +112,9 @@ export function useSendMessageMutation(chatId: string, senderId: string) {
     },
     onMutate: async (content) => {
       if (!chatId) return
-      await queryClient.cancelQueries({ queryKey: messagesKeys.byChat(chatId) })
+      await queryClient.cancelQueries({
+        queryKey: messagesKeys.byChat(chatId),
+      })
       const previous = queryClient.getQueryData(messagesKeys.byChat(chatId))
       const tempMessage: Message = {
         id: `temp-${Date.now()}`,
@@ -152,9 +155,7 @@ export function useSendMessageMutation(chatId: string, senderId: string) {
             next[tempIndex] = newMessage
             return {
               ...old,
-              pages: old.pages.map((p, i) =>
-                i === 0 ? { ...p, data: next } : p
-              ),
+              pages: old.pages.map((p, i) => (i === 0 ? { ...p, data: next } : p)),
             }
           }
           if (firstData.some((m) => m.id === newMessage.id)) return old

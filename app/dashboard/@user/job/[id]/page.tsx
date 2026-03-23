@@ -25,14 +25,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/animate-ui/components/radix/dropdown-menu"
+import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
-import { authClient } from "@/lib/auth-client"
-import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { useJob } from "@/lib/api/use-jobs"
 import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
-import { useCheckSavedJob, useRemoveSavedJobMutation, useSaveJobMutation } from "@/lib/api/use-saved-jobs"
+import { useJob } from "@/lib/api/use-jobs"
+import { useOrganization } from "@/lib/api/use-organization-mutations"
+import {
+  useCheckSavedJob,
+  useRemoveSavedJobMutation,
+  useSaveJobMutation,
+} from "@/lib/api/use-saved-jobs"
+import { authClient } from "@/lib/auth-client"
 
 function getJobModalidad(loc: JobLocation | null | undefined): string {
   if (!loc) return "Presencial"
@@ -53,15 +57,15 @@ function formatJobSalary(job: Job): string {
   return "A convenir"
 }
 
+import { formatDateChilean } from "@/lib/utils"
+
 function formatDateShort(isoDate: string | undefined | null): string {
   if (!isoDate) return "—"
-  const date = new Date(isoDate)
-  if (Number.isNaN(date.getTime())) return "—"
-  return date.toLocaleDateString("es-CL", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  })
+  try {
+    return formatDateChilean(isoDate, "d MMM")
+  } catch {
+    return "—"
+  }
 }
 
 function getBenefitIcon(benefit: JobBenefit) {
@@ -82,17 +86,13 @@ export default function JobDetailPage() {
 
   const { useSession } = authClient
   const { data: session } = useSession()
-  const professionalId = (
+  const professionalId =
     (session?.user as { id?: string; userId?: string; sub?: string } | undefined)?.id ??
     (session?.user as { userId?: string } | undefined)?.userId ??
     (session?.user as { sub?: string } | undefined)?.sub ??
     ""
-  )
 
-  const { data: savedCheck, isLoading: savedCheckLoading } = useCheckSavedJob(
-    professionalId,
-    jobId
-  )
+  const { data: savedCheck, isLoading: savedCheckLoading } = useCheckSavedJob(professionalId, jobId)
   const isSaved = savedCheck?.isSaved ?? false
 
   const saveMutation = useSaveJobMutation()
@@ -205,7 +205,12 @@ export default function JobDetailPage() {
                 {job.experienceLevel} · {job.employmentType}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-card px-3 py-1 text-xs font-semibold text-foreground">
-                <HugeiconsIcon icon={Cash02Icon} size={16} strokeWidth={1.5} className="h-3.5 w-3.5 text-secondary" />
+                <HugeiconsIcon
+                  icon={Cash02Icon}
+                  size={16}
+                  strokeWidth={1.5}
+                  className="h-3.5 w-3.5 text-secondary"
+                />
                 {salaryStr}
               </span>
             </div>
@@ -394,7 +399,9 @@ export default function JobDetailPage() {
               <div className="rounded-lg border border-border/30 bg-background/70 px-3 py-2.5">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground/90">Postulaciones</span>
-                  <span className="font-semibold text-foreground">{job.applicationsCount ?? "—"}</span>
+                  <span className="font-semibold text-foreground">
+                    {job.applicationsCount ?? "—"}
+                  </span>
                 </div>
               </div>
               <div className="rounded-lg border border-border/30 bg-background/70 px-3 py-2.5">

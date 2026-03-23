@@ -14,6 +14,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -26,17 +27,24 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useDebounce } from "@/hooks/use-debounce"
 import type { Chat } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByProfessional } from "@/lib/api/use-chats"
 import { useInfiniteMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
+import { formatDateChilean } from "@/lib/utils"
 
 export function UserMessagesContent() {
   const { useSession } = authClient
   const { data: session } = useSession()
   const professionalId = (session?.user as { id?: string })?.id
+
+  const [searchQuery, setSearchQuery] = useQueryState("q", {
+    defaultValue: "",
+  })
+  const debouncedSearchQuery = useDebounce(searchQuery, 300)
 
   const { data: chats = [], isLoading: chatsLoading } = useChatsByProfessional(professionalId)
   useChatListRealtime(chats)
@@ -119,9 +127,9 @@ export function UserMessagesContent() {
       const d = new Date(iso)
       const now = new Date()
       const diff = now.getTime() - d.getTime()
-      if (diff < 86400000) return format(d, "HH:mm", { locale: es })
-      if (diff < 604800000) return format(d, "EEE", { locale: es })
-      return format(d, "d MMM", { locale: es })
+      if (diff < 86400000) return formatDateChilean(iso, "HH:mm")
+      if (diff < 604800000) return formatDateChilean(iso, "EEE")
+      return formatDateChilean(iso, "d MMM")
     } catch {
       return ""
     }
@@ -152,6 +160,8 @@ export function UserMessagesContent() {
             />
             <Input
               placeholder="Buscar conversaciones..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="h-10 border-muted bg-muted/50 pl-10 transition-colors focus:bg-background"
             />
           </div>
@@ -164,6 +174,7 @@ export function UserMessagesContent() {
               chat={chat}
               isSelected={selectedChat?.id === chat.id}
               onSelect={() => setSelectedChat(chat)}
+              searchQuery={debouncedSearchQuery}
             />
           ))}
         </div>
@@ -262,7 +273,11 @@ export function UserMessagesContent() {
                               .toUpperCase()
                           : recruiterInitials
                       }
-                      senderAvatar={(msg.senderId === professionalId ? professionalProfile?.avatar : recruiter?.avatar) ?? undefined}
+                      senderAvatar={
+                        (msg.senderId === professionalId
+                          ? professionalProfile?.avatar
+                          : recruiter?.avatar) ?? undefined
+                      }
                       formatTime={formatMessageTime}
                     />
                   ))}
@@ -357,10 +372,12 @@ function UserChatListItem({
   chat,
   isSelected,
   onSelect,
+  searchQuery,
 }: {
   chat: Chat
   isSelected: boolean
   onSelect: () => void
+  searchQuery: string
 }) {
   const { data: recruiter } = useUser(chat.recruiterId)
   const name = recruiter?.name ?? "Reclutador"
@@ -371,14 +388,20 @@ function UserChatListItem({
     .slice(0, 2)
     .toUpperCase()
 
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase()
+    const matchesName = name.toLowerCase().includes(query)
+    if (!matchesName) return null
+  }
+
   const formatTime = (iso: string) => {
     try {
       const d = new Date(iso)
       const now = new Date()
       const diff = now.getTime() - d.getTime()
-      if (diff < 86400000) return format(d, "HH:mm", { locale: es })
-      if (diff < 604800000) return format(d, "EEE", { locale: es })
-      return format(d, "d MMM", { locale: es })
+      if (diff < 86400000) return formatDateChilean(iso, "HH:mm")
+      if (diff < 604800000) return formatDateChilean(iso, "EEE")
+      return formatDateChilean(iso, "d MMM")
     } catch {
       return ""
     }

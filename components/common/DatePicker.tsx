@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import { cn, formatDateChilean, TIMEZONE_CL } from "@/lib/utils"
 
-const USER_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone
+const USER_TZ = TIMEZONE_CL
 
 type DatePickerProps = {
   date: Date | undefined
@@ -48,7 +48,7 @@ export function DatePicker({ date, setDate, className, label, id }: DatePickerPr
             className
           )}
         >
-          {date ? format(date, "PPP") : <span>Seleccionar fecha</span>}
+          {date ? formatDateChilean(date) : <span>Seleccionar fecha</span>}
           <HugeiconsIcon icon={ArrowDown01Icon} />
         </Button>
       </PopoverTrigger>

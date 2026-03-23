@@ -15,6 +15,193 @@ export function JsonLd({ data }: JsonLdProps) {
   )
 }
 
+export interface JobPostingJsonLdProps {
+  jobId: string
+  title: string
+  description: string
+  organizationName: string
+  organizationUrl?: string
+  datePosted: string
+  validThrough?: string
+  employmentType: string
+  experienceLevel?: string
+  locationCity?: string
+  locationRegion?: string
+  locationCountry?: string
+  isRemote?: boolean
+  isHybrid?: boolean
+  salaryMin?: number
+  salaryMax?: number
+  salaryCurrency?: string
+  benefits?: string[]
+  url: string
+}
+
+export function JobPostingJsonLd({
+  title,
+  description,
+  organizationName,
+  datePosted,
+  validThrough,
+  employmentType,
+  experienceLevel,
+  locationCity,
+  locationRegion,
+  locationCountry,
+  isRemote,
+  isHybrid,
+  salaryMin,
+  salaryMax,
+  salaryCurrency = "CLP",
+  url,
+}: JobPostingJsonLdProps) {
+  const jobData = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title,
+    description,
+    datePosted,
+    validThrough,
+    employmentUnit: "FULL_TIME",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: organizationName,
+    },
+    jobLocation: isRemote
+      ? {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "CL",
+          },
+        }
+      : {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: locationCity,
+            addressRegion: locationRegion,
+            addressCountry: locationCountry,
+          },
+        },
+    jobLocationType: isRemote ? "REMOTE" : isHybrid ? "HYBRID" : "ONSITE",
+    employmentType: employmentType.toUpperCase(),
+    experienceRequirements: experienceLevel
+      ? {
+          "@type": "OccupationalExperienceRequirements",
+          yearsOfExperience: experienceLevel.includes("Senior")
+            ? "5-"
+            : experienceLevel.includes("Mid")
+              ? "3-5"
+              : experienceLevel.includes("Junior")
+                ? "1-3"
+                : undefined,
+        }
+      : undefined,
+    baseSalary:
+      salaryMin || salaryMax
+        ? {
+            "@type": "MonetaryAmount",
+            currency: salaryCurrency,
+            value:
+              salaryMin && salaryMax
+                ? {
+                    "@type": "QuantitativeValue",
+                    minValue: salaryMin,
+                    maxValue: salaryMax,
+                    unitText: "MONTH",
+                  }
+                : {
+                    "@type": "QuantitativeValue",
+                    value: salaryMin || salaryMax,
+                    unitText: "MONTH",
+                  },
+          }
+        : undefined,
+    url,
+  }
+
+  return <JsonLd data={jobData} />
+}
+
+export interface ArticleJsonLdProps {
+  title: string
+  description: string
+  authorName: string
+  authorUrl?: string
+  datePublished: string
+  dateModified?: string
+  image: string
+  url: string
+}
+
+export function ArticleJsonLd({
+  title,
+  description,
+  authorName,
+  datePublished,
+  dateModified,
+  image,
+  url,
+}: ArticleJsonLdProps) {
+  const articleData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description,
+    image,
+    datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      "@type": "Person",
+      name: authorName,
+      url: authorName.toLowerCase().replace(/\s+/g, "-"),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Biovity",
+      url: "https://biovity.cl",
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  }
+
+  return <JsonLd data={articleData} />
+}
+
+export interface PersonJsonLdProps {
+  name: string
+  jobTitle?: string
+  description?: string
+  url?: string
+  image?: string
+  sameAs?: string[]
+}
+
+export function PersonJsonLd({
+  name,
+  jobTitle,
+  description,
+  url,
+  image,
+  sameAs,
+}: PersonJsonLdProps) {
+  const personData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name,
+    jobTitle,
+    description,
+    url,
+    image,
+    sameAs,
+  }
+
+  return <JsonLd data={personData} />
+}
+
 // Organization schema for the entire site
 export function OrganizationJsonLd() {
   const organizationData = {

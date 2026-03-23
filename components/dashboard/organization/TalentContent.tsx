@@ -23,13 +23,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
 import { Avatar } from "@/components/base/avatar/avatar"
 import { Button } from "@/components/ui/button"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -43,8 +39,8 @@ import type { ResumeEducation, ResumeExperience } from "@/lib/api/resumes"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { useProfessionalUsers } from "@/lib/api/use-talent"
-import { authClient } from "@/lib/auth-client"
 import { formatUserLocation } from "@/lib/api/users"
+import { authClient } from "@/lib/auth-client"
 import { talentParsers } from "@/lib/parsers/talent"
 
 const EMPTY_PLACEHOLDER = "No especificado"
@@ -118,9 +114,7 @@ function TalentDetailSheet({
                     Candidato
                   </p>
                   <h2 className="font-semibold text-lg tracking-tight text-white">{user.name}</h2>
-                  {user.profession && (
-                    <p className="text-white/85 text-sm">{user.profession}</p>
-                  )}
+                  {user.profession && <p className="text-white/85 text-sm">{user.profession}</p>}
                 </div>
               </div>
             </div>
@@ -134,7 +128,10 @@ function TalentDetailSheet({
                 />
                 <div>
                   <p className="text-muted-foreground text-xs">Email</p>
-                  <a href={`mailto:${user.email}`} className="text-sm text-foreground hover:underline">
+                  <a
+                    href={`mailto:${user.email}`}
+                    className="text-sm text-foreground hover:underline"
+                  >
                     {user.email}
                   </a>
                 </div>
@@ -518,9 +515,7 @@ export function TalentContent() {
                                     className="text-primary"
                                   />
                                 </div>
-                                <span>
-                                  {formatUserLocation(user.location)}
-                                </span>
+                                <span>{formatUserLocation(user.location)}</span>
                               </div>
                             )}
                           </div>

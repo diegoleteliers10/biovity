@@ -4,9 +4,9 @@ import { ArrowRight01Icon, GraduationScrollIcon } from "@hugeicons/core-free-ico
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import { Badge } from "@/components/ui/badge"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { BENEFITS_FOR_STUDENTS } from "@/lib/data/home-data"
-import { Badge } from "@/components/ui/badge"
 
 export function ForStudents() {
   const reducedMotion = useReducedMotion()
