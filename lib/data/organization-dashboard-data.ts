@@ -106,3 +106,93 @@ export const ORGANIZATION_DATA = {
     },
   ],
 }
+
+export const ORGANIZATION_UPCOMING_INTERVIEWS = [
+  {
+    id: "1",
+    candidateName: "Ana Martínez",
+    position: "Técnico de Laboratorio",
+    date: "Mañana, 10:00 AM",
+    type: "Videollamada",
+  },
+  {
+    id: "2",
+    candidateName: "Pedro Sánchez",
+    position: "Desarrollador de Productos Farma",
+    date: "Jueves, 15:30 PM",
+    type: "Presencial",
+  },
+]
+
+export const ORGANIZATION_FEATURED_CANDIDATES = [
+  {
+    id: "1",
+    name: "Laura Gómez",
+    role: "Investigador Senior",
+    matchPercentage: 95,
+  },
+  {
+    id: "2",
+    name: "Diego Silva",
+    role: "Especialista en Control de Calidad",
+    matchPercentage: 88,
+  },
+]
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export async function fetchOrgNotifications() {
+  await delay(800)
+  return [
+    {
+      id: 1,
+      title: "Nueva aplicación recibida",
+      message: "María González aplicó a Investigador en Biotecnología",
+      time: "Hace 2 horas",
+      isRead: false,
+      type: "application",
+    },
+    {
+      id: 2,
+      title: "Entrevista programada",
+      message: "Ana Martínez confirmó entrevista para mañana",
+      time: "Hace 4 horas",
+      isRead: false,
+      type: "interview",
+    },
+    {
+      id: 3,
+      title: "Nuevo mensaje",
+      message: "Carlos Rodríguez te envió un mensaje",
+      time: "Hace 1 día",
+      isRead: true,
+      type: "recommendation",
+    },
+  ]
+}
+
+export async function fetchOrgMetrics() {
+  await delay(800)
+  return ORGANIZATION_DATA.metrics
+}
+
+export async function fetchOrgRecentApplications() {
+  await delay(800)
+  return ORGANIZATION_DATA.recentApplications
+}
+
+export async function fetchOrgRecentMessages() {
+  await delay(800)
+  return ORGANIZATION_DATA.recentMessages
+}
+
+export async function fetchOrgUpcomingInterviews() {
+  await delay(800)
+  return ORGANIZATION_UPCOMING_INTERVIEWS
+}
+
+export async function fetchOrgFeaturedCandidates() {
+  await delay(800)
+  return ORGANIZATION_FEATURED_CANDIDATES
+}
+
