@@ -1,8 +1,13 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { useQueries } from "@tanstack/react-query"
 import { authClient } from "@/lib/auth-client"
+import { useChatsByProfessional } from "@/lib/api/use-chats"
+import { getLastMessageFromSender } from "@/lib/api/messages"
+import { getUser } from "@/lib/api/users"
+import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { DATA } from "@/lib/data/data-test"
 import type { Notification } from "@/lib/types/dashboard"
 import { HomeHeader } from "./home/homeHeader"
@@ -72,9 +77,12 @@ export const HomeContent = () => {
   }, [])
 
   const handleViewAllJobs = useCallback(() => {
-    // TODO: Navigate to all jobs page
-    console.log("View all jobs")
-  }, [])
+    router.push("/dashboard/jobs")
+  }, [router])
+
+  const handleViewAllMessages = useCallback(() => {
+    router.push("/dashboard/messages")
+  }, [router])
 
   const handleCreateAlert = useCallback(() => {
     // TODO: Implement alert creation logic
@@ -86,6 +94,60 @@ export const HomeContent = () => {
   }, [])
 
   const firstName = data?.user?.name?.split(" ")[0] || "Usuario"
+
+  const professionalId = (data?.user as { id?: string })?.id
+  const { data: chats = [], isPending: chatsPending, isSuccess: chatsSuccess } = useChatsByProfessional(professionalId)
+
+  const { data: applications = [], isPending: applicationsPending, isSuccess: applicationsSuccess } = useApplicationsByCandidate(professionalId)
+
+  const recruiterQueries = useQueries({
+    queries: (chats ?? []).map((chat) => ({
+      queryKey: ["profile", "user", chat.recruiterId],
+      queryFn: async () => {
+        const result = await getUser(chat.recruiterId)
+        if ("error" in result) return null
+        return result.data
+      },
+      enabled: Boolean(chat.recruiterId),
+      staleTime: 5 * 60 * 1000,
+    })),
+  })
+
+  const recruiterNames = useMemo(() => {
+    const map: Record<string, string> = {}
+    recruiterQueries.forEach((q, i) => {
+      if (chats[i]?.recruiterId) {
+        map[chats[i].recruiterId] = q.data?.name ?? "Reclutador"
+      }
+    })
+    return map
+  }, [recruiterQueries, chats])
+
+  const lastRecruiterMessageQueries = useQueries({
+    queries: (chats ?? []).map((chat) => ({
+      queryKey: ["messages", "last-recruiter", chat.id],
+      queryFn: async () => {
+        if (!chat.recruiterId) return null
+        return await getLastMessageFromSender(chat.id, chat.recruiterId)
+      },
+      enabled: Boolean(chat.id && chat.recruiterId),
+      staleTime: 30 * 1000,
+    })),
+  })
+
+  const enrichedChats = useMemo(() => {
+    return chats.map((chat, i) => {
+      const lastMsg = lastRecruiterMessageQueries[i]?.data
+      return {
+        ...chat,
+        lastMessageFromRecruiter: lastMsg?.content ?? null,
+        lastMessageFromRecruiterAt: lastMsg?.createdAt ?? chat.updatedAt,
+        isLoading: lastRecruiterMessageQueries[i]?.isLoading ?? true,
+      }
+    })
+  }, [chats, lastRecruiterMessageQueries])
+
+  const isInitialLoad = !chatsSuccess || !applicationsSuccess || (chats.length > 0 && lastRecruiterMessageQueries.some((q) => q.isFetching))
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -108,10 +170,11 @@ export const HomeContent = () => {
       {/* Recent Applications and Messages */}
       <div className="border-t border-border/80 pt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <RecentApplicationsCard
-          applications={DATA.recentApplications}
+          applications={applications}
           onJobClick={handleJobClick}
+          isLoading={!applicationsSuccess}
         />
-        <RecentMessagesCard messages={DATA.recentMessages} />
+        <RecentMessagesCard chats={enrichedChats} isLoading={isInitialLoad} recruiterNames={recruiterNames} onViewAll={handleViewAllMessages} />
       </div>
 
       {/* Recommended Jobs Section */}
