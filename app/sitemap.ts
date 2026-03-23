@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next"
+import { getAllPosts } from "@/lib/posts"
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
-  // Static pages
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: siteUrl,
@@ -18,30 +18,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/login/professional`,
+      url: `${siteUrl}/trabajos`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     {
-      url: `${siteUrl}/login/organization`,
+      url: `${siteUrl}/salarios`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.8,
     },
     {
-      url: `${siteUrl}/register/professional`,
+      url: `${siteUrl}/nosotros`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: `${siteUrl}/register/organization`,
+      url: `${siteUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${siteUrl}/lista-espera`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.5,
     },
   ]
 
-  return staticPages
+  const blogPosts = await getAllPosts()
+  const blogUrls: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${siteUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.frontmatter.date),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, ...blogUrls]
 }

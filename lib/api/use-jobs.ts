@@ -2,14 +2,14 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
+  type CreateJobInput,
   createJob,
   deleteJob,
   getJob,
   getJobs,
   getJobsByOrganization,
-  updateJob,
-  type CreateJobInput,
   type UpdateJobInput,
+  updateJob,
 } from "./jobs"
 
 export const jobsKeys = {

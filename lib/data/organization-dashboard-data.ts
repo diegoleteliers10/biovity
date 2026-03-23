@@ -1,4 +1,4 @@
-import { BubbleChatIcon, FileAddIcon, File02Icon } from "@hugeicons/core-free-icons"
+import { BubbleChatIcon, File02Icon, FileAddIcon } from "@hugeicons/core-free-icons"
 
 export type JobOffer = {
   id: string

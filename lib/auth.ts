@@ -1,6 +1,6 @@
 import { dash } from "@better-auth/infra"
-import { APIError, createAuthMiddleware } from "better-auth/api"
 import { betterAuth } from "better-auth"
+import { APIError, createAuthMiddleware } from "better-auth/api"
 import { headers } from "next/headers"
 import { pool } from "@/lib/db"
 
@@ -14,7 +14,7 @@ export const auth = betterAuth({
 
       const result = await pool.query<{ id: string; isActive: boolean | null }>(
         `SELECT id, "isActive" FROM "user" WHERE LOWER(email) = LOWER($1)`,
-        [email.trim()],
+        [email.trim()]
       )
       const row = result.rows[0]
       if (row && row.isActive === false) {

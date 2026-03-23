@@ -10,7 +10,10 @@ export const savedJobsKeys = {
 
 export function useCheckSavedJob(userId: string | undefined, jobId: string | undefined) {
   return useQuery({
-    queryKey: userId && jobId ? savedJobsKeys.check(userId, jobId) : ["saved-jobs", "check", "disabled"] as const,
+    queryKey:
+      userId && jobId
+        ? savedJobsKeys.check(userId, jobId)
+        : (["saved-jobs", "check", "disabled"] as const),
     queryFn: async () => {
       if (!userId) throw new Error("User ID required")
       if (!jobId) throw new Error("Job ID required")
@@ -22,7 +25,10 @@ export function useCheckSavedJob(userId: string | undefined, jobId: string | und
   })
 }
 
-export function useSavedJobsByUser(userId: string | undefined, params?: { page?: number; limit?: number }) {
+export function useSavedJobsByUser(
+  userId: string | undefined,
+  params?: { page?: number; limit?: number }
+) {
   return useQuery({
     queryKey:
       userId && params
@@ -32,7 +38,10 @@ export function useSavedJobsByUser(userId: string | undefined, params?: { page?:
           : (["saved-jobs", "user", "disabled", 1, 10] as const),
     queryFn: async () => {
       if (!userId) throw new Error("User ID required")
-      const result = await getSavedJobsByUserId(userId, { page: params?.page, limit: params?.limit })
+      const result = await getSavedJobsByUserId(userId, {
+        page: params?.page,
+        limit: params?.limit,
+      })
       if ("error" in result) throw new Error(result.error)
       return result.data
     },
@@ -51,7 +60,9 @@ export function useSaveJobMutation() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
-      queryClient.invalidateQueries({ queryKey: savedJobsKeys.check(variables.userId, variables.jobId) })
+      queryClient.invalidateQueries({
+        queryKey: savedJobsKeys.check(variables.userId, variables.jobId),
+      })
     },
   })
 }
@@ -67,8 +78,9 @@ export function useRemoveSavedJobMutation() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
-      queryClient.invalidateQueries({ queryKey: savedJobsKeys.check(variables.userId, variables.jobId) })
+      queryClient.invalidateQueries({
+        queryKey: savedJobsKeys.check(variables.userId, variables.jobId),
+      })
     },
   })
 }
-

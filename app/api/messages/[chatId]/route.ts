@@ -1,5 +1,5 @@
 import { headers } from "next/headers"
-import { NextRequest, NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { getSupabaseAdmin } from "@/lib/supabase"
 
@@ -49,16 +49,15 @@ export async function GET(
         .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
         .eq("chatId", chatId)
         .lt("createdAt", cursor)
-        .order("createdAt", { ascending: true })
+        .order("createdAt", { ascending: false })
         .limit(limit)
 
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
       }
 
-      const messages = data ?? []
-      const nextCursor =
-        messages.length >= limit ? messages[messages.length - 1]?.createdAt ?? null : null
+      const messages = (data ?? []).reverse()
+      const nextCursor = messages.length >= limit ? (messages[0]?.createdAt ?? null) : null
 
       return NextResponse.json({ data: messages, nextCursor })
     }
@@ -75,13 +74,14 @@ export async function GET(
     }
 
     const messages = (data ?? []).reverse()
-    const nextCursor =
-      messages.length >= limit ? messages[0]?.createdAt : null
+    const nextCursor = messages.length >= limit ? messages[0]?.createdAt : null
 
     return NextResponse.json({ data: messages, nextCursor })
   } catch (err) {
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Error al obtener mensajes" },
+      {
+        error: err instanceof Error ? err.message : "Error al obtener mensajes",
+      },
       { status: 500 }
     )
   }

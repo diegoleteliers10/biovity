@@ -62,9 +62,7 @@ function normalizeUser(raw: unknown): User | null {
   const obj = raw as Record<string, unknown>
 
   let userObj: unknown =
-    (obj.data as Record<string, unknown>) ??
-    (obj.user as Record<string, unknown>) ??
-    obj
+    (obj.data as Record<string, unknown>) ?? (obj.user as Record<string, unknown>) ?? obj
 
   if (userObj && typeof userObj === "object") {
     const u = userObj as Record<string, unknown>
@@ -99,7 +97,7 @@ function normalizeUser(raw: unknown): User | null {
     isEmailVerified: Boolean(u.isEmailVerified ?? u.is_email_verified ?? false),
     isActive: Boolean(u.isActive ?? u.is_active ?? true),
     organizationId:
-      u.organizationId ?? u.organization_id
+      (u.organizationId ?? u.organization_id)
         ? String(u.organizationId ?? u.organization_id)
         : null,
     organization:
@@ -112,13 +110,8 @@ function normalizeUser(raw: unknown): User | null {
     avatar: u.avatar != null ? String(u.avatar) : null,
     profession: u.profession != null ? String(u.profession) : null,
     birthday:
-      (u.birthday ?? u.date_of_birth) != null
-        ? String(u.birthday ?? u.date_of_birth)
-        : null,
-    phone:
-      (u.phone ?? u.phone_number) != null
-        ? String(u.phone ?? u.phone_number)
-        : null,
+      (u.birthday ?? u.date_of_birth) != null ? String(u.birthday ?? u.date_of_birth) : null,
+    phone: (u.phone ?? u.phone_number) != null ? String(u.phone ?? u.phone_number) : null,
     location,
     createdAt: String(u.createdAt ?? u.created_at ?? ""),
     updatedAt: String(u.updatedAt ?? u.updated_at ?? ""),

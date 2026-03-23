@@ -1,7 +1,5 @@
 "use client"
 
-import Link from "next/link"
-import { useQuery } from "@tanstack/react-query"
 import {
   Building02Icon,
   File02Icon,
@@ -10,11 +8,13 @@ import {
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery } from "@tanstack/react-query"
+import Link from "next/link"
+import type { AdminStats } from "@/app/api/admin/stats/route"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { AdminStats } from "@/app/api/admin/stats/route"
 import type { Metric } from "@/lib/types/dashboard"
 
 type AdminUser = {
@@ -44,22 +44,22 @@ async function fetchRecentUsers(): Promise<AdminUser[]> {
   return data.data ?? []
 }
 
+import { formatDateChilean } from "@/lib/utils"
+
 function formatDate(iso: string): string {
   try {
-    const d = new Date(iso)
-    if (Number.isNaN(d.getTime())) return iso
-    return d.toLocaleDateString("es-CL", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    })
+    return formatDateChilean(iso, "d MMM yyyy")
   } catch {
     return iso
   }
 }
 
 export function AdminHomeContent() {
-  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery({
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: fetchStats,
   })
@@ -140,20 +140,17 @@ export function AdminHomeContent() {
                 </CardContent>
               </Card>
             ))
-          : metrics.map((metric) => (
-              <MetricCard key={metric.title} metric={metric} />
-            ))}
+          : metrics.map((metric) => <MetricCard key={metric.title} metric={metric} />)}
       </div>
 
       {stats && stats.users.recentCount > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Nuevos registros (últimos 7 días)
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Nuevos registros (últimos 7 días)</CardTitle>
             <p className="text-xs text-muted-foreground">
-              {stats.users.recentCount} usuario{stats.users.recentCount !== 1 ? "s" : ""}{" "}
-              registrado{stats.users.recentCount !== 1 ? "s" : ""}
+              {stats.users.recentCount} usuario
+              {stats.users.recentCount !== 1 ? "s" : ""} registrado
+              {stats.users.recentCount !== 1 ? "s" : ""}
             </p>
           </CardHeader>
         </Card>
@@ -189,7 +186,9 @@ export function AdminHomeContent() {
                       <span>{u.type === "professional" ? "Prof." : "Org."}</span>
                       <span
                         className={`rounded px-1.5 py-0.5 ${
-                          u.isActive ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"
+                          u.isActive
+                            ? "bg-green-100 text-green-800"
+                            : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {u.isActive ? "Activo" : "Inactivo"}

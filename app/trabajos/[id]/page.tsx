@@ -7,10 +7,10 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import type { Metadata } from "next"
 import { headers } from "next/headers"
-import { Fragment } from "react"
 import { notFound } from "next/navigation"
+import { Fragment } from "react"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
-import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
@@ -21,7 +21,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Card, CardContent } from "@/components/ui/card"
-import { getJob, formatJobLocation, type Job, type JobLocation } from "@/lib/api/jobs"
+import { formatJobLocation, getJob, type Job, type JobLocation } from "@/lib/api/jobs"
 import { getOrganization } from "@/lib/api/organizations"
 import {
   formatFechaLarga,
@@ -137,10 +137,29 @@ export default async function TrabajoDetailPage({ params }: Props) {
     <>
       <OrganizationJsonLd />
       <BreadcrumbJsonLd
-        items={breadcrumbs.map((b, i) => ({
+        items={breadcrumbs.map((b) => ({
           name: b.label,
           url: b.href ? `${siteUrl}${b.href}` : `${siteUrl}/trabajos/${job.id}`,
         }))}
+      />
+      <JobPostingJsonLd
+        jobId={job.id}
+        title={job.title}
+        description={job.description?.substring(0, 5000) || ""}
+        organizationName={organizationName}
+        datePosted={job.createdAt}
+        validThrough={job.expiresAt}
+        employmentType={job.employmentType}
+        experienceLevel={job.experienceLevel}
+        locationCity={job.location?.city}
+        locationRegion={job.location?.state}
+        locationCountry={job.location?.country}
+        isRemote={job.location?.isRemote}
+        isHybrid={job.location?.isHybrid}
+        salaryMin={job.salary?.min}
+        salaryMax={job.salary?.max}
+        salaryCurrency={job.salary?.currency}
+        url={`${siteUrl}/trabajos/${job.id}`}
       />
       <article className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

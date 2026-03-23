@@ -2,8 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 
-const API_BASE =
-  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export type AdminStats = {
   users: {
@@ -35,11 +34,8 @@ async function fetchExternalCount(
     const url = `${API_BASE}${path}${path.includes("?") ? "&" : "?"}limit=${limit}`
     const res = await fetch(url, { next: { revalidate: 60 } })
     if (!res.ok) return { count: 0, ok: false }
-    const data = (await res.json().catch(() => null)) as
-      | unknown[]
-      | { data?: unknown[] }
-      | null
-    const arr = Array.isArray(data) ? data : data?.data ?? []
+    const data = (await res.json().catch(() => null)) as unknown[] | { data?: unknown[] } | null
+    const arr = Array.isArray(data) ? data : (data?.data ?? [])
     return { count: arr.length, ok: true }
   } catch {
     return { count: 0, ok: false }
@@ -55,16 +51,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 })
     }
 
-    const [userStats, waitlistStats, jobsRes, orgsRes, appsRes, healthRes] =
-      await Promise.all([
-        pool.query<{
-          total: string
-          professionals: string
-          organizations: string
-          active: string
-          inactive: string
-          recent: string
-        }>(`
+    const [userStats, waitlistStats, jobsRes, orgsRes, appsRes, healthRes] = await Promise.all([
+      pool.query<{
+        total: string
+        professionals: string
+        organizations: string
+        active: string
+        inactive: string
+        recent: string
+      }>(`
           SELECT
             COUNT(*)::text AS total,
             COUNT(*) FILTER (WHERE type = 'professional')::text AS professionals,
@@ -75,24 +70,22 @@ export async function GET(request: NextRequest) {
           FROM "user"
           WHERE type != 'admin'
         `),
-        pool.query<{
-          total: string
-          professionals: string
-          organizations: string
-        }>(`
+      pool.query<{
+        total: string
+        professionals: string
+        organizations: string
+      }>(`
           SELECT
             COUNT(*)::text AS total,
             COUNT(*) FILTER (WHERE role = 'professional')::text AS professionals,
             COUNT(*) FILTER (WHERE role = 'organization')::text AS organizations
           FROM waitlist
         `),
-        fetchExternalCount("/api/v1/jobs"),
-        fetchExternalCount("/api/v1/organizations"),
-        fetchExternalCount("/api/v1/applications"),
-        fetch(`${API_BASE}/api/v1/health`, { next: { revalidate: 60 } }).then(
-          (r) => r.ok
-        ),
-      ])
+      fetchExternalCount("/api/v1/jobs"),
+      fetchExternalCount("/api/v1/organizations"),
+      fetchExternalCount("/api/v1/applications"),
+      fetch(`${API_BASE}/api/v1/health`, { next: { revalidate: 60 } }).then((r) => r.ok),
+    ])
 
     const ur = userStats.rows[0]
     const wr = waitlistStats.rows[0]
@@ -122,9 +115,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(stats)
   } catch (err) {
     console.error("[admin/stats] Error:", err)
-    return NextResponse.json(
-      { error: "Error al obtener estadísticas" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Error al obtener estadísticas" }, { status: 500 })
   }
 }

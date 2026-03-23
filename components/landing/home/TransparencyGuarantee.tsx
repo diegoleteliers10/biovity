@@ -3,9 +3,9 @@
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import { Badge } from "@/components/ui/badge"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { TRANSPARENCY_FEATURES } from "@/lib/data/home-data"
-import { Badge } from "@/components/ui/badge"
 
 export function TransparencyGuarantee() {
   const reducedMotion = useReducedMotion()
@@ -66,7 +66,9 @@ export function TransparencyGuarantee() {
                   <HugeiconsIcon icon={feature.icon} size={48} className="text-accent" />
                 </div>
                 <h3 className="text-primary text-lg mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
             </m.div>
           ))}

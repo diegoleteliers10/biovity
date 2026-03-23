@@ -2,31 +2,27 @@
 
 import { File02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
-import { useCallback, useMemo, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { authClient } from "@/lib/auth-client"
-import { useJobs } from "@/lib/api/use-jobs"
+import { useCallback, useMemo, useState } from "react"
+import type { Application } from "@/lib/api/applications"
+import { formatJobLocation } from "@/lib/api/jobs"
 import {
   applicationsKeys,
   useApplicationsByJob,
   useUpdateApplicationStatusMutation,
 } from "@/lib/api/use-applications"
-import { formatJobLocation } from "@/lib/api/jobs"
+import { useJobs } from "@/lib/api/use-jobs"
+import { authClient } from "@/lib/auth-client"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
-import type { Application } from "@/lib/api/applications"
+import { cn, formatDateChilean } from "@/lib/utils"
 import { ApplicationsKanban } from "./ApplicationsKanban"
-import { cn } from "@/lib/utils"
 
 function applicationToApplicant(app: Application): Applicant {
   return {
     id: app.id,
     candidateName: app.candidate?.name ?? "Sin nombre",
     position: app.candidate?.profession ?? app.job?.title ?? "—",
-    dateApplied: app.createdAt
-      ? format(new Date(app.createdAt), "d MMM yyyy", { locale: es })
-      : "—",
+    dateApplied: app.createdAt ? formatDateChilean(app.createdAt, "d MMM yyyy") : "—",
     stage: app.status as ApplicationStage,
   }
 }
@@ -60,7 +56,9 @@ export function OrganizationApplicationsContent() {
         { id: applicationId, status: newStage },
         {
           onError: () => {
-            queryClient.invalidateQueries({ queryKey: applicationsKeys.byJob(selectedJobId) })
+            queryClient.invalidateQueries({
+              queryKey: applicationsKeys.byJob(selectedJobId),
+            })
           },
         }
       )

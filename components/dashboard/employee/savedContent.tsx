@@ -1,10 +1,10 @@
 "use client"
 
 import {
-  Delete01Icon,
   Bookmark02Icon,
   Cash02Icon,
   Clock01Icon,
+  Delete01Icon,
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -12,12 +12,12 @@ import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatJobLocation, type Job } from "@/lib/api/jobs"
+import { useJob } from "@/lib/api/use-jobs"
+import { useOrganization } from "@/lib/api/use-organization-mutations"
+import { useRemoveSavedJobMutation, useSavedJobsByUser } from "@/lib/api/use-saved-jobs"
 import { authClient } from "@/lib/auth-client"
 import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
-import { formatJobLocation, type Job } from "@/lib/api/jobs"
-import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { useJob } from "@/lib/api/use-jobs"
-import { useRemoveSavedJobMutation, useSavedJobsByUser } from "@/lib/api/use-saved-jobs"
 
 function getSalaryDisplay(job: Job): string {
   const s = job.salary
@@ -79,7 +79,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 space-y-0.5">
             <CardTitle className="text-[15px] md:text-base font-semibold leading-tight line-clamp-2 text-foreground tracking-tight">
-              {jobLoading ? "Cargando..." : job?.title ?? "Vacante"}
+              {jobLoading ? "Cargando..." : (job?.title ?? "Vacante")}
             </CardTitle>
             <p className="text-sm text-muted-foreground/90 truncate">{organizationName}</p>
           </div>
@@ -94,7 +94,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
               disabled={removeMutation.isPending || jobLoading}
               aria-label="Quitar de guardados"
             >
-                <HugeiconsIcon icon={Delete01Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+              <HugeiconsIcon icon={Delete01Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -153,7 +153,9 @@ export const SavedContent = () => {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12">
-          <p className="text-muted-foreground text-sm">Inicia sesión para ver tus empleos guardados.</p>
+          <p className="text-muted-foreground text-sm">
+            Inicia sesión para ver tus empleos guardados.
+          </p>
         </div>
       </div>
     )

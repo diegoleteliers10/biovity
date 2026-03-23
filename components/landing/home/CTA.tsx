@@ -54,21 +54,11 @@ export function CTA() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <Button
-            type="button"
-            variant="secondary"
-            size="lg"
-            className="px-8 py-4"
-          >
+          <Button type="button" variant="secondary" size="lg" className="px-8 py-4">
             Crear cuenta gratis
             <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="lg"
-            className="px-8 py-4"
-          >
+          <Button type="button" variant="ghost" size="lg" className="px-8 py-4">
             Soy empresa
           </Button>
         </m.div>

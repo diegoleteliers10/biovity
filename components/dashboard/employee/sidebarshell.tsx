@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, type ReactNode } from "react"
+import { type ReactNode, useMemo } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
 import { useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"

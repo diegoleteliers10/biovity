@@ -28,6 +28,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { formatJobLocation, type Job, type JobBenefit } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
+import {
+  useRemoveSavedJobMutation,
+  useSavedJobsByUser,
+  useSaveJobMutation,
+} from "@/lib/api/use-saved-jobs"
+import { authClient } from "@/lib/auth-client"
 import { employeeSearchParsers } from "@/lib/parsers/employee-search"
 import {
   formatFechaRelativa,
@@ -35,8 +41,6 @@ import {
   getFormatoBadgeColor,
   getModalidadBadgeColor,
 } from "@/lib/utils"
-import { authClient } from "@/lib/auth-client"
-import { useRemoveSavedJobMutation, useSavedJobsByUser, useSaveJobMutation } from "@/lib/api/use-saved-jobs"
 
 function getJobModalidad(job: Job): string {
   const loc = job.location
@@ -406,7 +410,9 @@ export const SearchContent = () => {
                             e.stopPropagation()
                             handleSave(job.id)
                           }}
-                          aria-label={isSaved ? `Quitar ${job.title} de guardados` : `Guardar ${job.title}`}
+                          aria-label={
+                            isSaved ? `Quitar ${job.title} de guardados` : `Guardar ${job.title}`
+                          }
                           aria-pressed={isSaved}
                           disabled={!userId || saveMutation.isPending || removeMutation.isPending}
                         >

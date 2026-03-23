@@ -2,12 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
+  type Application,
+  type ApplicationStatus,
   createApplication,
   getApplicationsByCandidate,
   getApplicationsByJob,
   updateApplicationStatus,
-  type Application,
-  type ApplicationStatus,
 } from "./applications"
 
 export const applicationsKeys = {

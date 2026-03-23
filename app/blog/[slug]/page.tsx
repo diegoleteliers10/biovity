@@ -5,6 +5,7 @@ import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/blog/mdx-components"
 import { SocialShare } from "@/components/blog/SocialShare"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,6 +15,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getAllPosts, getPostBySlug } from "@/lib/posts"
+import { formatDateChilean } from "@/lib/utils"
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -72,8 +74,26 @@ export default async function PostPage({ params }: Props) {
     notFound()
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biovity.cl"
+  const postUrl = `${siteUrl}/blog/${slug}`
+
   return (
     <LandingLayout>
+      <ArticleJsonLd
+        title={post.frontmatter.title}
+        description={post.frontmatter.excerpt}
+        authorName={post.frontmatter.author}
+        datePublished={post.frontmatter.date}
+        image={post.frontmatter.featuredImage}
+        url={postUrl}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Inicio", url: `${siteUrl}` },
+          { name: "Blog", url: `${siteUrl}/blog` },
+          { name: post.frontmatter.title, url: postUrl },
+        ]}
+      />
       <article className="py-32">
         <main className="mx-auto max-w-4xl px-8 md:px-12">
           <Breadcrumb className="mb-8">
@@ -104,13 +124,7 @@ export default async function PostPage({ params }: Props) {
 
           {/* Metadata */}
           <div className="flex items-center gap-4 mb-8 text-sm text-gray-600">
-            <span>
-              {new Date(post.frontmatter.date).toLocaleDateString("es-CL", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-            </span>
+            <span>{formatDateChilean(post.frontmatter.date, "d MMM yyyy")}</span>
             <span>•</span>
             <span>Por {post.frontmatter.author}</span>
             <SocialShare className="ml-auto" />

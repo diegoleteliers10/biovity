@@ -76,8 +76,7 @@ export function useChatListRealtime(chats: Chat[]) {
         { event: "INSERT", schema: "public", table: "message" },
         (payload) => {
           const row = payload.new as Record<string, unknown>
-          const r = (k: string) =>
-            row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]
+          const r = (k: string) => row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]
           const msgChatId = String(r("chatId") ?? r("chat_id") ?? "")
           if (!chatIds.has(msgChatId)) return
 

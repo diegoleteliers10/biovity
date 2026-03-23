@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { Post } from "@/lib/types/posts"
+import { formatFechaLarga } from "@/lib/utils"
 
 interface PostCardProps {
   post: Post
@@ -24,13 +25,7 @@ export function PostCard({ post }: PostCardProps) {
           </h2>
           <p className="mt-2 text-gray-600">{post.frontmatter.excerpt}</p>
           <div className="mt-4 flex items-center">
-            <p className="text-sm text-gray-500">
-              {new Date(post.frontmatter.date).toLocaleDateString("es-CL", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
+            <p className="text-sm text-gray-500">{formatFechaLarga(post.frontmatter.date)}</p>
           </div>
         </div>
       </div>
