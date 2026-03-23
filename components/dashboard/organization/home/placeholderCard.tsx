@@ -6,13 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface PlaceholderCardProps {
   title: string
-  description: string
+  description?: string
   icon: IconSvgElement
+  children?: React.ReactNode
 }
 
-export function PlaceholderCard({ title, description, icon }: PlaceholderCardProps) {
+export function PlaceholderCard({ title, description, icon, children }: PlaceholderCardProps) {
   return (
-    <Card className="opacity-90">
+    <Card className="flex flex-col opacity-90">
       <CardHeader>
         <div className="flex items-center gap-2">
           <HugeiconsIcon
@@ -23,9 +24,12 @@ export function PlaceholderCard({ title, description, icon }: PlaceholderCardPro
           />
           <CardTitle className="text-base">{title}</CardTitle>
         </div>
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">Próximamente: {description}</p>
+      <CardContent className="flex-1">
+        {children || (
+          <p className="text-sm text-muted-foreground">Próximamente: {description}</p>
+        )}
       </CardContent>
     </Card>
   )
