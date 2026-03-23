@@ -11,6 +11,8 @@ interface MetricCardProps {
 }
 
 export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) {
+  const iconColorClass = metric.iconColor === "primary" ? "text-primary" : "text-secondary"
+
   return (
     <Card className="border border-border/80 bg-white">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -19,7 +21,7 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
           icon={metric.icon}
           size={24}
           strokeWidth={1.5}
-          className="h-4 w-4 text-secondary"
+          className={`h-4 w-4 ${iconColorClass}`}
         />
       </CardHeader>
       <CardContent>

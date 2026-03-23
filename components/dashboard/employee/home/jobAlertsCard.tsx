@@ -33,7 +33,7 @@ export function JobAlertsCard({ onCreateAlert }: JobAlertsCardProps) {
             <Input id="location" placeholder="Ciudad, país o remoto" className="text-sm bg-white" />
           </div>
 
-          <Button variant="secondary" className="w-full" onClick={onCreateAlert}>
+          <Button variant="secondary" className="w-full bg-violet-100 hover:bg-violet-200 text-violet-700" onClick={onCreateAlert}>
             <HugeiconsIcon
               icon={Notification01Icon}
               size={24}
@@ -49,7 +49,7 @@ export function JobAlertsCard({ onCreateAlert }: JobAlertsCardProps) {
               icon={IdeaIcon}
               size={24}
               strokeWidth={1.5}
-              className="h-4 w-4 text-secondary mt-0.5 flex-shrink-0"
+              className="h-4 w-4 text-violet-500 mt-0.5 shrink-0"
             />
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Consejo:</span> Crea múltiples alertas con diferentes

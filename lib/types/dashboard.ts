@@ -22,6 +22,7 @@ export interface Metric {
   trendPositive?: boolean
   subtitle?: string
   icon: IconSvgElement
+  iconColor?: "primary" | "secondary" | "accent"
 }
 
 export interface RecentApplication {

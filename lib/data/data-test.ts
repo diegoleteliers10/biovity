@@ -18,6 +18,7 @@ export const DATA = {
       value: "4",
       icon: Calendar04Icon,
       subtitle: "2 próximas",
+      iconColor: "accent" as const,
     },
     {
       title: "Vistas del Perfil",

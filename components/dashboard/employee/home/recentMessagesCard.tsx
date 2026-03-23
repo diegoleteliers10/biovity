@@ -3,17 +3,54 @@
 import { memo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { RecentMessage } from "@/lib/types/dashboard"
+import type { Chat } from "@/lib/api/chats"
+
+interface EnrichedChat extends Chat {
+  lastMessageFromRecruiter?: string | null
+  lastMessageFromRecruiterAt?: string
+  isLoading?: boolean
+}
+
+interface LegacyMessage {
+  sender: string
+  time: string
+  preview: string
+}
 
 interface RecentMessagesCardProps {
-  messages: RecentMessage[]
+  chats?: EnrichedChat[]
+  messages?: LegacyMessage[]
   onViewAll?: () => void
+  isLoading?: boolean
+  recruiterNames?: Record<string, string>
+}
+
+function formatMessageTime(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMins < 1) return "Ahora"
+  if (diffMins < 60) return `Hace ${diffMins}m`
+  if (diffHours < 24) return `Hace ${diffHours}h`
+  if (diffDays < 7) return `Hace ${diffDays}d`
+
+  return date.toLocaleDateString("es-CL", { day: "numeric", month: "short" })
 }
 
 export const RecentMessagesCard = memo(function RecentMessagesCard({
+  chats = [],
   messages,
   onViewAll,
+  isLoading,
+  recruiterNames = {},
 }: RecentMessagesCardProps) {
+  const hasLegacyMessages = messages && messages.length > 0
+  const displayChats = chats.length > 0 ? chats : []
+
   return (
     <Card className="border border-border/80 bg-white">
       <CardHeader>
@@ -22,7 +59,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground hover:text-primary"
+            className="text-violet-500 hover:text-violet-600 hover:bg-violet-50"
             onClick={onViewAll}
           >
             Ver Todo
@@ -30,17 +67,66 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {messages.map((message) => (
-            <div key={message.sender} className="space-y-1">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-foreground">{message.sender}</p>
-                <p className="text-xs text-muted-foreground">{message.time}</p>
+        {isLoading ? (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse space-y-2">
+                <div className="h-4 w-32 rounded bg-muted" />
+                <div className="h-3 w-48 rounded bg-muted" />
               </div>
-              <p className="text-xs text-muted-foreground">{message.preview}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : hasLegacyMessages ? (
+          <div className="space-y-4">
+            {messages!.slice(0, 5).map((msg, i) => (
+              <div key={i} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-foreground truncate">{msg.sender}</p>
+                  <p className="text-xs text-muted-foreground shrink-0">{msg.time}</p>
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{msg.preview}</p>
+              </div>
+            ))}
+          </div>
+        ) : displayChats.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">
+            No tienes mensajes recientes
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {displayChats.slice(0, 5).map((chat) => {
+              const isItemLoading = chat.isLoading
+              const hasRecruiterMessage = Boolean(chat.lastMessageFromRecruiter)
+              const recruiterName = recruiterNames[chat.recruiterId] ?? "Reclutador"
+
+              return (
+                <div key={chat.id} className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {recruiterName}
+                    </p>
+                    <p className="text-xs text-muted-foreground shrink-0">
+                      {isItemLoading
+                        ? "..."
+                        : formatMessageTime(chat.lastMessageFromRecruiterAt ?? chat.updatedAt)}
+                    </p>
+                  </div>
+                  <p className="text-xs truncate">
+                    {isItemLoading ? (
+                      <span className="text-muted-foreground/50 animate-pulse">
+                        Cargando mensaje...
+                      </span>
+                    ) : hasRecruiterMessage ? (
+                      <span className="text-muted-foreground">{chat.lastMessageFromRecruiter}</span>
+                    ) : (
+                      <span className="text-secondary italic">Esperando respuesta...</span>
+                    )}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   )
