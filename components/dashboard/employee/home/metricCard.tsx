@@ -12,20 +12,20 @@ interface MetricCardProps {
 
 export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) {
   return (
-    <Card>
+    <Card className="border border-border/80 bg-white">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+        <CardTitle className="text-sm font-medium text-foreground">{metric.title}</CardTitle>
         <HugeiconsIcon
           icon={metric.icon}
           size={24}
           strokeWidth={1.5}
-          className="h-4 w-4 text-muted-foreground"
+          className="h-4 w-4 text-secondary"
         />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{metric.value}</div>
+        <div className="text-2xl font-bold text-primary">{metric.value}</div>
         {metric.trend && (
-          <p className={`text-xs ${metric.trendPositive ? "text-green-600" : "text-red-600"}`}>
+          <p className={`text-xs ${metric.trendPositive ? "text-secondary" : "text-destructive"}`}>
             <HugeiconsIcon
               icon={TradeUpIcon}
               size={24}

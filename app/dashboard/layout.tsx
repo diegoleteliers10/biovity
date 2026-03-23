@@ -1,5 +1,5 @@
-import type { ReactNode } from "react"
 import { redirect } from "next/navigation"
+import type { ReactNode } from "react"
 import { checkUserRole } from "@/lib/auth"
 
 export default async function DashboardLayout({

@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import { Geist_Mono } from "next/font/google"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
-import { MotionProvider } from "@/components/providers/MotionProvider"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { MotionProvider } from "@/components/providers/MotionProvider"
+import { QueryProvider } from "@/components/providers/QueryProvider"
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -147,6 +149,9 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
           rel="stylesheet"
         />
+        <link rel="preload" href="/images/ilustrationOG.png" as="image" />
+        <link rel="preload" href="/ilustracionRegistroOrganization.png" as="image" />
+        <link rel="preload" href="/ilustracionRegistroUsers.png" as="image" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -159,7 +164,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistMono.variable} antialiased`}>
-        <MotionProvider>{children}</MotionProvider>
+        <NuqsAdapter>
+          <QueryProvider>
+            <MotionProvider>{children}</MotionProvider>
+          </QueryProvider>
+        </NuqsAdapter>
       </body>
       <Analytics />
       <SpeedInsights />

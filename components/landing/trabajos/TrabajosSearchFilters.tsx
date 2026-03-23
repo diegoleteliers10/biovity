@@ -2,7 +2,7 @@
 
 import { Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -35,7 +35,18 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   const [salarioMin, setSalarioMin] = useState(filtros.salarioMin?.toString() || "")
   const [salarioMax, setSalarioMax] = useState(filtros.salarioMax?.toString() || "")
   const [experiencia, setExperiencia] = useState(filtros.experiencia)
-  const [categoria, setCategoria] = useState(filtros.categoria || "todas")
+  const [categoria, setCategoria] = useState(filtros.categoria || "Categoría")
+
+  useEffect(() => {
+    setQuery(filtros.query)
+    setUbicacion(filtros.ubicacion)
+    setModalidad(filtros.modalidad)
+    setFormato(filtros.formato)
+    setSalarioMin(filtros.salarioMin?.toString() || "")
+    setSalarioMax(filtros.salarioMax?.toString() || "")
+    setExperiencia(filtros.experiencia)
+    setCategoria(filtros.categoria || "Categoría")
+  }, [filtros])
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
@@ -46,7 +57,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
       salarioMin: salarioMin ? Number(salarioMin.replace(/[^0-9]/g, "")) : null,
       salarioMax: salarioMax ? Number(salarioMax.replace(/[^0-9]/g, "")) : null,
       experiencia: experiencia as FiltrosTrabajos["experiencia"],
-      categoria: categoria === "todas" ? null : categoria,
+      categoria: categoria === "todas" || categoria === "Categoría" ? null : categoria,
     })
   }, [
     query,
@@ -63,20 +74,20 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   const handleLimpiar = useCallback(() => {
     setQuery("")
     setUbicacion("")
-    setModalidad("todas")
-    setFormato("todas")
+    setModalidad("Modalidad")
+    setFormato("Formato")
     setSalarioMin("")
     setSalarioMax("")
-    setExperiencia("todas")
-    setCategoria("todas")
+    setExperiencia("Experiencia")
+    setCategoria("Categoría")
     onFiltrosChange({
       query: "",
       ubicacion: "",
-      modalidad: "todas",
-      formato: "todas",
+      modalidad: "Modalidad",
+      formato: "Formato",
       salarioMin: null,
       salarioMax: null,
-      experiencia: "todas",
+      experiencia: "Experiencia",
       categoria: null,
     })
   }, [onFiltrosChange])
@@ -84,7 +95,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   return (
     <section className="pt-2 pb-32 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="shadow-lg border-0">
+        <Card className="bg-[#f3f3f5] border border-border/15">
           <CardContent className="p-6">
             {/* Barra de búsqueda principal */}
             <div className="mb-6">
@@ -97,7 +108,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 <Input
                   type="text"
                   placeholder="Buscar por título, empresa o palabras clave"
-                  className="pl-11 pr-4 py-2 w-full h-12"
+                  className="pl-11 pr-4 py-2 w-full h-12 bg-white"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => {
@@ -121,7 +132,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 <Input
                   type="text"
                   placeholder="Ubicación"
-                  className="pl-10"
+                  className="pl-10 bg-white"
                   value={ubicacion}
                   onChange={(e) => setUbicacion(e.target.value)}
                 />
@@ -132,7 +143,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 value={modalidad}
                 onValueChange={(value) => setModalidad(value as FiltrosTrabajos["modalidad"])}
               >
-                <SelectTrigger className={cn("w-full !h-9")}>
+                <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Modalidad" />
                 </SelectTrigger>
                 <SelectContent>
@@ -149,7 +160,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 value={formato}
                 onValueChange={(value) => setFormato(value as FiltrosTrabajos["formato"])}
               >
-                <SelectTrigger className={cn("w-full !h-9")}>
+                <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Formato" />
                 </SelectTrigger>
                 <SelectContent>
@@ -162,29 +173,33 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
               </Select>
 
               {/* Salario mínimo */}
-              <Input
-                type="text"
-                inputMode="numeric"
-                placeholder="Salario mínimo (CLP)"
-                value={salarioMin}
-                onChange={(e) => setSalarioMin(e.target.value)}
-              />
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Salario mínimo (CLP)"
+                  value={salarioMin}
+                  onChange={(e) => setSalarioMin(e.target.value)}
+                  className="placeholder:text-muted-foreground bg-white"
+                  aria-label="Salario mínimo en pesos chilenos"
+                />
 
               {/* Salario máximo */}
-              <Input
-                type="text"
-                inputMode="numeric"
-                placeholder="Salario máximo (CLP)"
-                value={salarioMax}
-                onChange={(e) => setSalarioMax(e.target.value)}
-              />
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Salario máximo (CLP)"
+                  value={salarioMax}
+                  onChange={(e) => setSalarioMax(e.target.value)}
+                  className="placeholder:text-muted-foreground bg-white"
+                  aria-label="Salario máximo en pesos chilenos"
+                />
 
               {/* Experiencia */}
               <Select
                 value={experiencia}
                 onValueChange={(value) => setExperiencia(value as FiltrosTrabajos["experiencia"])}
               >
-                <SelectTrigger className={cn("w-full !h-9")}>
+                <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Experiencia" />
                 </SelectTrigger>
                 <SelectContent>
@@ -198,7 +213,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
 
               {/* Categoría */}
               <Select value={categoria} onValueChange={(value) => setCategoria(value)}>
-                <SelectTrigger className={cn("w-full !h-9")}>
+                <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Categoría" />
                 </SelectTrigger>
                 <SelectContent>
@@ -213,14 +228,10 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
 
             {/* Botones de acción */}
             <div className="flex gap-3 justify-center">
-              <Button
-                onClick={handleBuscar}
-                size="lg"
-                className="px-8 bg-gray-900 hover:bg-gray-800 text-white"
-              >
+              <Button onClick={handleBuscar} variant="secondary" size="lg" className="px-8">
                 Buscar
               </Button>
-              <Button onClick={handleLimpiar} variant="outline" size="lg" className="px-8">
+              <Button onClick={handleLimpiar} variant="ghost" size="lg" className="px-8">
                 Limpiar filtros
               </Button>
             </div>

@@ -1,18 +1,16 @@
 import {
-  AirplaneLanding01Icon,
   Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
-  GraduationScrollIcon,
-  HeartAddIcon,
-  LaptopIcon,
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type { Metadata } from "next"
-import Link from "next/link"
+import { headers } from "next/headers"
 import { notFound } from "next/navigation"
-import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { Fragment } from "react"
+import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
+import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
@@ -22,10 +20,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
-import type { TipoBeneficio } from "@/lib/types/trabajos"
+import { formatJobLocation, getJob, type Job, type JobLocation } from "@/lib/api/jobs"
+import { getOrganization } from "@/lib/api/organizations"
 import {
   formatFechaLarga,
   formatSalarioRango,
@@ -37,29 +34,72 @@ type Props = {
   params: Promise<{ id: string }>
 }
 
+function getJobModalidad(loc: JobLocation | null | undefined): string {
+  if (!loc) return "presencial"
+  if (loc.isRemote) return "remoto"
+  if (loc.isHybrid) return "hibrido"
+  return "presencial"
+}
+
+function formatJobSalaryDisplay(job: Job): string {
+  const s = job.salary
+  if (!s) return "A convenir"
+  if (s.min != null && s.max != null) return formatSalarioRango(s.min, s.max)
+  if (s.isNegotiable) return "A convenir"
+  return "A convenir"
+}
+
+type BreadcrumbSegment = { label: string; href?: string }
+
+function getJobBreadcrumbs(referer: string | null, jobTitle: string): BreadcrumbSegment[] {
+  let refPath = ""
+  try {
+    if (referer) refPath = new URL(referer).pathname
+  } catch {
+    refPath = ""
+  }
+
+  if (refPath.startsWith("/dashboard")) {
+    const segments: BreadcrumbSegment[] = [{ label: "Dashboard", href: "/dashboard" }]
+    if (refPath.startsWith("/dashboard/jobs") || refPath.startsWith("/dashboard/search")) {
+      segments.push({ label: "Buscar Empleos", href: "/dashboard/jobs" })
+    }
+    segments.push({ label: jobTitle })
+    return segments
+  }
+
+  return [
+    { label: "Inicio", href: "/" },
+    { label: "Trabajos", href: "/trabajos" },
+    { label: jobTitle },
+  ]
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
-  const trabajo = TRABAJOS_MOCK.find((t) => t.slug === id)
+  const result = await getJob(id)
 
-  if (!trabajo) {
+  if ("error" in result) {
     return {
       title: "Trabajo no encontrado | Biovity",
     }
   }
 
-  const url = `/trabajos/${trabajo.slug}`
+  const job = result.data
+  const url = `/trabajos/${job.id}`
+  const desc = job.description?.substring(0, 160) ?? ""
   return {
-    title: `${trabajo.titulo} | ${trabajo.empresa} | Biovity`,
-    description: trabajo.descripcion.substring(0, 160),
+    title: `${job.title} | Biovity`,
+    description: desc,
     openGraph: {
-      title: `${trabajo.titulo} | ${trabajo.empresa} | Biovity`,
-      description: trabajo.descripcion.substring(0, 160),
+      title: `${job.title} | Biovity`,
+      description: desc,
       url,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${trabajo.titulo} | ${trabajo.empresa}`,
-      description: trabajo.descripcion.substring(0, 160),
+      title: job.title,
+      description: desc,
     },
     alternates: {
       canonical: url,
@@ -67,55 +107,77 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const getBeneficioIcon = (tipo: TipoBeneficio) => {
-  switch (tipo) {
-    case "salud":
-      return HeartAddIcon
-    case "vacaciones":
-      return AirplaneLanding01Icon
-    case "formacion":
-      return GraduationScrollIcon
-    case "equipo":
-      return LaptopIcon
-    default:
-      return null
-  }
-}
-
 export default async function TrabajoDetailPage({ params }: Props) {
   const { id } = await params
-  const trabajo = TRABAJOS_MOCK.find((t) => t.slug === id)
+  const headersList = await headers()
+  const referer = headersList.get("referer")
+  const result = await getJob(id)
 
-  if (!trabajo) {
+  if ("error" in result) {
     notFound()
   }
+
+  const job = result.data
+  let organizationName = job.organization?.name
+  if (!organizationName && job.organizationId) {
+    const orgResult = await getOrganization(job.organizationId)
+    if ("data" in orgResult) organizationName = orgResult.data.name
+  }
+  organizationName = organizationName ?? "Organización"
+
+  const modalidad = getJobModalidad(job.location)
+  const ubicacion = formatJobLocation(job.location) || "Sin especificar"
+  const salaryStr = formatJobSalaryDisplay(job)
+  const employmentTypeKey = job.employmentType.toLowerCase()
+  const breadcrumbs = getJobBreadcrumbs(referer, job.title)
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biovity.cl"
 
   return (
     <>
       <OrganizationJsonLd />
       <BreadcrumbJsonLd
-        items={[
-          { name: "Inicio", url: "https://biovity.cl" },
-          { name: "Trabajos", url: "https://biovity.cl/trabajos" },
-          { name: trabajo.titulo, url: `https://biovity.cl/trabajos/${trabajo.slug}` },
-        ]}
+        items={breadcrumbs.map((b) => ({
+          name: b.label,
+          url: b.href ? `${siteUrl}${b.href}` : `${siteUrl}/trabajos/${job.id}`,
+        }))}
+      />
+      <JobPostingJsonLd
+        jobId={job.id}
+        title={job.title}
+        description={job.description?.substring(0, 5000) || ""}
+        organizationName={organizationName}
+        datePosted={job.createdAt}
+        validThrough={job.expiresAt}
+        employmentType={job.employmentType}
+        experienceLevel={job.experienceLevel}
+        locationCity={job.location?.city}
+        locationRegion={job.location?.state}
+        locationCountry={job.location?.country}
+        isRemote={job.location?.isRemote}
+        isHybrid={job.location?.isHybrid}
+        salaryMin={job.salary?.min}
+        salaryMax={job.salary?.max}
+        salaryCurrency={job.salary?.currency}
+        url={`${siteUrl}/trabajos/${job.id}`}
       />
       <article className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb */}
+          {/* Breadcrumb - reflects navigation path (referer) */}
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Inicio</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/trabajos">Trabajos</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{trabajo.titulo}</BreadcrumbPage>
-              </BreadcrumbItem>
+              {breadcrumbs.map((b, i) => (
+                <Fragment key={`${b.label}-${b.href ?? "current"}`}>
+                  <BreadcrumbItem>
+                    {b.href ? (
+                      <BreadcrumbLink href={b.href}>{b.label}</BreadcrumbLink>
+                    ) : (
+                      <BreadcrumbPage>{b.label}</BreadcrumbPage>
+                    )}
+                  </BreadcrumbItem>
+                  {i < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                </Fragment>
+              ))}
             </BreadcrumbList>
           </Breadcrumb>
 
@@ -131,45 +193,39 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Empresa</p>
-                <p className="text-lg font-semibold text-foreground">{trabajo.empresa}</p>
+                <p className="text-xs text-muted-foreground font-mono">{job.id}</p>
+                <p className="text-lg font-semibold text-foreground">{organizationName}</p>
               </div>
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              {trabajo.titulo}
+              {job.title}
             </h1>
 
             {/* Meta información */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
               <div className="flex items-center gap-2">
                 <HugeiconsIcon icon={Location05Icon} size={20} className="text-muted-foreground" />
-                <span>{trabajo.ubicacion}</span>
+                <span>{ubicacion}</span>
               </div>
-              <Badge className={`${getModalidadBadgeColor(trabajo.modalidad)} capitalize`}>
-                {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
+              <Badge className={`${getModalidadBadgeColor(modalidad)} capitalize`}>
+                {modalidad === "hibrido" ? "Híbrido" : modalidad}
               </Badge>
-              <Badge className={`${getFormatoBadgeColor(trabajo.formato)} capitalize`}>
-                {trabajo.formato === "full-time"
-                  ? "Full Time"
-                  : trabajo.formato === "part-time"
-                    ? "Part Time"
-                    : trabajo.formato}
+              <Badge className={`${getFormatoBadgeColor(employmentTypeKey)} capitalize`}>
+                {job.employmentType}
               </Badge>
-              {trabajo.experiencia && (
+              {job.experienceLevel && (
                 <Badge className="bg-gray-100 text-gray-800 capitalize">
-                  {trabajo.experiencia === "mid" ? "Semi Senior" : trabajo.experiencia}
+                  {job.experienceLevel === "Mid-Senior" ? "Semi Senior" : job.experienceLevel}
                 </Badge>
               )}
               <div className="flex items-center gap-2 font-semibold text-gray-900">
                 <HugeiconsIcon icon={Cash02Icon} size={20} className="text-muted-foreground" />
-                <span>
-                  {formatSalarioRango(trabajo.rangoSalarial.min, trabajo.rangoSalarial.max)}
-                </span>
+                <span>{salaryStr}</span>
               </div>
               <div className="flex items-center gap-2">
                 <HugeiconsIcon icon={Clock01Icon} size={20} className="text-muted-foreground" />
-                <span>Publicado {formatFechaLarga(trabajo.fechaPublicacion)}</span>
+                <span>Publicado {formatFechaLarga(new Date(job.createdAt))}</span>
               </div>
             </div>
           </div>
@@ -181,47 +237,31 @@ export default async function TrabajoDetailPage({ params }: Props) {
               {/* Descripción */}
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Descripción</h2>
-                <p className="text-gray-700 leading-relaxed">{trabajo.descripcion}</p>
-              </section>
-
-              {/* Requisitos */}
-              <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Requisitos</h2>
-                <ul className="list-disc list-inside space-y-2 text-gray-700">
-                  {trabajo.requisitos.map((req) => (
-                    <li key={req}>{req}</li>
-                  ))}
-                </ul>
-              </section>
-
-              {/* Responsabilidades */}
-              <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Responsabilidades</h2>
-                <ul className="list-disc list-inside space-y-2 text-gray-700">
-                  {trabajo.responsabilidades.map((resp) => (
-                    <li key={resp}>{resp}</li>
-                  ))}
-                </ul>
+                <div className="text-gray-700 leading-relaxed prose prose-gray max-w-none">
+                  {job.description ? (
+                    <p className="whitespace-pre-wrap">{job.description}</p>
+                  ) : (
+                    <p className="text-muted-foreground">Sin descripción.</p>
+                  )}
+                </div>
               </section>
 
               {/* Beneficios */}
-              {trabajo.beneficios && trabajo.beneficios.length > 0 && (
+              {job.benefits && job.benefits.length > 0 && (
                 <section>
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Beneficios</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {trabajo.beneficios.map((beneficio) => {
-                      const IconComponent = getBeneficioIcon(beneficio.tipo)
-                      if (!IconComponent) return null
-                      return (
-                        <div
-                          key={`${beneficio.tipo}-${beneficio.label}`}
-                          className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                        >
-                          <HugeiconsIcon icon={IconComponent} className="h-5 w-5 text-primary" />
-                          <span className="text-gray-700">{beneficio.label}</span>
-                        </div>
-                      )
-                    })}
+                    {job.benefits.map((beneficio) => (
+                      <div
+                        key={beneficio.title}
+                        className="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg"
+                      >
+                        <span className="font-medium text-gray-900">{beneficio.title}</span>
+                        {beneficio.description && (
+                          <span className="text-gray-600 text-sm">{beneficio.description}</span>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </section>
               )}
@@ -235,47 +275,28 @@ export default async function TrabajoDetailPage({ params }: Props) {
                     <h3 className="font-semibold text-gray-900 mb-2">Información del Trabajo</h3>
                     <div className="space-y-2 text-sm text-gray-600">
                       <div className="flex justify-between">
-                        <span>Empresa:</span>
-                        <span className="font-medium text-gray-900">{trabajo.empresa}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span>Ubicación:</span>
-                        <span className="font-medium text-gray-900">{trabajo.ubicacion}</span>
+                        <span className="font-medium text-gray-900">{ubicacion}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Modalidad:</span>
                         <span className="font-medium text-gray-900 capitalize">
-                          {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
+                          {modalidad === "hibrido" ? "Híbrido" : modalidad}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Formato:</span>
-                        <span className="font-medium text-gray-900">
-                          {trabajo.formato === "full-time"
-                            ? "Full Time"
-                            : trabajo.formato === "part-time"
-                              ? "Part Time"
-                              : trabajo.formato}
-                        </span>
+                        <span className="font-medium text-gray-900">{job.employmentType}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Salario:</span>
-                        <span className="font-medium text-gray-900">
-                          {formatSalarioRango(trabajo.rangoSalarial.min, trabajo.rangoSalarial.max)}
-                        </span>
+                        <span className="font-medium text-gray-900">{salaryStr}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="pt-4 border-t">
-                    <Link href={`/login?redirect=/trabajos/${trabajo.slug}`}>
-                      <Button size="lg" className="w-full bg-gray-900 hover:bg-gray-800 text-white">
-                        Postular ahora
-                      </Button>
-                    </Link>
-                    <p className="text-xs text-gray-500 mt-2 text-center">
-                      Inicia sesión para postular a este trabajo
-                    </p>
+                    <ApplyJobButton jobId={job.id} />
                   </div>
                 </CardContent>
               </Card>

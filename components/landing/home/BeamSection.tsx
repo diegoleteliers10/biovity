@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import * as m from "motion/react-m";
-import { useReducedMotion } from "motion/react";
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations";
-import { AdnBeam } from "@/components/landing/home/common/AdnBeam";
+import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { AdnBeam } from "@/components/landing/home/common/AdnBeam"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
 export function ConexionTalento() {
-  const reducedMotion = useReducedMotion();
-  const t = (delay = 0) => getTransition({ delay, reducedMotion });
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion });
+  const reducedMotion = useReducedMotion()
+  const t = (delay = 0) => getTransition({ delay, reducedMotion })
+  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
     <section className="py-24 bg-white">
@@ -25,7 +25,7 @@ export function ConexionTalento() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
+            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight"
           >
             Conectamos talento con empresas
           </m.h2>
@@ -34,9 +34,10 @@ export function ConexionTalento() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-500 max-w-3xl mx-auto"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto"
           >
-            Biovity facilita el encuentro entre profesionales del sector científico y empresas que buscan talento especializado.
+            Biovity facilita el encuentro entre profesionales del sector científico y empresas que
+            buscan talento especializado.
           </m.p>
         </m.div>
 
@@ -60,10 +61,12 @@ export function ConexionTalento() {
               className="text-center p-6"
             >
               <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-emerald-600">1</span>
+                <span className="text-6xl font-bold text-secondary">1</span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Empresas publican</h3>
-              <p className="text-gray-500">Publica ofertas de trabajo dirigidas específicamente al sector científico.</p>
+              <h3 className="text-lg font-bold text-foreground mb-2">Empresas publican</h3>
+              <p className="text-muted-foreground">
+                Publica ofertas de trabajo dirigidas específicamente al sector científico.
+              </p>
             </m.div>
 
             <m.div
@@ -74,10 +77,12 @@ export function ConexionTalento() {
               className="text-center p-6"
             >
               <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-blue-600">2</span>
+                <span className="text-6xl font-bold text-secondary">2</span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Candidatos postulan</h3>
-              <p className="text-gray-500">Profesionales especializados encuentran y postulan a las mejores oportunidades.</p>
+              <h3 className="text-lg font-bold text-foreground mb-2">Candidatos postulan</h3>
+              <p className="text-muted-foreground">
+                Profesionales especializados encuentran y postulan a las mejores oportunidades.
+              </p>
             </m.div>
 
             <m.div
@@ -88,14 +93,16 @@ export function ConexionTalento() {
               className="text-center p-6"
             >
               <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-violet-600">3</span>
+                <span className="text-6xl font-bold text-secondary">3</span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Match perfecto</h3>
-              <p className="text-gray-500">Nuestro AI Matching conecta a los candidatos ideales con tu empresa.</p>
+              <h3 className="text-lg font-bold text-foreground mb-2">Match perfecto</h3>
+              <p className="text-muted-foreground">
+                Nuestro AI Matching conecta a los candidatos ideales con tu empresa.
+              </p>
             </m.div>
           </div>
         </m.div>
       </div>
     </section>
-  );
+  )
 }

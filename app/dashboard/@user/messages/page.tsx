@@ -1,7 +1,5 @@
-import { MessagesContent } from "@/components/dashboard/employee/messagesContent"
+import { UserMessagesContent } from "@/components/dashboard/employee/UserMessagesContent"
 
-const EmployeeMessages = () => {
-  return <MessagesContent />
+export default function MessagesPage() {
+  return <UserMessagesContent />
 }
-
-export default EmployeeMessages

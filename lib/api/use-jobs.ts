@@ -1,0 +1,138 @@
+"use client"
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  type CreateJobInput,
+  createJob,
+  deleteJob,
+  getJob,
+  getJobs,
+  getJobsByOrganization,
+  type UpdateJobInput,
+  updateJob,
+} from "./jobs"
+
+export const jobsKeys = {
+  list: (organizationId?: string) => ["jobs", organizationId ?? ""] as const,
+  byOrganization: (organizationId: string) => ["jobs", "organization", organizationId] as const,
+  search: (params?: { search?: string; page?: number }) =>
+    ["jobs", "search", params?.search ?? "", params?.page ?? 1] as const,
+  detail: (id: string) => ["jobs", "detail", id] as const,
+}
+
+export function useJobs(organizationId: string | undefined) {
+  return useQuery({
+    queryKey: jobsKeys.list(organizationId),
+    queryFn: async () => {
+      const result = await getJobs({
+        organizationId,
+      })
+      if ("error" in result) throw new Error(result.error)
+      let jobs = result.data
+      if (organizationId && jobs.length > 0) {
+        jobs = jobs.filter((j) => j.organizationId === organizationId)
+      }
+      return jobs
+    },
+    enabled: Boolean(organizationId),
+  })
+}
+
+export function useJobsByOrganization(
+  organizationId: string | undefined,
+  params?: { page?: number; limit?: number; status?: string; search?: string }
+) {
+  return useQuery({
+    queryKey: [
+      ...jobsKeys.byOrganization(organizationId ?? ""),
+      params?.page ?? 1,
+      params?.limit ?? 10,
+    ],
+    queryFn: async () => {
+      if (!organizationId) throw new Error("Organization ID required")
+      const result = await getJobsByOrganization(organizationId, {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 10,
+        status: params?.status,
+        search: params?.search,
+      })
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+    enabled: Boolean(organizationId),
+  })
+}
+
+export function useJobsSearch(search?: string) {
+  return useQuery({
+    queryKey: jobsKeys.search({ search }),
+    queryFn: async () => {
+      const result = await getJobs({
+        status: "active",
+        limit: 100,
+        ...(search?.trim() && { search: search.trim() }),
+      })
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+  })
+}
+
+export function useJob(id: string | undefined) {
+  return useQuery({
+    queryKey: jobsKeys.detail(id ?? ""),
+    queryFn: async () => {
+      if (!id) throw new Error("Job ID required")
+      const result = await getJob(id)
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+    enabled: Boolean(id),
+  })
+}
+
+export function useCreateJobMutation(organizationId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: Omit<CreateJobInput, "organizationId">) => {
+      const result = await createJob({ ...input, organizationId })
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
+      queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
+    },
+  })
+}
+
+export function useUpdateJobMutation(organizationId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, input }: { id: string; input: UpdateJobInput }) => {
+      const result = await updateJob(id, input)
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
+      queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
+      queryClient.invalidateQueries({ queryKey: jobsKeys.detail(id) })
+    },
+  })
+}
+
+export function useDeleteJobMutation(organizationId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const result = await deleteJob(id)
+      if ("error" in result) throw new Error(result.error)
+      return result.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
+      queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
+    },
+  })
+}

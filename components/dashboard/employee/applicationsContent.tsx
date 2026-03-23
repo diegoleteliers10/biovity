@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
 import {
   Calendar04Icon,
   Cancel01Icon,
   CheckmarkCircle02Icon,
   File02Icon,
-  IdeaIcon,
   Message01Icon,
   Share05Icon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import * as m from "motion/react-m"
-import { useRouter } from "next/navigation"
-import { useMemo, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DATA } from "@/lib/data/data-test"
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import * as m from "motion/react-m";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useApplicationsByCandidate } from "@/lib/api/use-applications";
+import { authClient } from "@/lib/auth-client";
+import { useOrganization } from "@/lib/api/use-organization";
+import type { Application } from "@/lib/api/applications";
 
-type ApplicationItem = {
-  jobTitle: string
-  company: string
-  dateApplied: string
-  status: string
-  statusColor: string
+import { formatDateChilean } from "@/lib/utils";
+
+function formatDateApplied(isoDate: string): string {
+  return formatDateChilean(isoDate, "d MMM yyyy");
 }
 
 const STAGES = [
@@ -31,41 +30,48 @@ const STAGES = [
   { id: "oferta", label: "Oferta", icon: Calendar04Icon },
   { id: "contratado", label: "Contratado", icon: CheckmarkCircle02Icon },
   { id: "rechazado", label: "Rechazado", icon: Cancel01Icon },
-]
+];
 
-const getCurrentStageIndex = (status: string) => {
-  const s = status.toLowerCase()
-  if (s.includes("contrat") || s.includes("hired"))
-    return STAGES.findIndex((x) => x.id === "contratado")
-  if (s.includes("reject") || s.includes("no seleccionado") || s.includes("rechaz"))
-    return STAGES.findIndex((x) => x.id === "rechazado")
-  if (s.includes("offer") || s.includes("oferta")) return STAGES.findIndex((x) => x.id === "oferta")
-  if (s.includes("interview") || s.includes("entrevista"))
-    return STAGES.findIndex((x) => x.id === "entrevista")
-  // Under review, applied, submitted -> pendiente
-  return STAGES.findIndex((x) => x.id === "pendiente")
-}
+const getCurrentStageIndex = (status: string): number => {
+  const idx = STAGES.findIndex((x) => x.id === status.toLowerCase());
+  return idx >= 0 ? idx : 0;
+};
 
 export const ApplicationsContent = () => {
-  const router = useRouter()
-  const applications: ApplicationItem[] = useMemo(
-    () => DATA.recentApplications as unknown as ApplicationItem[],
-    []
-  )
-  const [hovered, setHovered] = useState<string | null>(null)
+  const router = useRouter();
+  const { useSession } = authClient;
+  const { data: session } = useSession();
+  const userId = (session?.user as { id?: string })?.id;
+  const {
+    data: applications = [],
+    isLoading,
+    error,
+  } = useApplicationsByCandidate(userId);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">Mis Postulaciones</h1>
+          <h1 className="text-[28px] font-bold tracking-wide">
+            Mis Postulaciones
+          </h1>
           <p className="text-muted-foreground text-sm">
             Sigue el estado y progreso de tus aplicaciones.
           </p>
         </div>
       </div>
 
-      {applications.length === 0 ? (
+      {error ? (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <p className="text-destructive text-sm">{error.message}</p>
+        </div>
+      ) : isLoading ? (
+        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12">
+          <p className="text-muted-foreground text-sm">
+            Cargando postulaciones...
+          </p>
+        </div>
+      ) : applications.length === 0 ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
           <div className="flex flex-col items-center justify-center text-center gap-3 py-12">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
@@ -85,115 +91,93 @@ export const ApplicationsContent = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {applications.map((app) => {
-            const key = `${app.company}-${app.jobTitle}`
-            const current = getCurrentStageIndex(app.status)
-
-            return (
-              <div key={key} className="relative">
-                <Card className="relative overflow-hidden flex flex-col border-border/60 hover:border-border transition-colors duration-200 group">
-                  <CardHeader className="pb-0">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 space-y-0.5">
-                        <CardTitle className="text-[15px] md:text-base font-semibold leading-tight line-clamp-2">
-                          {app.jobTitle}
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground truncate">{app.company}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          className="rounded-md bg-muted hover:bg-muted/80 text-foreground hover:text-primary transition-colors duration-200"
-                          title="Compartir detalle"
-                          onClick={() => {
-                            const slug = app.jobTitle
-                              .toLowerCase()
-                              .replace(/[^\p{L}\p{N}]+/gu, "-")
-                              .replace(/^-+|-+$/g, "")
-                            router.push(`/dashboard/job/${slug}`)
-                          }}
-                        >
-                          <HugeiconsIcon
-                            icon={Share05Icon}
-                            size={24}
-                            strokeWidth={1.5}
-                            className="h-4 w-4"
-                          />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-3">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>Aplicado: {app.dateApplied}</span>
-                    </div>
-
-                    {/* Timeline inline */}
-                    <div className="mt-3 rounded-lg border border-border/60 bg-muted/20 p-3 font-mono">
-                      <div className="flex items-center justify-between">
-                        {STAGES.map((stage, idx) => {
-                          const isPast = idx < current
-                          const isCurrent = idx === current
-                          const isNext = idx === current && idx < STAGES.length - 1
-                          return (
-                            <div key={stage.id} className="flex-1 flex items-center">
-                              <div
-                                className={`flex items-center gap-2 ${idx > 0 ? "pl-2" : ""}`}
-                                aria-current={isCurrent}
-                              >
-                                <div
-                                  className={`size-6 rounded-full flex items-center justify-center text-[10px] font-semibold
-                                ${isPast ? "bg-primary text-primary-foreground" : isCurrent ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}
-                                  title={stage.label}
-                                >
-                                  <HugeiconsIcon
-                                    icon={stage.icon}
-                                    size={24}
-                                    strokeWidth={1.5}
-                                    className="h-3.5 w-3.5"
-                                  />
-                                </div>
-                                <span
-                                  className={`text-xs ${isCurrent ? "text-primary font-medium" : "text-muted-foreground"}`}
-                                >
-                                  {stage.label}
-                                </span>
-                              </div>
-                              {idx < STAGES.length - 1 && (
-                                <div
-                                  className={`relative mx-2 h-[2px] flex-1 rounded ${idx < current ? "bg-primary" : "bg-muted"}`}
-                                >
-                                  {isNext && (
-                                    <m.div
-                                      className="absolute inset-y-0 left-0 h-full rounded bg-primary"
-                                      initial={{ width: "50%" }}
-                                      animate={{ width: ["50%", "70%", "50%"] }}
-                                      transition={{
-                                        duration: 1.6,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        repeatDelay: 1.2,
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )
-          })}
+        <div className="grid grid-cols-1 gap-8">
+          {applications.map((app) => (
+            <ApplicationCard key={app.id} app={app} />
+          ))}
         </div>
       )}
     </div>
-  )
+  );
+};
+
+function ApplicationCard({ app }: { app: Application }) {
+  const router = useRouter();
+  const jobTitle = app.job?.title ?? "Trabajo";
+  const { data: org } = useOrganization(app.job?.organizationId);
+  const company = org?.name ?? "Organización";
+  const current = getCurrentStageIndex(app.status);
+
+  return (
+    <div className="relative">
+      <Card className="relative overflow-hidden flex flex-col border border-border rounded-2xl transition-all duration-300 group bg-card hover:-translate-y-0.5">
+        <CardHeader className="p-6 pb-2">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 space-y-1">
+              <CardTitle className="text-xl font-semibold leading-tight line-clamp-2 text-foreground">
+                {jobTitle}
+              </CardTitle>
+              <p className="text-sm font-medium text-muted-foreground truncate tracking-wide uppercase">
+                {company}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 rounded-full bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                title="Ver detalle del trabajo"
+                onClick={() => router.push(`/dashboard/job/${app.jobId}`)}
+              >
+                <HugeiconsIcon icon={Share05Icon} size={20} strokeWidth={1.5} />
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6 pt-2">
+          <div className="flex items-center justify-between text-[13px] font-medium text-muted-foreground mb-5">
+            <span>Aplicado el {formatDateApplied(app.createdAt)}</span>
+          </div>
+
+          {/* Timeline minimalist */}
+          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-message-hide pb-2 -mx-2 px-2 mt-2">
+            {STAGES.map((stage, idx) => {
+              const isPast = idx < current;
+              const isCurrent = idx === current;
+
+              return (
+                <div
+                  key={stage.id}
+                  className="flex items-center gap-2 sm:gap-3 shrink-0"
+                  aria-current={isCurrent}
+                >
+                  <div
+                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] transition-all duration-300 ${
+                      isPast
+                        ? "bg-secondary/10 text-secondary font-medium"
+                        : isCurrent
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "bg-transparent text-muted-foreground/50 font-medium"
+                    }`}
+                  >
+                    <HugeiconsIcon
+                      icon={stage.icon}
+                      size={18}
+                      strokeWidth={isCurrent || isPast ? 2 : 1.5}
+                    />
+                    <span className="whitespace-nowrap">{stage.label}</span>
+                  </div>
+                  {idx < STAGES.length - 1 && (
+                    <div className="w-3 sm:w-4 h-[1.5px] bg-border rounded-full shrink-0" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
 
-export default ApplicationsContent
+export default ApplicationsContent;

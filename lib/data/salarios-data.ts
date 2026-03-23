@@ -87,3 +87,31 @@ export const SALARIOS_HERO_STATS: SalariosHeroStatItem[] = [
   { icon: Building02Icon, value: "7", label: "industrias evaluadas", color: "#3b82f6" },
   { icon: Location05Icon, value: "3", label: "regiones comparadas", color: "#10b981" },
 ]
+
+export const FAQS_SALARIOS = [
+  {
+    question: "¿Cuál es el sueldo promedio de un bioinformático en Chile?",
+    answer:
+      "El sueldo promedio de un bioinformático en Chile varía entre $1.500.000 CLP para nivel junior y $3.200.000 CLP para nivel senior. Los profesionales con doctorado y experiencia en análisis de datos biológicos commanding los salarios más altos del sector.",
+  },
+  {
+    question: "¿Qué factores influyen en el sueldo en el sector biotecnológico?",
+    answer:
+      "Los principales factores son: (1) la carrera y especialización, donde bioinformática e ingeniería civil química lideran los salarios; (2) la industria, con minería y tech/pharma ofreciendo los mejores paquetes; (3) la ubicación geográfica, donde Antofagasta y la Región Metropolitana pagan más; (4) el nivel de postgrado, donde magíster y doctorado aumentan significativamente el salario.",
+  },
+  {
+    question: "¿Dónde se gana más en el sector científico en Chile?",
+    answer:
+      "Antofagasta (Norte Minero) ofrece los salarios más altos del país para profesionales en ciencias, seguida por la Región Metropolitana. Esto se debe al sector minero en el norte y la concentración de empresas pharma y tech en Santiago.",
+  },
+  {
+    question: "¿Conviene hacer un magíster o doctorado para aumentar el sueldo?",
+    answer:
+      "Sí, los datos muestran que un postgrado puede aumentar significativamente el sueldo, especialmente en roles de I+D y bioinformática. El magíster ofrece un aumento promedio del 70% sobre el salario sin postgrado, mientras que el doctorado puede duplicar el salario base.",
+  },
+  {
+    question: "¿Qué industrias pagan mejor en biotecnología y química?",
+    answer:
+      "Minería lidera con un rango de $1.800.000 a $3.500.000 CLP, seguida por Tech/Pharma ($1.500.000-$3.200.000), Retail/Pharma ($1.700.000-$2.400.000), Química/Procesos ($1.400.000-$2.600.000), Farmacéutica ($1.200.000-$2.200.000), Agroindustrial ($1.000.000-$1.900.000) y Academia/I+D ($950.000-$1.800.000).",
+  },
+]

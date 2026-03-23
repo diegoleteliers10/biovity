@@ -6,7 +6,8 @@ import { SalariosPorEducacion } from "@/components/landing/salarios/SalariosPorE
 import { SalariosPorIndustria } from "@/components/landing/salarios/SalariosPorIndustria"
 import { SalariosPorRegion } from "@/components/landing/salarios/SalariosPorRegion"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, FAQJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { FAQS_SALARIOS } from "@/lib/data/salarios-data"
 
 export const metadata: Metadata = {
   title: "Estudio de Sueldos en Biociencias | Biovity",
@@ -50,6 +51,7 @@ export default function SalariosPage() {
   return (
     <LandingLayout>
       <OrganizationJsonLd />
+      <FAQJsonLd faqs={FAQS_SALARIOS} />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

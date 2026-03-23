@@ -1,8 +1,9 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
+import { Badge } from "@/components/ui/badge"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { TRANSPARENCY_FEATURES } from "@/lib/data/home-data"
 
@@ -25,16 +26,16 @@ export function TransparencyGuarantee() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm mb-6"
+            className="mb-6"
           >
-            100% Transparente
+            <Badge variant="success">100% Transparente</Badge>
           </m.div>
           <m.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-3xl md:text-5xl text-gray-900 mb-4 text-balance"
+            className="text-3xl md:text-5xl text-foreground mb-4 text-balance"
           >
             Empleos reales y verificados
           </m.h2>
@@ -43,7 +44,7 @@ export function TransparencyGuarantee() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
-            className="text-xl text-gray-500 max-w-2xl mx-auto text-pretty"
+            className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty"
           >
             Sabemos lo importante que es encontrar oportunidades laborales confiables
           </m.p>
@@ -58,14 +59,16 @@ export function TransparencyGuarantee() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className="relative bg-gray-50 rounded-2xl p-8 border-2 border-dashed border-gray-300"
+              className="relative bg-[#f3f3f5] rounded-2xl p-8 border-2 border-dashed border-muted-foreground/30"
             >
               <div className="flex flex-col items-center text-center">
                 <div className="mb-6">
-                  <HugeiconsIcon icon={feature.icon} size={48} className={feature.iconColor} />
+                  <HugeiconsIcon icon={feature.icon} size={48} className="text-accent" />
                 </div>
-                <h3 className="text-gray-900 text-lg mb-3">{feature.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="text-primary text-lg mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
             </m.div>
           ))}

@@ -2,12 +2,13 @@
 
 import { ArrowRight01Icon, Building06Icon, UserIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import * as m from "motion/react-m"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
 
@@ -18,204 +19,136 @@ export function RegisterContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "professional") {
-        router.push("/dashboard")
-      } else if (session.user.type === "organization") {
+      const type = (session.user as { type?: string }).type
+      if (type === "professional" || type === "organization" || type === "admin") {
         router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
 
   if (isPending) {
-    return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-8">
-            <div className="flex flex-col items-center gap-5">
-              <m.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="flex items-end gap-2"
-                aria-label="Cargando"
-                role="status"
-              >
-                <m.span
-                  className="h-3 w-3 rounded-full bg-green-600"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{
-                    duration: 0.9,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-                <m.span
-                  className="h-3.5 w-3.5 rounded-full bg-emerald-500"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{
-                    duration: 0.9,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.12,
-                  }}
-                />
-                <m.span
-                  className="h-3 w-3 rounded-full bg-blue-600"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{
-                    duration: 0.9,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.24,
-                  }}
-                />
-              </m.div>
-              <p className="text-sm text-gray-600">Verificando sesión...</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <AuthLoader />
   }
 
-  if (session?.user) {
-    return null
-  }
+  if (session?.user) return null
 
   return (
-    <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl">
-        <CardHeader className="text-center space-y-1">
-          <div className="mx-auto">
-            <Logo size="lg" />
-          </div>
-          <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-gray-800">Únete a Biovity</CardTitle>
-            <CardDescription className="text-gray-600">
+    <div className="flex h-dvh">
+      {/* Left: Illustration */}
+      <div className="relative hidden w-1/2 overflow-hidden lg:block">
+        <Image
+          src="/images/ilustrationOG.png"
+          alt="Biovity - Colaboración en ciencias y biotecnología"
+          fill
+          className="object-cover object-center p-2.5 rounded-[20px]"
+          priority
+          sizes="50vw"
+        />
+      </div>
+
+      {/* Right: Register block */}
+      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
+        <div className="mx-auto w-full max-w-sm space-y-8">
+          <div className="space-y-2 text-center">
+            <Logo size="lg" className="justify-center" />
+            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+              Únete a Biovity
+            </h1>
+            <p className="text-center text-muted-foreground">
               Selecciona el tipo de cuenta que quieres crear
-            </CardDescription>
+            </p>
           </div>
-        </CardHeader>
-        <CardContent className="flex gap-6">
-          <div>
+
+          <div className="flex flex-col space-y-2">
             <Link href="/register/professional">
-              <Card className="cursor-pointer hover:shadow-md transition-all duration-200 border-2 hover:border-blue-300 hover:bg-blue-50/30">
-                <CardContent className="py-1 px-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-blue-100 rounded-full">
-                      <HugeiconsIcon
-                        icon={UserIcon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="text-blue-600"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">Usuario Individual</h3>
-                      <p className="text-sm text-gray-600">
-                        Para profesionales, investigadores y estudiantes
-                      </p>
-                      <div className="mt-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          Acceso básico
-                        </span>
-                      </div>
-                    </div>
-                    <HugeiconsIcon
-                      icon={ArrowRight01Icon}
-                      size={24}
-                      strokeWidth={1.5}
-                      className="text-blue-600"
-                    />
+              <Card className="group cursor-pointer border border-border/15 bg-white hover:border-border/30 hover:bg-[#f3f3f5] transition-all duration-200">
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary/20">
+                    <HugeiconsIcon icon={UserIcon} size={22} strokeWidth={1.5} />
                   </div>
+                  <div className="min-w-0 flex-1 text-left">
+                    <h3 className="font-semibold text-foreground transition-colors">
+                      Usuario Individual
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Profesionales, investigadores y estudiantes
+                    </p>
+                  </div>
+                  <HugeiconsIcon
+                    icon={ArrowRight01Icon}
+                    size={18}
+                    strokeWidth={1.5}
+                    className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-secondary"
+                  />
                 </CardContent>
               </Card>
             </Link>
             <Link href="/register/organization">
-              <Card className="cursor-pointer hover:shadow-md transition-all duration-200 border-2 hover:border-purple-300 hover:bg-purple-50/30 mt-3">
-                <CardContent className="py-1 px-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-purple-100 rounded-full">
-                      <HugeiconsIcon
-                        icon={Building06Icon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="text-purple-600"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">Organización</h3>
-                      <p className="text-sm text-gray-600">
-                        Para empresas, instituciones y laboratorios
-                      </p>
-                      <div className="mt-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                          Portal empresarial
-                        </span>
-                      </div>
-                    </div>
-                    <HugeiconsIcon
-                      icon={ArrowRight01Icon}
-                      size={24}
-                      strokeWidth={1.5}
-                      className="text-purple-600"
-                    />
+              <Card className="group cursor-pointer border border-border/15 bg-white hover:border-border/30 hover:bg-[#f3f3f5] transition-all duration-200">
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
+                    <HugeiconsIcon icon={Building06Icon} size={22} strokeWidth={1.5} />
                   </div>
+                  <div className="min-w-0 flex-1 text-left">
+                    <h3 className="font-semibold text-foreground transition-colors">
+                      Organización
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Empresas, instituciones y laboratorios
+                    </p>
+                  </div>
+                  <HugeiconsIcon
+                    icon={ArrowRight01Icon}
+                    size={18}
+                    strokeWidth={1.5}
+                    className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+                  />
                 </CardContent>
               </Card>
             </Link>
           </div>
-          <div className="flex flex-col justify-between">
-            <div className="bg-gray-50 rounded-lg py-2 px-4 space-y-2">
-              <h4 className="text-sm font-semibold text-gray-800">¿Por qué unirse a Biovity?</h4>
-              <ul className="text-xs text-gray-600 space-y-2">
-                <li>• Conecta con profesionales en biotecnología</li>
-                <li>• Acceso a oportunidades laborales exclusivas</li>
-                <li>• Red de colaboración científica</li>
-                <li>• Recursos y herramientas especializadas</li>
-              </ul>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">¿Ya tienes cuenta?</span>
-              </div>
-            </div>
-            <div className="space-y-3">
+
+          <div className="space-y-4 border-t border-border/15 pt-6">
+            <p className="text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              ¿Ya tienes cuenta?
+            </p>
+            <div className="space-y-2">
               <Button
                 asChild
-                variant="outline"
-                className="w-full h-11 border-blue-200 hover:bg-blue-50"
+                variant="ghost"
+                size="lg"
+                className="h-11 w-full"
               >
-                <Link href="/login/professional">
-                  <HugeiconsIcon icon={UserIcon} size={24} strokeWidth={1.5} />
+                <Link href="/login/professional" className="flex items-center gap-2">
+                  <HugeiconsIcon icon={UserIcon} size={18} strokeWidth={1.5} />
                   Iniciar sesión como usuario
                 </Link>
               </Button>
               <Button
                 asChild
-                variant="outline"
-                className="w-full h-11 border-purple-200 hover:bg-purple-50"
+                variant="ghost"
+                size="lg"
+                className="h-11 w-full"
               >
-                <Link href="/login/organization">
-                  <HugeiconsIcon icon={Building06Icon} size={24} strokeWidth={1.5} />
-                  Portal organizacional
+                <Link href="/login/organization" className="flex items-center gap-2">
+                  <HugeiconsIcon icon={Building06Icon} size={18} strokeWidth={1.5} />
+                  Acceder al portal organizacional
                 </Link>
               </Button>
             </div>
-            <div className="text-center">
-              <p className="text-xs text-gray-500">
-                ¿Tienes preguntas?{" "}
-                <a href="mailto:help@biovity.com" className="text-green-600 hover:underline">
-                  Obtener ayuda
-                </a>
-              </p>
-            </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <p className="text-center text-sm text-muted-foreground">
+            ¿Necesitas ayuda?{" "}
+            <a
+              href="mailto:support@biovity.com"
+              className="font-medium text-primary hover:underline"
+            >
+              Contactar soporte
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

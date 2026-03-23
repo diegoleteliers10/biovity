@@ -9,8 +9,8 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
 import Link from "next/link"
 import { useRef, useState } from "react"
 import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"

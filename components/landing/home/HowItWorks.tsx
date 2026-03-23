@@ -1,8 +1,8 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { STEPS_HOME } from "@/lib/data/home-data"
 
@@ -28,18 +28,18 @@ const StepCard = ({
       <div
         className={`w-full md:w-1/2 p-4 ${!isEven ? "md:pr-8 lg:pr-16 md:text-right" : "md:pl-8 lg:pl-16 md:text-left"}`}
       >
-        <div className="transform transition-transform duration-500 group-hover:scale-105 bg-gray-50 p-6 rounded-xl shadow-md border border-gray-100">
+        <div className="transform transition-transform duration-500 group-hover:scale-105 bg-[#f3f3f5] p-6 rounded-xl">
           {/* Mobile step indicator */}
           <div className="flex items-center mb-4 md:hidden">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md ring-2 ring-white mr-3">
-              <HugeiconsIcon icon={step.icon} size={20} className="text-white" />
+            <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shadow-md ring-2 ring-white mr-3">
+              <HugeiconsIcon icon={step.icon} size={20} className="text-secondary" />
             </div>
-            <span className="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+            <span className="text-sm font-semibold text-secondary bg-secondary/10 px-3 py-1 rounded-full">
               Paso {step.number}
             </span>
           </div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">{step.title}</h3>
-          <p className="text-gray-500">{step.description}</p>
+          <h3 className="text-xl font-bold text-primary mb-2">{step.title}</h3>
+          <p className="text-muted-foreground">{step.description}</p>
         </div>
       </div>
     </m.div>
@@ -86,8 +86,8 @@ const RoadmapLine = () => (
           y2="1200"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stopColor="#BFDBFE" />
-          <stop offset="100%" stopColor="#C4B5FD" />
+          <stop offset="0%" stopColor="#006b5e" />
+          <stop offset="100%" stopColor="#006b5e" />
         </linearGradient>
       </defs>
     </svg>
@@ -113,8 +113,12 @@ const StepMarker = ({
       viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
       transition={ts(markerDelay)}
     >
-      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg ring-4 ring-white">
-        <HugeiconsIcon icon={STEPS_HOME[index].icon} size={32} className="text-white" />
+      <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center shadow-ambient ring-4 ring-white">
+        <HugeiconsIcon
+          icon={STEPS_HOME[index].icon}
+          size={32}
+          className="text-secondary-foreground"
+        />
       </div>
     </m.div>
   )
@@ -140,7 +144,7 @@ export function HowItWorks() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
+            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight text-balance"
           >
             Tu Camino hacia el Éxito Profesional
           </m.h2>
@@ -149,7 +153,7 @@ export function HowItWorks() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-500 max-w-3xl mx-auto text-pretty"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty"
           >
             En solo 4 simples pasos, estarás más cerca del trabajo de tus sueños en el sector
             biotecnológico.

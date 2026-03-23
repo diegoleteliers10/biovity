@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { getChileanDate } from "@/lib/utils"
 import { DayModal } from "./day-modal"
 import { EventTooltip } from "./event-tooltip"
 
@@ -172,11 +173,12 @@ export function Calendar({ currentDate }: CalendarProps) {
             ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
             : null
           const dayEvents = dateKey ? sampleEvents[dateKey] || [] : []
+          const nowChile = getChileanDate()
           const isToday =
             day &&
-            new Date().getDate() === day &&
-            new Date().getMonth() === month &&
-            new Date().getFullYear() === year
+            nowChile.getDate() === day &&
+            nowChile.getMonth() === month &&
+            nowChile.getFullYear() === year
 
           return (
             <div

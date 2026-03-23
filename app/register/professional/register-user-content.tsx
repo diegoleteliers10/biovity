@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  ArrowLeft01Icon,
   Mail01Icon,
   SquareLock02Icon,
   UserIcon,
@@ -8,12 +9,13 @@ import {
   ViewOffSlashIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Select } from "@/components/base/select/select"
+import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
@@ -21,6 +23,27 @@ import { authClient } from "@/lib/auth-client"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signUp } = authClient
+
+const professions = [
+  { label: "Biotecnólogo", id: "biotecnologo" },
+  { label: "Bioinformático", id: "bioinformatico" },
+  { label: "Investigador", id: "investigador" },
+  { label: "Analista de Laboratorio", id: "analista-lab" },
+  { label: "Ingeniero Biomédico", id: "ing-biomedico" },
+  { label: "Microbiólogo", id: "microbiologo" },
+  { label: "Genetista", id: "genetista" },
+  { label: "Bioquímico", id: "bioquimico" },
+  { label: "Especialista en Calidad", id: "calidad" },
+  { label: "Técnico de Laboratorio", id: "tecnico-lab" },
+  { label: "Gerente de Proyectos", id: "gerente-proyectos" },
+  { label: "Científico de Datos", id: "cientifico-datos" },
+  { label: "Especialista Regulatorio", id: "regulatorio" },
+  { label: "Bioestadístico", id: "bioestadistico" },
+  { label: "Consultor", id: "consultor" },
+  { label: "Docente/Profesor", id: "docente" },
+  { label: "Estudiante", id: "estudiante" },
+  { label: "Otro", id: "otro" },
+]
 
 export function UserRegisterContent() {
   const router = useRouter()
@@ -40,66 +63,24 @@ export function UserRegisterContent() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmVisible, setIsConfirmVisible] = useState(false)
 
-  // Lista de profesiones/cargos
-  const professions = [
-    { label: "Biotecnólogo", id: "biotecnologo" },
-    { label: "Bioinformático", id: "bioinformatico" },
-    { label: "Investigador", id: "investigador" },
-    { label: "Analista de Laboratorio", id: "analista-lab" },
-    { label: "Ingeniero Biomédico", id: "ing-biomedico" },
-    { label: "Microbiólogo", id: "microbiologo" },
-    { label: "Genetista", id: "genetista" },
-    { label: "Bioquímico", id: "bioquimico" },
-    { label: "Especialista en Calidad", id: "calidad" },
-    { label: "Técnico de Laboratorio", id: "tecnico-lab" },
-    { label: "Gerente de Proyectos", id: "gerente-proyectos" },
-    { label: "Científico de Datos", id: "cientifico-datos" },
-    { label: "Especialista Regulatorio", id: "regulatorio" },
-    { label: "Bioestadístico", id: "bioestadistico" },
-    { label: "Consultor", id: "consultor" },
-    { label: "Docente/Profesor", id: "docente" },
-    { label: "Estudiante", id: "estudiante" },
-    { label: "Otro", id: "otro" },
-  ]
-
-  // Redirigir si ya hay sesión activa
   useEffect(() => {
     if (!isPending && session?.user) {
-      if (session.user.type === "professional") {
-        router.push("/dashboard")
-      } else if (session.user.type === "organization") {
+      const type = (session.user as { type?: string }).type
+      if (type === "professional" || type === "organization" || type === "admin") {
         router.push("/dashboard")
       }
     }
   }, [session, isPending, router])
 
-  // Mostrar loading mientras se verifica la sesión
   if (isPending) {
-    return (
-      <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg">
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <p className="text-sm text-gray-600">Verificando sesión...</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <AuthLoader />
   }
 
-  // Si hay sesión, no mostrar nada (se está redirigiendo)
-  if (session?.user) {
-    return null
-  }
+  if (session?.user) return null
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }))
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
   }
 
   const handleProfessionChange = (value: string | number | null) => {
@@ -127,11 +108,10 @@ export function UserRegisterContent() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!validateForm()) {
-      return
-    }
+    if (!validateForm()) return
 
     setIsLoading(true)
+    setErrors((prev) => ({ ...prev, general: "" }))
 
     const result = await signUp.email({
       email: formData.email,
@@ -154,29 +134,35 @@ export function UserRegisterContent() {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-r from-green-100 to-blue-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg">
-        <CardHeader className="text-center space-y-4">
-          {/* Logo */}
-          <div className="mx-auto">
-            <Logo size="lg" />
-          </div>
+    <div className="flex h-dvh">
+      {/* Left: Illustration */}
+      <div className="relative hidden w-1/2 overflow-hidden lg:block">
+        <Image
+          src="/ilustracionRegistroUsers.png"
+          alt="Biovity - Talento bio-digital y desarrollo profesional"
+          fill
+          className="object-cover object-center p-2.5 rounded-[20px]"
+          priority
+          sizes="50vw"
+        />
+      </div>
 
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold text-gray-800">
-              <h2>Crear cuenta de usuario</h2>
-            </CardTitle>
-            <CardDescription className="text-gray-600">
+      {/* Right: Registration form */}
+      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
+        <div className="mx-auto w-full max-w-lg space-y-8">
+          <div className="space-y-2 text-center">
+            <Logo size="lg" className="justify-center" />
+            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+              Crear cuenta de usuario
+            </h1>
+            <p className="text-center text-muted-foreground">
               Únete a la comunidad de profesionales en biociencias
-            </CardDescription>
+            </p>
           </div>
-        </CardHeader>
 
-        <CardContent>
           <form onSubmit={handleSignUp} className="space-y-6">
-            {/* Name Field */}
             <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="text-sm font-medium text-foreground">
                 Nombre completo
               </label>
               <div className="relative">
@@ -184,7 +170,7 @@ export function UserRegisterContent() {
                   icon={UserIcon}
                   size={16}
                   strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="name"
@@ -193,41 +179,37 @@ export function UserRegisterContent() {
                   placeholder="Tu nombre completo"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  className={`pl-10 ${errors.name ? "border-red-500" : ""}`}
+                  className={`pl-10 ${errors.name ? "border-destructive" : ""}`}
                   required
                   autoComplete="name"
                 />
               </div>
-              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+              {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
             </div>
 
-            {/* Profession Field */}
             <div className="space-y-2">
-              <label htmlFor="profession" className="text-sm font-medium text-gray-700">
+              <label htmlFor="profession" className="text-sm font-medium text-foreground">
                 Profesión o Cargo
               </label>
-              <div className="relative">
-                <Select.ComboBox
-                  isRequired
-                  placeholder="Buscar tu profesión..."
-                  items={professions}
-                  selectedKey={formData.profession}
-                  onSelectionChange={handleProfessionChange}
-                  className="w-full"
-                >
-                  {(item) => (
-                    <Select.Item id={item.id} supportingText={item.supportingText}>
-                      {item.label}
-                    </Select.Item>
-                  )}
-                </Select.ComboBox>
-              </div>
-              {errors.profession && <p className="text-sm text-red-500">{errors.profession}</p>}
+              <Select.ComboBox
+                isRequired
+                placeholder="Buscar tu profesión..."
+                items={professions}
+                selectedKey={formData.profession}
+                onSelectionChange={handleProfessionChange}
+                className="w-full"
+              >
+                {(item) => (
+                  <Select.Item id={item.id} supportingText={item.supportingText}>
+                    {item.label}
+                  </Select.Item>
+                )}
+              </Select.ComboBox>
+              {errors.profession && <p className="text-sm text-destructive">{errors.profession}</p>}
             </div>
 
-            {/* Email Field */}
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="text-sm font-medium text-foreground">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -235,7 +217,7 @@ export function UserRegisterContent() {
                   icon={Mail01Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="email"
@@ -244,97 +226,96 @@ export function UserRegisterContent() {
                   placeholder="tu@email.com"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
+                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
                   required
                   autoComplete="email"
                 />
               </div>
-              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
 
-            {/* Password Field */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Contraseña
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={SquareLock02Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                />
-                <Input
-                  id="password"
-                  name="password"
-                  type={isPasswordVisible ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
-                  required
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  aria-pressed={isPasswordVisible}
-                  onClick={() => setIsPasswordVisible((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
-                >
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium text-foreground">
+                  Contraseña
+                </label>
+                <div className="relative">
                   <HugeiconsIcon
-                    icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
-                    size={18}
-                    strokeWidth={1.75}
+                    icon={SquareLock02Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   />
-                </button>
+                  <Input
+                    id="password"
+                    name="password"
+                    type={isPasswordVisible ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange("password", e.target.value)}
+                    className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    aria-pressed={isPasswordVisible}
+                    onClick={() => setIsPasswordVisible((v) => !v)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                  >
+                    <HugeiconsIcon
+                      icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                      size={18}
+                      strokeWidth={1.75}
+                    />
+                  </button>
+                </div>
+                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
               </div>
-              {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
-            </div>
 
-            {/* Confirm Password Field */}
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
-                Confirmar contraseña
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={SquareLock02Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                />
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={isConfirmVisible ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                  className={`pl-10 pr-10 ${errors.confirmPassword ? "border-red-500" : ""}`}
-                  required
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  aria-label={isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  aria-pressed={isConfirmVisible}
-                  onClick={() => setIsConfirmVisible((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-0 rounded"
-                >
+              <div className="space-y-2">
+                <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
+                  Confirmar contraseña
+                </label>
+                <div className="relative">
                   <HugeiconsIcon
-                    icon={isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
-                    size={18}
-                    strokeWidth={1.75}
+                    icon={SquareLock02Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   />
-                </button>
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={isConfirmVisible ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                    className={`pl-10 pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    aria-label={isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    aria-pressed={isConfirmVisible}
+                    onClick={() => setIsConfirmVisible((v) => !v)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                  >
+                    <HugeiconsIcon
+                      icon={isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
+                      size={18}
+                      strokeWidth={1.75}
+                    />
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+                )}
               </div>
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-              )}
             </div>
 
-            {/* Terms and Conditions */}
             <div className="space-y-2">
               <Checkbox
                 id="terms"
@@ -342,70 +323,89 @@ export function UserRegisterContent() {
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
                 label={
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-foreground">
                     Acepto los{" "}
                     <button
                       type="button"
-                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                      className="text-teal-600 hover:text-teal-700 hover:underline"
                     >
                       términos y condiciones
                     </button>{" "}
                     y la{" "}
                     <button
                       type="button"
-                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                      className="text-teal-600 hover:text-teal-700 hover:underline"
                     >
                       política de privacidad
                     </button>
                   </span>
                 }
               />
-              {errors.terms && <p className="text-sm text-red-500">{errors.terms}</p>}
+              {errors.acceptTerms && (
+                <p className="text-sm text-destructive">{errors.acceptTerms}</p>
+              )}
             </div>
 
-            {/* General Error */}
             {errors.general && (
-              <div className="text-sm text-red-500 text-center">{errors.general}</div>
+              <div className="rounded-md bg-destructive/10 p-3 text-center text-sm text-destructive">
+                {errors.general}
+              </div>
             )}
 
-            {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-black text-white hover:bg-gray-800 h-11"
+              className="h-11 w-full bg-teal-600 text-white hover:bg-teal-700"
               disabled={isLoading}
             >
               {isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
             </Button>
           </form>
 
-          {/* Navigation Links */}
-          <div className="mt-6 space-y-4">
+          <div className="space-y-4 border-t pt-6">
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+              >
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
+                Volver a selección de registro
+              </Link>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
                 ¿Ya tienes una cuenta?{" "}
                 <Link
                   href="/login/professional"
-                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
                 >
                   Inicia sesión aquí
                 </Link>
               </p>
             </div>
-
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 ¿Representas una organización?{" "}
                 <Link
                   href="/register/organization"
-                  className="text-purple-600 hover:text-purple-800 hover:underline font-medium"
+                  className="font-medium text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
                 >
                   Registrar organización
                 </Link>
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <p className="text-center text-sm text-muted-foreground">
+            ¿Necesitas ayuda?{" "}
+            <a
+              href="mailto:support@biovity.com"
+              className="font-medium text-primary hover:underline"
+            >
+              Contactar soporte
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

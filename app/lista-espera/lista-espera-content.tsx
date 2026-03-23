@@ -8,8 +8,8 @@ import {
   Mail01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
-import * as m from "motion/react-m"
 import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
 import Image from "next/image"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"

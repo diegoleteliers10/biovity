@@ -11,12 +11,7 @@ import {
   type UseFloatingReturn,
   useFloating,
 } from "@floating-ui/react"
-import {
-  AnimatePresence,
-  type HTMLMotionProps,
-  LayoutGroup,
-  type Transition,
-} from "motion/react"
+import { AnimatePresence, type HTMLMotionProps, LayoutGroup, type Transition } from "motion/react"
 import * as m from "motion/react-m"
 import * as React from "react"
 import { Slot, type WithAsChild } from "@/components/animate-ui/primitives/animate/slot"
