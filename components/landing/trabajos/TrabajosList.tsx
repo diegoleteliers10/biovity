@@ -45,16 +45,16 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
 
   if (trabajos.length === 0) {
     return (
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-end mb-4">
             <p className="text-sm text-muted-foreground">0 trabajos encontrados</p>
           </div>
           <div className="text-center py-12">
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-foreground">
               No se encontraron trabajos con los filtros seleccionados.
             </p>
-            <p className="text-sm text-gray-500 mt-2">Intenta ajustar tus filtros de búsqueda.</p>
+            <p className="text-sm text-muted-foreground mt-2">Intenta ajustar tus filtros de búsqueda.</p>
           </div>
         </div>
       </section>
@@ -64,7 +64,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
   const count = trabajos.length
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-end mb-4">
           <p className="text-sm text-muted-foreground">
@@ -76,58 +76,67 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
             <Card
               key={trabajo.id}
               onClick={() => router.push(`/trabajos/${trabajo.slug}`)}
-              className="hover:shadow-lg transition-all duration-200 border-0 shadow-md cursor-pointer hover:scale-[1.01] py-4"
+              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              role="link"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  router.push(`/trabajos/${trabajo.slug}`)
+                }
+              }}
+              aria-label={`Ver detalles de ${trabajo.titulo}`}
             >
               <CardContent className="px-6 py-3">
                 <div className="flex flex-col gap-1.5">
                   {/* Header: Título y Fecha */}
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-xl font-bold text-gray-900 flex-1">{trabajo.titulo}</h2>
-                    {/* Fecha al lado derecho del título */}
-                    <div className="flex items-center gap-1.5 text-gray-700 text-xs shrink-0">
-                      <HugeiconsIcon
-                        icon={Clock01Icon}
-                        size={16}
-                        className="text-muted-foreground shrink-0"
-                      />
-                      <span>{formatFechaRelativa(trabajo.fechaPublicacion)}</span>
+                    <h2 className="text-xl flex-1 font-bold text-foreground tracking-tight">
+                      {trabajo.titulo}
+                    </h2>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground/90">
+                        <HugeiconsIcon
+                          icon={Clock01Icon}
+                          size={16}
+                          className="shrink-0 text-muted-foreground/80"
+                        />
+                        <span>{formatFechaRelativa(trabajo.fechaPublicacion)}</span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Segunda fila: Empresa | Ubicación, Salario, Beneficios — col en mobile para evitar desborde */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                    {/* Empresa | Ubicación */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600 min-w-0 shrink-0">
+                  {/* Segunda fila: Empresa | Ubicación, Beneficios, Salario */}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                    <div className="flex min-w-0 shrink-0 items-center gap-2 text-sm text-muted-foreground/90">
                       <span className="truncate">{trabajo.empresa}</span>
-                      <span className="text-gray-400 shrink-0">|</span>
-                      <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
+                      <span className="shrink-0 text-muted-foreground/60">|</span>
+                      <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground/90">
                         <HugeiconsIcon
                           icon={Location05Icon}
                           size={18}
-                          className="text-muted-foreground shrink-0"
+                          className="shrink-0 text-muted-foreground/80"
                         />
                         <span className="truncate">{trabajo.ubicacion}</span>
                       </div>
                     </div>
 
-                    {/* Beneficios y Salario — en mobile en columna (beneficios arriba, salario abajo); en desktop en fila */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-x-4 sm:gap-y-0 sm:shrink-0">
-                      {/* Beneficios */}
+                    <div className="flex flex-col gap-y-2 sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-0 sm:shrink-0">
                       {trabajo.beneficios && trabajo.beneficios.length > 0 && (
-                        <div className="flex items-center gap-2 sm:mr-20">
+                        <div className="flex items-center gap-2 sm:mr-5">
                           {trabajo.beneficios.map((beneficio) => {
                             const icon = getBeneficioIcon(beneficio.tipo)
                             if (!icon) return null
                             return (
                               <div
                                 key={`${beneficio.tipo}-${beneficio.label}`}
-                                className="text-gray-600"
+                                className="text-muted-foreground/90"
                                 title={beneficio.label}
                               >
                                 <HugeiconsIcon
                                   icon={icon}
                                   size={16}
-                                  className="text-muted-foreground"
+                                  className="text-muted-foreground/80"
                                 />
                               </div>
                             )
@@ -135,12 +144,11 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                         </div>
                       )}
 
-                      {/* Rango salarial — min-w-0 en mobile; margen top solo en mobile respecto a beneficios */}
-                      <div className="flex items-center gap-1.5 text-gray-900 font-semibold text-sm min-w-0 mt-1.5 sm:mt-0">
+                      <div className="mt-1.5 flex min-w-0 items-center gap-1.5 font-semibold text-foreground text-sm sm:mt-0">
                         <HugeiconsIcon
                           icon={Cash02Icon}
                           size={18}
-                          className="text-muted-foreground shrink-0"
+                          className="shrink-0 text-secondary"
                         />
                         <span className="break-words min-w-0">
                           {formatSalarioRango(trabajo.rangoSalarial.min, trabajo.rangoSalarial.max)}
@@ -149,19 +157,12 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                     </div>
                   </div>
 
-                  {/* Tercera fila: Modalidad y Formato — margen top solo en mobile */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm mt-3 sm:mt-0">
-                    {/* Modalidad */}
-                    <Badge
-                      className={`${getModalidadBadgeColor(trabajo.modalidad)} capitalize shrink-0`}
-                    >
+                  {/* Tercera fila: Modalidad y Formato */}
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:mt-0">
+                    <Badge className="shrink-0 border border-border/40 bg-muted/30 text-foreground/90 capitalize">
                       {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
                     </Badge>
-
-                    {/* Formato */}
-                    <Badge
-                      className={`${getFormatoBadgeColor(trabajo.formato)} capitalize shrink-0`}
-                    >
+                    <Badge className="shrink-0 border border-border/40 bg-card text-muted-foreground capitalize">
                       {trabajo.formato === "full-time"
                         ? "Full Time"
                         : trabajo.formato === "part-time"

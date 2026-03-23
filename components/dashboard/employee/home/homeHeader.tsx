@@ -40,7 +40,7 @@ export function HomeHeader({
 
     return (
       <div className="space-y-2">
-        <h1 className="text-[28px] font-bold tracking-wide">
+        <h1 className="text-[28px] font-bold tracking-wide text-foreground">
           ¡Bienvenido/a de vuelta, {firstName}!
         </h1>
         <p className="text-muted-foreground">
@@ -68,7 +68,7 @@ export function HomeHeader({
             <Button variant="ghost" size="icon" className="relative">
               <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
               {unreadCount > 0 && (
-                <span className="absolute top-[8px] right-[9px] h-2 w-2 bg-red-500 rounded-full" />
+                <span className="absolute top-[8px] right-[9px] h-2 w-2 bg-destructive rounded-full" />
               )}
             </Button>
           </DropdownMenuTrigger>
@@ -78,22 +78,22 @@ export function HomeHeader({
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-50 cursor-pointer"
+                  className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
                   onClick={() => onNotificationClick(notification.id)}
                 >
                   <div
                     className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
                       notification.isRead
-                        ? "bg-gray-300"
+                        ? "bg-muted-foreground/30"
                         : notification.type === "application"
-                          ? "bg-blue-500"
+                          ? "bg-secondary"
                           : notification.type === "interview"
-                            ? "bg-green-500"
-                            : "bg-purple-500"
+                            ? "bg-accent"
+                            : "bg-primary"
                     }`}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm ${notification.isRead ? "font-normal" : "font-medium"}`}>
+                    <p className={`text-sm ${notification.isRead ? "font-normal text-muted-foreground" : "font-medium text-foreground"}`}>
                       {notification.title}
                     </p>
                     <p className="text-xs text-muted-foreground">{notification.message}</p>

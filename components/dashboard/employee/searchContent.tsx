@@ -228,12 +228,13 @@ export const SearchContent = () => {
           <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/30 p-3 lg:flex-row">
             <div className="flex-1">
               <div className="relative">
-                <Input
-                  placeholder="Título, empresa o palabra clave"
-                  value={query}
-                  onChange={(e) => setUrlState({ q: e.target.value })}
-                  aria-label="Buscar por palabra clave"
-                />
+              <Input
+                placeholder="Título, empresa o palabra clave"
+                value={query}
+                onChange={(e) => setUrlState({ q: e.target.value })}
+                aria-label="Buscar por palabra clave"
+                className="bg-white"
+              />
                 <HugeiconsIcon
                   icon={Search01Icon}
                   size={24}
@@ -249,6 +250,7 @@ export const SearchContent = () => {
                 value={location}
                 onChange={(e) => setUrlState({ location: e.target.value })}
                 aria-label="Filtrar por ubicación"
+                className="bg-white"
               />
             </div>
             <div className="flex items-stretch gap-2">

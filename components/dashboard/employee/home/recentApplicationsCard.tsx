@@ -26,21 +26,21 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
   }
 
   return (
-    <Card className="md:col-span-2">
+    <Card className="md:col-span-2 border border-border/80 bg-white">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Aplicaciones Recientes</CardTitle>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+          <CardTitle className="text-foreground">Aplicaciones Recientes</CardTitle>
+          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
             Ver Todo
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {applications.map((app) => (
             <div
               key={app.jobTitle}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors duration-200 border border-transparent hover:border-gray-200"
+              className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors duration-200 border border-border/80 hover:border-border"
               onClick={() => handleJobClick(app.jobTitle, app.company)}
               onKeyDown={(e) => handleKeyDown(e, app.jobTitle, app.company)}
               tabIndex={0}
@@ -48,13 +48,13 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
               aria-label={`Ver detalles del trabajo ${app.jobTitle} en ${app.company}`}
             >
               <div className="space-y-2">
-                <p className="text-sm font-medium leading-none">{app.jobTitle}</p>
+                <p className="text-sm font-medium leading-none text-foreground">{app.jobTitle}</p>
                 <p className="text-sm text-muted-foreground">{app.company}</p>
               </div>
               <div className="text-right space-y-1">
                 <p className="text-sm text-muted-foreground">{app.dateApplied}</p>
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${app.statusColor}`}
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${app.statusColor}`}
                 >
                   {app.status}
                 </span>

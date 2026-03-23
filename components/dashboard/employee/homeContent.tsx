@@ -99,14 +99,14 @@ export const HomeContent = () => {
       />
 
       {/* Metrics Cards */}
-      <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {DATA.metrics.map((metric) => (
           <MetricCard key={metric.title} metric={metric} />
         ))}
       </div>
 
       {/* Recent Applications and Messages */}
-      <div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="border-t border-border/80 pt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <RecentApplicationsCard
           applications={DATA.recentApplications}
           onJobClick={handleJobClick}
@@ -115,13 +115,13 @@ export const HomeContent = () => {
       </div>
 
       {/* Recommended Jobs Section */}
-      <div className="mt-4 space-y-8">
+      <div className="border-t border-border/80 pt-4 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl tracking-tight font-semibold">Empleos Recomendados para Ti</h2>
+          <h2 className="text-xl tracking-tight font-semibold text-foreground">Empleos Recomendados para Ti</h2>
           <button
             type="button"
             onClick={handleViewAllJobs}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-primary transition-colors"
           >
             Ver Todos los Empleos
           </button>
@@ -141,9 +141,9 @@ export const HomeContent = () => {
       </div>
 
       {/* Job Alerts Section */}
-      <div className="space-y-2">
+      <div className="border-t border-border/80 pt-4 space-y-2">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold tracking-tight">Alertas de Empleo</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">Alertas de Empleo</h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Configura alertas para recibir notificaciones de nuevos empleos que coincidan con tus
