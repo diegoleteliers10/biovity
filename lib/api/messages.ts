@@ -53,6 +53,26 @@ export async function getMessagesByChatId(
   }
 }
 
+export async function getLastMessageFromSender(
+  chatId: string,
+  senderId: string
+): Promise<Message | null> {
+  try {
+    const result = await getMessagesByChatId(chatId, { limit: 100 })
+    if ("error" in result || !result.data.length) return null
+
+    const messagesFromSender = result.data.filter((m) => m.senderId === senderId)
+    if (!messagesFromSender.length) return null
+
+    const sorted = messagesFromSender.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    return sorted[0]
+  } catch {
+    return null
+  }
+}
+
 export async function sendMessage(
   chatId: string,
   _senderId: string,
