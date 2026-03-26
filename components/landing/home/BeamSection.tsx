@@ -3,6 +3,7 @@
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { AdnBeam } from "@/components/landing/home/common/AdnBeam"
+import { Badge } from "@/components/ui/badge"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
 export function ConexionTalento() {
@@ -93,8 +94,11 @@ export function ConexionTalento() {
               className="text-center p-6"
             >
               <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-secondary">3</span>
+                <span className="text-6xl font-bold text-accent">3</span>
               </div>
+              <Badge variant="accent" className="mb-2">
+                AI Matching
+              </Badge>
               <h3 className="text-lg font-bold text-foreground mb-2">Match perfecto</h3>
               <p className="text-muted-foreground">
                 Nuestro AI Matching conecta a los candidatos ideales con tu empresa.

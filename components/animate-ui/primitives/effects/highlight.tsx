@@ -582,4 +582,4 @@ function HighlightItem<T extends React.ElementType>({
   )
 }
 
-export { Highlight, HighlightItem, useHighlight, type HighlightProps, type HighlightItemProps }
+export { Highlight, HighlightItem, type HighlightItemProps, type HighlightProps, useHighlight }

@@ -189,12 +189,7 @@ export function UserLoginContent() {
             {errors.general && (
               <div className="text-center text-sm text-destructive">{errors.general}</div>
             )}
-            <Button
-              type="submit"
-              variant="secondary"
-              className="h-11 w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="h-11 w-full" disabled={isLoading}>
               {isLoading ? "Cargando..." : "Iniciar sesión"}
             </Button>
           </form>

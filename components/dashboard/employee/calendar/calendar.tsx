@@ -167,7 +167,7 @@ export function Calendar({ currentDate }: CalendarProps) {
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-[#e2e2e4] rounded-lg overflow-hidden">
         {days.map((day, index) => {
           const dateKey = day
             ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
@@ -186,9 +186,9 @@ export function Calendar({ currentDate }: CalendarProps) {
               role={day ? "button" : "presentation"}
               tabIndex={day ? 0 : undefined}
               className={`
-                min-h-[120px] bg-card p-2 flex flex-col
-                ${day ? "hover:bg-muted/50 transition-colors cursor-pointer" : ""}
-                ${isToday ? "ring-2 ring-primary ring-inset" : ""}
+                min-h-[120px] bg-white p-2 flex flex-col
+                ${day ? "hover:bg-[#f3f3f5] transition-colors cursor-pointer" : ""}
+                ${isToday ? "ring-2 ring-secondary ring-inset" : ""}
               `}
               onClick={day ? () => handleDayClick(day) : undefined}
               onKeyDown={
@@ -207,12 +207,12 @@ export function Calendar({ currentDate }: CalendarProps) {
                   <div
                     className={`
                     text-sm font-medium mb-2 relative
-                    ${isToday ? "text-primary font-bold" : "text-card-foreground"}
+                    ${isToday ? "text-secondary font-bold" : "text-foreground"}
                   `}
                   >
                     {day}
                     {dayEvents.length > 2 && (
-                      <span className="absolute -top-1 -right-1 text-secondary/50 text-[10px] w-6 h-6 flex items-center justify-center font-medium">
+                      <span className="absolute -top-1 -right-1 text-accent/60 text-[10px] w-6 h-6 flex items-center justify-center font-medium">
                         +{dayEvents.length - 2}
                       </span>
                     )}

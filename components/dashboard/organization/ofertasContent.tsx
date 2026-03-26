@@ -9,12 +9,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu"
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -26,6 +20,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import type { Job } from "@/lib/api/jobs"
 import { formatJobLocation } from "@/lib/api/jobs"
 import { useDeleteJobMutation, useJobsByOrganization } from "@/lib/api/use-jobs"

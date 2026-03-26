@@ -99,31 +99,37 @@ export default async function PostPage({ params }: Props) {
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbLink href="/" className="text-muted-foreground hover:text-secondary">
+                  Home
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/blog">Blog</BreadcrumbLink>
+                <BreadcrumbLink href="/blog" className="text-muted-foreground hover:text-secondary">
+                  Blog
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{post.frontmatter.title}</BreadcrumbPage>
+                <BreadcrumbPage className="text-foreground">
+                  {post.frontmatter.title}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
 
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-left">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-left text-foreground tracking-tight">
             {post.frontmatter.title}
           </h1>
 
           {/* Excerpt */}
-          <p className="text-lg md:text-xl text-gray-700 mb-6 text-left">
+          <p className="text-lg md:text-xl text-muted-foreground mb-6 text-left">
             {post.frontmatter.excerpt}
           </p>
 
           {/* Metadata */}
-          <div className="flex items-center gap-4 mb-8 text-sm text-gray-600">
+          <div className="flex items-center gap-4 mb-8 text-sm text-muted-foreground">
             <span>{formatDateChilean(post.frontmatter.date, "d MMM yyyy")}</span>
             <span>•</span>
             <span>Por {post.frontmatter.author}</span>
@@ -131,7 +137,7 @@ export default async function PostPage({ params }: Props) {
           </div>
 
           {/* Hero Image */}
-          <div className="relative w-full h-[400px] md:h-[500px] mb-12 rounded-lg overflow-hidden">
+          <div className="relative w-full h-[400px] md:h-[500px] mb-12 rounded-xl overflow-hidden border border-border/10">
             <Image
               src={post.frontmatter.featuredImage}
               alt={post.frontmatter.title}

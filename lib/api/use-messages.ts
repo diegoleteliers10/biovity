@@ -1,46 +1,40 @@
 "use client"
 
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import { getMessagesByChatId, type Message, sendMessage } from "./messages"
-
-const MESSAGES_PAGE_SIZE = 30
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
 }
 
-export function useInfiniteMessages(chatId: string | undefined) {
+export function useMessages(chatId: string | undefined) {
   const queryClient = useQueryClient()
   const effectiveChatId = chatId && chatId.trim() ? chatId : ""
 
-  const query = useInfiniteQuery({
+  const query = useQuery({
     queryKey: messagesKeys.byChat(effectiveChatId),
-    queryFn: async ({ pageParam }) => {
+    queryFn: async () => {
       if (!effectiveChatId) throw new Error("Chat ID required")
+      // Fetch a large number of messages for now (no pagination)
       const result = await getMessagesByChatId(effectiveChatId, {
-        limit: MESSAGES_PAGE_SIZE,
-        cursor: pageParam,
+        limit: 100,
       })
       if ("error" in result) throw new Error(result.error)
-      return {
-        data: result.data ?? [],
-        nextCursor: result.nextCursor ?? null,
-      }
+      return result.data ?? []
     },
-    initialPageParam: undefined as string | undefined,
-    getNextPageParam: () => undefined,
-    getPreviousPageParam: (firstPage) => firstPage?.nextCursor ?? undefined,
     enabled: Boolean(effectiveChatId),
   })
 
-  const messages = Array.isArray(query.data?.pages)
-    ? query.data.pages
-        .flatMap((p) => p?.data ?? [])
-        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  // Sort messages by createdAt ASC
+  const messages = query.data
+    ? [...query.data].sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      )
     : []
 
+  // Realtime subscription for new messages
   useEffect(() => {
     if (!effectiveChatId) return
 
@@ -76,17 +70,11 @@ export function useInfiniteMessages(chatId: string | undefined) {
           }
           queryClient.setQueryData(
             messagesKeys.byChat(effectiveChatId),
-            (old: { pages: { data?: Message[] }[]; pageParams: unknown[] } | undefined) => {
-              if (!old?.pages?.length) return old
-              const firstPage = old.pages[0]
-              const firstData = firstPage?.data ?? []
-              if (firstData.some((m) => m.id === msg.id)) return old
-              return {
-                ...old,
-                pages: old.pages.map((p, i) =>
-                  i === 0 ? { ...p, data: [...(p.data ?? []), msg] } : p
-                ),
-              }
+            (old: Message[] | undefined) => {
+              if (!old) return old
+              // Avoid duplicates
+              if (old.some((m) => m.id === msg.id)) return old
+              return [...old, msg]
             }
           )
         }
@@ -98,7 +86,13 @@ export function useInfiniteMessages(chatId: string | undefined) {
     }
   }, [effectiveChatId, queryClient])
 
-  return { ...query, messages }
+  return {
+    messages,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+    refetch: query.refetch,
+  }
 }
 
 export function useSendMessageMutation(chatId: string, senderId: string) {
@@ -115,7 +109,7 @@ export function useSendMessageMutation(chatId: string, senderId: string) {
       await queryClient.cancelQueries({
         queryKey: messagesKeys.byChat(chatId),
       })
-      const previous = queryClient.getQueryData(messagesKeys.byChat(chatId))
+      const previous = queryClient.getQueryData<Message[]>(messagesKeys.byChat(chatId))
       const tempMessage: Message = {
         id: `temp-${Date.now()}`,
         chatId,
@@ -124,18 +118,10 @@ export function useSendMessageMutation(chatId: string, senderId: string) {
         isRead: false,
         createdAt: new Date().toISOString(),
       }
-      queryClient.setQueryData(
-        messagesKeys.byChat(chatId),
-        (old: { pages: { data?: Message[] }[]; pageParams: unknown[] } | undefined) => {
-          if (!old?.pages?.length) return old
-          return {
-            ...old,
-            pages: old.pages.map((p, i) =>
-              i === 0 ? { ...p, data: [...(p.data ?? []), tempMessage] } : p
-            ),
-          }
-        }
-      )
+      queryClient.setQueryData(messagesKeys.byChat(chatId), (old: Message[] | undefined) => {
+        if (!old) return old
+        return [...old, tempMessage]
+      })
       return { previous }
     },
     onError: (_err, _content, context) => {
@@ -144,29 +130,19 @@ export function useSendMessageMutation(chatId: string, senderId: string) {
       }
     },
     onSuccess: (newMessage) => {
-      queryClient.setQueryData(
-        messagesKeys.byChat(chatId),
-        (old: { pages: { data?: Message[] }[]; pageParams: unknown[] } | undefined) => {
-          if (!old?.pages?.length) return old
-          const firstData = old.pages[0]?.data ?? []
-          const tempIndex = firstData.findIndex((m) => m.id.startsWith("temp-"))
-          if (tempIndex >= 0) {
-            const next = [...firstData]
-            next[tempIndex] = newMessage
-            return {
-              ...old,
-              pages: old.pages.map((p, i) => (i === 0 ? { ...p, data: next } : p)),
-            }
-          }
-          if (firstData.some((m) => m.id === newMessage.id)) return old
-          return {
-            ...old,
-            pages: old.pages.map((p, i) =>
-              i === 0 ? { ...p, data: [...(p.data ?? []), newMessage] } : p
-            ),
-          }
+      queryClient.setQueryData(messagesKeys.byChat(chatId), (old: Message[] | undefined) => {
+        if (!old) return old
+        // Replace temp message with real one
+        const tempIndex = old.findIndex((m) => m.id.startsWith("temp-"))
+        if (tempIndex >= 0) {
+          const next = [...old]
+          next[tempIndex] = newMessage
+          return next
         }
-      )
+        // Or add if not exists
+        if (old.some((m) => m.id === newMessage.id)) return old
+        return [...old, newMessage]
+      })
       queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {
         if (!prev) return prev
         return prev.map((chat) =>

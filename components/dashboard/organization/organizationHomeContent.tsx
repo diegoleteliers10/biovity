@@ -5,21 +5,21 @@ import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  useOrgFeaturedCandidates,
+  useOrgMetrics,
+  useOrgNotifications,
+  useOrgRecentApplications,
+  useOrgRecentMessages,
+  useOrgUpcomingInterviews,
+} from "@/lib/api/use-organization-dashboard"
 import { authClient } from "@/lib/auth-client"
 import type { Notification } from "@/lib/types/dashboard"
 import { CreateOfferCard } from "./home/createOfferCard"
 import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
 import { OrganizationRecentApplicationsCard } from "./home/organizationRecentApplicationsCard"
 import { PlaceholderCard } from "./home/placeholderCard"
-import { Skeleton } from "@/components/ui/skeleton"
-import {
-  useOrgNotifications,
-  useOrgMetrics,
-  useOrgRecentApplications,
-  useOrgRecentMessages,
-  useOrgUpcomingInterviews,
-  useOrgFeaturedCandidates,
-} from "@/lib/api/use-organization-dashboard"
 
 export function OrganizationHomeContent() {
   const router = useRouter()
@@ -70,9 +70,7 @@ export function OrganizationHomeContent() {
             Error al cargar métricas.
           </div>
         ) : (
-          metricsQuery.data?.map((metric) => (
-            <MetricCard key={metric.title} metric={metric} />
-          ))
+          metricsQuery.data?.map((metric) => <MetricCard key={metric.title} metric={metric} />)
         )}
       </div>
 
@@ -160,7 +158,9 @@ export function OrganizationHomeContent() {
                 <div key={candidate.id} className="flex flex-col gap-1 border-b pb-3 last:border-0">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-sm">{candidate.name}</span>
-                    <span className="text-xs font-bold text-green-600">{candidate.matchPercentage}% Match</span>
+                    <span className="text-xs font-bold text-green-600">
+                      {candidate.matchPercentage}% Match
+                    </span>
                   </div>
                   <span className="text-xs text-muted-foreground">{candidate.role}</span>
                 </div>

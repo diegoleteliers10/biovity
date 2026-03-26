@@ -173,26 +173,26 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
               </Select>
 
               {/* Salario mínimo */}
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="Salario mínimo (CLP)"
-                  value={salarioMin}
-                  onChange={(e) => setSalarioMin(e.target.value)}
-                  className="placeholder:text-muted-foreground bg-white"
-                  aria-label="Salario mínimo en pesos chilenos"
-                />
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="Salario mínimo (CLP)"
+                value={salarioMin}
+                onChange={(e) => setSalarioMin(e.target.value)}
+                className="placeholder:text-muted-foreground bg-white"
+                aria-label="Salario mínimo en pesos chilenos"
+              />
 
               {/* Salario máximo */}
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="Salario máximo (CLP)"
-                  value={salarioMax}
-                  onChange={(e) => setSalarioMax(e.target.value)}
-                  className="placeholder:text-muted-foreground bg-white"
-                  aria-label="Salario máximo en pesos chilenos"
-                />
+              <Input
+                type="text"
+                inputMode="numeric"
+                placeholder="Salario máximo (CLP)"
+                value={salarioMax}
+                onChange={(e) => setSalarioMax(e.target.value)}
+                className="placeholder:text-muted-foreground bg-white"
+                aria-label="Salario máximo en pesos chilenos"
+              />
 
               {/* Experiencia */}
               <Select

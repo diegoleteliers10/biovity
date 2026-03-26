@@ -20,7 +20,7 @@ export const MESSAGES_DATA: MessagesData = {
       unreadCount: 0,
       jobTitle: "Investigador en Biotecnología",
       status: "Interview Scheduled",
-      statusColor: "bg-blue-100 text-blue-800",
+      statusColor: "bg-accent/15 text-accent",
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ export const MESSAGES_DATA: MessagesData = {
       unreadCount: 2,
       jobTitle: "Especialista en Control de Calidad",
       status: "Under Review",
-      statusColor: "bg-yellow-100 text-yellow-800",
+      statusColor: "bg-secondary/15 text-secondary",
     },
     {
       id: 3,
@@ -60,7 +60,7 @@ export const MESSAGES_DATA: MessagesData = {
       unreadCount: 0,
       jobTitle: "Desarrollador de Productos Farma",
       status: "Offer Extended",
-      statusColor: "bg-green-100 text-green-800",
+      statusColor: "bg-secondary/20 text-secondary",
     },
     {
       id: 4,
@@ -80,7 +80,7 @@ export const MESSAGES_DATA: MessagesData = {
       unreadCount: 0,
       jobTitle: "Técnico de Laboratorio Clínico",
       status: "Under Review",
-      statusColor: "bg-yellow-100 text-yellow-800",
+      statusColor: "bg-secondary/15 text-secondary",
     },
   ],
   activeConversation: {

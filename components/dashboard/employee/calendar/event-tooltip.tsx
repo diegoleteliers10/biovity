@@ -91,7 +91,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
         top: tooltipPosition.y,
       }}
     >
-      <Card className="bg-background/95 backdrop-blur-sm border-border/50 shadow-xl max-w-sm">
+      <Card className="bg-white/95 backdrop-blur-sm border border-border/10 shadow-ambient max-w-sm">
         <div className="p-5 space-y-4">
           {/* Header with title and type badge */}
           <div className="space-y-2">

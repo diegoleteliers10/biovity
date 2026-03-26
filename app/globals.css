@@ -7,7 +7,9 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: "Satoshi", "Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif";
+    --font-sans:
+        "Satoshi", "Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto",
+        "Helvetica Neue", "Arial", "sans-serif";
     --font-mono: "var(--font-geist-mono)", "Courier New", "monospace";
     --font-serif: "Instrument Serif", "Georgia", "Times New Roman", "serif";
     --font-rubik: "Rubik", var(--font-sans);
@@ -102,6 +104,8 @@
     --color-base-content: var(--foreground);
     --color-primary: var(--primary);
     --color-primary-content: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-content: var(--secondary-foreground);
     --color-neutral: var(--muted);
     --color-neutral-content: var(--foreground);
     --radius-field: var(--radius);
@@ -110,13 +114,21 @@
 @layer utilities {
     /* Glass & gradients (Curated Organism) */
     .glass-card {
-        background: color-mix(in srgb, var(--surface-container-lowest) 80%, transparent);
+        background: color-mix(
+            in srgb,
+            var(--surface-container-lowest) 80%,
+            transparent
+        );
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
     }
 
     .bg-primary-texture {
-        background-image: linear-gradient(135deg, var(--primary), var(--primary-container));
+        background-image: linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-container)
+        );
     }
 
     /* Ambient shadow (no floating harsh shadows) */
@@ -166,6 +178,8 @@
     --color-base-content: var(--foreground);
     --color-primary: var(--primary);
     --color-primary-content: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-content: var(--secondary-foreground);
     --color-neutral: var(--muted);
     --color-neutral-content: var(--foreground);
     --radius-field: var(--radius);
@@ -183,27 +197,33 @@
     body {
         @apply bg-background text-foreground;
     }
-    
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-weight: 600;
         line-height: 1.25;
         font-family: var(--font-sans);
     }
-    
+
     [data-slot="card-content"] h3 {
         font-family: var(--font-sans);
     }
-    
+
     [class*="font-mono"] {
-        font-family: var(--font-geist-mono), "Courier New", monospace !important;
+        font-family:
+            var(--font-geist-mono), "Courier New", monospace !important;
     }
-    
+
     /* Hide scrollbars but allow scrolling */
     .scrollbar-message-hide {
         scrollbar-width: none;
         -ms-overflow-style: none;
     }
-    
+
     p,
     a,
     li,
@@ -213,5 +233,33 @@
     textarea,
     div {
         font-family: var(--font-sans);
+    }
+
+    /* Input autofill colors - uses system design surface tokens */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px var(--surface-container-lowest) inset !important;
+        -webkit-text-fill-color: var(--foreground) !important;
+        caret-color: var(--foreground) !important;
+        border-radius: var(--radius);
+    }
+
+    .dark input:-webkit-autofill,
+    .dark input:-webkit-autofill:hover,
+    .dark input:-webkit-autofill:focus,
+    .dark textarea:-webkit-autofill,
+    .dark textarea:-webkit-autofill:hover,
+    .dark textarea:-webkit-autofill:focus,
+    .dark select:-webkit-autofill,
+    .dark select:-webkit-autofill:hover,
+    .dark select:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px var(--background) inset !important;
     }
 }

@@ -81,7 +81,7 @@ export function ForStudents() {
 
             <button
               type="button"
-              className="inline-flex items-center px-8 py-4 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full font-medium transition-all duration-200 hover:-translate-y-1 shadow-ambient"
+              className="inline-flex items-center px-8 py-4 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full font-medium transition-all duration-200 hover:-translate-y-1"
             >
               Explorar oportunidades
               <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
@@ -95,10 +95,10 @@ export function ForStudents() {
             transition={ts(LANDING_ANIMATION.stagger)}
             className="relative"
           >
-            <div className="bg-gradient-to-br from-primary/30 via-secondary/40 to-accent/30 rounded-3xl p-8">
-              <div className="bg-white rounded-2xl p-8 shadow-ambient">
+            <div className="bg-accent/5 rounded-3xl p-8">
+              <div className="bg-white rounded-2xl p-8">
                 <div className="flex items-center space-x-4 mb-8">
-                  <div className="w-20 h-20 bg-secondary/10 rounded-2xl flex items-center justify-center shadow-md">
+                  <div className="w-20 h-20 bg-secondary/10 rounded-2xl flex items-center justify-center">
                     <HugeiconsIcon
                       icon={GraduationScrollIcon}
                       className="w-10 h-10 text-secondary"

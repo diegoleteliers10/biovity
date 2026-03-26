@@ -1,13 +1,13 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { 
-  fetchOrgNotifications, 
-  fetchOrgMetrics, 
-  fetchOrgRecentApplications, 
+import {
+  fetchOrgFeaturedCandidates,
+  fetchOrgMetrics,
+  fetchOrgNotifications,
+  fetchOrgRecentApplications,
   fetchOrgRecentMessages,
   fetchOrgUpcomingInterviews,
-  fetchOrgFeaturedCandidates
 } from "@/lib/data/organization-dashboard-data"
 
 export const orgDashboardKeys = {

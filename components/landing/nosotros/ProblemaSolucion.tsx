@@ -11,7 +11,7 @@ export function ProblemaSolucion() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 bg-[#f3f3f5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 40 }}
@@ -25,10 +25,10 @@ export function ProblemaSolucion() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-balance"
+            className="text-3xl md:text-4xl font-bold text-foreground mb-6 text-balance"
           >
             Por qué existe{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Biovity
             </span>
             ?
@@ -38,7 +38,7 @@ export function ProblemaSolucion() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
-            className="text-xl text-gray-600 leading-relaxed text-pretty"
+            className="text-xl text-muted-foreground leading-relaxed text-pretty"
           >
             El mercado laboral de ciencias en Chile está fragmentado — profesionales no encuentran
             oportunidades y empresas no encuentran talento.
@@ -52,15 +52,15 @@ export function ProblemaSolucion() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(0)}
-            className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl p-8 border border-border/10 hover:shadow-ambient transition-shadow"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
-                <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-red-600" />
+                <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-destructive" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">El Problema</h3>
+              <h3 className="text-xl font-bold text-foreground">El Problema</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed text-pretty">
+            <p className="text-muted-foreground leading-relaxed text-pretty">
               Profesionales enfrentan pocas ofertas dispersas en múltiples plataformas. Sin un
               espacio centralizado, perder tiempo buscando y comparando — o peor, ni siquiera saben
               que existen las oportunidades.
@@ -73,15 +73,15 @@ export function ProblemaSolucion() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(LANDING_ANIMATION.stagger)}
-            className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl p-8 border border-border/10 hover:shadow-ambient transition-shadow"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-                <HugeiconsIcon icon={Target01Icon} size={20} className="text-green-600" />
+              <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                <HugeiconsIcon icon={Target01Icon} size={20} className="text-secondary" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Nuestra Solución</h3>
+              <h3 className="text-xl font-bold text-foreground">Nuestra Solución</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed text-pretty">
+            <p className="text-muted-foreground leading-relaxed text-pretty">
               Un espacio centralizado donde profesionales encuentran empleos, comparan salarios del
               sector, acceden a consejos de carrera y conectan con una comunidad activa. Para
               empresas, acceso directo a talento verificado.

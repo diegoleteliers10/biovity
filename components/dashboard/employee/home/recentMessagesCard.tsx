@@ -56,12 +56,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-foreground">Mensajes Recientes</CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-violet-500 hover:text-violet-600 hover:bg-violet-50"
-            onClick={onViewAll}
-          >
+          <Button variant="ghost" size="sm" onClick={onViewAll}>
             Ver Todo
           </Button>
         </div>
@@ -102,9 +97,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
               return (
                 <div key={chat.id} className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {recruiterName}
-                    </p>
+                    <p className="text-sm font-medium text-foreground truncate">{recruiterName}</p>
                     <p className="text-xs text-muted-foreground shrink-0">
                       {isItemLoading
                         ? "..."

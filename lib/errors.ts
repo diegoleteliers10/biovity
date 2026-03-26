@@ -45,12 +45,12 @@ const createHighlightError = (message: string): HighlightError => ({
 })
 
 export {
-  createContextError,
-  createSignUpError,
-  createChartError,
-  createHighlightError,
-  type ContextError,
-  type SignUpError,
   type ChartError,
+  type ContextError,
+  createChartError,
+  createContextError,
+  createHighlightError,
+  createSignUpError,
   type HighlightError,
+  type SignUpError,
 }

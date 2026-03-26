@@ -50,13 +50,13 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
       <CardHeader className="relative">
         <div className="space-y-8">
           <div className="flex items-start justify-start">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-violet-50 text-violet-600 border border-violet-100">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent">
               {job.compatibility}% compatibilidad
             </span>
           </div>
 
           <div className="flex items-start gap-2">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600 shrink-0">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-secondary/10 text-secondary shrink-0">
               <HugeiconsIcon icon={File02Icon} size={24} strokeWidth={1.5} />
             </div>
             <div className="flex-1 min-w-0">
@@ -77,7 +77,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Location05Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 shrink-0 text-violet-500"
+              className="h-3 w-3 shrink-0 text-muted-foreground"
             />
             <span className="truncate">{job.location}</span>
           </div>
@@ -86,7 +86,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Cash02Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 shrink-0 text-violet-500"
+              className="h-3 w-3 shrink-0 text-muted-foreground"
             />
             <span className="truncate">{job.salary}</span>
           </div>

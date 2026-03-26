@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Calendar04Icon,
@@ -7,21 +7,20 @@ import {
   File02Icon,
   Message01Icon,
   Share05Icon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import * as m from "motion/react-m";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useApplicationsByCandidate } from "@/lib/api/use-applications";
-import { authClient } from "@/lib/auth-client";
-import { useOrganization } from "@/lib/api/use-organization";
-import type { Application } from "@/lib/api/applications";
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { Application } from "@/lib/api/applications"
+import { useApplicationsByCandidate } from "@/lib/api/use-applications"
+import { useOrganization } from "@/lib/api/use-organization"
+import { authClient } from "@/lib/auth-client"
 
-import { formatDateChilean } from "@/lib/utils";
+import { formatDateChilean } from "@/lib/utils"
 
 function formatDateApplied(isoDate: string): string {
-  return formatDateChilean(isoDate, "d MMM yyyy");
+  return formatDateChilean(isoDate, "d MMM yyyy")
 }
 
 const STAGES = [
@@ -30,31 +29,25 @@ const STAGES = [
   { id: "oferta", label: "Oferta", icon: Calendar04Icon },
   { id: "contratado", label: "Contratado", icon: CheckmarkCircle02Icon },
   { id: "rechazado", label: "Rechazado", icon: Cancel01Icon },
-];
+]
 
 const getCurrentStageIndex = (status: string): number => {
-  const idx = STAGES.findIndex((x) => x.id === status.toLowerCase());
-  return idx >= 0 ? idx : 0;
-};
+  const idx = STAGES.findIndex((x) => x.id === status.toLowerCase())
+  return idx >= 0 ? idx : 0
+}
 
 export const ApplicationsContent = () => {
-  const router = useRouter();
-  const { useSession } = authClient;
-  const { data: session } = useSession();
-  const userId = (session?.user as { id?: string })?.id;
-  const {
-    data: applications = [],
-    isLoading,
-    error,
-  } = useApplicationsByCandidate(userId);
+  const router = useRouter()
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const userId = (session?.user as { id?: string })?.id
+  const { data: applications = [], isLoading, error } = useApplicationsByCandidate(userId)
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">
-            Mis Postulaciones
-          </h1>
+          <h1 className="text-[28px] font-bold tracking-wide">Mis Postulaciones</h1>
           <p className="text-muted-foreground text-sm">
             Sigue el estado y progreso de tus aplicaciones.
           </p>
@@ -67,9 +60,7 @@ export const ApplicationsContent = () => {
         </div>
       ) : isLoading ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12">
-          <p className="text-muted-foreground text-sm">
-            Cargando postulaciones...
-          </p>
+          <p className="text-muted-foreground text-sm">Cargando postulaciones...</p>
         </div>
       ) : applications.length === 0 ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
@@ -98,86 +89,82 @@ export const ApplicationsContent = () => {
         </div>
       )}
     </div>
-  );
-};
-
-function ApplicationCard({ app }: { app: Application }) {
-  const router = useRouter();
-  const jobTitle = app.job?.title ?? "Trabajo";
-  const { data: org } = useOrganization(app.job?.organizationId);
-  const company = org?.name ?? "Organización";
-  const current = getCurrentStageIndex(app.status);
-
-  return (
-    <div className="relative">
-      <Card className="relative overflow-hidden flex flex-col border border-border rounded-2xl transition-all duration-300 group bg-card hover:-translate-y-0.5">
-        <CardHeader className="p-6 pb-2">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 space-y-1">
-              <CardTitle className="text-xl font-semibold leading-tight line-clamp-2 text-foreground">
-                {jobTitle}
-              </CardTitle>
-              <p className="text-sm font-medium text-muted-foreground truncate tracking-wide uppercase">
-                {company}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10 rounded-full bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-                title="Ver detalle del trabajo"
-                onClick={() => router.push(`/dashboard/job/${app.jobId}`)}
-              >
-                <HugeiconsIcon icon={Share05Icon} size={20} strokeWidth={1.5} />
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6 pt-2">
-          <div className="flex items-center justify-between text-[13px] font-medium text-muted-foreground mb-5">
-            <span>Aplicado el {formatDateApplied(app.createdAt)}</span>
-          </div>
-
-          {/* Timeline minimalist */}
-          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-message-hide pb-2 -mx-2 px-2 mt-2">
-            {STAGES.map((stage, idx) => {
-              const isPast = idx < current;
-              const isCurrent = idx === current;
-
-              return (
-                <div
-                  key={stage.id}
-                  className="flex items-center gap-2 sm:gap-3 shrink-0"
-                  aria-current={isCurrent}
-                >
-                  <div
-                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] transition-all duration-300 ${
-                      isPast
-                        ? "bg-secondary/10 text-secondary font-medium"
-                        : isCurrent
-                          ? "bg-primary text-primary-foreground font-semibold"
-                          : "bg-transparent text-muted-foreground/50 font-medium"
-                    }`}
-                  >
-                    <HugeiconsIcon
-                      icon={stage.icon}
-                      size={18}
-                      strokeWidth={isCurrent || isPast ? 2 : 1.5}
-                    />
-                    <span className="whitespace-nowrap">{stage.label}</span>
-                  </div>
-                  {idx < STAGES.length - 1 && (
-                    <div className="w-3 sm:w-4 h-[1.5px] bg-border rounded-full shrink-0" />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  )
 }
 
-export default ApplicationsContent;
+function ApplicationCard({ app }: { app: Application }) {
+  const router = useRouter()
+  const jobTitle = app.job?.title ?? "Trabajo"
+  const { data: org } = useOrganization(app.job?.organizationId)
+  const company = org?.name ?? "Organización"
+  const current = getCurrentStageIndex(app.status)
+
+  return (
+    <Card className="relative overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border transition-colors duration-300">
+      <CardHeader className="p-6 pb-2">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0 space-y-1">
+            <CardTitle className="text-base font-semibold leading-tight line-clamp-2 text-foreground">
+              {jobTitle}
+            </CardTitle>
+            <p className="text-sm font-medium text-muted-foreground truncate">{company}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-full bg-muted hover:bg-secondary hover:text-secondary-foreground transition-all duration-300"
+              title="Ver detalle del trabajo"
+              onClick={() => router.push(`/dashboard/job/${app.jobId}`)}
+            >
+              <HugeiconsIcon icon={Share05Icon} size={20} strokeWidth={1.5} />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="p-6 pt-2">
+        <div className="flex items-center justify-between text-[13px] font-medium text-muted-foreground mb-5">
+          <span>Aplicado el {formatDateApplied(app.createdAt)}</span>
+        </div>
+
+        {/* Timeline minimalist */}
+        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-message-hide pb-2 -mx-2 px-2 mt-2">
+          {STAGES.map((stage, idx) => {
+            const isPast = idx < current
+            const isCurrent = idx === current
+
+            return (
+              <div
+                key={stage.id}
+                className="flex items-center gap-2 sm:gap-3 shrink-0"
+                aria-current={isCurrent}
+              >
+                <div
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] transition-all duration-300 ${
+                    isPast
+                      ? "bg-secondary/10 text-secondary font-medium"
+                      : isCurrent
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "bg-transparent text-muted-foreground/50 font-medium"
+                  }`}
+                >
+                  <HugeiconsIcon
+                    icon={stage.icon}
+                    size={18}
+                    strokeWidth={isCurrent || isPast ? 2 : 1.5}
+                  />
+                  <span className="whitespace-nowrap">{stage.label}</span>
+                </div>
+                {idx < STAGES.length - 1 && (
+                  <div className="w-3 sm:w-4 h-[1.5px] bg-border rounded-full shrink-0" />
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default ApplicationsContent

@@ -26,10 +26,10 @@ export function CTANosotros() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight text-balance"
+            className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight text-balance"
           >
             ¿Listo para{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               unirte
             </span>
             ?
@@ -39,7 +39,7 @@ export function CTANosotros() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-600 mb-12 leading-relaxed max-w-2xl mx-auto text-pretty"
+            className="text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto text-pretty"
           >
             Ya seas un profesional buscando oportunidades o una empresa buscando talento.
           </m.p>
@@ -52,21 +52,12 @@ export function CTANosotros() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <Button
-            size="lg"
-            className="h-14 px-8 bg-gray-900 hover:bg-gray-800 text-white w-full sm:w-auto"
-            asChild
-          >
+          <Button size="lg" className="w-full sm:w-auto" asChild>
             <Link href="/register">
               <span>Crear cuenta gratis</span>
             </Link>
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="h-14 px-8 bg-white border-gray-200 text-gray-900 hover:bg-gray-50 w-full sm:w-auto"
-            asChild
-          >
+          <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
             <Link
               href="/register/organization"
               className="inline-flex items-center justify-center gap-2"

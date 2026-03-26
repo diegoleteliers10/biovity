@@ -27,9 +27,7 @@ export function PlaceholderCard({ title, description, icon, children }: Placehol
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </CardHeader>
       <CardContent className="flex-1">
-        {children || (
-          <p className="text-sm text-muted-foreground">Próximamente: {description}</p>
-        )}
+        {children || <p className="text-sm text-muted-foreground">Próximamente: {description}</p>}
       </CardContent>
     </Card>
   )

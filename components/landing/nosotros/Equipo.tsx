@@ -25,10 +25,10 @@ export function Equipo() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance"
+            className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance"
           >
             Nuestro{" "}
-            <span className="bg-linear-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Equipo
             </span>
           </m.h2>
@@ -37,7 +37,7 @@ export function Equipo() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-600 text-pretty"
+            className="text-xl text-muted-foreground text-pretty"
           >
             Conecta con nosotros
           </m.p>
@@ -50,9 +50,9 @@ export function Equipo() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex justify-center"
         >
-          <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100 max-w-md w-full text-center hover:shadow-lg transition-shadow">
+          <div className="bg-[#f3f3f5] rounded-2xl p-8 border border-border/10 max-w-md w-full text-center hover:bg-secondary/5 transition-colors">
             {/* Photo/Avatar */}
-            <div className="mx-auto mb-6 w-28 h-28 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+            <div className="mx-auto mb-6 w-28 h-28 rounded-full bg-secondary flex items-center justify-center">
               <span className="text-4xl font-bold text-white">DL</span>
             </div>
 
@@ -62,14 +62,14 @@ export function Equipo() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={t(LANDING_ANIMATION.sequenceDelay * 3)}
-              className="text-2xl font-bold text-gray-900 mb-1"
+              className="text-2xl font-bold text-foreground mb-1"
             >
               Diego Letelier
             </m.h3>
-            <p className="text-base text-blue-600 mb-4 font-semibold">CEO/CTO & Fundador</p>
+            <p className="text-base text-accent mb-4 font-semibold">CEO/CTO & Fundador</p>
 
             {/* Brief Description */}
-            <p className="text-gray-600 leading-relaxed mb-6 text-pretty">
+            <p className="text-muted-foreground leading-relaxed mb-6 text-pretty">
               Apasionado por conectar talento científico con oportunidades significativas en el
               sector de biociencias en Chile.
             </p>
@@ -79,7 +79,7 @@ export function Equipo() {
               href="https://linkedin.com/in/diegoleteliers10"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors font-medium align-center"
+              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors font-medium align-center"
               aria-label="Ir al perfil de LinkedIn de Diego Letelier"
             >
               <HugeiconsIcon icon={Linkedin02Icon} className="w-4 h-4" />

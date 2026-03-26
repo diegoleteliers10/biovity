@@ -17,6 +17,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import type * as React from "react"
 import { useRef, useState } from "react"
+import { Avatar } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,9 +26,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu"
-import { Avatar } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { MESSAGES_DATA } from "@/lib/data/messages-data"
 import type { ConversationWithMessages, Message } from "@/lib/types/messages"
@@ -144,8 +144,8 @@ export const MessagesContent = () => {
               <div className="flex items-start gap-3">
                 <div className="relative">
                   <Avatar className="h-12 w-12">
-                    <div className="h-full w-full rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">
+                    <div className="h-full w-full rounded-full bg-accent/20 flex items-center justify-center">
+                      <span className="text-accent text-sm font-semibold">
                         {conversation.recruiter.name
                           .split(" ")
                           .map((n) => n[0])
@@ -183,7 +183,7 @@ export const MessagesContent = () => {
                       {conversation.lastMessage.text}
                     </p>
                     {conversation.unreadCount > 0 && (
-                      <span className="bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center shrink-0">
+                      <span className="bg-secondary text-secondary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center shrink-0">
                         {conversation.unreadCount}
                       </span>
                     )}
@@ -252,7 +252,7 @@ export const MessagesContent = () => {
                       <span
                         className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
                           MESSAGES_DATA.conversations.find((c) => c.id === selectedConversation.id)
-                            ?.statusColor || "bg-gray-100 text-gray-800"
+                            ?.statusColor || "bg-muted text-muted-foreground"
                         } ml-3`}
                       >
                         {MESSAGES_DATA.conversations.find((c) => c.id === selectedConversation.id)
@@ -318,7 +318,7 @@ export const MessagesContent = () => {
                       <div
                         className={`rounded-2xl px-4 py-3 ${
                           message.sender === "user"
-                            ? "bg-primary text-primary-foreground"
+                            ? "bg-secondary text-secondary-foreground"
                             : "bg-muted text-foreground"
                         }`}
                       >

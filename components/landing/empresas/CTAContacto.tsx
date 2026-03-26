@@ -57,10 +57,7 @@ export function CTAContacto() {
   }
 
   return (
-    <section
-      id="contacto"
-      className="py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
-    >
+    <section id="contacto" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <m.div
@@ -69,26 +66,31 @@ export function CTAContacto() {
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(0)}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight text-balance">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight text-balance">
               ¿Listo para encontrar tu próximo talento?
             </h2>
-            <p className="text-xl text-gray-400 mb-8 leading-relaxed text-pretty">
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed text-pretty">
               Comienza gratis o habla con nuestro equipo para encontrar el plan perfecto para tu
               empresa.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button
-                size="lg"
-                className="h-14 px-8 bg-white text-gray-900 hover:bg-gray-100 text-lg"
-                asChild
-              >
-                <Link href="/register/organization">
-                  Comienza gratis
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-2">
+                <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-secondary" />
+                <span className="text-foreground">empresas@biovity.cl</span>
+              </div>
             </div>
+            <div className="flex items-center gap-2 mb-12">
+              <HugeiconsIcon icon={CallIcon} className="w-5 h-5 text-secondary" />
+              <span className="text-foreground">+56 9 1234 5678</span>
+            </div>
+
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/register/organization">
+                Comienza gratis
+                <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+              </Link>
+            </Button>
           </m.div>
 
           <m.div
@@ -98,15 +100,6 @@ export function CTAContacto() {
             transition={ts(LANDING_ANIMATION.stagger)}
             className="space-y-4"
           >
-            <div className="flex items-center gap-3 text-gray-400">
-              <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5" />
-              <span>empresas@biovity.cl</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-400">
-              <HugeiconsIcon icon={CallIcon} className="w-5 h-5" />
-              <span>+56 9 1234 5678</span>
-            </div>
-
             <m.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -114,15 +107,12 @@ export function CTAContacto() {
               transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
             >
               {isSubmitted ? (
-                <div className="bg-white rounded-2xl p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle02Icon}
-                      className="w-8 h-8 text-green-600"
-                    />
+                <div className="bg-white rounded-2xl p-8 border border-border/10 text-center">
+                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-8 h-8 text-accent" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">¡Mensaje enviado!</h3>
-                  <p className="text-gray-500 text-pretty">
+                  <h3 className="text-2xl font-bold text-foreground mb-2">¡Mensaje enviado!</h3>
+                  <p className="text-muted-foreground text-pretty">
                     Nos pondremos en contacto contigo pronto. Gracias por tu interés en Biovity.
                   </p>
                 </div>
@@ -130,13 +120,13 @@ export function CTAContacto() {
                 <form
                   ref={formRef}
                   onSubmit={handleSubmit}
-                  className="bg-white rounded-2xl p-8 shadow-xl"
+                  className="bg-white rounded-2xl p-8 border border-border/10"
                 >
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Contacta con ventas</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-6">Contacta con ventas</h3>
 
                   {Object.keys(errors).length > 0 && (
-                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="text-sm text-red-600">{Object.values(errors)[0]}</p>
+                    <div className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
+                      <p className="text-sm text-accent">{Object.values(errors)[0]}</p>
                     </div>
                   )}
 
@@ -145,28 +135,28 @@ export function CTAContacto() {
                       <div>
                         <label
                           htmlFor="nombre"
-                          className="block text-sm font-medium text-gray-700 mb-1"
+                          className="block text-sm font-medium text-foreground mb-1"
                         >
                           Nombre
                         </label>
                         <div className="relative">
                           <HugeiconsIcon
                             icon={UserIcon}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
                           />
                           <Input
                             id="nombre"
                             name="nombre"
                             required
                             placeholder="Tu nombre"
-                            className={`pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white ${errors.nombre ? "border-red-500" : ""}`}
+                            className={`pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary ${errors.nombre ? "border-accent" : ""}`}
                           />
                         </div>
                       </div>
                       <div>
                         <label
                           htmlFor="apellido"
-                          className="block text-sm font-medium text-gray-700 mb-1"
+                          className="block text-sm font-medium text-foreground mb-1"
                         >
                           Apellido
                         </label>
@@ -175,7 +165,7 @@ export function CTAContacto() {
                           name="apellido"
                           required
                           placeholder="Tu apellido"
-                          className="h-12 bg-gray-50 border-gray-200 focus:bg-white"
+                          className="h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
                         />
                       </div>
                     </div>
@@ -183,14 +173,14 @@ export function CTAContacto() {
                     <div>
                       <label
                         htmlFor="email"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium text-foreground mb-1"
                       >
                         Email corporativo
                       </label>
                       <div className="relative">
                         <HugeiconsIcon
                           icon={Mail01Icon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
                         />
                         <Input
                           id="email"
@@ -198,7 +188,7 @@ export function CTAContacto() {
                           type="email"
                           required
                           placeholder="tu@empresa.cl"
-                          className="pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white"
+                          className="pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
                         />
                       </div>
                     </div>
@@ -206,21 +196,21 @@ export function CTAContacto() {
                     <div>
                       <label
                         htmlFor="empresa"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium text-foreground mb-1"
                       >
                         Empresa
                       </label>
                       <div className="relative">
                         <HugeiconsIcon
                           icon={Building02Icon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
                         />
                         <Input
                           id="empresa"
                           name="empresa"
                           required
                           placeholder="Nombre de tu empresa"
-                          className="pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white"
+                          className="pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
                         />
                       </div>
                     </div>
@@ -228,21 +218,21 @@ export function CTAContacto() {
                     <div>
                       <label
                         htmlFor="telefono"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium text-foreground mb-1"
                       >
                         Teléfono (opcional)
                       </label>
                       <div className="relative">
                         <HugeiconsIcon
                           icon={CallIcon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
                         />
                         <Input
                           id="telefono"
                           name="telefono"
                           type="tel"
                           placeholder="+56 9 1234 5678"
-                          className="pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white"
+                          className="pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
                         />
                       </div>
                     </div>
@@ -250,7 +240,7 @@ export function CTAContacto() {
                     <div>
                       <label
                         htmlFor="mensaje"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium text-foreground mb-1"
                       >
                         ¿Cómo podemos ayudarte?
                       </label>
@@ -259,18 +249,14 @@ export function CTAContacto() {
                         name="mensaje"
                         rows={3}
                         placeholder="Cuéntanos sobre tus necesidades de contratación..."
-                        className="w-full px-4 py-3 bg-gray-50 border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        className="w-full px-4 py-3 bg-muted/20 border border-border/30 rounded-lg focus:bg-white focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20 resize-none"
                       />
                     </div>
 
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-semibold transition-all duration-200"
-                    >
+                    <Button type="submit" disabled={isSubmitting} className="w-full h-12">
                       {isSubmitting ? (
                         <>
-                          <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                          <span className="w-5 h-5 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
                           Enviando...
                         </>
                       ) : (

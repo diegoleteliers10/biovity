@@ -26,10 +26,10 @@ export function HistoriaMision() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-balance"
+            className="text-3xl md:text-4xl font-bold text-foreground mb-6 text-balance"
           >
             Nuestra{" "}
-            <span className="bg-linear-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Historia
             </span>
           </m.h2>
@@ -38,7 +38,7 @@ export function HistoriaMision() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
-            className="text-xl text-gray-700 leading-relaxed text-pretty"
+            className="text-xl text-muted-foreground leading-relaxed text-pretty"
           >
             Biovity nació en 2026 con una misión clara: resolver el problema de dispersión en el
             mercado laboral de ciencias. Vimos que profesionales y estudiantes altamente capacitados
@@ -56,8 +56,18 @@ export function HistoriaMision() {
           className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
         >
           {VALUES_DATA.map((item, index) => {
-            const iconColors = ["text-blue-600", "text-green-600", "text-purple-600"] as const
-            const iconColor = iconColors[index % iconColors.length]
+            const iconColor =
+              index % 3 === 0
+                ? "text-accent"
+                : index % 3 === 1
+                  ? "text-secondary"
+                  : "text-muted-foreground"
+            const iconBg =
+              index % 3 === 0
+                ? "bg-accent/10"
+                : index % 3 === 1
+                  ? "bg-secondary/10"
+                  : "bg-[#e2e2e4]"
             return (
               <m.div
                 key={item.title}
@@ -65,15 +75,15 @@ export function HistoriaMision() {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
                 transition={ts(index * LANDING_ANIMATION.chainStagger)}
-                className="group bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:border-blue-200 hover:shadow-lg transition-all duration-200"
+                className="group bg-[#f3f3f5] rounded-2xl p-8 border border-border/10 hover:border-secondary/20 hover:bg-secondary/5 transition-all duration-200"
               >
-                <HugeiconsIcon
-                  icon={item.icon}
-                  size={48}
-                  className={`mb-5 group-hover:scale-110 transition-transform duration-200 ${iconColor}`}
-                />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                <div
+                  className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${iconBg}`}
+                >
+                  <HugeiconsIcon icon={item.icon} size={32} className={`${iconColor}`} />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </m.div>
             )
           })}

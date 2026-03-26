@@ -72,7 +72,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
           handleOpenJob()
         }
       }}
-      className="cursor-pointer relative overflow-hidden flex flex-col rounded-xl border border-border/30 bg-muted/20 transition-colors duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="cursor-pointer relative overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border transition-colors duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label="Ver vacante guardada"
     >
       <CardHeader className="pb-0">
@@ -196,7 +196,7 @@ export const SavedContent = () => {
             <button
               type="button"
               onClick={() => router.push("/dashboard/jobs")}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-md shadow transition-colors hover:bg-primary/90"
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-colors hover:bg-secondary/90"
             >
               Ver todos los empleos
             </button>

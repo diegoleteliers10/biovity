@@ -69,12 +69,12 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
       />
 
       {/* Modal */}
-      <div className="relative bg-card border border-border rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden">
+      <div className="relative bg-white border border-border/10 rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
+        <div className="flex items-center justify-between p-6 border-b border-border/10">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl">
-              <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-primary" />
+            <div className="flex items-center justify-center w-12 h-12 bg-secondary/10 rounded-xl">
+              <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-secondary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-card-foreground">{day}</h2>
@@ -113,7 +113,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                   return (
                     <div
                       key={event.id}
-                      className="p-4 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors"
+                      className="p-4 rounded-lg bg-[#f3f3f5] hover:bg-[#e2e2e4] transition-colors"
                     >
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <h4 className="font-medium text-card-foreground leading-tight">

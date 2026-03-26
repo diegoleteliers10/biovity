@@ -1,13 +1,13 @@
 "use client"
 
+import { useQueries } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useState } from "react"
-import { useQueries } from "@tanstack/react-query"
-import { authClient } from "@/lib/auth-client"
-import { useChatsByProfessional } from "@/lib/api/use-chats"
 import { getLastMessageFromSender } from "@/lib/api/messages"
-import { getUser } from "@/lib/api/users"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
+import { useChatsByProfessional } from "@/lib/api/use-chats"
+import { getUser } from "@/lib/api/users"
+import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
 import type { Notification } from "@/lib/types/dashboard"
 import { HomeHeader } from "./home/homeHeader"
@@ -59,11 +59,10 @@ export const HomeContent = () => {
   }, [])
 
   const handleJobClick = useCallback(
-    (jobTitle: string, _company: string) => {
-      const slug = toSlug(jobTitle)
-      router.push(`/dashboard/job/${slug}`)
+    (jobId: string) => {
+      router.push(`/dashboard/job/${jobId}`)
     },
-    [toSlug, router]
+    [router]
   )
 
   const handleApplyJob = useCallback((_jobId: number, _jobTitle: string, _company: string) => {
@@ -100,9 +99,17 @@ export const HomeContent = () => {
   const firstName = data?.user?.name?.split(" ")[0] || "Usuario"
 
   const professionalId = (data?.user as { id?: string })?.id
-  const { data: chats = [], isPending: chatsPending, isSuccess: chatsSuccess } = useChatsByProfessional(professionalId)
+  const {
+    data: chats = [],
+    isPending: chatsPending,
+    isSuccess: chatsSuccess,
+  } = useChatsByProfessional(professionalId)
 
-  const { data: applications = [], isPending: applicationsPending, isSuccess: applicationsSuccess } = useApplicationsByCandidate(professionalId)
+  const {
+    data: applications = [],
+    isPending: applicationsPending,
+    isSuccess: applicationsSuccess,
+  } = useApplicationsByCandidate(professionalId)
 
   const recruiterQueries = useQueries({
     queries: (chats ?? []).map((chat) => ({
@@ -151,7 +158,10 @@ export const HomeContent = () => {
     })
   }, [chats, lastRecruiterMessageQueries])
 
-  const isInitialLoad = !chatsSuccess || !applicationsSuccess || (chats.length > 0 && lastRecruiterMessageQueries.some((q) => q.isFetching))
+  const isInitialLoad =
+    !chatsSuccess ||
+    !applicationsSuccess ||
+    (chats.length > 0 && lastRecruiterMessageQueries.some((q) => q.isFetching))
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -179,13 +189,20 @@ export const HomeContent = () => {
           onViewAll={handleViewAllApplications}
           isLoading={!applicationsSuccess}
         />
-        <RecentMessagesCard chats={enrichedChats} isLoading={isInitialLoad} recruiterNames={recruiterNames} onViewAll={handleViewAllMessages} />
+        <RecentMessagesCard
+          chats={enrichedChats}
+          isLoading={isInitialLoad}
+          recruiterNames={recruiterNames}
+          onViewAll={handleViewAllMessages}
+        />
       </div>
 
       {/* Recommended Jobs Section */}
       <div className="mt-4 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl tracking-tight font-semibold text-foreground">Empleos Recomendados para Ti</h2>
+          <h2 className="text-xl tracking-tight font-semibold text-foreground">
+            Empleos Recomendados para Ti
+          </h2>
           <button
             type="button"
             onClick={handleViewAllJobs}
@@ -211,7 +228,9 @@ export const HomeContent = () => {
       {/* Job Alerts Section */}
       <div className="mt-4 space-y-2">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold tracking-tight text-foreground">Alertas de Empleo</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">
+            Alertas de Empleo
+          </h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Configura alertas para recibir notificaciones de nuevos empleos que coincidan con tus

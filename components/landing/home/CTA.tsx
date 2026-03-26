@@ -54,11 +54,11 @@ export function CTA() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <Button type="button" variant="secondary" size="lg" className="px-8 py-4">
+          <Button type="button" variant="default" size="lg" className="px-8 py-4">
             Crear cuenta gratis
             <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>
-          <Button type="button" variant="ghost" size="lg" className="px-8 py-4">
+          <Button type="button" variant="outline" size="lg" className="px-8 py-4">
             Soy empresa
           </Button>
         </m.div>
@@ -79,7 +79,10 @@ export function CTA() {
               transition={ts(index * LANDING_ANIMATION.chainStagger * 0.5)}
               className="flex items-center text-muted-foreground"
             >
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2 text-secondary" />
+              <HugeiconsIcon
+                icon={CheckmarkCircle02Icon}
+                className="w-4 h-4 mr-2 text-muted-foreground"
+              />
               {benefit}
             </m.div>
           ))}

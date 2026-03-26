@@ -211,7 +211,12 @@ const EditableCard = ({
   children: React.ReactNode
   className?: string
 }) => (
-  <Card className={cn("group relative", className)}>
+  <Card
+    className={cn(
+      "group relative bg-white border border-border/10 hover:bg-secondary/5 transition-colors duration-300",
+      className
+    )}
+  >
     {!isEditing && (
       <Button
         type="button"
@@ -643,9 +648,9 @@ const EmployeeProfile = () => {
 
   return (
     <main className="p-6 space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold text-foreground text-balance">Mi Perfil</h1>
-        <p className="text-muted-foreground text-pretty text-sm mt-0.5">
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
+        <p className="text-muted-foreground text-sm mt-1">
           Gestiona tu información personal y profesional
         </p>
       </header>
@@ -741,7 +746,7 @@ const EmployeeProfile = () => {
                       {data.profession || EMPTY_PLACEHOLDER}
                     </p>
                     {user?.type && (
-                      <Badge variant="secondary" className="mt-2 text-xs">
+                      <Badge variant="accent" className="mt-2 text-xs">
                         {user.type === "professional" ? "Profesional" : user.type}
                       </Badge>
                     )}

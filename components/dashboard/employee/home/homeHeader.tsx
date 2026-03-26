@@ -3,13 +3,13 @@
 import { Notification01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Suspense } from "react"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Notification } from "@/lib/types/dashboard"
 
@@ -93,7 +93,9 @@ export function HomeHeader({
                     }`}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm ${notification.isRead ? "font-normal text-muted-foreground" : "font-medium text-foreground"}`}>
+                    <p
+                      className={`text-sm ${notification.isRead ? "font-normal text-muted-foreground" : "font-medium text-foreground"}`}
+                    >
                       {notification.title}
                     </p>
                     <p className="text-xs text-muted-foreground">{notification.message}</p>

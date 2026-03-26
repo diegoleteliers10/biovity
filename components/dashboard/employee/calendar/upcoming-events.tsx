@@ -86,11 +86,11 @@ export function UpcomingEvents() {
   }
 
   return (
-    <Card className="bg-sidebar border-sidebar-border h-full">
+    <Card className="bg-white border border-border/10 h-full">
       <div className="p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-6">
-          <HugeiconsIcon icon={Calendar01Icon} className="h-5 w-5 text-sidebar-primary" />
-          <h3 className="text-lg font-semibold text-sidebar-foreground">Próximos Eventos</h3>
+          <HugeiconsIcon icon={Calendar01Icon} className="h-5 w-5 text-secondary" />
+          <h3 className="text-lg font-semibold text-foreground">Próximos Eventos</h3>
         </div>
 
         <div className="space-y-4">
@@ -117,13 +117,13 @@ export function UpcomingEvents() {
                     {event.title}
                   </h4>
                   {index === 0 && (
-                    <span className="text-xs bg-sidebar-accent text-sidebar-accent-foreground px-2 py-1 rounded-full font-medium">
+                    <span className="text-xs bg-accent/15 text-accent px-2 py-1 rounded-full font-medium">
                       Próximo
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-4 text-xs text-sidebar-foreground/70">
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <HugeiconsIcon icon={Calendar01Icon} className="h-3 w-3" />
                     <span>{event.date}</span>
@@ -135,7 +135,7 @@ export function UpcomingEvents() {
                 </div>
 
                 {event.location && (
-                  <div className="flex items-center gap-1 text-xs text-sidebar-foreground/60">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground/80">
                     <HugeiconsIcon icon={Location05Icon} className="h-3 w-3" />
                     <span>{event.location}</span>
                   </div>
@@ -145,8 +145,11 @@ export function UpcomingEvents() {
           ))}
         </div>
 
-        <div className="mt-auto pt-4 border-t border-sidebar-border">
-          <button className="w-full text-sm text-sidebar-primary hover:text-sidebar-primary/80 font-medium transition-colors">
+        <div className="mt-auto pt-4 border-t border-border/10">
+          <button
+            type="button"
+            className="w-full text-sm text-secondary hover:text-secondary/80 font-medium transition-colors"
+          >
             Ver todos los eventos →
           </button>
         </div>

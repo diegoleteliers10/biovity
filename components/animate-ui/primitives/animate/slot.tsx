@@ -74,4 +74,4 @@ function Slot<T extends HTMLElement = HTMLElement>({ children, ref, ...props }: 
   return <Base {...mergedProps} ref={mergeRefs(childRef as React.Ref<T>, ref)} />
 }
 
-export { Slot, type SlotProps, type WithAsChild, type DOMMotionProps, type AnyProps }
+export { type AnyProps, type DOMMotionProps, Slot, type SlotProps, type WithAsChild }
