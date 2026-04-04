@@ -12,6 +12,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { Application } from "@/lib/api/applications"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useOrganization } from "@/lib/api/use-organization"
@@ -43,6 +44,8 @@ export const ApplicationsContent = () => {
   const userId = (session?.user as { id?: string })?.id
   const { data: applications = [], isLoading, error } = useApplicationsByCandidate(userId)
 
+  const isPending = !userId || isLoading || applications === undefined
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex items-start justify-between gap-4">
@@ -58,9 +61,32 @@ export const ApplicationsContent = () => {
         <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
           <p className="text-destructive text-sm">{error.message}</p>
         </div>
-      ) : isLoading ? (
-        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12">
-          <p className="text-muted-foreground text-sm">Cargando postulaciones...</p>
+      ) : isPending ? (
+        <div className="grid grid-cols-1 gap-8">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i} className="relative overflow-hidden flex flex-col border border-border/80 bg-white">
+              <CardHeader className="p-6 pb-2">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 space-y-2 flex-1">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 pt-2">
+                <Skeleton className="h-3 w-32 mb-5" />
+                <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-message-hide pb-2 -mx-2 px-2 mt-2">
+                  {STAGES.map((_, idx) => (
+                    <div key={idx} className="flex items-center gap-2 sm:gap-3 shrink-0">
+                      <Skeleton className="h-7 w-20 rounded-full" />
+                      {idx < STAGES.length - 1 && <Skeleton className="h-[1.5px] w-4 rounded-full" />}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       ) : applications.length === 0 ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">

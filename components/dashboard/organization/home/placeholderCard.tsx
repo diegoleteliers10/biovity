@@ -13,16 +13,16 @@ interface PlaceholderCardProps {
 
 export function PlaceholderCard({ title, description, icon, children }: PlaceholderCardProps) {
   return (
-    <Card className="flex flex-col opacity-90">
+    <Card className="flex flex-col border border-border/80 bg-white">
       <CardHeader>
         <div className="flex items-center gap-2">
           <HugeiconsIcon
             icon={icon}
             size={20}
             strokeWidth={1.5}
-            className="text-muted-foreground"
+            className="text-secondary"
           />
-          <CardTitle className="text-base">{title}</CardTitle>
+          <CardTitle className="text-base text-foreground">{title}</CardTitle>
         </div>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </CardHeader>

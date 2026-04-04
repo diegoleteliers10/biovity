@@ -34,13 +34,13 @@ import { formatDateChilean } from "@/lib/utils"
 import { CreateJobDialog } from "./CreateJobDialog"
 
 const statusColors: Record<string, string> = {
-  active: "bg-green-100 text-green-800",
-  cerrada: "bg-gray-100 text-gray-800",
-  closed: "bg-gray-100 text-gray-800",
-  borrador: "bg-yellow-100 text-yellow-800",
-  draft: "bg-yellow-100 text-yellow-800",
+  active: "bg-secondary/10 text-secondary border border-secondary/20",
+  cerrada: "bg-muted text-muted-foreground",
+  closed: "bg-muted text-muted-foreground",
+  borrador: "bg-accent/10 text-accent border border-accent/20",
+  draft: "bg-accent/10 text-accent border border-accent/20",
   paused: "bg-yellow-100 text-yellow-800",
-  expired: "bg-red-100 text-red-800",
+  expired: "bg-destructive/10 text-destructive border border-destructive/20",
 }
 
 function getApplicationsCount(job: { applicationsCount?: number }): number {
@@ -197,7 +197,7 @@ export function OfertasContent() {
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[job.status] ?? "bg-gray-100 text-gray-800"}`}
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
                     >
                       {getStatusLabel(job.status)}
                     </span>

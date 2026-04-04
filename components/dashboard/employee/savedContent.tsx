@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
@@ -137,8 +138,9 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
 
 export const SavedContent = () => {
   const { useSession } = authClient
-  const { data: session } = useSession()
+  const { data: session, isPending: sessionPending } = useSession()
   const userId = (session?.user as { id?: string })?.id
+
   const { data: savedJobs, isLoading: savedJobsLoading } = useSavedJobsByUser(userId, {
     page: 1,
     limit: 50,
@@ -148,6 +150,50 @@ export const SavedContent = () => {
   const hasJobs = jobIds.length > 0
 
   const router = useRouter()
+
+  const isPending = sessionPending || savedJobsLoading || savedJobs === undefined
+
+  if (isPending) {
+    return (
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <Skeleton className="h-9 w-72" />
+            <Skeleton className="h-4 w-96" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i} className="relative overflow-hidden flex flex-col border border-border/80 bg-white">
+              <CardHeader className="pb-0">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 space-y-0.5 flex-1">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
+                  <Skeleton className="h-7 w-7 rounded-md shrink-0" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2 pt-3 flex-1 flex flex-col">
+                <div className="flex items-center gap-1.5">
+                  <Skeleton className="h-3.5 w-3.5 rounded" />
+                  <Skeleton className="h-3 w-24" />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Skeleton className="h-3.5 w-3.5 rounded" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Skeleton className="h-3.5 w-3.5 rounded" />
+                  <Skeleton className="h-3 w-28" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (!userId) {
     return (
@@ -172,11 +218,7 @@ export const SavedContent = () => {
         </div>
       </div>
 
-      {savedJobsLoading ? (
-        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed py-12">
-          <p className="text-muted-foreground text-sm">Cargando guardados...</p>
-        </div>
-      ) : !hasJobs ? (
+      {!hasJobs ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
           <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">

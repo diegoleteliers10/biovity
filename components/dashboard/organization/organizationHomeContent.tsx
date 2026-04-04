@@ -64,7 +64,16 @@ export function OrganizationHomeContent() {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {metricsQuery.isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-[120px] w-full" />)
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="border border-border/80 bg-white rounded-xl p-6">
+              <div className="flex items-center justify-between pb-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-4" />
+              </div>
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-3 w-24 mt-1" />
+            </div>
+          ))
         ) : metricsQuery.error ? (
           <div className="col-span-full text-sm text-destructive bg-destructive/10 p-4 rounded-lg">
             Error al cargar métricas.
@@ -76,8 +85,25 @@ export function OrganizationHomeContent() {
 
       <div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {applicationsQuery.isLoading ? (
-          <div className="md:col-span-2">
-            <Skeleton className="h-[400px] w-full" />
+          <div className="md:col-span-2 border border-border/80 bg-white rounded-xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60">
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <Skeleton className="h-3 w-20 ml-auto" />
+                    <Skeleton className="h-5 w-16 rounded-full ml-auto" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : applicationsQuery.error ? (
           <div className="md:col-span-2 text-sm text-destructive bg-destructive/10 p-4 rounded-lg flex items-center justify-center">
@@ -88,7 +114,23 @@ export function OrganizationHomeContent() {
         )}
 
         {messagesQuery.isLoading ? (
-          <Skeleton className="h-[400px] w-full" />
+          <div className="border border-border/80 bg-white rounded-xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <Skeleton className="h-5 w-36" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-36" />
+                    <Skeleton className="h-3 w-12" />
+                  </div>
+                  <Skeleton className="h-3 w-56" />
+                </div>
+              ))}
+            </div>
+          </div>
         ) : messagesQuery.error ? (
           <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-lg flex items-center justify-center">
             Error al cargar mensajes recientes.
@@ -113,8 +155,18 @@ export function OrganizationHomeContent() {
         >
           {interviewsQuery.isLoading ? (
             <div className="space-y-3 mt-2">
-              <Skeleton className="h-14 w-full" />
-              <Skeleton className="h-14 w-full" />
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="flex flex-col gap-2 p-3 rounded-lg border border-border/60">
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-4 w-36" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-3 w-40" />
+                    <Skeleton className="h-5 w-20 rounded-full" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : interviewsQuery.error ? (
             <p className="text-sm text-destructive mt-2">Error al cargar entrevistas.</p>
@@ -147,8 +199,15 @@ export function OrganizationHomeContent() {
         >
           {candidatesQuery.isLoading ? (
             <div className="space-y-3 mt-2">
-              <Skeleton className="h-14 w-full" />
-              <Skeleton className="h-14 w-full" />
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="flex flex-col gap-2 p-3 rounded-lg border border-border/60">
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-4 w-36" />
+                    <Skeleton className="h-4 w-14" />
+                  </div>
+                  <Skeleton className="h-3 w-40" />
+                </div>
+              ))}
             </div>
           ) : candidatesQuery.error ? (
             <p className="text-sm text-destructive mt-2">Error al cargar candidatos.</p>
@@ -158,7 +217,7 @@ export function OrganizationHomeContent() {
                 <div key={candidate.id} className="flex flex-col gap-1 border-b pb-3 last:border-0">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-sm">{candidate.name}</span>
-                    <span className="text-xs font-bold text-green-600">
+                    <span className="text-xs font-bold text-secondary">
                       {candidate.matchPercentage}% Match
                     </span>
                   </div>
