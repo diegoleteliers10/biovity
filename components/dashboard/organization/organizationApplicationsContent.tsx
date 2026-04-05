@@ -139,7 +139,7 @@ export function OrganizationApplicationsContent() {
           )}
         </aside>
 
-        <section className="min-w-0 flex-1 overflow-hidden rounded-lg border bg-card">
+        <section className="min-w-0 max-w-dvw flex-1 overflow-hidden rounded-lg border bg-card">
           {selectedJob ? (
             <div className="flex h-full flex-col overflow-hidden">
               <div className="border-b px-4 py-3">
@@ -148,7 +148,7 @@ export function OrganizationApplicationsContent() {
                   {formatJobLocation(selectedJob.location)} · {applicants.length} postulantes
                 </p>
               </div>
-              <div className="flex-1 overflow-x-auto overflow-y-auto p-4">
+              <div className="flex-1 p-4">
                 {appsLoading ? (
                   <div className="flex flex-1 items-center justify-center py-12">
                     <div className="size-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />

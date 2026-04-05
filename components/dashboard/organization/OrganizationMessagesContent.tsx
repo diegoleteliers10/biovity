@@ -14,7 +14,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
@@ -39,6 +39,7 @@ import { authClient } from "@/lib/auth-client"
 import { formatDateChilean } from "@/lib/utils"
 
 export function OrganizationMessagesContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const chatIdFromUrl = searchParams.get("chat")
 
@@ -177,7 +178,12 @@ export function OrganizationMessagesContent() {
               key={chat.id}
               chat={chat}
               isSelected={selectedChat?.id === chat.id}
-              onSelect={() => setSelectedChat(chat)}
+              onSelect={() => {
+                setSelectedChat(chat)
+                const params = new URLSearchParams(searchParams.toString())
+                params.set("chat", chat.id)
+                router.replace(`/dashboard/messages?${params.toString()}`)
+              }}
               searchQuery={debouncedSearchQuery}
               contactType="professional"
               formatTime={formatMessageTime}

@@ -148,3 +148,39 @@ export async function updateApplicationStatus(
   const app = (json?.data ?? json) as Application
   return { data: app }
 }
+
+export async function getApplicationsByOrganization(
+  organizationId: string,
+  params?: { page?: number; limit?: number }
+): Promise<{ data: Application[]; total: number; page: number; limit: number; totalPages: number } | { error: string }> {
+  let res: Response
+  try {
+    const searchParams = new URLSearchParams()
+    if (params?.page != null) searchParams.set("page", String(params.page))
+    if (params?.limit != null) searchParams.set("limit", String(params.limit))
+    const query = searchParams.toString() ? `?${searchParams.toString()}` : ""
+    res = await fetch(`${API_BASE}/api/v1/applications/organization/${organizationId}${query}`)
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error de red" }
+  }
+
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    return { error: getErrorMessage(data, "Error al obtener las postulaciones") }
+  }
+
+  const parsed = data as {
+    data?: Application[]
+    total?: number
+    page?: number
+    limit?: number
+    totalPages?: number
+  }
+  return {
+    data: parsed?.data ?? [],
+    total: parsed?.total ?? 0,
+    page: parsed?.page ?? 1,
+    limit: parsed?.limit ?? 10,
+    totalPages: parsed?.totalPages ?? 0,
+  }
+}

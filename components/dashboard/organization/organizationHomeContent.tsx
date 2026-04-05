@@ -1,19 +1,24 @@
 "use client"
 
 import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
+import { useQueries } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  useChatsByRecruiter,
+} from "@/lib/api/use-chats"
 import {
   useOrgFeaturedCandidates,
   useOrgMetrics,
   useOrgNotifications,
   useOrgRecentApplications,
-  useOrgRecentMessages,
   useOrgUpcomingInterviews,
 } from "@/lib/api/use-organization-dashboard"
+import { useOrganization } from "@/lib/api/use-organization"
+import { getUser } from "@/lib/api/users"
 import { authClient } from "@/lib/auth-client"
 import type { Notification } from "@/lib/types/dashboard"
 import { CreateOfferCard } from "./home/createOfferCard"
@@ -26,14 +31,64 @@ export function OrganizationHomeContent() {
   const { useSession } = authClient
   const { data, isPending } = useSession()
 
+  const organizationId = (data?.user as { organizationId?: string } | undefined)?.organizationId
+  const { data: organizationData } = useOrganization(organizationId)
+  const organizationName = organizationData?.name
+
   const notificationsQuery = useOrgNotifications()
-  const metricsQuery = useOrgMetrics()
-  const applicationsQuery = useOrgRecentApplications()
-  const messagesQuery = useOrgRecentMessages()
+  const metricsQuery = useOrgMetrics(organizationId)
+  const applicationsQuery = useOrgRecentApplications(organizationId)
+  const userId = (data?.user as { id?: string } | undefined)?.id
+  const messagesQuery = useChatsByRecruiter(userId)
   const interviewsQuery = useOrgUpcomingInterviews()
+
+  const candidateQueries = useQueries({
+    queries: (messagesQuery.data ?? []).map((chat) => ({
+      queryKey: ["profile", "user", chat.professionalId],
+      queryFn: async () => {
+        if (!chat.professionalId) return null
+        const result = await getUser(chat.professionalId)
+        if ("error" in result) return null
+        return result.data
+      },
+      enabled: Boolean(chat.professionalId),
+      staleTime: 5 * 60 * 1000,
+    })),
+  })
+
+  const candidateNames = useMemo(() => {
+    const map: Record<string, string> = {}
+    candidateQueries.forEach((q, i) => {
+      const chat = messagesQuery.data?.[i]
+      if (chat?.professionalId) {
+        map[chat.professionalId] = q.data?.name ?? "Candidato"
+      }
+    })
+    return map
+  }, [candidateQueries, messagesQuery.data])
+
   const candidatesQuery = useOrgFeaturedCandidates()
 
   const [localNotifications, setLocalNotifications] = useState<Notification[]>([])
+  const [showSkeletons, setShowSkeletons] = useState(true)
+  const [showMessagesSkeletons, setShowMessagesSkeletons] = useState(true)
+
+  const hasOrgId = Boolean(organizationId && organizationId.length > 0)
+
+  useEffect(() => {
+    if (
+      hasOrgId &&
+      !applicationsQuery.isPending &&
+      applicationsQuery.data !== undefined &&
+      !messagesQuery.isPending
+    ) {
+      setShowSkeletons(false)
+      setShowMessagesSkeletons(false)
+    } else {
+      setShowSkeletons(true)
+      setShowMessagesSkeletons(true)
+    }
+  }, [hasOrgId, applicationsQuery.isPending, applicationsQuery.data, messagesQuery.isPending])
 
   useEffect(() => {
     if (notificationsQuery.data) {
@@ -50,13 +105,14 @@ export function OrganizationHomeContent() {
   }, [router])
 
   const firstName = data?.user?.name?.split(" ")[0] || "Organización"
+  const displayName = organizationName || firstName
   const unreadCount = localNotifications.filter((n) => !n.isRead).length
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       <OrganizationHomeHeader
-        firstName={firstName}
-        isPending={isPending || notificationsQuery.isLoading}
+        firstName={displayName}
+        isPending={isPending || notificationsQuery.isLoading || organizationData === undefined}
         notifications={localNotifications}
         unreadCount={unreadCount}
         onNotificationClick={handleNotificationClick}
@@ -84,7 +140,7 @@ export function OrganizationHomeContent() {
       </div>
 
       <div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {applicationsQuery.isLoading ? (
+        {showSkeletons ? (
           <div className="md:col-span-2 border border-border/80 bg-white rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <Skeleton className="h-5 w-40" />
@@ -113,7 +169,7 @@ export function OrganizationHomeContent() {
           <OrganizationRecentApplicationsCard applications={applicationsQuery.data || []} />
         )}
 
-        {messagesQuery.isLoading ? (
+        {showMessagesSkeletons ? (
           <div className="border border-border/80 bg-white rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <Skeleton className="h-5 w-36" />
@@ -137,7 +193,15 @@ export function OrganizationHomeContent() {
           </div>
         ) : (
           <RecentMessagesCard
-            messages={messagesQuery.data || []}
+            messages={messagesQuery.data?.map((chat) => ({
+              sender: candidateNames[chat.professionalId] ?? "Candidato",
+              time: new Date(chat.updatedAt).toLocaleDateString("es-CL", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }),
+              preview: chat.lastMessage ?? "Sin mensajes",
+            })) || []}
             onViewAll={handleViewAllMessages}
           />
         )}
@@ -180,7 +244,7 @@ export function OrganizationHomeContent() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">{interview.position}</span>
-                    <span className="text-xs font-medium px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent">
                       {interview.type}
                     </span>
                   </div>
@@ -196,6 +260,7 @@ export function OrganizationHomeContent() {
           title="Candidatos destacados"
           description="candidatos que coinciden con tus ofertas"
           icon={UserIcon}
+          iconColor="accent"
         >
           {candidatesQuery.isLoading ? (
             <div className="space-y-3 mt-2">
@@ -217,7 +282,7 @@ export function OrganizationHomeContent() {
                 <div key={candidate.id} className="flex flex-col gap-1 border-b pb-3 last:border-0">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-sm">{candidate.name}</span>
-                    <span className="text-xs font-bold text-secondary">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent">
                       {candidate.matchPercentage}% Match
                     </span>
                   </div>

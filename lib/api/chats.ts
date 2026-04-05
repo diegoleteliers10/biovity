@@ -104,7 +104,8 @@ export async function createOrFindChat(
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al crear el chat") }
+    const errorMsg = data?.error ?? data?.message ?? "Error al crear el chat"
+    return { error: typeof errorMsg === "string" ? errorMsg : "Error al crear el chat" }
   }
 
   const chat = data?.data ?? data

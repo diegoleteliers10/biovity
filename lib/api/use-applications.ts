@@ -7,12 +7,14 @@ import {
   createApplication,
   getApplicationsByCandidate,
   getApplicationsByJob,
+  getApplicationsByOrganization,
   updateApplicationStatus,
 } from "./applications"
 
 export const applicationsKeys = {
   byJob: (jobId: string) => ["applications", "job", jobId] as const,
   byCandidate: (candidateId: string) => ["applications", "candidate", candidateId] as const,
+  byOrganization: (organizationId: string) => ["applications", "organization", organizationId] as const,
 }
 
 export function useApplicationsByJob(jobId: string | undefined) {
@@ -71,5 +73,18 @@ export function useUpdateApplicationStatusMutation(jobId: string) {
         )
       })
     },
+  })
+}
+
+export function useApplicationsByOrganization(organizationId: string | undefined) {
+  return useQuery({
+    queryKey: applicationsKeys.byOrganization(organizationId ?? ""),
+    queryFn: async () => {
+      if (!organizationId) throw new Error("Organization ID required")
+      const result = await getApplicationsByOrganization(organizationId, { limit: 100 })
+      if ("error" in result) throw new Error(result.error)
+      return result
+    },
+    enabled: Boolean(organizationId),
   })
 }

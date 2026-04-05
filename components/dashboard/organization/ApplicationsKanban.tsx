@@ -113,11 +113,11 @@ function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-w-[220px] flex-1 flex-col rounded-lg border bg-muted/30 p-3 transition-colors",
+        "flex min-w-[220px] max-w-[220px] flex-col rounded-lg border bg-muted/30 p-3 transition-colors max-h-full overflow-hidden",
         isOver && "border-primary/50 bg-primary/5"
       )}
     >
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-3 flex items-center gap-2 shrink-0">
         <HugeiconsIcon
           icon={stage.icon}
           size={20}
@@ -127,7 +127,7 @@ function KanbanColumn({
         <span className="font-medium text-sm">{stage.label}</span>
         <span className="tabular-nums text-muted-foreground text-xs">({applicants.length})</span>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-y-auto">
         {applicants.map((a) => (
           <ApplicantCard key={a.id} applicant={a} />
         ))}
@@ -197,7 +197,7 @@ export function ApplicationsKanban({
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div className="flex gap-4 overflow-x-auto pb-2">
+      <div className="flex gap-4 overflow-x-auto pb-2" style={{ height: "100%" }}>
         {STAGES.map((stage) => (
           <KanbanColumn
             key={stage.id}

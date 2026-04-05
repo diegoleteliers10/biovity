@@ -14,6 +14,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
@@ -29,8 +30,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { ChatListItem, MessageBubble } from "@/components/ui/message-bubble"
 import { useDebounce } from "@/hooks/use-debounce"
-import type { Chat } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
+import { type Chat, getChatById } from "@/lib/api/chats"
 import { useChatListRealtime, useChatsByProfessional } from "@/lib/api/use-chats"
 import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
@@ -38,6 +39,10 @@ import { authClient } from "@/lib/auth-client"
 import { formatDateChilean } from "@/lib/utils"
 
 export function UserMessagesContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const chatIdFromUrl = searchParams.get("chat")
+
   const { useSession } = authClient
   const { data: session } = useSession()
   const professionalId = (session?.user as { id?: string })?.id
@@ -50,6 +55,24 @@ export function UserMessagesContent() {
   const { data: chats = [], isLoading: chatsLoading } = useChatsByProfessional(professionalId)
   useChatListRealtime(chats)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
+
+  useEffect(() => {
+    if (!chatIdFromUrl) return
+
+    const found = chats.find((c) => c.id === chatIdFromUrl)
+    if (found) {
+      setSelectedChat(found)
+      return
+    }
+
+    const loadChat = async () => {
+      const result = await getChatById(chatIdFromUrl)
+      if ("data" in result) {
+        setSelectedChat(result.data)
+      }
+    }
+    void loadChat()
+  }, [chatIdFromUrl, chats])
   const [messageInput, setMessageInput] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -155,7 +178,12 @@ export function UserMessagesContent() {
               key={chat.id}
               chat={chat}
               isSelected={selectedChat?.id === chat.id}
-              onSelect={() => setSelectedChat(chat)}
+              onSelect={() => {
+                setSelectedChat(chat)
+                const params = new URLSearchParams(searchParams.toString())
+                params.set("chat", chat.id)
+                router.replace(`/dashboard/messages?${params.toString()}`)
+              }}
               searchQuery={debouncedSearchQuery}
               contactType="recruiter"
               formatTime={formatMessageTime}

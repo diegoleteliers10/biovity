@@ -343,7 +343,9 @@ export function TalentContent() {
       e.stopPropagation()
       createChatMutation.mutate(professionalId, {
         onSuccess: (chat) => {
-          router.push(`/dashboard/messages?chat=${chat.id}`)
+          if (chat?.id) {
+            router.push(`/dashboard/messages?chat=${chat.id}`)
+          }
         },
       })
     },

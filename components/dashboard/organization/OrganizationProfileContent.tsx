@@ -410,7 +410,7 @@ export function OrganizationProfileContent() {
                     <p className="mt-0.5 text-muted-foreground text-sm">
                       {sidebarData?.profession || EMPTY_PLACEHOLDER}
                     </p>
-                    <Badge variant="secondary" className="mt-2 text-xs">
+                    <Badge variant="accent" className="mt-2 text-xs">
                       Organización
                     </Badge>
                   </>

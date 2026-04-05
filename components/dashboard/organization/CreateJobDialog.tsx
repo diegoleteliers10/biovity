@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/animate-ui/components/radix/dialog"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Combobox,
   ComboboxChip,
@@ -265,15 +266,11 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
           <Field>
             <FieldLabel>Ubicación</FieldLabel>
             <div className="space-y-3">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isRemote}
-                  onChange={(e) => setIsRemote(e.target.checked)}
-                  className="rounded border-input"
-                />
-                <span className="text-sm">Trabajo remoto</span>
-              </label>
+              <Checkbox
+                checked={isRemote}
+                onChange={(e) => setIsRemote(e.target.checked)}
+                label="Trabajo remoto"
+              />
               {!isRemote && (
                 <div className="grid grid-cols-2 gap-3">
                   <Input

@@ -8,10 +8,11 @@ interface PlaceholderCardProps {
   title: string
   description?: string
   icon: IconSvgElement
+  iconColor?: "secondary" | "accent"
   children?: React.ReactNode
 }
 
-export function PlaceholderCard({ title, description, icon, children }: PlaceholderCardProps) {
+export function PlaceholderCard({ title, description, icon, iconColor = "secondary", children }: PlaceholderCardProps) {
   return (
     <Card className="flex flex-col border border-border/80 bg-white">
       <CardHeader>
@@ -20,7 +21,7 @@ export function PlaceholderCard({ title, description, icon, children }: Placehol
             icon={icon}
             size={20}
             strokeWidth={1.5}
-            className="text-secondary"
+            className={iconColor === "accent" ? "text-accent" : "text-secondary"}
           />
           <CardTitle className="text-base text-foreground">{title}</CardTitle>
         </div>
