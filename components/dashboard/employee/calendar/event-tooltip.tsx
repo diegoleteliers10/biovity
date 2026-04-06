@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock01Icon } from "@hugeicons/core-free-icons"
+import { Clock01Icon, Location05Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
@@ -8,9 +8,9 @@ import { Card } from "@/components/ui/card"
 type Event = {
   readonly id: string
   readonly title: string
-  readonly time: string
-  readonly description: string
-  readonly type: "meeting" | "personal" | "work" | "important"
+  readonly startAt: string
+  readonly description?: string
+  readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
 
 type EventTooltipProps = {
@@ -31,19 +31,17 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
 
-      let x = position.x - rect.width / 2 // Center horizontally
-      let y = position.y + 20 // Position below the event
+      let x = position.x - rect.width / 2
+      let y = position.y + 20
 
-      // Adjust if tooltip goes off screen horizontally
       if (x < 10) {
         x = 10
       } else if (x + rect.width > viewportWidth - 10) {
         x = viewportWidth - rect.width - 10
       }
 
-      // Adjust if tooltip goes off screen vertically (show above if needed)
       if (y + rect.height > viewportHeight - 10) {
-        y = position.y - rect.height - 10 // Position above the event
+        y = position.y - rect.height - 10
       }
 
       setAdjustedPosition({ x, y })
@@ -52,16 +50,31 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
     updatePosition()
   }, [position])
 
+  const formatEventDateTime = (iso: string) => {
+    try {
+      const d = new Date(iso)
+      return d.toLocaleDateString("es-CL", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    } catch {
+      return iso
+    }
+  }
+
   const getEventTypeLabel = (type: Event["type"]) => {
     switch (type) {
-      case "meeting":
-        return "Reunión"
-      case "important":
-        return "Importante"
-      case "personal":
-        return "Personal"
-      case "work":
-        return "Trabajo"
+      case "interview":
+        return "Entrevista"
+      case "onboarding":
+        return "Onboarding"
+      case "task_deadline":
+        return "Tarea"
+      case "announcement":
+        return "Anuncio"
       default:
         return "Evento"
     }
@@ -69,14 +82,14 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
 
   const getEventTypeColor = (type: Event["type"]) => {
     switch (type) {
-      case "meeting":
+      case "interview":
         return "bg-primary/10 text-primary border-primary/20"
-      case "important":
-        return "bg-destructive/10 text-destructive border-destructive/20"
-      case "personal":
+      case "onboarding":
         return "bg-secondary/10 text-secondary border-secondary/20"
-      case "work":
+      case "task_deadline":
         return "bg-accent/10 text-accent border-accent/20"
+      case "announcement":
+        return "bg-muted/10 text-muted-foreground border-muted/20"
       default:
         return "bg-muted/10 text-muted-foreground border-muted/20"
     }
@@ -93,7 +106,6 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
     >
       <Card className="bg-white/95 backdrop-blur-sm border border-border/10 shadow-ambient max-w-sm">
         <div className="p-5 space-y-4">
-          {/* Header with title and type badge */}
           <div className="space-y-2">
             <div className="flex items-start justify-between gap-3">
               <h4 className="font-semibold text-base leading-tight text-foreground">
@@ -106,17 +118,17 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
               </span>
             </div>
 
-            {/* Time with icon */}
             <div className="flex items-center gap-2 text-muted-foreground">
               <HugeiconsIcon icon={Clock01Icon} className="h-3.5 w-3.5" />
-              <span className="text-sm font-medium">{event.time}</span>
+              <span className="text-sm font-medium">{formatEventDateTime(event.startAt)}</span>
             </div>
           </div>
 
-          {/* Description */}
-          <div className="pt-2 border-t border-border/30">
-            <p className="text-sm text-muted-foreground leading-relaxed">{event.description}</p>
-          </div>
+          {event.description && (
+            <div className="pt-2 border-t border-border/30">
+              <p className="text-sm text-muted-foreground leading-relaxed">{event.description}</p>
+            </div>
+          )}
         </div>
       </Card>
     </div>

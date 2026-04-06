@@ -192,7 +192,9 @@ export const HomeContent = () => {
         <RecentMessagesCard
           chats={enrichedChats}
           isLoading={isInitialLoad}
-          recruiterNames={recruiterNames}
+          namesMap={recruiterNames}
+          participantIdKey="recruiterId"
+          defaultName="Reclutador"
           onViewAll={handleViewAllMessages}
         />
       </div>

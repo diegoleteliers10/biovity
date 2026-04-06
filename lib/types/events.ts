@@ -1,0 +1,89 @@
+/**
+ * Event types for calendar and scheduling system
+ */
+
+export type EventType = "interview" | "task_deadline" | "announcement" | "onboarding"
+export type EventStatus = "scheduled" | "completed" | "cancelled"
+export type ParticipantRole = "organizer" | "attendee" | "guest"
+export type ParticipantStatus = "pending" | "accepted" | "declined"
+
+export interface Event {
+  id: string
+  title: string
+  description?: string
+  type: EventType
+  startAt: string
+  endAt?: string
+  location?: string
+  meetingUrl?: string
+  status: EventStatus
+  organizerId: string
+  applicationId?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface EventParticipant {
+  id: string
+  eventId: string
+  userId: string
+  role: ParticipantRole
+  status: ParticipantStatus
+  joinedAt?: string
+  createdAt: string
+}
+
+export interface EventWithParticipants extends Event {
+  participants: EventParticipant[]
+}
+
+export interface EventNote {
+  id: string
+  eventId: string
+  authorId: string
+  content: string
+  createdAt: string
+}
+
+// API Response types
+export interface CreateEventInput {
+  title: string
+  description?: string
+  type: EventType
+  startAt: string
+  endAt?: string
+  location?: string
+  meetingUrl?: string
+  organizerId: string
+  candidateId: string
+  applicationId?: string
+}
+
+export interface UpdateEventInput {
+  title?: string
+  description?: string
+  startAt?: string
+  endAt?: string
+  location?: string
+  meetingUrl?: string
+  status?: EventStatus
+}
+
+export interface EventFilters {
+  userId?: string
+  organizerId?: string
+  type?: EventType
+  status?: EventStatus
+  from?: string
+  to?: string
+  page?: number
+  limit?: number
+}
+
+export interface PaginatedEventsResponse {
+  data: Event[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}

@@ -45,6 +45,7 @@ export type ApplicationStage = "pendiente" | "entrevista" | "oferta" | "contrata
 
 export interface Applicant {
   id: string
+  candidateId: string
   candidateName: string
   position: string
   dateApplied: string

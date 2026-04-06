@@ -1,13 +1,14 @@
 "use client"
-import { Calendar01Icon, Cancel01Icon, Clock01Icon } from "@hugeicons/core-free-icons"
+
+import { Calendar01Icon, Cancel01Icon, Clock03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
-type Event = {
+type CalendarEvent = {
   readonly id: string
   readonly title: string
-  readonly time: string
-  readonly description: string
-  readonly type: "meeting" | "personal" | "work" | "important"
+  readonly startAt: string
+  readonly description?: string
+  readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
 
 type DayModalProps = {
@@ -15,41 +16,36 @@ type DayModalProps = {
   readonly onClose: () => void
   readonly day: number
   readonly dayName: string
-  readonly events: readonly Event[]
+  readonly events: readonly CalendarEvent[]
 }
-
-const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
 
 export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProps) {
   if (!isOpen) return null
 
-  const getEventTypeInfo = (type: Event["type"]) => {
+  const formatEventTime = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleTimeString("es-CL", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    } catch {
+      return ""
+    }
+  }
+
+  const getEventTypeInfo = (type: CalendarEvent["type"]) => {
     switch (type) {
-      case "meeting":
-        return {
-          color: "bg-primary/10 text-primary border-primary/20",
-          label: "Reunión",
-        }
-      case "important":
-        return {
-          color: "bg-destructive/10 text-destructive border-destructive/20",
-          label: "Importante",
-        }
-      case "personal":
-        return {
-          color: "bg-secondary/10 text-secondary-foreground border-secondary/20",
-          label: "Personal",
-        }
-      case "work":
-        return {
-          color: "bg-accent/10 text-accent-foreground border-accent/20",
-          label: "Trabajo",
-        }
+      case "interview":
+        return { color: "bg-primary/10 text-primary border-primary/20", label: "Entrevista" }
+      case "onboarding":
+        return { color: "bg-secondary/10 text-secondary-foreground border-secondary/20", label: "Onboarding" }
+      case "task_deadline":
+        return { color: "bg-accent/10 text-accent-foreground border-accent/20", label: "Tarea" }
+      case "announcement":
+        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Anuncio" }
       default:
-        return {
-          color: "bg-muted/10 text-muted-foreground border-muted/20",
-          label: "Evento",
-        }
+        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Evento" }
     }
   }
 
@@ -119,29 +115,23 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                         <h4 className="font-medium text-card-foreground leading-tight">
                           {event.title}
                         </h4>
-                        <span
-                          className={`
-                          px-2 py-1 rounded-md text-xs font-medium border shrink-0
-                          ${typeInfo.color}
-                        `}
-                        >
+                        <span className={`px-2 py-1 rounded-md text-xs font-medium border shrink-0 ${typeInfo.color}`}>
                           {typeInfo.label}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 mb-3">
-                        <HugeiconsIcon
-                          icon={Clock01Icon}
-                          className="w-4 h-4 text-muted-foreground"
-                        />
-                        <span className="text-sm font-medium text-muted-foreground">
-                          {event.time}
-                        </span>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <HugeiconsIcon icon={Clock03Icon} className="w-4 h-4" />
+                          <span className="font-medium">{formatEventTime(event.startAt)}</span>
+                        </div>
                       </div>
 
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {event.description}
-                      </p>
+                      {event.description && (
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                          {event.description}
+                        </p>
+                      )}
                     </div>
                   )
                 })}

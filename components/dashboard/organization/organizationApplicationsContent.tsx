@@ -16,10 +16,13 @@ import { authClient } from "@/lib/auth-client"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import { cn, formatDateChilean } from "@/lib/utils"
 import { ApplicationsKanban } from "./ApplicationsKanban"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
+import type { EventType } from "@/lib/types/events"
 
 function applicationToApplicant(app: Application): Applicant {
   return {
     id: app.id,
+    candidateId: app.candidateId,
     candidateName: app.candidate?.name ?? "Sin nombre",
     position: app.candidate?.profession ?? app.job?.title ?? "—",
     dateApplied: app.createdAt ? formatDateChilean(app.createdAt, "d MMM yyyy") : "—",
@@ -32,6 +35,7 @@ export function OrganizationApplicationsContent() {
   const { useSession } = authClient
   const { data: session, isPending: sessionPending } = useSession()
   const organizationId = (session?.user as { organizationId?: string })?.organizationId
+  const recruiterId = (session?.user as { id?: string })?.id
 
   const { data: jobs, isLoading: jobsLoading, error: jobsError } = useJobs(organizationId)
   const jobList = jobs ?? []
@@ -41,6 +45,13 @@ export function OrganizationApplicationsContent() {
     selectedJobId ?? undefined
   )
   const updateStatusMutation = useUpdateApplicationStatusMutation(selectedJobId ?? "")
+
+  // Modal de evento
+  const [eventModal, setEventModal] = useState<{
+    isOpen: boolean
+    applicant: Applicant | null
+    lockedType: EventType | null
+  }>({ isOpen: false, applicant: null, lockedType: null })
 
   const selectedJob = useMemo(
     () => jobList.find((j) => j.id === selectedJobId) ?? null,
@@ -64,6 +75,27 @@ export function OrganizationApplicationsContent() {
       )
     },
     [selectedJobId, updateStatusMutation, queryClient]
+  )
+
+  const handleCreateEvent = useCallback(
+    (applicant: Applicant, eventType: "interview" | "onboarding") => {
+      setEventModal({
+        isOpen: true,
+        applicant,
+        lockedType: eventType,
+      })
+    },
+    []
+  )
+
+  const handleEventSuccess = useCallback(
+    async (eventId: string) => {
+      if (!eventModal.applicant) return
+      // Actualizar el estado de la postulación
+      const newStage: ApplicationStage = eventModal.lockedType === "interview" ? "entrevista" : "contratado"
+      handleStatusChange(eventModal.applicant.id, newStage)
+    },
+    [eventModal.applicant, eventModal.lockedType, handleStatusChange]
   )
 
   if (sessionPending) {
@@ -171,7 +203,11 @@ export function OrganizationApplicationsContent() {
                     </div>
                   </div>
                 ) : (
-                  <ApplicationsKanban applicants={applicants} onStatusChange={handleStatusChange} />
+                  <ApplicationsKanban
+                  applicants={applicants}
+                  onStatusChange={handleStatusChange}
+                  onCreateEvent={handleCreateEvent}
+                />
                 )}
               </div>
             </div>
@@ -195,6 +231,19 @@ export function OrganizationApplicationsContent() {
           )}
         </section>
       </div>
+
+      {/* Event Form Modal */}
+      {eventModal.applicant && recruiterId && (
+        <EventFormModal
+          isOpen={eventModal.isOpen}
+          onClose={() => setEventModal({ isOpen: false, applicant: null, lockedType: null })}
+          organizerId={recruiterId}
+          candidateId={eventModal.applicant.candidateId}
+          applicationId={eventModal.applicant.id}
+          lockedType={eventModal.lockedType ?? undefined}
+          onSuccess={handleEventSuccess}
+        />
+      )}
     </div>
   )
 }

@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
-import { getMessagesByChatId, type Message, sendMessage } from "./messages"
+import { getMessagesByChatId, sendMessage, type Message, type MessageType } from "./messages"
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
@@ -17,7 +17,6 @@ export function useMessages(chatId: string | undefined) {
     queryKey: messagesKeys.byChat(effectiveChatId),
     queryFn: async () => {
       if (!effectiveChatId) throw new Error("Chat ID required")
-      // Fetch a large number of messages for now (no pagination)
       const result = await getMessagesByChatId(effectiveChatId, {
         limit: 100,
       })
@@ -27,14 +26,12 @@ export function useMessages(chatId: string | undefined) {
     enabled: Boolean(effectiveChatId),
   })
 
-  // Sort messages by createdAt ASC
   const messages = query.data
     ? [...query.data].sort(
         (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       )
     : []
 
-  // Realtime subscription for new messages
   useEffect(() => {
     if (!effectiveChatId) return
 
@@ -57,6 +54,7 @@ export function useMessages(chatId: string | undefined) {
             (row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]) as
               | string
               | boolean
+              | unknown
               | undefined
           const chatIdVal = String(r("chatId") ?? r("chat_id") ?? "")
           if (chatIdVal !== effectiveChatId) return
@@ -65,6 +63,8 @@ export function useMessages(chatId: string | undefined) {
             chatId: chatIdVal || effectiveChatId,
             senderId: String(r("senderId") ?? r("sender_id") ?? ""),
             content: String(r("content") ?? ""),
+            type: (r("type") as MessageType) ?? "text",
+            contentType: (r("contentType") ?? r("content_type")) as Record<string, unknown> | null ?? null,
             isRead: Boolean(r("isRead") ?? r("is_read") ?? false),
             createdAt: String(r("createdAt") ?? r("created_at") ?? new Date().toISOString()),
           }
@@ -72,7 +72,6 @@ export function useMessages(chatId: string | undefined) {
             messagesKeys.byChat(effectiveChatId),
             (old: Message[] | undefined) => {
               if (!old) return old
-              // Avoid duplicates
               if (old.some((m) => m.id === msg.id)) return old
               return [...old, msg]
             }
@@ -95,61 +94,70 @@ export function useMessages(chatId: string | undefined) {
   }
 }
 
-export function useSendMessageMutation(chatId: string, senderId: string) {
+export type SendMessageInput = {
+  chatId: string
+  senderId: string
+  content: string
+  type?: MessageType
+  contentType?: Record<string, unknown> | null
+}
+
+export function useSendMessageMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (content: string) => {
-      const result = await sendMessage(chatId, senderId, content)
+    mutationFn: async (input: SendMessageInput) => {
+      const result = await sendMessage(input)
       if ("error" in result) throw new Error(result.error)
       return result.data
     },
-    onMutate: async (content) => {
-      if (!chatId) return
+    onMutate: async (input) => {
+      if (!input.chatId) return
       await queryClient.cancelQueries({
-        queryKey: messagesKeys.byChat(chatId),
+        queryKey: messagesKeys.byChat(input.chatId),
       })
-      const previous = queryClient.getQueryData<Message[]>(messagesKeys.byChat(chatId))
+      const previous = queryClient.getQueryData<Message[]>(messagesKeys.byChat(input.chatId))
       const tempMessage: Message = {
         id: `temp-${Date.now()}`,
-        chatId,
-        senderId,
-        content,
+        chatId: input.chatId,
+        senderId: input.senderId,
+        content: input.content,
+        type: input.type ?? "text",
+        contentType: input.contentType ?? null,
         isRead: false,
         createdAt: new Date().toISOString(),
       }
-      queryClient.setQueryData(messagesKeys.byChat(chatId), (old: Message[] | undefined) => {
+      queryClient.setQueryData(messagesKeys.byChat(input.chatId), (old: Message[] | undefined) => {
         if (!old) return old
+        if (old.some((m) => m.id === tempMessage.id)) return old
         return [...old, tempMessage]
       })
       return { previous }
     },
-    onError: (_err, _content, context) => {
+    onError: (_err, _input, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(messagesKeys.byChat(chatId), context.previous)
+        queryClient.setQueryData(messagesKeys.byChat(_input.chatId), context.previous)
       }
     },
     onSuccess: (newMessage) => {
-      queryClient.setQueryData(messagesKeys.byChat(chatId), (old: Message[] | undefined) => {
+      queryClient.setQueryData(messagesKeys.byChat(newMessage.chatId), (old: Message[] | undefined) => {
         if (!old) return old
-        // Replace temp message with real one
         const tempIndex = old.findIndex((m) => m.id.startsWith("temp-"))
         if (tempIndex >= 0) {
           const next = [...old]
           next[tempIndex] = newMessage
           return next
         }
-        // Or add if not exists
         if (old.some((m) => m.id === newMessage.id)) return old
         return [...old, newMessage]
       })
       queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {
         if (!prev) return prev
         return prev.map((chat) =>
-          (chat as { id?: string }).id === chatId
+          (chat as { id?: string }).id === newMessage.chatId
             ? {
                 ...chat,
-                lastMessage: newMessage.content,
+                lastMessage: newMessage.type === "event" ? "Evento" : newMessage.content,
                 updatedAt: newMessage.createdAt,
               }
             : chat

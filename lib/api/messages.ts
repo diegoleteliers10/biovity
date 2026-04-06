@@ -1,8 +1,12 @@
+export type MessageType = "text" | "event" | "audio" | "image" | "file"
+
 export type Message = {
   id: string
   chatId: string
   senderId: string
   content: string
+  type: MessageType
+  contentType: Record<string, unknown> | null
   isRead: boolean
   createdAt: string
 }
@@ -53,18 +57,29 @@ export async function getMessagesByChatId(
   }
 }
 
-export async function sendMessage(
-  chatId: string,
-  _senderId: string,
+export type SendMessageInput = {
+  chatId: string
+  senderId: string
   content: string
-): Promise<{ data: Message } | { error: string }> {
+  type?: MessageType
+  contentType?: Record<string, unknown> | null
+}
+
+export async function sendMessage(input: SendMessageInput): Promise<{ data: Message } | { error: string }> {
   try {
     const base = getBaseUrl()
+    const payload = {
+      chatId: input.chatId,
+      senderId: input.senderId,
+      content: input.content.trim(),
+      type: input.type ?? "text",
+      contentType: input.contentType ?? null,
+    }
     const res = await fetch(`${base}/api/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ chatId, content: content.trim() }),
+      body: JSON.stringify(payload),
     })
     const data = await res.json().catch(() => null)
 

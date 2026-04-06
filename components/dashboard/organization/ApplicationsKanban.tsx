@@ -2,6 +2,7 @@
 
 import {
   DndContext,
+  DragOverlay,
   type DragEndEvent,
   PointerSensor,
   useDraggable,
@@ -113,7 +114,7 @@ function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-w-[220px] max-w-[220px] flex-col rounded-lg border bg-muted/30 p-3 transition-colors max-h-full overflow-hidden",
+        "flex min-w-[220px] max-w-[220px] flex-col rounded-lg border bg-muted/30 p-3 transition-colors max-h-full",
         isOver && "border-primary/50 bg-primary/5"
       )}
     >
@@ -127,7 +128,7 @@ function KanbanColumn({
         <span className="font-medium text-sm">{stage.label}</span>
         <span className="tabular-nums text-muted-foreground text-xs">({applicants.length})</span>
       </div>
-      <div className="flex flex-col gap-2 overflow-y-auto">
+      <div className="flex flex-col gap-2">
         {applicants.map((a) => (
           <ApplicantCard key={a.id} applicant={a} />
         ))}
@@ -136,14 +137,23 @@ function KanbanColumn({
   )
 }
 
+export type { Applicant, ApplicationStage }
+
 export function ApplicationsKanban({
   applicants: initialApplicants,
   onStatusChange,
+  onCreateEvent,
 }: {
   applicants: Applicant[]
   onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
+  /** Called when dragging to 'entrevista' or 'contratado' stages */
+  onCreateEvent?: (
+    applicant: Applicant,
+    eventType: "interview" | "onboarding"
+  ) => void
 }) {
   const [applicants, setApplicants] = useState<Applicant[]>(initialApplicants)
+  const [activeApplicant, setActiveApplicant] = useState<Applicant | null>(null)
 
   useEffect(() => {
     setApplicants(initialApplicants)
@@ -162,14 +172,21 @@ export function ApplicationsKanban({
     return map
   }, [applicants])
 
+  const handleDragStart = useCallback((event: DragEndEvent) => {
+    const data = event.active.data.current as { applicant: Applicant } | undefined
+    if (data?.applicant) {
+      setActiveApplicant(data.applicant)
+    }
+  }, [])
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
+      setActiveApplicant(null)
       const { active, over } = event
       if (!over?.id || typeof over.id !== "string") return
       const data = active.data.current as { applicant: Applicant } | undefined
       if (!data?.applicant) return
 
-      // Resolve target stage: over.id can be column id (stage) or applicant id (when dropped on a card)
       let targetStage: ApplicationStage
       if (STAGES.some((s) => s.id === over.id)) {
         targetStage = over.id as ApplicationStage
@@ -181,12 +198,22 @@ export function ApplicationsKanban({
 
       if (data.applicant.stage === targetStage) return
 
+      if (targetStage === "entrevista" || targetStage === "contratado") {
+        const eventType = targetStage === "entrevista" ? "interview" : "onboarding"
+        setApplicants((prev) =>
+          prev.map((a) => (a.id === data.applicant.id ? { ...a, stage: targetStage } : a))
+        )
+        onStatusChange?.(data.applicant.id, targetStage)
+        onCreateEvent?.(data.applicant, eventType)
+        return
+      }
+
       setApplicants((prev) =>
         prev.map((a) => (a.id === data.applicant.id ? { ...a, stage: targetStage } : a))
       )
       onStatusChange?.(data.applicant.id, targetStage)
     },
-    [applicants, onStatusChange]
+    [applicants, onStatusChange, onCreateEvent]
   )
 
   const sensors = useSensors(
@@ -196,7 +223,7 @@ export function ApplicationsKanban({
   )
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex gap-4 overflow-x-auto pb-2" style={{ height: "100%" }}>
         {STAGES.map((stage) => (
           <KanbanColumn
@@ -206,6 +233,21 @@ export function ApplicationsKanban({
           />
         ))}
       </div>
+      <DragOverlay>
+        {activeApplicant ? (
+          <div className="cursor-grabbing rotate-2 opacity-90">
+            <Card className="border-2 border-primary shadow-2xl">
+              <CardContent className="relative px-4 py-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium leading-tight">{activeApplicant.candidateName}</p>
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground">{activeApplicant.position}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Aplicó: {activeApplicant.dateApplied}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   )
 }

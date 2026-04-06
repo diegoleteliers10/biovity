@@ -232,7 +232,7 @@ export const messageSchema = z
   .string({
     error: () => "El mensaje debe ser un texto",
   })
-  .min(10, "El mensaje debe tener al menos 10 caracteres")
+  .min(1, "El mensaje no puede estar vacío")
   .max(5000, "El mensaje es demasiado largo")
   .trim()
 

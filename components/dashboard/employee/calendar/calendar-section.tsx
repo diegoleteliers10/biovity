@@ -1,12 +1,16 @@
 "use client"
 
-import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowLeft01Icon, ArrowRight01Icon, PlusSignIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { authClient } from "@/lib/auth-client"
 import { getChileanDate } from "@/lib/utils"
 import { Calendar } from "./calendar"
 import { UpcomingEvents } from "./upcoming-events"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
+import { useEvents } from "@/lib/api/use-events"
+import type { Event } from "@/lib/types/events"
 
 const months = [
   "Enero",
@@ -23,8 +27,32 @@ const months = [
   "Diciembre",
 ]
 
-export function CalendarSection() {
+type CalendarSectionProps = {
+  userId?: string
+  userRole?: "professional" | "organization"
+}
+
+export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   const [currentDate, setCurrentDate] = useState(getChileanDate())
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const organizerId = (session?.user as { id?: string })?.id
+
+  // Calcular rango de fechas para el mes actual
+  const year = currentDate.getFullYear()
+  const month = currentDate.getMonth()
+  const from = new Date(year, month, 1).toISOString()
+  const to = new Date(year, month + 1, 0, 23, 59, 59).toISOString()
+
+  const { events = [], isLoading } = useEvents({
+    userId,
+    from,
+    to,
+    limit: 100,
+  })
 
   const navigateMonth = (direction: "prev" | "next") => {
     setCurrentDate((prev) => {
@@ -38,6 +66,17 @@ export function CalendarSection() {
     })
   }
 
+  const handleCreateEvent = (date?: Date) => {
+    setSelectedDate(date ?? null)
+    setShowCreateModal(true)
+  }
+
+  // Para profesionales, usan su propio ID
+  // Para organizaciones, pueden ver eventos donde fueron organizadores o participantes
+  const displayEvents = userRole === "organization"
+    ? events.filter((e) => e.organizerId === organizerId)
+    : events
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Calendar Section */}
@@ -49,6 +88,17 @@ export function CalendarSection() {
               {months[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
             <div className="flex items-center gap-2">
+              {userRole === "organization" && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => handleCreateEvent()}
+                  className="gap-1.5"
+                >
+                  <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />
+                  Crear evento
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"
@@ -78,15 +128,36 @@ export function CalendarSection() {
 
           {/* Calendar Grid */}
           <div className="p-6">
-            <Calendar currentDate={currentDate} />
+            <Calendar
+              currentDate={currentDate}
+              events={displayEvents}
+              isLoading={isLoading}
+              onCreateEvent={userRole === "organization" ? handleCreateEvent : undefined}
+            />
           </div>
         </div>
       </div>
 
       {/* Upcoming Events Sidebar */}
       <div className="lg:col-span-1">
-        <UpcomingEvents />
+        <UpcomingEvents events={displayEvents} isLoading={isLoading} />
       </div>
+
+      {/* Create Event Modal */}
+      {organizerId && (
+        <EventFormModal
+          isOpen={showCreateModal}
+          onClose={() => {
+            setShowCreateModal(false)
+            setSelectedDate(null)
+          }}
+          organizerId={organizerId}
+          lockedType={undefined}
+          onSuccess={(eventId) => {
+            console.log("Evento creado:", eventId)
+          }}
+        />
+      )}
     </div>
   )
 }

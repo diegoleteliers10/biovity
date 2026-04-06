@@ -87,7 +87,7 @@ export function UserMessagesContent() {
     error: messagesErrorDetail,
     refetch: refetchMessages,
   } = useMessages(selectedChat?.id)
-  const sendMutation = useSendMessageMutation(selectedChat?.id ?? "", professionalId ?? "")
+  const sendMutation = useSendMessageMutation()
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
     requestAnimationFrame(() => {
@@ -104,12 +104,15 @@ export function UserMessagesContent() {
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !professionalId) return
-    sendMutation.mutate(messageInput.trim(), {
-      onSuccess: () => {
-        setMessageInput("")
-        scrollToBottom()
-      },
-    })
+    sendMutation.mutate(
+      { chatId: selectedChat.id, senderId: professionalId, content: messageInput.trim() },
+      {
+        onMutate: () => {
+          setMessageInput("")
+          scrollToBottom()
+        },
+      }
+    )
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

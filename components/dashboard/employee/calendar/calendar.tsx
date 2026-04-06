@@ -6,76 +6,14 @@ import { useState } from "react"
 import { getChileanDate } from "@/lib/utils"
 import { DayModal } from "./day-modal"
 import { EventTooltip } from "./event-tooltip"
+import type { Event } from "@/lib/types/events"
 
-type Event = {
+type CalendarEvent = {
   readonly id: string
   readonly title: string
-  readonly time: string
-  readonly description: string
-  readonly type: "meeting" | "personal" | "work" | "important"
-}
-
-const sampleEvents: Record<string, Event[]> = {
-  "2025-09-20": [
-    {
-      id: "today-1",
-      title: "Reunión de proyecto",
-      time: "9:00 AM",
-      description:
-        "Revisión del progreso del proyecto y definición de próximos pasos con el equipo de desarrollo",
-      type: "meeting",
-    },
-    {
-      id: "today-2",
-      title: "Presentación importante",
-      time: "3:30 PM",
-      description: "Presentación de resultados trimestrales a la junta directiva",
-      type: "important",
-    },
-    {
-      id: "today-3",
-      title: "Llamada con cliente",
-      time: "5:00 PM",
-      description: "Seguimiento del proyecto y resolución de dudas técnicas",
-      type: "work",
-    },
-  ],
-  "2024-12-15": [
-    {
-      id: "1",
-      title: "Reunión de equipo",
-      time: "10:00 AM",
-      description: "Revisión semanal del proyecto y planificación de tareas",
-      type: "meeting",
-    },
-  ],
-  "2024-12-18": [
-    {
-      id: "2",
-      title: "Presentación cliente",
-      time: "2:00 PM",
-      description: "Presentación final del proyecto al cliente principal",
-      type: "important",
-    },
-  ],
-  "2024-12-20": [
-    {
-      id: "3",
-      title: "Cita médica",
-      time: "11:30 AM",
-      description: "Chequeo médico anual",
-      type: "personal",
-    },
-  ],
-  "2024-12-22": [
-    {
-      id: "4",
-      title: "Entrega proyecto",
-      time: "5:00 PM",
-      description: "Fecha límite para la entrega del proyecto Q4",
-      type: "work",
-    },
-  ],
+  readonly startAt: string
+  readonly description?: string
+  readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
 
 const weekDays = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
@@ -83,17 +21,21 @@ const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes
 
 type CalendarProps = {
   readonly currentDate: Date
+  events?: Event[]
+  isLoading?: boolean
+  onCreateEvent?: (date: Date) => void
 }
 
-export function Calendar({ currentDate }: CalendarProps) {
+export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }: CalendarProps) {
   const [hoveredEvent, setHoveredEvent] = useState<{
-    event: Event
+    event: CalendarEvent
     position: { x: number; y: number }
   } | null>(null)
   const [selectedDay, setSelectedDay] = useState<{
     day: number
     dayName: string
-    events: Event[]
+    date: Date
+    events: CalendarEvent[]
   } | null>(null)
 
   const year = currentDate.getFullYear()
@@ -104,34 +46,59 @@ export function Calendar({ currentDate }: CalendarProps) {
   const firstDayWeekday = firstDayOfMonth.getDay()
   const daysInMonth = lastDayOfMonth.getDate()
 
-  const days = []
+  const days: (number | null)[] = []
 
-  // Empty cells for days before the first day of the month
   for (let i = 0; i < firstDayWeekday; i++) {
     days.push(null)
   }
-
-  // Days of the month
   for (let day = 1; day <= daysInMonth; day++) {
     days.push(day)
   }
 
-  const getEventTypeColor = (type: Event["type"]) => {
+  // Agrupar eventos por fecha
+  const eventsByDate: Record<string, CalendarEvent[]> = {}
+  for (const event of events) {
+    const dateKey = event.startAt.split("T")[0]
+    if (!eventsByDate[dateKey]) {
+      eventsByDate[dateKey] = []
+    }
+    eventsByDate[dateKey].push({
+      id: event.id,
+      title: event.title,
+      startAt: event.startAt,
+      description: event.description,
+      type: event.type,
+    })
+  }
+
+  const getEventTypeColor = (type: CalendarEvent["type"]) => {
     switch (type) {
-      case "meeting":
+      case "interview":
         return "bg-primary text-primary-foreground"
-      case "important":
-        return "bg-destructive text-destructive-foreground"
-      case "personal":
+      case "onboarding":
         return "bg-secondary text-secondary-foreground"
-      case "work":
+      case "task_deadline":
         return "bg-accent text-accent-foreground"
+      case "announcement":
+        return "bg-muted text-muted-foreground"
       default:
         return "bg-muted text-muted-foreground"
     }
   }
 
-  const handleEventHover = (event: Event, mouseEvent: React.MouseEvent) => {
+  const formatEventTime = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleTimeString("es-CL", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    } catch {
+      return ""
+    }
+  }
+
+  const handleEventHover = (event: CalendarEvent, mouseEvent: React.MouseEvent) => {
     setHoveredEvent({
       event,
       position: { x: mouseEvent.clientX, y: mouseEvent.clientY },
@@ -143,16 +110,22 @@ export function Calendar({ currentDate }: CalendarProps) {
   }
 
   const handleDayClick = (day: number) => {
-    const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-    const dayEvents = sampleEvents[dateKey] || []
     const date = new Date(year, month, day)
     const dayName = dayNames[date.getDay()]
+    const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+    const dayEvents = eventsByDate[dateKey] || []
 
-    setSelectedDay({ day, dayName, events: dayEvents })
+    setSelectedDay({ day, dayName, date, events: dayEvents })
   }
 
   const handleCloseModal = () => {
     setSelectedDay(null)
+  }
+
+  const handleDayDoubleClick = (day: number) => {
+    if (!onCreateEvent) return
+    const date = new Date(year, month, day)
+    onCreateEvent(date)
   }
 
   return (
@@ -172,7 +145,7 @@ export function Calendar({ currentDate }: CalendarProps) {
           const dateKey = day
             ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
             : null
-          const dayEvents = dateKey ? sampleEvents[dateKey] || [] : []
+          const dayEvents = dateKey ? eventsByDate[dateKey] || [] : []
           const nowChile = getChileanDate()
           const isToday =
             day &&
@@ -191,6 +164,7 @@ export function Calendar({ currentDate }: CalendarProps) {
                 ${isToday ? "ring-2 ring-secondary ring-inset" : ""}
               `}
               onClick={day ? () => handleDayClick(day) : undefined}
+              onDoubleClick={day ? () => handleDayDoubleClick(day) : undefined}
               onKeyDown={
                 day
                   ? (e) => {
@@ -238,7 +212,7 @@ export function Calendar({ currentDate }: CalendarProps) {
                         }}
                       >
                         <div className="font-medium truncate">{event.title}</div>
-                        <div className="opacity-80">{event.time}</div>
+                        <div className="opacity-80">{formatEventTime(event.startAt)}</div>
                       </div>
                     ))}
                   </div>

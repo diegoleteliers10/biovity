@@ -193,15 +193,15 @@ export function OrganizationHomeContent() {
           </div>
         ) : (
           <RecentMessagesCard
-            messages={messagesQuery.data?.map((chat) => ({
-              sender: candidateNames[chat.professionalId] ?? "Candidato",
-              time: new Date(chat.updatedAt).toLocaleDateString("es-CL", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              }),
-              preview: chat.lastMessage ?? "Sin mensajes",
-            })) || []}
+            chats={(messagesQuery.data || []).map((chat) => ({
+              ...chat,
+              lastMessageFromRecruiter: chat.lastMessage ?? null,
+              lastMessageFromRecruiterAt: chat.updatedAt,
+              isLoading: false,
+            }))}
+            namesMap={candidateNames}
+            participantIdKey="professionalId"
+            defaultName="Candidato"
             onViewAll={handleViewAllMessages}
           />
         )}
