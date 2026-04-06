@@ -1,25 +1,50 @@
 "use client"
 
-import { useState } from "react"
-import { Calendar04Icon, Clock03Icon, Location05Icon, VideoCameraAiIcon } from "@hugeicons/core-free-icons"
+import {
+  Calendar04Icon,
+  Clock03Icon,
+  Location05Icon,
+  VideoCameraAiIcon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { useCreateEvent } from "@/lib/api/use-events"
-import type { EventType } from "@/lib/types/events"
+import { Input } from "@/components/ui/input"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/animate-ui/components/radix/sheet"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { useCreateEvent, useDeleteEvent, useUpdateEvent } from "@/lib/api/use-events"
+import type { Event, EventType } from "@/lib/types/events"
 import { cn } from "@/lib/utils"
 
 type EventFormModalProps = {
   isOpen: boolean
   onClose: () => void
   organizerId: string
+  organizationId?: string
   candidateId?: string
   applicationId?: string
   /** Si se pasa, el tipo está bloqueado */
   lockedType?: EventType
+  /** Si se pasa, el modal está en modo edición */
+  editEvent?: Event
   onSuccess?: (eventId: string) => void
+  onDelete?: (eventId: string) => void
 }
 
 const EVENT_TYPES: { value: EventType; label: string }[] = [
@@ -33,12 +58,19 @@ export function EventFormModal({
   isOpen,
   onClose,
   organizerId,
+  organizationId,
   candidateId,
   applicationId,
   lockedType,
+  editEvent,
   onSuccess,
+  onDelete,
 }: EventFormModalProps) {
   const createEvent = useCreateEvent()
+  const updateEvent = useUpdateEvent()
+  const deleteEvent = useDeleteEvent()
+
+  const isEditMode = Boolean(editEvent)
 
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -49,34 +81,65 @@ export function EventFormModal({
   const [endTime, setEndTime] = useState("")
   const [location, setLocation] = useState("")
   const [meetingUrl, setMeetingUrl] = useState("")
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
-  const isLoading = createEvent.isPending
+  const isLoading = createEvent.isPending || updateEvent.isPending || deleteEvent.isPending
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!title.trim() || !startDate || !startTime) return
 
-    const startAt = new Date(`${startDate}T${startTime}:00`).toISOString()
-    const endAt = endDate && endTime ? new Date(`${endDate}T${endTime}:00`).toISOString() : undefined
+    const startAtISO = new Date(`${startDate}T${startTime}:00`).toISOString()
+    const endAtISO =
+      endDate && endTime ? new Date(`${endDate}T${endTime}:00`).toISOString() : undefined
 
     try {
-      const result = await createEvent.mutateAsync({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        type,
-        startAt,
-        endAt,
-        location: location.trim() || undefined,
-        meetingUrl: meetingUrl.trim() || undefined,
-        organizerId,
-        candidateId,
-        applicationId,
-      })
-
-      onSuccess?.(result.id)
+      if (isEditMode && editEvent) {
+        const result = await updateEvent.mutateAsync({
+          id: editEvent.id,
+          input: {
+            title: title.trim(),
+            description: description.trim() || undefined,
+            type,
+            startAt: startAtISO,
+            endAt: endAtISO,
+            location: location.trim() || undefined,
+            meetingUrl: meetingUrl.trim() || undefined,
+          },
+        })
+        onSuccess?.(result.id)
+      } else {
+        const result = await createEvent.mutateAsync({
+          title: title.trim(),
+          description: description.trim() || undefined,
+          type,
+          startAt: startAtISO,
+          endAt: endAtISO,
+          location: location.trim() || undefined,
+          meetingUrl: meetingUrl.trim() || undefined,
+          organizerId,
+          ...(organizationId && { organizationId }),
+          ...(candidateId && { candidateId }),
+          ...(applicationId && { applicationId }),
+        })
+        onSuccess?.(result.id)
+      }
     } finally {
       handleClose()
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!editEvent) return
+    setShowDeleteConfirm(false)
+
+    try {
+      await deleteEvent.mutateAsync(editEvent.id)
+      onDelete?.(editEvent.id)
+      handleClose()
+    } catch {
+      // error handled by mutation
     }
   }
 
@@ -93,23 +156,44 @@ export function EventFormModal({
     onClose()
   }
 
+  useEffect(() => {
+    if (editEvent) {
+      const start = new Date(editEvent.startAt)
+      const end = editEvent.endAt ? new Date(editEvent.endAt) : null
+      setTitle(editEvent.title)
+      setDescription(editEvent.description ?? "")
+      setType(editEvent.type)
+      setStartDate(start.toISOString().split("T")[0])
+      setStartTime(start.toTimeString().slice(0, 5))
+      setEndDate(end ? end.toISOString().split("T")[0] : "")
+      setEndTime(end ? end.toTimeString().slice(0, 5) : "")
+      setLocation(editEvent.location ?? "")
+      setMeetingUrl(editEvent.meetingUrl ?? "")
+    }
+  }, [editEvent])
+
   const isValid = title.trim() && startDate && startTime
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <SheetContent side="right" className="flex w-full flex-col sm:max-w-lg">
+      <SheetContent side="right" className="flex w-full flex-col sm:max-w-lg [&_[data-slot=content]]:sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>
-            {lockedType ? EVENT_TYPES.find((t) => t.value === lockedType)?.label : "Crear Evento"}
+            {isEditMode ? "Editar Evento" : lockedType ? EVENT_TYPES.find((t) => t.value === lockedType)?.label : "Crear Evento"}
           </SheetTitle>
           <SheetDescription>
-            {lockedType
-              ? `Programar ${EVENT_TYPES.find((t) => t.value === lockedType)?.label.toLowerCase()} para el candidato`
-              : "Crear un nuevo evento en el calendario"}
+            {isEditMode
+              ? "Actualiza los detalles del evento"
+              : lockedType
+                ? `Programar ${EVENT_TYPES.find((t) => t.value === lockedType)?.label.toLowerCase()} para el candidato`
+                : "Crear un nuevo evento en el calendario"}
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-4"
+        >
           {/* Título */}
           <div className="space-y-1.5">
             <label htmlFor="event-title" className="text-sm font-medium text-foreground">
@@ -276,25 +360,56 @@ export function EventFormModal({
           </div>
 
           {/* Error */}
-          {createEvent.isError && (
+          {(createEvent.isError || updateEvent.isError) && (
             <p className="text-sm text-destructive">
               {createEvent.error instanceof Error
                 ? createEvent.error.message
-                : "Error al crear el evento"}
+                : updateEvent.error instanceof Error
+                  ? updateEvent.error.message
+                  : "Error en el evento"}
             </p>
           )}
 
           {/* Footer */}
           <div className="mt-auto flex gap-2 pt-4 border-t">
+            {isEditMode && (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isLoading}
+                className="flex-1"
+              >
+                Eliminar
+              </Button>
+            )}
             <Button type="button" variant="outline" onClick={handleClose} className="flex-1">
               Cancelar
             </Button>
             <Button type="submit" disabled={!isValid || isLoading} className="flex-1">
-              {isLoading ? "Creando..." : "Crear evento"}
+              {isLoading ? (isEditMode ? "Guardando..." : "Creando...") : isEditMode ? "Guardar" : "Crear evento"}
             </Button>
           </div>
         </form>
       </SheetContent>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar evento?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. El evento será eliminado permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={handleDelete}>
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Sheet>
   )
 }

@@ -4,6 +4,7 @@ import { File02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
 import type { Application } from "@/lib/api/applications"
 import { formatJobLocation } from "@/lib/api/jobs"
 import {
@@ -14,10 +15,9 @@ import {
 import { useJobs } from "@/lib/api/use-jobs"
 import { authClient } from "@/lib/auth-client"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
+import type { EventType } from "@/lib/types/events"
 import { cn, formatDateChilean } from "@/lib/utils"
 import { ApplicationsKanban } from "./ApplicationsKanban"
-import { EventFormModal } from "@/components/calendar/event-form-modal"
-import type { EventType } from "@/lib/types/events"
 
 function applicationToApplicant(app: Application): Applicant {
   return {
@@ -92,7 +92,8 @@ export function OrganizationApplicationsContent() {
     async (eventId: string) => {
       if (!eventModal.applicant) return
       // Actualizar el estado de la postulación
-      const newStage: ApplicationStage = eventModal.lockedType === "interview" ? "entrevista" : "contratado"
+      const newStage: ApplicationStage =
+        eventModal.lockedType === "interview" ? "entrevista" : "contratado"
       handleStatusChange(eventModal.applicant.id, newStage)
     },
     [eventModal.applicant, eventModal.lockedType, handleStatusChange]
@@ -204,10 +205,10 @@ export function OrganizationApplicationsContent() {
                   </div>
                 ) : (
                   <ApplicationsKanban
-                  applicants={applicants}
-                  onStatusChange={handleStatusChange}
-                  onCreateEvent={handleCreateEvent}
-                />
+                    applicants={applicants}
+                    onStatusChange={handleStatusChange}
+                    onCreateEvent={handleCreateEvent}
+                  />
                 )}
               </div>
             </div>
@@ -233,11 +234,12 @@ export function OrganizationApplicationsContent() {
       </div>
 
       {/* Event Form Modal */}
-      {eventModal.applicant && recruiterId && (
+      {eventModal.applicant && recruiterId && organizationId && (
         <EventFormModal
           isOpen={eventModal.isOpen}
           onClose={() => setEventModal({ isOpen: false, applicant: null, lockedType: null })}
           organizerId={recruiterId}
+          organizationId={organizationId}
           candidateId={eventModal.applicant.candidateId}
           applicationId={eventModal.applicant.id}
           lockedType={eventModal.lockedType ?? undefined}

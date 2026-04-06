@@ -65,7 +65,9 @@ export type SendMessageInput = {
   contentType?: Record<string, unknown> | null
 }
 
-export async function sendMessage(input: SendMessageInput): Promise<{ data: Message } | { error: string }> {
+export async function sendMessage(
+  input: SendMessageInput
+): Promise<{ data: Message } | { error: string }> {
   try {
     const base = getBaseUrl()
     const payload = {

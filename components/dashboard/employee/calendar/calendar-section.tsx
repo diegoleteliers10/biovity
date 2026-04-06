@@ -3,14 +3,14 @@
 import { ArrowLeft01Icon, ArrowRight01Icon, PlusSignIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { Button } from "@/components/ui/button"
+import { useEvents } from "@/lib/api/use-events"
 import { authClient } from "@/lib/auth-client"
+import type { Event } from "@/lib/types/events"
 import { getChileanDate } from "@/lib/utils"
 import { Calendar } from "./calendar"
 import { UpcomingEvents } from "./upcoming-events"
-import { EventFormModal } from "@/components/calendar/event-form-modal"
-import { useEvents } from "@/lib/api/use-events"
-import type { Event } from "@/lib/types/events"
 
 const months = [
   "Enero",
@@ -34,12 +34,14 @@ type CalendarSectionProps = {
 
 export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   const [currentDate, setCurrentDate] = useState(getChileanDate())
-  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEventModal, setShowEventModal] = useState(false)
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const { useSession } = authClient
   const { data: session } = useSession()
   const organizerId = (session?.user as { id?: string })?.id
+  const organizationId = (session?.user as { organizationId?: string })?.organizationId
 
   // Calcular rango de fechas para el mes actual
   const year = currentDate.getFullYear()
@@ -67,15 +69,20 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   }
 
   const handleCreateEvent = (date?: Date) => {
+    setEditingEvent(null)
     setSelectedDate(date ?? null)
-    setShowCreateModal(true)
+    setShowEventModal(true)
+  }
+
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event)
+    setShowEventModal(true)
   }
 
   // Para profesionales, usan su propio ID
   // Para organizaciones, pueden ver eventos donde fueron organizadores o participantes
-  const displayEvents = userRole === "organization"
-    ? events.filter((e) => e.organizerId === organizerId)
-    : events
+  const displayEvents =
+    userRole === "organization" ? events.filter((e) => e.organizerId === organizerId) : events
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -140,21 +147,32 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
 
       {/* Upcoming Events Sidebar */}
       <div className="lg:col-span-1">
-        <UpcomingEvents events={displayEvents} isLoading={isLoading} />
+        <UpcomingEvents
+          events={displayEvents}
+          isLoading={isLoading}
+          onEdit={handleEditEvent}
+          onDelete={(eventId) => console.log("Delete event:", eventId)}
+        />
       </div>
 
-      {/* Create Event Modal */}
+      {/* Create/Edit Event Modal */}
       {organizerId && (
         <EventFormModal
-          isOpen={showCreateModal}
+          isOpen={showEventModal}
           onClose={() => {
-            setShowCreateModal(false)
+            setShowEventModal(false)
+            setEditingEvent(null)
             setSelectedDate(null)
           }}
           organizerId={organizerId}
+          organizationId={organizationId ?? ""}
           lockedType={undefined}
+          editEvent={editingEvent ?? undefined}
           onSuccess={(eventId) => {
-            console.log("Evento creado:", eventId)
+            console.log(editingEvent ? "Evento actualizado:" : "Evento creado:", eventId)
+          }}
+          onDelete={(eventId) => {
+            console.log("Evento eliminado:", eventId)
           }}
         />
       )}

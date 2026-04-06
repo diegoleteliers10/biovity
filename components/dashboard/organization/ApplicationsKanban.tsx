@@ -2,8 +2,8 @@
 
 import {
   DndContext,
-  DragOverlay,
   type DragEndEvent,
+  DragOverlay,
   PointerSensor,
   useDraggable,
   useDroppable,
@@ -147,10 +147,7 @@ export function ApplicationsKanban({
   applicants: Applicant[]
   onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
   /** Called when dragging to 'entrevista' or 'contratado' stages */
-  onCreateEvent?: (
-    applicant: Applicant,
-    eventType: "interview" | "onboarding"
-  ) => void
+  onCreateEvent?: (applicant: Applicant, eventType: "interview" | "onboarding") => void
 }) {
   const [applicants, setApplicants] = useState<Applicant[]>(initialApplicants)
   const [activeApplicant, setActiveApplicant] = useState<Applicant | null>(null)
@@ -240,8 +237,12 @@ export function ApplicationsKanban({
               <CardContent className="relative px-4 py-4">
                 <div className="min-w-0 flex-1">
                   <p className="font-medium leading-tight">{activeApplicant.candidateName}</p>
-                  <p className="mt-0.5 truncate text-sm text-muted-foreground">{activeApplicant.position}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Aplicó: {activeApplicant.dateApplied}</p>
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                    {activeApplicant.position}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Aplicó: {activeApplicant.dateApplied}
+                  </p>
                 </div>
               </CardContent>
             </Card>

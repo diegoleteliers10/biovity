@@ -12,7 +12,13 @@ interface PlaceholderCardProps {
   children?: React.ReactNode
 }
 
-export function PlaceholderCard({ title, description, icon, iconColor = "secondary", children }: PlaceholderCardProps) {
+export function PlaceholderCard({
+  title,
+  description,
+  icon,
+  iconColor = "secondary",
+  children,
+}: PlaceholderCardProps) {
   return (
     <Card className="flex flex-col border border-border/80 bg-white">
       <CardHeader>

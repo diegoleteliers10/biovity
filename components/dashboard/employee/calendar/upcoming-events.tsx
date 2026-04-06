@@ -1,25 +1,40 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "motion/react"
 import {
   Calendar01Icon,
-  Clock01Icon,
-  Location05Icon,
   ChevronDown,
+  Clock01Icon,
+  Delete01Icon,
+  Edit01Icon,
+  Location05Icon,
   VideoCameraAiIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { AnimatePresence, motion } from "motion/react"
+import { useState } from "react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Card } from "@/components/ui/card"
 import type { Event } from "@/lib/types/events"
 
 type UpcomingEventsProps = {
   events?: Event[]
   isLoading?: boolean
+  onEdit?: (event: Event) => void
+  onDelete?: (eventId: string) => void
 }
 
-export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) {
+export function UpcomingEvents({ events = [], isLoading, onEdit, onDelete }: UpcomingEventsProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [deleteEventId, setDeleteEventId] = useState<string | null>(null)
 
   const now = new Date()
   const upcoming = events
@@ -57,21 +72,6 @@ export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) 
       })
     } catch {
       return ""
-    }
-  }
-
-  const getEventTypeColor = (type: Event["type"]) => {
-    switch (type) {
-      case "interview":
-        return "border-l-primary"
-      case "onboarding":
-        return "border-l-secondary"
-      case "task_deadline":
-        return "border-l-accent"
-      case "announcement":
-        return "border-l-muted-foreground"
-      default:
-        return "border-l-muted-foreground"
     }
   }
 
@@ -125,9 +125,7 @@ export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) 
           </div>
         ) : upcoming.length === 0 ? (
           <div className="flex flex-1 items-center justify-center">
-            <p className="text-sm text-muted-foreground text-center">
-              No hay eventos próximos
-            </p>
+            <p className="text-sm text-muted-foreground text-center">No hay eventos próximos</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -137,34 +135,31 @@ export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) 
                 <div key={event.id}>
                   <motion.div
                     layout
-                    className={`relative p-4 rounded-lg border-l-4 bg-white cursor-pointer ${getEventTypeColor(
-                      event.type
-                    )} ${isExpanded ? "shadow-md" : "hover:shadow-sm"}`}
+                    className={`relative p-4 rounded-lg bg-white cursor-pointer ${isExpanded ? "shadow-md" : "hover:shadow-sm border border-border/50"}`}
                     onClick={() => handleToggle(event.id)}
                     role="button"
                     tabIndex={0}
-                    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleToggle(event.id)}
+                    onKeyDown={(e) =>
+                      (e.key === "Enter" || e.key === " ") && handleToggle(event.id)
+                    }
                     aria-expanded={isExpanded}
                     aria-label={`Evento: ${event.title}`}
                   >
-                    <div
-                      className={`absolute -left-2 top-6 w-3 h-3 rounded-full border-2 border-sidebar ${getEventTypeDot(
-                        event.type
-                      )}`}
-                    />
-
                     <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-medium text-sidebar-foreground text-sm leading-tight pr-2">
-                          {event.title}
-                        </h4>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${getEventTypeDot(event.type)}`} />
+                          <h4 className="font-medium text-sidebar-foreground text-sm leading-tight">
+                            {event.title}
+                          </h4>
+                        </div>
                         <div className="flex items-center gap-2 shrink-0">
                           {index === 0 && (
-                            <span className="text-xs bg-accent/15 text-accent px-2 py-1 rounded-full font-medium">
+                            <span className="text-xs bg-accent/15 text-accent px-2 py-0.5 rounded-full font-medium">
                               Próximo
                             </span>
                           )}
-                            <motion.div
+                          <motion.div
                             animate={{ rotate: isExpanded ? 180 : 0 }}
                             transition={{ duration: 0.2 }}
                           >
@@ -215,13 +210,6 @@ export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) 
                             )}
 
                             <div className="flex flex-wrap gap-2">
-                              <span
-                                className={`text-xs px-2 py-1 rounded-full font-medium ${getEventTypeColor(
-                                  event.type
-                                )} bg-muted/30`}
-                              >
-                                {getEventTypeLabel(event.type)}
-                              </span>
                               {event.endAt && (
                                 <span className="text-xs px-2 py-1 rounded-full bg-muted/30 text-muted-foreground">
                                   {formatEventTime(event.startAt)} — {formatEndTime(event.endAt)}
@@ -246,6 +234,29 @@ export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) 
                                 </a>
                               </div>
                             )}
+
+                            <div className="flex gap-2 pt-2">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  onEdit?.(event)
+                                }}
+                                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                <HugeiconsIcon icon={Edit01Icon} className="h-3.5 w-3.5" />
+                                Editar
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setDeleteEventId(event.id)
+                                }}
+                                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors"
+                              >
+                                <HugeiconsIcon icon={Delete01Icon} className="h-3.5 w-3.5" />
+                                Eliminar
+                              </button>
+                            </div>
                           </div>
                         </motion.div>
                       )}
@@ -257,6 +268,32 @@ export function UpcomingEvents({ events = [], isLoading }: UpcomingEventsProps) 
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteEventId !== null} onOpenChange={(open) => !open && setDeleteEventId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar evento?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. El evento será eliminado permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteEventId(null)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (deleteEventId) {
+                  onDelete?.(deleteEventId)
+                  setDeleteEventId(null)
+                }
+              }}
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   )
 }

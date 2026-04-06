@@ -56,9 +56,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const existing = chats.find(
-      (c) => c.professionalId === professionalId
-    )
+    const existing = chats.find((c) => c.professionalId === professionalId)
 
     if (existing) {
       return NextResponse.json(existing)

@@ -24,7 +24,6 @@ import {
   useSidebar,
 } from "@/components/animate-ui/components/radix/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/ui/logo"
+import { Skeleton } from "@/components/ui/skeleton"
 import { authClient } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
 
@@ -337,7 +337,11 @@ export function DashboardSidebar({
                   <HugeiconsIcon icon={User02Icon} size={16} strokeWidth={1.5} className="mr-2" />
                   Ver Perfil
                 </DropdownMenuItem>
-                <DropdownMenuItem variant="destructive" onClick={handleLogout} className={logoutItemClassName}>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className={logoutItemClassName}
+                >
                   <HugeiconsIcon
                     icon={TransitionRightIcon}
                     size={16}

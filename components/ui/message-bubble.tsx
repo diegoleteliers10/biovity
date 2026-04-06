@@ -4,9 +4,9 @@ import { Calendar04Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icon
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import type { MessageType } from "@/lib/api/messages"
 import { useUser } from "@/lib/api/use-profile"
 import { cn } from "@/lib/utils"
-import type { MessageType } from "@/lib/api/messages"
 
 interface MessageBubbleProps {
   message: {
@@ -51,13 +51,7 @@ export function MessageBubble({
           candidateName: string
         } | null
         if (!event) return null
-        return (
-          <EventMessageCard
-            event={event}
-            isOwn={isOwn}
-            onAction={onEventAction}
-          />
-        )
+        return <EventMessageCard event={event} isOwn={isOwn} onAction={onEventAction} />
       }
       case "image": {
         const img = message.contentType as {
@@ -94,9 +88,7 @@ export function MessageBubble({
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">{file?.name ?? "Archivo"}</p>
               {file?.size && (
-                <p className="text-xs opacity-70">
-                  {(file.size / 1024).toFixed(1)} KB
-                </p>
+                <p className="text-xs opacity-70">{(file.size / 1024).toFixed(1)} KB</p>
               )}
             </div>
           </div>
@@ -225,12 +217,8 @@ function EventMessageCard({
           <HugeiconsIcon icon={Calendar04Icon} size={12} />
           <span>{formatEventDate(event.startAt)}</span>
         </div>
-        {event.endAt && (
-          <p className="pl-5">— {formatEventDate(event.endAt)}</p>
-        )}
-        {event.location && (
-          <p className="pl-5">{event.location}</p>
-        )}
+        {event.endAt && <p className="pl-5">— {formatEventDate(event.endAt)}</p>}
+        {event.location && <p className="pl-5">{event.location}</p>}
         {event.meetingUrl && (
           <p className="pl-5 truncate">
             <a
@@ -246,30 +234,30 @@ function EventMessageCard({
       </div>
 
       {/* Description */}
-      {event.description && (
-        <p className="text-xs opacity-80">{event.description}</p>
-      )}
+      {event.description && <p className="text-xs opacity-80">{event.description}</p>}
 
       {/* Action buttons - only show for non-owner */}
-      {!isOwn && event.participantStatus !== "accepted" && event.participantStatus !== "declined" && (
-        <div className="flex gap-2 pt-2">
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-7 text-xs"
-            onClick={() => onAction?.(event.eventId, "decline")}
-          >
-            No asistir
-          </Button>
-          <Button
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => onAction?.(event.eventId, "accept")}
-          >
-            Asistir
-          </Button>
-        </div>
-      )}
+      {!isOwn &&
+        event.participantStatus !== "accepted" &&
+        event.participantStatus !== "declined" && (
+          <div className="flex gap-2 pt-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs"
+              onClick={() => onAction?.(event.eventId, "decline")}
+            >
+              No asistir
+            </Button>
+            <Button
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => onAction?.(event.eventId, "accept")}
+            >
+              Asistir
+            </Button>
+          </div>
+        )}
 
       {/* Status indicator */}
       {event.participantStatus === "accepted" && (

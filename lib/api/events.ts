@@ -1,11 +1,11 @@
 import type {
-  Event,
-  EventWithParticipants,
-  EventNote,
   CreateEventInput,
-  UpdateEventInput,
+  Event,
   EventFilters,
+  EventNote,
+  EventWithParticipants,
   PaginatedEventsResponse,
+  UpdateEventInput,
 } from "@/lib/types/events"
 
 const API_BASE =
@@ -56,7 +56,9 @@ export async function getEvents(
   return data as PaginatedEventsResponse
 }
 
-export async function getEventById(id: string): Promise<{ data: EventWithParticipants } | { error: string }> {
+export async function getEventById(
+  id: string
+): Promise<{ data: EventWithParticipants } | { error: string }> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${id}`)

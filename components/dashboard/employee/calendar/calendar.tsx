@@ -3,10 +3,10 @@
 import type React from "react"
 
 import { useState } from "react"
+import type { Event } from "@/lib/types/events"
 import { getChileanDate } from "@/lib/utils"
 import { DayModal } from "./day-modal"
 import { EventTooltip } from "./event-tooltip"
-import type { Event } from "@/lib/types/events"
 
 type CalendarEvent = {
   readonly id: string

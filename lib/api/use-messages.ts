@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
-import { getMessagesByChatId, sendMessage, type Message, type MessageType } from "./messages"
+import { getMessagesByChatId, type Message, type MessageType, sendMessage } from "./messages"
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
@@ -64,7 +64,8 @@ export function useMessages(chatId: string | undefined) {
             senderId: String(r("senderId") ?? r("sender_id") ?? ""),
             content: String(r("content") ?? ""),
             type: (r("type") as MessageType) ?? "text",
-            contentType: (r("contentType") ?? r("content_type")) as Record<string, unknown> | null ?? null,
+            contentType:
+              ((r("contentType") ?? r("content_type")) as Record<string, unknown> | null) ?? null,
             isRead: Boolean(r("isRead") ?? r("is_read") ?? false),
             createdAt: String(r("createdAt") ?? r("created_at") ?? new Date().toISOString()),
           }
@@ -140,17 +141,20 @@ export function useSendMessageMutation() {
       }
     },
     onSuccess: (newMessage) => {
-      queryClient.setQueryData(messagesKeys.byChat(newMessage.chatId), (old: Message[] | undefined) => {
-        if (!old) return old
-        const tempIndex = old.findIndex((m) => m.id.startsWith("temp-"))
-        if (tempIndex >= 0) {
-          const next = [...old]
-          next[tempIndex] = newMessage
-          return next
+      queryClient.setQueryData(
+        messagesKeys.byChat(newMessage.chatId),
+        (old: Message[] | undefined) => {
+          if (!old) return old
+          const tempIndex = old.findIndex((m) => m.id.startsWith("temp-"))
+          if (tempIndex >= 0) {
+            const next = [...old]
+            next[tempIndex] = newMessage
+            return next
+          }
+          if (old.some((m) => m.id === newMessage.id)) return old
+          return [...old, newMessage]
         }
-        if (old.some((m) => m.id === newMessage.id)) return old
-        return [...old, newMessage]
-      })
+      )
       queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {
         if (!prev) return prev
         return prev.map((chat) =>

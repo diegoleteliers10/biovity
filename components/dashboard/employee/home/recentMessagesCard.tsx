@@ -1,7 +1,7 @@
 "use client"
 
-import { memo } from "react"
 import { useRouter } from "next/navigation"
+import { memo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Chat } from "@/lib/api/chats"
@@ -115,10 +115,14 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
                   onClick={() => handleChatClick(chat.id)}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && handleChatClick(chat.id)}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") && handleChatClick(chat.id)
+                  }
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground truncate">{participantName}</p>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {participantName}
+                    </p>
                     <p className="text-xs text-muted-foreground shrink-0">
                       {isItemLoading
                         ? "..."

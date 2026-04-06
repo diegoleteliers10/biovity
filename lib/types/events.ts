@@ -18,6 +18,7 @@ export interface Event {
   meetingUrl?: string
   status: EventStatus
   organizerId: string
+  candidateId?: string
   applicationId?: string
   createdAt: string
   updatedAt: string
@@ -55,13 +56,15 @@ export interface CreateEventInput {
   location?: string
   meetingUrl?: string
   organizerId: string
-  candidateId: string
+  organizationId?: string
+  candidateId?: string
   applicationId?: string
 }
 
 export interface UpdateEventInput {
   title?: string
   description?: string
+  type?: EventType
   startAt?: string
   endAt?: string
   location?: string

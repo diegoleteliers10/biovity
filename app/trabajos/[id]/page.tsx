@@ -2,6 +2,7 @@ import {
   Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
+  ViewIcon,
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -9,6 +10,7 @@ import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { Fragment } from "react"
+import { JobViewsTracker } from "@/components/common/job-views-tracker"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { Badge } from "@/components/ui/badge"
@@ -162,6 +164,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
         url={`${siteUrl}/trabajos/${job.id}`}
       />
       <article className="py-16">
+        <JobViewsTracker jobId={job.id} jobOrganizationId={job.organizationId} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb - reflects navigation path (referer) */}
           <Breadcrumb className="mb-8">
@@ -227,6 +230,12 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <HugeiconsIcon icon={Clock01Icon} size={20} className="text-muted-foreground" />
                 <span>Publicado {formatFechaLarga(new Date(job.createdAt))}</span>
               </div>
+              {"views" in job && typeof job.views === "number" && job.views > 0 && (
+                <div className="flex items-center gap-2">
+                  <HugeiconsIcon icon={ViewIcon} size={20} className="text-muted-foreground" />
+                  <span>{job.views} vistas</span>
+                </div>
+              )}
             </div>
           </div>
 

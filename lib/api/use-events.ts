@@ -1,18 +1,26 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import type {
+  CreateEventInput,
+  Event,
+  EventNote,
+  EventStatus,
+  EventType,
+  EventWithParticipants,
+  UpdateEventInput,
+} from "@/lib/types/events"
 import {
-  getEvents,
-  getEventById,
-  createEvent,
-  updateEvent,
-  deleteEvent,
   addEventParticipant,
-  removeEventParticipant,
-  getEventNotes,
+  createEvent,
   createEventNote,
+  deleteEvent,
+  getEventById,
+  getEventNotes,
+  getEvents,
+  removeEventParticipant,
+  updateEvent,
 } from "./events"
-import type { Event, EventWithParticipants, EventNote, CreateEventInput, UpdateEventInput, EventType, EventStatus } from "@/lib/types/events"
 
 export const eventsKeys = {
   all: ["events"] as const,

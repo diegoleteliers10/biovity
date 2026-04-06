@@ -63,7 +63,9 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
                 aria-label={`Ver aplicación de ${app.candidateName} para ${app.position}`}
               >
                 <div className="space-y-2">
-                  <p className="text-sm font-medium leading-none text-foreground">{app.candidateName}</p>
+                  <p className="text-sm font-medium leading-none text-foreground">
+                    {app.candidateName}
+                  </p>
                   <p className="text-sm text-muted-foreground">{app.position}</p>
                 </div>
                 <div className="text-right space-y-1">

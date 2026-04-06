@@ -21,7 +21,9 @@ const Checkbox = React.forwardRef<
             className
           )}
         >
-          {props.checked && <HugeiconsIcon icon={Tick02Icon} className="w-3 h-3 text-primary-foreground" />}
+          {props.checked && (
+            <HugeiconsIcon icon={Tick02Icon} className="w-3 h-3 text-primary-foreground" />
+          )}
         </div>
       </div>
       {label && <span className="text-sm text-foreground">{label}</span>}

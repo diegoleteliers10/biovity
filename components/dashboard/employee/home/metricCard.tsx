@@ -1,6 +1,6 @@
 "use client"
 
-import { TradeUpIcon } from "@hugeicons/core-free-icons"
+import { TradeDownIcon, TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import { memo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +12,7 @@ interface MetricCardProps {
 
 export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) {
   const iconColorClass = metric.iconColor === "primary" ? "text-primary" : "text-secondary"
+  const TrendIcon = metric.trendPositive ? TradeUpIcon : TradeDownIcon
 
   return (
     <Card className="border border-border/80 bg-white">
@@ -29,7 +30,7 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
         {metric.trend && (
           <p className={`text-xs ${metric.trendPositive ? "text-secondary" : "text-destructive"}`}>
             <HugeiconsIcon
-              icon={TradeUpIcon}
+              icon={TrendIcon}
               size={24}
               strokeWidth={1.5}
               className="inline h-3 w-3 mr-1"

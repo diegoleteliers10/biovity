@@ -152,7 +152,10 @@ export async function updateApplicationStatus(
 export async function getApplicationsByOrganization(
   organizationId: string,
   params?: { page?: number; limit?: number }
-): Promise<{ data: Application[]; total: number; page: number; limit: number; totalPages: number } | { error: string }> {
+): Promise<
+  | { data: Application[]; total: number; page: number; limit: number; totalPages: number }
+  | { error: string }
+> {
   let res: Response
   try {
     const searchParams = new URLSearchParams()

@@ -93,7 +93,9 @@ export function OrganizationHomeHeader({
                     }`}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm ${notification.isRead ? "font-normal text-muted-foreground" : "font-medium text-foreground"}`}>
+                    <p
+                      className={`text-sm ${notification.isRead ? "font-normal text-muted-foreground" : "font-medium text-foreground"}`}
+                    >
                       {notification.title}
                     </p>
                     <p className="text-xs text-muted-foreground">{notification.message}</p>

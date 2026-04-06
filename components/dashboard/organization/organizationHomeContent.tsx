@@ -7,9 +7,8 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  useChatsByRecruiter,
-} from "@/lib/api/use-chats"
+import { useChatsByRecruiter } from "@/lib/api/use-chats"
+import { useOrganization } from "@/lib/api/use-organization"
 import {
   useOrgFeaturedCandidates,
   useOrgMetrics,
@@ -17,7 +16,6 @@ import {
   useOrgRecentApplications,
   useOrgUpcomingInterviews,
 } from "@/lib/api/use-organization-dashboard"
-import { useOrganization } from "@/lib/api/use-organization"
 import { getUser } from "@/lib/api/users"
 import { authClient } from "@/lib/auth-client"
 import type { Notification } from "@/lib/types/dashboard"
@@ -40,7 +38,7 @@ export function OrganizationHomeContent() {
   const applicationsQuery = useOrgRecentApplications(organizationId)
   const userId = (data?.user as { id?: string } | undefined)?.id
   const messagesQuery = useChatsByRecruiter(userId)
-  const interviewsQuery = useOrgUpcomingInterviews()
+  const interviewsQuery = useOrgUpcomingInterviews(userId)
 
   const candidateQueries = useQueries({
     queries: (messagesQuery.data ?? []).map((chat) => ({
@@ -119,7 +117,7 @@ export function OrganizationHomeContent() {
       />
 
       <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {metricsQuery.isLoading ? (
+        {metricsQuery.isPending ? (
           Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="border border-border/80 bg-white rounded-xl p-6">
               <div className="flex items-center justify-between pb-2">
@@ -148,7 +146,10 @@ export function OrganizationHomeContent() {
             </div>
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60">
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60"
+                >
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-48" />
                     <Skeleton className="h-3 w-32" />
@@ -217,7 +218,7 @@ export function OrganizationHomeContent() {
           description="calendario de entrevistas"
           icon={Calendar03Icon}
         >
-          {interviewsQuery.isLoading ? (
+          {interviewsQuery.isPending ? (
             <div className="space-y-3 mt-2">
               {Array.from({ length: 2 }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-2 p-3 rounded-lg border border-border/60">
@@ -232,7 +233,7 @@ export function OrganizationHomeContent() {
                 </div>
               ))}
             </div>
-          ) : interviewsQuery.error ? (
+          ) : interviewsQuery.isError ? (
             <p className="text-sm text-destructive mt-2">Error al cargar entrevistas.</p>
           ) : interviewsQuery.data && interviewsQuery.data.length > 0 ? (
             <div className="space-y-4 mt-2">
@@ -240,7 +241,9 @@ export function OrganizationHomeContent() {
                 <div key={interview.id} className="flex flex-col gap-1 border-b pb-3 last:border-0">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-sm">{interview.candidateName}</span>
-                    <span className="text-xs text-muted-foreground">{interview.date}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {interview.date}, {interview.time}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">{interview.position}</span>

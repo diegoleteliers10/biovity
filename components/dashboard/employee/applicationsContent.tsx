@@ -64,7 +64,10 @@ export const ApplicationsContent = () => {
       ) : isPending ? (
         <div className="grid grid-cols-1 gap-8">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="relative overflow-hidden flex flex-col border border-border/80 bg-white">
+            <Card
+              key={i}
+              className="relative overflow-hidden flex flex-col border border-border/80 bg-white"
+            >
               <CardHeader className="p-6 pb-2">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 space-y-2 flex-1">
@@ -80,7 +83,9 @@ export const ApplicationsContent = () => {
                   {STAGES.map((_, idx) => (
                     <div key={idx} className="flex items-center gap-2 sm:gap-3 shrink-0">
                       <Skeleton className="h-7 w-20 rounded-full" />
-                      {idx < STAGES.length - 1 && <Skeleton className="h-[1.5px] w-4 rounded-full" />}
+                      {idx < STAGES.length - 1 && (
+                        <Skeleton className="h-[1.5px] w-4 rounded-full" />
+                      )}
                     </div>
                   ))}
                 </div>

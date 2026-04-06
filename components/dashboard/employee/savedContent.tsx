@@ -164,7 +164,10 @@ export const SavedContent = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i} className="relative overflow-hidden flex flex-col border border-border/80 bg-white">
+            <Card
+              key={i}
+              className="relative overflow-hidden flex flex-col border border-border/80 bg-white"
+            >
               <CardHeader className="pb-0">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-0.5 flex-1">

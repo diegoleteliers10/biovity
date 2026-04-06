@@ -14,7 +14,8 @@ import {
 export const applicationsKeys = {
   byJob: (jobId: string) => ["applications", "job", jobId] as const,
   byCandidate: (candidateId: string) => ["applications", "candidate", candidateId] as const,
-  byOrganization: (organizationId: string) => ["applications", "organization", organizationId] as const,
+  byOrganization: (organizationId: string) =>
+    ["applications", "organization", organizationId] as const,
 }
 
 export function useApplicationsByJob(jobId: string | undefined) {
