@@ -7,6 +7,7 @@ import { getLastMessageFromSender } from "@/lib/api/messages"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useChatsByProfessional } from "@/lib/api/use-chats"
 import { getUser } from "@/lib/api/users"
+import { Result } from "better-result"
 import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
 import type { Notification } from "@/lib/types/dashboard"
@@ -116,8 +117,8 @@ export const HomeContent = () => {
       queryKey: ["profile", "user", chat.recruiterId],
       queryFn: async () => {
         const result = await getUser(chat.recruiterId)
-        if ("error" in result) return null
-        return result.data
+        if (!Result.isOk(result)) return null
+        return result.value
       },
       enabled: Boolean(chat.recruiterId),
       staleTime: 5 * 60 * 1000,
@@ -139,7 +140,8 @@ export const HomeContent = () => {
       queryKey: ["messages", "last-recruiter", chat.id],
       queryFn: async () => {
         if (!chat.recruiterId) return null
-        return await getLastMessageFromSender(chat.id, chat.recruiterId)
+        const msg = await getLastMessageFromSender(chat.id, chat.recruiterId)
+        return msg
       },
       enabled: Boolean(chat.id && chat.recruiterId),
       staleTime: 30 * 1000,

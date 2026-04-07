@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import {
   type CreateResumeInput,
   createResume,
@@ -29,8 +31,8 @@ export function useUser(id: string | undefined) {
     queryFn: async () => {
       if (!id) throw new Error("User ID required")
       const result = await getUser(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(id),
   })
@@ -42,8 +44,8 @@ export function useResumeByUser(userId: string | undefined) {
     queryFn: async () => {
       if (!userId) throw new Error("User ID required")
       const result = await getResumeByUserId(userId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(userId),
     staleTime: 0,
@@ -55,8 +57,8 @@ export function useUpdateUserMutation(userId: string) {
   return useMutation({
     mutationFn: async (input: UpdateUserInput) => {
       const result = await updateUser(userId, input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
@@ -69,8 +71,8 @@ export function useCreateResumeMutation(userId: string) {
   return useMutation({
     mutationFn: async (input: Omit<CreateResumeInput, "userId">) => {
       const result = await createResume({ ...input, userId })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
@@ -83,8 +85,8 @@ export function useUpdateResumeMutation(resumeId: string, userId: string) {
   return useMutation({
     mutationFn: async (input: UpdateResumeInput) => {
       const result = await updateResume(resumeId, input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
@@ -97,8 +99,8 @@ export function useUploadResumeCvMutation(resumeId: string, userId: string) {
   return useMutation({
     mutationFn: async (file: File) => {
       const result = await uploadResumeCv(resumeId, file)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
@@ -111,10 +113,10 @@ export function useUploadAvatarMutation(userId: string) {
   return useMutation({
     mutationFn: async (file: File) => {
       const uploadResult = await uploadAvatar(file)
-      if ("error" in uploadResult) throw new Error(uploadResult.error)
-      const updateResult = await updateUser(userId, { avatar: uploadResult.data })
-      if ("error" in updateResult) throw new Error(updateResult.error)
-      return updateResult.data
+      if (!Result.isOk(uploadResult)) throw new Error(getResultErrorMessage(uploadResult.error))
+      const updateResult = await updateUser(userId, { avatar: uploadResult.value })
+      if (!Result.isOk(updateResult)) throw new Error(getResultErrorMessage(updateResult.error))
+      return updateResult.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })

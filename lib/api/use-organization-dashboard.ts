@@ -2,10 +2,12 @@
 
 import { BubbleChatIcon, Calendar03Icon, File02Icon, FileAddIcon } from "@hugeicons/core-free-icons"
 import { useQuery } from "@tanstack/react-query"
+import { Result } from "better-result"
 import { getApplicationsByOrganization } from "@/lib/api/applications"
 import { getEvents } from "@/lib/api/events"
 import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getUser } from "@/lib/api/users"
+import { getResultErrorMessage } from "@/lib/result"
 import {
   fetchOrgFeaturedCandidates,
   fetchOrgNotifications,
@@ -56,8 +58,8 @@ export function useOrgMetrics(organizationId: string | undefined) {
     queryKey: orgDashboardKeys.metrics,
     queryFn: async () => {
       const result = await getOrganizationMetrics(organizationId!, { period: "month" })
-      if ("error" in result) throw new Error(result.error)
-      return getMetricsCards(result.dashboard, false)
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return getMetricsCards(result.value.dashboard, false)
     },
     enabled: Boolean(organizationId),
     staleTime: 60 * 1000,
@@ -81,7 +83,7 @@ export function useOrganizationMetrics(
         }
       }
       const result = await getOrganizationMetrics(organizationId, { period })
-      if ("error" in result) {
+      if (!Result.isOk(result)) {
         return {
           dashboard: DEFAULT_DASHBOARD_METRICS,
           pipeline: { totalApplications: 0, byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 }, conversionRate: 0 },
@@ -89,7 +91,7 @@ export function useOrganizationMetrics(
           recentTrend: [],
         }
       }
-      return result
+      return result.value
     },
     enabled: Boolean(organizationId),
   })
@@ -151,9 +153,9 @@ export function useOrgRecentApplications(organizationId: string | undefined) {
       if (!organizationId) throw new Error("Organization ID required")
 
       const applicationsResult = await getApplicationsByOrganization(organizationId, { limit: 10 })
-      if ("error" in applicationsResult) throw new Error(applicationsResult.error)
+      if (!Result.isOk(applicationsResult)) throw new Error(getResultErrorMessage(applicationsResult.error))
 
-      const applications = applicationsResult.data
+      const applications = applicationsResult.value.data
 
       return applications.map((app) => ({
         candidateName: app.candidate?.name ?? "Candidato",
@@ -209,9 +211,9 @@ export function useOrgUpcomingInterviews(userId: string | undefined) {
         limit: 10,
       })
 
-      if ("error" in result) throw new Error(result.error)
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
 
-      const events = result.data
+      const events = result.value.data
 
       if (events.length === 0) return []
 
@@ -228,8 +230,8 @@ export function useOrgUpcomingInterviews(userId: string | undefined) {
       const candidateQueries = await Promise.all(
         uniqueCandidateIds.map(async (id) => {
           const res = await getUser(id)
-          if ("error" in res) return { id, name: "Candidato", avatar: null }
-          return { id, name: res.data.name, avatar: res.data.avatar }
+          if (!Result.isOk(res)) return { id, name: "Candidato", avatar: null }
+          return { id, name: res.value.name, avatar: res.value.avatar }
         })
       )
 

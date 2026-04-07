@@ -30,6 +30,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { ChatListItem, MessageBubble } from "@/components/ui/message-bubble"
 import { useDebounce } from "@/hooks/use-debounce"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import { type Chat, getChatById } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
@@ -67,9 +69,11 @@ export function OrganizationMessagesContent() {
 
     const loadChat = async () => {
       const result = await getChatById(chatIdFromUrl)
-      if ("data" in result) {
-        setSelectedChat(result.data)
+      if (!Result.isOk(result)) {
+        console.error(getResultErrorMessage(result.error))
+        return
       }
+      setSelectedChat(result.value)
     }
     void loadChat()
   }, [chatIdFromUrl, chats])
@@ -104,15 +108,10 @@ export function OrganizationMessagesContent() {
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !recruiterId) return
-    sendMutation.mutate(
-      { chatId: selectedChat.id, senderId: recruiterId, content: messageInput.trim() },
-      {
-        onMutate: () => {
-          setMessageInput("")
-          scrollToBottom()
-        },
-      }
-    )
+    const content = messageInput.trim()
+    setMessageInput("")
+    scrollToBottom()
+    sendMutation.mutate({ chatId: selectedChat.id, senderId: recruiterId, content })
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

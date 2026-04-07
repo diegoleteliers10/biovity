@@ -8,7 +8,7 @@ import {
   FileAddIcon,
   User02Icon,
 } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import { useState } from "react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Badge } from "@/components/ui/badge"
@@ -48,7 +48,7 @@ interface KpiCardProps {
   subtitle?: string
   trend?: string
   trendPositive?: boolean
-  icon: React.ElementType
+  icon: import("@hugeicons/react").IconSvgElement
 }
 
 function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: KpiCardProps) {

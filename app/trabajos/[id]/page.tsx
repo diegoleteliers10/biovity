@@ -31,6 +31,7 @@ import {
   getFormatoBadgeColor,
   getModalidadBadgeColor,
 } from "@/lib/utils"
+import { Result } from "better-result"
 
 type Props = {
   params: Promise<{ id: string }>
@@ -80,14 +81,13 @@ function getJobBreadcrumbs(referer: string | null, jobTitle: string): Breadcrumb
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const result = await getJob(id)
-
-  if ("error" in result) {
+  if (!Result.isOk(result)) {
     return {
       title: "Trabajo no encontrado | Biovity",
     }
   }
 
-  const job = result.data
+  const job = result.value
   const url = `/trabajos/${job.id}`
   const desc = job.description?.substring(0, 160) ?? ""
   return {
@@ -114,16 +114,15 @@ export default async function TrabajoDetailPage({ params }: Props) {
   const headersList = await headers()
   const referer = headersList.get("referer")
   const result = await getJob(id)
-
-  if ("error" in result) {
+  if (!Result.isOk(result)) {
     notFound()
   }
 
-  const job = result.data
+  const job = result.value
   let organizationName = job.organization?.name
   if (!organizationName && job.organizationId) {
     const orgResult = await getOrganization(job.organizationId)
-    if ("data" in orgResult) organizationName = orgResult.data.name
+    if (Result.isOk(orgResult)) organizationName = orgResult.value.name
   }
   organizationName = organizationName ?? "Organización"
 

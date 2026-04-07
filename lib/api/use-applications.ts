@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import {
   type Application,
   type ApplicationStatus,
@@ -24,8 +26,8 @@ export function useApplicationsByJob(jobId: string | undefined) {
     queryFn: async () => {
       if (!jobId) throw new Error("Job ID required")
       const result = await getApplicationsByJob(jobId, { limit: 100 })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(jobId),
   })
@@ -37,8 +39,8 @@ export function useApplicationsByCandidate(candidateId: string | undefined) {
     queryFn: async () => {
       if (!candidateId) throw new Error("Candidate ID required")
       const result = await getApplicationsByCandidate(candidateId, { limit: 100 })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(candidateId),
   })
@@ -49,8 +51,8 @@ export function useCreateApplicationMutation(candidateId: string) {
   return useMutation({
     mutationFn: async (jobId: string) => {
       const result = await createApplication(jobId, candidateId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: applicationsKeys.byCandidate(candidateId) })
@@ -63,8 +65,8 @@ export function useUpdateApplicationStatusMutation(jobId: string) {
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: ApplicationStatus }) => {
       const result = await updateApplicationStatus(id, status)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (updatedApp) => {
       queryClient.setQueryData<Application[]>(applicationsKeys.byJob(jobId), (old) => {
@@ -83,8 +85,8 @@ export function useApplicationsByOrganization(organizationId: string | undefined
     queryFn: async () => {
       if (!organizationId) throw new Error("Organization ID required")
       const result = await getApplicationsByOrganization(organizationId, { limit: 100 })
-      if ("error" in result) throw new Error(result.error)
-      return result
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(organizationId),
   })

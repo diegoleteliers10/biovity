@@ -1,3 +1,9 @@
+import { Result, Result as R } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
+
+const getBaseUrl = () =>
+  typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
+
 export type MessageType = "text" | "event" | "audio" | "image" | "file"
 
 export type Message = {
@@ -10,10 +16,6 @@ export type Message = {
   isRead: boolean
   createdAt: string
 }
-
-/** Base URL for API calls. Empty string on client (relative URLs). */
-const getBaseUrl = () =>
-  typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
 
 export type GetMessagesParams = {
   limit?: number
@@ -28,7 +30,7 @@ export type GetMessagesResponse = {
 export async function getMessagesByChatId(
   chatId: string,
   params?: GetMessagesParams
-): Promise<{ data: Message[]; nextCursor: string | null } | { error: string }> {
+): Promise<Result<GetMessagesResponse, ApiError | NetworkError>> {
   try {
     const base = getBaseUrl()
     const searchParams = new URLSearchParams()
@@ -41,19 +43,34 @@ export async function getMessagesByChatId(
     const json = await res.json().catch(() => null)
 
     if (!res.ok) {
-      return { error: json?.error ?? "Error al obtener mensajes" }
+      return R.err(
+        new ApiError({
+          status: res.status,
+          statusText: res.statusText,
+          body: json,
+          message: (json as { error?: string })?.error ?? "Error al obtener mensajes",
+        })
+      )
     }
 
-    if (!json || typeof json !== "object" || !Array.isArray(json.data)) {
-      return { error: "Respuesta inválida" }
+    if (!json || typeof json !== "object" || !Array.isArray((json as GetMessagesResponse).data)) {
+      return R.err(new ApiError({ status: 200, message: "Respuesta inválida" }))
     }
 
-    return {
-      data: json.data as Message[],
-      nextCursor: typeof json.nextCursor === "string" ? json.nextCursor : null,
-    }
+    return R.ok({
+      data: (json as GetMessagesResponse).data,
+      nextCursor:
+        typeof (json as GetMessagesResponse).nextCursor === "string"
+          ? (json as GetMessagesResponse).nextCursor
+          : null,
+    })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error al obtener mensajes" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error al obtener mensajes",
+        cause: err,
+      })
+    )
   }
 }
 
@@ -67,7 +84,7 @@ export type SendMessageInput = {
 
 export async function sendMessage(
   input: SendMessageInput
-): Promise<{ data: Message } | { error: string }> {
+): Promise<Result<Message, ApiError | NetworkError>> {
   try {
     const base = getBaseUrl()
     const payload = {
@@ -86,16 +103,28 @@ export async function sendMessage(
     const data = await res.json().catch(() => null)
 
     if (!res.ok) {
-      return { error: data?.error ?? "Error al enviar mensaje" }
+      return R.err(
+        new ApiError({
+          status: res.status,
+          statusText: res.statusText,
+          body: data,
+          message: (data as { error?: string })?.error ?? "Error al enviar mensaje",
+        })
+      )
     }
 
     if (!data?.id) {
-      return { error: "Respuesta inválida" }
+      return R.err(new ApiError({ status: 200, message: "Respuesta inválida" }))
     }
 
-    return { data: data as Message }
+    return R.ok(data as Message)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error al enviar mensaje" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error al enviar mensaje",
+        cause: err,
+      })
+    )
   }
 }
 
@@ -103,18 +132,19 @@ export async function getLastMessageFromSender(
   chatId: string,
   senderId: string
 ): Promise<Message | null> {
-  try {
-    const result = await getMessagesByChatId(chatId, { limit: 100 })
-    if ("error" in result || !result.data.length) return null
-
-    const messagesFromSender = result.data.filter((m) => m.senderId === senderId)
-    if (!messagesFromSender.length) return null
-
-    const sorted = messagesFromSender.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-    return sorted[0]
-  } catch {
+  const result = await getMessagesByChatId(chatId, { limit: 100 })
+  if (!Result.isOk(result)) {
     return null
   }
+
+  const { data } = result.value
+  if (!data.length) return null
+
+  const messagesFromSender = data.filter((m) => m.senderId === senderId)
+  if (!messagesFromSender.length) return null
+
+  const sorted = messagesFromSender.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
+  return sorted[0] ?? null
 }

@@ -529,10 +529,15 @@ export function TalentContent() {
                               disabled={!recruiterId || createChatMutation.isPending}
                               aria-label={`Enviar mensaje a ${user.name}`}
                             >
-                              <HugeiconsIcon icon={Sent02Icon} size={16} />
+                              {createChatMutation.isPending &&
+                              createChatMutation.variables === user.id ? (
+                                <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                              ) : (
+                                <HugeiconsIcon icon={Sent02Icon} size={16} />
+                              )}
                               {createChatMutation.isPending &&
                               createChatMutation.variables === user.id
-                                ? "Creando..."
+                                ? "Enviando..."
                                 : "Enviar mensaje"}
                             </Button>
                             <p className="mt-2 text-center text-muted-foreground text-xs">

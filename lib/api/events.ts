@@ -1,3 +1,6 @@
+import { Result, Result as R } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
+import { getErrorMessage } from "@/lib/result"
 import type {
   CreateEventInput,
   Event,
@@ -13,21 +16,9 @@ const API_BASE =
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
-function getErrorMessage(data: unknown, fallback: string): string {
-  if (!data || typeof data !== "object") return fallback
-  const d = data as Record<string, unknown>
-  const msg = d.message
-  if (Array.isArray(msg)) return msg.join(". ") || fallback
-  if (typeof msg === "string") return msg
-  if (typeof d.error === "string") return d.error
-  return fallback
-}
-
-// ─── Events ─────────────────────────────────────────────────────────────────
-
 export async function getEvents(
   filters?: EventFilters
-): Promise<PaginatedEventsResponse | { error: string }> {
+): Promise<Result<PaginatedEventsResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (filters?.userId) searchParams.set("userId", filters.userId)
   if (filters?.organizerId) searchParams.set("organizerId", filters.organizerId)
@@ -45,38 +36,62 @@ export async function getEvents(
   try {
     res = await fetch(url)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener eventos") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener eventos"),
+      })
+    )
   }
 
-  return data as PaginatedEventsResponse
+  return R.ok(data as PaginatedEventsResponse)
 }
 
 export async function getEventById(
   id: string
-): Promise<{ data: EventWithParticipants } | { error: string }> {
+): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${id}`)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener el evento") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener el evento"),
+      })
+    )
   }
 
-  return { data: data as EventWithParticipants }
+  return R.ok(data as EventWithParticipants)
 }
 
 export async function createEvent(
   input: CreateEventInput
-): Promise<{ data: Event } | { error: string }> {
+): Promise<Result<Event, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events`, {
@@ -85,7 +100,12 @@ export async function createEvent(
       body: JSON.stringify(input),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   let data: unknown
@@ -97,16 +117,23 @@ export async function createEvent(
 
   if (!res.ok) {
     const msg = (data as { message?: string })?.message ?? "Error al crear el evento"
-    return { error: msg }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: msg,
+      })
+    )
   }
 
-  return { data: data as Event }
+  return R.ok(data as Event)
 }
 
 export async function updateEvent(
   id: string,
   input: UpdateEventInput
-): Promise<{ data: EventWithParticipants } | { error: string }> {
+): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${id}`, {
@@ -115,42 +142,66 @@ export async function updateEvent(
       body: JSON.stringify(input),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al actualizar el evento") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al actualizar el evento"),
+      })
+    )
   }
 
-  return { data: data as EventWithParticipants }
+  return R.ok(data as EventWithParticipants)
 }
 
-export async function deleteEvent(id: string): Promise<{ data: void } | { error: string }> {
+export async function deleteEvent(
+  id: string
+): Promise<Result<void, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${id}`, {
       method: "DELETE",
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   if (!res.ok) {
     const data = await res.json().catch(() => null)
-    return { error: getErrorMessage(data, "Error al eliminar el evento") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al eliminar el evento"),
+      })
+    )
   }
 
-  return { data: undefined }
+  return R.ok(undefined)
 }
-
-// ─── Participants ─────────────────────────────────────────────────────────────
 
 export async function addEventParticipant(
   eventId: string,
   userId: string,
   role: "attendee" | "guest" = "attendee"
-): Promise<{ data: EventWithParticipants } | { error: string }> {
+): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${eventId}/participants`, {
@@ -159,63 +210,97 @@ export async function addEventParticipant(
       body: JSON.stringify({ userId, role }),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al agregar participante") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al agregar participante"),
+      })
+    )
   }
 
-  return { data: data as EventWithParticipants }
+  return R.ok(data as EventWithParticipants)
 }
 
 export async function removeEventParticipant(
   eventId: string,
   userId: string
-): Promise<{ data: void } | { error: string }> {
+): Promise<Result<void, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${eventId}/participants/${userId}`, {
       method: "DELETE",
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   if (!res.ok) {
     const data = await res.json().catch(() => null)
-    return { error: getErrorMessage(data, "Error al eliminar participante") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al eliminar participante"),
+      })
+    )
   }
 
-  return { data: undefined }
+  return R.ok(undefined)
 }
-
-// ─── Notes ────────────────────────────────────────────────────────────────────
 
 export async function getEventNotes(
   eventId: string
-): Promise<{ data: EventNote[] } | { error: string }> {
+): Promise<Result<EventNote[], ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${eventId}/notes`)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener notas") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener notas"),
+      })
+    )
   }
 
-  return { data: data as EventNote[] }
+  return R.ok(data as EventNote[])
 }
 
 export async function createEventNote(
   eventId: string,
   authorId: string,
   content: string
-): Promise<{ data: EventNote } | { error: string }> {
+): Promise<Result<EventNote, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${eventId}/notes`, {
@@ -224,13 +309,25 @@ export async function createEventNote(
       body: JSON.stringify({ content, authorId }),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al crear nota") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al crear nota"),
+      })
+    )
   }
 
-  return { data: data as EventNote }
+  return R.ok(data as EventNote)
 }

@@ -17,6 +17,7 @@ alwaysApply: true
 - Use existing code patterns and utilities over creating new ones.
 - Suggest only minimal, focused changes related to the current request.
 - Ensure strict typing where language allows.
+- Always check library with npx opensrc <libray> to understand how to implement it.
 
 ## Commit & Change Protocol
 - Use Conventional Commits:

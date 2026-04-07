@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
+import { Result } from "better-result"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import { getMessagesByChatId, type Message, type MessageType, sendMessage } from "./messages"
 
@@ -20,8 +21,8 @@ export function useMessages(chatId: string | undefined) {
       const result = await getMessagesByChatId(effectiveChatId, {
         limit: 100,
       })
-      if ("error" in result) throw new Error(result.error)
-      return result.data ?? []
+      if (!Result.isOk(result)) throw new Error(result.error.message)
+      return result.value.data ?? []
     },
     enabled: Boolean(effectiveChatId),
   })
@@ -109,8 +110,8 @@ export function useSendMessageMutation() {
   return useMutation({
     mutationFn: async (input: SendMessageInput) => {
       const result = await sendMessage(input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(result.error.message)
+      return result.value
     },
     onMutate: async (input) => {
       if (!input.chatId) return
@@ -135,6 +136,7 @@ export function useSendMessageMutation() {
       })
       return { previous }
     },
+    mutationKey: ["sendMessage"],
     onError: (_err, _input, context) => {
       if (context?.previous) {
         queryClient.setQueryData(messagesKeys.byChat(_input.chatId), context.previous)

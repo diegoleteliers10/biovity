@@ -3,26 +3,18 @@ const API_BASE =
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
+import { Result, Result as R } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
 import type {
   OrganizationMetrics,
   OrganizationMetricsFilters,
-  TopJobMetrics,
 } from "@/lib/types/organization-metrics"
-
-function getErrorMessage(data: unknown, fallback: string): string {
-  if (!data || typeof data !== "object") return fallback
-  const d = data as Record<string, unknown>
-  const msg = d.message
-  if (Array.isArray(msg)) return msg.join(". ") || fallback
-  if (typeof msg === "string") return msg
-  if (typeof d.error === "string") return d.error
-  return fallback
-}
+import { getErrorMessage } from "@/lib/result"
 
 export async function getOrganizationMetrics(
   organizationId: string,
   filters?: OrganizationMetricsFilters
-): Promise<OrganizationMetrics | { error: string }> {
+): Promise<Result<OrganizationMetrics, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (filters?.period) searchParams.set("period", filters.period)
 
@@ -33,47 +25,63 @@ export async function getOrganizationMetrics(
   try {
     res = await fetch(url)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err }))
   }
 
   const json = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(json, "Error al obtener métricas") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: json,
+        message: getErrorMessage(json, "Error al obtener métricas"),
+      })
+    )
   }
 
   // Handle nested response: { data: { data: { dashboard, pipeline, ... }, timestamp, path } }
   const wrapper = json as { data?: { data?: OrganizationMetrics; dashboard?: never }; dashboard?: never }
   if (wrapper.data?.data) {
-    return wrapper.data.data
+    return R.ok(wrapper.data.data)
   }
   // Handle semi-nested: { data: { dashboard, pipeline, ... } }
   if (wrapper.data?.dashboard) {
-    return wrapper.data as unknown as OrganizationMetrics
+    return R.ok(wrapper.data as unknown as OrganizationMetrics)
   }
   // Handle direct response: { dashboard, pipeline, ... }
   const direct = json as OrganizationMetrics
   if (direct.dashboard) {
-    return direct
+    return R.ok(direct)
   }
-  return { error: "Formato de respuesta inválido" }
+  return R.err(
+    new ApiError({ status: 0, statusText: "Invalid Response", body: json, message: "Formato de respuesta inválido" })
+  )
 }
 
 export async function incrementJobViews(
   jobId: string
-): Promise<{ data: { views: number } } | { error: string }> {
+): Promise<Result<{ views: number }, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/jobs/${jobId}/views`, {
       method: "PUT",
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err }))
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al incrementar vistas") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al incrementar vistas"),
+      })
+    )
   }
 
-  return { data: { views: (data as { views: number }).views } }
+  return R.ok({ views: (data as { views: number }).views })
 }

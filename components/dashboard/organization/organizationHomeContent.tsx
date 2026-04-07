@@ -16,6 +16,7 @@ import {
   useOrgRecentApplications,
   useOrgUpcomingInterviews,
 } from "@/lib/api/use-organization-dashboard"
+import { Result } from "better-result"
 import { getUser } from "@/lib/api/users"
 import { authClient } from "@/lib/auth-client"
 import type { Notification } from "@/lib/types/dashboard"
@@ -46,8 +47,8 @@ export function OrganizationHomeContent() {
       queryFn: async () => {
         if (!chat.professionalId) return null
         const result = await getUser(chat.professionalId)
-        if ("error" in result) return null
-        return result.data
+        if (!Result.isOk(result)) return null
+        return result.value
       },
       enabled: Boolean(chat.professionalId),
       staleTime: 5 * 60 * 1000,

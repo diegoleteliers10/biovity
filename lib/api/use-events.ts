@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import type {
   CreateEventInput,
   Event,
@@ -43,8 +45,8 @@ export function useEvents(filters?: {
     queryKey: eventsKeys.list(filters),
     queryFn: async () => {
       const result = await getEvents(filters)
-      if ("error" in result) throw new Error(result.error)
-      return result
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
   })
 
@@ -67,8 +69,8 @@ export function useEvent(id: string | undefined) {
     queryFn: async () => {
       if (!id) throw new Error("Event ID required")
       const result = await getEventById(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(id),
   })
@@ -88,8 +90,8 @@ export function useCreateEvent() {
   return useMutation({
     mutationFn: async (input: CreateEventInput) => {
       const result = await createEvent(input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: eventsKeys.all })
@@ -103,8 +105,8 @@ export function useUpdateEvent() {
   return useMutation({
     mutationFn: async ({ id, input }: { id: string; input: UpdateEventInput }) => {
       const result = await updateEvent(id, input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (data) => {
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
@@ -119,8 +121,8 @@ export function useDeleteEvent() {
   return useMutation({
     mutationFn: async (id: string) => {
       const result = await deleteEvent(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: eventsKeys.all })
@@ -142,8 +144,8 @@ export function useAddEventParticipant() {
       role?: "attendee" | "guest"
     }) => {
       const result = await addEventParticipant(eventId, userId, role)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (data) => {
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
@@ -157,11 +159,11 @@ export function useRemoveEventParticipant() {
   return useMutation({
     mutationFn: async ({ eventId, userId }: { eventId: string; userId: string }) => {
       const result = await removeEventParticipant(eventId, userId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: eventsKeys.detail(variables.eventId) })
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.detail(variables.eventId) })
     },
   })
 }
@@ -172,8 +174,8 @@ export function useEventNotes(eventId: string | undefined) {
     queryFn: async () => {
       if (!eventId) throw new Error("Event ID required")
       const result = await getEventNotes(eventId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(eventId),
   })
@@ -201,11 +203,11 @@ export function useCreateEventNote() {
       content: string
     }) => {
       const result = await createEventNote(eventId, authorId, content)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
     },
   })
 }

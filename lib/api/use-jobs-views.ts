@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import { incrementJobViews } from "@/lib/api/organization-metrics"
 
 export function useIncrementJobViews() {
@@ -9,8 +11,8 @@ export function useIncrementJobViews() {
   return useMutation({
     mutationFn: async (jobId: string) => {
       const result = await incrementJobViews(jobId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (data, jobId) => {
       queryClient.setQueryData(["job", jobId], (old: unknown) => {
