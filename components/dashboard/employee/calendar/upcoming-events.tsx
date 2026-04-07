@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Card } from "@/components/ui/card"
 import type { Event } from "@/lib/types/events"
+import { formatDateChilean, formatDateTimeChilean, getChileanDate } from "@/lib/utils"
 
 type UpcomingEventsProps = {
   events?: Event[]
@@ -36,43 +37,22 @@ export function UpcomingEvents({ events = [], isLoading, onEdit, onDelete }: Upc
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null)
 
-  const now = new Date()
+  const now = getChileanDate()
   const upcoming = events
-    .filter((e) => new Date(e.startAt) >= now)
-    .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
+    .filter((e) => getChileanDate(e.startAt) >= now)
+    .sort((a, b) => getChileanDate(a.startAt).getTime() - getChileanDate(b.startAt).getTime())
     .slice(0, 5)
 
   const formatEventDate = (iso: string) => {
-    try {
-      const d = new Date(iso)
-      return d.toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" })
-    } catch {
-      return ""
-    }
+    return formatDateChilean(iso, "d MMM yyyy")
   }
 
   const formatEventTime = (iso: string) => {
-    try {
-      return new Date(iso).toLocaleTimeString("es-CL", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    } catch {
-      return ""
-    }
+    return formatDateChilean(iso, "p")
   }
 
   const formatEndTime = (iso: string) => {
-    try {
-      return new Date(iso).toLocaleTimeString("es-CL", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    } catch {
-      return ""
-    }
+    return formatDateChilean(iso, "p")
   }
 
   const getEventTypeDot = (type: Event["type"]) => {

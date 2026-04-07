@@ -4,6 +4,7 @@ import { Clock01Icon, Location05Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
+import { formatDateChilean } from "@/lib/utils"
 
 type Event = {
   readonly id: string
@@ -51,18 +52,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
   }, [position])
 
   const formatEventDateTime = (iso: string) => {
-    try {
-      const d = new Date(iso)
-      return d.toLocaleDateString("es-CL", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    } catch {
-      return iso
-    }
+    return formatDateChilean(iso, "EEE d MMM, HH:mm")
   }
 
   const getEventTypeLabel = (type: Event["type"]) => {

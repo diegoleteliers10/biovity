@@ -2,6 +2,8 @@
 
 import type React from "react"
 
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 import { useState } from "react"
 import type { Event } from "@/lib/types/events"
 import { getChileanDate } from "@/lib/utils"
@@ -55,10 +57,11 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
     days.push(day)
   }
 
-  // Agrupar eventos por fecha
+  // Agrupar eventos por fecha (en zona horaria Chile)
   const eventsByDate: Record<string, CalendarEvent[]> = {}
   for (const event of events) {
-    const dateKey = event.startAt.split("T")[0]
+    const chileDate = getChileanDate(event.startAt)
+    const dateKey = format(chileDate, "yyyy-MM-dd")
     if (!eventsByDate[dateKey]) {
       eventsByDate[dateKey] = []
     }
@@ -88,11 +91,8 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
 
   const formatEventTime = (iso: string) => {
     try {
-      return new Date(iso).toLocaleTimeString("es-CL", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
+      const chileDate = getChileanDate(iso)
+      return format(chileDate, "HH:mm")
     } catch {
       return ""
     }

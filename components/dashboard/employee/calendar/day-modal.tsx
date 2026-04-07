@@ -2,6 +2,7 @@
 
 import { Calendar01Icon, Cancel01Icon, Clock03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { formatDateChilean } from "@/lib/utils"
 
 type CalendarEvent = {
   readonly id: string
@@ -23,15 +24,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
   if (!isOpen) return null
 
   const formatEventTime = (iso: string) => {
-    try {
-      return new Date(iso).toLocaleTimeString("es-CL", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    } catch {
-      return ""
-    }
+    return formatDateChilean(iso, "p")
   }
 
   const getEventTypeInfo = (type: CalendarEvent["type"]) => {

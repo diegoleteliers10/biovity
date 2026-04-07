@@ -4,10 +4,10 @@ import {
   Building06Icon,
   Camera01Icon,
   Cancel01Icon,
+  CreditCardIcon,
   Edit01Icon,
   FloppyDiskIcon,
   Globe02Icon,
-  Link01Icon,
   Location01Icon,
   Mail01Icon,
   MapPinIcon,
@@ -16,13 +16,27 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, useRef } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import type { OrganizationAddress } from "@/lib/api/organizations"
-import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
+import {
+  useOrganization,
+  useUpdateOrganizationMutation,
+} from "@/lib/api/use-organization"
 import {
   formatUserLocation,
   parseLocationString,
@@ -171,11 +185,16 @@ function parseAddressString(value: string): OrganizationAddress {
 
 export function OrganizationProfileContent() {
   const { useSession } = authClient
-  const { data: session } = useSession()
+  const { data: session, isPending } = useSession()
   const userId = (session?.user as { id?: string })?.id
-  const organizationId = (session?.user as { organizationId?: string })?.organizationId
+  const organizationId = (session?.user as { organizationId?: string })
+    ?.organizationId
 
-  const { data: user, isLoading: userLoading, error: userError } = useUser(userId)
+  const {
+    data: user,
+    isLoading: userLoading,
+    error: userError,
+  } = useUser(userId)
   const {
     data: organization,
     isLoading: orgLoading,
@@ -185,6 +204,12 @@ export function OrganizationProfileContent() {
   const updateUserMutation = useUpdateUserMutation(userId ?? "")
   const updateOrgMutation = useUpdateOrganizationMutation(organizationId ?? "")
   const uploadAvatarMutation = useUploadAvatarMutation(userId ?? "")
+
+  // Hydration guard: skip SSR render of auth-dependent UI to prevent flash
+  const mounted = useRef(false)
+  useEffect(() => {
+    mounted.current = true
+  }, [])
 
   const [editingSection, setEditingSection] = useState<SectionId | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -211,7 +236,8 @@ export function OrganizationProfileContent() {
     phone: user?.phone ?? "",
     location: user ? formatUserLocation(user.location) : "",
     profession: user?.profession ?? "",
-    avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
+    avatar:
+      user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
   }
 
   useEffect(() => {
@@ -222,7 +248,8 @@ export function OrganizationProfileContent() {
         phone: user?.phone ?? "",
         location: user ? formatUserLocation(user.location) : "",
         profession: user?.profession ?? "",
-        avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
+        avatar:
+          user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
       })
     }
   }, [user, session, editingSection])
@@ -292,14 +319,18 @@ export function OrganizationProfileContent() {
             profession: userForm.profession || undefined,
             phone: userForm.phone || undefined,
             avatar: userForm.avatar || undefined,
-            location: userForm.location ? parseLocationString(userForm.location) : undefined,
+            location: userForm.location
+              ? parseLocationString(userForm.location)
+              : undefined,
           })
         } else {
           await updateOrgMutation.mutateAsync({
             name: orgForm.name,
             website: orgForm.website || undefined,
             phone: orgForm.phone || undefined,
-            address: orgForm.address ? parseAddressString(orgForm.address) : undefined,
+            address: orgForm.address
+              ? parseAddressString(orgForm.address)
+              : undefined,
           })
         }
         setEditingSection(null)
@@ -334,7 +365,10 @@ export function OrganizationProfileContent() {
         uploadAvatarMutation.mutate(file, {
           onSuccess: (updatedUser) => {
             if (updatedUser?.avatar) {
-              setUserForm((prev) => ({ ...prev, avatar: updatedUser.avatar ?? prev.avatar }))
+              setUserForm((prev) => ({
+                ...prev,
+                avatar: updatedUser.avatar ?? prev.avatar,
+              }))
             }
           },
         })
@@ -345,21 +379,47 @@ export function OrganizationProfileContent() {
   )
 
   const isLoading = userLoading || orgLoading
-  const isSaving = updateUserMutation.isPending || updateOrgMutation.isPending
+  const isSaving =
+    updateUserMutation.isPending || updateOrgMutation.isPending
 
-  if (!userId && !session) {
+  // Skip all auth-dependent rendering until client-side hydration is complete.
+  // This prevents the flash of "Inicia sesión" on page reload when the session
+  // cookie is present but the client hasn't rehydrated yet.
+  if (!mounted.current) {
     return (
       <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
-        <p className="text-muted-foreground text-pretty">Inicia sesión para ver tu perfil.</p>
+        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
+          <div className="h-96 animate-pulse rounded-xl bg-muted" />
+          <div className="space-y-6">
+            <div className="h-48 animate-pulse rounded-xl bg-muted" />
+            <div className="h-64 animate-pulse rounded-xl bg-muted" />
+          </div>
+        </div>
       </main>
     )
   }
 
-  if (userError) {
+  if (isPending) {
     return (
       <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
-        <p className="text-destructive text-pretty">
-          {userError instanceof Error ? userError.message : "Error al cargar el perfil"}
+        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
+          <div className="h-96 animate-pulse rounded-xl bg-muted" />
+          <div className="space-y-6">
+            <div className="h-48 animate-pulse rounded-xl bg-muted" />
+            <div className="h-64 animate-pulse rounded-xl bg-muted" />
+          </div>
+        </div>
+      </main>
+    )
+  }
+
+  if (!userId && !session) {
+    return (
+      <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
+        <p className="text-muted-foreground text-pretty">
+          Inicia sesión para ver tu perfil.
         </p>
       </main>
     )
@@ -380,6 +440,18 @@ export function OrganizationProfileContent() {
     )
   }
 
+  if (userError) {
+    return (
+      <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
+        <p className="text-destructive text-pretty">
+          {userError instanceof Error
+            ? userError.message
+            : "Error al cargar el perfil"}
+        </p>
+      </main>
+    )
+  }
+
   const isEditingSidebar = editingSection === "sidebar"
   const isEditingOrg = editingSection === "organization"
   const data = editingSection ? userForm : profileData
@@ -387,7 +459,9 @@ export function OrganizationProfileContent() {
   return (
     <main className="flex flex-1 flex-col gap-8 p-6 md:p-8">
       <header>
-        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">
+          Mi Perfil
+        </h1>
         <p className="text-muted-foreground text-sm mt-1">
           Gestiona tu información personal y de la organización
         </p>
@@ -419,7 +493,11 @@ export function OrganizationProfileContent() {
                     unoptimized
                   />
                 ) : (
-                  <HugeiconsIcon icon={UserIcon} size={40} className="text-muted-foreground" />
+                  <HugeiconsIcon
+                    icon={UserIcon}
+                    size={40}
+                    className="text-muted-foreground"
+                  />
                 )}
                 {isEditingSidebar && (
                   <label
@@ -432,7 +510,11 @@ export function OrganizationProfileContent() {
                     {uploadAvatarMutation.isPending ? (
                       <span className="text-white text-xs">Subiendo…</span>
                     ) : (
-                      <HugeiconsIcon icon={Camera01Icon} size={24} className="text-white" />
+                      <HugeiconsIcon
+                        icon={Camera01Icon}
+                        size={24}
+                        className="text-white"
+                      />
                     )}
                     <input
                       type="file"
@@ -449,30 +531,38 @@ export function OrganizationProfileContent() {
                   {uploadAvatarMutation.error?.message}
                 </p>
               )}
-              <div className="mt-4 text-center px-6">
+              <div className="mt-4 px-6">
                 {isEditingSidebar ? (
-                  <div className="space-y-3 px-6">
+                  <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-left text-xs font-medium text-muted-foreground">Nombre</label>
+                      <label className="text-left text-xs font-medium text-muted-foreground">
+                        Nombre
+                      </label>
                       <Input
                         value={userForm.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
                         placeholder="Nombre completo"
                         className={cn(errors.name && "ring-destructive")}
                       />
-                      {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+                      {errors.name && (
+                        <p className="text-xs text-destructive">{errors.name}</p>
+                      )}
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-left text-xs font-medium text-muted-foreground">Cargo</label>
+                      <label className="text-left text-xs font-medium text-muted-foreground">
+                        Cargo
+                      </label>
                       <Input
                         value={userForm.profession}
-                        onChange={(e) => handleInputChange("profession", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("profession", e.target.value)
+                        }
                         placeholder="Profesión"
                       />
                     </div>
                   </div>
                 ) : (
-                  <>
+                  <div className="text-center">
                     <p className="text-lg font-semibold text-foreground text-balance">
                       {data.name || EMPTY_PLACEHOLDER}
                     </p>
@@ -481,10 +571,12 @@ export function OrganizationProfileContent() {
                     </p>
                     {user?.type && (
                       <Badge variant="accent" className="mt-2 text-xs">
-                        {user.type === "organization" ? "Organización" : user.type}
+                        {user.type === "organization"
+                          ? "Organización"
+                          : user.type}
                       </Badge>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             </div>
@@ -520,7 +612,9 @@ export function OrganizationProfileContent() {
                   isEditingSidebar ? (
                     <Input
                       value={userForm.location}
-                      onChange={(e) => handleInputChange("location", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("location", e.target.value)
+                      }
                       placeholder="Ciudad, País"
                       className="h-8 w-full text-sm border-0 bg-muted/50 px-2 -ml-1.5"
                     />
@@ -533,135 +627,239 @@ export function OrganizationProfileContent() {
           </EditableCard>
         </aside>
 
-        <div className="space-y-6 min-w-0">
+        <div className="min-w-0 space-y-6">
           {errors.general && (
-            <p className="text-sm text-destructive text-pretty">{errors.general}</p>
+            <p className="text-sm text-destructive text-pretty">
+              {errors.general}
+            </p>
           )}
 
-          <EditableCard
-            isEditing={isEditingOrg}
-            onEdit={() => handleEditSection("organization")}
-            onSave={() => handleSaveSection("organization")}
-            onCancel={handleCancelSection}
-            isSaving={isSaving}
-          >
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <HugeiconsIcon icon={Building06Icon} size={18} />
-                Información de la organización
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {!organizationId ? (
-                <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 py-16 text-center">
-                  <div className="flex size-16 items-center justify-center rounded-full bg-muted ring-2 ring-border/60">
-                    <HugeiconsIcon
-                      icon={Building06Icon}
-                      size={32}
-                      className="text-muted-foreground"
-                    />
-                  </div>
-                  <div className="space-y-1 px-4">
-                    <p className="font-medium text-foreground">Sin organización</p>
-                    <p className="text-muted-foreground text-pretty text-sm max-w-sm">
-                      No tienes una organización asociada. Completa tu perfil para vincular una.
-                    </p>
-                  </div>
-                </div>
-              ) : orgError ? (
-                <p className="rounded-lg bg-destructive/10 px-4 py-3 text-destructive text-sm">
-                  {orgError.message}
-                </p>
-              ) : (
-                <div className="space-y-6">
-                  {isEditingOrg ? (
-                    <div className="space-y-5">
-                      <div className="grid gap-5 sm:grid-cols-2">
-                        <div className="space-y-1.5">
-                          <label className="text-sm font-medium text-foreground">Nombre</label>
-                          <Input
-                            value={orgForm.name}
-                            onChange={(e) => handleOrgInputChange("name", e.target.value)}
-                            placeholder="Nombre de la organización"
-                            className="h-10"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-sm font-medium text-foreground">Sitio web</label>
-                          <Input
-                            value={orgForm.website}
-                            onChange={(e) => handleOrgInputChange("website", e.target.value)}
-                            placeholder="https://..."
-                            className="h-10"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <label className="text-sm font-medium text-foreground">Teléfono</label>
-                          <Input
-                            value={orgForm.phone}
-                            onChange={(e) => handleOrgInputChange("phone", e.target.value)}
-                            placeholder="+56 9 1234 5678"
-                            className="h-10"
-                          />
-                        </div>
-                        <div className="space-y-1.5 sm:col-span-2">
-                          <label className="text-sm font-medium text-foreground">Dirección</label>
-                          <Input
-                            value={orgForm.address}
-                            onChange={(e) => handleOrgInputChange("address", e.target.value)}
-                            placeholder="Calle, Ciudad, Región, País, Código postal"
-                            className="h-10"
-                          />
-                        </div>
+          <div className="relative min-h-[120px]">
+            <Tabs defaultValue="profile" className="w-full">
+              <TabsList
+                variant="line"
+                className="absolute z-20 bg-background px-1"
+              >
+                <TabsTrigger value="profile" className="gap-2">
+                  <HugeiconsIcon icon={Building06Icon} size={16} />
+                  Perfil
+                </TabsTrigger>
+                <TabsTrigger value="subscription" className="gap-2">
+                  <HugeiconsIcon icon={CreditCardIcon} size={16} />
+                  Suscripción
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="profile" className="w-full">
+                <div className="pt-10 w-full">
+              <EditableCard
+                isEditing={isEditingOrg}
+                onEdit={() => handleEditSection("organization")}
+                onSave={() => handleSaveSection("organization")}
+                onCancel={handleCancelSection}
+                isSaving={isSaving}
+              >
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <HugeiconsIcon icon={Building06Icon} size={18} />
+                    Información de la organización
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {!organizationId ? (
+                    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 py-16 text-center">
+                      <div className="flex size-16 items-center justify-center rounded-full bg-muted ring-2 ring-border/60">
+                        <HugeiconsIcon
+                          icon={Building06Icon}
+                          size={32}
+                          className="text-muted-foreground"
+                        />
+                      </div>
+                      <div className="space-y-1 px-4">
+                        <p className="font-medium text-foreground">
+                          Sin organización
+                        </p>
+                        <p className="text-muted-foreground text-pretty text-sm max-w-sm">
+                          No tienes una organización asociada. Completa tu perfil
+                          para vincular una.
+                        </p>
                       </div>
                     </div>
+                  ) : orgError ? (
+                    <p className="rounded-lg bg-destructive/10 px-4 py-3 text-destructive text-sm">
+                      {orgError.message}
+                    </p>
                   ) : (
-                    <div className="space-y-5">
-                      <div className="grid gap-5 sm:grid-cols-2">
-                        <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
-                          <SectionTitle icon={Building06Icon} title="Nombre" />
-                          <p className="mt-2 text-sm font-medium text-foreground">
-                            {organization?.name || EMPTY_PLACEHOLDER}
-                          </p>
-                        </div>
-                        <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
-                          <SectionTitle icon={Globe02Icon} title="Sitio web" />
-                          {organization?.website ? (
-                            <a
-                              href={
-                                organization.website.startsWith("http")
-                                  ? organization.website
-                                  : `https://${organization.website}`
+                    <div className="space-y-6">
+                      {isEditingOrg ? (
+                        <div className="grid gap-5 sm:grid-cols-2">
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground">
+                              Nombre
+                            </label>
+                            <Input
+                              value={orgForm.name}
+                              onChange={(e) =>
+                                handleOrgInputChange("name", e.target.value)
                               }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="mt-2 block text-sm text-primary hover:underline break-all"
-                            >
-                              {organization.website}
-                            </a>
-                          ) : (
-                            <p className="mt-2 text-sm text-muted-foreground">{EMPTY_PLACEHOLDER}</p>
-                          )}
+                              placeholder="Nombre de la organización"
+                              className="h-10"
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground">
+                              Sitio web
+                            </label>
+                            <Input
+                              value={orgForm.website}
+                              onChange={(e) =>
+                                handleOrgInputChange("website", e.target.value)
+                              }
+                              placeholder="https://..."
+                              className="h-10"
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground">
+                              Teléfono
+                            </label>
+                            <Input
+                              value={orgForm.phone}
+                              onChange={(e) =>
+                                handleOrgInputChange("phone", e.target.value)
+                              }
+                              placeholder="+56 9 1234 5678"
+                              className="h-10"
+                            />
+                          </div>
+                          <div className="space-y-1.5 sm:col-span-2">
+                            <label className="text-sm font-medium text-foreground">
+                              Dirección
+                            </label>
+                            <Input
+                              value={orgForm.address}
+                              onChange={(e) =>
+                                handleOrgInputChange("address", e.target.value)
+                              }
+                              placeholder="Calle, Ciudad, Región, País, Código postal"
+                              className="h-10"
+                            />
+                          </div>
                         </div>
-                        <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
-                          <SectionTitle icon={SmartPhone01Icon} title="Teléfono" />
-                          <p className="mt-2 text-sm font-medium text-foreground">
-                            {organization?.phone || EMPTY_PLACEHOLDER}
-                          </p>
+                      ) : (
+                        <div className="space-y-5">
+                          <div className="grid gap-5 sm:grid-cols-2">
+                            <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                              <SectionTitle
+                                icon={Building06Icon}
+                                title="Nombre"
+                              />
+                              <p className="mt-2 text-sm font-medium text-foreground">
+                                {organization?.name || EMPTY_PLACEHOLDER}
+                              </p>
+                            </div>
+                            <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                              <SectionTitle
+                                icon={Globe02Icon}
+                                title="Sitio web"
+                              />
+                              {organization?.website ? (
+                                <a
+                                  href={
+                                    organization.website.startsWith("http")
+                                      ? organization.website
+                                      : `https://${organization.website}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="mt-2 block text-sm text-primary hover:underline break-all"
+                                >
+                                  {organization.website}
+                                </a>
+                              ) : (
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                  {EMPTY_PLACEHOLDER}
+                                </p>
+                              )}
+                            </div>
+                            <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                              <SectionTitle
+                                icon={SmartPhone01Icon}
+                                title="Teléfono"
+                              />
+                              <p className="mt-2 text-sm font-medium text-foreground">
+                                {organization?.phone || EMPTY_PLACEHOLDER}
+                              </p>
+                            </div>
+                            <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4 sm:col-span-2">
+                              <SectionTitle
+                                icon={MapPinIcon}
+                                title="Dirección"
+                              />
+                              <p className="mt-2 text-sm font-medium text-foreground">
+                                {formatAddress(organization?.address ?? null) ||
+                                  EMPTY_PLACEHOLDER}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                            <SectionTitle
+                              icon={CreditCardIcon}
+                              title="ID de Suscripción"
+                            />
+                            <p className="mt-2 text-sm font-medium text-foreground">
+                              {organization?.subscriptionId ? (
+                                <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">
+                                  {organization.subscriptionId}
+                                </code>
+                              ) : (
+                                <span className="text-muted-foreground">
+                                  {EMPTY_PLACEHOLDER}
+                                </span>
+                              )}
+                            </p>
+                          </div>
                         </div>
-                        <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4 sm:col-span-2">
-                          <SectionTitle icon={MapPinIcon} title="Dirección" />
-                          <p className="mt-2 text-sm font-medium text-foreground">
-                            {formatAddress(organization?.address ?? null) || EMPTY_PLACEHOLDER}
-                          </p>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   )}
+                </CardContent>
+              </EditableCard>
                 </div>
-              )}
-            </CardContent>
-          </EditableCard>
+              </TabsContent>
+
+            <TabsContent value="subscription" className="w-full pt-10">
+              <Card className="bg-white border border-border/10 w-full">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <HugeiconsIcon icon={CreditCardIcon} size={18} />
+                    Información de suscripción
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 py-16 text-center">
+                    <div className="flex size-16 items-center justify-center rounded-full bg-muted ring-2 ring-border/60">
+                      <HugeiconsIcon
+                        icon={CreditCardIcon}
+                        size={32}
+                        className="text-muted-foreground"
+                      />
+                    </div>
+                    <div className="space-y-1 px-4">
+                      <p className="font-medium text-foreground">
+                        Suscripción no disponible
+                      </p>
+                      <p className="text-muted-foreground text-pretty text-sm max-w-sm">
+                        La información de tu plan y facturación aparecerá aquí
+                        cuando integrate el endpoint de suscripciones.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+          </div>
         </div>
       </div>
     </main>
