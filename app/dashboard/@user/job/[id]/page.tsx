@@ -18,9 +18,11 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
+import { useEffect, useRef } from "react"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
+import { useIncrementJobViews } from "@/lib/api/use-jobs-views"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
 import {
   useCheckSavedJob,
@@ -104,6 +107,16 @@ export default function JobDetailPage() {
     if (isSaved) removeMutation.mutate({ userId: professionalId, jobId })
     else saveMutation.mutate({ userId: professionalId, jobId })
   }
+
+  const incrementViews = useIncrementJobViews()
+  const hasIncrementedView = useRef(false)
+
+  useEffect(() => {
+    if (jobId && !hasIncrementedView.current) {
+      hasIncrementedView.current = true
+      incrementViews.mutate(jobId)
+    }
+  }, [jobId, incrementViews])
 
   const { data: organization } = useOrganization(
     job && !job.organization && job.organizationId ? job.organizationId : undefined
@@ -330,9 +343,7 @@ export default function JobDetailPage() {
                 Descripción
               </h2>
             </div>
-            <p className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground/95 md:text-[15px]">
-              {job.description || "Sin descripción."}
-            </p>
+            <HtmlContent html={job.description} className="text-sm leading-7 md:text-[15px]" />
 
             {job.benefits && job.benefits.length > 0 && (
               <section className="space-y-3 rounded-xl bg-[#f3f3f5] p-4 md:p-5">
