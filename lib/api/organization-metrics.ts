@@ -25,7 +25,9 @@ export async function getOrganizationMetrics(
   try {
     res = await fetch(url)
   } catch (err) {
-    return R.err(new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err }))
+    return R.err(
+      new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err })
+    )
   }
 
   const json = await res.json().catch(() => null)
@@ -41,7 +43,10 @@ export async function getOrganizationMetrics(
   }
 
   // Handle nested response: { data: { data: { dashboard, pipeline, ... }, timestamp, path } }
-  const wrapper = json as { data?: { data?: OrganizationMetrics; dashboard?: never }; dashboard?: never }
+  const wrapper = json as {
+    data?: { data?: OrganizationMetrics; dashboard?: never }
+    dashboard?: never
+  }
   if (wrapper.data?.data) {
     return R.ok(wrapper.data.data)
   }
@@ -55,7 +60,12 @@ export async function getOrganizationMetrics(
     return R.ok(direct)
   }
   return R.err(
-    new ApiError({ status: 0, statusText: "Invalid Response", body: json, message: "Formato de respuesta inválido" })
+    new ApiError({
+      status: 0,
+      statusText: "Invalid Response",
+      body: json,
+      message: "Formato de respuesta inválido",
+    })
   )
 }
 
@@ -68,7 +78,9 @@ export async function incrementJobViews(
       method: "PUT",
     })
   } catch (err) {
-    return R.err(new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err }))
+    return R.err(
+      new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err })
+    )
   }
 
   const data = await res.json().catch(() => null)

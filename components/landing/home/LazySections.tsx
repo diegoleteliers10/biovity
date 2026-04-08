@@ -3,7 +3,10 @@
 import dynamic from "next/dynamic"
 
 const TransparencyGuarantee = dynamic(
-  () => import("@/components/landing/home/TransparencyGuarantee").then((mod) => mod.TransparencyGuarantee),
+  () =>
+    import("@/components/landing/home/TransparencyGuarantee").then(
+      (mod) => mod.TransparencyGuarantee
+    ),
   {
     ssr: false,
     loading: () => <div className="py-24 bg-white" />,

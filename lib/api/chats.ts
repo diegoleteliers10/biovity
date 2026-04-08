@@ -146,9 +146,7 @@ export async function createOrFindChat(
   return R.ok(chat as Chat)
 }
 
-export async function getChatById(
-  chatId: string
-): Promise<Result<Chat, ApiError | NetworkError>> {
+export async function getChatById(chatId: string): Promise<Result<Chat, ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/chats/${chatId}`
 
   let res: Response

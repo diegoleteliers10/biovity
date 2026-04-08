@@ -182,9 +182,7 @@ export async function getUsers(
   })
 }
 
-export async function getUser(
-  id: string
-): Promise<Result<User, ApiError | NetworkError>> {
+export async function getUser(id: string): Promise<Result<User, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/users/${id}`)
@@ -216,9 +214,7 @@ export async function getUser(
   return R.ok(normalized)
 }
 
-export async function uploadAvatar(
-  file: File
-): Promise<Result<string, ApiError | NetworkError>> {
+export async function uploadAvatar(file: File): Promise<Result<string, ApiError | NetworkError>> {
   const formData = new FormData()
   formData.append("file", file)
 

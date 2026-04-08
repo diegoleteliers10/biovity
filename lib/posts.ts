@@ -60,8 +60,7 @@ export async function getAllPosts(): Promise<Result<Post[], NotFoundError | Pars
 
   return R.ok(
     posts.sort(
-      (a, b) =>
-        new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+      (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
     )
   )
 }

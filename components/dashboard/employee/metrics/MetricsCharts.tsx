@@ -141,24 +141,13 @@ export function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
   return (
     <ChartContainer config={config}>
       <BarChart accessibilityLayer data={data}>
-        <rect
-          x="0"
-          y="0"
-          width="100%"
-          height="85%"
-          fill="url(#default-pattern-dots-response)"
-        />
+        <rect x="0" y="0" width="100%" height="85%" fill="url(#default-pattern-dots-response)" />
         <defs>
           <DottedBackgroundPattern patternId="default-pattern-dots-response" />
         </defs>
         <XAxis dataKey="period" tickLine={false} tickMargin={10} axisLine={false} />
         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-        <Bar
-          dataKey="count"
-          fill="var(--color-count)"
-          shape={<CustomDuotoneBar />}
-          radius={4}
-        />
+        <Bar dataKey="count" fill="var(--color-count)" shape={<CustomDuotoneBar />} radius={4} />
       </BarChart>
     </ChartContainer>
   )
@@ -373,7 +362,11 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
 
       {/* Pipeline */}
       <Card className="border border-border/80 bg-white lg:col-span-2">
-        <PipelineChart data={pipelineData} config={pipelineChartConfig} totalPipeline={totalPipeline} />
+        <PipelineChart
+          data={pipelineData}
+          config={pipelineChartConfig}
+          totalPipeline={totalPipeline}
+        />
       </Card>
 
       {/* Industries */}

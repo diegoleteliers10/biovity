@@ -24,6 +24,7 @@ export type JobLocation = {
 }
 
 export type JobBenefit = {
+  tipo?: string
   title: string
   description?: string
 }
@@ -52,6 +53,7 @@ export type Job = {
   benefits?: JobBenefit[]
   status: string
   applicationsCount?: number
+  views?: number
   expiresAt?: string
   createdAt: string
   updatedAt: string
@@ -375,9 +377,7 @@ export async function updateJob(
   return R.ok(data as Job)
 }
 
-export async function deleteJob(
-  id: string
-): Promise<Result<void, ApiError | NetworkError>> {
+export async function deleteJob(id: string): Promise<Result<void, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/jobs/${id}`, {

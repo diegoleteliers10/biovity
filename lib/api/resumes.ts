@@ -166,9 +166,7 @@ export async function getResumeByUserId(
   return R.ok(normalized)
 }
 
-export async function getResume(
-  id: string
-): Promise<Result<Resume, ApiError | NetworkError>> {
+export async function getResume(id: string): Promise<Result<Resume, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/resumes/${id}`)

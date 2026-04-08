@@ -176,10 +176,17 @@ export function EventFormModal({
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <SheetContent side="right" className="flex w-full flex-col sm:max-w-lg [&_[data-slot=content]]:sm:max-w-lg">
+      <SheetContent
+        side="right"
+        className="flex w-full flex-col sm:max-w-lg [&_[data-slot=content]]:sm:max-w-lg"
+      >
         <SheetHeader>
           <SheetTitle>
-            {isEditMode ? "Editar Evento" : lockedType ? EVENT_TYPES.find((t) => t.value === lockedType)?.label : "Crear Evento"}
+            {isEditMode
+              ? "Editar Evento"
+              : lockedType
+                ? EVENT_TYPES.find((t) => t.value === lockedType)?.label
+                : "Crear Evento"}
           </SheetTitle>
           <SheetDescription>
             {isEditMode
@@ -387,7 +394,13 @@ export function EventFormModal({
               Cancelar
             </Button>
             <Button type="submit" disabled={!isValid || isLoading} className="flex-1">
-              {isLoading ? (isEditMode ? "Guardando..." : "Creando...") : isEditMode ? "Guardar" : "Crear evento"}
+              {isLoading
+                ? isEditMode
+                  ? "Guardando..."
+                  : "Creando..."
+                : isEditMode
+                  ? "Guardar"
+                  : "Crear evento"}
             </Button>
           </div>
         </form>

@@ -20,18 +20,15 @@ type TimeRange = "3m" | "6m" | "12m"
 
 // Dynamic import for heavy chart components - defer recharts bundle loading
 // Per bundle-dynamic-imports: use next/dynamic for heavy components not needed on initial render
-const ChartsGrid = dynamic(
-  () => import("./metrics/MetricsCharts").then((mod) => mod.ChartsGrid),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
-        <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
-      </div>
-    ),
-  }
-)
+const ChartsGrid = dynamic(() => import("./metrics/MetricsCharts").then((mod) => mod.ChartsGrid), {
+  ssr: false,
+  loading: () => (
+    <div className="grid gap-4 lg:grid-cols-3">
+      <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
+      <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
+    </div>
+  ),
+})
 
 const MOCK_METRICS: Metric[] = [
   {

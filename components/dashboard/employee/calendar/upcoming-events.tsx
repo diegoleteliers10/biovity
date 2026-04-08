@@ -128,7 +128,9 @@ export function UpcomingEvents({ events = [], isLoading, onEdit, onDelete }: Upc
                     <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full shrink-0 ${getEventTypeDot(event.type)}`} />
+                          <span
+                            className={`w-2 h-2 rounded-full shrink-0 ${getEventTypeDot(event.type)}`}
+                          />
                           <h4 className="font-medium text-sidebar-foreground text-sm leading-tight">
                             {event.title}
                           </h4>
@@ -250,7 +252,10 @@ export function UpcomingEvents({ events = [], isLoading, onEdit, onDelete }: Upc
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteEventId !== null} onOpenChange={(open) => !open && setDeleteEventId(null)}>
+      <AlertDialog
+        open={deleteEventId !== null}
+        onOpenChange={(open) => !open && setDeleteEventId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar evento?</AlertDialogTitle>

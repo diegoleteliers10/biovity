@@ -235,7 +235,7 @@ export function DashboardSidebar({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Progreso del Perfil: {navData.profileProgress.percentage}%</p>
-                    <p className="text-xs text-muted-foreground">Click para completar</p>
+                    <p className="text-xs text-secondary-foreground/70">Click para completar</p>
                   </TooltipContent>
                 </Tooltip>
               </SidebarMenu>

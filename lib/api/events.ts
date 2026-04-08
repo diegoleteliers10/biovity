@@ -165,9 +165,7 @@ export async function updateEvent(
   return R.ok(data as EventWithParticipants)
 }
 
-export async function deleteEvent(
-  id: string
-): Promise<Result<void, ApiError | NetworkError>> {
+export async function deleteEvent(id: string): Promise<Result<void, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/events/${id}`, {

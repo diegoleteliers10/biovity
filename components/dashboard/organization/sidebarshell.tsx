@@ -20,7 +20,9 @@ export function DashboardShellOrganization({ children, defaultOpen }: DashboardS
         avatarGradient={{ from: "purple-500", to: "blue-600" }}
         logoutHoverContrastOnAccent
       />
-      <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
+      <SidebarInset className="rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   )
 }

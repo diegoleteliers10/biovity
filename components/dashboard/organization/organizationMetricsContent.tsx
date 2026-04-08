@@ -141,13 +141,17 @@ export function OrganizationMetricsContent() {
             <KpiCard
               title="Ofertas activas"
               value={metrics?.dashboard.activeJobs ?? 0}
-              subtitle={period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"}
+              subtitle={
+                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+              }
               icon={FileAddIcon}
             />
             <KpiCard
               title="Aplicaciones recibidas"
               value={metrics?.pipeline.totalApplications ?? 0}
-              subtitle={period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"}
+              subtitle={
+                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+              }
               icon={File02Icon}
               trend={`${(metrics?.dashboard.applicationsTrend ?? 0 > 0) ? "+" : ""}${metrics?.dashboard.applicationsTrend ?? 0}%`}
               trendPositive={(metrics?.dashboard.applicationsTrend ?? 0) >= 0}
@@ -155,7 +159,9 @@ export function OrganizationMetricsContent() {
             <KpiCard
               title="Entrevistas"
               value={metrics?.dashboard.interviewsThisPeriod ?? 0}
-              subtitle={period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"}
+              subtitle={
+                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+              }
               icon={Calendar03Icon}
               trend={`${(metrics?.dashboard.interviewsTrend ?? 0 > 0) ? "+" : ""}${metrics?.dashboard.interviewsTrend ?? 0}%`}
               trendPositive={(metrics?.dashboard.interviewsTrend ?? 0) >= 0}
@@ -163,7 +169,9 @@ export function OrganizationMetricsContent() {
             <KpiCard
               title="Vistas de ofertas"
               value={totalViews}
-              subtitle={period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"}
+              subtitle={
+                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+              }
               icon={ViewIcon}
             />
           </>
@@ -224,8 +232,20 @@ export function OrganizationMetricsContent() {
                   <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="aplicaciones" stroke="#6366f1" strokeWidth={2} dot={{ r: 4 }} />
-                  <Line type="monotone" dataKey="entrevistas" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="aplicaciones"
+                    stroke="#6366f1"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="entrevistas"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             ) : (

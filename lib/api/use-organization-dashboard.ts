@@ -77,7 +77,11 @@ export function useOrganizationMetrics(
       if (!organizationId) {
         return {
           dashboard: DEFAULT_DASHBOARD_METRICS,
-          pipeline: { totalApplications: 0, byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 }, conversionRate: 0 },
+          pipeline: {
+            totalApplications: 0,
+            byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 },
+            conversionRate: 0,
+          },
           topJobs: [],
           recentTrend: [],
         }
@@ -86,7 +90,11 @@ export function useOrganizationMetrics(
       if (!Result.isOk(result)) {
         return {
           dashboard: DEFAULT_DASHBOARD_METRICS,
-          pipeline: { totalApplications: 0, byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 }, conversionRate: 0 },
+          pipeline: {
+            totalApplications: 0,
+            byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 },
+            conversionRate: 0,
+          },
           topJobs: [],
           recentTrend: [],
         }
@@ -153,7 +161,8 @@ export function useOrgRecentApplications(organizationId: string | undefined) {
       if (!organizationId) throw new Error("Organization ID required")
 
       const applicationsResult = await getApplicationsByOrganization(organizationId, { limit: 10 })
-      if (!Result.isOk(applicationsResult)) throw new Error(getResultErrorMessage(applicationsResult.error))
+      if (!Result.isOk(applicationsResult))
+        throw new Error(getResultErrorMessage(applicationsResult.error))
 
       const applications = applicationsResult.value.data
 

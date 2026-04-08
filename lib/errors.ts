@@ -14,7 +14,12 @@ class NetworkError extends _NetworkError {
   }
 }
 
-const _ApiError = ApiErrorFactory<{ status: number; statusText?: string; message: string; body?: unknown }>()
+const _ApiError = ApiErrorFactory<{
+  status: number
+  statusText?: string
+  message: string
+  body?: unknown
+}>()
 class ApiError extends _ApiError {
   constructor(args: {
     status: number
@@ -56,8 +61,7 @@ class NotFoundError extends _NotFoundError {
 const _DbError = DbErrorFactory<{ operation: string; message: string; cause?: unknown }>()
 class DbError extends _DbError {
   constructor(args: { operation: string; cause?: unknown }) {
-    const msg =
-      args.cause instanceof Error ? args.cause.message : String(args.cause ?? "unknown")
+    const msg = args.cause instanceof Error ? args.cause.message : String(args.cause ?? "unknown")
     super({
       operation: args.operation,
       message: `DB ${args.operation} failed: ${msg}`,
