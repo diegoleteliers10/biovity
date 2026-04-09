@@ -56,10 +56,21 @@ export function ListaEsperaContent() {
     }
   }
 
+  const backgroundBlobs = (
+    <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
+      <div className="absolute top-[5%] left-[10%] w-[22rem] h-[22rem] bg-[#00374a]/25 rounded-full blur-3xl"></div>
+      <div className="absolute top-[15%] right-[15%] w-[18rem] h-[18rem] bg-[#00374a]/20 rounded-full blur-2xl"></div>
+      <div className="absolute top-[55%] left-[5%] w-[20rem] h-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl"></div>
+      <div className="absolute top-[65%] right-[10%] w-[24rem] h-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl"></div>
+      <div className="absolute bottom-[15%] left-[25%] w-[19rem] h-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl"></div>
+      <div className="absolute top-[35%] right-[30%] w-[16rem] h-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl"></div>
+    </div>
+  )
+
   if (isSubmitted) {
     return (
       <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-green-50 pointer-events-none" />
+        {backgroundBlobs}
         <m.div
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -74,13 +85,13 @@ export function ListaEsperaContent() {
             className="mx-auto mb-6"
             priority
           />
-          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={40} className="text-green-600" />
+          <div className="w-20 h-20 rounded-full bg-[#006b5e]/20 flex items-center justify-center mx-auto mb-6">
+            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={40} className="text-[#006b5e]" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-balance">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
             ¡Estás en la lista!
           </h1>
-          <p className="text-lg text-gray-600 text-pretty">
+          <p className="text-lg text-muted-foreground text-pretty">
             Te avisaremos cuando Biovity esté listo. Mientras tanto, seguimos construyendo el mejor
             portal de empleo para el sector científico en Chile.
           </p>
@@ -91,17 +102,7 @@ export function ListaEsperaContent() {
 
   return (
     <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-green-50 pointer-events-none">
-        <div className="absolute top-[12%] left-[5%] w-76 h-76 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20 blur-2xl" />
-        <div className="absolute top-[8%] right-[6%] w-72 h-72 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-18 blur-2xl" />
-        <div className="absolute top-[48%] left-[50%] w-84 h-84 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-12 blur-3xl" />
-        <div className="absolute top-[75%] left-[4%] w-80 h-80 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-21 blur-2xl" />
-        <div className="absolute top-[62%] right-[5%] w-76 h-76 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-17 blur-2xl" />
-        <div className="absolute top-[28%] left-[18%] w-68 h-68 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-18 blur-2xl" />
-        <div className="absolute top-[22%] right-[22%] w-72 h-72 bg-gradient-to-br from-violet-400 to-purple-400 rounded-full opacity-19 blur-2xl" />
-        <div className="absolute top-[65%] left-[35%] w-68 h-68 bg-gradient-to-br from-violet-400 to-purple-400 rounded-full opacity-18 blur-2xl" />
-        <div className="absolute top-[72%] right-[18%] w-76 h-76 bg-gradient-to-br from-violet-400 to-purple-400 rounded-full opacity-20 blur-2xl" />
-      </div>
+      {backgroundBlobs}
 
       <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6">
         <m.div
@@ -118,13 +119,13 @@ export function ListaEsperaContent() {
             className="mx-auto mb-6"
             priority
           />
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight text-balance">
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight text-balance">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Biovity
             </span>{" "}
             llega pronto
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 text-pretty">
+          <p className="text-base sm:text-lg text-muted-foreground text-pretty">
             El portal de empleo para biotecnología, bioquímica y ciencias en Chile está en
             construcción. Únete a la lista y sé el primero en enterarte.
           </p>
@@ -135,10 +136,10 @@ export function ListaEsperaContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={ts(LANDING_ANIMATION.sequenceDelay)}
           onSubmit={handleSubmit}
-          className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl border border-gray-100"
+          className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl border border-border/10"
         >
           <div className="mb-6">
-            <span className="block text-sm font-medium text-gray-700 mb-3">
+            <span className="block text-sm font-medium text-foreground mb-3">
               ¿Qué te describe mejor?
             </span>
             <div className="flex gap-3">
@@ -152,8 +153,8 @@ export function ListaEsperaContent() {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 transition-all font-medium",
                       role === opt.value
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                        ? "border-secondary bg-secondary/10 text-secondary"
+                        : "border-border/20 bg-white text-muted-foreground hover:border-secondary/40"
                     )}
                     aria-pressed={role === opt.value}
                     aria-label={`Seleccionar ${opt.label}`}
@@ -167,14 +168,14 @@ export function ListaEsperaContent() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
               {emailLabel}
             </label>
             <div className="relative">
               <HugeiconsIcon
                 icon={Mail01Icon}
                 size={20}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
               <Input
                 id="email"
@@ -183,7 +184,7 @@ export function ListaEsperaContent() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={emailPlaceholder}
                 required
-                className="pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white"
+                className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
                 aria-invalid={!!error}
               />
             </div>
@@ -217,7 +218,7 @@ export function ListaEsperaContent() {
           </Button>
         </m.form>
 
-        <p className="text-center text-sm text-gray-500 mt-6 text-pretty">
+        <p className="text-center text-sm text-muted-foreground mt-6 text-pretty">
           Sin spam. Solo te avisaremos cuando estemos listos.
         </p>
       </div>

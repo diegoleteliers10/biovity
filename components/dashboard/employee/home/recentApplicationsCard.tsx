@@ -7,7 +7,8 @@ import type { Application } from "@/lib/api/applications"
 
 interface RecentApplicationsCardProps {
   applications?: Application[]
-  onJobClick: (jobTitle: string, company: string) => void
+  onJobClick: (jobId: string) => void
+  onViewAll?: () => void
   isLoading?: boolean
 }
 
@@ -16,7 +17,12 @@ function formatApplicationDate(dateString: string): string {
   return date.toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" })
 }
 
-function getStatusStyles(status: string): { bg: string; text: string; border: string; label: string } {
+function getStatusStyles(status: string): {
+  bg: string
+  text: string
+  border: string
+  label: string
+} {
   switch (status) {
     case "pendiente":
       return {
@@ -60,16 +66,17 @@ function getStatusStyles(status: string): { bg: string; text: string; border: st
 export const RecentApplicationsCard = memo(function RecentApplicationsCard({
   applications = [],
   onJobClick,
+  onViewAll,
   isLoading,
 }: RecentApplicationsCardProps) {
-  const handleJobClick = (jobTitle: string, company: string) => {
-    onJobClick(jobTitle, company)
+  const handleJobClick = (jobId: string) => {
+    onJobClick(jobId)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent, jobTitle: string, company: string) => {
+  const handleKeyDown = (e: React.KeyboardEvent, jobId: string) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault()
-      handleJobClick(jobTitle, company)
+      handleJobClick(jobId)
     }
   }
 
@@ -78,7 +85,7 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-foreground">Aplicaciones Recientes</CardTitle>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+          <Button variant="ghost" size="sm" onClick={onViewAll}>
             Ver Todo
           </Button>
         </div>
@@ -87,7 +94,10 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60 animate-pulse">
+              <div
+                key={i}
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60 animate-pulse"
+              >
                 <div className="space-y-2">
                   <div className="h-4 w-40 rounded bg-muted" />
                   <div className="h-3 w-24 rounded bg-muted" />
@@ -111,8 +121,8 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
                 <div
                   key={app.id}
                   className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors duration-200 border border-border/60 hover:border-border/80"
-                  onClick={() => handleJobClick(app.job?.title ?? "Trabajo", app.candidate?.profession ?? "Organización")}
-                  onKeyDown={(e) => handleKeyDown(e, app.job?.title ?? "Trabajo", app.candidate?.profession ?? "Organización")}
+                  onClick={() => handleJobClick(app.jobId)}
+                  onKeyDown={(e) => handleKeyDown(e, app.jobId)}
                   tabIndex={0}
                   role="button"
                   aria-label={`Ver detalles del trabajo ${app.job?.title}`}

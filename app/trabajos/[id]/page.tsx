@@ -2,6 +2,7 @@ import {
   Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
+  ViewIcon,
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -9,6 +10,7 @@ import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { Fragment } from "react"
+import { JobViewsTracker } from "@/components/common/job-views-tracker"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { Badge } from "@/components/ui/badge"
@@ -29,6 +31,7 @@ import {
   getFormatoBadgeColor,
   getModalidadBadgeColor,
 } from "@/lib/utils"
+import { Result } from "better-result"
 
 type Props = {
   params: Promise<{ id: string }>
@@ -78,14 +81,13 @@ function getJobBreadcrumbs(referer: string | null, jobTitle: string): Breadcrumb
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const result = await getJob(id)
-
-  if ("error" in result) {
+  if (!Result.isOk(result)) {
     return {
       title: "Trabajo no encontrado | Biovity",
     }
   }
 
-  const job = result.data
+  const job = result.value
   const url = `/trabajos/${job.id}`
   const desc = job.description?.substring(0, 160) ?? ""
   return {
@@ -112,16 +114,15 @@ export default async function TrabajoDetailPage({ params }: Props) {
   const headersList = await headers()
   const referer = headersList.get("referer")
   const result = await getJob(id)
-
-  if ("error" in result) {
+  if (!Result.isOk(result)) {
     notFound()
   }
 
-  const job = result.data
+  const job = result.value
   let organizationName = job.organization?.name
   if (!organizationName && job.organizationId) {
     const orgResult = await getOrganization(job.organizationId)
-    if ("data" in orgResult) organizationName = orgResult.data.name
+    if (Result.isOk(orgResult)) organizationName = orgResult.value.name
   }
   organizationName = organizationName ?? "Organización"
 
@@ -162,6 +163,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
         url={`${siteUrl}/trabajos/${job.id}`}
       />
       <article className="py-16">
+        <JobViewsTracker jobId={job.id} jobOrganizationId={job.organizationId} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb - reflects navigation path (referer) */}
           <Breadcrumb className="mb-8">
@@ -227,6 +229,12 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <HugeiconsIcon icon={Clock01Icon} size={20} className="text-muted-foreground" />
                 <span>Publicado {formatFechaLarga(new Date(job.createdAt))}</span>
               </div>
+              {"views" in job && typeof job.views === "number" && job.views > 0 && (
+                <div className="flex items-center gap-2">
+                  <HugeiconsIcon icon={ViewIcon} size={20} className="text-muted-foreground" />
+                  <span>{job.views} vistas</span>
+                </div>
+              )}
             </div>
           </div>
 

@@ -19,25 +19,31 @@ export function SocialShare({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <span className="text-sm font-medium">Compartir:</span>
-      <Button asChild variant="outline" size="icon-sm">
+      <span className="text-sm font-medium text-muted-foreground">Compartir:</span>
+      <Button asChild variant="ghost" size="icon-sm">
         <a
           href={shareLinks.twitter}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Compartir en Twitter"
         >
-          <HugeiconsIcon icon={TwitterIcon} className="h-4 w-4" />
+          <HugeiconsIcon
+            icon={TwitterIcon}
+            className="h-4 w-4 text-muted-foreground hover:text-secondary"
+          />
         </a>
       </Button>
-      <Button asChild variant="outline" size="icon-sm">
+      <Button asChild variant="ghost" size="icon-sm">
         <a
           href={shareLinks.linkedin}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Compartir en LinkedIn"
         >
-          <HugeiconsIcon icon={Linkedin02Icon} className="h-4 w-4" />
+          <HugeiconsIcon
+            icon={Linkedin02Icon}
+            className="h-4 w-4 text-muted-foreground hover:text-secondary"
+          />
         </a>
       </Button>
     </div>

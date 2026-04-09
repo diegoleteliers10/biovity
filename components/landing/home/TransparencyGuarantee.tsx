@@ -59,13 +59,13 @@ export function TransparencyGuarantee() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className="relative bg-[#f3f3f5] rounded-2xl p-8 border-2 border-dashed border-muted-foreground/30"
+              className="relative bg-[#f3f3f5] rounded-2xl p-8"
             >
               <div className="flex flex-col items-center text-center">
                 <div className="mb-6">
-                  <HugeiconsIcon icon={feature.icon} size={48} className="text-accent" />
+                  <HugeiconsIcon icon={feature.icon} size={48} className="text-secondary" />
                 </div>
-                <h3 className="text-primary text-lg mb-3">{feature.title}</h3>
+                <h3 className="text-foreground text-lg font-semibold mb-3">{feature.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>

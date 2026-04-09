@@ -61,7 +61,7 @@ export function RegisterContent() {
 
           <div className="flex flex-col space-y-2">
             <Link href="/register/professional">
-              <Card className="group cursor-pointer border border-border/15 bg-white hover:border-border/30 hover:bg-[#f3f3f5] transition-all duration-200">
+              <Card className="group cursor-pointer border border-border/10 bg-white hover:border-border/30 hover:bg-secondary/5 transition-all duration-200">
                 <CardContent className="flex items-center gap-4 p-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary/20">
                     <HugeiconsIcon icon={UserIcon} size={22} strokeWidth={1.5} />
@@ -84,7 +84,7 @@ export function RegisterContent() {
               </Card>
             </Link>
             <Link href="/register/organization">
-              <Card className="group cursor-pointer border border-border/15 bg-white hover:border-border/30 hover:bg-[#f3f3f5] transition-all duration-200">
+              <Card className="group cursor-pointer border border-border/10 bg-white hover:border-border/30 hover:bg-accent/5 transition-all duration-200">
                 <CardContent className="flex items-center gap-4 p-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
                     <HugeiconsIcon icon={Building06Icon} size={22} strokeWidth={1.5} />
@@ -113,23 +113,13 @@ export function RegisterContent() {
               ¿Ya tienes cuenta?
             </p>
             <div className="space-y-2">
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="h-11 w-full"
-              >
+              <Button asChild variant="ghost" size="lg" className="h-11 w-full">
                 <Link href="/login/professional" className="flex items-center gap-2">
                   <HugeiconsIcon icon={UserIcon} size={18} strokeWidth={1.5} />
                   Iniciar sesión como usuario
                 </Link>
               </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="h-11 w-full"
-              >
+              <Button asChild variant="ghost" size="lg" className="h-11 w-full">
                 <Link href="/login/organization" className="flex items-center gap-2">
                   <HugeiconsIcon icon={Building06Icon} size={18} strokeWidth={1.5} />
                   Acceder al portal organizacional

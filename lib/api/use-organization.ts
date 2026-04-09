@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import { getOrganization, type UpdateOrganizationInput, updateOrganization } from "./organizations"
 
 export const organizationKeys = {
@@ -13,8 +15,8 @@ export function useOrganization(id: string | undefined) {
     queryFn: async () => {
       if (!id) throw new Error("Organization ID required")
       const result = await getOrganization(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(id),
   })
@@ -25,8 +27,8 @@ export function useUpdateOrganizationMutation(organizationId: string) {
   return useMutation({
     mutationFn: async (input: UpdateOrganizationInput) => {
       const result = await updateOrganization(organizationId, input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: organizationKeys.detail(organizationId) })

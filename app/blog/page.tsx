@@ -3,6 +3,7 @@ import { BlogGrid } from "@/components/blog/BlogGrid"
 import { BlogHeader } from "@/components/blog/BlogHeader"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { getAllPosts } from "@/lib/posts"
+import { Result } from "better-result"
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -39,7 +40,8 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  const posts = await getAllPosts()
+  const result = await getAllPosts()
+  const posts = Result.isOk(result) ? result.value : []
 
   return (
     <LandingLayout>

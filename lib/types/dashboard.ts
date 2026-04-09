@@ -22,6 +22,7 @@ export interface Metric {
   trendPositive?: boolean
   subtitle?: string
   icon: IconSvgElement
+  iconColor?: "primary" | "secondary" | "accent"
 }
 
 export interface RecentApplication {
@@ -44,6 +45,7 @@ export type ApplicationStage = "pendiente" | "entrevista" | "oferta" | "contrata
 
 export interface Applicant {
   id: string
+  candidateId: string
   candidateName: string
   position: string
   dateApplied: string

@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/animate-ui/components/radix/dialog"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Combobox,
   ComboboxChip,
@@ -26,6 +27,7 @@ import {
 } from "@/components/ui/combobox"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { RichTextEditor } from "@/components/dashboard/shared/RichTextEditor"
 import {
   Select,
   SelectContent,
@@ -33,7 +35,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import type { Job, JobBenefitInput } from "@/lib/api/jobs"
 import { useCreateJobMutation, useUpdateJobMutation } from "@/lib/api/use-jobs"
 
@@ -140,6 +141,8 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     [onOpenChange, resetForm]
   )
 
+  const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "").trim()
+
   const payload = {
     title: title.trim(),
     description: description.trim(),
@@ -167,7 +170,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim() || !description.trim() || !employmentType || !experienceLevel) return
+    if (!title.trim() || !stripHtml(description) || !employmentType || !experienceLevel) return
 
     if (isEdit && job) {
       updateMutation.mutate(
@@ -188,7 +191,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   }
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending
-  const canSubmit = title.trim() && description.trim() && employmentType && experienceLevel
+  const canSubmit = title.trim() && stripHtml(description) && employmentType && experienceLevel
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -218,14 +221,12 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="job-description">Descripción *</FieldLabel>
-            <Textarea
-              id="job-description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+            <FieldLabel>Descripción *</FieldLabel>
+            <RichTextEditor
+              content={description}
+              onChange={setDescription}
               placeholder="Describe el puesto, requisitos y responsabilidades..."
-              rows={5}
-              required
+              className="min-h-[160px]"
             />
           </Field>
 
@@ -265,15 +266,11 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
           <Field>
             <FieldLabel>Ubicación</FieldLabel>
             <div className="space-y-3">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isRemote}
-                  onChange={(e) => setIsRemote(e.target.checked)}
-                  className="rounded border-input"
-                />
-                <span className="text-sm">Trabajo remoto</span>
-              </label>
+              <Checkbox
+                checked={isRemote}
+                onChange={(e) => setIsRemote(e.target.checked)}
+                label="Trabajo remoto"
+              />
               {!isRemote && (
                 <div className="grid grid-cols-2 gap-3">
                   <Input

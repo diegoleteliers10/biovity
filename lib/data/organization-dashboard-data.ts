@@ -195,4 +195,3 @@ export async function fetchOrgFeaturedCandidates() {
   await delay(800)
   return ORGANIZATION_FEATURED_CANDIDATES
 }
-

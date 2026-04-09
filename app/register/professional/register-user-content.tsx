@@ -327,14 +327,14 @@ export function UserRegisterContent() {
                     Acepto los{" "}
                     <button
                       type="button"
-                      className="text-teal-600 hover:text-teal-700 hover:underline"
+                      className="text-secondary hover:text-secondary/80 hover:underline"
                     >
                       términos y condiciones
                     </button>{" "}
                     y la{" "}
                     <button
                       type="button"
-                      className="text-teal-600 hover:text-teal-700 hover:underline"
+                      className="text-secondary hover:text-secondary/80 hover:underline"
                     >
                       política de privacidad
                     </button>
@@ -352,16 +352,12 @@ export function UserRegisterContent() {
               </div>
             )}
 
-            <Button
-              type="submit"
-              className="h-11 w-full bg-teal-600 text-white hover:bg-teal-700"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="h-11 w-full" disabled={isLoading}>
               {isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
             </Button>
           </form>
 
-          <div className="space-y-4 border-t pt-6">
+          <div className="space-y-4 border-t border-border/10 pt-6">
             <div className="text-center">
               <Link
                 href="/register"
@@ -387,7 +383,7 @@ export function UserRegisterContent() {
                 ¿Representas una organización?{" "}
                 <Link
                   href="/register/organization"
-                  className="font-medium text-fuchsia-600 hover:text-fuchsia-700 hover:underline"
+                  className="font-medium text-accent hover:text-accent/80 hover:underline"
                 >
                   Registrar organización
                 </Link>

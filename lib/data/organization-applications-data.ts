@@ -10,6 +10,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
     applicants: [
       {
         id: "a1",
+        candidateId: "c1",
         candidateName: "María González",
         position: "Investigador en Biotecnología",
         dateApplied: "4 Mar 2026",
@@ -17,6 +18,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
       },
       {
         id: "a2",
+        candidateId: "c2",
         candidateName: "Carlos Rodríguez",
         position: "Investigador en Biotecnología",
         dateApplied: "3 Mar 2026",
@@ -24,6 +26,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
       },
       {
         id: "a3",
+        candidateId: "c3",
         candidateName: "Ana Martínez",
         position: "Investigador en Biotecnología",
         dateApplied: "2 Mar 2026",
@@ -31,6 +34,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
       },
       {
         id: "a4",
+        candidateId: "c4",
         candidateName: "Pedro Sánchez",
         position: "Investigador en Biotecnología",
         dateApplied: "1 Mar 2026",
@@ -38,6 +42,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
       },
       {
         id: "a5",
+        candidateId: "c5",
         candidateName: "Laura Fernández",
         position: "Investigador en Biotecnología",
         dateApplied: "28 Feb 2026",
@@ -54,6 +59,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
     applicants: [
       {
         id: "b1",
+        candidateId: "c6",
         candidateName: "Roberto Díaz",
         position: "Especialista en Control de Calidad",
         dateApplied: "3 Mar 2026",
@@ -61,6 +67,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
       },
       {
         id: "b2",
+        candidateId: "c7",
         candidateName: "Carmen López",
         position: "Especialista en Control de Calidad",
         dateApplied: "2 Mar 2026",
@@ -68,6 +75,7 @@ export const OFFERS_WITH_APPLICANTS: OfferWithApplicants[] = [
       },
       {
         id: "b3",
+        candidateId: "c8",
         candidateName: "Jorge Muñoz",
         position: "Especialista en Control de Calidad",
         dateApplied: "1 Mar 2026",

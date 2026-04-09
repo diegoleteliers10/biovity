@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import {
   type CreateOrganizationInput,
   createOrganization,
@@ -14,8 +16,8 @@ export function useOrganization(id: string | undefined) {
     queryFn: async () => {
       if (!id) throw new Error("Organization ID required")
       const result = await getOrganization(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(id),
   })
@@ -25,8 +27,8 @@ export function useCreateOrganizationMutation() {
   return useMutation({
     mutationFn: async (input: CreateOrganizationInput) => {
       const result = await createOrganization(input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
   })
 }
@@ -35,8 +37,8 @@ export function useLinkUserToOrganizationMutation() {
   return useMutation({
     mutationFn: async ({ userId, organizationId }: { userId: string; organizationId: string }) => {
       const result = await linkUserToOrganization(userId, organizationId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
   })
 }

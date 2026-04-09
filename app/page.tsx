@@ -1,10 +1,6 @@
 import type { Metadata } from "next"
-import { Categories } from "@/components/landing/home/Categories"
-import { CTA } from "@/components/landing/home/CTA"
-import { ForStudents } from "@/components/landing/home/ForStudents"
 import { Hero } from "@/components/landing/home/Hero"
-import { HowItWorks } from "@/components/landing/home/HowItWorks"
-import { TransparencyGuarantee } from "@/components/landing/home/TransparencyGuarantee"
+import { LazyLandingSections } from "@/components/landing/home/LazySections"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { JobBoardJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "../components/seo/JsonLd"
 
@@ -47,8 +43,6 @@ export const metadata: Metadata = {
   },
 }
 
-import { ConexionTalento } from "@/components/landing/home/BeamSection"
-
 export default function Home() {
   return (
     <LandingLayout>
@@ -57,12 +51,7 @@ export default function Home() {
       <JobBoardJsonLd />
       <main className="flex flex-col relative">
         <Hero />
-        <TransparencyGuarantee />
-        <ConexionTalento />
-        <HowItWorks />
-        <ForStudents />
-        <Categories />
-        <CTA />
+        <LazyLandingSections />
       </main>
     </LandingLayout>
   )

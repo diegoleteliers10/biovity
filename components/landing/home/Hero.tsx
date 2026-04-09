@@ -15,19 +15,14 @@ export function Hero() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
   return (
     <section className="relative h-dvh w-full flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-green-50 pointer-events-none">
-        {/* Blue-Cyan: 3 circles, blur for soft essence */}
-        <div className="absolute top-[12%] left-[5%] w-[19rem] h-[19rem] bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20 blur-2xl"></div>
-        <div className="absolute top-[8%] right-[6%] w-[18rem] h-[18rem] bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-18 blur-2xl"></div>
-        <div className="absolute top-[48%] left-[50%] w-[21rem] h-[21rem] bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-12 blur-3xl"></div>
-        {/* Green-Emerald: 3 circles, blur for soft essence */}
-        <div className="absolute top-[75%] left-[4%] w-[20rem] h-[20rem] bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-21 blur-2xl"></div>
-        <div className="absolute top-[62%] right-[5%] w-[19rem] h-[19rem] bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-17 blur-2xl"></div>
-        <div className="absolute top-[28%] left-[18%] w-[17rem] h-[17rem] bg-gradient-to-br from-green-400 to-emerald-400 rounded-full opacity-18 blur-2xl"></div>
-        {/* Violet-Purple: 3 circles, blur for soft essence */}
-        <div className="absolute top-[22%] right-[22%] w-[18rem] h-[18rem] bg-gradient-to-br from-violet-400 to-purple-400 rounded-full opacity-19 blur-2xl"></div>
-        <div className="absolute top-[65%] left-[35%] w-[17rem] h-[17rem] bg-gradient-to-br from-violet-400 to-purple-400 rounded-full opacity-18 blur-2xl"></div>
-        <div className="absolute top-[72%] right-[18%] w-[19rem] h-[19rem] bg-gradient-to-br from-violet-400 to-purple-400 rounded-full opacity-20 blur-2xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
+        {/* Brand-aligned blobs - 6 circles for depth */}
+        <div className="absolute top-[5%] left-[10%] w-[22rem] h-[22rem] bg-[#00374a]/25 rounded-full blur-3xl"></div>
+        <div className="absolute top-[15%] right-[15%] w-[18rem] h-[18rem] bg-[#00374a]/20 rounded-full blur-2xl"></div>
+        <div className="absolute top-[55%] left-[5%] w-[20rem] h-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-[65%] right-[10%] w-[24rem] h-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-[15%] left-[25%] w-[19rem] h-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl"></div>
+        <div className="absolute top-[35%] right-[30%] w-[16rem] h-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl"></div>
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
@@ -38,7 +33,7 @@ export function Hero() {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
           >
             Donde el talento y la
-            <span className="bg-linear-to-r from-accent via-blue-700/80 to-secondary bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               {" "}
               ciencia{" "}
             </span>
@@ -60,7 +55,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           >
-            <Card className="p-4 sm:p-6 max-w-4xl mx-auto shadow-lg border border-border/15 bg-white/90 backdrop-blur-sm w-full px-4 sm:px-6">
+            <Card className="p-4 sm:p-6 max-w-4xl mx-auto bg-white/90 backdrop-blur-sm w-full px-4 sm:px-6 border border-border/10">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="flex-1 relative">
                   <HugeiconsIcon
@@ -90,11 +85,19 @@ export function Hero() {
             </Card>
 
             <div className="flex flex-wrap justify-center gap-3 mt-6 md:mt-8 px-4">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs sm:text-sm text-muted-foreground"
+              >
                 <HugeiconsIcon icon={Briefcase01Icon} className="w-4 h-4 mr-2" />
                 Para Profesionales
               </Button>
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs sm:text-sm text-muted-foreground"
+              >
                 <HugeiconsIcon icon={Search01Icon} className="w-4 h-4 mr-2" />
                 Para Empresas
               </Button>

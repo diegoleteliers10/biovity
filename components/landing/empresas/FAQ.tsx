@@ -31,7 +31,7 @@ export function FAQ() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight text-balance"
+            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight text-balance"
           >
             Preguntas frecuentes
           </m.h2>
@@ -40,7 +40,7 @@ export function FAQ() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-500 text-pretty"
+            className="text-xl text-muted-foreground text-pretty"
           >
             Todo lo que necesitas saber sobre Biovity para empresas.
           </m.p>
@@ -57,13 +57,13 @@ export function FAQ() {
               <AccordionItem
                 key={faq.question}
                 value={faq.question}
-                className="bg-gray-50 rounded-xl border border-gray-100 overflow-hidden"
+                className="bg-[#f3f3f5] rounded-xl border border-border/10 overflow-hidden"
               >
-                <AccordionTrigger className="w-full px-6 py-5 flex items-center justify-between text-left transition-colors duration-200 hover:no-underline font-semibold text-gray-900 text-base gap-4 [&>svg]:text-gray-500">
+                <AccordionTrigger className="w-full px-6 py-5 flex items-center justify-between text-left transition-colors duration-200 hover:no-underline font-semibold text-foreground text-base gap-4 [&>svg]:text-muted-foreground">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent
-                  className="px-6 pb-5 text-gray-600 leading-relaxed text-pretty text-base"
+                  className="px-6 pb-5 text-muted-foreground leading-relaxed text-pretty text-base"
                   keepRendered
                   transition={{
                     duration: reducedMotion ? 0.01 : 0.7,

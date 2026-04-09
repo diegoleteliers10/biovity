@@ -41,8 +41,11 @@ export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
         profileUrl="/dashboard/profile"
         avatarUrl={user?.avatar}
         avatarGradient={{ from: "blue-500", to: "purple-600" }}
+        profession={user?.profession}
       />
-      <SidebarInset className="rounded-tl-lg">{children}</SidebarInset>
+      <SidebarInset className="rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   )
 }

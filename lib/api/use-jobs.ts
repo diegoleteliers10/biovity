@@ -1,6 +1,8 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import {
   type CreateJobInput,
   createJob,
@@ -24,11 +26,9 @@ export function useJobs(organizationId: string | undefined) {
   return useQuery({
     queryKey: jobsKeys.list(organizationId),
     queryFn: async () => {
-      const result = await getJobs({
-        organizationId,
-      })
-      if ("error" in result) throw new Error(result.error)
-      let jobs = result.data
+      const result = await getJobs({ organizationId })
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      let jobs = result.value
       if (organizationId && jobs.length > 0) {
         jobs = jobs.filter((j) => j.organizationId === organizationId)
       }
@@ -56,8 +56,8 @@ export function useJobsByOrganization(
         status: params?.status,
         search: params?.search,
       })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(organizationId),
   })
@@ -72,8 +72,8 @@ export function useJobsSearch(search?: string) {
         limit: 100,
         ...(search?.trim() && { search: search.trim() }),
       })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
   })
 }
@@ -84,8 +84,8 @@ export function useJob(id: string | undefined) {
     queryFn: async () => {
       if (!id) throw new Error("Job ID required")
       const result = await getJob(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(id),
   })
@@ -96,8 +96,8 @@ export function useCreateJobMutation(organizationId: string) {
   return useMutation({
     mutationFn: async (input: Omit<CreateJobInput, "organizationId">) => {
       const result = await createJob({ ...input, organizationId })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
@@ -111,8 +111,8 @@ export function useUpdateJobMutation(organizationId: string) {
   return useMutation({
     mutationFn: async ({ id, input }: { id: string; input: UpdateJobInput }) => {
       const result = await updateJob(id, input)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
@@ -127,8 +127,8 @@ export function useDeleteJobMutation(organizationId: string) {
   return useMutation({
     mutationFn: async (id: string) => {
       const result = await deleteJob(id)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })

@@ -7,7 +7,7 @@ export function TrabajosHero() {
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 md:mb-4 leading-tight">
             Encuentra tu Próximo{" "}
-            <span className="bg-gradient-to-r from-accent via-blue-700/80 to-secondary bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
               Trabajo en Ciencias
             </span>
           </h1>

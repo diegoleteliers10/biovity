@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getAllPosts, getPostBySlug } from "@/lib/posts"
 import { formatDateChilean } from "@/lib/utils"
+import { Result } from "better-result"
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -24,7 +25,11 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
-    const post = await getPostBySlug(slug)
+    const result = await getPostBySlug(slug)
+    if (!Result.isOk(result)) {
+      return { title: "Post Not Found", description: "This post could not be found." }
+    }
+    const post = result.value
     const url = `/blog/${slug}`
     return {
       title: post.frontmatter.title,
@@ -51,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         canonical: url,
       },
     }
-  } catch (error) {
+  } catch {
     return {
       title: "Post Not Found",
       description: "This post could not be found.",
@@ -60,19 +65,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const posts = await getAllPosts()
-  return posts.map((post) => ({
-    slug: post.slug,
-  }))
+  const result = await getAllPosts()
+  const posts = Result.isOk(result) ? result.value : []
+  return posts.map((post) => ({ slug: post.slug }))
 }
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params
-  const post = await getPostBySlug(slug).catch(() => null)
+  const result = await getPostBySlug(slug)
 
-  if (!post) {
+  if (!Result.isOk(result)) {
     notFound()
   }
+
+  const post = result.value
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biovity.cl"
   const postUrl = `${siteUrl}/blog/${slug}`
@@ -99,39 +105,41 @@ export default async function PostPage({ params }: Props) {
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbLink href="/" className="text-muted-foreground hover:text-secondary">
+                  Home
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/blog">Blog</BreadcrumbLink>
+                <BreadcrumbLink href="/blog" className="text-muted-foreground hover:text-secondary">
+                  Blog
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{post.frontmatter.title}</BreadcrumbPage>
+                <BreadcrumbPage className="text-foreground">
+                  {post.frontmatter.title}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
 
-          {/* Title */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-left">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-left text-foreground tracking-tight">
             {post.frontmatter.title}
           </h1>
 
-          {/* Excerpt */}
-          <p className="text-lg md:text-xl text-gray-700 mb-6 text-left">
+          <p className="text-lg md:text-xl text-muted-foreground mb-6 text-left">
             {post.frontmatter.excerpt}
           </p>
 
-          {/* Metadata */}
-          <div className="flex items-center gap-4 mb-8 text-sm text-gray-600">
+          <div className="flex items-center gap-4 mb-8 text-sm text-muted-foreground">
             <span>{formatDateChilean(post.frontmatter.date, "d MMM yyyy")}</span>
             <span>•</span>
             <span>Por {post.frontmatter.author}</span>
             <SocialShare className="ml-auto" />
           </div>
 
-          {/* Hero Image */}
-          <div className="relative w-full h-[400px] md:h-[500px] mb-12 rounded-lg overflow-hidden">
+          <div className="relative w-full h-[400px] md:h-[500px] mb-12 rounded-xl overflow-hidden border border-border/10">
             <Image
               src={post.frontmatter.featuredImage}
               alt={post.frontmatter.title}
@@ -142,7 +150,6 @@ export default async function PostPage({ params }: Props) {
             />
           </div>
 
-          {/* Content */}
           <div className="prose prose-lg max-w-none">
             <MDXRemote source={post.content} components={mdxComponents} />
           </div>

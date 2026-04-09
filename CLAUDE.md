@@ -44,6 +44,7 @@ bun typecheck        # TypeScript type checking
 The authentication system uses **Better Auth** configured in `lib/auth.ts` (server) and `lib/auth-client.ts` (client).
 
 Key configuration:
+
 - Email/password provider
 - Custom user fields: `type` (professional/organization), `profession`, `avatar`, `isActive`, `organizationId`
 - Session expiry: 7 days
@@ -53,11 +54,13 @@ Key configuration:
 - **Admin override**: emails in `ADMIN_EMAILS` (comma-separated) are treated as admin role regardless of `type`
 
 ### Server-side helpers (`lib/auth.ts`)
+
 - `checkUserRole()`: returns `"admin" | "professional" | "organization" | null` for conditional routing (e.g. Parallel Routes). Admin if email in `ADMIN_EMAILS`; otherwise uses `session.user.type`. Note: `session.user.type` is not inferred by `getSession`; use `(session.user as { type?: string }).type` when accessing.
 
 ## Directory Structure
 
 ### App Router (`app/`)
+
 ```
 app/
 ├── api/
@@ -99,6 +102,7 @@ app/
 ```
 
 ### Components (`components/`)
+
 ```
 components/
 ├── animate-ui/                  # Animated Radix/UI primitives
@@ -119,6 +123,7 @@ components/
 ```
 
 ### Library (`lib/`)
+
 ```
 lib/
 ├── auth.ts                      # Better Auth server config
@@ -140,6 +145,7 @@ lib/
 ```
 
 ### Other
+
 ```
 content/blog/                    # MDX blog posts
 docs/                            # Plans, SECURITY.md, COMMITS.md
@@ -153,7 +159,7 @@ hooks/                           # use-data-state, use-resize-observer, use-mobi
 - `BETTER_AUTH_API_KEY` – Dash plugin
 - `ADMIN_EMAILS` – Comma-separated admin emails (optional)
 - `NEXT_PUBLIC_APP_URL` – App URL for client
-- `NEXT_PUBLIC_SITE_URL` – Site URL for sitemap (default: https://biovity.cl)
+- `NEXT_PUBLIC_SITE_URL` – Site URL for sitemap (default: [https://biovity.cl](https://biovity.cl))
 
 ## Code Style Guidelines
 
@@ -169,6 +175,7 @@ From `.cursor/rules/` - follow these patterns:
 ### Post-implementation: `/remove-ai-slop`
 
 After every code generation or modification, run the `/remove-ai-slop` skill to audit the touched files. Remove:
+
 - Comments a human wouldn't write or that are inconsistent with the rest of the file
 - Unnecessary defensive checks or try/catch blocks in trusted/validated codepaths
 - Casts to `any` used to work around type issues
@@ -178,6 +185,7 @@ After every code generation or modification, run the `/remove-ai-slop` skill to 
 ## Commit Convention
 
 Follow Conventional Commits format:
+
 ```
 <type>(<scope>): <description>
 
@@ -207,6 +215,7 @@ Every implementation task MUST follow this three-phase workflow using the availa
 Before writing any code, use DeepWiki to find reference implementations in relevant GitHub repositories. This provides real-world patterns and avoids reinventing solutions.
 
 **When to use:**
+
 - Implementing a new feature, API route, or component pattern
 - Integrating a library you haven't used before in this project
 - Solving an architectural decision (e.g. auth flow, data fetching strategy)
@@ -214,19 +223,18 @@ Before writing any code, use DeepWiki to find reference implementations in relev
 **How to use:**
 
 1. `ask_question` — Ask implementation questions against repos from the tech stack:
-   - `better-auth/better-auth` — auth flows, plugins, session management
-   - `vercel/next.js` — App Router patterns, API routes, middleware
-   - `colinhacks/zod` — validation schemas, transforms, branded types
-   - `shadcn-ui/ui` — component patterns, Radix integration
-   - `TanStack/query` — data fetching, mutations, cache invalidation
-   - `supabase/supabase` — Postgres, storage, realtime
-   - `recharts/recharts` — chart implementations
-
+  - `better-auth/better-auth` — auth flows, plugins, session management
+  - `vercel/next.js` — App Router patterns, API routes, middleware
+  - `colinhacks/zod` — validation schemas, transforms, branded types
+  - `shadcn-ui/ui` — component patterns, Radix integration
+  - `TanStack/query` — data fetching, mutations, cache invalidation
+  - `supabase/supabase` — Postgres, storage, realtime
+  - `recharts/recharts` — chart implementations
 2. `read_wiki_structure` — Get the documentation topic tree before diving deep.
-
 3. `read_wiki_contents` — Read full documentation for specific patterns.
 
 **Example flow:**
+
 ```
 # Before implementing password reset:
 ask_question("better-auth/better-auth", "How to implement password reset flow with email verification?")
@@ -240,6 +248,7 @@ ask_question("vercel/next.js", "How to implement drag and drop with server actio
 After researching patterns, use OpenSrc to read the actual source code of dependencies used in this project. This ensures implementations align with how the library actually works, not how you think it works.
 
 **When to use:**
+
 - Before calling any library API for the first time in a feature
 - When DeepWiki gives you a pattern but you need to verify exact function signatures
 - When debugging unexpected behavior from a dependency
@@ -248,35 +257,34 @@ After researching patterns, use OpenSrc to read the actual source code of depend
 **How to use (via `execute` tool):**
 
 1. **Fetch the dependency source:**
-   ```js
+  ```js
    async () => {
      const [{ source }] = await opensrc.fetch("better-auth");
      return await opensrc.tree(source.name, { depth: 2 });
    }
-   ```
-
+  ```
 2. **Search for specific patterns:**
-   ```js
+  ```js
    async () => {
      return await opensrc.grep("forgetPassword", {
        sources: ["better-auth"],
        include: "*.ts"
      });
    }
-   ```
-
+  ```
 3. **Read the actual implementation:**
-   ```js
+  ```js
    async () => {
      return await opensrc.read("better-auth", "src/plugins/email-password/routes.ts");
    }
-   ```
+  ```
 
 **Key dependencies to inspect when relevant:**
+
 - `better-auth` — auth config, plugins, client methods
 - `zod` — schema internals, error types
 - `@tanstack/react-query` — hook signatures, mutation patterns
-- `@radix-ui/*` — component props, accessibility internals
+- `@radix-ui/`* — component props, accessibility internals
 - `recharts` — chart component APIs, data shapes
 - `motion` — animation API, variants
 
@@ -285,6 +293,7 @@ After researching patterns, use OpenSrc to read the actual source code of depend
 Use Sequential Thinking to break down every non-trivial task into structured steps before writing code. This prevents half-baked implementations and ensures nothing is missed.
 
 **When to use:**
+
 - ANY task that involves more than a single file change
 - Feature implementation, bug fixes with multiple causes, refactors
 - When the solution path is not immediately obvious
@@ -297,12 +306,14 @@ Use Sequential Thinking to break down every non-trivial task into structured ste
 4. **Verify hypothesis** — Before finishing, validate the plan covers all edge cases.
 
 **Required parameters:**
+
 - `thought`: Current reasoning step
 - `thoughtNumber`: Step number (1, 2, 3...)
 - `totalThoughts`: Estimated total steps (adjust as you go)
 - `nextThoughtNeeded`: `true` until the final step
 
 **Example flow for implementing a feature:**
+
 ```
 Thought 1: Identify all files that need changes and their dependencies
 Thought 2: Define the data model / types needed
@@ -324,34 +335,41 @@ Thought 6: Verify the plan covers the full requirement
 ## Important Patterns
 
 ### Dashboard Layout
+
 - **Parallel Routes**: `@admin`, `@user`, `@organization` – layout picks slot by `checkUserRole()`
 - Tab-based navigation with separate content components in `components/dashboard/employee/`
 - Sidebar state persisted via cookies
 - Role-based routing (admin vs professional vs organization)
 
 ### Component Organization
+
 - Feature-based grouping under `components/landing/` and `components/dashboard/`
 - Reusable UI in `components/ui/` (Shadcn) and `components/base/` (primitives)
 - Layout wrappers for consistent structure
 - `components/animate-ui/` for animated Radix variants
 
 ### Data Management
+
 - Static data files in `lib/data/` (jobs, categories, filters)
 - TypeScript interfaces in `lib/types/` matching data structure
 - Zod schemas in `lib/validations/` for forms and API validation
 - Utility functions for formatting (currency CLP, dates, badge colors) in `lib/utils.ts`
 
 ### Database (Postgres)
+
 - Shared connection pool in `lib/db/index.ts` (Supabase, max 10 conns, idle timeout 30s)
 - Migrations in `lib/db/migrations/`
 
 ### API Routes
+
 - `app/api/waitlist/route.ts`: POST with rate limiting (`lib/rate-limit.ts`), Zod validation
 - `app/api/og/route.ts`: Dynamic OG images
 - `app/api/cron/route.ts`: Scheduled tasks
 
 ### Styling Approach
+
 - Tailwind-first (no CSS modules or inline styles)
 - Utility classes for all styling
 - Gradient backgrounds for visual hierarchy
 - Consistent spacing with padding/margin utilities
+

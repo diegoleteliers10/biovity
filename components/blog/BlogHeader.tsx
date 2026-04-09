@@ -15,7 +15,7 @@ export function BlogHeader() {
         initial={{ opacity: 0, y: 28, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={ts(0)}
-        className="text-5xl font-bold text-gray-900 text-balance"
+        className="text-5xl font-bold text-foreground text-balance"
       >
         Nuestro Blog
       </m.h1>
@@ -23,7 +23,7 @@ export function BlogHeader() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={ts(LANDING_ANIMATION.sequenceDelay)}
-        className="mt-4 text-lg text-gray-600 px-4 text-pretty"
+        className="mt-4 text-lg text-muted-foreground px-4 text-pretty"
       >
         Noticias y artículos del mundo de la biotecnología y ciencias.
       </m.p>

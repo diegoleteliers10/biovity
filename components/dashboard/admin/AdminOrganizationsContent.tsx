@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/table"
 import { setUserActive } from "@/lib/api/users"
 import { adminOrganizationsParsers } from "@/lib/parsers/admin-organizations"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 
 type AdminUser = {
   id: string
@@ -109,12 +111,12 @@ export function AdminOrganizationsContent() {
     setTogglingId(user.id)
     try {
       const result = await setUserActive(user.id, !user.isActive)
-      if ("error" in result) {
-        alert(result.error)
+      if (!Result.isOk(result)) {
+        alert(getResultErrorMessage(result.error))
         return
       }
       setUsers((prev) =>
-        prev.map((u) => (u.id === user.id ? { ...u, isActive: result.isActive } : u))
+        prev.map((u) => (u.id === user.id ? { ...u, isActive: result.value.isActive } : u))
       )
     } finally {
       setTogglingId(null)

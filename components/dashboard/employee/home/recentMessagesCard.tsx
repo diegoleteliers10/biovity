@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { memo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,11 +12,23 @@ interface EnrichedChat extends Chat {
   isLoading?: boolean
 }
 
+interface LegacyMessage {
+  sender: string
+  time: string
+  preview: string
+}
+
 interface RecentMessagesCardProps {
   chats?: EnrichedChat[]
+  messages?: LegacyMessage[]
   onViewAll?: () => void
   isLoading?: boolean
-  recruiterNames?: Record<string, string>
+  /** Mapa de id → nombre. Para profesional: recruiterNames[id]; para org: candidateNames[id] */
+  namesMap?: Record<string, string>
+  /** Campo del chat a usar para el lookup: "recruiterId" | "professionalId" */
+  participantIdKey?: "recruiterId" | "professionalId"
+  /** Nombre por defecto cuando no se encuentra en namesMap */
+  defaultName?: string
 }
 
 function formatMessageTime(dateString: string): string {
@@ -36,21 +49,27 @@ function formatMessageTime(dateString: string): string {
 
 export const RecentMessagesCard = memo(function RecentMessagesCard({
   chats = [],
+  messages,
   onViewAll,
   isLoading,
-  recruiterNames = {},
+  namesMap = {},
+  participantIdKey = "recruiterId",
+  defaultName = "Usuario",
 }: RecentMessagesCardProps) {
+  const router = useRouter()
+  const hasLegacyMessages = messages && messages.length > 0
+  const displayChats = chats.length > 0 ? chats : []
+
+  const handleChatClick = (chatId: string) => {
+    router.push(`/dashboard/messages?chat=${chatId}`)
+  }
+
   return (
     <Card className="border border-border/80 bg-white">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-foreground">Mensajes Recientes</CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-primary"
-            onClick={onViewAll}
-          >
+          <Button variant="ghost" size="sm" onClick={onViewAll}>
             Ver Todo
           </Button>
         </div>
@@ -65,22 +84,44 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
               </div>
             ))}
           </div>
-        ) : chats.length === 0 ? (
+        ) : hasLegacyMessages ? (
+          <div className="space-y-4">
+            {messages!.slice(0, 5).map((msg, i) => (
+              <div key={i} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-foreground truncate">{msg.sender}</p>
+                  <p className="text-xs text-muted-foreground shrink-0">{msg.time}</p>
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{msg.preview}</p>
+              </div>
+            ))}
+          </div>
+        ) : displayChats.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
             No tienes mensajes recientes
           </p>
         ) : (
           <div className="space-y-4">
-            {chats.slice(0, 5).map((chat) => {
+            {displayChats.slice(0, 5).map((chat) => {
               const isItemLoading = chat.isLoading
               const hasRecruiterMessage = Boolean(chat.lastMessageFromRecruiter)
-              const recruiterName = recruiterNames[chat.recruiterId] ?? "Reclutador"
+              const participantId = chat[participantIdKey] as string
+              const participantName = namesMap[participantId] ?? defaultName
 
               return (
-                <div key={chat.id} className="space-y-1">
+                <div
+                  key={chat.id}
+                  className="space-y-1 cursor-pointer hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-colors"
+                  onClick={() => handleChatClick(chat.id)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") && handleChatClick(chat.id)
+                  }
+                >
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-foreground truncate">
-                      {recruiterName}
+                      {participantName}
                     </p>
                     <p className="text-xs text-muted-foreground shrink-0">
                       {isItemLoading

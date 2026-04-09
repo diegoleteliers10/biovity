@@ -24,7 +24,7 @@ import { es } from "date-fns/locale"
 import { Github, Globe, Linkedin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { DatePicker } from "@/components/common/DatePicker"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -211,7 +211,12 @@ const EditableCard = ({
   children: React.ReactNode
   className?: string
 }) => (
-  <Card className={cn("group relative", className)}>
+  <Card
+    className={cn(
+      "group relative bg-white border border-border/10 hover:bg-secondary/5 transition-colors duration-300",
+      className
+    )}
+  >
     {!isEditing && (
       <Button
         type="button"
@@ -253,6 +258,12 @@ const EmployeeProfile = () => {
   const updateResumeMutation = useUpdateResumeMutation(resume?.id ?? "", userId ?? "")
   const uploadCvMutation = useUploadResumeCvMutation(resume?.id ?? "", userId ?? "")
   const uploadAvatarMutation = useUploadAvatarMutation(userId ?? "")
+
+  // Hydration guard: skip SSR render of auth-dependent UI to prevent flash
+  const mounted = useRef(false)
+  useEffect(() => {
+    mounted.current = true
+  }, [])
 
   const [editingSection, setEditingSection] = useState<SectionId | null>(null)
   const [resumeFormData, setResumeFormData] = useState<ResumeFormData>({
@@ -598,6 +609,24 @@ const EmployeeProfile = () => {
   const isSaving =
     updateUserMutation.isPending || updateResumeMutation.isPending || createResumeMutation.isPending
 
+  // Skip all auth-dependent rendering until client-side hydration is complete.
+  // This prevents the flash of "Inicia sesión" on page reload when the session
+  // cookie is present but the client hasn't rehydrated yet.
+  if (!mounted.current) {
+    return (
+      <main className="p-6 space-y-6">
+        <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="h-80 bg-muted animate-pulse rounded-xl" />
+          <div className="lg:col-span-2 space-y-6">
+            <div className="h-48 bg-muted animate-pulse rounded-xl" />
+            <div className="h-64 bg-muted animate-pulse rounded-xl" />
+          </div>
+        </div>
+      </main>
+    )
+  }
+
   if (!userId && !session) {
     return (
       <main className="p-6">
@@ -643,9 +672,9 @@ const EmployeeProfile = () => {
 
   return (
     <main className="p-6 space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold text-foreground text-balance">Mi Perfil</h1>
-        <p className="text-muted-foreground text-pretty text-sm mt-0.5">
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
+        <p className="text-muted-foreground text-sm mt-1">
           Gestiona tu información personal y profesional
         </p>
       </header>
@@ -741,7 +770,7 @@ const EmployeeProfile = () => {
                       {data.profession || EMPTY_PLACEHOLDER}
                     </p>
                     {user?.type && (
-                      <Badge variant="secondary" className="mt-2 text-xs">
+                      <Badge variant="accent" className="mt-2 text-xs">
                         {user.type === "professional" ? "Profesional" : user.type}
                       </Badge>
                     )}

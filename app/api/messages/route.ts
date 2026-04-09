@@ -2,6 +2,7 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { getSupabaseAdmin } from "@/lib/supabase"
+import { createMessageSchema } from "@/lib/validations/messages"
 
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -10,13 +11,15 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null)
-  const chatId = body?.chatId as string | undefined
-  const content = body?.content as string | undefined
 
-  if (!chatId || typeof content !== "string" || !content.trim()) {
-    return NextResponse.json({ error: "chatId y content son requeridos" }, { status: 400 })
+  const result = createMessageSchema.safeParse(body)
+
+  if (!result.success) {
+    const error = result.error.issues[0]
+    return NextResponse.json({ error: error?.message || "Datos inválidos" }, { status: 400 })
   }
 
+  const { chatId, content } = result.data
   const senderId = session.user.id
 
   const supabase = getSupabaseAdmin()
@@ -37,7 +40,7 @@ export async function POST(request: Request) {
   try {
     const { data, error } = await supabase
       .from("message")
-      .insert({ chatId, senderId, content: content.trim() })
+      .insert({ chatId, senderId, content })
       .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
       .single()
 
@@ -50,7 +53,7 @@ export async function POST(request: Request) {
     fetch(`${apiBase}/api/v1/chats/${chatId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lastMessage: content.trim() }),
+      body: JSON.stringify({ lastMessage: content }),
     }).catch(() => {})
 
     return NextResponse.json(data)

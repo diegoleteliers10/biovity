@@ -49,11 +49,11 @@ export function JobAlertsCard({ onCreateAlert }: JobAlertsCardProps) {
               icon={IdeaIcon}
               size={24}
               strokeWidth={1.5}
-              className="h-4 w-4 text-secondary mt-0.5 flex-shrink-0"
+              className="h-4 w-4 text-accent mt-0.5 shrink-0"
             />
             <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Consejo:</span> Crea múltiples alertas con diferentes
-              palabras clave para no perderte oportunidades.
+              <span className="font-medium text-foreground">Consejo:</span> Crea múltiples alertas
+              con diferentes palabras clave para no perderte oportunidades.
             </p>
           </div>
         </div>

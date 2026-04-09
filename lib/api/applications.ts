@@ -1,3 +1,7 @@
+import { Result, Result as R } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
+import { getErrorMessage } from "@/lib/result"
+
 const API_BASE =
   typeof window !== "undefined"
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
@@ -36,20 +40,10 @@ export type GetApplicationsByJobParams = {
   status?: ApplicationStatus
 }
 
-function getErrorMessage(data: unknown, fallback: string): string {
-  if (!data || typeof data !== "object") return fallback
-  const d = data as Record<string, unknown>
-  const msg = d.message
-  if (Array.isArray(msg)) return msg.join(". ") || fallback
-  if (typeof msg === "string") return msg
-  if (typeof d.error === "string") return d.error
-  return fallback
-}
-
 export async function getApplicationsByCandidate(
   candidateId: string,
   params?: GetApplicationsByJobParams
-): Promise<{ data: Application[] } | { error: string }> {
+): Promise<Result<Application[], ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
   if (params?.limit != null) searchParams.set("limit", String(params.limit))
@@ -62,23 +56,35 @@ export async function getApplicationsByCandidate(
   try {
     res = await fetch(url)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener las postulaciones") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener las postulaciones"),
+      })
+    )
   }
 
   const parsed = data as { data?: Application[] } | Application[]
   const apps = Array.isArray(parsed) ? parsed : (parsed?.data ?? [])
-  return { data: apps }
+  return R.ok(apps)
 }
 
 export async function getApplicationsByJob(
   jobId: string,
   params?: GetApplicationsByJobParams
-): Promise<{ data: Application[] } | { error: string }> {
+): Promise<Result<Application[], ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
   if (params?.limit != null) searchParams.set("limit", String(params.limit))
@@ -91,23 +97,35 @@ export async function getApplicationsByJob(
   try {
     res = await fetch(url)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener las postulaciones") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener las postulaciones"),
+      })
+    )
   }
 
   const parsed = data as { data?: Application[] } | Application[]
   const apps = Array.isArray(parsed) ? parsed : (parsed?.data ?? [])
-  return { data: apps }
+  return R.ok(apps)
 }
 
 export async function createApplication(
   jobId: string,
   candidateId: string
-): Promise<{ data: Application } | { error: string }> {
+): Promise<Result<Application, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/applications`, {
@@ -116,20 +134,32 @@ export async function createApplication(
       body: JSON.stringify({ jobId, candidateId }),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al postular") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al postular"),
+      })
+    )
   }
-  return { data: data as Application }
+  return R.ok(data as Application)
 }
 
 export async function updateApplicationStatus(
   id: string,
   status: ApplicationStatus
-): Promise<{ data: Application } | { error: string }> {
+): Promise<Result<Application, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/applications/${id}/status`, {
@@ -138,13 +168,81 @@ export async function updateApplicationStatus(
       body: JSON.stringify({ status }),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const json = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(json, "Error al actualizar el estado") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: json,
+        message: getErrorMessage(json, "Error al actualizar el estado"),
+      })
+    )
   }
   const app = (json?.data ?? json) as Application
-  return { data: app }
+  return R.ok(app)
+}
+
+export type ApplicationsByOrganizationResponse = {
+  data: Application[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export async function getApplicationsByOrganization(
+  organizationId: string,
+  params?: { page?: number; limit?: number }
+): Promise<Result<ApplicationsByOrganizationResponse, ApiError | NetworkError>> {
+  let res: Response
+  try {
+    const searchParams = new URLSearchParams()
+    if (params?.page != null) searchParams.set("page", String(params.page))
+    if (params?.limit != null) searchParams.set("limit", String(params.limit))
+    const query = searchParams.toString() ? `?${searchParams.toString()}` : ""
+    res = await fetch(`${API_BASE}/api/v1/applications/organization/${organizationId}${query}`)
+  } catch (err) {
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
+  }
+
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener las postulaciones"),
+      })
+    )
+  }
+
+  const parsed = data as {
+    data?: Application[]
+    total?: number
+    page?: number
+    limit?: number
+    totalPages?: number
+  }
+  return R.ok({
+    data: parsed?.data ?? [],
+    total: parsed?.total ?? 0,
+    page: parsed?.page ?? 1,
+    limit: parsed?.limit ?? 10,
+    totalPages: parsed?.totalPages ?? 0,
+  })
 }

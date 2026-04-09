@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/ui/logo"
+import { Skeleton } from "@/components/ui/skeleton"
 import { authClient } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
 
@@ -45,6 +46,7 @@ export interface DashboardSidebarProps {
     to: string
   }
   logoutHoverContrastOnAccent?: boolean
+  profession?: string | null
 }
 
 export function DashboardSidebar({
@@ -54,12 +56,13 @@ export function DashboardSidebar({
   avatarUrl: avatarUrlProp,
   avatarGradient = { from: "blue-500", to: "purple-600" },
   logoutHoverContrastOnAccent = false,
+  profession: professionProp,
 }: DashboardSidebarProps) {
   const { state, setOpen, open } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
   const { signOut, useSession } = authClient
-  const { data } = useSession()
+  const { data, isPending: sessionPending } = useSession()
   const sessionUser = data?.user as
     | {
         id?: string
@@ -71,6 +74,7 @@ export function DashboardSidebar({
   const userId = sessionUser?.id
   const queryClient = useQueryClient()
   const avatarUrl = avatarUrlProp ?? sessionUser?.avatar ?? sessionUser?.image
+  const userTitle = professionProp ?? navData.user.title
   const initials =
     sessionUser?.name
       ?.split(" ")
@@ -231,7 +235,7 @@ export function DashboardSidebar({
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Progreso del Perfil: {navData.profileProgress.percentage}%</p>
-                    <p className="text-xs text-muted-foreground">Click para completar</p>
+                    <p className="text-xs text-secondary-foreground/70">Click para completar</p>
                   </TooltipContent>
                 </Tooltip>
               </SidebarMenu>
@@ -285,31 +289,46 @@ export function DashboardSidebar({
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    {avatarUrl ? (
-                      <AvatarImage
-                        src={avatarUrl}
-                        alt={sessionUser?.name ?? "Avatar"}
-                        className="rounded-lg object-cover"
-                        loading="eager"
-                      />
-                    ) : null}
-                    <AvatarFallback
-                      className={
-                        avatarGradient.from === "blue-500"
-                          ? "rounded-lg bg-gradient-to-br from-blue-500 to-purple-600"
-                          : "rounded-lg bg-gradient-to-br from-purple-500 to-blue-600"
-                      }
-                    >
-                      <span className="text-white text-sm font-semibold">{initials}</span>
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      {data?.user?.name ?? navData.user.name}
-                    </span>
-                    <span className="truncate text-xs">{navData.user.title}</span>
-                  </div>
+                  {sessionPending ? (
+                    <Skeleton className="h-8 w-8 rounded-lg bg-muted" />
+                  ) : (
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      {avatarUrl ? (
+                        <AvatarImage
+                          src={avatarUrl}
+                          alt={sessionUser?.name ?? "Avatar"}
+                          className="rounded-lg object-cover"
+                          loading="eager"
+                        />
+                      ) : null}
+                      <AvatarFallback
+                        className={
+                          avatarGradient.from === "blue-500"
+                            ? "rounded-lg bg-gradient-to-br from-blue-500 to-purple-600"
+                            : "rounded-lg bg-gradient-to-br from-purple-500 to-blue-600"
+                        }
+                      >
+                        <span className="text-white text-sm font-semibold">{initials}</span>
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                  {state !== "collapsed" && (
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      {sessionPending ? (
+                        <>
+                          <Skeleton className="h-4 w-24 bg-muted" />
+                          <Skeleton className="h-3 w-16 mt-1 bg-muted" />
+                        </>
+                      ) : (
+                        <>
+                          <span className="truncate font-semibold">
+                            {data?.user?.name ?? navData.user.name}
+                          </span>
+                          <span className="truncate text-xs">{userTitle}</span>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" side="top" sideOffset={8}>
@@ -318,12 +337,16 @@ export function DashboardSidebar({
                   <HugeiconsIcon icon={User02Icon} size={16} strokeWidth={1.5} className="mr-2" />
                   Ver Perfil
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className={logoutItemClassName}>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className={logoutItemClassName}
+                >
                   <HugeiconsIcon
                     icon={TransitionRightIcon}
                     size={16}
                     strokeWidth={1.5}
-                    className="mr-2 text-current"
+                    className="mr-2"
                   />
                   Cerrar Sesión
                 </DropdownMenuItem>

@@ -19,10 +19,10 @@ export function AdnBeam() {
       <div className="flex size-full flex-col items-stretch justify-between gap-10">
         <div className="flex flex-row justify-between">
           <Circle ref={div1Ref} className="size-20">
-            <HugeiconsIcon icon={UserIcon} size={42} />
+            <HugeiconsIcon icon={UserIcon} size={42} className="text-muted-foreground" />
           </Circle>
           <Circle ref={div2Ref} className="size-20">
-            <HugeiconsIcon icon={Building05Icon} size={42} />
+            <HugeiconsIcon icon={Building05Icon} size={42} className="text-muted-foreground" />
           </Circle>
         </div>
       </div>

@@ -228,13 +228,13 @@ export const SearchContent = () => {
           <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/30 p-3 lg:flex-row">
             <div className="flex-1">
               <div className="relative">
-              <Input
-                placeholder="Título, empresa o palabra clave"
-                value={query}
-                onChange={(e) => setUrlState({ q: e.target.value })}
-                aria-label="Buscar por palabra clave"
-                className="bg-white"
-              />
+                <Input
+                  placeholder="Título, empresa o palabra clave"
+                  value={query}
+                  onChange={(e) => setUrlState({ q: e.target.value })}
+                  aria-label="Buscar por palabra clave"
+                  className="bg-white"
+                />
                 <HugeiconsIcon
                   icon={Search01Icon}
                   size={24}
@@ -376,7 +376,7 @@ export const SearchContent = () => {
               <Card
                 key={job.id}
                 onClick={() => router.push(`/dashboard/job/${job.id}`)}
-                className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group relative cursor-pointer overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 role="link"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -406,7 +406,7 @@ export const SearchContent = () => {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          className="rounded-md hover:bg-primary/10"
+                          className="rounded-md hover:bg-muted"
                           onClick={(e) => {
                             e.preventDefault()
                             e.stopPropagation()
@@ -422,7 +422,7 @@ export const SearchContent = () => {
                             icon={Bookmark02Icon}
                             size={24}
                             strokeWidth={1.5}
-                            className={`h-4 w-4 ${isSaved ? "fill-current text-primary" : ""}`}
+                            className={`h-4 w-4 ${isSaved ? "fill-current text-secondary" : ""}`}
                           />
                         </Button>
                       </div>
@@ -479,10 +479,10 @@ export const SearchContent = () => {
 
                     {/* Tercera fila: Modalidad y Formato */}
                     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:mt-0">
-                      <Badge className="shrink-0 border border-border/40 bg-muted/30 text-foreground/90 capitalize">
+                      <Badge variant="success" className="shrink-0 capitalize">
                         {modalidad === "hibrido" ? "Híbrido" : modalidad}
                       </Badge>
-                      <Badge className="shrink-0 border border-border/40 bg-card text-muted-foreground capitalize">
+                      <Badge variant="default" className="shrink-0 capitalize">
                         {job.employmentType === "Full-time"
                           ? "Full Time"
                           : job.employmentType === "Part-time"

@@ -2,6 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useMemo } from "react"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import type { Chat } from "./chats"
 import { createOrFindChat, getChatsByProfessional, getChatsByRecruiter } from "./chats"
@@ -17,8 +19,8 @@ export function useChatsByRecruiter(recruiterId: string | undefined) {
     queryFn: async () => {
       if (!recruiterId) throw new Error("Recruiter ID required")
       const result = await getChatsByRecruiter(recruiterId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(recruiterId),
   })
@@ -30,8 +32,8 @@ export function useChatsByProfessional(professionalId: string | undefined) {
     queryFn: async () => {
       if (!professionalId) throw new Error("Professional ID required")
       const result = await getChatsByProfessional(professionalId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     enabled: Boolean(professionalId),
   })
@@ -43,8 +45,8 @@ export function useCreateOrFindChatMutation(recruiterId: string | undefined) {
   return useMutation({
     mutationFn: async (professionalId: string) => {
       const result = await createOrFindChat(professionalId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
     onSuccess: () => {
       if (recruiterId) {

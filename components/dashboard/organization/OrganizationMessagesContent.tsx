@@ -14,30 +14,34 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { ChatListItem, MessageBubble } from "@/components/ui/message-bubble"
 import { useDebounce } from "@/hooks/use-debounce"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import { type Chat, getChatById } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
-import { useInfiniteMessages, useSendMessageMutation } from "@/lib/api/use-messages"
+import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { formatDateChilean } from "@/lib/utils"
 
 export function OrganizationMessagesContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const chatIdFromUrl = searchParams.get("chat")
 
@@ -65,9 +69,11 @@ export function OrganizationMessagesContent() {
 
     const loadChat = async () => {
       const result = await getChatById(chatIdFromUrl)
-      if ("data" in result) {
-        setSelectedChat(result.data)
+      if (!Result.isOk(result)) {
+        console.error(getResultErrorMessage(result.error))
+        return
       }
+      setSelectedChat(result.value)
     }
     void loadChat()
   }, [chatIdFromUrl, chats])
@@ -84,11 +90,8 @@ export function OrganizationMessagesContent() {
     isError: messagesError,
     error: messagesErrorDetail,
     refetch: refetchMessages,
-    fetchPreviousPage,
-    hasPreviousPage,
-    isFetchingPreviousPage,
-  } = useInfiniteMessages(selectedChat?.id)
-  const sendMutation = useSendMessageMutation(selectedChat?.id ?? "", recruiterId ?? "")
+  } = useMessages(selectedChat?.id)
+  const sendMutation = useSendMessageMutation()
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
     requestAnimationFrame(() => {
@@ -96,37 +99,19 @@ export function OrganizationMessagesContent() {
     })
   }
 
-  const lastMessageId = messages[messages.length - 1]?.id
-
   useEffect(() => {
-    if (selectedChat?.id && !messagesLoading && messages.length > 0 && lastMessageId) {
-      scrollToBottom()
+    if (selectedChat?.id && !messagesLoading && messages.length > 0) {
+      const timeout = setTimeout(() => scrollToBottom(), 50)
+      return () => clearTimeout(timeout)
     }
-  }, [selectedChat?.id, messagesLoading, lastMessageId])
-
-  const handleMessagesScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const el = e.currentTarget
-    const threshold = 80
-    if (el.scrollTop <= threshold && hasPreviousPage && !isFetchingPreviousPage) {
-      const prevScrollHeight = el.scrollHeight
-      const prevScrollTop = el.scrollTop
-      fetchPreviousPage().then(() => {
-        requestAnimationFrame(() => {
-          const newScrollHeight = el.scrollHeight
-          el.scrollTop = prevScrollTop + (newScrollHeight - prevScrollHeight)
-        })
-      })
-    }
-  }
+  }, [selectedChat?.id, messagesLoading, messages.length])
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !recruiterId) return
-    sendMutation.mutate(messageInput.trim(), {
-      onSuccess: () => {
-        setMessageInput("")
-        scrollToBottom()
-      },
-    })
+    const content = messageInput.trim()
+    setMessageInput("")
+    scrollToBottom()
+    sendMutation.mutate({ chatId: selectedChat.id, senderId: recruiterId, content })
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -195,8 +180,15 @@ export function OrganizationMessagesContent() {
               key={chat.id}
               chat={chat}
               isSelected={selectedChat?.id === chat.id}
-              onSelect={() => setSelectedChat(chat)}
+              onSelect={() => {
+                setSelectedChat(chat)
+                const params = new URLSearchParams(searchParams.toString())
+                params.set("chat", chat.id)
+                router.replace(`/dashboard/messages?${params.toString()}`)
+              }}
               searchQuery={debouncedSearchQuery}
+              contactType="professional"
+              formatTime={formatMessageTime}
             />
           ))}
         </div>
@@ -253,10 +245,7 @@ export function OrganizationMessagesContent() {
             </div>
 
             {/* Messages */}
-            <div
-              className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0"
-              onScroll={handleMessagesScroll}
-            >
+            <div className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0">
               {messagesLoading ? (
                 <div className="flex justify-center py-8">
                   <p className="text-muted-foreground text-sm">Cargando mensajes...</p>
@@ -274,11 +263,6 @@ export function OrganizationMessagesContent() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {isFetchingPreviousPage && (
-                    <div className="flex justify-center py-2">
-                      <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    </div>
-                  )}
                   {messages.map((msg) => (
                     <MessageBubble
                       key={msg.id}
@@ -384,132 +368,6 @@ export function OrganizationMessagesContent() {
               </div>
             </div>
           </>
-        )}
-      </div>
-    </div>
-  )
-}
-
-function ChatListItem({
-  chat,
-  isSelected,
-  onSelect,
-  searchQuery,
-}: {
-  chat: Chat
-  isSelected: boolean
-  onSelect: () => void
-  searchQuery: string
-}) {
-  const { data: professional } = useUser(chat.professionalId)
-  const name = professional?.name ?? "Profesional"
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
-
-  if (searchQuery) {
-    const query = searchQuery.toLowerCase()
-    const matchesName = name.toLowerCase().includes(query)
-    if (!matchesName) return null
-  }
-
-  const formatTime = (iso: string) => {
-    try {
-      const d = new Date(iso)
-      const now = new Date()
-      const diff = now.getTime() - d.getTime()
-      if (diff < 86400000) return formatDateChilean(iso, "HH:mm")
-      if (diff < 604800000) return formatDateChilean(iso, "EEE")
-      return formatDateChilean(iso, "d MMM")
-    } catch {
-      return ""
-    }
-  }
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      className={`cursor-pointer border-b border-border p-4 transition-colors hover:bg-muted/30 focus-visible:bg-muted/50 ${
-        isSelected ? "bg-muted/50" : ""
-      }`}
-      onClick={onSelect}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault()
-          onSelect()
-        }
-      }}
-    >
-      <div className="flex items-start gap-3">
-        <Avatar className="size-12">
-          {professional?.avatar && <AvatarImage src={professional.avatar} alt="" />}
-          <AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 flex-1">
-          <div className="mb-1 flex items-center justify-between">
-            <h3 className="truncate text-sm font-semibold">{name}</h3>
-            <span className="ml-2 shrink-0 text-muted-foreground text-xs">
-              {formatTime(chat.updatedAt)}
-            </span>
-          </div>
-          <p className="truncate text-muted-foreground text-sm">{chat.lastMessage ?? "—"}</p>
-          {chat.unreadCountRecruiter > 0 && (
-            <span className="mt-1 inline-flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
-              {chat.unreadCountRecruiter}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function MessageBubble({
-  message,
-  isOwn,
-  senderName,
-  senderInitials,
-  senderAvatar,
-  formatTime,
-}: {
-  message: Message
-  isOwn: boolean
-  senderName: string
-  senderInitials: string
-  senderAvatar?: string
-  formatTime: (iso: string) => string
-}) {
-  const chatAlign = isOwn ? "chat-end" : "chat-start"
-  const bubbleColor = isOwn ? "chat-bubble-primary" : "chat-bubble-neutral"
-
-  return (
-    <div className={`chat ${chatAlign}`}>
-      <div className="chat-image avatar">
-        <div className="size-10 overflow-hidden rounded-full">
-          <Avatar className="size-10 rounded-full">
-            {senderAvatar && <AvatarImage src={senderAvatar} alt="" />}
-            <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
-              {senderInitials}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-      </div>
-      <div className="chat-header">
-        {senderName}
-        <time className="text-xs opacity-50">{formatTime(message.createdAt)}</time>
-      </div>
-      <div className={`chat-bubble ${bubbleColor}`}>
-        <p className="text-sm leading-relaxed">{message.content}</p>
-        {isOwn && (
-          <div className="mt-1 flex justify-end">
-            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} className="opacity-70" />
-          </div>
         )}
       </div>
     </div>

@@ -31,10 +31,10 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
   }
 
   return (
-    <Card className="md:col-span-2">
+    <Card className="md:col-span-2 border border-border/80 bg-white">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Aplicaciones Recientes</CardTitle>
+          <CardTitle className="text-foreground">Aplicaciones Recientes</CardTitle>
           <Button
             variant="ghost"
             size="sm"
@@ -55,7 +55,7 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
             applications.map((app) => (
               <div
                 key={`${app.candidateName}-${app.position}`}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors duration-200 border border-transparent hover:border-gray-200"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors duration-200 border border-border/60 hover:border-border/80"
                 onClick={handleApplicationClick}
                 onKeyDown={handleKeyDown}
                 tabIndex={0}
@@ -63,7 +63,9 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
                 aria-label={`Ver aplicación de ${app.candidateName} para ${app.position}`}
               >
                 <div className="space-y-2">
-                  <p className="text-sm font-medium leading-none">{app.candidateName}</p>
+                  <p className="text-sm font-medium leading-none text-foreground">
+                    {app.candidateName}
+                  </p>
                   <p className="text-sm text-muted-foreground">{app.position}</p>
                 </div>
                 <div className="text-right space-y-1">

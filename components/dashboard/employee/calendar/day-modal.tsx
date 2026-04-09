@@ -1,13 +1,15 @@
 "use client"
-import { Calendar01Icon, Cancel01Icon, Clock01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 
-type Event = {
+import { Calendar01Icon, Cancel01Icon, Clock03Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { formatDateChilean } from "@/lib/utils"
+
+type CalendarEvent = {
   readonly id: string
   readonly title: string
-  readonly time: string
-  readonly description: string
-  readonly type: "meeting" | "personal" | "work" | "important"
+  readonly startAt: string
+  readonly description?: string
+  readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
 
 type DayModalProps = {
@@ -15,41 +17,31 @@ type DayModalProps = {
   readonly onClose: () => void
   readonly day: number
   readonly dayName: string
-  readonly events: readonly Event[]
+  readonly events: readonly CalendarEvent[]
 }
-
-const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
 
 export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProps) {
   if (!isOpen) return null
 
-  const getEventTypeInfo = (type: Event["type"]) => {
+  const formatEventTime = (iso: string) => {
+    return formatDateChilean(iso, "p")
+  }
+
+  const getEventTypeInfo = (type: CalendarEvent["type"]) => {
     switch (type) {
-      case "meeting":
-        return {
-          color: "bg-primary/10 text-primary border-primary/20",
-          label: "Reunión",
-        }
-      case "important":
-        return {
-          color: "bg-destructive/10 text-destructive border-destructive/20",
-          label: "Importante",
-        }
-      case "personal":
+      case "interview":
+        return { color: "bg-primary/10 text-primary border-primary/20", label: "Entrevista" }
+      case "onboarding":
         return {
           color: "bg-secondary/10 text-secondary-foreground border-secondary/20",
-          label: "Personal",
+          label: "Onboarding",
         }
-      case "work":
-        return {
-          color: "bg-accent/10 text-accent-foreground border-accent/20",
-          label: "Trabajo",
-        }
+      case "task_deadline":
+        return { color: "bg-accent/10 text-accent-foreground border-accent/20", label: "Tarea" }
+      case "announcement":
+        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Anuncio" }
       default:
-        return {
-          color: "bg-muted/10 text-muted-foreground border-muted/20",
-          label: "Evento",
-        }
+        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Evento" }
     }
   }
 
@@ -69,12 +61,12 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
       />
 
       {/* Modal */}
-      <div className="relative bg-card border border-border rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden">
+      <div className="relative bg-white border border-border/10 rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
+        <div className="flex items-center justify-between p-6 border-b border-border/10">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl">
-              <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-primary" />
+            <div className="flex items-center justify-center w-12 h-12 bg-secondary/10 rounded-xl">
+              <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-secondary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-card-foreground">{day}</h2>
@@ -113,35 +105,31 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                   return (
                     <div
                       key={event.id}
-                      className="p-4 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors"
+                      className="p-4 rounded-lg bg-[#f3f3f5] hover:bg-[#e2e2e4] transition-colors"
                     >
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <h4 className="font-medium text-card-foreground leading-tight">
                           {event.title}
                         </h4>
                         <span
-                          className={`
-                          px-2 py-1 rounded-md text-xs font-medium border shrink-0
-                          ${typeInfo.color}
-                        `}
+                          className={`px-2 py-1 rounded-md text-xs font-medium border shrink-0 ${typeInfo.color}`}
                         >
                           {typeInfo.label}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 mb-3">
-                        <HugeiconsIcon
-                          icon={Clock01Icon}
-                          className="w-4 h-4 text-muted-foreground"
-                        />
-                        <span className="text-sm font-medium text-muted-foreground">
-                          {event.time}
-                        </span>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <HugeiconsIcon icon={Clock03Icon} className="w-4 h-4" />
+                          <span className="font-medium">{formatEventTime(event.startAt)}</span>
+                        </div>
                       </div>
 
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {event.description}
-                      </p>
+                      {event.description && (
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                          {event.description}
+                        </p>
+                      )}
                     </div>
                   )
                 })}

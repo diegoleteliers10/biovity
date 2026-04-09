@@ -1,6 +1,8 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { getResultErrorMessage } from "@/lib/result"
 import { getUsers } from "./users"
 
 export const talentKeys = {
@@ -21,8 +23,8 @@ export function useProfessionalUsers(page: number = 1, search?: string) {
         isActive: true,
         ...(search?.trim() && { search: search.trim() }),
       })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
     },
   })
 }

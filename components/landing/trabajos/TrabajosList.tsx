@@ -54,7 +54,9 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
             <p className="text-lg text-foreground">
               No se encontraron trabajos con los filtros seleccionados.
             </p>
-            <p className="text-sm text-muted-foreground mt-2">Intenta ajustar tus filtros de búsqueda.</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Intenta ajustar tus filtros de búsqueda.
+            </p>
           </div>
         </div>
       </section>
@@ -159,10 +161,10 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
 
                   {/* Tercera fila: Modalidad y Formato */}
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:mt-0">
-                    <Badge className="shrink-0 border border-border/40 bg-muted/30 text-foreground/90 capitalize">
+                    <Badge variant="success" className="shrink-0 capitalize">
                       {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
                     </Badge>
-                    <Badge className="shrink-0 border border-border/40 bg-card text-muted-foreground capitalize">
+                    <Badge variant="default" className="shrink-0 capitalize">
                       {trabajo.formato === "full-time"
                         ? "Full Time"
                         : trabajo.formato === "part-time"

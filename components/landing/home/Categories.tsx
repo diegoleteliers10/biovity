@@ -52,10 +52,10 @@ export function Categories() {
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
             >
-              <Card className="group p-6 cursor-pointer border border-border/15 bg-white hover:border-border/30 transition-colors">
+              <Card className="group p-6 cursor-pointer bg-white hover:bg-secondary/5 transition-colors">
                 <div className="flex items-center space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                    <HugeiconsIcon icon={category.icon} size={24} className="text-accent" />
+                  <div className="flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                    <HugeiconsIcon icon={category.icon} size={24} className="text-secondary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-foreground text-lg mb-1">{category.title}</h3>
@@ -74,7 +74,7 @@ export function Categories() {
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="outline" className="px-8 py-3">
+          <Button size="lg" variant="secondary" className="px-8 py-3">
             Ver todas las especialidades
             <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
           </Button>

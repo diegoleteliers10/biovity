@@ -40,7 +40,7 @@ export function Pricing() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
+            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight"
           >
             Planes simples y transparentes
           </m.h2>
@@ -49,7 +49,7 @@ export function Pricing() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-gray-500 max-w-3xl mx-auto"
+            className="text-xl text-muted-foreground max-w-3xl mx-auto"
           >
             Elige el plan que mejor se adapte a las necesidades de tu empresa.
           </m.p>
@@ -62,14 +62,16 @@ export function Pricing() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex items-center justify-center gap-4 mb-12 relative"
         >
-          <span className={`text-sm font-medium ${!isAnual ? "text-gray-900" : "text-gray-500"}`}>
+          <span
+            className={`text-sm font-medium ${!isAnual ? "text-foreground" : "text-muted-foreground"}`}
+          >
             Mensual
           </span>
           <button
             type="button"
             onClick={() => setIsAnual(!isAnual)}
             className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
-              isAnual ? "bg-blue-600" : "bg-gray-300"
+              isAnual ? "bg-secondary" : "bg-[#e2e2e4]"
             }`}
             aria-label={isAnual ? "Cambiar a mensual" : "Cambiar a anual"}
           >
@@ -79,11 +81,13 @@ export function Pricing() {
               }`}
             />
           </button>
-          <span className={`text-sm font-medium ${isAnual ? "text-gray-900" : "text-gray-500"}`}>
+          <span
+            className={`text-sm font-medium ${isAnual ? "text-foreground" : "text-muted-foreground"}`}
+          >
             Anual
           </span>
           <span
-            className={`absolute left-1/2 translate-x-24 sm:translate-x-28 text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full transition-opacity duration-300 ${
+            className={`absolute left-1/2 translate-x-24 sm:translate-x-28 text-xs font-semibold text-accent bg-accent/10 px-2 py-1 rounded-full transition-opacity duration-300 ${
               isAnual ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
@@ -101,12 +105,12 @@ export function Pricing() {
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
               className={`relative rounded-2xl p-6 flex flex-col ${
                 plan.highlighted
-                  ? "bg-gray-900 text-white ring-2 ring-blue-500 shadow-xl"
-                  : "bg-white border border-gray-200 shadow-sm"
+                  ? "bg-[#00374a] text-white ring-2 ring-secondary shadow-xl"
+                  : "bg-white border border-border/10"
               }`}
             >
               {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold text-white bg-blue-600 px-3 py-1 rounded-full">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold text-white bg-secondary px-3 py-1 rounded-full">
                   {plan.badge}
                 </span>
               )}
@@ -114,7 +118,7 @@ export function Pricing() {
               <div className="mb-6">
                 <h3
                   className={`text-xl font-bold mb-2 ${
-                    plan.highlighted ? "text-white" : "text-gray-900"
+                    plan.highlighted ? "text-white" : "text-foreground"
                   }`}
                 >
                   {plan.name}
@@ -122,28 +126,28 @@ export function Pricing() {
                 <div className="flex items-baseline gap-1 flex-wrap">
                   {plan.price !== "Personalizado" && (
                     <span
-                      className={`text-sm ${plan.highlighted ? "text-gray-400" : "text-gray-500"}`}
+                      className={`text-sm ${plan.highlighted ? "text-white/60" : "text-muted-foreground"}`}
                     >
                       $
                     </span>
                   )}
                   <span
                     className={`font-bold ${
-                      plan.highlighted ? "text-white" : "text-gray-900"
+                      plan.highlighted ? "text-white" : "text-foreground"
                     } ${plan.price === "Personalizado" ? "text-2xl" : "text-4xl"}`}
                   >
                     {getPrice(plan.price)}
                   </span>
                   {plan.period && (
                     <span
-                      className={`text-sm ${plan.highlighted ? "text-gray-400" : "text-gray-500"}`}
+                      className={`text-sm ${plan.highlighted ? "text-white/60" : "text-muted-foreground"}`}
                     >
                       {plan.period}
                     </span>
                   )}
                 </div>
                 <p
-                  className={`text-sm mt-2 ${plan.highlighted ? "text-gray-400" : "text-gray-500"}`}
+                  className={`text-sm mt-2 ${plan.highlighted ? "text-white/60" : "text-muted-foreground"}`}
                 >
                   {plan.description}
                 </p>
@@ -155,11 +159,11 @@ export function Pricing() {
                     <HugeiconsIcon
                       icon={Tick02Icon}
                       className={`w-5 h-5 flex-shrink-0 ${
-                        plan.highlighted ? "text-blue-400" : "text-green-500"
+                        plan.highlighted ? "text-accent" : "text-secondary"
                       }`}
                     />
                     <span
-                      className={`text-sm ${plan.highlighted ? "text-gray-300" : "text-gray-600"}`}
+                      className={`text-sm ${plan.highlighted ? "text-white/80" : "text-muted-foreground"}`}
                     >
                       {feature}
                     </span>
@@ -170,10 +174,10 @@ export function Pricing() {
               <Button
                 className={`w-full h-12 font-semibold ${
                   plan.highlighted
-                    ? "bg-white text-gray-900 hover:bg-gray-100"
+                    ? "bg-secondary text-white hover:bg-secondary/90"
                     : plan.isEnterprise
-                      ? "bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300"
-                      : "bg-gray-900 text-white hover:bg-gray-800"
+                      ? "bg-transparent text-foreground border border-border/30 hover:bg-secondary/5"
+                      : "bg-secondary text-white hover:bg-secondary/90"
                 }`}
                 asChild
               >
@@ -186,7 +190,7 @@ export function Pricing() {
           ))}
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-8">
+        <p className="text-center text-sm text-muted-foreground mt-8">
           Todos los precios en CLP. IVA no incluido. Cancela cuando quieras.
         </p>
       </div>

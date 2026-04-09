@@ -61,7 +61,7 @@ export function LoginContent() {
 
           <div className="flex flex-col space-y-2">
             <Link href="/login/professional">
-              <Card className="group cursor-pointer border border-border/15 bg-white hover:border-border/30 hover:bg-[#f3f3f5] transition-all duration-200">
+              <Card className="group cursor-pointer border border-border/10 bg-white hover:border-border/30 hover:bg-secondary/5 transition-all duration-200">
                 <CardContent className="flex items-center gap-4 p-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary/20">
                     <HugeiconsIcon icon={UserIcon} size={22} strokeWidth={1.5} />
@@ -84,7 +84,7 @@ export function LoginContent() {
               </Card>
             </Link>
             <Link href="/login/organization">
-              <Card className="group cursor-pointer border border-border/15 bg-white hover:border-border/30 hover:bg-[#f3f3f5] transition-all duration-200">
+              <Card className="group cursor-pointer border border-border/10 bg-white hover:border-border/30 hover:bg-accent/5 transition-all duration-200">
                 <CardContent className="flex items-center gap-4 p-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
                     <HugeiconsIcon icon={Building06Icon} size={22} strokeWidth={1.5} />
@@ -112,23 +112,13 @@ export function LoginContent() {
               ¿Eres nuevo en Biovity?
             </p>
             <div className="space-y-2">
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="h-11 w-full"
-              >
+              <Button asChild variant="ghost" size="lg" className="h-11 w-full">
                 <Link href="/register/professional" className="flex items-center gap-2">
                   <HugeiconsIcon icon={UserIcon} size={18} strokeWidth={1.5} />
                   Crear cuenta de usuario
                 </Link>
               </Button>
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="h-11 w-full"
-              >
+              <Button asChild variant="ghost" size="lg" className="h-11 w-full">
                 <Link href="/register/organization" className="flex items-center gap-2">
                   <HugeiconsIcon icon={Building06Icon} size={18} strokeWidth={1.5} />
                   Registrar organización

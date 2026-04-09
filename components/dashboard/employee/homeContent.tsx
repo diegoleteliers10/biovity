@@ -1,8 +1,13 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useCallback, useMemo, useState } from "react"
 import { useQueries } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { cache, useCallback, useMemo, useState } from "react"
+import { getLastMessageFromSender } from "@/lib/api/messages"
+import { useApplicationsByCandidate } from "@/lib/api/use-applications"
+import { useChatsByProfessional } from "@/lib/api/use-chats"
+import { getUser } from "@/lib/api/users"
+import { Result } from "better-result"
 import { authClient } from "@/lib/auth-client"
 import { useChatsByProfessional } from "@/lib/api/use-chats"
 import { getLastMessageFromSender } from "@/lib/api/messages"
@@ -16,6 +21,16 @@ import { MetricCard } from "./home/metricCard"
 import { RecentApplicationsCard } from "./home/recentApplicationsCard"
 import { RecentMessagesCard } from "./home/recentMessagesCard"
 import { RecommendedJobCard } from "./home/recommendedJobCard"
+
+// Cached user fetcher - deduplicates within the request using React.cache
+// Per async-parallel rule: use Promise.all for independent operations
+// Per server-parallel-nested-fetching rule: each item chains its own nested fetch
+const getCachedUser = cache(async (recruiterId: string) => {
+  if (!recruiterId) return null
+  const result = await getUser(recruiterId)
+  if (!Result.isOk(result)) return null
+  return result.value
+})
 
 export const HomeContent = () => {
   const router = useRouter()
@@ -59,11 +74,10 @@ export const HomeContent = () => {
   }, [])
 
   const handleJobClick = useCallback(
-    (jobTitle: string, _company: string) => {
-      const slug = toSlug(jobTitle)
-      router.push(`/dashboard/job/${slug}`)
+    (jobId: string) => {
+      router.push(`/dashboard/job/${jobId}`)
     },
-    [toSlug, router]
+    [router]
   )
 
   const handleApplyJob = useCallback((_jobId: number, _jobTitle: string, _company: string) => {
@@ -84,6 +98,10 @@ export const HomeContent = () => {
     router.push("/dashboard/messages")
   }, [router])
 
+  const handleViewAllApplications = useCallback(() => {
+    router.push("/dashboard/applications")
+  }, [router])
+
   const handleCreateAlert = useCallback(() => {
     // TODO: Implement alert creation logic
     console.log("Create alert")
@@ -96,39 +114,61 @@ export const HomeContent = () => {
   const firstName = data?.user?.name?.split(" ")[0] || "Usuario"
 
   const professionalId = (data?.user as { id?: string })?.id
-  const { data: chats = [], isPending: chatsPending, isSuccess: chatsSuccess } = useChatsByProfessional(professionalId)
+  const {
+    data: chats = [],
+    isPending: chatsPending,
+    isSuccess: chatsSuccess,
+  } = useChatsByProfessional(professionalId)
 
-  const { data: applications = [], isPending: applicationsPending, isSuccess: applicationsSuccess } = useApplicationsByCandidate(professionalId)
+  const {
+    data: applications = [],
+    isPending: applicationsPending,
+    isSuccess: applicationsSuccess,
+  } = useApplicationsByCandidate(professionalId)
+
+  // Deduplicate recruiter IDs to avoid redundant queries
+  // Per async-parallel rule: parallelize independent operations
+  // Per server-parallel-nested-fetching rule: deduplicate before fetching
+  const uniqueRecruiterIds = useMemo(() => {
+    const seen = new Set<string>()
+    return (chats ?? [])
+      .map((c) => c.recruiterId)
+      .filter((id): id is string => {
+        if (!id) return false
+        if (seen.has(id)) return false
+        seen.add(id)
+        return true
+      })
+  }, [chats])
 
   const recruiterQueries = useQueries({
-    queries: (chats ?? []).map((chat) => ({
-      queryKey: ["profile", "user", chat.recruiterId],
-      queryFn: async () => {
-        const result = await getUser(chat.recruiterId)
-        if ("error" in result) return null
-        return result.data
-      },
-      enabled: Boolean(chat.recruiterId),
+    queries: uniqueRecruiterIds.map((recruiterId) => ({
+      queryKey: ["profile", "user", recruiterId],
+      queryFn: () => getCachedUser(recruiterId),
+      enabled: Boolean(recruiterId),
       staleTime: 5 * 60 * 1000,
     })),
   })
 
+  // Build recruiter names map from deduplicated queries
   const recruiterNames = useMemo(() => {
     const map: Record<string, string> = {}
     recruiterQueries.forEach((q, i) => {
-      if (chats[i]?.recruiterId) {
-        map[chats[i].recruiterId] = q.data?.name ?? "Reclutador"
+      const recruiterId = uniqueRecruiterIds[i]
+      if (recruiterId) {
+        map[recruiterId] = q.data?.name ?? "Reclutador"
       }
     })
     return map
-  }, [recruiterQueries, chats])
+  }, [recruiterQueries, uniqueRecruiterIds])
 
   const lastRecruiterMessageQueries = useQueries({
     queries: (chats ?? []).map((chat) => ({
       queryKey: ["messages", "last-recruiter", chat.id],
       queryFn: async () => {
         if (!chat.recruiterId) return null
-        return await getLastMessageFromSender(chat.id, chat.recruiterId)
+        const msg = await getLastMessageFromSender(chat.id, chat.recruiterId)
+        return msg
       },
       enabled: Boolean(chat.id && chat.recruiterId),
       staleTime: 30 * 1000,
@@ -147,7 +187,10 @@ export const HomeContent = () => {
     })
   }, [chats, lastRecruiterMessageQueries])
 
-  const isInitialLoad = !chatsSuccess || !applicationsSuccess || (chats.length > 0 && lastRecruiterMessageQueries.some((q) => q.isFetching))
+  const isInitialLoad =
+    !chatsSuccess ||
+    !applicationsSuccess ||
+    (chats.length > 0 && lastRecruiterMessageQueries.some((q) => q.isFetching))
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -168,19 +211,29 @@ export const HomeContent = () => {
       </div>
 
       {/* Recent Applications and Messages */}
-      <div className="border-t border-border/80 pt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <RecentApplicationsCard
           applications={applications}
           onJobClick={handleJobClick}
+          onViewAll={handleViewAllApplications}
           isLoading={!applicationsSuccess}
         />
-        <RecentMessagesCard chats={enrichedChats} isLoading={isInitialLoad} recruiterNames={recruiterNames} onViewAll={handleViewAllMessages} />
+        <RecentMessagesCard
+          chats={enrichedChats}
+          isLoading={isInitialLoad}
+          namesMap={recruiterNames}
+          participantIdKey="recruiterId"
+          defaultName="Reclutador"
+          onViewAll={handleViewAllMessages}
+        />
       </div>
 
       {/* Recommended Jobs Section */}
-      <div className="border-t border-border/80 pt-4 space-y-4">
+      <div className="mt-4 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl tracking-tight font-semibold text-foreground">Empleos Recomendados para Ti</h2>
+          <h2 className="text-xl tracking-tight font-semibold text-foreground">
+            Empleos Recomendados para Ti
+          </h2>
           <button
             type="button"
             onClick={handleViewAllJobs}
@@ -204,9 +257,11 @@ export const HomeContent = () => {
       </div>
 
       {/* Job Alerts Section */}
-      <div className="border-t border-border/80 pt-4 space-y-2">
+      <div className="mt-4 space-y-2">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold tracking-tight text-foreground">Alertas de Empleo</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">
+            Alertas de Empleo
+          </h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Configura alertas para recibir notificaciones de nuevos empleos que coincidan con tus

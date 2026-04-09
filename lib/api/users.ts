@@ -1,3 +1,7 @@
+import { Result, Result as R } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
+import { getErrorMessage } from "@/lib/result"
+
 const API_BASE =
   typeof window !== "undefined"
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
@@ -39,16 +43,6 @@ export type UpdateUserInput = {
   phone?: string
   birthday?: string
   location?: UserLocation
-}
-
-function getErrorMessage(data: unknown, fallback: string): string {
-  if (!data || typeof data !== "object") return fallback
-  const d = data as Record<string, unknown>
-  const msg = d.message
-  if (Array.isArray(msg)) return msg.join(". ") || fallback
-  if (typeof msg === "string") return msg
-  if (typeof d.error === "string") return d.error
-  return fallback
 }
 
 export function formatUserLocation(loc: UserLocation | null): string {
@@ -136,7 +130,7 @@ export type UsersPaginatedResponse = {
 
 export async function getUsers(
   params?: GetUsersParams
-): Promise<{ data: UsersPaginatedResponse } | { error: string }> {
+): Promise<Result<UsersPaginatedResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
   if (params?.limit != null) searchParams.set("limit", String(params.limit))
@@ -151,12 +145,24 @@ export async function getUsers(
   try {
     res = await fetch(url)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener los usuarios") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener los usuarios"),
+      })
+    )
   }
 
   const parsed = data as {
@@ -167,38 +173,48 @@ export async function getUsers(
     totalPages?: number
   }
   const users = Array.isArray(parsed?.data) ? parsed.data : []
-  return {
-    data: {
-      data: users,
-      total: typeof parsed?.total === "number" ? parsed.total : users.length,
-      page: typeof parsed?.page === "number" ? parsed.page : 1,
-      limit: typeof parsed?.limit === "number" ? parsed.limit : 10,
-      totalPages: typeof parsed?.totalPages === "number" ? parsed.totalPages : 1,
-    },
-  }
+  return R.ok({
+    data: users,
+    total: typeof parsed?.total === "number" ? parsed.total : users.length,
+    page: typeof parsed?.page === "number" ? parsed.page : 1,
+    limit: typeof parsed?.limit === "number" ? parsed.limit : 10,
+    totalPages: typeof parsed?.totalPages === "number" ? parsed.totalPages : 1,
+  })
 }
 
-export async function getUser(id: string): Promise<{ data: User } | { error: string }> {
+export async function getUser(id: string): Promise<Result<User, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/users/${id}`)
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al obtener el usuario") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al obtener el usuario"),
+      })
+    )
   }
 
   const normalized = normalizeUser(data)
   if (!normalized) {
-    return { error: "Formato de respuesta inválido" }
+    return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
   }
-  return { data: normalized }
+  return R.ok(normalized)
 }
 
-export async function uploadAvatar(file: File): Promise<{ data: string } | { error: string }> {
+export async function uploadAvatar(file: File): Promise<Result<string, ApiError | NetworkError>> {
   const formData = new FormData()
   formData.append("file", file)
 
@@ -206,40 +222,66 @@ export async function uploadAvatar(file: File): Promise<{ data: string } | { err
   try {
     res = await fetch("/api/upload/avatar", { method: "POST", body: formData })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: (data as { error?: string })?.error ?? "Error al subir la imagen" }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: (data as { error?: string })?.error ?? "Error al subir la imagen",
+      })
+    )
   }
-  return { data: (data as { url: string }).url }
+  return R.ok((data as { url: string }).url)
 }
 
 export async function setUserActive(
   userId: string,
   isActive: boolean
-): Promise<{ success: true; isActive: boolean } | { error: string }> {
+): Promise<Result<{ success: true; isActive: boolean }, ApiError | NetworkError>> {
+  let res: Response
   try {
-    const res = await fetch(`/api/admin/users/${userId}/is-active`, {
+    res = await fetch(`/api/admin/users/${userId}/is-active`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isActive }),
     })
-    const data = await res.json().catch(() => null)
-    if (!res.ok) {
-      return { error: (data as { error?: string })?.error ?? "Error al actualizar el estado" }
-    }
-    return { success: true, isActive }
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
+
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: (data as { error?: string })?.error ?? "Error al actualizar el estado",
+      })
+    )
+  }
+  return R.ok({ success: true, isActive })
 }
 
 export async function updateUser(
   id: string,
   input: UpdateUserInput
-): Promise<{ data: User } | { error: string }> {
+): Promise<Result<User, ApiError | NetworkError>> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1/users/${id}`, {
@@ -248,12 +290,24 @@ export async function updateUser(
       body: JSON.stringify(input),
     })
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
   }
 
   const data = await res.json().catch(() => null)
   if (!res.ok) {
-    return { error: getErrorMessage(data, "Error al actualizar el usuario") }
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: data,
+        message: getErrorMessage(data, "Error al actualizar el usuario"),
+      })
+    )
   }
-  return { data: data as User }
+  return R.ok(data as User)
 }
