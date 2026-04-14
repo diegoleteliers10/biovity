@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { LoginContent } from "./login-content"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Iniciar Sesión",
   description:
