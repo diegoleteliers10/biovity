@@ -44,8 +44,8 @@ export function UserLoginContent() {
     if (!signInSuccess) return
 
     // Use getSession directly to avoid stale state from useSession/sentinelClient
-    authClient.getSession().then(({ data: { session: directSession } }) => {
-      if (directSession?.user) {
+    authClient.getSession().then(({ data }) => {
+      if (data?.user) {
         router.push(redirectTo)
       } else {
         // No session after successful sign-in - might be inactive user
