@@ -41,15 +41,21 @@ export function OrganizationLoginContent() {
 
   // Wait for session to be confirmed after sign-in before redirecting
   useEffect(() => {
-    if (signInSuccess && !isPending && session?.user) {
-      router.push(redirectTo)
-    } else if (signInSuccess && !isPending && !session?.user) {
-      // Sign-in returned success but no session - might be inactive user
-      setErrors({ general: "Tu cuenta está desactivada. Contacta al administrador." })
-      setSignInSuccess(false)
-    }
-  }, [signInSuccess, session, isPending, router, redirectTo])
+    if (!signInSuccess) return
 
+    // Use getSession directly to avoid stale state from useSession/sentinelClient
+    authClient.getSession().then(({ data: { session: directSession } }) => {
+      if (directSession?.user) {
+        router.push(redirectTo)
+      } else {
+        // No session after successful sign-in - might be inactive user
+        setErrors({ general: "Tu cuenta está desactivada. Contacta al administrador." })
+        setSignInSuccess(false)
+      }
+    })
+  }, [signInSuccess, router, redirectTo])
+
+  // Redirect if user already has an active session
   useEffect(() => {
     if (!isPending && session?.user) {
       const type = (session.user as { type?: string }).type
