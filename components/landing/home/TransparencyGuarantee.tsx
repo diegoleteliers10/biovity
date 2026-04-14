@@ -28,7 +28,7 @@ export function TransparencyGuarantee() {
             transition={t(0)}
             className="mb-6"
           >
-            <Badge variant="success">100% Transparente</Badge>
+            <Badge variant="secondary">100% Transparente</Badge>
           </m.div>
           <m.h2
             initial={{ opacity: 0 }}

@@ -3,13 +3,13 @@ const API_BASE =
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
-import { Result, Result as R } from "better-result"
+import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
+import { getErrorMessage } from "@/lib/result"
 import type {
   OrganizationMetrics,
   OrganizationMetricsFilters,
 } from "@/lib/types/organization-metrics"
-import { getErrorMessage } from "@/lib/result"
 
 export async function getOrganizationMetrics(
   organizationId: string,

@@ -19,10 +19,10 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
+import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import {
   DropdownMenu,
   DropdownMenuContent,

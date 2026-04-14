@@ -1,4 +1,4 @@
-import { Result, Result as R } from "better-result"
+import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
 import { getErrorMessage } from "@/lib/result"
 
@@ -21,6 +21,10 @@ export type ApplicationCandidate = {
   email: string
   avatar?: string | null
   profession?: string | null
+  education?: string | null
+  skills?: string[]
+  yearsOfExperience?: number
+  bio?: string
 }
 
 export type Application = {
@@ -184,6 +188,36 @@ export async function updateApplicationStatus(
         statusText: res.statusText,
         body: json,
         message: getErrorMessage(json, "Error al actualizar el estado"),
+      })
+    )
+  }
+  const app = (json?.data ?? json) as Application
+  return R.ok(app)
+}
+
+export async function getApplicationDetail(
+  id: string
+): Promise<Result<Application, ApiError | NetworkError>> {
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/api/v1/applications/${id}`)
+  } catch (err) {
+    return R.err(
+      new NetworkError({
+        message: err instanceof Error ? err.message : "Error de red",
+        cause: err,
+      })
+    )
+  }
+
+  const json = await res.json().catch(() => null)
+  if (!res.ok) {
+    return R.err(
+      new ApiError({
+        status: res.status,
+        statusText: res.statusText,
+        body: json,
+        message: getErrorMessage(json, "Error al obtener la postulación"),
       })
     )
   }

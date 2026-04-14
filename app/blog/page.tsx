@@ -1,9 +1,9 @@
+import { Result } from "better-result"
 import type { Metadata } from "next"
 import { BlogGrid } from "@/components/blog/BlogGrid"
 import { BlogHeader } from "@/components/blog/BlogHeader"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { getAllPosts } from "@/lib/posts"
-import { Result } from "better-result"
 
 export const metadata: Metadata = {
   title: "Blog",

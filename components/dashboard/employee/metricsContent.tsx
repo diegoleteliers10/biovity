@@ -8,8 +8,8 @@ import {
   Pulse01Icon,
   User02Icon,
 } from "@hugeicons/core-free-icons"
-import { useCallback, useState } from "react"
 import dynamic from "next/dynamic"
+import { useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { authClient } from "@/lib/auth-client"

@@ -4,6 +4,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { GlobalAgentSheet } from "@/components/ai/GlobalAgentSheet"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
 
@@ -166,7 +167,10 @@ export default function RootLayout({
       <body className={`${geistMono.variable} antialiased`}>
         <NuqsAdapter>
           <QueryProvider>
-            <MotionProvider>{children}</MotionProvider>
+            <MotionProvider>
+              {children}
+              <GlobalAgentSheet />
+            </MotionProvider>
           </QueryProvider>
         </NuqsAdapter>
       </body>

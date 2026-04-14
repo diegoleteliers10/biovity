@@ -1,4 +1,4 @@
-import { Result, Result as R } from "better-result"
+import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
 import { getErrorMessage } from "@/lib/result"
 import type {

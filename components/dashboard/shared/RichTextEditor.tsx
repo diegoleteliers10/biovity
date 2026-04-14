@@ -1,19 +1,21 @@
 "use client"
 
-import { useEditor, EditorContent } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
 import {
-  TextBoldIcon,
-  TextItalicIcon,
-  TextStrikethroughIcon,
-  LeftToRightListBulletIcon,
-  LeftToRightListNumberIcon,
-  LeftToRightBlockQuoteIcon,
   ArrowTurnBackwardIcon,
   ArrowTurnForwardIcon,
   CodeIcon,
+  LeftToRightBlockQuoteIcon,
+  LeftToRightListBulletIcon,
+  LeftToRightListNumberIcon,
+  TextBoldIcon,
+  TextItalicIcon,
+  TextStrikethroughIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { EditorContent, useEditor } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
+import { marked } from "marked"
+import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 interface RichTextEditorProps {
@@ -21,6 +23,7 @@ interface RichTextEditorProps {
   onChange: (content: string) => void
   placeholder?: string
   className?: string
+  toolbarSuffix?: React.ReactNode
 }
 
 const MenuButton = ({
@@ -100,7 +103,13 @@ const EDITOR_CONTENT_CSS = `
   }
 `
 
-export function RichTextEditor({ content, onChange, placeholder, className }: RichTextEditorProps) {
+export function RichTextEditor({
+  content,
+  onChange,
+  placeholder,
+  className,
+  toolbarSuffix,
+}: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit],
     content,
@@ -116,6 +125,16 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
     },
   })
 
+  // Sync external content changes (e.g. from AI overwrite) into TipTap
+  useEffect(() => {
+    if (!editor) return
+    const editorHTML = editor.getHTML()
+    if (content !== editorHTML) {
+      const html = (marked.parse(content) as string).trim()
+      editor.commands.setContent(html)
+    }
+  }, [editor, content])
+
   if (!editor) return null
 
   return (
@@ -128,82 +147,84 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
           className
         )}
       >
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-border px-1 py-1">
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          isActive={editor.isActive("bold")}
-          title="Negrita"
-        >
-          <HugeiconsIcon icon={TextBoldIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          isActive={editor.isActive("italic")}
-          title="Cursiva"
-        >
-          <HugeiconsIcon icon={TextItalicIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          isActive={editor.isActive("strike")}
-          title="Tachado"
-        >
-          <HugeiconsIcon icon={TextStrikethroughIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          isActive={editor.isActive("code")}
-          title="Código"
-        >
-          <HugeiconsIcon icon={CodeIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
+        {/* Toolbar */}
+        <div className="flex flex-wrap items-center gap-0.5 border-b border-border px-1 py-1">
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            isActive={editor.isActive("bold")}
+            title="Negrita"
+          >
+            <HugeiconsIcon icon={TextBoldIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            isActive={editor.isActive("italic")}
+            title="Cursiva"
+          >
+            <HugeiconsIcon icon={TextItalicIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            isActive={editor.isActive("strike")}
+            title="Tachado"
+          >
+            <HugeiconsIcon icon={TextStrikethroughIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleCode().run()}
+            isActive={editor.isActive("code")}
+            title="Código"
+          >
+            <HugeiconsIcon icon={CodeIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
 
-        <div className="mx-1 h-4 w-px bg-border" />
+          <div className="mx-1 h-4 w-px bg-border" />
 
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          isActive={editor.isActive("bulletList")}
-          title="Lista con puntos"
-        >
-          <HugeiconsIcon icon={LeftToRightListBulletIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          isActive={editor.isActive("orderedList")}
-          title="Lista numerada"
-        >
-          <HugeiconsIcon icon={LeftToRightListNumberIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
-        <MenuButton
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          isActive={editor.isActive("blockquote")}
-          title="Cita"
-        >
-          <HugeiconsIcon icon={LeftToRightBlockQuoteIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            isActive={editor.isActive("bulletList")}
+            title="Lista con puntos"
+          >
+            <HugeiconsIcon icon={LeftToRightListBulletIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            isActive={editor.isActive("orderedList")}
+            title="Lista numerada"
+          >
+            <HugeiconsIcon icon={LeftToRightListNumberIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            isActive={editor.isActive("blockquote")}
+            title="Cita"
+          >
+            <HugeiconsIcon icon={LeftToRightBlockQuoteIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
 
-        <div className="mx-1 h-4 w-px bg-border" />
+          <div className="mx-1 h-4 w-px bg-border" />
 
-        <MenuButton
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-          title="Deshacer"
-        >
-          <HugeiconsIcon icon={ArrowTurnBackwardIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
-        <MenuButton
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-          title="Rehacer"
-        >
-          <HugeiconsIcon icon={ArrowTurnForwardIcon} size={14} strokeWidth={1.5} />
-        </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().undo().run()}
+            disabled={!editor.can().undo()}
+            title="Deshacer"
+          >
+            <HugeiconsIcon icon={ArrowTurnBackwardIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+          <MenuButton
+            onClick={() => editor.chain().focus().redo().run()}
+            disabled={!editor.can().redo()}
+            title="Rehacer"
+          >
+            <HugeiconsIcon icon={ArrowTurnForwardIcon} size={14} strokeWidth={1.5} />
+          </MenuButton>
+
+          {toolbarSuffix && <div className="ml-1 flex items-center">{toolbarSuffix}</div>}
+        </div>
+
+        {/* Editor content */}
+        <EditorContent editor={editor} />
       </div>
-
-      {/* Editor content */}
-      <EditorContent editor={editor} />
-    </div>
     </>
   )
 }

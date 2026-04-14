@@ -10,9 +10,11 @@ import {
   Edit01Icon,
   FileAttachmentIcon,
   FloppyDiskIcon,
+  GithubIcon,
   Globe02Icon,
   GraduationScrollIcon,
   Link01Icon,
+  LinkedinIcon,
   Location01Icon,
   Mail01Icon,
   SmartPhone01Icon,
@@ -21,7 +23,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { Github, Globe, Linkedin } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -54,18 +55,18 @@ import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/valida
 
 const EMPTY_PLACEHOLDER = "No especificado"
 
-type LinkInfo = { label: string; Icon: typeof Github }
+type LinkInfo = { label: string; Icon: typeof GithubIcon }
 
 const getLinkInfo = (url: string): LinkInfo => {
   try {
     const host = new URL(url).hostname.toLowerCase()
-    if (host.includes("linkedin")) return { label: "LinkedIn", Icon: Linkedin }
-    if (host.includes("github")) return { label: "GitHub", Icon: Github }
+    if (host.includes("linkedin")) return { label: "LinkedIn", Icon: LinkedinIcon }
+    if (host.includes("github")) return { label: "GitHub", Icon: GithubIcon }
     if (host.includes("portfolio") || host.includes("personal"))
-      return { label: "Portfolio", Icon: Globe }
-    return { label: host.replace("www.", ""), Icon: Globe }
+      return { label: "Portfolio", Icon: Globe02Icon }
+    return { label: host.replace("www.", ""), Icon: Globe02Icon }
   } catch {
-    return { label: url, Icon: Globe }
+    return { label: url, Icon: Globe02Icon }
   }
 }
 const API_BASE =
@@ -770,7 +771,7 @@ const EmployeeProfile = () => {
                       {data.profession || EMPTY_PLACEHOLDER}
                     </p>
                     {user?.type && (
-                      <Badge variant="accent" className="mt-2 text-xs">
+                      <Badge variant="secondary" className="mt-2 text-xs">
                         {user.type === "professional" ? "Profesional" : user.type}
                       </Badge>
                     )}
@@ -1590,6 +1591,7 @@ const EmployeeProfile = () => {
                 <ul className="space-y-2">
                   {(resume?.links ?? []).map((link, i) => {
                     const { label, Icon } = getLinkInfo(link.url)
+                    const IconComponent = Icon
                     return (
                       <li key={i}>
                         <Link
@@ -1598,7 +1600,7 @@ const EmployeeProfile = () => {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
                         >
-                          <Icon size={14} />
+                          <HugeiconsIcon icon={IconComponent} size={14} />
                           {label}
                         </Link>
                       </li>

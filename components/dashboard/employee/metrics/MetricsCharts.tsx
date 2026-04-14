@@ -1,5 +1,7 @@
 "use client"
 
+import { DashboardSquare02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Area,
   AreaChart,
@@ -11,16 +13,14 @@ import {
   PieChart,
   XAxis,
 } from "recharts"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { DashboardSquare02Icon } from "@hugeicons/core-free-icons"
 
 type TimeRange = "3m" | "6m" | "12m"
 

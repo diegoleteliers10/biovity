@@ -29,7 +29,7 @@ export function ForStudents() {
               transition={t(0)}
               className="mb-6"
             >
-              <Badge variant="accent">Para estudiantes y graduados</Badge>
+              <Badge variant="secondary">Para estudiantes y graduados</Badge>
             </m.div>
             <m.h2
               initial={{ opacity: 0 }}

@@ -1,4 +1,4 @@
-import { Result, Result as R } from "better-result"
+import { Result as R, Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
 
 const getBaseUrl = () =>

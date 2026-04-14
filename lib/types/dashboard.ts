@@ -50,6 +50,11 @@ export interface Applicant {
   position: string
   dateApplied: string
   stage: ApplicationStage
+  /** Extended candidate data for AI features (optional, populated from Application) */
+  candidateEducation?: string
+  candidateSkills?: string[]
+  candidateYearsOfExperience?: number
+  candidateBio?: string
 }
 
 export interface OfferWithApplicants {

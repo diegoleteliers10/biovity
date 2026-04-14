@@ -12,12 +12,14 @@ import {
   Sent02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Result } from "better-result"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,14 +32,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { ChatListItem, MessageBubble } from "@/components/ui/message-bubble"
 import { useDebounce } from "@/hooks/use-debounce"
-import { Result } from "better-result"
-import { getResultErrorMessage } from "@/lib/result"
 import { type Chat, getChatById } from "@/lib/api/chats"
 import type { Message } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
 import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
+import { getResultErrorMessage } from "@/lib/result"
 import { formatDateChilean } from "@/lib/utils"
 
 export function OrganizationMessagesContent() {
@@ -147,19 +148,11 @@ export function OrganizationMessagesContent() {
       {/* Sidebar */}
       <div className="flex w-80 flex-col overflow-hidden border-r border-border max-h-dvh">
         <div className="p-4">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Mensajes</h1>
-              <p className="mt-1 text-muted-foreground text-sm">
-                {chatsLoading ? "Cargando..." : `${chats.length} conversaciones activas`}
-              </p>
-            </div>
-            <Button variant="ghost" size="icon" className="size-9" aria-label="Más opciones">
-              <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
-            </Button>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold text-foreground">Mensajes</h1>
+            <NotificationBell notifications={[]} />
           </div>
-
-          <div className="relative mb-6">
+          <div className="relative">
             <HugeiconsIcon
               icon={Search01Icon}
               size={18}

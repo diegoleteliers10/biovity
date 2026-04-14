@@ -13,9 +13,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { addTransitionType, startTransition } from "react"
-import { ViewTransition } from "react"
+import { addTransitionType, startTransition, useState, ViewTransition } from "react"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import {
   AlertDialog,
@@ -218,7 +216,10 @@ export function OfertasContent() {
               const salaryStr = formatJobSalary(job)
 
               return (
-                <Card key={job.id} className="group relative cursor-pointer border border-border bg-card">
+                <Card
+                  key={job.id}
+                  className="group relative cursor-pointer border border-border bg-card"
+                >
                   {/* Full-card clickable link */}
                   <button
                     type="button"
@@ -247,142 +248,144 @@ export function OfertasContent() {
                       </span>
                     </div>
 
-                  {/* Salary */}
-                  <div className="flex items-center gap-2 border-t border-border/10 px-4 py-2">
-                    <HugeiconsIcon
-                      icon={Cash02Icon}
-                      size={13}
-                      strokeWidth={1.5}
-                      className="h-3.5 w-3.5 shrink-0 text-secondary"
-                    />
-                    <span className="text-xs font-medium text-foreground">{salaryStr}</span>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="flex items-center gap-3 px-4 pb-2">
-                    <div className="flex items-center gap-1">
+                    {/* Salary */}
+                    <div className="flex items-center gap-2 border-t border-border/10 px-4 py-2">
                       <HugeiconsIcon
-                        icon={UserGroupIcon}
+                        icon={Cash02Icon}
                         size={13}
                         strokeWidth={1.5}
-                        className="h-3.5 w-3.5 text-muted-foreground"
+                        className="h-3.5 w-3.5 shrink-0 text-secondary"
                       />
-                      <span className="text-xs text-foreground">
-                        {job.applicationsCount ?? 0}
+                      <span className="text-xs font-medium text-foreground">{salaryStr}</span>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 px-4 pb-2">
+                      <div className="flex items-center gap-1">
+                        <HugeiconsIcon
+                          icon={UserGroupIcon}
+                          size={13}
+                          strokeWidth={1.5}
+                          className="h-3.5 w-3.5 text-muted-foreground"
+                        />
+                        <span className="text-xs text-foreground">
+                          {job.applicationsCount ?? 0}
+                        </span>
+                        <span className="text-xs text-muted-foreground">post.</span>
+                      </div>
+                      <div className="h-3 w-px bg-border/30" />
+                      <div className="flex items-center gap-1">
+                        <HugeiconsIcon
+                          icon={EyeIcon}
+                          size={13}
+                          strokeWidth={1.5}
+                          className="h-3.5 w-3.5 text-muted-foreground"
+                        />
+                        <span className="text-xs text-foreground">{job.views ?? 0}</span>
+                        <span className="text-xs text-muted-foreground">vistas</span>
+                      </div>
+                      {job.expiresAt && (
+                        <>
+                          <div className="h-3 w-px bg-border/30" />
+                          <div className="flex items-center gap-1">
+                            <HugeiconsIcon
+                              icon={Clock01Icon}
+                              size={13}
+                              strokeWidth={1.5}
+                              className="h-3.5 w-3.5 text-muted-foreground"
+                            />
+                            <span className="text-xs text-muted-foreground">
+                              {getDaysRemaining(job.expiresAt)}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between border-t border-border/10 px-4 py-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      <span>
+                        {job.createdAt ? formatDateChilean(job.createdAt, "d MMM yyyy") : "—"}
                       </span>
-                      <span className="text-xs text-muted-foreground">post.</span>
+                      {job.expiresAt && (
+                        <span>Expira: {formatDateChilean(job.expiresAt, "d MMM yyyy")}</span>
+                      )}
                     </div>
-                    <div className="h-3 w-px bg-border/30" />
-                    <div className="flex items-center gap-1">
-                      <HugeiconsIcon
-                        icon={EyeIcon}
-                        size={13}
-                        strokeWidth={1.5}
-                        className="h-3.5 w-3.5 text-muted-foreground"
-                      />
-                      <span className="text-xs text-foreground">{job.views ?? 0}</span>
-                      <span className="text-xs text-muted-foreground">vistas</span>
-                    </div>
-                    {job.expiresAt && (
-                      <>
-                        <div className="h-3 w-px bg-border/30" />
-                        <div className="flex items-center gap-1">
+                  </div>
+
+                  {/* Actions overlay - above the clickable link */}
+                  <div className="absolute right-2 top-2 z-10">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                          aria-label="Más opciones"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <HugeiconsIcon icon={MoreHorizontalIcon} size={18} strokeWidth={1.5} />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleEditJob(job)
+                          }}
+                        >
                           <HugeiconsIcon
-                            icon={Clock01Icon}
-                            size={13}
+                            icon={Edit01Icon}
+                            size={18}
                             strokeWidth={1.5}
-                            className="h-3.5 w-3.5 text-muted-foreground"
+                            className="mr-2"
                           />
-                          <span className="text-xs text-muted-foreground">
-                            {getDaysRemaining(job.expiresAt)}
-                          </span>
-                        </div>
-                      </>
-                    )}
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDeleteClick(job)
+                          }}
+                        >
+                          <HugeiconsIcon
+                            icon={Delete01Icon}
+                            size={18}
+                            strokeWidth={1.5}
+                            className="mr-2"
+                          />
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
+                </Card>
+              )
+            })}
 
-                  {/* Footer */}
-                  <div className="flex items-center justify-between border-t border-border/10 px-4 py-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                    <span>
-                      {job.createdAt ? formatDateChilean(job.createdAt, "d MMM yyyy") : "—"}
-                    </span>
-                    {job.expiresAt && (
-                      <span>Expira: {formatDateChilean(job.expiresAt, "d MMM yyyy")}</span>
-                    )}
-                  </div>
+            {/* Create new offer card */}
+            {jobList.length > 0 && (
+              <button
+                type="button"
+                onClick={handleCreateOffer}
+                className="group flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border/40 bg-transparent px-4 py-6 transition-all duration-200 hover:border-secondary/40 hover:bg-secondary/5"
+              >
+                <div className="flex size-10 items-center justify-center rounded-full bg-secondary/10 transition-colors duration-200 group-hover:bg-secondary/20">
+                  <HugeiconsIcon
+                    icon={FileAddIcon}
+                    size={22}
+                    strokeWidth={1.5}
+                    className="text-secondary"
+                  />
                 </div>
-
-                {/* Actions overlay - above the clickable link */}
-                <div className="absolute right-2 top-2 z-10">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-                        aria-label="Más opciones"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <HugeiconsIcon icon={MoreHorizontalIcon} size={18} strokeWidth={1.5} />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleEditJob(job)
-                        }}
-                      >
-                        <HugeiconsIcon
-                          icon={Edit01Icon}
-                          size={18}
-                          strokeWidth={1.5}
-                          className="mr-2"
-                        />
-                        Editar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeleteClick(job)
-                        }}
-                      >
-                        <HugeiconsIcon
-                          icon={Delete01Icon}
-                          size={18}
-                          strokeWidth={1.5}
-                          className="mr-2"
-                        />
-                        Eliminar
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </Card>
-            )
-          })}
-
-          {/* Create new offer card */}
-          {jobList.length > 0 && (
-            <button
-              type="button"
-              onClick={handleCreateOffer}
-              className="group flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border/40 bg-transparent px-4 py-6 transition-all duration-200 hover:border-secondary/40 hover:bg-secondary/5"
-            >
-              <div className="flex size-10 items-center justify-center rounded-full bg-secondary/10 transition-colors duration-200 group-hover:bg-secondary/20">
-                <HugeiconsIcon
-                  icon={FileAddIcon}
-                  size={22}
-                  strokeWidth={1.5}
-                  className="text-secondary"
-                />
-              </div>
-              <span className="text-xs font-medium text-muted-foreground">Crear nueva oferta</span>
-            </button>
-          )}
-        </div>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Crear nueva oferta
+                </span>
+              </button>
+            )}
+          </div>
         </DirectionalTransition>
       )}
 

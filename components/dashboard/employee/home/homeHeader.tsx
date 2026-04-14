@@ -68,7 +68,7 @@ export function HomeHeader({
             <Button variant="ghost" size="icon" className="relative">
               <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
               {unreadCount > 0 && (
-                <span className="absolute top-[8px] right-[9px] h-2 w-2 bg-destructive rounded-full" />
+                <span className="absolute top-0 right-0 h-2 w-2 bg-destructive rounded-full" />
               )}
             </Button>
           </DropdownMenuTrigger>

@@ -96,7 +96,7 @@ export function ConexionTalento() {
               <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
                 <span className="text-6xl font-bold text-accent">3</span>
               </div>
-              <Badge variant="accent" className="mb-2">
+              <Badge variant="secondary" className="mb-2">
                 AI Matching
               </Badge>
               <h3 className="text-lg font-bold text-foreground mb-2">Match perfecto</h3>

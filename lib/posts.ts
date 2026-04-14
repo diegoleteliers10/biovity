@@ -1,4 +1,4 @@
-import { Result, Result as R } from "better-result"
+import { Result as R, Result } from "better-result"
 import fs from "fs"
 import { glob } from "glob"
 import matter from "gray-matter"

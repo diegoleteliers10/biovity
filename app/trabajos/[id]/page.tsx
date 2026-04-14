@@ -2,10 +2,11 @@ import {
   Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
-  ViewIcon,
   Location05Icon,
+  ViewIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Result } from "better-result"
 import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { notFound } from "next/navigation"
@@ -31,7 +32,6 @@ import {
   getFormatoBadgeColor,
   getModalidadBadgeColor,
 } from "@/lib/utils"
-import { Result } from "better-result"
 
 type Props = {
   params: Promise<{ id: string }>
