@@ -31,6 +31,11 @@ export const auth = betterAuth({
     window: 60, // 1 minute
     max: 10, // 10 requests per minute per IP
   },
+  trustedOrigins: [
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    "https://biovity.cl",
+    "https://www.biovity.cl",
+  ],
   experimental: {
     joins: true, // Enable database joins for better performance
   },
