@@ -17,7 +17,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
+// import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -737,7 +737,7 @@ export function OrganizationProfileContent() {
               </TabsContent>
 
               <TabsContent value="subscription" className="w-full pt-10">
-                <SubscriptionTab organizationId={organizationId ?? ""} />
+                {/*(<SubscriptionTab organizationId={organizationId ?? ""} />*/}
               </TabsContent>
             </Tabs>
           </div>

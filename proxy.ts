@@ -4,10 +4,10 @@ const WAITLIST_PATH = "/lista-espera"
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-  const isProduction = process.env.NODE_ENV === "production"
+  const isDevelopment = process.env.NODE_ENV !== "production"
 
-  // En producción: redirigir todo excepto lista-espera y assets al waitlist
-  if (isProduction) {
+  // En desarrollo: redirigir todo excepto lista-espera y assets al waitlist
+  if (isDevelopment) {
     const allowedPaths = [
       WAITLIST_PATH,
       "/api/waitlist",
@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // En development: lógica de auth para dashboard
+  // En producción: lógica de auth para dashboard
   const protectedRoutes = ["/dashboard"]
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
