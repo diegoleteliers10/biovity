@@ -37,6 +37,18 @@ export function UserLoginContent() {
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [signInSuccess, setSignInSuccess] = useState(false)
+
+  // Wait for session to be confirmed after sign-in before redirecting
+  useEffect(() => {
+    if (signInSuccess && !isPending && session?.user) {
+      router.push(redirectTo)
+    } else if (signInSuccess && !isPending && !session?.user) {
+      // Sign-in returned success but no session - might be inactive user
+      setErrors({ general: "Tu cuenta está desactivada. Contacta al administrador." })
+      setSignInSuccess(false)
+    }
+  }, [signInSuccess, session, isPending, router, redirectTo])
 
   useEffect(() => {
     if (!isPending && session?.user) {
@@ -74,7 +86,8 @@ export function UserLoginContent() {
           "Credenciales inválidas. Por favor verifica tu email y contraseña."
         setErrors({ general: msg })
       } else {
-        router.push(redirectTo)
+        // Set flag to wait for session confirmation before redirecting
+        setSignInSuccess(true)
       }
     } catch {
       setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." })
