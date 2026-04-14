@@ -39,20 +39,10 @@ export function OrganizationLoginContent() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [signInSuccess, setSignInSuccess] = useState(false)
 
-  // Wait for session to be confirmed after sign-in before redirecting
+  // Redirect on successful sign-in
   useEffect(() => {
     if (!signInSuccess) return
-
-    // Use getSession directly to avoid stale state from useSession/sentinelClient
-    authClient.getSession().then(({ data }) => {
-      if (data?.user) {
-        router.push(redirectTo)
-      } else {
-        // No session after successful sign-in - might be inactive user
-        setErrors({ general: "Tu cuenta está desactivada. Contacta al administrador." })
-        setSignInSuccess(false)
-      }
-    })
+    router.push(redirectTo)
   }, [signInSuccess, router, redirectTo])
 
   // Redirect if user already has an active session
