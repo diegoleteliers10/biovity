@@ -2,8 +2,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
-import { getResultErrorMessage } from "@/lib/result"
 import { incrementJobViews } from "@/lib/api/organization-metrics"
+import { getResultErrorMessage } from "@/lib/result"
 
 export function useIncrementJobViews() {
   const queryClient = useQueryClient()

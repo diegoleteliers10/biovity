@@ -22,6 +22,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { AIScoreBadge, AIScoreBadgeSkeleton } from "@/components/ai/AIScoreBadge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -30,6 +31,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
+import type { JobOfferContext } from "@/lib/ai/types"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import { cn } from "@/lib/utils"
 
@@ -41,7 +44,21 @@ const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[]
   { id: "rechazado", label: "Rechazado", icon: Cancel01Icon },
 ]
 
-function ApplicantCard({ applicant }: { applicant: Applicant }) {
+interface ApplicantCardProps {
+  applicant: Applicant
+  getScore?: (candidateId: string) => ScoreEntry | undefined
+  isAnalyzing?: boolean
+  jobOffer?: JobOfferContext
+  onScoreClick?: (candidateId: string) => void
+}
+
+function ApplicantCard({
+  applicant,
+  getScore,
+  isAnalyzing: analyzing,
+  jobOffer,
+  onScoreClick,
+}: ApplicantCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: applicant.id,
     data: { applicant, stage: applicant.stage },
@@ -52,6 +69,8 @@ function ApplicantCard({ applicant }: { applicant: Applicant }) {
   const handleMenuPointerDown = (e: React.PointerEvent) => {
     e.stopPropagation()
   }
+
+  const scoreEntry = getScore ? getScore(applicant.candidateId) : undefined
 
   return (
     <Card
@@ -65,27 +84,48 @@ function ApplicantCard({ applicant }: { applicant: Applicant }) {
       {...attributes}
     >
       <CardContent className="relative px-4 py-0">
-        <div className="flex items-start justify-between gap-2 pr-6">
-          <div className="min-w-0 flex-1">
-            <p className="font-medium leading-tight">{applicant.candidateName}</p>
-            <p className="mt-0.5 truncate text-sm text-muted-foreground">{applicant.position}</p>
-            <p className="mt-1 text-xs text-muted-foreground">Aplicó: {applicant.dateApplied}</p>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-start justify-between gap-2 pr-6">
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-sm leading-tight truncate">
+                {applicant.candidateName}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">{applicant.position}</p>
+            </div>
+            <div>
+              {scoreEntry ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onScoreClick?.(applicant.candidateId)
+                  }}
+                  className="animate-in fade-in duration-300"
+                >
+                  <AIScoreBadge score={scoreEntry.score} />
+                </button>
+              ) : analyzing ? (
+                <AIScoreBadgeSkeleton />
+              ) : null}
+            </div>
           </div>
+          <p className="text-xs text-muted-foreground/70">Aplicó: {applicant.dateApplied}</p>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2 size-7 text-muted-foreground hover:text-foreground"
+            <HugeiconsIcon
+              icon={MoreHorizontalIcon}
+              className="absolute top-0 right-4 size-5 text-muted-foreground hover:text-foreground cursor-pointer"
               onPointerDown={handleMenuPointerDown}
               onClick={(e) => e.stopPropagation()}
               aria-label="Más opciones"
-            >
-              <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
-            </Button>
+            />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
+          <DropdownMenuContent
+            align="end"
+            className="min-w-40"
+            onCloseAutoFocus={(e) => e.preventDefault()}
+          >
             <DropdownMenuItem onSelect={() => {}}>
               <HugeiconsIcon icon={UserIcon} size={16} />
               Ver información del postulante
@@ -104,9 +144,17 @@ function ApplicantCard({ applicant }: { applicant: Applicant }) {
 function KanbanColumn({
   stage,
   applicants,
+  getScore,
+  isAnalyzing,
+  jobOffer,
+  onScoreClick,
 }: {
   stage: (typeof STAGES)[number]
   applicants: Applicant[]
+  getScore?: (candidateId: string) => ScoreEntry | undefined
+  isAnalyzing?: boolean
+  jobOffer?: JobOfferContext
+  onScoreClick?: (candidateId: string) => void
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id })
 
@@ -130,7 +178,14 @@ function KanbanColumn({
       </div>
       <div className="flex flex-col gap-2">
         {applicants.map((a) => (
-          <ApplicantCard key={a.id} applicant={a} />
+          <ApplicantCard
+            key={a.id}
+            applicant={a}
+            getScore={getScore}
+            isAnalyzing={isAnalyzing}
+            jobOffer={jobOffer}
+            onScoreClick={onScoreClick}
+          />
         ))}
       </div>
     </div>
@@ -143,11 +198,20 @@ export function ApplicationsKanban({
   applicants: initialApplicants,
   onStatusChange,
   onCreateEvent,
+  getScore,
+  isAnalyzing,
+  jobOffer,
+  onScoreClick,
 }: {
   applicants: Applicant[]
   onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
   /** Called when dragging to 'entrevista' or 'contratado' stages */
   onCreateEvent?: (applicant: Applicant, eventType: "interview" | "onboarding") => void
+  /** Get score for a candidate */
+  getScore?: (candidateId: string) => ScoreEntry | undefined
+  isAnalyzing?: boolean
+  jobOffer?: JobOfferContext
+  onScoreClick?: (candidateId: string) => void
 }) {
   const [applicants, setApplicants] = useState<Applicant[]>(initialApplicants)
   const [activeApplicant, setActiveApplicant] = useState<Applicant | null>(null)
@@ -227,6 +291,10 @@ export function ApplicationsKanban({
             key={stage.id}
             stage={stage}
             applicants={applicantsByStage.get(stage.id) ?? []}
+            getScore={getScore}
+            isAnalyzing={isAnalyzing}
+            jobOffer={jobOffer}
+            onScoreClick={onScoreClick}
           />
         ))}
       </div>

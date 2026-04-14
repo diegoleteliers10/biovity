@@ -2,6 +2,7 @@
 
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Result } from "better-result"
 import { useQueryStates } from "nuqs"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Badge } from "@/components/ui/badge"
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/table"
 import { setUserActive } from "@/lib/api/users"
 import { adminUsersParsers } from "@/lib/parsers/admin-users"
-import { Result } from "better-result"
 import { getResultErrorMessage } from "@/lib/result"
 
 type AdminUser = {

@@ -2,6 +2,7 @@
 
 import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
 import { useQueries } from "@tanstack/react-query"
+import { Result } from "better-result"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
@@ -16,7 +17,6 @@ import {
   useOrgRecentApplications,
   useOrgUpcomingInterviews,
 } from "@/lib/api/use-organization-dashboard"
-import { Result } from "better-result"
 import { getUser } from "@/lib/api/users"
 import { authClient } from "@/lib/auth-client"
 import type { Notification } from "@/lib/types/dashboard"

@@ -1,10 +1,5 @@
 "use client"
 
-import { ViewTransition } from "react"
-import { addTransitionType, startTransition } from "react"
-import { useRouter } from "next/navigation"
-import { useParams } from "next/navigation"
-import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import {
   ArrowLeft01Icon,
   Briefcase01Icon,
@@ -12,13 +7,14 @@ import {
   Clock01Icon,
   EyeIcon,
   Home02Icon,
-  RefreshIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useParams, useRouter } from "next/navigation"
+import { addTransitionType, startTransition, ViewTransition } from "react"
+import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -29,9 +25,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { Job } from "@/lib/api/jobs"
+import { useApplicationsByJob } from "@/lib/api/use-applications"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { useApplicationsByJob } from "@/lib/api/use-applications"
 import { authClient } from "@/lib/auth-client"
 import { formatCurrencyCLP, formatDateChilean } from "@/lib/utils"
 
@@ -150,105 +146,105 @@ export default function OfertaDetailPage() {
 
         {/* Job Header */}
         <Card className="border border-border bg-card">
-            <CardContent className="flex flex-col gap-4 p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <h1 className="text-xl font-semibold leading-tight text-foreground">
-                    <ViewTransition name={`job-title-${job.id}`} share="morph" default="none">
-                      {job.title}
-                    </ViewTransition>
-                  </h1>
-                  <p className="mt-1 text-muted-foreground text-sm">
-                    {organization?.name ?? job.organization?.name ?? "Organización"}
-                  </p>
-                </div>
-                <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wider ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
-                >
-                  {getStatusLabel(job.status)}
-                </span>
+          <CardContent className="flex flex-col gap-4 p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl font-semibold leading-tight text-foreground">
+                  <ViewTransition name={`job-title-${job.id}`} share="morph" default="none">
+                    {job.title}
+                  </ViewTransition>
+                </h1>
+                <p className="mt-1 text-muted-foreground text-sm">
+                  {organization?.name ?? job.organization?.name ?? "Organización"}
+                </p>
               </div>
+              <span
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wider ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
+              >
+                {getStatusLabel(job.status)}
+              </span>
+            </div>
 
-              {/* Job meta */}
-              <div className="flex flex-wrap items-center gap-3 text-muted-foreground text-xs">
-                <span className="inline-flex items-center gap-1">
-                  <HugeiconsIcon
-                    icon={Home02Icon}
-                    size={13}
-                    strokeWidth={1.5}
-                    className="h-3.5 w-3.5"
-                  />
-                  {locationStr}
-                </span>
-                <span className="text-muted-foreground/30">·</span>
-                <span className={modalidad !== "Presencial" ? "text-secondary font-medium" : ""}>
-                  {modalidad}
-                </span>
-                <span className="text-muted-foreground/30">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <HugeiconsIcon
-                    icon={Briefcase01Icon}
-                    size={13}
-                    strokeWidth={1.5}
-                    className="h-3.5 w-3.5"
-                  />
-                  {job.employmentType}
-                </span>
-                <span className="text-muted-foreground/30">·</span>
-                <span>{job.experienceLevel}</span>
-              </div>
-
-              {/* Salary */}
-              <div className="flex items-center gap-2 rounded-lg bg-[#f3f3f5] px-4 py-2.5">
+            {/* Job meta */}
+            <div className="flex flex-wrap items-center gap-3 text-muted-foreground text-xs">
+              <span className="inline-flex items-center gap-1">
                 <HugeiconsIcon
-                  icon={Cash02Icon}
-                  size={16}
+                  icon={Home02Icon}
+                  size={13}
+                  strokeWidth={1.5}
+                  className="h-3.5 w-3.5"
+                />
+                {locationStr}
+              </span>
+              <span className="text-muted-foreground/30">·</span>
+              <span className={modalidad !== "Presencial" ? "text-secondary font-medium" : ""}>
+                {modalidad}
+              </span>
+              <span className="text-muted-foreground/30">·</span>
+              <span className="inline-flex items-center gap-1">
+                <HugeiconsIcon
+                  icon={Briefcase01Icon}
+                  size={13}
+                  strokeWidth={1.5}
+                  className="h-3.5 w-3.5"
+                />
+                {job.employmentType}
+              </span>
+              <span className="text-muted-foreground/30">·</span>
+              <span>{job.experienceLevel}</span>
+            </div>
+
+            {/* Salary */}
+            <div className="flex items-center gap-2 rounded-lg bg-[#f3f3f5] px-4 py-2.5">
+              <HugeiconsIcon
+                icon={Cash02Icon}
+                size={16}
+                strokeWidth={1.5}
+                className="h-4 w-4 text-secondary"
+              />
+              <span className="text-sm font-medium text-foreground">{salaryStr}</span>
+            </div>
+
+            {/* Stats */}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <HugeiconsIcon
+                  icon={UserGroupIcon}
+                  size={15}
                   strokeWidth={1.5}
                   className="h-4 w-4 text-secondary"
                 />
-                <span className="text-sm font-medium text-foreground">{salaryStr}</span>
+                <span className="text-sm font-medium text-foreground">
+                  {applications?.length ?? 0}
+                </span>
+                <span className="text-sm text-muted-foreground">postulaciones</span>
               </div>
-
-              {/* Stats */}
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <HugeiconsIcon
+                  icon={EyeIcon}
+                  size={15}
+                  strokeWidth={1.5}
+                  className="h-4 w-4 text-muted-foreground"
+                />
+                <span className="text-sm font-medium text-foreground">{job.views ?? 0}</span>
+                <span className="text-sm text-muted-foreground">vistas</span>
+              </div>
+              {job.expiresAt && (
                 <div className="flex items-center gap-1.5">
                   <HugeiconsIcon
-                    icon={UserGroupIcon}
-                    size={15}
-                    strokeWidth={1.5}
-                    className="h-4 w-4 text-secondary"
-                  />
-                  <span className="text-sm font-medium text-foreground">
-                    {applications?.length ?? 0}
-                  </span>
-                  <span className="text-sm text-muted-foreground">postulaciones</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <HugeiconsIcon
-                    icon={EyeIcon}
+                    icon={Clock01Icon}
                     size={15}
                     strokeWidth={1.5}
                     className="h-4 w-4 text-muted-foreground"
                   />
-                  <span className="text-sm font-medium text-foreground">{job.views ?? 0}</span>
-                  <span className="text-sm text-muted-foreground">vistas</span>
+                  <span className="text-sm text-muted-foreground">
+                    Expira {formatDateChilean(job.expiresAt, "d MMM yyyy")}
+                  </span>
                 </div>
-                {job.expiresAt && (
-                  <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon
-                      icon={Clock01Icon}
-                      size={15}
-                      strokeWidth={1.5}
-                      className="h-4 w-4 text-muted-foreground"
-                    />
-                    <span className="text-sm text-muted-foreground">
-                      Expira {formatDateChilean(job.expiresAt, "d MMM yyyy")}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Applicants Section */}
         <div className="space-y-3">

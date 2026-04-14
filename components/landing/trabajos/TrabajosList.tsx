@@ -161,7 +161,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
 
                   {/* Tercera fila: Modalidad y Formato */}
                   <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:mt-0">
-                    <Badge variant="success" className="shrink-0 capitalize">
+                    <Badge variant="secondary" className="shrink-0 capitalize">
                       {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
                     </Badge>
                     <Badge variant="default" className="shrink-0 capitalize">

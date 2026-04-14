@@ -1,4 +1,4 @@
-import { Result, Result as R } from "better-result"
+import { Result as R, type Result } from "better-result"
 import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"
 

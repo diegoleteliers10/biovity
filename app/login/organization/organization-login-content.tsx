@@ -205,7 +205,7 @@ export function OrganizationLoginContent() {
             {errors.general && (
               <div className="text-center text-sm text-destructive">{errors.general}</div>
             )}
-            <Button type="submit" variant="accent" className="h-11 w-full" disabled={isLoading}>
+            <Button type="submit" variant="default" className="h-11 w-full" disabled={isLoading}>
               {isLoading ? "Cargando..." : "Acceder al portal"}
             </Button>
           </form>

@@ -118,17 +118,17 @@ const createHighlightError = (message: string): HighlightError => ({
 })
 
 export {
+  ApiError,
   type ChartError,
   type ContextError,
   createChartError,
   createContextError,
   createHighlightError,
   createSignUpError,
-  type HighlightError,
-  type SignUpError,
-  ApiError,
   DbError,
+  type HighlightError,
   NetworkError,
   NotFoundError,
   ParseError,
+  type SignUpError,
 }

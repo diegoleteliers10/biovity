@@ -13,7 +13,17 @@ const config: Config = {
       mono: ["var(--font-mono)"],
       rubik: ["var(--font-rubik)"],
     },
-    extend: {},
+    extend: {
+      animation: {
+        shimmer: "shimmer 1s linear infinite",
+      },
+      keyframes: {
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(200%)" },
+        },
+      },
+    },
   },
   plugins: [require("@tailwindcss/typography")],
 }

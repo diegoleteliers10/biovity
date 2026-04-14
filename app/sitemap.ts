@@ -1,6 +1,6 @@
+import { Result } from "better-result"
 import type { MetadataRoute } from "next"
 import { getAllPosts } from "@/lib/posts"
-import { Result } from "better-result"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 

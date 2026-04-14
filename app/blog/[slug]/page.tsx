@@ -1,3 +1,4 @@
+import { Result } from "better-result"
 import type { Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
@@ -16,7 +17,6 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getAllPosts, getPostBySlug } from "@/lib/posts"
 import { formatDateChilean } from "@/lib/utils"
-import { Result } from "better-result"
 
 type Props = {
   params: Promise<{ slug: string }>

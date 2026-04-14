@@ -413,7 +413,7 @@ export default function OrganizationRegisterPage() {
 
             <Button
               type="submit"
-              variant="accent"
+              variant="default"
               className="h-11 w-full"
               disabled={
                 isLoading || createOrganizationMutation.isPending || linkUserMutation.isPending

@@ -3,6 +3,7 @@
 import { Edit01Icon, FileAddIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useState } from "react"
+import { AIJobDescriptionWriter } from "@/components/ai/AIJobDescriptionWriter"
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/animate-ui/components/radix/dialog"
+import { RichTextEditor } from "@/components/dashboard/shared/RichTextEditor"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -27,7 +29,6 @@ import {
 } from "@/components/ui/combobox"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { RichTextEditor } from "@/components/dashboard/shared/RichTextEditor"
 import {
   Select,
   SelectContent,
@@ -227,6 +228,20 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               onChange={setDescription}
               placeholder="Describe el puesto, requisitos y responsabilidades..."
               className="min-h-[160px]"
+              toolbarSuffix={
+                <AIJobDescriptionWriter
+                  jobTitle={title}
+                  companyName=""
+                  area={experienceLevel}
+                  skills={[]}
+                  contractType={employmentType}
+                  modality={isRemote ? "remoto" : "presencial"}
+                  currentDescription={description}
+                  onGenerated={(generatedDescription) => {
+                    setDescription(generatedDescription)
+                  }}
+                />
+              }
             />
           </Field>
 

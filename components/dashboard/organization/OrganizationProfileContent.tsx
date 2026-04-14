@@ -16,7 +16,8 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
-import { useCallback, useEffect, useState, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+// import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -515,7 +516,7 @@ export function OrganizationProfileContent() {
                       {data.profession || EMPTY_PLACEHOLDER}
                     </p>
                     {user?.type && (
-                      <Badge variant="accent" className="mt-2 text-xs">
+                      <Badge variant="secondary" className="mt-2 text-xs">
                         {user.type === "organization" ? "Organización" : user.type}
                       </Badge>
                     )}
@@ -736,32 +737,7 @@ export function OrganizationProfileContent() {
               </TabsContent>
 
               <TabsContent value="subscription" className="w-full pt-10">
-                <Card className="bg-white border border-border/10 w-full">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <HugeiconsIcon icon={CreditCardIcon} size={18} />
-                      Información de suscripción
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-muted/20 py-16 text-center">
-                      <div className="flex size-16 items-center justify-center rounded-full bg-muted ring-2 ring-border/60">
-                        <HugeiconsIcon
-                          icon={CreditCardIcon}
-                          size={32}
-                          className="text-muted-foreground"
-                        />
-                      </div>
-                      <div className="space-y-1 px-4">
-                        <p className="font-medium text-foreground">Suscripción no disponible</p>
-                        <p className="text-muted-foreground text-pretty text-sm max-w-sm">
-                          La información de tu plan y facturación aparecerá aquí cuando integrate el
-                          endpoint de suscripciones.
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/*(<SubscriptionTab organizationId={organizationId ?? ""} />*/}
               </TabsContent>
             </Tabs>
           </div>

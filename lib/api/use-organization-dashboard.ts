@@ -7,12 +7,12 @@ import { getApplicationsByOrganization } from "@/lib/api/applications"
 import { getEvents } from "@/lib/api/events"
 import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getUser } from "@/lib/api/users"
-import { getResultErrorMessage } from "@/lib/result"
 import {
   fetchOrgFeaturedCandidates,
   fetchOrgNotifications,
   fetchOrgRecentMessages,
 } from "@/lib/data/organization-dashboard-data"
+import { getResultErrorMessage } from "@/lib/result"
 import type { Metric } from "@/lib/types/dashboard"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 

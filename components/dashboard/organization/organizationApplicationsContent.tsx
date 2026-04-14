@@ -4,7 +4,15 @@ import { File02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { useCallback, useMemo, useState } from "react"
+import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
+import { AIScoreModal } from "@/components/ai/AIScoreModal"
+import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
+import { NotificationBell } from "@/components/common/NotificationBell"
+import { Button } from "@/components/ui/button"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
+import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
+import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
+import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
 import { formatJobLocation } from "@/lib/api/jobs"
 import {
@@ -19,6 +27,16 @@ import type { EventType } from "@/lib/types/events"
 import { cn, formatDateChilean } from "@/lib/utils"
 import { ApplicationsKanban } from "./ApplicationsKanban"
 
+function applicantToCandidateContext(app: Application): CandidateContext {
+  return {
+    name: app.candidate?.name ?? "Sin nombre",
+    education: app.candidate?.education ?? "",
+    skills: app.candidate?.skills ?? [],
+    yearsOfExperience: app.candidate?.yearsOfExperience ?? 0,
+    bio: app.candidate?.bio ?? "",
+  }
+}
+
 function applicationToApplicant(app: Application): Applicant {
   return {
     id: app.id,
@@ -27,6 +45,10 @@ function applicationToApplicant(app: Application): Applicant {
     position: app.candidate?.profession ?? app.job?.title ?? "—",
     dateApplied: app.createdAt ? formatDateChilean(app.createdAt, "d MMM yyyy") : "—",
     stage: app.status as ApplicationStage,
+    candidateEducation: app.candidate?.education ?? undefined,
+    candidateSkills: app.candidate?.skills ?? undefined,
+    candidateYearsOfExperience: app.candidate?.yearsOfExperience ?? undefined,
+    candidateBio: app.candidate?.bio ?? undefined,
   }
 }
 
@@ -59,6 +81,57 @@ export function OrganizationApplicationsContent() {
   )
 
   const applicants = useMemo(() => (applications ?? []).map(applicationToApplicant), [applications])
+  const candidates = useMemo(
+    () =>
+      (applications ?? []).map((app) => ({
+        id: app.candidateId,
+        data: {
+          name: app.candidate?.name ?? "Sin nombre",
+          education: app.candidate?.education ?? "",
+          skills: app.candidate?.skills ?? [],
+          yearsOfExperience: app.candidate?.yearsOfExperience ?? 0,
+          bio: app.candidate?.bio ?? "",
+        } as CandidateContext,
+      })),
+    [applications]
+  )
+
+  const { analyze, clearScores, getScore, isAnalyzing, analyzedAt } = useKanbanAIScoring()
+
+  const jobOfferContext = useMemo<JobOfferContext | null>(() => {
+    if (!selectedJob) return null
+    return {
+      title: selectedJob.title,
+      description: selectedJob.description,
+      requiredSkills: [],
+      minExperience: 0,
+      area: selectedJob.employmentType,
+      contractType: selectedJob.employmentType,
+      modality: selectedJob.location?.isRemote ? "remoto" : "presencial",
+    }
+  }, [selectedJob])
+
+  // Score modal
+  const [scoreModal, setScoreModal] = useState<{
+    isOpen: boolean
+    candidateId: string | null
+    score: CandidateScore | null
+  }>({ isOpen: false, candidateId: null, score: null })
+
+  const handleScoreClick = useCallback(
+    (candidateId: string) => {
+      const entry = getScore(candidateId)
+      if (entry) {
+        const app = applications?.find((a) => a.candidateId === candidateId)
+        setScoreModal({
+          isOpen: true,
+          candidateId,
+          score: entry.score,
+        })
+      }
+    },
+    [getScore, applications]
+  )
 
   const handleStatusChange = useCallback(
     (applicationId: string, newStage: ApplicationStage) => {
@@ -140,6 +213,7 @@ export function OrganizationApplicationsContent() {
             Revisa las postulaciones de candidatos a tus ofertas.
           </p>
         </div>
+        <NotificationBell notifications={[]} />
       </div>
 
       <div className="flex min-h-0 flex-1 gap-4">
@@ -176,7 +250,19 @@ export function OrganizationApplicationsContent() {
           {selectedJob ? (
             <div className="flex h-full flex-col overflow-hidden">
               <div className="border-b px-4 py-3">
-                <h2 className="font-semibold">{selectedJob.title}</h2>
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="font-semibold">{selectedJob.title}</h2>
+                  {jobOfferContext && (
+                    <AnalyzeButton
+                      onAnalyze={() => analyze(candidates, jobOfferContext)}
+                      isAnalyzing={isAnalyzing}
+                      analyzedAt={analyzedAt}
+                      onClear={clearScores}
+                      disabled={candidates.length === 0}
+                      jobOffer={jobOfferContext}
+                    />
+                  )}
+                </div>
                 <p className="text-muted-foreground text-sm">
                   {formatJobLocation(selectedJob.location)} · {applicants.length} postulantes
                 </p>
@@ -204,11 +290,17 @@ export function OrganizationApplicationsContent() {
                     </div>
                   </div>
                 ) : (
-                  <ApplicationsKanban
-                    applicants={applicants}
-                    onStatusChange={handleStatusChange}
-                    onCreateEvent={handleCreateEvent}
-                  />
+                  <div className="flex h-full flex-col gap-4 overflow-y-auto">
+                    <ApplicationsKanban
+                      applicants={applicants}
+                      onStatusChange={handleStatusChange}
+                      onCreateEvent={handleCreateEvent}
+                      getScore={getScore}
+                      isAnalyzing={isAnalyzing}
+                      jobOffer={jobOfferContext ?? undefined}
+                      onScoreClick={handleScoreClick}
+                    />
+                  </div>
                 )}
               </div>
             </div>
@@ -244,6 +336,19 @@ export function OrganizationApplicationsContent() {
           applicationId={eventModal.applicant.id}
           lockedType={eventModal.lockedType ?? undefined}
           onSuccess={handleEventSuccess}
+        />
+      )}
+
+      {/* Score Detail Modal */}
+      {scoreModal.candidateId && scoreModal.score && jobOfferContext && (
+        <AIScoreModal
+          open={scoreModal.isOpen}
+          onOpenChange={(open) => setScoreModal((prev) => ({ ...prev, isOpen: open }))}
+          score={scoreModal.score}
+          jobOffer={jobOfferContext}
+          candidateName={
+            applicants.find((a) => a.candidateId === scoreModal.candidateId)?.candidateName ?? ""
+          }
         />
       )}
     </div>
