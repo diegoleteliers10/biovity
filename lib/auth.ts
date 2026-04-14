@@ -45,7 +45,7 @@ export const auth = betterAuth({
       generateId: () => crypto.randomUUID(),
     },
     useSecureCookies: process.env.NODE_ENV === "production",
-    crossSubdomainCookies: {
+    crossSubDomainCookies: {
       enabled: true,
       domain: ".biovity.cl",
     },
