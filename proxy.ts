@@ -46,6 +46,14 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Si ya tiene sesión y va a /login, redirigir a /dashboard
+  if (pathname === "/login" || pathname === "/") {
+    const sessionToken = request.cookies.get("better-auth.session_token")?.value
+    if (sessionToken) {
+      return NextResponse.redirect(new URL("/dashboard", request.url))
+    }
+  }
+
   return NextResponse.next()
 }
 
