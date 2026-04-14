@@ -2,6 +2,13 @@ import { type NextRequest, NextResponse } from "next/server"
 
 const WAITLIST_PATH = "/lista-espera"
 
+function getSessionToken(request: NextRequest): string | undefined {
+  return (
+    request.cookies.get("__Secure-better-auth.session_token")?.value ??
+    request.cookies.get("better-auth.session_token")?.value
+  )
+}
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isDevelopment = process.env.NODE_ENV !== "production"
@@ -37,7 +44,7 @@ export async function proxy(request: NextRequest) {
   if (isProtectedRoute) {
     // Solo verificar la cookie de sesión (sincrónico, sin fetch).
     // Evita redirecciones falsas por fallos intermitentes de get-session.
-    const sessionToken = request.cookies.get("better-auth.session_token")?.value
+    const sessionToken = getSessionToken(request)
 
     if (!sessionToken) {
       const loginUrl = new URL("/login", request.url)
@@ -48,7 +55,7 @@ export async function proxy(request: NextRequest) {
 
   // Si ya tiene sesión y va a /login, redirigir a /dashboard
   if (pathname === "/login" || pathname === "/") {
-    const sessionToken = request.cookies.get("better-auth.session_token")?.value
+    const sessionToken = getSessionToken(request)
     if (sessionToken) {
       return NextResponse.redirect(new URL("/dashboard", request.url))
     }
