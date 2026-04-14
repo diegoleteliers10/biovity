@@ -39,21 +39,13 @@ export function UserLoginContent() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [signInSuccess, setSignInSuccess] = useState(false)
 
-  // Redirect on successful sign-in
+  // Redirect on successful sign-in (wait for session to propagate to browser)
   useEffect(() => {
-    if (!signInSuccess) return
-    router.push(redirectTo)
-  }, [signInSuccess, router, redirectTo])
-
-  // Redirect if user already has an active session
-  useEffect(() => {
-    if (!isPending && session?.user) {
-      const type = (session.user as { type?: string }).type
-      if (type === "professional" || type === "organization" || type === "admin") {
-        router.push("/dashboard")
-      }
+    if (!signInSuccess || isPending) return
+    if (session?.user) {
+      router.push(redirectTo)
     }
-  }, [session, isPending, router])
+  }, [signInSuccess, isPending, session, router, redirectTo])
 
   if (isPending) {
     return <AuthLoader />
