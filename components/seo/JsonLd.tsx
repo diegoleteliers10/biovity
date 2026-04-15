@@ -365,6 +365,34 @@ export function FAQJsonLd({ faqs }: FAQJsonLdProps) {
   return <JsonLd data={faqData} />
 }
 
+// Collection page schema for blog listing
+interface CollectionJsonLdProps {
+  name: string
+  description: string
+  url: string
+  items: Array<{
+    name: string
+    url: string
+  }>
+}
+
+export function CollectionJsonLd({ name, description, url, items }: CollectionJsonLdProps) {
+  const collectionData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url,
+    hasPart: items.map((item) => ({
+      "@type": "WebPage",
+      name: item.name,
+      url: item.url,
+    })),
+  }
+
+  return <JsonLd data={collectionData} />
+}
+
 // Breadcrumb schema
 interface BreadcrumbItem {
   name: string

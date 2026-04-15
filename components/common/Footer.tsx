@@ -26,9 +26,9 @@ const FOOTER_SECTIONS = [
   {
     title: "Para Empresas",
     links: [
-      { label: "Publicar Empleo", href: "/empresas" },
-      { label: "Buscar Candidatos", href: "/empresas" },
-      { label: "Planes y Precios", href: "/empresas" },
+      { label: "Publicar Empleo", href: "/dashboard/ofertas" },
+      { label: "Buscar Candidatos", href: "/dashboard/talent" },
+      { label: "Planes y Precios", href: "/planes" },
       { label: "Herramientas de Reclutamiento", href: "/empresas" },
       { label: "Contactar Ventas", href: "/empresas#contacto" },
     ],
@@ -37,7 +37,6 @@ const FOOTER_SECTIONS = [
     title: "Soporte",
     links: [
       { label: "Centro de Ayuda", href: "/nosotros" },
-      { label: "Contacto", href: "/empresas#contacto" },
       { label: "Términos de Servicio", href: "/" },
       { label: "Política de Privacidad", href: "/" },
       { label: "Política de Cookies", href: "/" },
