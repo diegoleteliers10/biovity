@@ -1,10 +1,14 @@
 "use client"
 
+import { Briefcase01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryStates } from "nuqs"
 import { useMemo } from "react"
-import { TRABAJOS_MOCK } from "@/lib/data/trabajos-data"
 import { trabajosParsers } from "@/lib/parsers/trabajos"
-import type { FiltrosTrabajos } from "@/lib/types/trabajos"
+import type { FiltrosTrabajos, Trabajo } from "@/lib/types/trabajos"
+import type { Job, JobLocation } from "@/lib/api/jobs"
+import { useJobsSearch } from "@/lib/api/use-jobs"
+import { formatJobLocation } from "@/lib/api/jobs"
 import { TrabajosHero } from "./TrabajosHero"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
@@ -68,6 +72,66 @@ function filtrosToUrlState(filtros: FiltrosTrabajos) {
   }
 }
 
+function normalizeEmploymentType(
+  type: string
+): "remoto" | "hibrido" | "presencial" {
+  const normalized = type.toLowerCase()
+  if (normalized.includes("remote") || normalized.includes("remoto")) return "remoto"
+  if (normalized.includes("hybrid") || normalized.includes("híbrido") || normalized.includes("hibrido"))
+    return "hibrido"
+  if (normalized.includes("presencial") || normalized.includes("onsite") || normalized.includes("on-site"))
+    return "presencial"
+  return "presencial"
+}
+
+function normalizeFormato(type: string): "full-time" | "part-time" | "contrato" {
+  const normalized = type.toLowerCase()
+  if (normalized.includes("full") || normalized.includes("tiempo completo")) return "full-time"
+  if (normalized.includes("part") || normalized.includes("medio")) return "part-time"
+  if (normalized.includes("contract") || normalized.includes("contrato")) return "contrato"
+  return "full-time"
+}
+
+function jobToTrabajo(job: Job): Trabajo {
+  const locationStr = formatJobLocation(job.location)
+
+  const tipoToLabel: Record<string, string> = {
+    salud: "Salud",
+    vacaciones: "Vacaciones",
+    formacion: "Formación",
+    equipo: "Equipo",
+    otro: "Otro",
+  }
+
+  return {
+    id: job.id,
+    titulo: job.title,
+    empresa: job.organization?.name ?? "Empresa",
+    ubicacion: locationStr || job.location?.city || "Chile",
+    modalidad: normalizeEmploymentType(job.employmentType),
+    formato: normalizeFormato(job.employmentType),
+    fechaPublicacion: new Date(job.createdAt),
+    rangoSalarial: {
+      min: job.salary?.min ?? 0,
+      max: job.salary?.max ?? 0,
+      moneda: "CLP",
+    },
+    beneficios:
+      job.benefits?.map((b) => ({
+        tipo: (b.tipo as TipoBeneficio) || "otro",
+        label: b.title || tipoToLabel[b.tipo || "otro"] || "Otro",
+      })) ?? [],
+    descripcion: job.description,
+    requisitos: [],
+    responsabilidades: [],
+    categoria: undefined,
+    experiencia: undefined,
+    slug: job.id,
+  }
+}
+
+type TipoBeneficio = "salud" | "vacaciones" | "formacion" | "equipo" | "otro"
+
 export function TrabajosPageContent() {
   const [urlState, setUrlState] = useQueryStates(trabajosParsers, {
     history: "push",
@@ -76,12 +140,19 @@ export function TrabajosPageContent() {
 
   const filtros = useMemo(() => urlStateToFiltros(urlState), [urlState])
 
+  const { data: jobs, isLoading, isError, error } = useJobsSearch(urlState.q || undefined)
+
+  const apiTrabajos = useMemo(() => {
+    if (!jobs) return []
+    return jobs.map(jobToTrabajo)
+  }, [jobs])
+
   const handleFiltrosChange = (newFiltros: FiltrosTrabajos) => {
     setUrlState(filtrosToUrlState(newFiltros))
   }
 
   const trabajosFiltrados = useMemo(() => {
-    return TRABAJOS_MOCK.filter((trabajo) => {
+    return apiTrabajos.filter((trabajo) => {
       if (filtros.query) {
         const queryLower = filtros.query.toLowerCase()
         if (
@@ -135,13 +206,57 @@ export function TrabajosPageContent() {
 
       return true
     })
-  }, [filtros])
+  }, [apiTrabajos, filtros])
 
   return (
     <>
       <TrabajosHero />
       <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
-      <TrabajosList trabajos={trabajosFiltrados} />
+      {isLoading && (
+        <section className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-center items-center py-12">
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <div className="animate-spin">
+                  <HugeiconsIcon icon={Briefcase01Icon} size={24} />
+                </div>
+                <span>Cargando ofertas...</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+      {isError && (
+        <section className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-12">
+              <p className="text-lg text-destructive font-medium">
+                Error al cargar las ofertas laborales
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                {error instanceof Error ? error.message : "Intenta nuevamente más tarde"}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+      {!isLoading && !isError && apiTrabajos.length === 0 && (
+        <section className="py-16 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-12">
+              <p className="text-lg text-foreground font-medium">
+                No hay ofertas publicadas actualmente
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Vuelve pronto, estamos trabajando para traer nuevas oportunidades.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+      {!isLoading && !isError && apiTrabajos.length > 0 && (
+        <TrabajosList trabajos={trabajosFiltrados} />
+      )}
     </>
   )
 }

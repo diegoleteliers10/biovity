@@ -4,34 +4,12 @@ import { ArrowRight01Icon, Building06Icon, UserIcon } from "@hugeicons/core-free
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Logo } from "@/components/ui/logo"
-import { authClient } from "@/lib/auth-client"
 
 export function LoginContent() {
-  const router = useRouter()
-  const { useSession } = authClient
-  const { data: session, isPending } = useSession()
-
-  useEffect(() => {
-    if (!isPending && session?.user) {
-      const type = (session.user as { type?: string }).type
-      if (type === "professional" || type === "organization" || type === "admin") {
-        router.push("/dashboard")
-      }
-    }
-  }, [session, isPending, router])
-
-  if (isPending) {
-    return <AuthLoader />
-  }
-
-  if (session?.user) return null
-
   return (
     <div className="flex h-dvh">
       {/* Left: Illustration */}

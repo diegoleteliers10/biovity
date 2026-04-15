@@ -33,10 +33,10 @@ export const Header = () => {
   }, [])
   return (
     <header>
-      <nav data-state={menuState && "active"} className="fixed z-20 w-full px-2 group">
+      <nav data-state={menuState && "active"} className="fixed z-20 w-full px-4 lg:px-2 group">
         <div
           className={cn(
-            "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
+            "mx-auto mt-4 max-w-6xl px-6 transition-all duration-300 lg:px-12",
             isScrolled && "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5"
           )}
         >
@@ -117,20 +117,20 @@ export const Header = () => {
                   asChild
                   variant="outline"
                   size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
+                  className={cn(isScrolled && "hidden")}
                 >
                   <Link href="/login">
                     <span>Login</span>
                   </Link>
                 </Button>
-                <Button asChild size="sm" className={cn(isScrolled && "lg:hidden")}>
+                <Button asChild size="sm" className={cn(isScrolled && "hidden")}>
                   <Link href="/register">
                     <span>Sign Up</span>
                   </Link>
                 </Button>
                 <Button
                   size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
+                  className={cn(isScrolled ? "inline-flex" : "hidden")}
                   onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 >
                   <span>Get Started</span>
