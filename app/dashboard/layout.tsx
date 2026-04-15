@@ -12,7 +12,7 @@ export default async function DashboardLayout({
   organization: ReactNode
 }) {
   const role = await checkUserRole()
-  if (!role) redirect("/login")
+  if (!role) redirect("/register")
 
   if (role === "admin") return admin
   if (role === "organization") return organization

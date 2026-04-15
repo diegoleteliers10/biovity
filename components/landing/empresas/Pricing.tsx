@@ -26,35 +26,8 @@ export function Pricing() {
   }
 
   return (
-    <section className="py-24 bg-white" id="pricing">
+    <section className="pt-0 pb-16 bg-white" id="pricing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <m.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(0)}
-          className="text-center mb-8"
-        >
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight"
-          >
-            Planes simples y transparentes
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-muted-foreground max-w-3xl mx-auto"
-          >
-            Elige el plan que mejor se adapte a las necesidades de tu empresa.
-          </m.p>
-        </m.div>
-
         <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

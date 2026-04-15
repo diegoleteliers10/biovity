@@ -2,7 +2,35 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { TrabajosPageContent } from "@/components/landing/trabajos/TrabajosPageContent"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, FAQJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+
+const FAQS_TRABAJOS = [
+  {
+    question: "¿Cómo me postulo a un trabajo en Biovity?",
+    answer:
+      "Para postula a un trabajo, necesitas crear una cuenta profesional. Una vez registrado, puedes buscar empleos en la sección de trabajos y hacer clic en 'Postular' en la oferta que te interese. Tu perfil y CV estarán disponibles para la empresa.",
+  },
+  {
+    question: "¿Biovity es gratis para profesionales?",
+    answer:
+      "Sí, Biovity es completamente gratis para profesionales y estudiantes. Puedes buscar empleos, postula a ofertas, guardar trabajos favoritos y recibir alertas de nuevas oportunidades sin ningún costo.",
+  },
+  {
+    question: "¿Qué tipos de trabajos científicos encuentro en Biovity?",
+    answer:
+      "En Biovity encuentras ofertas en biotecnología, bioquímica, química, ingeniería química, salud y áreas relacionadas. Incluye posiciones de investigación, desarrollo, control de calidad, producción y más.",
+  },
+  {
+    question: "¿Cómo funciona el matching por IA?",
+    answer:
+      "Nuestro sistema de AI Matching analiza tu perfil profesional, experiencia y preferencias para sugerirte las ofertas más relevantes. Esto te ahorra tiempo en la búsqueda y aumenta tus posibilidades de encontrar el trabajo ideal.",
+  },
+  {
+    question: "¿Puedo filtrar trabajos por ubicación o modalidad?",
+    answer:
+      "Sí, puedes filtrar por ubicación (ciudad o región), modalidad (presencial, remoto, híbrido), nivel de experiencia, área científica y rango salarial para encontrar las oportunidades que mejor se adapten a tus necesidades.",
+  },
+]
 
 export const metadata: Metadata = {
   title: "Trabajos en Ciencias | Biovity",
@@ -47,6 +75,7 @@ export default function TrabajosPage() {
   return (
     <LandingLayout>
       <OrganizationJsonLd />
+      <FAQJsonLd faqs={FAQS_TRABAJOS} />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

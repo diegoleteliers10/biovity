@@ -1,0 +1,29 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow dashboard routes (private area)
+Disallow: /dashboard/
+
+# AI Training Crawlers - Allow by default (opt-out by uncommenting)
+# If you want to BLOCK AI training crawlers, uncomment these lines:
+# User-agent: GPTBot
+# Disallow: /
+# User-agent: ClaudeBot
+# Disallow: /
+# User-agent: PerplexityBot
+# Disallow: /
+# User-agent: Google-Extended
+# Disallow: /
+
+# Allow AI crawlers to index public content for AI citations
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://biovity.cl/sitemap.xml
