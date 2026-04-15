@@ -13,7 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Notification } from "@/lib/types/dashboard"
 
-interface OrganizationHomeHeaderProps {
+type OrganizationHomeHeaderProps = {
   firstName: string
   isPending: boolean
   notifications: Notification[]

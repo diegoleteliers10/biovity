@@ -21,7 +21,7 @@ import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/componen
 import { Button } from "@/components/ui/button"
 import { useSession } from "@/lib/auth-client"
 
-interface AgentChatProps {
+type AgentChatProps = {
   jobOfferId?: string
   organizationId?: string
   recruiterUserId?: string

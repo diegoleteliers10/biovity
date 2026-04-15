@@ -1,6 +1,9 @@
+import { Result as R } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
+import { DbError } from "@/lib/errors"
+import { fetchJson } from "@/lib/result"
 
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
@@ -30,28 +33,28 @@ async function fetchExternalCount(
   path: string,
   limit = 1000
 ): Promise<{ count: number; ok: boolean }> {
-  try {
-    const url = `${API_BASE}${path}${path.includes("?") ? "&" : "?"}limit=${limit}`
-    const res = await fetch(url, { next: { revalidate: 60 } })
-    if (!res.ok) return { count: 0, ok: false }
-    const data = (await res.json().catch(() => null)) as unknown[] | { data?: unknown[] } | null
-    const arr = Array.isArray(data) ? data : (data?.data ?? [])
-    return { count: arr.length, ok: true }
-  } catch {
-    return { count: 0, ok: false }
-  }
+  const url = `${API_BASE}${path}${path.includes("?") ? "&" : "?"}limit=${limit}`
+  const result = await fetchJson<unknown[] | { data?: unknown[] }>(url, {
+    next: { revalidate: 60 },
+  })
+
+  if (result.isErr()) return { count: 0, ok: false }
+
+  const data = result.value
+  const arr = Array.isArray(data) ? data : (data?.data ?? [])
+  return { count: arr.length, ok: true }
 }
 
 export async function GET(request: NextRequest) {
-  try {
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    })
-    if (!isAdminSession(session)) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 403 })
-    }
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  })
+  if (!isAdminSession(session)) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 })
+  }
 
-    const [userStats, waitlistStats, jobsRes, orgsRes, appsRes, healthRes] = await Promise.all([
+  const userStatsResult = await R.tryPromise({
+    try: () =>
       pool.query<{
         total: string
         professionals: string
@@ -70,6 +73,11 @@ export async function GET(request: NextRequest) {
           FROM "user"
           WHERE type != 'admin'
         `),
+    catch: (cause) => new DbError({ operation: "stats_users", cause }),
+  })
+
+  const waitlistStatsResult = await R.tryPromise({
+    try: () =>
       pool.query<{
         total: string
         professionals: string
@@ -81,40 +89,50 @@ export async function GET(request: NextRequest) {
             COUNT(*) FILTER (WHERE role = 'organization')::text AS organizations
           FROM waitlist
         `),
-      fetchExternalCount("/api/v1/jobs"),
-      fetchExternalCount("/api/v1/organizations"),
-      fetchExternalCount("/api/v1/applications"),
-      fetch(`${API_BASE}/api/v1/health`, { next: { revalidate: 60 } }).then((r) => r.ok),
-    ])
+    catch: (cause) => new DbError({ operation: "stats_waitlist", cause }),
+  })
 
-    const ur = userStats.rows[0]
-    const wr = waitlistStats.rows[0]
-
-    const stats: AdminStats = {
-      users: {
-        total: Number.parseInt(ur?.total ?? "0", 10),
-        professionals: Number.parseInt(ur?.professionals ?? "0", 10),
-        organizations: Number.parseInt(ur?.organizations ?? "0", 10),
-        active: Number.parseInt(ur?.active ?? "0", 10),
-        inactive: Number.parseInt(ur?.inactive ?? "0", 10),
-        recentCount: Number.parseInt(ur?.recent ?? "0", 10),
-      },
-      waitlist: {
-        total: Number.parseInt(wr?.total ?? "0", 10),
-        professionals: Number.parseInt(wr?.professionals ?? "0", 10),
-        organizations: Number.parseInt(wr?.organizations ?? "0", 10),
-      },
-      platform: {
-        jobs: jobsRes.ok ? jobsRes.count : null,
-        organizations: orgsRes.ok ? orgsRes.count : null,
-        applications: appsRes.ok ? appsRes.count : null,
-        apiHealthy: healthRes,
-      },
-    }
-
-    return NextResponse.json(stats)
-  } catch (err) {
-    console.error("[admin/stats] Error:", err)
+  if (userStatsResult.isErr()) {
+    console.error("[admin/stats] Error:", userStatsResult.error)
     return NextResponse.json({ error: "Error al obtener estadísticas" }, { status: 500 })
   }
+
+  if (waitlistStatsResult.isErr()) {
+    console.error("[admin/stats] Error:", waitlistStatsResult.error)
+    return NextResponse.json({ error: "Error al obtener estadísticas" }, { status: 500 })
+  }
+
+  const [jobsRes, orgsRes, appsRes, healthRes] = await Promise.all([
+    fetchExternalCount("/api/v1/jobs"),
+    fetchExternalCount("/api/v1/organizations"),
+    fetchExternalCount("/api/v1/applications"),
+    fetch(`${API_BASE}/api/v1/health`, { next: { revalidate: 60 } }).then((r) => r.ok),
+  ])
+
+  const ur = userStatsResult.value.rows[0]
+  const wr = waitlistStatsResult.value.rows[0]
+
+  const stats: AdminStats = {
+    users: {
+      total: Number.parseInt(ur?.total ?? "0", 10),
+      professionals: Number.parseInt(ur?.professionals ?? "0", 10),
+      organizations: Number.parseInt(ur?.organizations ?? "0", 10),
+      active: Number.parseInt(ur?.active ?? "0", 10),
+      inactive: Number.parseInt(ur?.inactive ?? "0", 10),
+      recentCount: Number.parseInt(ur?.recent ?? "0", 10),
+    },
+    waitlist: {
+      total: Number.parseInt(wr?.total ?? "0", 10),
+      professionals: Number.parseInt(wr?.professionals ?? "0", 10),
+      organizations: Number.parseInt(wr?.organizations ?? "0", 10),
+    },
+    platform: {
+      jobs: jobsRes.ok ? jobsRes.count : null,
+      organizations: orgsRes.ok ? orgsRes.count : null,
+      applications: appsRes.ok ? appsRes.count : null,
+      apiHealthy: healthRes,
+    },
+  }
+
+  return NextResponse.json(stats)
 }

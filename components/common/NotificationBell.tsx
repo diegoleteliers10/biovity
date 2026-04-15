@@ -11,13 +11,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import type { Notification } from "@/lib/types/dashboard"
 
-interface NotificationBellProps {
+type NotificationBellProps = {
   notifications: Notification[]
   unreadCount?: number
   onNotificationClick?: (id: number) => void
 }
 
-export function NotificationBell({ notifications = [], unreadCount = 0, onNotificationClick }: NotificationBellProps) {
+export function NotificationBell({
+  notifications = [],
+  unreadCount = 0,
+  onNotificationClick,
+}: NotificationBellProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,9 +35,7 @@ export function NotificationBell({ notifications = [], unreadCount = 0, onNotifi
       <DropdownMenuContent className="w-80" align="end">
         <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
         {notifications.length === 0 ? (
-          <div className="p-4 text-center text-sm text-muted-foreground">
-            No hay notificaciones
-          </div>
+          <div className="p-4 text-center text-sm text-muted-foreground">No hay notificaciones</div>
         ) : (
           <div className="p-2 space-y-2 max-h-[300px] overflow-y-auto">
             {notifications.map((notification) => (

@@ -94,7 +94,7 @@ const CustomDuotoneBarMultiple = (props: React.SVGProps<SVGRectElement> & { data
   )
 }
 
-interface ApplicationsChartProps {
+type ApplicationsChartProps = {
   data: Array<{ month: string; applications: number }>
   config: ChartConfig
 }
@@ -132,7 +132,7 @@ export function ApplicationsChart({ data, config }: ApplicationsChartProps) {
   )
 }
 
-interface ResponseTimeChartProps {
+type ResponseTimeChartProps = {
   data: Array<{ period: string; count: number }>
   config: ChartConfig
 }
@@ -153,7 +153,7 @@ export function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
   )
 }
 
-interface PipelineChartProps {
+type PipelineChartProps = {
   data: Array<{ stage: string; count: number }>
   config: ChartConfig
   totalPipeline: number
@@ -202,7 +202,7 @@ export function PipelineChart({ data, config, totalPipeline }: PipelineChartProp
   )
 }
 
-interface IndustriesChartProps {
+type IndustriesChartProps = {
   data: Array<{ industry: string; count: number; fill: string }>
   config: ChartConfig
 }
@@ -238,7 +238,7 @@ export function IndustriesChart({ data, config }: IndustriesChartProps) {
   )
 }
 
-interface ChartsGridProps {
+type ChartsGridProps = {
   timeRange: TimeRange
 }
 

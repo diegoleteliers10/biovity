@@ -13,7 +13,7 @@ import {
 import type { JobOfferContext } from "@/lib/ai/types"
 import { cn } from "@/lib/utils"
 
-interface Props {
+type Props = {
   score: CandidateScore
   jobOffer: JobOfferContext
   candidateName: string

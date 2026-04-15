@@ -1,12 +1,12 @@
 import type { IconSvgElement } from "@hugeicons/react"
 import type { IconTitleDescription } from "@/lib/types/landing"
 
-export interface FAQItem {
+export type FAQItem = {
   question: string
   answer: string
 }
 
-export interface PlanItem {
+export type PlanItem = {
   name: string
   price: string
   period: string
@@ -19,15 +19,15 @@ export interface PlanItem {
   isEnterprise?: boolean
 }
 
-export interface FeatureATSItem extends IconTitleDescription {
+export type FeatureATSItem = IconTitleDescription & {
   badge?: string
 }
 
-export interface PasoEmpresaItem extends IconTitleDescription {
+export type PasoEmpresaItem = IconTitleDescription & {
   number: string
 }
 
-export interface HeroStatEmpresaItem {
+export type HeroStatEmpresaItem = {
   icon: IconSvgElement
   value: string
   label: string

@@ -34,11 +34,11 @@ const isUnderline = (fontStyle: number | undefined) =>
   fontStyle && fontStyle & 4
 
 // Transform tokens to include pre-computed keys to avoid noArrayIndexKey lint
-interface KeyedToken {
+type KeyedToken = {
   token: ThemedToken
   key: string
 }
-interface KeyedLine {
+type KeyedLine = {
   tokens: KeyedToken[]
   key: string
 }
@@ -107,13 +107,13 @@ type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
   showLineNumbers?: boolean
 }
 
-interface TokenizedCode {
+type TokenizedCode = {
   tokens: ThemedToken[][]
   fg: string
   bg: string
 }
 
-interface CodeBlockContextType {
+type CodeBlockContextType = {
   code: string
 }
 

@@ -21,7 +21,7 @@ import {
   getModalidadBadgeColor,
 } from "@/lib/utils"
 
-interface TrabajosListProps {
+type TrabajosListProps = {
   trabajos: Trabajo[]
 }
 

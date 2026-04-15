@@ -7,7 +7,7 @@ export type EventStatus = "scheduled" | "completed" | "cancelled"
 export type ParticipantRole = "organizer" | "attendee" | "guest"
 export type ParticipantStatus = "pending" | "accepted" | "declined"
 
-export interface Event {
+export type Event = {
   id: string
   title: string
   description?: string
@@ -24,7 +24,7 @@ export interface Event {
   updatedAt: string
 }
 
-export interface EventParticipant {
+export type EventParticipant = {
   id: string
   eventId: string
   userId: string
@@ -34,11 +34,11 @@ export interface EventParticipant {
   createdAt: string
 }
 
-export interface EventWithParticipants extends Event {
+export type EventWithParticipants = Event & {
   participants: EventParticipant[]
 }
 
-export interface EventNote {
+export type EventNote = {
   id: string
   eventId: string
   authorId: string
@@ -46,8 +46,7 @@ export interface EventNote {
   createdAt: string
 }
 
-// API Response types
-export interface CreateEventInput {
+export type CreateEventInput = {
   title: string
   description?: string
   type: EventType
@@ -61,7 +60,7 @@ export interface CreateEventInput {
   applicationId?: string
 }
 
-export interface UpdateEventInput {
+export type UpdateEventInput = {
   title?: string
   description?: string
   type?: EventType
@@ -72,7 +71,7 @@ export interface UpdateEventInput {
   status?: EventStatus
 }
 
-export interface EventFilters {
+export type EventFilters = {
   userId?: string
   organizerId?: string
   type?: EventType
@@ -83,7 +82,7 @@ export interface EventFilters {
   limit?: number
 }
 
-export interface PaginatedEventsResponse {
+export type PaginatedEventsResponse = {
   data: Event[]
   total: number
   page: number

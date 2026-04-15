@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import type { JobOfferContext } from "@/lib/ai/types"
 import { cn } from "@/lib/utils"
 
-interface Props {
+type Props = {
   onAnalyze: () => void
   isAnalyzing: boolean
   analyzedAt: Date | null
@@ -15,14 +15,7 @@ interface Props {
   jobOffer: JobOfferContext
 }
 
-export function AnalyzeButton({
-  onAnalyze,
-  isAnalyzing,
-  analyzedAt,
-  onClear,
-  disabled,
-  jobOffer,
-}: Props) {
+export function AnalyzeButton({ onAnalyze, isAnalyzing, analyzedAt, onClear, disabled }: Props) {
   return (
     <div className="flex items-center gap-2">
       {analyzedAt && (

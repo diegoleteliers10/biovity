@@ -6,7 +6,7 @@ import { motion } from "motion/react"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import { cn } from "@/lib/utils"
 
-interface Props {
+type Props = {
   score: CandidateScore
 }
 

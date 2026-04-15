@@ -8,7 +8,7 @@ import type { MessageType } from "@/lib/api/messages"
 import { useUser } from "@/lib/api/use-profile"
 import { cn } from "@/lib/utils"
 
-interface MessageBubbleProps {
+type MessageBubbleProps = {
   message: {
     id: string
     content: string
@@ -270,7 +270,7 @@ function EventMessageCard({
   )
 }
 
-interface ChatListItemProps {
+type ChatListItemProps = {
   chat: {
     id: string
     professionalId?: string
@@ -283,7 +283,6 @@ interface ChatListItemProps {
   isSelected: boolean
   onSelect: () => void
   searchQuery?: string
-  /** Pass 'professional' if this list is for recruiters viewing professionals, 'recruiter' otherwise */
   contactType: "professional" | "recruiter"
   isOnline?: boolean
   formatTime: (iso: string) => string

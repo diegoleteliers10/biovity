@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -61,31 +61,11 @@ function normalizeOrganization(raw: unknown): Organization | null {
 export async function getOrganization(
   id: string
 ): Promise<Result<Organization, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/organizations/${id}`)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/organizations/${id}`)
 
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener la organización"),
-      })
-    )
-  }
+  if (result.isErr()) return R.err(result.error)
 
-  const organization = normalizeOrganization(data)
+  const organization = normalizeOrganization(result.value)
   if (!organization) {
     return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
   }
@@ -95,100 +75,31 @@ export async function getOrganization(
 export async function createOrganization(
   input: CreateOrganizationInput
 ): Promise<Result<Organization, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/organizations`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al crear la organización"),
-      })
-    )
-  }
-  return R.ok(data as Organization)
+  return fetchJson<Organization>(`${API_BASE}/api/v1/organizations`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
 }
 
 export async function updateOrganization(
   id: string,
   input: UpdateOrganizationInput
 ): Promise<Result<Organization, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/organizations/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al actualizar la organización"),
-      })
-    )
-  }
-  return R.ok(data as Organization)
+  return fetchJson<Organization>(`${API_BASE}/api/v1/organizations/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
 }
 
 export async function linkUserToOrganization(
   userId: string,
   organizationId: string
 ): Promise<Result<unknown, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/users/${userId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ organizationId }),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al vincular usuario a la organización"),
-      })
-    )
-  }
-  return R.ok(data)
+  return fetchJson<unknown>(`${API_BASE}/api/v1/users/${userId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ organizationId }),
+  })
 }

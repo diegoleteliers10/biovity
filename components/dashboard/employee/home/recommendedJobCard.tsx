@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Job } from "@/lib/types/dashboard"
 
-interface RecommendedJobCardProps {
+type RecommendedJobCardProps = {
   job: Job
   onJobClick: (jobTitle: string, company: string) => void
   onApplyJob: (jobId: number, jobTitle: string, company: string) => void

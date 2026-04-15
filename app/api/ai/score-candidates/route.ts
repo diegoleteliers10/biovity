@@ -17,9 +17,28 @@ const BatchScoreResultSchema = z.object({
   scores: z.array(CandidateScoreSchema),
 })
 
-export interface CandidateScore extends z.infer<typeof CandidateScoreSchema> {}
+export type CandidateScore = z.infer<typeof CandidateScoreSchema>
 
-export interface BatchScoreResult extends z.infer<typeof BatchScoreResultSchema> {}
+export type BatchScoreResult = z.infer<typeof BatchScoreResultSchema>
+
+function safeParseBatchScore(raw: string): BatchScoreResult | null {
+  const cleaned = raw
+    .trim()
+    .replace(/^```json\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim()
+
+  if (!cleaned.startsWith("{")) return null
+
+  try {
+    const parsed = JSON.parse(cleaned)
+    const normalized = Array.isArray(parsed) ? { scores: parsed } : parsed
+    const validated = BatchScoreResultSchema.parse(normalized)
+    return validated
+  } catch {
+    return null
+  }
+}
 
 export async function POST(req: NextRequest) {
   const {
@@ -74,26 +93,10 @@ Devuelve un array JSON con scoring para CADA candidato listado arriba. Usa el ID
   })
 
   const raw = text ?? "{}"
+  const validated = safeParseBatchScore(raw)
 
-  const cleaned = raw
-    .trim()
-    .replace(/^```json\s*/i, "")
-    .replace(/\s*```$/i, "")
-    .trim()
-
-  try {
-    const parsed = JSON.parse(cleaned)
-    const normalized = Array.isArray(parsed) ? { scores: parsed } : parsed
-    const validated = BatchScoreResultSchema.parse(normalized)
-    return Response.json(validated)
-  } catch (err) {
-    console.error(
-      "[ai/score-candidates] parse/validation error. Raw:",
-      raw.slice(0, 300),
-      "Cleaned:",
-      cleaned.slice(0, 300),
-      err
-    )
+  if (!validated) {
+    console.error("[ai/score-candidates] parse/validation error. Raw:", raw.slice(0, 300))
     const fallback: BatchScoreResult = {
       scores: candidates.map((c) => ({
         candidateId: c.id,
@@ -107,4 +110,6 @@ Devuelve un array JSON con scoring para CADA candidato listado arriba. Usa el ID
     }
     return Response.json(fallback)
   }
+
+  return Response.json(validated)
 }

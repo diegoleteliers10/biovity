@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -39,31 +39,11 @@ export async function getChatsByRecruiter(
 ): Promise<Result<Chat[], ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/chats/recruiter/${recruiterId}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+  const result = await fetchJson<unknown>(url)
 
-  const data: unknown = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener los chats"),
-      })
-    )
-  }
+  if (result.isErr()) return R.err(result.error)
 
-  const chats = extractChats(data)
+  const chats = extractChats(result.value)
   return R.ok(chats)
 }
 
@@ -72,31 +52,11 @@ export async function getChatsByProfessional(
 ): Promise<Result<Chat[], ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/chats/professional/${professionalId}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+  const result = await fetchJson<unknown>(url)
 
-  const data: unknown = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener los chats"),
-      })
-    )
-  }
+  if (result.isErr()) return R.err(result.error)
 
-  const chats = extractChats(data)
+  const chats = extractChats(result.value)
   return R.ok(chats)
 }
 
@@ -108,37 +68,30 @@ export async function createOrFindChat(
       ? ""
       : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
 
-  let res: Response
-  try {
-    res = await fetch(`${base}/api/chats/create`, {
+  const result = await fetchJson<{ data?: Chat; error?: string; message?: string }>(
+    `${base}/api/chats/create`,
+    {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({ professionalId }),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+    }
+  )
 
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    const errorMsg = (data as { error?: string })?.error ?? (data as { message?: string })?.message
+  if (result.isErr()) return R.err(result.error)
+
+  const data = result.value
+  if (data.error || data.message) {
+    const errorMsg = data.error ?? data.message
     return R.err(
       new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
+        status: 400,
         message: typeof errorMsg === "string" ? errorMsg : "Error al crear el chat",
       })
     )
   }
 
-  const chat = (data as { data?: Chat })?.data ?? (data as Chat)
+  const chat = data.data ?? (data as unknown as Chat)
   if (!chat?.id) {
     return R.err(new ApiError({ status: 200, message: "Respuesta inválida" }))
   }
@@ -149,29 +102,5 @@ export async function createOrFindChat(
 export async function getChatById(chatId: string): Promise<Result<Chat, ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/chats/${chatId}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener el chat"),
-      })
-    )
-  }
-
-  return R.ok(data as Chat)
+  return fetchJson<Chat>(url)
 }

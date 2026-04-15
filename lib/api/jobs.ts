@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson, fetchNoContent, fetchWithFallback, getErrorMessage } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -161,32 +161,7 @@ export async function getJobsByOrganization(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/jobs/organization/${organizationId}${query ? `?${query}` : ""}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener los trabajos"),
-      })
-    )
-  }
-
-  const payload = data as JobsByOrganizationResponse
-  return R.ok(payload)
+  return fetchJson<JobsByOrganizationResponse>(url)
 }
 
 export async function getJobs(
@@ -201,30 +176,12 @@ export async function getJobs(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/jobs${query ? `?${query}` : ""}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+  const result = await fetchJson<unknown>(url)
 
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener los trabajos"),
-      })
-    )
-  }
-  const jobs = Array.isArray(data) ? data : ((data as { data?: Job[] })?.data ?? [])
+  if (result.isErr()) return R.err(result.error)
+
+  const data = result.value
+  const jobs = Array.isArray(data) ? (data as Job[]) : ((data as { data?: Job[] })?.data ?? [])
   return R.ok(jobs)
 }
 
@@ -232,34 +189,11 @@ export async function getJob(id: string): Promise<Result<Job, ApiError | Network
   const withApplicationsUrl = `${API_BASE}/api/v1/jobs/${id}/with-applications`
   const fallbackUrl = `${API_BASE}/api/v1/jobs/${id}`
 
-  let res: Response
-  try {
-    res = await fetch(withApplicationsUrl)
-    if (!res.ok) {
-      res = await fetch(fallbackUrl)
-    }
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+  const result = await fetchWithFallback<unknown>(withApplicationsUrl, fallbackUrl)
 
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener el trabajo"),
-      })
-    )
-  }
+  if (result.isErr()) return R.err(result.error)
 
-  const job = normalizeJobResponse(data)
+  const job = normalizeJobResponse(result.value)
   if (!job) return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
   return R.ok(job)
 }
@@ -288,34 +222,11 @@ export async function createJob(
       : undefined,
   }
 
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/jobs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al crear el trabajo"),
-      })
-    )
-  }
-  return R.ok(data as Job)
+  return fetchJson<Job>(`${API_BASE}/api/v1/jobs`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
 }
 
 export type UpdateJobInput = Partial<
@@ -347,63 +258,17 @@ export async function updateJob(
       : undefined,
   }
 
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/jobs/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al actualizar el trabajo"),
-      })
-    )
-  }
-  return R.ok(data as Job)
+  return fetchJson<Job>(`${API_BASE}/api/v1/jobs/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
 }
 
 export async function deleteJob(id: string): Promise<Result<void, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/jobs/${id}`, {
-      method: "DELETE",
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => null)
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al eliminar el trabajo"),
-      })
-    )
-  }
-  return R.ok(undefined)
+  return fetchNoContent(`${API_BASE}/api/v1/jobs/${id}`, {
+    method: "DELETE",
+  })
 }
 
 export function formatJobLocation(loc: JobLocation | null | undefined): string {

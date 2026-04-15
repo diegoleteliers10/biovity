@@ -12,14 +12,14 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null)
 
-  const result = createMessageSchema.safeParse(body)
+  const parsed = createMessageSchema.safeParse(body)
 
-  if (!result.success) {
-    const error = result.error.issues[0]
+  if (!parsed.success) {
+    const error = parsed.error.issues[0]
     return NextResponse.json({ error: error?.message || "Datos inválidos" }, { status: 400 })
   }
 
-  const { chatId, content } = result.data
+  const { chatId, content } = parsed.data
   const senderId = session.user.id
 
   const supabase = getSupabaseAdmin()
@@ -37,30 +37,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No tienes acceso a este chat" }, { status: 403 })
   }
 
-  try {
-    const { data, error } = await supabase
-      .from("message")
-      .insert({ chatId, senderId, content })
-      .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
-      .single()
+  const { data, error } = await supabase
+    .from("message")
+    .insert({ chatId, senderId, content })
+    .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
+    .single()
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
-
-    const apiBase =
-      process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
-    fetch(`${apiBase}/api/v1/chats/${chatId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lastMessage: content }),
-    }).catch(() => {})
-
-    return NextResponse.json(data)
-  } catch (err) {
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Error al enviar mensaje" },
-      { status: 500 }
-    )
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  const apiBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+  fetch(`${apiBase}/api/v1/chats/${chatId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ lastMessage: content }),
+  }).catch(() => {})
+
+  return NextResponse.json(data)
 }

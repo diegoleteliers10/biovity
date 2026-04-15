@@ -6,9 +6,6 @@
 import { z } from "zod"
 import { emailSchema, waitlistRoleSchema } from "./primitives"
 
-// =====================
-// Waitlist Schemas
-// =====================
 
 /**
  * Waitlist API request schema
@@ -28,17 +25,11 @@ export const waitlistResponseSchema = z.object({
   error: z.string().optional(),
 })
 
-// =====================
-// Type Exports
-// =====================
 
 /** Infer types from schemas for use in the codebase */
 export type WaitlistInput = z.infer<typeof waitlistSchema>
 export type WaitlistResponse = z.infer<typeof waitlistResponseSchema>
 
-// =====================
-// Validation Helpers
-// =====================
 
 /**
  * Validate waitlist API request

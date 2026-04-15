@@ -2,7 +2,7 @@
 
 import ReactMarkdown from "react-markdown"
 
-interface AIStreamOutputProps {
+type AIStreamOutputProps = {
   text: string
   className?: string
 }

@@ -1,8 +1,7 @@
 import { Clock01Icon, FavouriteIcon, Link01Icon } from "@hugeicons/core-free-icons"
 import type { IconSvgElement } from "@hugeicons/react"
 
-/** Values section item using HugeIcons (Misión, Visión, Valores) */
-export interface ValorItem {
+export type ValorItem = {
   icon: IconSvgElement
   title: string
   description: string

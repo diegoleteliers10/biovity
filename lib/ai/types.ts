@@ -7,12 +7,12 @@ export type AIActionType =
   | "generate_interview_questions"
   | "score_candidate_fit"
 
-export interface AIActionPayload {
+export type AIActionPayload = {
   action: AIActionType
   context: Record<string, unknown>
 }
 
-export interface CandidateContext {
+export type CandidateContext = {
   name: string
   education: string
   skills: string[]
@@ -21,7 +21,7 @@ export interface CandidateContext {
   specialization?: string
 }
 
-export interface JobOfferContext {
+export type JobOfferContext = {
   title: string
   description: string
   requiredSkills: string[]
@@ -32,12 +32,12 @@ export interface JobOfferContext {
   modality?: string
 }
 
-export interface MessageContext {
+export type MessageContext = {
   content: string
   senderRole: "recruiter" | "candidate"
 }
 
-export interface FitScoreResult {
+export type FitScoreResult = {
   score: number
   label: "Excelente" | "Bueno" | "Regular" | "Bajo"
   reason: string

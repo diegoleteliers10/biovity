@@ -6,28 +6,25 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Chat } from "@/lib/api/chats"
 
-interface EnrichedChat extends Chat {
+type EnrichedChat = Chat & {
   lastMessageFromRecruiter?: string | null
   lastMessageFromRecruiterAt?: string
   isLoading?: boolean
 }
 
-interface LegacyMessage {
+type LegacyMessage = {
   sender: string
   time: string
   preview: string
 }
 
-interface RecentMessagesCardProps {
+type RecentMessagesCardProps = {
   chats?: EnrichedChat[]
   messages?: LegacyMessage[]
   onViewAll?: () => void
   isLoading?: boolean
-  /** Mapa de id → nombre. Para profesional: recruiterNames[id]; para org: candidateNames[id] */
   namesMap?: Record<string, string>
-  /** Campo del chat a usar para el lookup: "recruiterId" | "professionalId" */
   participantIdKey?: "recruiterId" | "professionalId"
-  /** Nombre por defecto cuando no se encuentra en namesMap */
   defaultName?: string
 }
 

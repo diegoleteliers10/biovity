@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
-interface UseScrollAnimationOptions {
+type UseScrollAnimationOptions = {
   threshold?: number
   rootMargin?: string
   triggerOnce?: boolean

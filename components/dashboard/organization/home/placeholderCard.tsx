@@ -4,7 +4,7 @@ import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-interface PlaceholderCardProps {
+type PlaceholderCardProps = {
   title: string
   description?: string
   icon: IconSvgElement

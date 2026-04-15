@@ -4,7 +4,6 @@ import { ArrowRight01Icon, Building06Icon, UserIcon } from "@hugeicons/core-free
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Logo } from "@/components/ui/logo"

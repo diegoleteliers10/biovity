@@ -25,7 +25,7 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import Image from "next/image"
 import Link from "next/link"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { DatePicker } from "@/components/common/DatePicker"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -50,7 +50,7 @@ import {
   useUser,
 } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
-import { cn, dateToDateString, formatMonthYear, parseLocalDate } from "@/lib/utils"
+import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const EMPTY_PLACEHOLDER = "No especificado"
@@ -288,19 +288,21 @@ const EmployeeProfile = () => {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const profileData: FormData = {
-    name: user?.name ?? session?.user?.name ?? "",
-    email: user?.email ?? session?.user?.email ?? "",
-    phone: user?.phone ?? "",
-    location: user ? formatUserLocation(user.location) : "",
-    profession: user?.profession ?? "",
-    bio: resume?.summary ?? "",
-    skills: Array.isArray(resume?.skills)
-      ? resume.skills.map((s): string => (typeof s === "string" ? s : s.name))
-      : [],
-    avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
-    dateOfBirth: user?.birthday ? user.birthday.slice(0, 10) : "",
-  }
+  const profileData = useMemo<FormData>(() => {
+    return {
+      name: user?.name ?? session?.user?.name ?? "",
+      email: user?.email ?? session?.user?.email ?? "",
+      phone: user?.phone ?? "",
+      location: user ? formatUserLocation(user.location) : "",
+      profession: user?.profession ?? "",
+      bio: resume?.summary ?? "",
+      skills: Array.isArray(resume?.skills)
+        ? resume.skills.map((s): string => (typeof s === "string" ? s : s.name))
+        : [],
+      avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
+      dateOfBirth: user?.birthday ? user.birthday.slice(0, 10) : "",
+    }
+  }, [user, session, resume])
 
   useEffect(() => {
     if (!editingSection && (user ?? session)) {

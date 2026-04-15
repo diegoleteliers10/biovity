@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Application } from "@/lib/api/applications"
 
-interface RecentApplicationsCardProps {
+type RecentApplicationsCardProps = {
   applications?: Application[]
   onJobClick: (jobId: string) => void
   onViewAll?: () => void

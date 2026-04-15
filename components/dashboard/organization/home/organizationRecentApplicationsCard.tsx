@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { OrganizationRecentApplication } from "@/lib/types/dashboard"
 
-interface OrganizationRecentApplicationsCardProps {
+type OrganizationRecentApplicationsCardProps = {
   applications: OrganizationRecentApplication[]
 }
 
