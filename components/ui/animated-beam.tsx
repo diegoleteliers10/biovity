@@ -5,9 +5,9 @@ import { type RefObject, useEffect, useId, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
-export interface AnimatedBeamProps {
+export type AnimatedBeamProps = {
   className?: string
-  containerRef: RefObject<HTMLElement | null> // Container ref
+  containerRef: RefObject<HTMLElement | null>
   fromRef: RefObject<HTMLElement | null>
   toRef: RefObject<HTMLElement | null>
   curvature?: number

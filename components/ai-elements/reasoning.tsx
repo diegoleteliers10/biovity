@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils"
 
 import { Shimmer } from "./shimmer"
 
-interface ReasoningContextValue {
+type ReasoningContextValue = {
   isStreaming: boolean
   isOpen: boolean
   setIsOpen: (open: boolean) => void

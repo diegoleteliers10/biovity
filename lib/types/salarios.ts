@@ -1,30 +1,30 @@
 import type { IconSvgElement } from "@hugeicons/react"
 
-export interface EducacionChartItem {
+export type EducacionChartItem = {
   nivel: string
   promedio: number
   porcentaje: number
 }
 
-export interface RegionChartItem {
+export type RegionChartItem = {
   region: string
   promedio: number
 }
 
-export interface IndustriaChartItem {
+export type IndustriaChartItem = {
   industria: string
   minimo: number
   maximo: number
   promedio: number
 }
 
-export interface CarreraChartItem {
+export type CarreraChartItem = {
   carrera: string
   junior: number
   senior: number
 }
 
-export interface ConclusionItem {
+export type ConclusionItem = {
   icon: IconSvgElement
   title: string
   description: string
@@ -32,7 +32,7 @@ export interface ConclusionItem {
   bgColor: string
 }
 
-export interface SalariosHeroStatItem {
+export type SalariosHeroStatItem = {
   icon: IconSvgElement
   value: string
   label: string

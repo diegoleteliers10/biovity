@@ -1,6 +1,6 @@
 "use client"
 
-interface HtmlContentProps {
+type HtmlContentProps = {
   html: string
   className?: string
 }

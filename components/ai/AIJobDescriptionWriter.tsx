@@ -5,7 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { AIStreamOutput } from "@/components/ai/AIStreamOutput"
 import { useAIAction } from "@/hooks/useAIAction"
 
-interface Props {
+type Props = {
   jobTitle: string
   companyName: string
   area: string

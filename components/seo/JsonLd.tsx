@@ -1,6 +1,6 @@
 import Script from "next/script"
 
-interface JsonLdProps {
+type JsonLdProps = {
   data: Record<string, unknown>
 }
 
@@ -15,7 +15,7 @@ export function JsonLd({ data }: JsonLdProps) {
   )
 }
 
-export interface JobPostingJsonLdProps {
+export type JobPostingJsonLdProps = {
   jobId: string
   title: string
   description: string
@@ -124,7 +124,7 @@ export function JobPostingJsonLd({
   return <JsonLd data={jobData} />
 }
 
-export interface ArticleJsonLdProps {
+export type ArticleJsonLdProps = {
   title: string
   description: string
   authorName: string
@@ -171,7 +171,7 @@ export function ArticleJsonLd({
   return <JsonLd data={articleData} />
 }
 
-export interface PersonJsonLdProps {
+export type PersonJsonLdProps = {
   name: string
   jobTitle?: string
   description?: string
@@ -344,7 +344,7 @@ export function SoftwareApplicationJsonLd() {
 
 import type { FAQItem } from "@/lib/types/empresas"
 
-interface FAQJsonLdProps {
+type FAQJsonLdProps = {
   faqs: FAQItem[]
 }
 
@@ -366,7 +366,7 @@ export function FAQJsonLd({ faqs }: FAQJsonLdProps) {
 }
 
 // Collection page schema for blog listing
-interface CollectionJsonLdProps {
+type CollectionJsonLdProps = {
   name: string
   description: string
   url: string
@@ -394,12 +394,12 @@ export function CollectionJsonLd({ name, description, url, items }: CollectionJs
 }
 
 // Breadcrumb schema
-interface BreadcrumbItem {
+type BreadcrumbItem = {
   name: string
   url: string
 }
 
-interface BreadcrumbJsonLdProps {
+type BreadcrumbJsonLdProps = {
   items: BreadcrumbItem[]
 }
 

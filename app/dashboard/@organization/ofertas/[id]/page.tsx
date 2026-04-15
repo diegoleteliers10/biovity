@@ -28,7 +28,6 @@ import type { Job } from "@/lib/api/jobs"
 import { useApplicationsByJob } from "@/lib/api/use-applications"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { authClient } from "@/lib/auth-client"
 import { formatCurrencyCLP, formatDateChilean } from "@/lib/utils"
 
 function formatJobSalary(job: Job): string {

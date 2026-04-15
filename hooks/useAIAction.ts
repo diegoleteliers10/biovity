@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import type { AIActionType } from "@/lib/ai/types"
 
-interface Options {
+type Options = {
   onChunk?: (text: string) => void
   onDone?: (fullText: string) => void
   onError?: (msg: string) => void

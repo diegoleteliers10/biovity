@@ -1,24 +1,28 @@
 import { NextResponse } from "next/server"
+import { Result as R } from "better-result"
 import { pool } from "@/lib/db"
+import { DbError } from "@/lib/errors"
 
 export async function GET() {
-  try {
-    // Simple ping query to keep database alive (uses shared pool, no create/destroy)
-    await pool.query("SELECT 1")
+  const result = await R.tryPromise({
+    try: () => pool.query("SELECT 1"),
+    catch: (cause) => new DbError({ operation: "cron_ping", cause }),
+  })
 
-    return NextResponse.json({
-      success: true,
-      message: "Database ping successful",
-    })
-  } catch (error) {
-    console.error("Database ping failed:", error)
+  if (result.isErr()) {
+    console.error("Database ping failed:", result.error)
     return NextResponse.json(
       {
         success: false,
         message: "Database ping failed",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: result.error.message,
       },
       { status: 500 }
     )
   }
+
+  return NextResponse.json({
+    success: true,
+    message: "Database ping successful",
+  })
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import type { CandidateContext, FitScoreResult, JobOfferContext } from "@/lib/ai/types"
 
-interface Props {
+type Props = {
   candidate: CandidateContext
   jobOffer: JobOfferContext
 }

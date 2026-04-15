@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -134,130 +134,43 @@ function normalizeResume(raw: unknown): Resume | null {
 export async function getResumeByUserId(
   userId: string
 ): Promise<Result<Resume | null, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/resumes/user/${userId}`)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
+  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/resumes/user/${userId}`)
+
+  if (result.isErr()) {
+    const error = result.error
+    if (error._tag === "ApiError" && error.status === 404) {
+      return R.ok(null)
+    }
+    return R.err(error)
   }
 
-  if (res.status === 404) {
-    return R.ok(null)
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener el currículum"),
-      })
-    )
-  }
-
-  const normalized = normalizeResume(data)
+  const normalized = normalizeResume(result.value)
   return R.ok(normalized)
 }
 
 export async function getResume(id: string): Promise<Result<Resume, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/resumes/${id}`)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener el currículum"),
-      })
-    )
-  }
-  return R.ok(data as Resume)
+  return fetchJson<Resume>(`${API_BASE}/api/v1/resumes/${id}`)
 }
 
 export async function createResume(
   input: CreateResumeInput
 ): Promise<Result<Resume, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/resumes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al crear el currículum"),
-      })
-    )
-  }
-  return R.ok(data as Resume)
+  return fetchJson<Resume>(`${API_BASE}/api/v1/resumes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
 }
 
 export async function updateResume(
   id: string,
   input: UpdateResumeInput
 ): Promise<Result<Resume, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/resumes/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al actualizar el currículum"),
-      })
-    )
-  }
-  return R.ok(data as Resume)
+  return fetchJson<Resume>(`${API_BASE}/api/v1/resumes/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
 }
 
 export async function uploadResumeCv(
@@ -269,36 +182,24 @@ export async function uploadResumeCv(
 
   const uploadUrl = "/api/upload/cv"
 
-  let res: Response
-  try {
-    res = await fetch(uploadUrl, { method: "POST", body: formData })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
+  const uploadResult = await fetchJson<{
+    url?: string
+    originalName?: string
+    mimeType?: string
+    size?: number
+    uploadedAt?: string
+  }>(uploadUrl, { method: "POST", body: formData })
 
-  const uploadData = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: uploadData,
-        message: getErrorMessage(uploadData, "Error al subir el CV"),
-      })
-    )
-  }
+  if (uploadResult.isErr()) return R.err(uploadResult.error)
+
+  const uploadData = uploadResult.value
 
   const cvFile: ResumeCvFile = {
-    url: (uploadData as { url?: string }).url,
-    originalName: (uploadData as { originalName?: string }).originalName,
-    mimeType: (uploadData as { mimeType?: string }).mimeType,
-    size: (uploadData as { size?: number }).size,
-    uploadedAt: (uploadData as { uploadedAt?: string }).uploadedAt,
+    url: uploadData.url,
+    originalName: uploadData.originalName,
+    mimeType: uploadData.mimeType,
+    size: uploadData.size,
+    uploadedAt: uploadData.uploadedAt,
   }
 
   return updateResume(resumeId, { cvFile })

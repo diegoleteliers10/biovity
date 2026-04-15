@@ -5,7 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useAIAction } from "@/hooks/useAIAction"
 import type { AIActionType } from "@/lib/ai/types"
 
-interface AIButtonProps {
+type AIButtonProps = {
   action: AIActionType
   context: Record<string, unknown>
   children: React.ReactNode

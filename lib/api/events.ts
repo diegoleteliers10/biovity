@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson, fetchNoContent } from "@/lib/result"
 import type {
   CreateEventInput,
   Event,
@@ -32,167 +32,40 @@ export async function getEvents(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/events${query ? `?${query}` : ""}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener eventos"),
-      })
-    )
-  }
-
-  return R.ok(data as PaginatedEventsResponse)
+  return fetchJson<PaginatedEventsResponse>(url)
 }
 
 export async function getEventById(
   id: string
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${id}`)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener el evento"),
-      })
-    )
-  }
-
-  return R.ok(data as EventWithParticipants)
+  return fetchJson<EventWithParticipants>(`${API_BASE}/api/v1/events/${id}`)
 }
 
 export async function createEvent(
   input: CreateEventInput
 ): Promise<Result<Event, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  let data: unknown
-  try {
-    data = await res.json()
-  } catch {
-    data = { message: res.statusText }
-  }
-
-  if (!res.ok) {
-    const msg = (data as { message?: string })?.message ?? "Error al crear el evento"
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: msg,
-      })
-    )
-  }
-
-  return R.ok(data as Event)
+  return fetchJson<Event>(`${API_BASE}/api/v1/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
 }
 
 export async function updateEvent(
   id: string,
   input: UpdateEventInput
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al actualizar el evento"),
-      })
-    )
-  }
-
-  return R.ok(data as EventWithParticipants)
+  return fetchJson<EventWithParticipants>(`${API_BASE}/api/v1/events/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
 }
 
 export async function deleteEvent(id: string): Promise<Result<void, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${id}`, {
-      method: "DELETE",
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => null)
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al eliminar el evento"),
-      })
-    )
-  }
-
-  return R.ok(undefined)
+  return fetchNoContent(`${API_BASE}/api/v1/events/${id}`, {
+    method: "DELETE",
+  })
 }
 
 export async function addEventParticipant(
@@ -200,98 +73,26 @@ export async function addEventParticipant(
   userId: string,
   role: "attendee" | "guest" = "attendee"
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${eventId}/participants`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, role }),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al agregar participante"),
-      })
-    )
-  }
-
-  return R.ok(data as EventWithParticipants)
+  return fetchJson<EventWithParticipants>(`${API_BASE}/api/v1/events/${eventId}/participants`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, role }),
+  })
 }
 
 export async function removeEventParticipant(
   eventId: string,
   userId: string
 ): Promise<Result<void, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${eventId}/participants/${userId}`, {
-      method: "DELETE",
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => null)
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al eliminar participante"),
-      })
-    )
-  }
-
-  return R.ok(undefined)
+  return fetchNoContent(`${API_BASE}/api/v1/events/${eventId}/participants/${userId}`, {
+    method: "DELETE",
+  })
 }
 
 export async function getEventNotes(
   eventId: string
 ): Promise<Result<EventNote[], ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${eventId}/notes`)
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al obtener notas"),
-      })
-    )
-  }
-
-  return R.ok(data as EventNote[])
+  return fetchJson<EventNote[]>(`${API_BASE}/api/v1/events/${eventId}/notes`)
 }
 
 export async function createEventNote(
@@ -299,33 +100,9 @@ export async function createEventNote(
   authorId: string,
   content: string
 ): Promise<Result<EventNote, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/events/${eventId}/notes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content, authorId }),
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({
-        message: err instanceof Error ? err.message : "Error de red",
-        cause: err,
-      })
-    )
-  }
-
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al crear nota"),
-      })
-    )
-  }
-
-  return R.ok(data as EventNote)
+  return fetchJson<EventNote>(`${API_BASE}/api/v1/events/${eventId}/notes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content, authorId }),
+  })
 }

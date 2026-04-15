@@ -4,8 +4,7 @@
 
 export type MessageType = "text" | "event" | "audio" | "image" | "file"
 
-// Content type schemas for different message types
-export interface EventContentType {
+export type EventContentType = {
   eventId: string
   title: string
   description?: string
@@ -20,13 +19,13 @@ export interface EventContentType {
   candidateAvatar?: string
 }
 
-export interface AudioContentType {
+export type AudioContentType = {
   url: string
   duration: number
   waveform?: number[]
 }
 
-export interface ImageContentType {
+export type ImageContentType = {
   url: string
   thumbnailUrl?: string
   width?: number
@@ -34,14 +33,14 @@ export interface ImageContentType {
   alt?: string
 }
 
-export interface FileContentType {
+export type FileContentType = {
   url: string
   name: string
   size: number
   mimeType: string
 }
 
-export interface Message {
+export type Message = {
   id: string
   chatId: string
   senderId: string
@@ -52,7 +51,7 @@ export interface Message {
   createdAt: string
 }
 
-export interface Conversation {
+export type Conversation = {
   id: string
   recruiterId: string
   professionalId: string
@@ -63,7 +62,7 @@ export interface Conversation {
   updatedAt: string
 }
 
-export interface Chat {
+export type Chat = {
   id: string
   recruiterId: string
   professionalId: string
@@ -73,6 +72,6 @@ export interface Chat {
   updatedAt: string
 }
 
-export interface ConversationWithMessages extends Conversation {
+export type ConversationWithMessages = Conversation & {
   messages: Message[]
 }

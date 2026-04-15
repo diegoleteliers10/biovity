@@ -18,7 +18,7 @@ import { marked } from "marked"
 import { useEffect } from "react"
 import { cn } from "@/lib/utils"
 
-interface RichTextEditorProps {
+type RichTextEditorProps = {
   content: string
   onChange: (content: string) => void
   placeholder?: string

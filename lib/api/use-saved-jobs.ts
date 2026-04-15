@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
 import { checkSavedJob, getSavedJobsByUserId, removeSavedJob, saveJob } from "./saved-jobs"
 
 export const savedJobsKeys = {
@@ -18,8 +19,12 @@ export function useCheckSavedJob(userId: string | undefined, jobId: string | und
       if (!userId) throw new Error("User ID required")
       if (!jobId) throw new Error("Job ID required")
       const result = await checkSavedJob(userId, jobId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      return result.match({
+        ok: (data) => data,
+        err: (e) => {
+          throw new Error(e.message)
+        },
+      })
     },
     enabled: Boolean(userId && jobId),
   })
@@ -42,8 +47,12 @@ export function useSavedJobsByUser(
         page: params?.page,
         limit: params?.limit,
       })
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      return result.match({
+        ok: (data) => data,
+        err: (e) => {
+          throw new Error(e.message)
+        },
+      })
     },
     enabled: Boolean(userId),
   })
@@ -55,8 +64,12 @@ export function useSaveJobMutation() {
   return useMutation({
     mutationFn: async ({ userId, jobId }: { userId: string; jobId: string }) => {
       const result = await saveJob(userId, jobId)
-      if ("error" in result) throw new Error(result.error)
-      return result.data
+      return result.match({
+        ok: (data) => data,
+        err: (e) => {
+          throw new Error(e.message)
+        },
+      })
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
@@ -73,8 +86,12 @@ export function useRemoveSavedJobMutation() {
   return useMutation({
     mutationFn: async ({ userId, jobId }: { userId: string; jobId: string }) => {
       const result = await removeSavedJob(userId, jobId)
-      if ("error" in result) throw new Error(result.error)
-      return result
+      return result.match({
+        ok: (data) => data,
+        err: (e) => {
+          throw new Error(e.message)
+        },
+      })
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })

@@ -1,34 +1,33 @@
 import type { IconSvgElement } from "@hugeicons/react"
 
-export interface NavUser {
+export type NavUser = {
   name: string
   title: string
   avatar: string
 }
 
-export interface NavItem {
+export type NavItem = {
   title: string
   url: string
   icon: IconSvgElement
   badge?: number
 }
 
-export interface NavExploreItem {
+export type NavExploreItem = {
   title: string
   url: string
   icon: IconSvgElement
-  /** Tooltip text when sidebar is collapsed (icon mode) */
   tooltipCollapsed?: string
 }
 
-export interface ProfileProgress {
+export type ProfileProgress = {
   percentage: number
   title: string
   subtitle: string
   actionText: string
 }
 
-export interface NavData {
+export type NavData = {
   user: NavUser
   navMain: NavItem[]
   explore?: NavExploreItem[]

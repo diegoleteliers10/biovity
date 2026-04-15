@@ -1,15 +1,15 @@
-const API_BASE =
-  typeof window !== "undefined"
-    ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
-    : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
-
 import { Result as R, type Result } from "better-result"
 import { ApiError, NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson } from "@/lib/result"
 import type {
   OrganizationMetrics,
   OrganizationMetricsFilters,
 } from "@/lib/types/organization-metrics"
+
+const API_BASE =
+  typeof window !== "undefined"
+    ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
+    : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
 export async function getOrganizationMetrics(
   organizationId: string,
@@ -21,41 +21,22 @@ export async function getOrganizationMetrics(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/organizations/${organizationId}/metrics${query ? `?${query}` : ""}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return R.err(
-      new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err })
-    )
-  }
-
-  const json = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: json,
-        message: getErrorMessage(json, "Error al obtener métricas"),
-      })
-    )
-  }
-
-  // Handle nested response: { data: { data: { dashboard, pipeline, ... }, timestamp, path } }
-  const wrapper = json as {
+  const result = await fetchJson<{
     data?: { data?: OrganizationMetrics; dashboard?: never }
     dashboard?: never
+  }>(url)
+
+  if (result.isErr()) return R.err(result.error)
+
+  const json = result.value
+
+  if (json.data?.data) {
+    return R.ok(json.data.data)
   }
-  if (wrapper.data?.data) {
-    return R.ok(wrapper.data.data)
+  if (json.data?.dashboard) {
+    return R.ok(json.data as unknown as OrganizationMetrics)
   }
-  // Handle semi-nested: { data: { dashboard, pipeline, ... } }
-  if (wrapper.data?.dashboard) {
-    return R.ok(wrapper.data as unknown as OrganizationMetrics)
-  }
-  // Handle direct response: { dashboard, pipeline, ... }
-  const direct = json as OrganizationMetrics
+  const direct = json as unknown as OrganizationMetrics
   if (direct.dashboard) {
     return R.ok(direct)
   }
@@ -72,28 +53,11 @@ export async function getOrganizationMetrics(
 export async function incrementJobViews(
   jobId: string
 ): Promise<Result<{ views: number }, ApiError | NetworkError>> {
-  let res: Response
-  try {
-    res = await fetch(`${API_BASE}/api/v1/jobs/${jobId}/views`, {
-      method: "PUT",
-    })
-  } catch (err) {
-    return R.err(
-      new NetworkError({ message: err instanceof Error ? err.message : "Error de red", cause: err })
-    )
-  }
+  const result = await fetchJson<{ views: number }>(`${API_BASE}/api/v1/jobs/${jobId}/views`, {
+    method: "PUT",
+  })
 
-  const data = await res.json().catch(() => null)
-  if (!res.ok) {
-    return R.err(
-      new ApiError({
-        status: res.status,
-        statusText: res.statusText,
-        body: data,
-        message: getErrorMessage(data, "Error al incrementar vistas"),
-      })
-    )
-  }
+  if (result.isErr()) return R.err(result.error)
 
-  return R.ok({ views: (data as { views: number }).views })
+  return R.ok({ views: result.value.views })
 }

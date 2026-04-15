@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useIncrementJobViews } from "@/lib/api/use-jobs-views"
 import { authClient } from "@/lib/auth-client"
 
-interface JobViewsTrackerProps {
+type JobViewsTrackerProps = {
   jobId: string
   jobOrganizationId: string
 }

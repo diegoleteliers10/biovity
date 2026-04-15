@@ -46,7 +46,7 @@ export const auth = betterAuth({
     },
     useSecureCookies: process.env.NODE_ENV === "production",
     crossSubDomainCookies: {
-      enabled: true,
+      enabled: process.env.NODE_ENV === "production",
       domain: ".biovity.cl",
     },
     ipAddress: {

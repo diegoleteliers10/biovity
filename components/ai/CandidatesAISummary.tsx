@@ -6,7 +6,7 @@ import { AIStreamOutput } from "@/components/ai/AIStreamOutput"
 import { useAIAction } from "@/hooks/useAIAction"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
 
-interface Props {
+type Props = {
   jobOffer: JobOfferContext
   candidates: CandidateContext[]
 }

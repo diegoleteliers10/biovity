@@ -1,3 +1,7 @@
+import { Result as R, type Result } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
+import { fetchJson } from "@/lib/result"
+
 const API_BASE =
   typeof window !== "undefined"
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
@@ -21,16 +25,6 @@ export type CheckSavedJobResponse = {
   isSaved: boolean
 }
 
-function getErrorMessage(data: unknown, fallback: string): string {
-  if (!data || typeof data !== "object") return fallback
-  const d = data as Record<string, unknown>
-  const msg = d.message
-  if (Array.isArray(msg)) return msg.join(". ") || fallback
-  if (typeof msg === "string") return msg
-  if (typeof d.error === "string") return d.error
-  return fallback
-}
-
 function unwrapData(payload: unknown): unknown {
   if (!payload || typeof payload !== "object") return payload
   const p = payload as Record<string, unknown>
@@ -50,10 +44,6 @@ function normalizeSavedJobItem(raw: unknown): SavedJob | null {
 
   const jobIdCandidateFromId = extractString(obj.jobId ?? obj.job_id)
 
-  // Common shapes:
-  // - { jobId }
-  // - { job_id }
-  // - { job: { id } }
   const jobId =
     jobIdCandidateFromId ??
     (obj.job && typeof obj.job === "object"
@@ -89,7 +79,6 @@ function extractSavedJobsList(payload: unknown): {
 
   const maybeData = p.data
 
-  // Some endpoints use { data: [...] }, others use { data: { data: [...] } }
   const listCandidate = Array.isArray(maybeData)
     ? maybeData
     : maybeData && typeof maybeData === "object"
@@ -105,21 +94,14 @@ function extractSavedJobsList(payload: unknown): {
 export async function checkSavedJob(
   userId: string,
   jobId: string
-): Promise<{ data: CheckSavedJobResponse } | { error: string }> {
+): Promise<Result<CheckSavedJobResponse, ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/saved-jobs/check/${userId}/${jobId}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
-  }
+  const result = await fetchJson<unknown>(url)
 
-  const json: unknown = await res.json().catch(() => null)
-  if (!res.ok) return { error: getErrorMessage(json, "Error al verificar guardado") }
+  if (result.isErr()) return R.err(result.error)
 
-  // Observed wrapper: { data: { data: { isSaved } } }
-  // but we keep it flexible.
+  const json = result.value
   const dataLevel1 = unwrapData(json)
   const dataLevel2 = unwrapData(dataLevel1)
 
@@ -130,13 +112,13 @@ export async function checkSavedJob(
         ? ((dataLevel1 as Record<string, unknown>).isSaved as boolean)
         : false
 
-  return { data: { isSaved } }
+  return R.ok({ isSaved })
 }
 
 export async function getSavedJobsByUserId(
   userId: string,
   params?: { page?: number; limit?: number }
-): Promise<{ data: SavedJobsByUserResponse } | { error: string }> {
+): Promise<Result<SavedJobsByUserResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
   if (params?.limit != null) searchParams.set("limit", String(params.limit))
@@ -144,40 +126,29 @@ export async function getSavedJobsByUserId(
 
   const url = `${API_BASE}/api/v1/saved-jobs/user/${userId}${query ? `?${query}` : ""}`
 
-  let res: Response
-  try {
-    res = await fetch(url)
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
-  }
+  const result = await fetchJson<unknown>(url)
 
-  const json: unknown = await res.json().catch(() => null)
-  if (!res.ok) return { error: getErrorMessage(json, "Error al obtener empleos guardados") }
+  if (result.isErr()) return R.err(result.error)
 
-  const extracted = extractSavedJobsList(json)
-  return { data: extracted }
+  const extracted = extractSavedJobsList(result.value)
+  return R.ok(extracted)
 }
 
 export async function saveJob(
   userId: string,
   jobId: string
-): Promise<{ data: SavedJob } | { error: string }> {
+): Promise<Result<SavedJob, ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/saved-jobs`
 
-  let res: Response
-  try {
-    res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, jobId }),
-    })
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
-  }
+  const result = await fetchJson<unknown>(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, jobId }),
+  })
 
-  const json: unknown = await res.json().catch(() => null)
-  if (!res.ok) return { error: getErrorMessage(json, "Error al guardar el empleo") }
+  if (result.isErr()) return R.err(result.error)
 
+  const json = result.value
   const dataLevel1 = unwrapData(json)
   const dataLevel2 = unwrapData(dataLevel1)
 
@@ -185,26 +156,16 @@ export async function saveJob(
     normalizeSavedJobItem(dataLevel2) ??
     normalizeSavedJobItem(dataLevel1) ??
     normalizeSavedJobItem(json)
-  if (!saved) return { error: "Respuesta inválida" }
+  if (!saved) return R.err(new ApiError({ status: 200, message: "Respuesta inválida" }))
 
-  return { data: saved }
+  return R.ok(saved)
 }
 
 export async function removeSavedJob(
   userId: string,
   jobId: string
-): Promise<{ success: true } | { error: string }> {
+): Promise<Result<{ success: true }, ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/saved-jobs/user/${userId}/job/${jobId}`
 
-  let res: Response
-  try {
-    res = await fetch(url, { method: "DELETE" })
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error de red" }
-  }
-
-  const json: unknown = await res.json().catch(() => null)
-  if (!res.ok) return { error: getErrorMessage(json, "Error al quitar de guardados") }
-
-  return { success: true }
+  return fetchJson<{ success: true }>(url, { method: "DELETE" })
 }

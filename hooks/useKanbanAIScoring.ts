@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
 
-interface ScoreEntry {
+type ScoreEntry = {
   score: CandidateScore
   analyzedAt: Date
 }

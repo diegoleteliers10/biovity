@@ -5,10 +5,6 @@
 
 import { z } from "zod"
 
-// =====================
-// Email Validation
-// =====================
-
 /**
  * Email schema with RFC 5322 compliant validation
  * - Maximum 254 characters (RFC 5322 limit)
@@ -59,10 +55,6 @@ export const organizationLoginEmailSchema = emailSchema.refine((val) => {
   return !PERSONAL_EMAIL_DOMAINS.includes(domain)
 }, "Usa tu correo corporativo. No se permiten Gmail, Hotmail, Yahoo, Outlook, etc.")
 
-// =====================
-// Password Validation
-// =====================
-
 /**
  * User password schema
  * - Minimum 6 characters (Better Auth default)
@@ -87,10 +79,6 @@ export const organizationPasswordSchema = z
   .min(8, "La contraseña debe tener al menos 8 caracteres")
   .max(128, "La contraseña es demasiado larga")
 
-// =====================
-// Name Validation
-// =====================
-
 /**
  * Name schema for person names
  * - Minimum 2 characters
@@ -108,10 +96,6 @@ export const nameSchema = z
     (val) => /^[\p{L}\s'-]+$/u.test(val),
     "El nombre solo puede contener letras, espacios, guiones y apóstrofes"
   )
-
-// =====================
-// URL Validation
-// =====================
 
 /**
  * URL schema for website/organization URLs
@@ -154,10 +138,6 @@ export const domainSchema = z
     "El dominio no es válido (ejemplo: tuorganizacion.com)"
   )
 
-// =====================
-// Phone Validation
-// =====================
-
 /**
  * Phone number schema (international format)
  * - Optional field
@@ -176,10 +156,6 @@ export const phoneSchema = z
     return /^[\d\s+()-]{8,20}$/.test(val)
   }, "El número de teléfono no es válido")
 
-// =====================
-// Location Validation
-// =====================
-
 /**
  * Location schema for user location
  * - Optional field
@@ -193,10 +169,6 @@ export const locationSchema = z
   .max(200, "La ubicación es demasiado larga")
   .trim()
   .optional()
-
-// =====================
-// Text/Content Validation
-// =====================
 
 /**
  * Short text schema for fields like profession, position, etc.
@@ -236,10 +208,6 @@ export const messageSchema = z
   .max(5000, "El mensaje es demasiado largo")
   .trim()
 
-// =====================
-// Role/Type Enums
-// =====================
-
 /**
  * User type enum for Better Auth (standardized across auth and waitlist)
  */
@@ -268,10 +236,6 @@ export const experienceLevelSchema = z.enum(["any", "junior", "mid", "senior"], 
   error: () => ({ message: "El nivel de experiencia no es válido" }),
 })
 
-// =====================
-// Array Schemas
-// =====================
-
 /**
  * Skills schema - array of skill strings
  */
@@ -286,10 +250,6 @@ export const skillsSchema = z
   .min(1, "Debe tener al menos una habilidad")
   .max(20, "Demasiadas habilidades (máximo 20)")
   .optional()
-
-// =====================
-// Type Exports
-// =====================
 
 /** Infer types from schemas for use in the codebase */
 export type Email = z.infer<typeof emailSchema>

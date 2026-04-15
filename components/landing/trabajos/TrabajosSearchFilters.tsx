@@ -22,7 +22,7 @@ import {
 import type { FiltrosTrabajos } from "@/lib/types/trabajos"
 import { cn } from "@/lib/utils"
 
-interface TrabajosSearchFiltersProps {
+type TrabajosSearchFiltersProps = {
   filtros: FiltrosTrabajos
   onFiltrosChange: (filtros: FiltrosTrabajos) => void
 }

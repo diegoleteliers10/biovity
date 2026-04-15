@@ -44,7 +44,7 @@ const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[]
   { id: "rechazado", label: "Rechazado", icon: Cancel01Icon },
 ]
 
-interface ApplicantCardProps {
+type ApplicantCardProps = {
   applicant: Applicant
   getScore?: (candidateId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean

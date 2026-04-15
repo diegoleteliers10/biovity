@@ -160,7 +160,7 @@ const captureScreenshot = async (): Promise<File | null> => {
 // Provider Context & Types
 // ============================================================================
 
-export interface AttachmentsContext {
+export type AttachmentsContext = {
   files: (FileUIPart & { id: string })[]
   add: (files: File[] | FileList) => void
   remove: (id: string) => void
@@ -169,16 +169,15 @@ export interface AttachmentsContext {
   fileInputRef: RefObject<HTMLInputElement | null>
 }
 
-export interface TextInputContext {
+export type TextInputContext = {
   value: string
   setInput: (v: string) => void
   clear: () => void
 }
 
-export interface PromptInputControllerProps {
+export type PromptInputControllerProps = {
   textInput: TextInputContext
   attachments: AttachmentsContext
-  /** INTERNAL: Allows PromptInput to register its file textInput + "open" callback */
   __registerFileInput: (ref: RefObject<HTMLInputElement | null>, open: () => void) => void
 }
 
@@ -359,7 +358,7 @@ export const usePromptInputAttachments = () => {
 // Referenced Sources (Local to PromptInput)
 // ============================================================================
 
-export interface ReferencedSourcesContext {
+export type ReferencedSourcesContext = {
   sources: (SourceDocumentUIPart & { id: string })[]
   add: (sources: SourceDocumentUIPart[] | SourceDocumentUIPart) => void
   remove: (id: string) => void
@@ -447,7 +446,7 @@ export const PromptInputActionAddScreenshot = ({
   )
 }
 
-export interface PromptInputMessage {
+export type PromptInputMessage = {
   text: string
   files: FileUIPart[]
 }

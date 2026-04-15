@@ -36,7 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { authClient } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
 
-export interface DashboardSidebarProps {
+export type DashboardSidebarProps = {
   navData: NavData
   logoutRedirect: string
   profileUrl?: string

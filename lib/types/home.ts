@@ -1,20 +1,20 @@
 import type { IconSvgElement } from "@hugeicons/react"
 
-export interface StepHomeItem {
+export type StepHomeItem = {
   icon: IconSvgElement
   title: string
   description: string
   number: string
 }
 
-export interface BenefitHomeItem {
+export type BenefitHomeItem = {
   icon: IconSvgElement
   title: string
   description: string
   gradient: string
 }
 
-export interface TransparencyFeatureItem {
+export type TransparencyFeatureItem = {
   icon: IconSvgElement
   title: string
   description: string
@@ -22,7 +22,7 @@ export interface TransparencyFeatureItem {
   iconColor: string
 }
 
-export interface CategoryHomeItem {
+export type CategoryHomeItem = {
   icon: IconSvgElement
   title: string
   positions: string

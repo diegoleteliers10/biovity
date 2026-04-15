@@ -29,7 +29,7 @@ export type SelectItemType = {
   icon?: FC | ReactNode
 }
 
-export interface CommonProps {
+export type CommonProps = {
   hint?: string
   label?: string
   tooltip?: string

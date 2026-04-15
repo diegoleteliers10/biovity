@@ -1,6 +1,6 @@
 export type MetricsPeriod = "week" | "month" | "year"
 
-export interface DashboardMetrics {
+export type DashboardMetrics = {
   activeJobs: number
   pendingApplications: number
   interviewsThisPeriod: number
@@ -8,7 +8,7 @@ export interface DashboardMetrics {
   applicationsTrend: number
 }
 
-export interface PipelineMetrics {
+export type PipelineMetrics = {
   totalApplications: number
   byStatus: {
     pendiente: number
@@ -20,7 +20,7 @@ export interface PipelineMetrics {
   conversionRate: number
 }
 
-export interface TopJobMetrics {
+export type TopJobMetrics = {
   jobId: string
   jobTitle: string
   views: number
@@ -28,19 +28,19 @@ export interface TopJobMetrics {
   applicationRate: number
 }
 
-export interface RecentTrendMetrics {
+export type RecentTrendMetrics = {
   date: string
   applications: number
   interviews: number
 }
 
-export interface OrganizationMetrics {
+export type OrganizationMetrics = {
   dashboard: DashboardMetrics
   pipeline: PipelineMetrics
   topJobs: TopJobMetrics[]
   recentTrend: RecentTrendMetrics[]
 }
 
-export interface OrganizationMetricsFilters {
+export type OrganizationMetricsFilters = {
   period?: MetricsPeriod
 }

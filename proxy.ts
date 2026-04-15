@@ -1,14 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
+import { Result as R } from "better-result"
 
 const WAITLIST_PATH = "/lista-espera"
+
+async function getSessionSafe(request: NextRequest) {
+  return R.tryPromise({
+    try: async () =>
+      auth.api.getSession({
+        headers: request.headers,
+      }),
+    catch: (e) => (e instanceof Error ? e : new Error(String(e))),
+  })
+}
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isWaitList = (process.env.NODE_ENV as string) === "wait-list"
-  const isProduction = process.env.NODE_ENV === "production"
 
-  // En wait-list: redirigir todo excepto lista-espera y assets al waitlist
   if (isWaitList) {
     const allowedPaths = [
       WAITLIST_PATH,
@@ -32,43 +41,29 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // En producción: lógica de auth para dashboard
   const protectedRoutes = ["/dashboard"]
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   if (isProtectedRoute) {
-    // Verificar sesión usando better-auth (funciona en dev y prod)
-    try {
-      const session = await auth.api.getSession({
-        headers: request.headers,
-      })
-      if (!session?.user) {
-        const loginUrl = new URL("/login", request.url)
-        loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
-        return NextResponse.redirect(loginUrl)
-      }
-    } catch {
-      // Si falla la verificación de sesión, permitir pasar
-      // para evitar bloqueos por problemas de red o configuración
+    const sessionResult = await getSessionSafe(request)
+
+    if (sessionResult.isOk() && !sessionResult.value?.user) {
+      const loginUrl = new URL("/login", request.url)
+      loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
+      return NextResponse.redirect(loginUrl)
     }
   }
 
-  // Si ya tiene sesión y va a /login o /register (o sus sub-rutas), redirigir a /dashboard
   if (
     pathname === "/login" ||
     pathname === "/register" ||
     pathname.startsWith("/login/") ||
     pathname.startsWith("/register/")
   ) {
-    try {
-      const session = await auth.api.getSession({
-        headers: request.headers,
-      })
-      if (session?.user) {
-        return NextResponse.redirect(new URL("/dashboard", request.url))
-      }
-    } catch {
-      // Si falla, no redirigir y permitir acceso al login/register
+    const sessionResult = await getSessionSafe(request)
+
+    if (sessionResult.isOk() && sessionResult.value?.user) {
+      return NextResponse.redirect(new URL("/dashboard", request.url))
     }
   }
 

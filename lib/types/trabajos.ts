@@ -3,18 +3,18 @@ export type FormatoTrabajo = "full-time" | "part-time" | "contrato"
 export type NivelExperiencia = "junior" | "mid" | "senior"
 export type TipoBeneficio = "salud" | "vacaciones" | "formacion" | "equipo" | "otro"
 
-export interface Beneficio {
+export type Beneficio = {
   tipo: TipoBeneficio
   label: string
 }
 
-export interface RangoSalarial {
+export type RangoSalarial = {
   min: number
   max: number
   moneda: "CLP"
 }
 
-export interface Trabajo {
+export type Trabajo = {
   id: string
   titulo: string
   empresa: string
@@ -32,7 +32,7 @@ export interface Trabajo {
   slug: string
 }
 
-export interface FiltrosTrabajos {
+export type FiltrosTrabajos = {
   query: string
   ubicacion: string
   modalidad: "Modalidad" | ModalidadTrabajo

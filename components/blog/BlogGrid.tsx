@@ -7,7 +7,7 @@ import type { Post } from "@/lib/types/posts"
 import { Input } from "../ui/input"
 import { PostCard } from "./PostCard"
 
-interface BlogGridProps {
+type BlogGridProps = {
   posts: Post[]
 }
 

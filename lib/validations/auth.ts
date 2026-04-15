@@ -14,9 +14,6 @@ import {
   userPasswordSchema,
 } from "./primitives"
 
-// =====================
-// Login Schemas
-// =====================
 
 /**
  * User login form schema
@@ -47,9 +44,6 @@ export const organizationLoginSchema = z.object({
   rememberMe: z.boolean().optional().default(true),
 })
 
-// =====================
-// Registration Schemas
-// =====================
 
 /**
  * User registration form schema
@@ -132,9 +126,6 @@ export const organizationRegistrationSchema = z
     path: ["confirmPassword"],
   })
 
-// =====================
-// Password Reset Schemas
-// =====================
 
 /**
  * Password reset request schema (email only)
@@ -162,9 +153,6 @@ export const passwordResetConfirmSchema = z
     path: ["confirmPassword"],
   })
 
-// =====================
-// Session Management
-// =====================
 
 /**
  * Session data schema for Better Auth session
@@ -184,9 +172,6 @@ export const sessionSchema = z.object({
   expiresAt: z.date().optional(),
 })
 
-// =====================
-// Type Exports
-// =====================
 
 /** Infer types from schemas for use in the codebase */
 export type UserLoginInput = z.infer<typeof userLoginSchema>
@@ -197,9 +182,6 @@ export type PasswordResetRequestInput = z.infer<typeof passwordResetRequestSchem
 export type PasswordResetConfirmInput = z.infer<typeof passwordResetConfirmSchema>
 export type SessionData = z.infer<typeof sessionSchema>
 
-// =====================
-// Validation Helpers
-// =====================
 
 /**
  * Safe parse helper that returns formatted errors for form display

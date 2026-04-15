@@ -6,7 +6,7 @@ import type { IconSvgElement } from "@hugeicons/react"
 
 export type NotificationType = "application" | "interview" | "recommendation"
 
-export interface Notification {
+export type Notification = {
   id: number
   title: string
   message: string
@@ -15,7 +15,7 @@ export interface Notification {
   type: NotificationType
 }
 
-export interface Metric {
+export type Metric = {
   title: string
   value: string | number
   trend?: string
@@ -25,7 +25,7 @@ export interface Metric {
   iconColor?: "primary" | "secondary" | "accent"
 }
 
-export interface RecentApplication {
+export type RecentApplication = {
   jobTitle: string
   company: string
   dateApplied: string
@@ -33,7 +33,7 @@ export interface RecentApplication {
   statusColor: string
 }
 
-export interface OrganizationRecentApplication {
+export type OrganizationRecentApplication = {
   candidateName: string
   position: string
   dateApplied: string
@@ -43,21 +43,20 @@ export interface OrganizationRecentApplication {
 
 export type ApplicationStage = "pendiente" | "entrevista" | "oferta" | "contratado" | "rechazado"
 
-export interface Applicant {
+export type Applicant = {
   id: string
   candidateId: string
   candidateName: string
   position: string
   dateApplied: string
   stage: ApplicationStage
-  /** Extended candidate data for AI features (optional, populated from Application) */
   candidateEducation?: string
   candidateSkills?: string[]
   candidateYearsOfExperience?: number
   candidateBio?: string
 }
 
-export interface OfferWithApplicants {
+export type OfferWithApplicants = {
   id: string
   title: string
   location: string
@@ -66,13 +65,13 @@ export interface OfferWithApplicants {
   applicants: Applicant[]
 }
 
-export interface RecentMessage {
+export type RecentMessage = {
   sender: string
   time: string
   preview: string
 }
 
-export interface Job {
+export type Job = {
   id: number
   jobTitle: string
   company: string

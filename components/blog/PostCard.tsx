@@ -3,7 +3,7 @@ import Link from "next/link"
 import type { Post } from "@/lib/types/posts"
 import { formatFechaLarga } from "@/lib/utils"
 
-interface PostCardProps {
+type PostCardProps = {
   post: Post
 }
 

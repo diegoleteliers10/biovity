@@ -43,7 +43,7 @@ const statusColors: Record<string, string> = {
   contratado: "bg-green-500/10 text-green-600 border-green-500/20",
 }
 
-interface KpiCardProps {
+type KpiCardProps = {
   title: string
   value: string | number
   subtitle?: string
