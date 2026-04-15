@@ -3,6 +3,13 @@ import { auth } from "@/lib/auth"
 
 const WAITLIST_PATH = "/lista-espera"
 
+function getSessionToken(request: NextRequest): string | undefined {
+  return (
+    request.cookies.get("__Secure-better-auth.session_token")?.value ??
+    request.cookies.get("better-auth.session_token")?.value
+  )
+}
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isWaitList = (process.env.NODE_ENV as string) === "wait-list"

@@ -5,6 +5,7 @@ import { headers } from "next/headers"
 import { pool } from "@/lib/db"
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       if (ctx.path !== "/sign-in/email") return
@@ -44,6 +45,10 @@ export const auth = betterAuth({
       generateId: () => crypto.randomUUID(),
     },
     useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: ".biovity.cl",
+    },
     ipAddress: {
       ipAddressHeaders: [
         "cf-connecting-ip",
