@@ -52,34 +52,19 @@ const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: st
   )
 }
 
-const DottedBackgroundPatternEducacion = () => {
-  return (
-    <pattern
-      id="default-pattern-dots-educacion"
-      x="0"
-      y="0"
-      width="10"
-      height="10"
-      patternUnits="userSpaceOnUse"
-    >
-      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
-    </pattern>
-  )
-}
-
 export function SalariosPorEducacion() {
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-16 md:py-24 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 tracking-tight">
             Impacto del{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Nivel Educativo
             </span>{" "}
             (Postgrado)
           </h2>
-          <div className="space-y-4 text-gray-700 leading-relaxed">
+          <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
               La especialización a través de postgrados es un factor clave para acceder a los
               sueldos más altos en el sector de biociencias, especialmente en roles de I+D y
@@ -96,7 +81,7 @@ export function SalariosPorEducacion() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="border-0 shadow-lg flex flex-col h-full">
+          <Card className="rounded-xl border border-border/10 flex flex-col h-full bg-surface-container-lowest">
             <CardHeader>
               <CardTitle>Sueldo Promedio por Nivel Educativo</CardTitle>
               <CardDescription>
@@ -104,41 +89,34 @@ export function SalariosPorEducacion() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-1 min-h-0">
-              <ChartContainer config={chartConfig} className="w-full h-full">
+              <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
                 <BarChart
                   data={EDUCACION_CHART_DATA}
-                  margin={{ top: 60, right: 30, left: 20, bottom: 60 }}
+                  margin={{ top: 20, right: 10, left: 10, bottom: 40 }}
                 >
-                  <rect
-                    x="0"
-                    y="0"
-                    width="100%"
-                    height="100%"
-                    fill="url(#default-pattern-dots-educacion)"
-                  />
-                  <defs>
-                    <DottedBackgroundPatternEducacion />
-                  </defs>
-                  <XAxis dataKey="nivel" tickLine={false} axisLine={false} tickMargin={10} />
+                  <XAxis dataKey="nivel" tickLine={false} axisLine={false} tickMargin={5} tick={{ fontSize: 11 }} />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(value) => `$${value}K`}
+                    width={40}
+                    tick={{ fontSize: 10 }}
                   />
                   <ChartTooltip
-                    cursor={false}
                     content={({ active, payload }) => {
                       if (!active || !payload?.length) return null
                       return (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="mb-2 font-medium">{payload[0]?.payload?.nivel}</div>
-                          <div className="grid grid-cols-[1fr_auto] gap-4">
-                            <span className="text-sm text-muted-foreground">Promedio</span>
-                            <span className="font-mono font-medium text-right">
-                              {formatCurrencyCLP(payload[0]?.value as number)}
-                            </span>
-                          </div>
-                        </div>
+                        <ChartTooltipContent
+                          active={active}
+                          payload={[
+                            {
+                              name: "Promedio",
+                              value: payload[0]?.value as number,
+                              color: payload[0]?.color as string,
+                              payload: payload[0]?.payload,
+                            },
+                          ]}
+                        />
                       )
                     }}
                   />
@@ -161,45 +139,48 @@ export function SalariosPorEducacion() {
           </Card>
 
           <div className="space-y-4">
-            <Card className="border bg-gradient-to-br from-blue-50 to-indigo-50">
+            <Card className="rounded-xl border border-border/10 bg-secondary/5">
               <CardHeader className="pb-3">
-                <div className="grid grid-cols-[auto_1fr] gap-2">
-                  <HugeiconsIcon icon={GraduationScrollIcon} size={20} className="text-blue-600" />
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-secondary/10">
+                    <HugeiconsIcon icon={GraduationScrollIcon} size={20} className="text-secondary" />
+                  </div>
                   <CardTitle className="text-lg">Insights Clave</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-[auto_1fr] gap-3">
+                <div className="flex items-start gap-3">
                   <HugeiconsIcon
                     icon={Award01Icon}
                     size={20}
-                    className="text-blue-600 mt-0.5 shrink-0"
+                    className="text-secondary mt-0.5 shrink-0"
                   />
                   <div>
                     <p className="font-semibold text-sm">Magíster lidera</p>
-                    <p className="text-xs text-gray-600">$2.55M promedio, orientado a industria</p>
+                    <p className="text-xs text-muted-foreground">$2.55M promedio, orientado a industria</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-[auto_1fr] gap-3">
+                <div className="flex items-start gap-3">
                   <HugeiconsIcon
                     icon={GraduationScrollIcon}
-                    className="w-5 h-5 text-green-600 mt-0.5 shrink-0"
+                    className="w-5 h-5 text-secondary mt-0.5 shrink-0"
                   />
                   <div>
                     <p className="font-semibold text-sm">Postgrado marca diferencia</p>
-                    <p className="text-xs text-gray-600">+$1M sobre sin postgrado</p>
+                    <p className="text-xs text-muted-foreground">+$1M sobre sin postgrado</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border bg-blue-50">
+            <Card className="rounded-xl border border-border/10 bg-surface-container-lowest">
               <CardContent className="pt-6">
-                <p className="text-sm text-gray-700">
-                  <strong>Nota:</strong> La diferencia entre Magíster y Doctorado se debe a que los
-                  Magísteres suelen estar más orientados a la industria (Ingeniería Civil Química,
-                  Bioinformática), mientras que los Doctorados a menudo se asocian a la
-                  Academia/I+D, donde los sueldos base son más bajos, aunque con mayor flexibilidad.
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">Nota:</strong> La diferencia entre Magíster y
+                  Doctorado se debe a que los Magísteres suelen estar más orientados a la industria
+                  (Ingeniería Civil Química, Bioinformática), mientras que los Doctorados a menudo se
+                  asocian a la Academia/I+D, donde los sueldos base son más bajos, aunque con mayor
+                  flexibilidad.
                 </p>
               </CardContent>
             </Card>

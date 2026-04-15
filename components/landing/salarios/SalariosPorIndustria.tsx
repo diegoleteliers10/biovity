@@ -1,6 +1,6 @@
 "use client"
 
-import { Award01Icon, Building01Icon, TradeUpIcon } from "@hugeicons/core-free-icons"
+import { Award01Icon, Factory01Icon, TrendingUp } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,15 +17,15 @@ import { formatCurrencyCLP } from "@/lib/utils"
 const chartConfig = {
   minimo: {
     label: "Mínimo",
-    color: "#6366f1",
+    color: "hsl(var(--chart-3))",
   },
   promedio: {
     label: "Promedio",
-    color: "#10b981",
+    color: "hsl(var(--chart-1))",
   },
   maximo: {
     label: "Máximo",
-    color: "#3b82f6",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
@@ -60,32 +60,18 @@ const CustomDuotoneBarMultiple = (props: React.SVGProps<SVGRectElement> & { data
   )
 }
 
-const DottedBackgroundPatternIndustria = () => {
-  return (
-    <pattern
-      id="default-multiple-pattern-dots-industria"
-      x="0"
-      y="0"
-      width="10"
-      height="10"
-      patternUnits="userSpaceOnUse"
-    >
-      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
-    </pattern>
-  )
-}
-
 export function SalariosPorIndustria() {
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-16 md:py-24 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-              Sueldos por Industria
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 tracking-tight">
+            Sueldos por{" "}
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+              Industria
             </span>
           </h2>
-          <div className="space-y-4 text-gray-700 leading-relaxed">
+          <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
               El factor más determinante en la remuneración dentro del sector de biociencias es la
               industria en la que se desempeña el profesional. Nuestro análisis revela diferencias
@@ -101,7 +87,7 @@ export function SalariosPorIndustria() {
           </div>
         </div>
 
-        <Card className="border-0 shadow-lg mb-8 flex flex-col h-full">
+        <Card className="rounded-xl border border-border/10 mb-8 flex flex-col h-full bg-surface-container-lowest">
           <CardHeader>
             <CardTitle>Rangos Salariales por Industria</CardTitle>
             <CardDescription>
@@ -109,59 +95,38 @@ export function SalariosPorIndustria() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 min-h-0">
-            <ChartContainer config={chartConfig} className="w-full h-full">
+            <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
               <BarChart
                 data={INDUSTRIA_CHART_DATA}
-                margin={{ top: 60, right: 30, left: 20, bottom: 100 }}
+                margin={{ top: 20, right: 10, left: 10, bottom: 60 }}
               >
-                <rect
-                  x="0"
-                  y="0"
-                  width="100%"
-                  height="100%"
-                  fill="url(#default-multiple-pattern-dots-industria)"
-                />
-                <defs>
-                  <DottedBackgroundPatternIndustria />
-                </defs>
                 <XAxis
                   dataKey="industria"
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={10}
+                  tickMargin={5}
                   angle={-45}
                   textAnchor="end"
-                  height={120}
+                  height={80}
+                  tick={{ fontSize: 9 }}
                 />
-                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}K`} />
+                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}K`} width={40} tick={{ fontSize: 10 }} />
                 <ChartTooltip
-                  cursor={false}
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null
+                    const labelMap: Record<string, string> = {
+                      minimo: "Mínimo",
+                      maximo: "Máximo",
+                      promedio: "Promedio",
+                    }
                     return (
-                      <div className="rounded-lg border bg-background p-2 shadow-sm">
-                        <div className="mb-2 font-medium">{payload[0]?.payload?.industria}</div>
-                        <div className="grid gap-2">
-                          {payload.map((item) => (
-                            <div key={item.name} className="grid grid-cols-[auto_1fr_auto] gap-2">
-                              <div
-                                className="h-2 w-2 rounded-full mt-1.5"
-                                style={{ backgroundColor: item.color }}
-                              />
-                              <span className="text-sm text-muted-foreground">
-                                {item.name === "minimo"
-                                  ? "Mínimo"
-                                  : item.name === "maximo"
-                                    ? "Máximo"
-                                    : "Promedio"}
-                              </span>
-                              <span className="font-mono font-medium text-right">
-                                {formatCurrencyCLP(item.value as number)}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      <ChartTooltipContent
+                        active={active}
+                        payload={payload.map((item) => ({
+                          ...item,
+                          name: labelMap[item.name as string] ?? item.name,
+                        }))}
+                      />
                     )
                   }}
                 />
@@ -189,34 +154,36 @@ export function SalariosPorIndustria() {
         </Card>
 
         <div className="mb-8">
-          <Card className="border bg-gradient-to-br from-blue-50 to-indigo-50">
+          <Card className="rounded-xl border border-border/10 bg-secondary/5">
             <CardHeader className="pb-3">
-              <div className="grid grid-cols-[auto_1fr] gap-2">
-                <HugeiconsIcon icon={Building01Icon} size={20} className="text-blue-600" />
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-secondary/10">
+                  <HugeiconsIcon icon={Factory01Icon} size={20} className="text-secondary" />
+                </div>
                 <CardTitle className="text-lg">Insights Clave</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-[auto_1fr] gap-3">
+              <div className="flex items-start gap-3">
                 <HugeiconsIcon
                   icon={Award01Icon}
                   size={20}
-                  className="text-blue-600 mt-0.5 shrink-0"
+                  className="text-secondary mt-0.5 shrink-0"
                 />
                 <div>
                   <p className="font-semibold text-sm">Minería lidera</p>
-                  <p className="text-xs text-gray-600">Promedio de $2.65M, rango hasta $3.5M</p>
+                  <p className="text-xs text-muted-foreground">Promedio de $2.65M, rango hasta $3.5M</p>
                 </div>
               </div>
-              <div className="grid grid-cols-[auto_1fr] gap-3">
+              <div className="flex items-start gap-3">
                 <HugeiconsIcon
-                  icon={TradeUpIcon}
+                  icon={TrendingUp}
                   size={20}
-                  className="text-green-600 mt-0.5 shrink-0"
+                  className="text-secondary mt-0.5 shrink-0"
                 />
                 <div>
                   <p className="font-semibold text-sm">Tech/Pharma en crecimiento</p>
-                  <p className="text-xs text-gray-600">Segundo lugar con $2.35M promedio</p>
+                  <p className="text-xs text-muted-foreground">Segundo lugar con $2.35M promedio</p>
                 </div>
               </div>
             </CardContent>
@@ -225,32 +192,35 @@ export function SalariosPorIndustria() {
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {INDUSTRIA_CHART_DATA.map((item) => (
-            <Card key={item.industria} className="border">
+            <Card
+              key={item.industria}
+              className="rounded-xl border border-border/10 bg-surface-container-lowest hover:bg-secondary/5 transition-colors"
+            >
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">{item.industria}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="grid grid-cols-[1fr_auto] gap-4">
+                  <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Mínimo</span>
                     <span className="font-mono font-semibold text-sm text-right">
                       {formatCurrencyCLP(item.minimo)}
                     </span>
                   </div>
-                  <div className="grid grid-cols-[1fr_auto] gap-4">
+                  <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Promedio</span>
-                    <span className="font-mono font-semibold text-blue-600 text-right">
+                    <span className="font-mono font-semibold text-secondary text-right">
                       {formatCurrencyCLP(item.promedio)}
                     </span>
                   </div>
-                  <div className="grid grid-cols-[1fr_auto] gap-4">
+                  <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Máximo</span>
                     <span className="font-mono font-semibold text-sm text-right">
                       {formatCurrencyCLP(item.maximo)}
                     </span>
                   </div>
-                  <div className="pt-2 border-t">
-                    <div className="grid grid-cols-[1fr_auto] gap-4">
+                  <div className="pt-2 border-t border-border/10">
+                    <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">Rango</span>
                       <span className="font-mono text-xs font-medium text-right">
                         {formatCurrencyCLP(item.maximo - item.minimo)}

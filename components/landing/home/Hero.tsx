@@ -24,7 +24,7 @@ export function Hero() {
         <div className="absolute bottom-[15%] left-[25%] w-[19rem] h-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl"></div>
         <div className="absolute top-[35%] right-[30%] w-[16rem] h-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl"></div>
       </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-safe-top md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
           <m.h1
             initial={{ opacity: 0, y: 28, scale: 0.98 }}

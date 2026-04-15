@@ -7,26 +7,26 @@ import { SALARIOS_HERO_STATS } from "@/lib/data/salarios-data"
 
 export function SalariosHero() {
   return (
-    <section className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
+    <section className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-safe-top md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
           <m.h1
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight text-balance"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 md:mb-6 leading-tight text-balance tracking-tight"
           >
             Estudio de{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Salarios en Biociencias
             </span>
           </m.h1>
 
           <m.p
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
-            className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed font-sans text-pretty"
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed text-pretty"
           >
             Análisis completo de remuneraciones en el sector de biociencias en Chile. Datos
             segmentados por carrera, industria, región y nivel educativo (2024-2025).
@@ -36,9 +36,9 @@ export function SalariosHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
-            className="text-center text-sm text-gray-500 mb-12"
+            className="text-center text-sm text-muted-foreground mb-12"
           >
-            <HugeiconsIcon icon={TradeUpIcon} className="w-5 h-5 text-blue-600 inline-block mr-2" />
+            <HugeiconsIcon icon={TradeUpIcon} className="w-5 h-5 text-accent inline-block mr-2" />
             <span>Datos actualizados 2024-2025</span>
           </m.div>
 
@@ -57,10 +57,12 @@ export function SalariosHero() {
                 className="text-center"
               >
                 <div className="mx-auto mb-3 flex justify-center">
-                  <HugeiconsIcon icon={stat.icon} size={40} style={{ color: stat.color }} />
+                  <div className="p-3 rounded-full bg-secondary/10">
+                    <HugeiconsIcon icon={stat.icon} size={40} className="text-secondary" />
+                  </div>
                 </div>
-                <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-2xl font-bold text-foreground mb-1">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
               </m.div>
             ))}
           </m.div>

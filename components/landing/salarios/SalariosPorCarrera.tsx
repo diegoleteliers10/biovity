@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowUpRight01Icon, Award01Icon, TradeUpIcon } from "@hugeicons/core-free-icons"
+import { ArrowUpRight01Icon, Award01Icon, TrendingUp } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,11 +17,11 @@ import { formatCurrencyCLP } from "@/lib/utils"
 const chartConfig = {
   junior: {
     label: "Junior (0-2 años)",
-    color: "#6366f1",
+    color: "hsl(var(--chart-1))",
   },
   senior: {
     label: "Senior (5+ años)",
-    color: "#10b981",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
@@ -56,33 +56,19 @@ const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: st
   )
 }
 
-const DottedBackgroundPattern = () => {
-  return (
-    <pattern
-      id="default-pattern-dots-carrera"
-      x="0"
-      y="0"
-      width="10"
-      height="10"
-      patternUnits="userSpaceOnUse"
-    >
-      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
-    </pattern>
-  )
-}
-
 export function SalariosPorCarrera() {
   return (
-    <section className="py-32 md:py-24 bg-white">
+    <section className="py-16 md:py-24 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            <span className="bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-              Sueldos por Carrera
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 tracking-tight">
+            Sueldos por{" "}
+            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+              Carrera
             </span>{" "}
             y Nivel de Experiencia
           </h2>
-          <div className="space-y-4 text-gray-700 leading-relaxed">
+          <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
               El nivel de experiencia es uno de los factores más determinantes en las remuneraciones
               del sector de biociencias. Nuestro análisis revela diferencias significativas entre
@@ -99,67 +85,45 @@ export function SalariosPorCarrera() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           <div className="lg:col-span-2">
-            <Card className="border-0 shadow-lg flex flex-col h-full">
+            <Card className="rounded-xl border border-border/10 flex flex-col h-full bg-surface-container-lowest">
               <CardHeader>
                 <CardTitle>Sueldos Promedio Mensual (CLP)</CardTitle>
                 <CardDescription>Valores en miles de pesos chilenos (CLP)</CardDescription>
               </CardHeader>
               <CardContent className="p-6 flex-1 min-h-0">
-                <ChartContainer config={chartConfig} className="w-full h-full">
+                <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
                   <BarChart
                     data={CARRERA_CHART_DATA}
-                    margin={{ top: 60, right: 30, left: 20, bottom: 100 }}
+                    margin={{ top: 20, right: 10, left: 10, bottom: 60 }}
                   >
-                    <rect
-                      x="0"
-                      y="0"
-                      width="100%"
-                      height="100%"
-                      fill="url(#default-pattern-dots-carrera)"
-                    />
-                    <defs>
-                      <DottedBackgroundPattern />
-                    </defs>
                     <XAxis
                       dataKey="carrera"
                       tickLine={false}
                       axisLine={false}
-                      tickMargin={10}
+                      tickMargin={5}
                       angle={-45}
                       textAnchor="end"
-                      height={100}
+                      height={80}
+                      tick={{ fontSize: 9 }}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
                       tickFormatter={(value) => `$${value}K`}
+                      width={40}
+                      tick={{ fontSize: 10 }}
                     />
                     <ChartTooltip
-                      cursor={false}
                       content={({ active, payload }) => {
                         if (!active || !payload?.length) return null
                         return (
-                          <div className="rounded-lg border bg-background p-2 shadow-sm">
-                            <div className="grid gap-2">
-                              {payload.map((item) => (
-                                <div
-                                  key={item.name}
-                                  className="grid grid-cols-[auto_1fr_auto] gap-2"
-                                >
-                                  <div
-                                    className="h-2 w-2 rounded-full mt-1.5"
-                                    style={{ backgroundColor: item.color }}
-                                  />
-                                  <span className="text-sm text-muted-foreground">
-                                    {item.name === "junior" ? "Junior" : "Senior"}
-                                  </span>
-                                  <span className="font-mono font-medium text-right">
-                                    {formatCurrencyCLP(item.value as number)}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+                          <ChartTooltipContent
+                            active={active}
+                            payload={payload.map((item) => ({
+                              ...item,
+                              name: item.name === "junior" ? "Junior" : "Senior",
+                            }))}
+                          />
                         )
                       }}
                     />
@@ -182,41 +146,46 @@ export function SalariosPorCarrera() {
           </div>
 
           <div className="space-y-4">
-            <Card className="border bg-gradient-to-br from-blue-50 to-indigo-50">
+            <Card className="rounded-xl border border-border/10 bg-secondary/5">
               <CardHeader className="pb-3">
-                <div className="grid grid-cols-[auto_1fr] gap-2">
-                  <HugeiconsIcon icon={TradeUpIcon} size={20} className="text-blue-600" />
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-secondary/10">
+                    <HugeiconsIcon icon={TrendingUp} size={20} className="text-secondary" />
+                  </div>
                   <CardTitle className="text-lg">Insights Clave</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-[auto_1fr] gap-3">
+                <div className="flex items-start gap-3">
                   <HugeiconsIcon
                     icon={Award01Icon}
                     size={20}
-                    className="text-blue-600 mt-0.5 shrink-0"
+                    className="text-secondary mt-0.5 shrink-0"
                   />
                   <div>
                     <p className="font-semibold text-sm">Bioinformática lidera</p>
-                    <p className="text-xs text-gray-600">Mayor sueldo senior: $3.2M</p>
+                    <p className="text-xs text-muted-foreground">Mayor sueldo senior: $3.2M</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-[auto_1fr] gap-3">
+                <div className="flex items-start gap-3">
                   <HugeiconsIcon
                     icon={ArrowUpRight01Icon}
                     size={20}
-                    className="text-green-600 mt-0.5 shrink-0"
+                    className="text-secondary mt-0.5 shrink-0"
                   />
                   <div>
                     <p className="font-semibold text-sm">Mayor crecimiento</p>
-                    <p className="text-xs text-gray-600">Brecha de $1.7M en Bioinformática</p>
+                    <p className="text-xs text-muted-foreground">Brecha de $1.7M en Bioinformática</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {CARRERA_CHART_DATA.slice(0, 3).map((item) => (
-              <Card key={item.carrera} className="border">
+              <Card
+                key={item.carrera}
+                className="rounded-xl border border-border/10 bg-surface-container-lowest hover:bg-secondary/5 transition-colors"
+              >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base">{item.carrera}</CardTitle>
                 </CardHeader>
@@ -230,7 +199,7 @@ export function SalariosPorCarrera() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">Senior</span>
-                      <span className="font-mono font-semibold text-sm text-blue-600">
+                      <span className="font-mono font-semibold text-sm text-secondary">
                         {formatCurrencyCLP(item.senior)}
                       </span>
                     </div>
@@ -243,7 +212,10 @@ export function SalariosPorCarrera() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {CARRERA_CHART_DATA.map((item) => (
-            <Card key={item.carrera} className="border hover:shadow-md transition-shadow">
+            <Card
+              key={item.carrera}
+              className="rounded-xl border border-border/10 bg-surface-container-lowest hover:bg-secondary/5 transition-colors"
+            >
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm">{item.carrera}</CardTitle>
               </CardHeader>
@@ -257,11 +229,11 @@ export function SalariosPorCarrera() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">Senior</span>
-                    <span className="font-mono font-semibold text-xs text-blue-600">
+                    <span className="font-mono font-semibold text-xs text-secondary">
                       {formatCurrencyCLP(item.senior)}
                     </span>
                   </div>
-                  <div className="pt-2 border-t">
+                  <div className="pt-2 border-t border-border/10">
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-muted-foreground">Diferencia</span>
                       <span className="font-mono text-xs font-medium">

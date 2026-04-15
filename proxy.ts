@@ -1,13 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 
 const WAITLIST_PATH = "/lista-espera"
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
-  const isDevelopment = process.env.NODE_ENV !== "production"
+  const isWaitList = (process.env.NODE_ENV as string) === "wait-list"
 
-  // En desarrollo: redirigir todo excepto lista-espera y assets al waitlist
-  if (isDevelopment) {
+  // En wait-list: redirigir todo excepto lista-espera y assets al waitlist
+  if (isWaitList) {
     const allowedPaths = [
       WAITLIST_PATH,
       "/api/waitlist",
@@ -35,22 +36,58 @@ export async function proxy(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   if (isProtectedRoute) {
-    // Solo verificar la cookie de sesión (sincrónico, sin fetch).
-    // Evita redirecciones falsas por fallos intermitentes de get-session.
-    const sessionToken = request.cookies.get("better-auth.session_token")?.value
-
-    if (!sessionToken) {
-      const loginUrl = new URL("/login", request.url)
-      loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
-      return NextResponse.redirect(loginUrl)
+    // En desarrollo, verificar sesión usando better-auth directamente
+    // para evitar problemas con cookies en localhost
+    if (process.env.NODE_ENV === "development") {
+      try {
+        const session = await auth.api.getSession({
+          headers: request.headers,
+        })
+        if (!session?.user) {
+          const loginUrl = new URL("/login", request.url)
+          loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
+          return NextResponse.redirect(loginUrl)
+        }
+      } catch {
+        // Si falla la verificación de sesión, permitir pasar
+        // para evitar bloqueos por problemas de conexión
+      }
+    } else {
+      // En producción: solo verificar la cookie de sesión (sincrónico, sin fetch).
+      // Evita redirecciones falsas por fallos intermitentes de get-session.
+      const sessionToken = request.cookies.get("better-auth.session_token")?.value
+      if (!sessionToken) {
+        const loginUrl = new URL("/login", request.url)
+        loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
+        return NextResponse.redirect(loginUrl)
+      }
     }
   }
 
-  // Si ya tiene sesión y va a /login, redirigir a /dashboard
-  if (pathname === "/login" || pathname === "/") {
-    const sessionToken = request.cookies.get("better-auth.session_token")?.value
-    if (sessionToken) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+  // Si ya tiene sesión y va a /login o /register (o sus sub-rutas), redirigir a /dashboard
+  if (
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname.startsWith("/login/") ||
+    pathname.startsWith("/register/")
+  ) {
+    // En desarrollo, verificar sesión usando better-auth
+    if (process.env.NODE_ENV === "development") {
+      try {
+        const session = await auth.api.getSession({
+          headers: request.headers,
+        })
+        if (session?.user) {
+          return NextResponse.redirect(new URL("/dashboard", request.url))
+        }
+      } catch {
+        // Si falla, no redirigir
+      }
+    } else {
+      const sessionToken = request.cookies.get("better-auth.session_token")?.value
+      if (sessionToken) {
+        return NextResponse.redirect(new URL("/dashboard", request.url))
+      }
     }
   }
 

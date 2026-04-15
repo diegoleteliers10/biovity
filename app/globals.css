@@ -193,6 +193,39 @@
         @apply border-border outline-ring/50;
     }
 
+    /* iOS safe area support */
+    :root {
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --safe-left: env(safe-area-inset-left, 0px);
+        --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    /* Safe area utility classes */
+    .pt-safe-top {
+        padding-top: max(var(--safe-top), 12px);
+    }
+
+    .pb-safe-bottom {
+        padding-bottom: max(var(--safe-bottom), 12px);
+    }
+
+    .pl-safe-left {
+        padding-left: max(var(--safe-left), 12px);
+    }
+
+    .pr-safe-right {
+        padding-right: max(var(--safe-right), 12px);
+    }
+
+    /* iOS Safari search bar transparency */
+    /* Makes the area behind Safari's search bar transparent */
+    @supports (padding-top: env(safe-area-inset-top)) {
+        body {
+            padding-top: var(--safe-top);
+        }
+    }
+
     body {
         @apply bg-background text-foreground;
     }
