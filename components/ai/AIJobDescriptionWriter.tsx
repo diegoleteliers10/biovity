@@ -15,6 +15,7 @@ type Props = {
   sector?: string
   currentDescription?: string
   onGenerated?: (description: string) => void
+  onGeneratingChange?: (isGenerating: boolean) => void
 }
 
 export function AIJobDescriptionWriter({
@@ -27,26 +28,33 @@ export function AIJobDescriptionWriter({
   sector = "científico y biotecnológico",
   currentDescription,
   onGenerated,
+  onGeneratingChange,
 }: Props) {
   const { run, isStreaming } = useAIAction({
-    onDone: (text) => onGenerated?.(text),
+    onDone: (text) => {
+      onGenerated?.(text)
+      onGeneratingChange?.(false)
+    },
   })
+
+  const handleRun = () => {
+    onGeneratingChange?.(true)
+    run("generate_job_description", {
+      jobTitle,
+      companyName,
+      area,
+      skills,
+      contractType,
+      modality,
+      sector,
+      currentDescription: currentDescription ?? "",
+    })
+  }
 
   return (
     <button
       type="button"
-      onClick={() =>
-        run("generate_job_description", {
-          jobTitle,
-          companyName,
-          area,
-          skills,
-          contractType,
-          modality,
-          sector,
-          currentDescription: currentDescription ?? "",
-        })
-      }
+      onClick={handleRun}
       disabled={isStreaming}
       className="flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
     >

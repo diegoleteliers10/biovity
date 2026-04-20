@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server"
 import { Result as R } from "better-result"
+import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"

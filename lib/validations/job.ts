@@ -6,7 +6,6 @@
 import { z } from "zod"
 import { experienceLevelSchema, jobTypeSchema } from "./primitives"
 
-
 /**
  * Job search filters schema
  * - All fields optional for flexible searching
@@ -70,7 +69,6 @@ export const jobSearchWithValidationSchema = jobSearchSchema.refine(
     path: ["minSalary"],
   }
 )
-
 
 /**
  * Job posting schema for creating/editing job listings
@@ -155,7 +153,6 @@ export const jobPostingWithValidationSchema = jobPostingSchema.refine(
   }
 )
 
-
 /**
  * Job application schema for submitting applications
  */
@@ -187,14 +184,12 @@ export const jobApplicationSchema = z.object({
     .optional(),
 })
 
-
 /** Infer types from schemas for use in the codebase */
 export type JobSearchInput = z.infer<typeof jobSearchSchema>
 export type JobSearchWithValidationInput = z.infer<typeof jobSearchWithValidationSchema>
 export type JobPostingInput = z.infer<typeof jobPostingSchema>
 export type JobPostingWithValidationInput = z.infer<typeof jobPostingWithValidationSchema>
 export type JobApplicationInput = z.infer<typeof jobApplicationSchema>
-
 
 /**
  * Validate job search filters

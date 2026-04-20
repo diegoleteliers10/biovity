@@ -108,7 +108,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
               return (
                 <div
                   key={chat.id}
-                  className="space-y-1 cursor-pointer hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-colors"
+                  className="space-y-1 cursor-pointer hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-all duration-150 active:scale-[0.98]"
                   onClick={() => handleChatClick(chat.id)}
                   role="button"
                   tabIndex={0}

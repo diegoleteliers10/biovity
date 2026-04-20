@@ -78,7 +78,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
             <Card
               key={trabajo.id}
               onClick={() => router.push(`/trabajos/${trabajo.slug}`)}
-              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 hover:bg-secondary/5 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
               role="link"
               tabIndex={0}
               onKeyDown={(e) => {

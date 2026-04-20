@@ -1,5 +1,5 @@
 import { Result as R, type Result } from "better-result"
-import { ApiError, NetworkError } from "@/lib/errors"
+import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson } from "@/lib/result"
 
 const getBaseUrl = () =>

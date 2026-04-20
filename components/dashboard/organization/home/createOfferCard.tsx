@@ -31,7 +31,10 @@ export function CreateOfferCard() {
               Publica una vacante y comienza a recibir candidatos.
             </p>
           </div>
-          <Button onClick={handleCreateOffer} className="shrink-0">
+          <Button
+            onClick={handleCreateOffer}
+            className="shrink-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+          >
             <HugeiconsIcon icon={FileAddIcon} size={18} strokeWidth={1.5} className="mr-2" />
             Crear oferta
           </Button>

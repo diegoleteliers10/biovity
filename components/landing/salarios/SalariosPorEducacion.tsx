@@ -89,12 +89,21 @@ export function SalariosPorEducacion() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-1 min-h-0">
-              <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
+              <ChartContainer
+                config={chartConfig}
+                className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0"
+              >
                 <BarChart
                   data={EDUCACION_CHART_DATA}
                   margin={{ top: 20, right: 10, left: 10, bottom: 40 }}
                 >
-                  <XAxis dataKey="nivel" tickLine={false} axisLine={false} tickMargin={5} tick={{ fontSize: 11 }} />
+                  <XAxis
+                    dataKey="nivel"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={5}
+                    tick={{ fontSize: 11 }}
+                  />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
@@ -143,7 +152,11 @@ export function SalariosPorEducacion() {
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-lg bg-secondary/10">
-                    <HugeiconsIcon icon={GraduationScrollIcon} size={20} className="text-secondary" />
+                    <HugeiconsIcon
+                      icon={GraduationScrollIcon}
+                      size={20}
+                      className="text-secondary"
+                    />
                   </div>
                   <CardTitle className="text-lg">Insights Clave</CardTitle>
                 </div>
@@ -157,7 +170,9 @@ export function SalariosPorEducacion() {
                   />
                   <div>
                     <p className="font-semibold text-sm">Magíster lidera</p>
-                    <p className="text-xs text-muted-foreground">$2.55M promedio, orientado a industria</p>
+                    <p className="text-xs text-muted-foreground">
+                      $2.55M promedio, orientado a industria
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -178,9 +193,9 @@ export function SalariosPorEducacion() {
                 <p className="text-sm text-muted-foreground">
                   <strong className="text-foreground">Nota:</strong> La diferencia entre Magíster y
                   Doctorado se debe a que los Magísteres suelen estar más orientados a la industria
-                  (Ingeniería Civil Química, Bioinformática), mientras que los Doctorados a menudo se
-                  asocian a la Academia/I+D, donde los sueldos base son más bajos, aunque con mayor
-                  flexibilidad.
+                  (Ingeniería Civil Química, Bioinformática), mientras que los Doctorados a menudo
+                  se asocian a la Academia/I+D, donde los sueldos base son más bajos, aunque con
+                  mayor flexibilidad.
                 </p>
               </CardContent>
             </Card>

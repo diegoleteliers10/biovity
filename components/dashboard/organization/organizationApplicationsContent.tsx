@@ -7,9 +7,9 @@ import { useCallback, useMemo, useState } from "react"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import { AIScoreModal } from "@/components/ai/AIScoreModal"
 import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { Button } from "@/components/ui/button"
-import { EventFormModal } from "@/components/calendar/event-form-modal"
 import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
@@ -234,7 +234,7 @@ export function OrganizationApplicationsContent() {
                 type="button"
                 onClick={() => setSelectedJobId(job.id)}
                 className={cn(
-                  "flex flex-col gap-0.5 rounded-md px-3 py-2 text-left transition-colors",
+                  "flex flex-col gap-0.5 rounded-md px-3 py-2 text-left transition-all duration-150 active:scale-[0.98]",
                   selectedJobId === job.id ? "bg-primary/10 text-primary" : "hover:bg-muted/60"
                 )}
                 aria-pressed={selectedJobId === job.id}

@@ -1,7 +1,14 @@
 "use client"
 
-import { Calendar01Icon, Cancel01Icon, Clock03Icon } from "@hugeicons/core-free-icons"
+import { Calendar01Icon, Clock03Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { formatDateChilean } from "@/lib/utils"
 
 type CalendarEvent = {
@@ -21,8 +28,6 @@ type DayModalProps = {
 }
 
 export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProps) {
-  if (!isOpen) return null
-
   const formatEventTime = (iso: string) => {
     return formatDateChilean(iso, "p")
   }
@@ -46,26 +51,17 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm border-none p-0 cursor-pointer"
-        onClick={onClose}
-        onKeyDown={(e) => {
-          if (e.key === "Escape" || e.key === "Enter") {
-            onClose()
-          }
-        }}
-        aria-label="Cerrar modal"
-      />
-
-      {/* Modal */}
-      <div className="relative bg-white border border-border/10 rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border/10">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-md p-0 gap-0 overflow-hidden">
+        <DialogTitle className="sr-only">
+          Eventos del {day} {dayName}
+        </DialogTitle>
+        <DialogDescription className="sr-only">
+          Lista de eventos programados para este día
+        </DialogDescription>
+        <DialogHeader className="p-6 pb-4 border-b border-border/10">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 bg-secondary/10 rounded-xl">
+            <div className="flex items-center justify-center w-12 h-12 bg-secondary/10 rounded-xl shrink-0">
               <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-secondary" />
             </div>
             <div>
@@ -73,16 +69,8 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
               <p className="text-sm text-muted-foreground">{dayName}</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-muted/50 transition-colors"
-          >
-            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
+        </DialogHeader>
 
-        {/* Content */}
         <div className="p-6 max-h-[60vh] overflow-y-auto">
           {events.length === 0 ? (
             <div className="text-center py-8">
@@ -105,7 +93,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                   return (
                     <div
                       key={event.id}
-                      className="p-4 rounded-lg bg-[#f3f3f5] hover:bg-[#e2e2e4] transition-colors"
+                      className="p-4 rounded-lg bg-[#f3f3f5] hover:bg-[#e2e2e4] transition-colors duration-150"
                     >
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <h4 className="font-medium text-card-foreground leading-tight">
@@ -137,7 +125,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

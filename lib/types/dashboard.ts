@@ -23,6 +23,7 @@ export type Metric = {
   subtitle?: string
   icon: IconSvgElement
   iconColor?: "primary" | "secondary" | "accent"
+  href?: string
 }
 
 export type RecentApplication = {

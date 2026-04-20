@@ -55,7 +55,7 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
             applications.map((app) => (
               <div
                 key={`${app.candidateName}-${app.position}`}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors duration-200 border border-border/60 hover:border-border/80"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80"
                 onClick={handleApplicationClick}
                 onKeyDown={handleKeyDown}
                 tabIndex={0}

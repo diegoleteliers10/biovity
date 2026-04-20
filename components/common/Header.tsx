@@ -5,7 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 
@@ -22,24 +22,11 @@ const isActivePath = (pathname: string, href: string) =>
 export const Header = () => {
   const pathname = usePathname()
   const [menuState, setMenuState] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
   return (
     <header>
       <nav data-state={menuState && "active"} className="fixed z-20 w-full px-4 lg:px-2 group">
-        <div
-          className={cn(
-            "mx-auto mt-4 max-w-6xl px-6 transition-all duration-300 lg:px-12",
-            isScrolled && "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5"
-          )}
-        >
+        <div className="mx-auto mt-4 max-w-4xl rounded-2xl border bg-background/50 px-6 backdrop-blur-lg transition-all duration-300 lg:px-5">
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
               <Link href="/" aria-label="home" className="flex items-center space-x-2">
@@ -113,27 +100,15 @@ export const Header = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className={cn(isScrolled && "hidden")}
-                >
+                <Button asChild variant="outline" size="sm">
                   <Link href="/login">
                     <span>Login</span>
                   </Link>
                 </Button>
-                <Button asChild size="sm" className={cn(isScrolled && "hidden")}>
+                <Button asChild size="sm">
                   <Link href="/register">
                     <span>Sign Up</span>
                   </Link>
-                </Button>
-                <Button
-                  size="sm"
-                  className={cn(isScrolled ? "inline-flex" : "hidden")}
-                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                >
-                  <span>Get Started</span>
                 </Button>
               </div>
             </div>

@@ -317,15 +317,7 @@ export function OfertasContent() {
                   <div className="absolute right-2 top-2 z-10">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-7 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-                          aria-label="Más opciones"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <HugeiconsIcon icon={MoreHorizontalIcon} size={18} strokeWidth={1.5} />
-                        </Button>
+                        <HugeiconsIcon icon={MoreHorizontalIcon} size={18} strokeWidth={1.5} onClick={(e) => e.stopPropagation()} className="relative right-2"/>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem
@@ -370,7 +362,7 @@ export function OfertasContent() {
               <button
                 type="button"
                 onClick={handleCreateOffer}
-                className="group flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border/40 bg-transparent px-4 py-6 transition-all duration-200 hover:border-secondary/40 hover:bg-secondary/5"
+                className="group flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border/40 bg-transparent px-4 py-6 transition-all duration-200 hover:border-secondary/40 hover:bg-secondary/5 active:scale-[0.98]"
               >
                 <div className="flex size-10 items-center justify-center rounded-full bg-secondary/10 transition-colors duration-200 group-hover:bg-secondary/20">
                   <HugeiconsIcon

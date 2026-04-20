@@ -47,7 +47,9 @@ export function SalariosConclusiones() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">{conclusionItem.description}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {conclusionItem.description}
+                </p>
               </CardContent>
             </Card>
           ))}

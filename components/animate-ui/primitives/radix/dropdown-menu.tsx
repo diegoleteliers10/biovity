@@ -143,7 +143,7 @@ function DropdownMenuSubContent({
   arrowPadding,
   sticky,
   hideWhenDetached,
-  transition = { duration: 0.2 },
+  transition = { duration: 0.2, ease: "easeOut" },
   style,
   container,
   ...props
@@ -234,7 +234,7 @@ function DropdownMenuContent({
   arrowPadding,
   sticky,
   hideWhenDetached,
-  transition = { duration: 0.2 },
+  transition = { duration: 0.2, ease: "easeOut" },
   style,
   container,
   ...props

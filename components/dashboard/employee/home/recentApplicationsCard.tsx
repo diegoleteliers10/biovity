@@ -120,7 +120,7 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
               return (
                 <div
                   key={app.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors duration-200 border border-border/60 hover:border-border/80"
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80"
                   onClick={() => handleJobClick(app.jobId)}
                   onKeyDown={(e) => handleKeyDown(e, app.jobId)}
                   tabIndex={0}

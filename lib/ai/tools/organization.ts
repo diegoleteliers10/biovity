@@ -9,6 +9,39 @@ import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getResumeByUserId } from "@/lib/api/resumes"
 import { getUser, getUsers } from "@/lib/api/users"
 
+const DANGEROUS_PATTERNS = [
+  /;\s*drop\s+/i,
+  /;\s*delete\s+/i,
+  /;\s*truncate\s+/i,
+  /;\s*insert\s+/i,
+  /;\s*update\s+\w+\s+set/i,
+  /exec\s*\(/i,
+  /eval\s*\(/i,
+  /system\s*\(/i,
+  /shell\s*\(/i,
+  /\$\{.*\}/,
+  /\$\w+/,
+]
+
+function containsDangerousInput(input: unknown): boolean {
+  if (typeof input === "string") {
+    return DANGEROUS_PATTERNS.some((pattern) => pattern.test(input))
+  }
+  if (Array.isArray(input)) {
+    return input.some(containsDangerousInput)
+  }
+  if (typeof input === "object" && input !== null) {
+    return Object.values(input as Record<string, unknown>).some(containsDangerousInput)
+  }
+  return false
+}
+
+function validateToolInput(toolName: string, args: Record<string, unknown>): void {
+  if (containsDangerousInput(args)) {
+    throw new Error(`Potentially dangerous input detected in ${toolName}`)
+  }
+}
+
 type KanbanStatus = "applied" | "reviewing" | "interview" | "offer" | "rejected" | "all"
 
 const mapKanbanToApiStatus = (status: Exclude<KanbanStatus, "all">) => {
@@ -53,10 +86,11 @@ const getResultValue = <T, E>(result: ResultType<T, E>): T | null => {
 export const getCandidatesTool = tool({
   description: "Obtiene todos los candidatos postulados a un job offer con su perfil completo",
   inputSchema: z.object({
-    jobOfferId: z.string().describe("ID del job offer"),
-    status: z.enum(["applied", "reviewing", "interview", "offer", "rejected", "all"] as const),
+    jobOfferId: z.string().min(1).max(100),
+    status: z.enum(["applied", "reviewing", "interview", "offer", "rejected", "all"]),
   }),
   execute: async ({ jobOfferId, status }) => {
+    validateToolInput("getCandidates", { jobOfferId })
     const apiStatus = status !== "all" ? mapKanbanToApiStatus(status) : undefined
     const result = await getApplicationsByJob(jobOfferId, { limit: 100, status: apiStatus })
     if (!Result.isOk(result)) {
@@ -96,9 +130,10 @@ export const getCandidatesTool = tool({
 export const getJobOfferTool = tool({
   description: "Obtiene los detalles completos de un job offer",
   inputSchema: z.object({
-    jobOfferId: z.string().describe("ID del job offer"),
+    jobOfferId: z.string().min(1).max(100),
   }),
   execute: async ({ jobOfferId }) => {
+    validateToolInput("getJobOffer", { jobOfferId })
     const result = await getJob(jobOfferId)
     if (!Result.isOk(result)) {
       return { error: "No se pudo obtener la oferta", details: String(result.error) }
@@ -110,13 +145,9 @@ export const getJobOfferTool = tool({
 export const getJobOffersTool = tool({
   description: "Lista todas las ofertas de trabajo activas de la organización",
   inputSchema: z.object({
-    organizationId: z.string().optional().describe("ID de la organización"),
-    status: z
-      .enum(["active", "closed", "draft", "paused", "all"])
-      .optional()
-      .default("active")
-      .describe("Filtrar por estado de la oferta"),
-    limit: z.number().optional().default(20),
+    organizationId: z.string().max(100).optional(),
+    status: z.enum(["active", "closed", "draft", "paused", "all"]).optional().default("active"),
+    limit: z.number().min(1).max(50).default(20),
   }),
   execute: async ({ organizationId, status, limit = 20 }) => {
     const result = await getJobs({
@@ -136,13 +167,12 @@ export const getJobOffersTool = tool({
 export const updateCandidateStatusTool = tool({
   description: "Mueve un candidato a otra columna del kanban",
   inputSchema: z.object({
-    applicationId: z.string().describe("ID de la postulación"),
-    newStatus: z
-      .enum(["applied", "reviewing", "interview", "offer", "rejected"])
-      .describe("Nuevo estado del candidato"),
-    reason: z.string().describe("Razón del cambio de estado"),
+    applicationId: z.string().min(1).max(100),
+    newStatus: z.enum(["applied", "reviewing", "interview", "offer", "rejected"]),
+    reason: z.string().min(1).max(500),
   }),
   execute: async ({ applicationId, newStatus, reason }) => {
+    validateToolInput("updateCandidateStatus", { applicationId })
     const { updateApplicationStatus } = await import("@/lib/api/applications")
     const result = await updateApplicationStatus(applicationId, mapKanbanToApiStatus(newStatus))
     if (!Result.isOk(result)) {
@@ -166,12 +196,13 @@ export const updateCandidateStatusTool = tool({
 export const sendMessageToCandidateTool = tool({
   description: "Envía un mensaje directo a un candidato desde la plataforma",
   inputSchema: z.object({
-    candidateId: z.string().describe("ID del candidato"),
-    recruiterId: z.string().describe("ID del recruiter que envía el mensaje"),
-    subject: z.string().describe("Asunto del mensaje"),
-    body: z.string().describe("Contenido del mensaje"),
+    candidateId: z.string().min(1).max(100),
+    recruiterId: z.string().min(1).max(100),
+    subject: z.string().min(1).max(200),
+    body: z.string().min(1).max(5000),
   }),
   execute: async ({ candidateId, recruiterId, subject, body }) => {
+    validateToolInput("sendMessageToCandidate", { candidateId, subject, body })
     const chatResult = await createOrFindChat(candidateId)
     if (!Result.isOk(chatResult)) {
       return {
@@ -203,11 +234,12 @@ export const searchCandidatesBySkillsTool = tool({
   description:
     "Busca candidatos en la base de datos por skills específicos, aunque no hayan postulado al job actual",
   inputSchema: z.object({
-    skills: z.array(z.string()).describe("Lista de skills a buscar"),
-    minExperience: z.number().optional().default(0),
-    limit: z.number().optional().default(10),
+    skills: z.array(z.string().min(1).max(100)).min(1).max(20),
+    minExperience: z.number().min(0).max(50).optional().default(0),
+    limit: z.number().min(1).max(50).optional().default(10),
   }),
   execute: async ({ skills, minExperience = 0, limit = 10 }) => {
+    validateToolInput("searchCandidatesBySkills", { skills })
     const usersResult = await getUsers({
       type: "professional",
       limit: 100,
@@ -251,9 +283,10 @@ export const searchCandidatesBySkillsTool = tool({
 export const getOrganizationStatsTool = tool({
   description: "Obtiene estadísticas de la organización: ofertas activas, postulaciones, métricas",
   inputSchema: z.object({
-    organizationId: z.string().describe("ID de la organización"),
+    organizationId: z.string().min(1).max(100),
   }),
   execute: async ({ organizationId }) => {
+    validateToolInput("getOrganizationStats", { organizationId })
     const metricsResult = await getOrganizationMetrics(organizationId, { period: "month" })
     if (!Result.isOk(metricsResult)) {
       return { error: "No se pudieron obtener métricas", details: String(metricsResult.error) }
@@ -265,9 +298,10 @@ export const getOrganizationStatsTool = tool({
 export const getCandidateDetailTool = tool({
   description: "Obtiene el perfil detallado de un candidato específico",
   inputSchema: z.object({
-    candidateId: z.string().describe("ID del perfil/candidato"),
+    candidateId: z.string().min(1).max(100),
   }),
   execute: async ({ candidateId }) => {
+    validateToolInput("getCandidateDetail", { candidateId })
     const [userResult, resumeResult, applicationsResult] = await Promise.all([
       getUser(candidateId),
       getResumeByUserId(candidateId),
@@ -286,14 +320,15 @@ export const getCandidateDetailTool = tool({
 export const listApplicationsTool = tool({
   description: "Lista todas las postulaciones de la organización con opción de filtrar",
   inputSchema: z.object({
-    organizationId: z.string().describe("ID de la organización"),
+    organizationId: z.string().min(1).max(100),
     status: z
       .enum(["applied", "reviewing", "interview", "offer", "rejected", "all"])
       .optional()
       .default("all"),
-    limit: z.number().optional().default(50),
+    limit: z.number().min(1).max(100).optional().default(50),
   }),
   execute: async ({ organizationId, status, limit = 50 }) => {
+    validateToolInput("listApplications", { organizationId })
     const { getApplicationsByOrganization } = await import("@/lib/api/applications")
     const result = await getApplicationsByOrganization(organizationId, { page: 1, limit })
     if (!Result.isOk(result)) {

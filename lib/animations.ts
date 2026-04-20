@@ -17,6 +17,10 @@ export const LANDING_ANIMATION = {
   chainStagger: 0.28,
   /** Viewport margin so elements start animating slightly before fully in view */
   viewportMargin: "0px 0px -80px 0px",
+  /** Custom ease-out for UI interactions - strong punch */
+  easeOut: [0.23, 1, 0.32, 1] as [number, number, number, number],
+  /** Custom ease-in-out for on-screen movement */
+  easeInOut: [0.77, 0, 0.175, 1] as [number, number, number, number],
   /** Easing for entrance - ease-out feels natural */
   ease: "easeOut" as const,
   /** Spring config: subtle organic bounce for cards and key elements */
@@ -35,7 +39,7 @@ export const getTransition = (options: {
   return {
     delay,
     duration: prefersReduced ? LANDING_ANIMATION.durationReduced : duration,
-    ease: LANDING_ANIMATION.ease,
+    ease: LANDING_ANIMATION.easeOut,
   }
 }
 

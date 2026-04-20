@@ -12,7 +12,6 @@ import {
   phoneSchema,
 } from "./primitives"
 
-
 /**
  * Organization contact form schema
  * - Used in the landing page "Contacta con ventas" form
@@ -43,7 +42,6 @@ export const organizationContactSchema = z.object({
   mensaje: messageSchema,
 })
 
-
 /**
  * General contact form schema
  * - Simpler version for general inquiries
@@ -60,7 +58,6 @@ export const generalContactSchema = z.object({
     .trim(),
   message: messageSchema,
 })
-
 
 /**
  * Support contact form schema
@@ -95,12 +92,10 @@ export const supportContactSchema = z.object({
     .optional(),
 })
 
-
 /** Infer types from schemas for use in the codebase */
 export type OrganizationContactInput = z.infer<typeof organizationContactSchema>
 export type GeneralContactInput = z.infer<typeof generalContactSchema>
 export type SupportContactInput = z.infer<typeof supportContactSchema>
-
 
 /**
  * Validate organization contact form

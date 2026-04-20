@@ -95,7 +95,10 @@ export function SalariosPorIndustria() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 min-h-0">
-            <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
+            <ChartContainer
+              config={chartConfig}
+              className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0"
+            >
               <BarChart
                 data={INDUSTRIA_CHART_DATA}
                 margin={{ top: 20, right: 10, left: 10, bottom: 60 }}
@@ -110,7 +113,13 @@ export function SalariosPorIndustria() {
                   height={80}
                   tick={{ fontSize: 9 }}
                 />
-                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}K`} width={40} tick={{ fontSize: 10 }} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `$${value}K`}
+                  width={40}
+                  tick={{ fontSize: 10 }}
+                />
                 <ChartTooltip
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null
@@ -172,7 +181,9 @@ export function SalariosPorIndustria() {
                 />
                 <div>
                   <p className="font-semibold text-sm">Minería lidera</p>
-                  <p className="text-xs text-muted-foreground">Promedio de $2.65M, rango hasta $3.5M</p>
+                  <p className="text-xs text-muted-foreground">
+                    Promedio de $2.65M, rango hasta $3.5M
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">

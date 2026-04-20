@@ -142,7 +142,83 @@ Mesh de 6 blobs con brand colors a 20-30% opacity:
 
 ---
 
-## 6. Do's and Don'ts
+## 6. Animation System
+
+### Animation Tokens
+
+| Token | Duration | Easing | Usage |
+|-------|----------|--------|-------|
+| **default** | 150ms | ease-out | Micro-interactions (hover, focus) |
+| **smooth** | 300ms | ease-in-out | Page transitions, reveals |
+| **slow** | 500ms | ease-in-out | Hero animations, modal entrances |
+
+### Animation Patterns
+
+#### Enter Animation
+- **Opacity**: 0 → 1
+- **Transform**: translateY(8px) → translateY(0)
+- **Duration**: 300ms (smooth)
+- **Easing**: ease-out
+
+#### Exit Animation
+- **Opacity**: 1 → 0
+- **Transform**: translateY(0) → translateY(-8px)
+- **Duration**: 300ms (smooth)
+- **Easing**: ease-in-out
+
+#### Scale Animation
+- **Transform**: scale(0.95) → scale(1)
+- **Duration**: 150ms (default)
+- **Usage**: Button hover, card hover states
+
+### Animation Rules
+
+- **Entrances first**: Elements should fade + slide up (translateY 8px → 0) on mount
+- **Exits follow**: Elements fade + slide up slightly before disappearing
+- **Micro-interactions**: Use 150ms for hover/focus states
+- **Page transitions**: Use 300ms smooth for route changes
+- **Hero content**: Use 500ms slow for hero sections, staggered 50-100ms between elements
+- **No jarring motion**: Avoid instant state changes; always use easing
+
+### Spacing Scale
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| 4 | 1rem (16px) | Tight spacing, icon gaps |
+| 6 | 1.5rem (24px) | Card padding, small gaps |
+| 8 | 2rem (32px) | Section gaps |
+| 10 | 2.5rem (40px) | Large section gaps |
+| 12 | 3rem (48px) | Page section margins |
+| 16 | 4rem (64px) | Hero spacing |
+| 20 | 5rem (80px) | Major section breaks |
+| 24 | 6rem (96px) | Large vertical rhythm |
+| 32 | 8rem (128px) | Hero height |
+
+### Border Radius
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| **none** | 0 | Sharp edges, geometric |
+| **sm** | 0.125rem (2px) | Subtle rounding |
+| **md** | 0.375rem (6px) | Inputs, small buttons |
+| **lg** | 0.5rem (8px) | Cards, dropdowns |
+| **xl** | 0.75rem (12px) | Modals, large cards |
+| **2xl** | 1rem (16px) | Feature cards |
+| **3xl** | 1.5rem (24px) | Hero containers |
+
+### Shadows
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| **sm** | 0 1px 2px rgba(26,28,29,0.05) | Subtle elevation |
+| **md** | 0 4px 8px rgba(26,28,29,0.08) | Cards |
+| **lg** | 0 8px 16px rgba(26,28,29,0.10) | Floating elements |
+| **xl** | 0 16px 32px rgba(26,28,29,0.12) | Modals, overlays |
+| **2xl** | 0 24px 48px rgba(26,28,29,0.16) | Hero elements |
+
+---
+
+## 7. Do's and Don'ts
 
 ### Do
 
