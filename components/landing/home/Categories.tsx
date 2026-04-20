@@ -2,6 +2,7 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
@@ -13,6 +14,13 @@ export function Categories() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const getCategorySlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+  }
+
   return (
     <section className="py-24 bg-[#f3f3f5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,31 +60,35 @@ export function Categories() {
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
             >
-              <Card className="group p-6 cursor-pointer bg-white hover:bg-secondary/5 transition-colors">
-                <div className="flex items-center space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
-                    <HugeiconsIcon icon={category.icon} size={24} className="text-secondary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground text-lg mb-1">{category.title}</h3>
-                    <div className="flex items-center">
-                      <span className="text-muted-foreground text-sm">{category.positions}</span>
+              <Link href={`/trabajos?categoria=${getCategorySlug(category.title)}`}>
+                <Card className="group p-6 cursor-pointer bg-white hover:bg-secondary/5 transition-colors">
+                  <div className="flex items-center space-x-4">
+                    <div className="shrink-0 w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                      <HugeiconsIcon icon={category.icon} size={24} className="text-secondary" />
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-foreground text-lg mb-1">{category.title}</h3>
+                      <div className="flex items-center">
+                        <span className="text-muted-foreground text-sm">{category.positions}</span>
+                      </div>
+                    </div>
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all shrink-0"
+                    />
                   </div>
-                  <HugeiconsIcon
-                    icon={ArrowRight01Icon}
-                    className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all flex-shrink-0"
-                  />
-                </div>
-              </Card>
+                </Card>
+              </Link>
             </m.div>
           ))}
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="secondary" className="px-8 py-3">
-            Ver todas las especialidades
-            <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+          <Button asChild size="lg" variant="secondary" className="px-8 py-3">
+            <Link href="/trabajos">
+              Ver todas las especialidades
+              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+            </Link>
           </Button>
         </div>
       </div>

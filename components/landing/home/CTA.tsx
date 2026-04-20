@@ -2,6 +2,7 @@
 
 import { ArrowRight01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
@@ -54,12 +55,16 @@ export function CTA() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <Button type="button" variant="default" size="lg" className="px-8 py-4">
-            Crear cuenta gratis
-            <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+          <Button asChild variant="default" size="lg" className="px-8 py-4">
+            <Link href="/register/professional">
+              Crear cuenta gratis
+              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+            </Link>
           </Button>
-          <Button type="button" variant="outline" size="lg" className="px-8 py-4">
-            Soy empresa
+          <Button asChild variant="outline" size="lg" className="px-8 py-4">
+            <Link href="/register/organization">
+              Soy empresa
+            </Link>
           </Button>
         </m.div>
 
