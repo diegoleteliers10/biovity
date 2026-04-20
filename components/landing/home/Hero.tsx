@@ -14,7 +14,7 @@ export function Hero() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
   return (
-    <section className="relative h-dvh w-full flex items-center justify-center overflow-hidden">
+    <section className="relative h-dvh flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
         {/* Brand-aligned blobs - 6 circles for depth */}
         <div className="absolute top-[5%] left-[10%] w-[22rem] h-[22rem] bg-[#00374a]/25 rounded-full blur-3xl"></div>

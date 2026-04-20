@@ -61,7 +61,7 @@ type SheetOverlayProps = Omit<
   HTMLMotionProps<"div">
 
 function SheetOverlay({
-  transition = { duration: 0.2, ease: "easeInOut" },
+  transition = { duration: 0.2, ease: "easeOut" },
   ...props
 }: SheetOverlayProps) {
   return (
@@ -69,9 +69,9 @@ function SheetOverlay({
       <m.div
         key="sheet-overlay"
         data-slot="sheet-overlay"
-        initial={{ opacity: 0, filter: "blur(4px)" }}
+        initial={{ opacity: 0, filter: "blur(2px)" }}
         animate={{ opacity: 1, filter: "blur(0px)" }}
-        exit={{ opacity: 0, filter: "blur(4px)" }}
+        exit={{ opacity: 0, filter: "blur(2px)" }}
         transition={transition}
         {...props}
       />
@@ -84,11 +84,13 @@ type Side = "top" | "bottom" | "left" | "right"
 type SheetContentProps = React.ComponentProps<typeof SheetPrimitive.Content> &
   HTMLMotionProps<"div"> & {
     side?: Side
+    exitTransition?: React.ComponentProps<typeof m.div>["transition"]
   }
 
 function SheetContent({
   side = "right",
-  transition = { type: "spring", stiffness: 150, damping: 22 },
+  transition = { type: "spring", stiffness: 200, damping: 25 },
+  exitTransition = { duration: 0.2, ease: "easeOut" },
   style,
   ...props
 }: SheetContentProps) {
@@ -116,7 +118,7 @@ function SheetContent({
         data-side={side}
         initial={offscreen[side]}
         animate={{ [axis]: 0, opacity: 1 }}
-        exit={offscreen[side]}
+        exit={{ ...offscreen[side], transition: exitTransition }}
         style={{
           position: "fixed",
           ...positionStyle[side],

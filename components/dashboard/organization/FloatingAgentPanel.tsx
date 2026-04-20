@@ -36,7 +36,9 @@ export function FloatingAgentPanel() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <HugeiconsIcon icon={SparklesIcon} size={16} className="text-primary" />
-                <SheetTitle className="text-sm font-semibold">Asistente de Reclutamiento</SheetTitle>
+                <SheetTitle className="text-sm font-semibold">
+                  Asistente de Reclutamiento
+                </SheetTitle>
               </div>
             </div>
           </SheetHeader>

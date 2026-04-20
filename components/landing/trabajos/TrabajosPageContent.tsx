@@ -4,11 +4,11 @@ import { Briefcase01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryStates } from "nuqs"
 import { useMemo } from "react"
+import type { Job, JobLocation } from "@/lib/api/jobs"
+import { formatJobLocation } from "@/lib/api/jobs"
+import { useJobsSearch } from "@/lib/api/use-jobs"
 import { trabajosParsers } from "@/lib/parsers/trabajos"
 import type { FiltrosTrabajos, Trabajo } from "@/lib/types/trabajos"
-import type { Job, JobLocation } from "@/lib/api/jobs"
-import { useJobsSearch } from "@/lib/api/use-jobs"
-import { formatJobLocation } from "@/lib/api/jobs"
 import { TrabajosHero } from "./TrabajosHero"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
@@ -72,14 +72,20 @@ function filtrosToUrlState(filtros: FiltrosTrabajos) {
   }
 }
 
-function normalizeEmploymentType(
-  type: string
-): "remoto" | "hibrido" | "presencial" {
+function normalizeEmploymentType(type: string): "remoto" | "hibrido" | "presencial" {
   const normalized = type.toLowerCase()
   if (normalized.includes("remote") || normalized.includes("remoto")) return "remoto"
-  if (normalized.includes("hybrid") || normalized.includes("híbrido") || normalized.includes("hibrido"))
+  if (
+    normalized.includes("hybrid") ||
+    normalized.includes("híbrido") ||
+    normalized.includes("hibrido")
+  )
     return "hibrido"
-  if (normalized.includes("presencial") || normalized.includes("onsite") || normalized.includes("on-site"))
+  if (
+    normalized.includes("presencial") ||
+    normalized.includes("onsite") ||
+    normalized.includes("on-site")
+  )
     return "presencial"
   return "presencial"
 }

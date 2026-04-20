@@ -73,7 +73,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
           handleOpenJob()
         }
       }}
-      className="cursor-pointer relative overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border transition-colors duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="cursor-pointer relative overflow-hidden flex flex-col border border-border/80 bg-white active:scale-[0.99] transition-all duration-150 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label="Ver vacante guardada"
     >
       <CardHeader className="pb-0">

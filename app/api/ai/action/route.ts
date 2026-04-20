@@ -19,5 +19,29 @@ export async function POST(req: NextRequest) {
     prompt: userPrompt,
   })
 
-  return result.toTextStreamResponse()
+  const textStream = result.textStream
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder()
+      try {
+        for await (const chunk of textStream) {
+          const line = `data: ${JSON.stringify({ text: chunk })}\n`
+          controller.enqueue(encoder.encode(line))
+        }
+        controller.enqueue(encoder.encode("data: [DONE]\n"))
+        controller.close()
+      } catch {
+        controller.error("Stream error")
+      }
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  })
 }

@@ -88,6 +88,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   const [salaryMin, setSalaryMin] = useState("")
   const [salaryMax, setSalaryMax] = useState("")
   const [benefits, setBenefits] = useState<JobBenefitInput[]>([])
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false)
   const benefitsAnchorRef = useComboboxAnchor()
 
   const createMutation = useCreateJobMutation(organizationId)
@@ -228,6 +229,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               onChange={setDescription}
               placeholder="Describe el puesto, requisitos y responsabilidades..."
               className="min-h-[160px]"
+              isGenerating={isGeneratingDescription}
               toolbarSuffix={
                 <AIJobDescriptionWriter
                   jobTitle={title}
@@ -240,6 +242,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                   onGenerated={(generatedDescription) => {
                     setDescription(generatedDescription)
                   }}
+                  onGeneratingChange={setIsGeneratingDescription}
                 />
               }
             />

@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server"
 import { Result as R } from "better-result"
+import { NextResponse } from "next/server"
 import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"
 

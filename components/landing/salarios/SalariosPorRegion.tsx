@@ -33,13 +33,12 @@ export function SalariosPorRegion() {
           <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
               La ubicación geográfica es un factor crucial en las remuneraciones del sector de
-              biociencias en Chile. La concentración de industrias de alto valor agregado
-              (Minería, Tech/Pharma) en ciertas zonas genera disparidades salariales
-              significativas.
+              biociencias en Chile. La concentración de industrias de alto valor agregado (Minería,
+              Tech/Pharma) en ciertas zonas genera disparidades salariales significativas.
             </p>
             <p>
-              Antofagasta, con su fuerte presencia minera y aplicaciones biotecnológicas, lidera
-              los sueldos promedio. La Región Metropolitana, centro de servicios, farmacéuticas y
+              Antofagasta, con su fuerte presencia minera y aplicaciones biotecnológicas, lidera los
+              sueldos promedio. La Región Metropolitana, centro de servicios, farmacéuticas y
               tecnología, ocupa el segundo lugar, mientras que las regiones agroindustriales
               presentan rangos más moderados pero estables.
             </p>
@@ -52,7 +51,10 @@ export function SalariosPorRegion() {
             <CardDescription>Valores en miles de pesos chilenos (CLP)</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 min-h-0">
-            <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
+            <ChartContainer
+              config={chartConfig}
+              className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0"
+            >
               <BarChart
                 data={REGION_CHART_DATA}
                 margin={{ top: 20, right: 10, left: 10, bottom: 40 }}

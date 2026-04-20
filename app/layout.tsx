@@ -166,9 +166,7 @@ export default function RootLayout({
       <body className={`${geistMono.variable} antialiased`}>
         <NuqsAdapter>
           <QueryProvider>
-            <MotionProvider>
-              {children}
-            </MotionProvider>
+            <MotionProvider>{children}</MotionProvider>
           </QueryProvider>
         </NuqsAdapter>
       </body>

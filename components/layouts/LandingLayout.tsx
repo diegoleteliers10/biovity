@@ -3,7 +3,7 @@ import { Header } from "../common/Header"
 
 export const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="landing-layout">
+    <div className="overflow-x-hidden">
       <Header />
       {children}
       <Footer />

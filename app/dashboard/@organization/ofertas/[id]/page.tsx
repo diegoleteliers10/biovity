@@ -12,6 +12,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
 import { addTransitionType, startTransition, ViewTransition } from "react"
+import { QuestionsManager } from "@/components/dashboard/organization/QuestionsManager"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -24,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Job } from "@/lib/api/jobs"
 import { useApplicationsByJob } from "@/lib/api/use-applications"
 import { useJob } from "@/lib/api/use-jobs"
@@ -245,90 +247,104 @@ export default function OfertaDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Applicants Section */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-foreground">
-              Postulaciones ({applications?.length ?? 0})
-            </h2>
-          </div>
+        {/* Applicants Section with Tabs */}
+        <Tabs defaultValue="applicants" className="w-full flex-col gap-4">
+            <TabsList
+              variant="line"
+            >
+              <TabsTrigger value="applicants">
+                Postulaciones ({applications?.length ?? 0})
+              </TabsTrigger>
+              <TabsTrigger value="questions">
+                Preguntas Postulación
+              </TabsTrigger>
+            </TabsList>
 
-          {appsLoading ? (
-            <div className="rounded-lg border border-border">
-              <div className="h-12 animate-pulse border-b border-border bg-muted/50" />
-              <div className="h-12 animate-pulse border-b border-border bg-muted/50" />
-              <div className="h-12 animate-pulse bg-muted/50" />
-            </div>
-          ) : !applications || applications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center">
-              <HugeiconsIcon
-                icon={UserGroupIcon}
-                size={32}
-                strokeWidth={1.5}
-                className="mb-2 h-8 w-8 text-muted-foreground"
-              />
-              <p className="text-sm text-muted-foreground">
-                Aún no hay postulaciones para esta oferta.
-              </p>
-            </div>
-          ) : (
-            <div className="rounded-lg border border-border overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead>Candidato</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Fecha</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {applications.map((app) => (
-                    <TableRow key={app.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarFallback className="bg-secondary/10 text-secondary text-xs font-semibold">
-                              {app.candidate?.name?.charAt(0).toUpperCase() ?? "?"}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-medium text-foreground">
-                              {app.candidate?.name ?? "Candidato"}
-                            </p>
-                            <p className="truncate text-muted-foreground text-xs">
-                              {app.candidate?.email ?? ""}
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            app.status === "pendiente"
-                              ? "outline"
-                              : app.status === "entrevista"
-                                ? "secondary"
-                                : app.status === "oferta"
-                                  ? "default"
-                                  : app.status === "rechazado"
-                                    ? "destructive"
-                                    : "secondary"
-                          }
-                          className="text-[10px] uppercase tracking-wider"
-                        >
-                          {app.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right text-muted-foreground text-xs">
-                        {formatDateChilean(app.createdAt, "d MMM yyyy")}
-                      </TableCell>
+            <TabsContent value="applicants">
+            {appsLoading ? (
+              <div className="rounded-lg border border-border">
+                <div className="h-12 animate-pulse border-b border-border bg-muted/50" />
+                <div className="h-12 animate-pulse border-b border-border bg-muted/50" />
+                <div className="h-12 animate-pulse bg-muted/50" />
+              </div>
+            ) : !applications || applications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center">
+                <HugeiconsIcon
+                  icon={UserGroupIcon}
+                  size={32}
+                  strokeWidth={1.5}
+                  className="mb-2 h-8 w-8 text-muted-foreground"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Aún no hay postulaciones para esta oferta.
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-border overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>Candidato</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead className="text-right">Fecha</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </div>
+                  </TableHeader>
+                  <TableBody>
+                    {applications.map((app) => (
+                      <TableRow key={app.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback className="bg-secondary/10 text-secondary text-xs font-semibold">
+                                {app.candidate?.name?.charAt(0).toUpperCase() ?? "?"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-medium text-foreground">
+                                {app.candidate?.name ?? "Candidato"}
+                              </p>
+                              <p className="truncate text-muted-foreground text-xs">
+                                {app.candidate?.email ?? ""}
+                              </p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              app.status === "pendiente"
+                                ? "outline"
+                                : app.status === "entrevista"
+                                  ? "secondary"
+                                  : app.status === "oferta"
+                                    ? "default"
+                                    : app.status === "rechazado"
+                                      ? "destructive"
+                                      : "secondary"
+                            }
+                            className="text-[10px] uppercase tracking-wider"
+                          >
+                            {app.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right text-muted-foreground text-xs">
+                          {formatDateChilean(app.createdAt, "d MMM yyyy")}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="questions">
+            <QuestionsManager
+              jobId={job.id}
+              organizationId={job.organizationId ?? organization?.id ?? ""}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </DirectionalTransition>
   )

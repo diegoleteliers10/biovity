@@ -156,7 +156,12 @@ export function DashboardSidebar({
                 <Tooltip key={item.title} side="right" align="center">
                   <TooltipTrigger asChild>
                     <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive} size="default">
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        size="default"
+                        className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+                      >
                         <button
                           type="button"
                           onClick={() => router.push(item.url)}
@@ -257,7 +262,12 @@ export function DashboardSidebar({
                   <Tooltip key={item.title} side="right" align="center">
                     <TooltipTrigger asChild>
                       <SidebarMenuItem>
-                        <SidebarMenuButton asChild isActive={isActive} size="sm">
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive}
+                          size="sm"
+                          className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+                        >
                           <button
                             type="button"
                             onClick={() => router.push(item.url)}

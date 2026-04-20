@@ -77,7 +77,7 @@ function ApplicantCard({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "cursor-grab touch-none border-border/60 py-4 active:cursor-grabbing",
+        "cursor-grab touch-none border-border/60 py-4 active:cursor-grabbing active:scale-[0.99] transition-all duration-150",
         isDragging && "opacity-50 shadow-lg"
       )}
       {...listeners}

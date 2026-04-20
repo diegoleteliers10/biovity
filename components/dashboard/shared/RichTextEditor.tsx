@@ -24,6 +24,7 @@ type RichTextEditorProps = {
   placeholder?: string
   className?: string
   toolbarSuffix?: React.ReactNode
+  isGenerating?: boolean
 }
 
 const MenuButton = ({
@@ -101,6 +102,22 @@ const EDITOR_CONTENT_CSS = `
     pointer-events: none;
     position: absolute;
   }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .rich-text-shimmer {
+    animation: shimmer 1.8s ease-in-out infinite;
+    background: linear-gradient(
+      90deg,
+      var(--muted) 0%,
+      var(--border) 40%,
+      var(--muted) 80%,
+      var(--border) 100%
+    );
+    background-size: 200% 100%;
+  }
 `
 
 export function RichTextEditor({
@@ -109,6 +126,7 @@ export function RichTextEditor({
   placeholder,
   className,
   toolbarSuffix,
+  isGenerating,
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit],
@@ -223,7 +241,23 @@ export function RichTextEditor({
         </div>
 
         {/* Editor content */}
-        <EditorContent editor={editor} />
+        <div className="relative">
+          <EditorContent editor={editor} />
+          {isGenerating && (
+            <div className="pointer-events-none absolute inset-0 z-10 flex flex-col gap-2 rounded-lg bg-background p-3">
+              <div className="rich-text-shimmer h-4 w-3/4 rounded" />
+              <div className="rich-text-shimmer h-4 w-full rounded" />
+              <div className="rich-text-shimmer h-4 w-5/6 rounded" />
+              <div className="rich-text-shimmer h-4 w-2/3 rounded" />
+              <div className="mt-1 flex gap-2">
+                <div className="rich-text-shimmer h-4 w-16 rounded" />
+                <div className="rich-text-shimmer h-4 w-24 rounded" />
+                <div className="rich-text-shimmer h-4 w-20 rounded" />
+              </div>
+              <div className="rich-text-shimmer mt-1 h-4 w-4/5 rounded" />
+            </div>
+          )}
+        </div>
       </div>
     </>
   )

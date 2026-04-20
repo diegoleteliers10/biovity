@@ -43,7 +43,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
 
   return (
     <Card
-      className="relative overflow-hidden flex flex-col cursor-pointer transition-colors duration-300 border border-border/80 bg-white hover:border-border"
+      className="relative overflow-hidden flex flex-col cursor-pointer hover:bg-secondary/5 active:scale-[0.99] transition-all duration-150 border border-border/80 bg-white"
       onClick={handleCardClick}
       aria-label={`Ver detalles del trabajo ${job.jobTitle} en ${job.company}`}
     >

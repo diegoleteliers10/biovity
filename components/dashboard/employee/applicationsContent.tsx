@@ -131,7 +131,7 @@ function ApplicationCard({ app }: { app: Application }) {
   const current = getCurrentStageIndex(app.status)
 
   return (
-    <Card className="relative overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border transition-colors duration-300">
+    <Card className="relative overflow-hidden flex flex-col border border-border/80 bg-white active:scale-[0.99] transition-all duration-150">
       <CardHeader className="p-6 pb-2">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 space-y-1">
@@ -144,7 +144,7 @@ function ApplicationCard({ app }: { app: Application }) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full bg-muted hover:bg-secondary hover:text-secondary-foreground transition-all duration-300"
+              className="h-10 w-10 rounded-full bg-muted hover:bg-secondary hover:text-secondary-foreground active:scale-90 transition-all duration-150"
               title="Ver detalle del trabajo"
               onClick={() => router.push(`/dashboard/job/${app.jobId}`)}
             >

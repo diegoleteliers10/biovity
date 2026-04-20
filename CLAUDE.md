@@ -373,3 +373,15 @@ Thought 6: Verify the plan covers the full requirement
 - Gradient backgrounds for visual hierarchy
 - Consistent spacing with padding/margin utilities
 
+### Animation Guidelines
+
+Follow the animation tokens and patterns defined in `DESIGN.md`:
+
+- **Micro-interactions**: 150ms ease-out for hover/focus states
+- **Reveals**: 300ms ease-out with translateY(8px → 0) + opacity
+- **Page transitions**: 300ms smooth via DirectionalTransition component
+- **Hero animations**: 500ms slow with 50-100ms stagger between elements
+- **Scale on hover**: 150ms scale(0.95 → 1) for interactive elements
+
+Use `lib/animations.ts` for predefined animation variants. Prefer Motion for complex sequences and Tailwind utilities for simple transitions.
+

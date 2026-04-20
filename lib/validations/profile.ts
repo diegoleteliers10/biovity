@@ -14,7 +14,6 @@ import {
   skillsSchema,
 } from "./primitives"
 
-
 /**
  * Full user profile schema
  * - All profile fields including optional ones
@@ -59,7 +58,6 @@ export const profileSaveSchema = z.object({
   profession: optionalShortTextSchema,
 })
 
-
 /**
  * Avatar file schema for upload validation
  * - Common image formats
@@ -82,13 +80,11 @@ export const avatarFileSchema = z
     return file.size <= 2 * 1024 * 1024 // 2MB
   }, "La imagen es demasiado grande (máximo 2MB)")
 
-
 /** Infer types from schemas for use in the codebase */
 export type UserProfile = z.infer<typeof userProfileSchema>
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>
 export type ProfileSaveInput = z.infer<typeof profileSaveSchema>
 export type AvatarFile = z.infer<typeof avatarFileSchema>
-
 
 /**
  * Validate profile data for save operation

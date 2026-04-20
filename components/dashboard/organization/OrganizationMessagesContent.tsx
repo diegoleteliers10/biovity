@@ -15,6 +15,8 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Result } from "better-result"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { createClientBrowser } from "@/lib/supabase-browser"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
@@ -57,27 +59,63 @@ export function OrganizationMessagesContent() {
 
   const { data: chats = [], isLoading: chatsLoading } = useChatsByRecruiter(recruiterId)
   useChatListRealtime(chats)
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
 
+  // Local state for selected chat (updated on click or URL change)
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null)
+
+  // Sync URL changes to local state (handles page reload with ?chat=)
   useEffect(() => {
-    if (!chatIdFromUrl) return
-
-    const found = chats.find((c) => c.id === chatIdFromUrl)
-    if (found) {
-      setSelectedChat(found)
-      return
+    if (chatIdFromUrl) {
+      setSelectedChatId(chatIdFromUrl)
     }
+  }, [chatIdFromUrl])
 
-    const loadChat = async () => {
+  // Query dedicated to loading chat from URL (for page reload case)
+  const { data: chatFromUrl } = useQuery({
+    queryKey: ["chat", "fromUrl", chatIdFromUrl],
+    queryFn: async () => {
+      if (!chatIdFromUrl) return null
       const result = await getChatById(chatIdFromUrl)
       if (!Result.isOk(result)) {
         console.error(getResultErrorMessage(result.error))
-        return
+        return null
       }
-      setSelectedChat(result.value)
+      return result.value
+    },
+    enabled: Boolean(chatIdFromUrl),
+  })
+
+  const queryClient = useQueryClient()
+
+  // Invalidate chatFromUrl when messages change (realtime updates)
+  useEffect(() => {
+    if (!chatIdFromUrl) return
+
+    const supabase = createClientBrowser()
+    if (!supabase) return
+
+    const channel = supabase
+      .channel(`chat-messages-${chatIdFromUrl}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "message" },
+        () => {
+          // Invalidate the chat query to refresh data
+          queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
     }
-    void loadChat()
-  }, [chatIdFromUrl, chats])
+  }, [chatIdFromUrl, queryClient])
+
+  // Find selected chat: prefer chats list (stable), fallback to chatFromUrl (for reload case)
+  const selectedChat = selectedChatId
+    ? chats.find((c) => c.id === selectedChatId) ?? chatFromUrl ?? null
+    : null
+
   const [messageInput, setMessageInput] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -174,7 +212,7 @@ export function OrganizationMessagesContent() {
               chat={chat}
               isSelected={selectedChat?.id === chat.id}
               onSelect={() => {
-                setSelectedChat(chat)
+                setSelectedChatId(chat.id)
                 const params = new URLSearchParams(searchParams.toString())
                 params.set("chat", chat.id)
                 router.replace(`/dashboard/messages?${params.toString()}`)

@@ -91,7 +91,10 @@ export function SalariosPorCarrera() {
                 <CardDescription>Valores en miles de pesos chilenos (CLP)</CardDescription>
               </CardHeader>
               <CardContent className="p-6 flex-1 min-h-0">
-                <ChartContainer config={chartConfig} className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0">
+                <ChartContainer
+                  config={chartConfig}
+                  className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0"
+                >
                   <BarChart
                     data={CARRERA_CHART_DATA}
                     margin={{ top: 20, right: 10, left: 10, bottom: 60 }}
@@ -175,7 +178,9 @@ export function SalariosPorCarrera() {
                   />
                   <div>
                     <p className="font-semibold text-sm">Mayor crecimiento</p>
-                    <p className="text-xs text-muted-foreground">Brecha de $1.7M en Bioinformática</p>
+                    <p className="text-xs text-muted-foreground">
+                      Brecha de $1.7M en Bioinformática
+                    </p>
                   </div>
                 </div>
               </CardContent>

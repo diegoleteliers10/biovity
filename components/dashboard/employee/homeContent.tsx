@@ -2,6 +2,7 @@
 
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
+import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
 import { cache, useCallback, useMemo, useState } from "react"
 import { getLastMessageFromSender } from "@/lib/api/messages"
@@ -201,8 +202,15 @@ export const HomeContent = () => {
 
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {DATA.metrics.map((metric) => (
-          <MetricCard key={metric.title} metric={metric} />
+        {DATA.metrics.map((metric, i) => (
+          <m.div
+            key={metric.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <MetricCard metric={metric} />
+          </m.div>
         ))}
       </div>
 

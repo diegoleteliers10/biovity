@@ -1,5 +1,7 @@
 import type { NextRequest } from "next/server"
+import { getScoringSystemPrompt } from "@/lib/ai/prompts"
 import { generateText, model } from "@/lib/ai/provider"
+import { sanitizeInput } from "@/lib/ai/sanitize"
 import type { CandidateContext, FitScoreResult, JobOfferContext } from "@/lib/ai/types"
 
 function isValidScoreResult(value: unknown): value is FitScoreResult {
@@ -30,10 +32,11 @@ export async function POST(req: NextRequest) {
     jobOffer: JobOfferContext
   } = await req.json()
 
+  sanitizeInput(JSON.stringify({ candidate, jobOffer }), "scorer-system")
+
   const { text } = await generateText({
     model,
-    system:
-      "Eres un sistema de scoring de candidatos. Responde ÚNICAMENTE con JSON válido, sin markdown ni texto extra.",
+    system: getScoringSystemPrompt(),
     prompt: `
       Evalúa el fit de este candidato para el job offer.
 

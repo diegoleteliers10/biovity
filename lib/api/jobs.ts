@@ -1,5 +1,5 @@
 import { Result as R, type Result } from "better-result"
-import { ApiError, NetworkError } from "@/lib/errors"
+import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent, fetchWithFallback, getErrorMessage } from "@/lib/result"
 
 const API_BASE =

@@ -31,8 +31,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: "Planes y Precios para Empresas | Biovity",
-    description:
-      "Planes simples y transparentes para empresas que buscan talento científico.",
+    description: "Planes simples y transparentes para empresas que buscan talento científico.",
     images: ["/og/empresas.png"],
   },
   alternates: {
@@ -58,8 +57,8 @@ export default function PlanesPage() {
               Planes y Precios
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Elige el plan que mejor se adapte a las necesidades de tu empresa y comienza a reclutar
-              talento científico hoy.
+              Elige el plan que mejor se adapte a las necesidades de tu empresa y comienza a
+              reclutar talento científico hoy.
             </p>
           </div>
         </section>

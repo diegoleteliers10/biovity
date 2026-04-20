@@ -13,10 +13,25 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "GPTBot",
         allow: "/",
+        disallow: ["/api/", "/dashboard/", "/login/", "/register/"],
+      },
+      {
+        userAgent: "GPTBot-Preview",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/"],
+      },
+      {
+        userAgent: "OAI-SearchBot",
+        allow: "/",
         disallow: ["/api/", "/dashboard/"],
       },
       {
         userAgent: "ClaudeBot",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/", "/login/", "/register/"],
+      },
+      {
+        userAgent: "Claude-Web",
         allow: "/",
         disallow: ["/api/", "/dashboard/"],
       },
@@ -27,6 +42,31 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Google-Extended",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/"],
+      },
+      {
+        userAgent: "anthropic-ai",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/"],
+      },
+      {
+        userAgent: "CCBot",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/"],
+      },
+      {
+        userAgent: "Diffbot",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/"],
+      },
+      {
+        userAgent: "Bytespider",
+        allow: "/",
+        disallow: ["/api/", "/dashboard/"],
+      },
+      {
+        userAgent: "Amazonbot",
         allow: "/",
         disallow: ["/api/", "/dashboard/"],
       },

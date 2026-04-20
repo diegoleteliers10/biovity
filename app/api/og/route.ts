@@ -1,7 +1,7 @@
+import { Result as R, type Result } from "better-result"
 import { NextResponse } from "next/server"
 import sharp from "sharp"
 import generateOgImage from "@/app/opengraph-image"
-import { Result as R, type Result } from "better-result"
 
 async function generateOgBuffer(): Promise<Result<Buffer, Error>> {
   return R.tryPromise({

@@ -11,9 +11,9 @@ import {
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import { useState } from "react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { NotificationBell } from "@/components/common/NotificationBell"
 import {
   Select,
   SelectContent,

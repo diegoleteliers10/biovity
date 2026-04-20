@@ -432,7 +432,7 @@ export function TalentContent() {
                 {users.map((user) => (
                   <TableRow
                     key={user.id}
-                    className="cursor-pointer"
+                    className="cursor-pointer active:scale-[0.99] transition-all duration-150"
                     onClick={() => handleRowClick(user.id)}
                     tabIndex={0}
                     onKeyDown={(e) => {

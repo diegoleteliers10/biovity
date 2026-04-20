@@ -24,12 +24,46 @@ import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getOrganization } from "@/lib/api/organizations"
 import type { CreateEventInput, EventStatus, EventType, UpdateEventInput } from "@/lib/types/events"
 
+const DANGEROUS_PATTERNS = [
+  /;\s*drop\s+/i,
+  /;\s*delete\s+/i,
+  /;\s*truncate\s+/i,
+  /;\s*insert\s+/i,
+  /;\s*update\s+\w+\s+set/i,
+  /exec\s*\(/i,
+  /eval\s*\(/i,
+  /system\s*\(/i,
+  /shell\s*\(/i,
+  /\$\{.*\}/,
+  /\$\w+/,
+]
+
+function containsDangerousInput(input: unknown): boolean {
+  if (typeof input === "string") {
+    return DANGEROUS_PATTERNS.some((pattern) => pattern.test(input))
+  }
+  if (Array.isArray(input)) {
+    return input.some(containsDangerousInput)
+  }
+  if (typeof input === "object" && input !== null) {
+    return Object.values(input as Record<string, unknown>).some(containsDangerousInput)
+  }
+  return false
+}
+
+function validateToolInput(toolName: string, args: Record<string, unknown>): void {
+  if (containsDangerousInput(args)) {
+    throw new Error(`Potentially dangerous input detected in ${toolName}`)
+  }
+}
+
 export const getJobViewsTool = tool({
   description: "Obtiene el número de vistas de una oferta de trabajo específica",
   inputSchema: z.object({
-    jobId: z.string().describe("ID del job offer"),
+    jobId: z.string().min(1).max(100),
   }),
   execute: async ({ jobId }) => {
+    validateToolInput("getJobViews", { jobId })
     const result = await getJob(jobId)
     if (!Result.isOk(result)) {
       return { error: "Error al obtener vistas del job", details: String(result.error) }
@@ -47,28 +81,25 @@ export const createJobTool = tool({
   description:
     "Crea una nueva oferta de trabajo para la organización. IMPORTANTE: Esta acción modifica datos. Requiere confirmación del usuario.",
   inputSchema: z.object({
-    organizationId: z.string().describe("ID de la organización"),
-    title: z.string().describe("Título del puesto"),
-    description: z.string().describe("Descripción completa del puesto"),
-    employmentType: z.string().describe("Tipo de empleo: full-time, part-time, contract, etc."),
-    experienceLevel: z
-      .enum(["junior", "mid", "senior", "lead", "executive"])
-      .describe("Nivel de experiencia requerido"),
+    organizationId: z.string().min(1).max(100),
+    title: z.string().min(1).max(200),
+    description: z.string().min(1).max(5000),
+    employmentType: z.enum(["full-time", "part-time", "contract", "internship", "temporary"]),
+    experienceLevel: z.enum(["junior", "mid", "senior", "lead", "executive"]),
     salary: z
       .object({
-        min: z.number().optional(),
-        max: z.number().optional(),
+        min: z.number().min(0).optional(),
+        max: z.number().min(0).optional(),
         currency: z.string().default("CLP"),
         period: z.string().default("monthly"),
         isNegotiable: z.boolean().default(false),
       })
-      .optional()
-      .describe("Rango salarial"),
+      .optional(),
     location: z
       .object({
-        city: z.string().optional(),
-        state: z.string().optional(),
-        country: z.string().optional(),
+        city: z.string().max(100).optional(),
+        state: z.string().max(100).optional(),
+        country: z.string().max(100).optional(),
         isRemote: z.boolean().default(false),
         isHybrid: z.boolean().default(false),
       })
@@ -76,13 +107,13 @@ export const createJobTool = tool({
     benefits: z
       .array(
         z.object({
-          tipo: z.string(),
-          label: z.string(),
+          tipo: z.string().max(50),
+          label: z.string().max(200),
         })
       )
-      .optional()
-      .describe("Beneficios laborales"),
-    confirm: z.boolean().default(false).describe("Confirmar la creación del job"),
+      .max(20)
+      .optional(),
+    confirm: z.boolean().default(false),
   }),
   execute: async ({
     organizationId,
@@ -95,6 +126,7 @@ export const createJobTool = tool({
     benefits,
     confirm,
   }) => {
+    validateToolInput("createJob", { organizationId, title, description })
     if (!confirm) {
       return {
         confirmation_required: true,
@@ -140,15 +172,17 @@ export const updateJobTool = tool({
   description:
     "Actualiza una oferta de trabajo existente. IMPORTANTE: Esta acción modifica datos. Requiere confirmación para cambios significativos.",
   inputSchema: z.object({
-    jobId: z.string().describe("ID del job offer a actualizar"),
-    title: z.string().optional().describe("Nuevo título del puesto"),
-    description: z.string().optional().describe("Nueva descripción"),
-    employmentType: z.string().optional().describe("Nuevo tipo de empleo"),
-    experienceLevel: z.string().optional().describe("Nuevo nivel de experiencia"),
+    jobId: z.string().min(1).max(100),
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().min(1).max(5000).optional(),
+    employmentType: z
+      .enum(["full-time", "part-time", "contract", "internship", "temporary"])
+      .optional(),
+    experienceLevel: z.enum(["junior", "mid", "senior", "lead", "executive"]).optional(),
     salary: z
       .object({
-        min: z.number().optional(),
-        max: z.number().optional(),
+        min: z.number().min(0).optional(),
+        max: z.number().min(0).optional(),
         currency: z.string().optional(),
         period: z.string().optional(),
         isNegotiable: z.boolean().optional(),
@@ -156,15 +190,15 @@ export const updateJobTool = tool({
       .optional(),
     location: z
       .object({
-        city: z.string().optional(),
-        state: z.string().optional(),
-        country: z.string().optional(),
+        city: z.string().max(100).optional(),
+        state: z.string().max(100).optional(),
+        country: z.string().max(100).optional(),
         isRemote: z.boolean().optional(),
         isHybrid: z.boolean().optional(),
       })
       .optional(),
-    status: z.string().optional().describe("Nuevo estado: active, closed, paused, draft"),
-    confirm: z.boolean().default(false).describe("Confirmar la actualización"),
+    status: z.enum(["active", "closed", "paused", "draft"]).optional(),
+    confirm: z.boolean().default(false),
   }),
   execute: async ({
     jobId,
@@ -177,6 +211,7 @@ export const updateJobTool = tool({
     status,
     confirm,
   }) => {
+    validateToolInput("updateJob", { jobId, title, description })
     const changes: string[] = []
     if (title) changes.push(`título: "${title}"`)
     if (description) changes.push("descripción")
@@ -228,10 +263,11 @@ export const closeJobTool = tool({
   description:
     "Cierra una oferta de trabajo (la marca como no activa). IMPORTANTE: Esta acción no puede deshacerse fácilmente.",
   inputSchema: z.object({
-    jobId: z.string().describe("ID del job offer a cerrar"),
-    confirm: z.boolean().default(false).describe("Confirmar el cierre del job"),
+    jobId: z.string().min(1).max(100),
+    confirm: z.boolean().default(false),
   }),
   execute: async ({ jobId, confirm }) => {
+    validateToolInput("closeJob", { jobId })
     if (!confirm) {
       return {
         confirmation_required: true,
@@ -261,15 +297,12 @@ export const closeJobTool = tool({
 export const getEventsByOrganizationTool = tool({
   description: "Obtiene los eventos (entrevistas, tareas, anuncios) de la organización",
   inputSchema: z.object({
-    organizationId: z.string().describe("ID de la organización"),
-    type: z
-      .enum(["interview", "task_deadline", "announcement", "onboarding"])
-      .optional()
-      .describe("Filtrar por tipo de evento"),
+    organizationId: z.string().min(1).max(100),
+    type: z.enum(["interview", "task_deadline", "announcement", "onboarding"]).optional(),
     status: z.enum(["scheduled", "completed", "cancelled"]).optional(),
-    from: z.string().optional().describe("Fecha inicio (ISO 8601)"),
-    to: z.string().optional().describe("Fecha fin (ISO 8601)"),
-    limit: z.number().optional().default(50),
+    from: z.string().optional(),
+    to: z.string().optional(),
+    limit: z.number().min(1).max(100).default(50),
   }),
   execute: async ({ organizationId, type, status, from, to, limit }) => {
     const result = await getEvents({ organizerId: organizationId, type, status, from, to, limit })
@@ -299,20 +332,18 @@ export const createEventTool = tool({
   description:
     "Crea un nuevo evento como una entrevista, tarea o anuncio. IMPORTANTE: Esta acción crea datos. Requiere confirmación.",
   inputSchema: z.object({
-    organizerId: z.string().describe("ID del organizador (usuario)"),
-    organizationId: z.string().optional().describe("ID de la organización"),
-    title: z.string().describe("Título del evento"),
-    description: z.string().optional().describe("Descripción del evento"),
-    type: z
-      .enum(["interview", "task_deadline", "announcement", "onboarding"])
-      .describe("Tipo de evento"),
-    startAt: z.string().describe("Fecha y hora de inicio (ISO 8601)"),
-    endAt: z.string().optional().describe("Fecha y hora de fin (ISO 8601)"),
-    location: z.string().optional().describe("Ubicación física"),
-    meetingUrl: z.string().optional().describe("URL de reunión virtual"),
-    candidateId: z.string().optional().describe("ID del candidato asociado"),
-    applicationId: z.string().optional().describe("ID de la postulación asociada"),
-    confirm: z.boolean().default(false).describe("Confirmar la creación"),
+    organizerId: z.string().min(1).max(100),
+    organizationId: z.string().max(100).optional(),
+    title: z.string().min(1).max(200),
+    description: z.string().max(2000).optional(),
+    type: z.enum(["interview", "task_deadline", "announcement", "onboarding"]),
+    startAt: z.string().min(1).max(50),
+    endAt: z.string().max(50).optional(),
+    location: z.string().max(300).optional(),
+    meetingUrl: z.string().url().max(500).optional(),
+    candidateId: z.string().max(100).optional(),
+    applicationId: z.string().max(100).optional(),
+    confirm: z.boolean().default(false),
   }),
   execute: async ({
     organizerId,
@@ -328,6 +359,7 @@ export const createEventTool = tool({
     applicationId,
     confirm,
   }) => {
+    validateToolInput("createEvent", { title, description })
     if (!confirm) {
       return {
         confirmation_required: true,
@@ -375,14 +407,14 @@ export const createEventTool = tool({
 export const updateEventTool = tool({
   description: "Actualiza un evento existente (entrevista, tarea, etc.)",
   inputSchema: z.object({
-    eventId: z.string().describe("ID del evento a actualizar"),
-    title: z.string().optional(),
-    description: z.string().optional(),
+    eventId: z.string().min(1).max(100),
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(2000).optional(),
     type: z.enum(["interview", "task_deadline", "announcement", "onboarding"]).optional(),
-    startAt: z.string().optional(),
-    endAt: z.string().optional(),
-    location: z.string().optional(),
-    meetingUrl: z.string().optional(),
+    startAt: z.string().max(50).optional(),
+    endAt: z.string().max(50).optional(),
+    location: z.string().max(300).optional(),
+    meetingUrl: z.string().url().max(500).optional(),
     status: z.enum(["scheduled", "completed", "cancelled"]).optional(),
     confirm: z.boolean().default(false),
   }),
@@ -398,6 +430,7 @@ export const updateEventTool = tool({
     status,
     confirm,
   }) => {
+    validateToolInput("updateEvent", { eventId, title, description })
     const changes: string[] = []
     if (title) changes.push(`título: "${title}"`)
     if (description !== undefined) changes.push("descripción")
@@ -451,14 +484,13 @@ export const updateApplicationStatusTool = tool({
   description:
     "Actualiza el estado de una postulación en el pipeline de reclutamiento. IMPORTANTE: Esta acción modifica datos del candidato.",
   inputSchema: z.object({
-    applicationId: z.string().describe("ID de la postulación"),
-    newStatus: z
-      .enum(["pendiente", "entrevista", "oferta", "rechazado", "contratado"])
-      .describe("Nuevo estado en el pipeline"),
-    reason: z.string().optional().describe("Razón del cambio de estado"),
+    applicationId: z.string().min(1).max(100),
+    newStatus: z.enum(["pendiente", "entrevista", "oferta", "rechazado", "contratado"]),
+    reason: z.string().max(500).optional(),
     confirm: z.boolean().default(false),
   }),
   execute: async ({ applicationId, newStatus, reason, confirm }) => {
+    validateToolInput("updateApplicationStatus", { applicationId })
     if (!confirm) {
       return {
         confirmation_required: true,
@@ -490,7 +522,7 @@ export const updateApplicationStatusTool = tool({
 export const getApplicationDetailTool = tool({
   description: "Obtiene el detalle completo de una postulación",
   inputSchema: z.object({
-    applicationId: z.string().describe("ID de la postulación"),
+    applicationId: z.string().min(1).max(100),
   }),
   execute: async ({ applicationId }) => {
     const result = await getApplicationDetail(applicationId)
@@ -504,7 +536,7 @@ export const getApplicationDetailTool = tool({
 export const getSubscriptionTool = tool({
   description: "Obtiene la información de suscripción y plan de la organización",
   inputSchema: z.object({
-    organizationId: z.string().describe("ID de la organización"),
+    organizationId: z.string().min(1).max(100),
   }),
   execute: async ({ organizationId }) => {
     const orgResult = await getOrganization(organizationId)
@@ -525,8 +557,8 @@ export const getSubscriptionTool = tool({
 export const getChatsByRecruiterTool = tool({
   description: "Obtiene todos los chats de un reclutador con candidatos",
   inputSchema: z.object({
-    recruiterId: z.string().describe("ID del reclutador"),
-    limit: z.number().optional().default(50),
+    recruiterId: z.string().min(1).max(100),
+    limit: z.number().min(1).max(100).default(50),
   }),
   execute: async ({ recruiterId, limit }) => {
     const result = await getChatsByRecruiter(recruiterId)
@@ -551,16 +583,14 @@ export const sendDirectMessageTool = tool({
   description:
     "Envía un mensaje directo a un candidato a través del chat. IMPORTANTE: Esta acción envía un mensaje real.",
   inputSchema: z.object({
-    professionalId: z.string().describe("ID del profesional/candidato"),
-    senderId: z.string().describe("ID del remitente (recruiter)"),
-    content: z.string().describe("Contenido del mensaje"),
-    chatId: z
-      .string()
-      .optional()
-      .describe("ID del chat existente (opcional, se crea uno nuevo si no existe)"),
+    professionalId: z.string().min(1).max(100),
+    senderId: z.string().min(1).max(100),
+    content: z.string().min(1).max(5000),
+    chatId: z.string().max(100).optional(),
     confirm: z.boolean().default(false),
   }),
   execute: async ({ professionalId, senderId, content, chatId, confirm }) => {
+    validateToolInput("sendDirectMessage", { content })
     if (!confirm) {
       return {
         confirmation_required: true,
@@ -617,9 +647,9 @@ export const sendDirectMessageTool = tool({
 export const getChatMessagesTool = tool({
   description: "Obtiene los mensajes de un chat específico",
   inputSchema: z.object({
-    chatId: z.string().describe("ID del chat"),
-    limit: z.number().optional().default(50),
-    cursor: z.string().optional().describe("Cursor para paginación"),
+    chatId: z.string().min(1).max(100),
+    limit: z.number().min(1).max(100).default(50),
+    cursor: z.string().max(100).optional(),
   }),
   execute: async ({ chatId, limit, cursor }) => {
     const result = await getMessagesByChatId(chatId, { limit, cursor })

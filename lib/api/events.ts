@@ -1,5 +1,5 @@
 import { Result as R, type Result } from "better-result"
-import { ApiError, NetworkError } from "@/lib/errors"
+import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent } from "@/lib/result"
 import type {
   CreateEventInput,

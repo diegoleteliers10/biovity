@@ -117,13 +117,14 @@ export function getMetricsCards(
 ): Metric[] {
   if (isLoading) {
     return [
-      { title: "Ofertas Activas", value: "-", icon: FileAddIcon, subtitle: "cargando..." },
-      { title: "Postulaciones Nuevas", value: "-", icon: File02Icon, subtitle: "cargando..." },
+      { title: "Ofertas Activas", value: "-", icon: FileAddIcon, subtitle: "cargando...", href: "/dashboard/ofertas" },
+      { title: "Postulaciones Nuevas", value: "-", icon: File02Icon, subtitle: "cargando...", href: "/dashboard/applications" },
       {
-        title: "Entrevistas Esta Semana",
+        title: "Entrevistas",
         value: "-",
         icon: Calendar03Icon,
         subtitle: "cargando...",
+        href: "/dashboard/calendar",
       },
     ]
   }
@@ -134,6 +135,7 @@ export function getMetricsCards(
       value: dashboard.activeJobs,
       icon: FileAddIcon,
       subtitle: "publicadas",
+      href: "/dashboard/ofertas",
     },
     {
       title: "Postulaciones Nuevas",
@@ -142,6 +144,7 @@ export function getMetricsCards(
       trend: `${dashboard.applicationsTrend > 0 ? "+" : ""}${dashboard.applicationsTrend}%`,
       trendPositive: dashboard.applicationsTrend >= 0,
       subtitle: "este mes",
+      href: "/dashboard/applications",
     },
     {
       title: "Entrevistas",
@@ -150,6 +153,7 @@ export function getMetricsCards(
       trend: `${dashboard.interviewsTrend > 0 ? "+" : ""}${dashboard.interviewsTrend}%`,
       trendPositive: dashboard.interviewsTrend >= 0,
       subtitle: "este mes",
+      href: "/dashboard/calendar",
     },
   ]
 }
