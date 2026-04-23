@@ -2,7 +2,7 @@
 
 export function NosotrosHero() {
   return (
-    <section className="relative min-h-dvh sm:h-dvh w-full flex items-center justify-center overflow-hidden contain-paint">
+    <section className="relative min-h-svh sm:h-svh w-full flex items-center justify-center overflow-hidden contain-paint">
       <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
         <div className="absolute top-[5%] left-[10%] w-[22rem] h-[22rem] bg-[#00374a]/25 rounded-full blur-3xl will-change-transform"></div>
         <div className="absolute top-[15%] right-[15%] w-[18rem] h-[18rem] bg-[#00374a]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
