@@ -14,7 +14,12 @@ export function NosotrosHero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance hero-animate-h1">
+          <h1
+            style={{
+              animation: "hero-entrance-h1 0.5s cubic-bezier(0.23, 1, 0.32, 1) both",
+            }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
+          >
             Conectando el{" "}
             <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               Talento Científico
@@ -22,17 +27,37 @@ export function NosotrosHero() {
             de Chile
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty hero-animate-p">
+          <p
+            style={{
+              animation: "hero-entrance-p 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.12s both",
+            }}
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty"
+          >
             Creamos una comunidad que conecta profesionales y estudiantes en biociencias con
             oportunidades significativas en Chile.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-8 md:gap-12 max-w-4xl mx-auto hero-animate-stats">
-            <div className="text-center" style={{ animationDelay: "0.36s" }}>
+          <div
+            style={{
+              animation: "hero-entrance-stats 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.24s both",
+            }}
+            className="flex flex-wrap justify-center gap-8 md:gap-12 max-w-4xl mx-auto"
+          >
+            <div
+              style={{
+                animation: `hero-entrance-stat-item 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.36s both`,
+              }}
+              className="text-center"
+            >
               <p className="text-3xl font-bold text-foreground mb-1">+500</p>
               <p className="text-sm text-muted-foreground">profesionales activos</p>
             </div>
-            <div className="text-center" style={{ animationDelay: "0.44s" }}>
+            <div
+              style={{
+                animation: `hero-entrance-stat-item 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.44s both`,
+              }}
+              className="text-center"
+            >
               <p className="text-3xl font-bold text-foreground mb-1">2026</p>
               <p className="text-sm text-muted-foreground">fundada</p>
             </div>
