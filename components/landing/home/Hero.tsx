@@ -19,7 +19,12 @@ export function Hero() {
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-safe-top md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance hero-animate-h1">
+          <h1
+            style={{
+              animation: "hero-entrance-h1 0.5s cubic-bezier(0.23, 1, 0.32, 1) both",
+            }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
+          >
             Donde el talento y la
             <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
               {" "}
@@ -28,12 +33,21 @@ export function Hero() {
             se encuentran
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty hero-animate-p">
+          <p
+            style={{
+              animation: "hero-entrance-p 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.12s both",
+            }}
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty"
+          >
             Ayudamos a profesionales y estudiantes a encontrar trabajo y oportunidades en
             biotecnología, bioquímica, química, ingeniería química y salud.
           </p>
 
-          <div className="hero-animate-card">
+          <div
+            style={{
+              animation: "hero-entrance-card 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.24s both",
+            }}
+          >
             <Card className="p-4 sm:p-6 max-w-4xl mx-auto bg-white/90 backdrop-blur-sm w-full px-4 sm:px-6 border border-border/10">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="flex-1 relative">
