@@ -6,6 +6,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import * as m from "motion/react-m"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 
@@ -24,10 +25,10 @@ export const Header = () => {
   const [menuState, setMenuState] = useState(false)
 
   return (
-    <header>
+    <header className="contents">
       <nav
         data-state={menuState ? "open" : "closed"}
-        className="fixed z-20 w-full px-4 lg:px-2"
+        className="fixed z-20 w-full px-4 lg:px-2 lg:contain-paint"
       >
         <div className="mx-auto mt-4 max-w-4xl rounded-2xl border bg-background/50 px-6 backdrop-blur-lg transition-all duration-300 lg:px-5">
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
@@ -49,24 +50,34 @@ export const Header = () => {
                 aria-label={menuState === true ? "Close Menu" : "Open Menu"}
                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
               >
-                <HugeiconsIcon
-                  icon={Menu01Icon}
-                  className={cn(
-                    "m-auto size-6 transition-all duration-200",
-                    menuState
-                      ? "rotate-180 scale-0 opacity-0"
-                      : "rotate-0 scale-100 opacity-100"
-                  )}
-                />
-                <HugeiconsIcon
-                  icon={Cancel01Icon}
-                  className={cn(
-                    "absolute inset-0 m-auto size-6 transition-all duration-200",
-                    menuState
-                      ? "rotate-0 scale-100 opacity-100"
-                      : "-rotate-180 scale-0 opacity-0"
-                  )}
-                />
+                <span className="relative block size-6" aria-hidden>
+                  <m.span
+                    initial={false}
+                    animate={{
+                      opacity: menuState ? 0 : 1,
+                      scale: menuState ? 0.25 : 1,
+                      filter: menuState ? "blur(4px)" : "blur(0px)",
+                      rotate: menuState ? -90 : 0,
+                    }}
+                    transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                    className="absolute inset-0 flex items-center justify-center will-change-transform"
+                  >
+                    <HugeiconsIcon icon={Menu01Icon} className="size-6" />
+                  </m.span>
+                  <m.span
+                    initial={false}
+                    animate={{
+                      opacity: menuState ? 1 : 0,
+                      scale: menuState ? 1 : 0.25,
+                      filter: menuState ? "blur(0px)" : "blur(4px)",
+                      rotate: menuState ? 0 : 90,
+                    }}
+                    transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                    className="absolute inset-0 flex items-center justify-center will-change-transform"
+                  >
+                    <HugeiconsIcon icon={Cancel01Icon} className="size-6" />
+                  </m.span>
+                </span>
               </button>
             </div>
 
@@ -93,7 +104,7 @@ export const Header = () => {
 
             <div
               className={cn(
-                "mb-6 w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent",
+                "mb-6 w-full flex-wrap items-start justify-start space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:justify-end lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent",
                 !menuState ? "hidden" : "flex"
               )}
             >
