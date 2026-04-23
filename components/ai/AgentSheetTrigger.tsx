@@ -5,6 +5,11 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { AgentChat } from "@/components/ai/AgentChat"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/animate-ui/components/animate/tooltip"
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -23,16 +28,23 @@ export function AgentSheetTrigger({ className }: AgentSheetTriggerProps) {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsOpen(true)}
-        className={cn("text-accent", className)}
-        aria-label="Abrir asistente de reclutamiento"
-      >
-        <HugeiconsIcon icon={SparklesIcon} size={20} />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(true)}
+            className={cn("text-accent", className)}
+            aria-label="Abrir asistente de reclutamiento"
+          >
+            <HugeiconsIcon icon={SparklesIcon} size={20} />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>AI Agent</p>
+        </TooltipContent>
+      </Tooltip>
 
       <SheetContent
         side="right"

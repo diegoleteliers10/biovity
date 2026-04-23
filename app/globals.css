@@ -297,6 +297,101 @@
 }
 
 /* =========================================
+   Hero Entrance Animations (CSS-first)
+   Falls back to motion/react if JS loads.
+   Prevents flash/pop on mobile production.
+   ========================================= */
+
+@keyframes hero-entrance-h1 {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hero-entrance-p {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-entrance-card {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hero-entrance-stats {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-entrance-stat-item {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Base animation classes - applied immediately via CSS */
+.hero-animate-h1 {
+  animation: hero-entrance-h1 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.hero-animate-p {
+  animation: hero-entrance-p 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.12s both;
+}
+
+.hero-animate-card {
+  animation: hero-entrance-card 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.24s both;
+}
+
+.hero-animate-stats {
+  animation: hero-entrance-stats 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.36s both;
+}
+
+.hero-animate-stat-item {
+  animation: hero-entrance-stat-item 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.36s both;
+}
+
+/* Reduced motion override */
+@media (prefers-reduced-motion: reduce) {
+  .hero-animate-h1,
+  .hero-animate-p,
+  .hero-animate-card,
+  .hero-animate-stats,
+  .hero-animate-stat-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* =========================================
    View Transition CSS Recipes
    See: .claude/skills/vercel-react-view-transitions
    ========================================= */
