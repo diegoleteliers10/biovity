@@ -12,7 +12,7 @@ type DashboardShellProps = {
 
 export function DashboardShellOrganization({ children, defaultOpen }: DashboardShellProps) {
   return (
-    <SidebarProvider className="pt-2 pl-2 bg-sidebar" defaultOpen={defaultOpen}>
+    <SidebarProvider className="pt-2 px-2 pb-2 bg-sidebar" defaultOpen={defaultOpen}>
       <DashboardSidebar
         navData={NAV_DATA_ORGANIZATION}
         logoutRedirect="/login/organization"
@@ -20,7 +20,7 @@ export function DashboardShellOrganization({ children, defaultOpen }: DashboardS
         avatarGradient={{ from: "purple-500", to: "blue-600" }}
         logoutHoverContrastOnAccent
       />
-      <SidebarInset className="rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
+      <SidebarInset className="min-h-0 rounded-tl-lg sm:rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
         {children}
       </SidebarInset>
     </SidebarProvider>

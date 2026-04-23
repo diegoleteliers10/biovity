@@ -6,10 +6,10 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   type ChartConfig,
-  ChartContainer,
+  ChartContainer as LazyChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/lazy-chart"
 
 import { INDUSTRIA_CHART_DATA } from "@/lib/data/salarios-data"
 import { formatCurrencyCLP } from "@/lib/utils"
@@ -95,7 +95,7 @@ export function SalariosPorIndustria() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 min-h-0">
-            <ChartContainer
+            <LazyChartContainer
               config={chartConfig}
               className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0"
             >
@@ -158,7 +158,7 @@ export function SalariosPorIndustria() {
                   radius={8}
                 />
               </BarChart>
-            </ChartContainer>
+            </LazyChartContainer>
           </CardContent>
         </Card>
 

@@ -10,6 +10,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import type * as React from "react"
+import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -212,9 +214,17 @@ export const SavedContent = () => {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-start justify-between gap-4">
+      {/* Top row: menu on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
+        </div>
         <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">Empleos Guardados</h1>
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Empleos Guardados</h1>
           <p className="text-muted-foreground text-sm">
             Revisa rápidamente los empleos que marcaste para ver más tarde.
           </p>

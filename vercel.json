@@ -4,5 +4,14 @@
       "path": "/api/cron",
       "schedule": "0 10 */5 * *"
     }
+  ],
+  "regions": ["cle1"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=86400" }
+      ]
+    }
   ]
 }

@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/animate-ui/components/radix/dialog"
-import { RichTextEditor } from "@/components/dashboard/shared/RichTextEditor"
+import { RichTextEditor } from "@/components/dashboard/shared/lazy-rich-text-editor"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {

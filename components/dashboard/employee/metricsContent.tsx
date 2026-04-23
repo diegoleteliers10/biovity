@@ -10,6 +10,8 @@ import {
 } from "@hugeicons/core-free-icons"
 import dynamic from "next/dynamic"
 import { useCallback, useState } from "react"
+import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { authClient } from "@/lib/auth-client"
@@ -80,24 +82,32 @@ export const MetricsContent = () => {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
-        {sessionPending ? (
-          <div className="space-y-2">
-            <Skeleton className="h-9 w-80" />
-            <Skeleton className="h-5 w-96" />
-          </div>
-        ) : (
-          <div className="space-y-1">
-            <h1 className="text-[28px] font-bold tracking-wide text-foreground">
-              ¡Bienvenido/a de vuelta, {firstName}!
-            </h1>
-            <p className="text-muted-foreground">
-              Seguimiento de postulaciones, embudo de contratación y rendimiento reciente.
-            </p>
-          </div>
-        )}
-        <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-2 rounded-lg border p-1 bg-white">
+      {/* Top row: menu button on mobile (notification not present on employee metrics) */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
+        </div>
+        <div className="flex items-end justify-between gap-4">
+          {sessionPending ? (
+            <div className="space-y-2">
+              <Skeleton className="h-9 w-full max-w-[280px] sm:max-w-[320px]" />
+              <Skeleton className="h-5 w-full max-w-[320px] sm:max-w-[384px]" />
+            </div>
+          ) : (
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide text-foreground">
+                ¡Bienvenido/a de vuelta, {firstName}!
+              </h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Seguimiento de postulaciones, embudo de contratación y rendimiento reciente.
+              </p>
+            </div>
+          )}
+          <div className="hidden lg:flex items-center gap-2 rounded-lg border p-1 bg-white">
             <Button
               variant={timeRange === "3m" ? "default" : "ghost"}
               size="sm"

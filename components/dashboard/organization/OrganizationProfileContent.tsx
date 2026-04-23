@@ -17,6 +17,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { NotificationBell } from "@/components/common/NotificationBell"
 // import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -418,7 +420,16 @@ export function OrganizationProfileContent() {
 
   return (
     <main className="flex flex-1 flex-col gap-8 p-6 md:p-8">
+      {/* Top row: menu + notification on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+        <NotificationBell notifications={[]} />
+      </div>
+
       <header>
+        <div className="hidden lg:flex items-center justify-end mb-2">
+          <NotificationBell notifications={[]} />
+        </div>
         <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
         <p className="text-muted-foreground text-sm mt-1">
           Gestiona tu información personal y de la organización

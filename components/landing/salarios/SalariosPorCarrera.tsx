@@ -6,10 +6,10 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   type ChartConfig,
-  ChartContainer,
+  ChartContainer as LazyChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/lazy-chart"
 
 import { CARRERA_CHART_DATA } from "@/lib/data/salarios-data"
 import { formatCurrencyCLP } from "@/lib/utils"
@@ -91,7 +91,7 @@ export function SalariosPorCarrera() {
                 <CardDescription>Valores en miles de pesos chilenos (CLP)</CardDescription>
               </CardHeader>
               <CardContent className="p-6 flex-1 min-h-0">
-                <ChartContainer
+                <LazyChartContainer
                   config={chartConfig}
                   className="w-full aspect-[4/3] md:aspect-video min-h-[200px] md:min-h-0"
                 >
@@ -143,7 +143,7 @@ export function SalariosPorCarrera() {
                       radius={8}
                     />
                   </BarChart>
-                </ChartContainer>
+                </LazyChartContainer>
               </CardContent>
             </Card>
           </div>

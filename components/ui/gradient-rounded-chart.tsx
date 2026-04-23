@@ -10,7 +10,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/lazy-chart"
 
 const chartData = [
   { month: "January", desktop: 342, mobile: 245 },

@@ -20,7 +20,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/lazy-chart"
 
 type TimeRange = "3m" | "6m" | "12m"
 

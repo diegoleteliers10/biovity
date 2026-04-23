@@ -19,6 +19,10 @@ export type CandidateContext = {
   yearsOfExperience: number
   bio: string
   specialization?: string
+  resumeUrl?: string
+  experiences?: string[]
+  certifications?: string[]
+  languages?: string[]
 }
 
 export type JobOfferContext = {

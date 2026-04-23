@@ -152,6 +152,34 @@ export async function getResume(id: string): Promise<Result<Resume, ApiError | N
   return fetchJson<Resume>(`${API_BASE}/api/v1/resumes/${id}`)
 }
 
+export async function getResumesByUserIds(
+  userIds: string[]
+): Promise<Result<Record<string, Resume>, ApiError | NetworkError>> {
+  if (userIds.length === 0) return R.ok({})
+
+  const idsParam = userIds.join(",")
+  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/resumes/users?ids=${idsParam}`)
+
+  if (result.isErr()) return R.err(result.error)
+
+  const raw = result.value
+  if (!raw || typeof raw !== "object") return R.ok({})
+
+  const obj = raw as Record<string, unknown>
+  const resumesObj: Record<string, Resume> = {}
+
+  if (Array.isArray(obj.data)) {
+    for (const item of obj.data) {
+      const normalized = normalizeResume(item)
+      if (normalized) {
+        resumesObj[normalized.userId] = normalized
+      }
+    }
+  }
+
+  return R.ok(resumesObj)
+}
+
 export async function createResume(
   input: CreateResumeInput
 ): Promise<Result<Resume, ApiError | NetworkError>> {

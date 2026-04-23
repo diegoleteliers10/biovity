@@ -58,7 +58,7 @@ export function DashboardSidebar({
   logoutHoverContrastOnAccent = false,
   profession: professionProp,
 }: DashboardSidebarProps) {
-  const { state, setOpen, open } = useSidebar()
+  const { state, setOpen, open, setOpenMobile, isMobile } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
   const { signOut, useSession } = authClient
@@ -83,6 +83,13 @@ export function DashboardSidebar({
       .slice(0, 2)
       .toUpperCase() ?? navData.user.title.slice(0, 2).toUpperCase()
 
+  const handleNavigate = (url: string) => {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+    router.push(url)
+  }
+
   const handleLogout = async () => {
     try {
       await signOut({
@@ -103,7 +110,7 @@ export function DashboardSidebar({
   }
 
   const handleViewProfile = () => {
-    router.push(profileUrl)
+    handleNavigate(profileUrl)
   }
 
   const logoutItemClassName = logoutHoverContrastOnAccent
@@ -164,7 +171,7 @@ export function DashboardSidebar({
                       >
                         <button
                           type="button"
-                          onClick={() => router.push(item.url)}
+                          onClick={() => handleNavigate(item.url)}
                           className="flex items-center w-full focus:outline-none cursor-pointer"
                         >
                           <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
@@ -270,7 +277,7 @@ export function DashboardSidebar({
                         >
                           <button
                             type="button"
-                            onClick={() => router.push(item.url)}
+                            onClick={() => handleNavigate(item.url)}
                             className="flex items-center w-full focus:outline-none cursor-pointer"
                           >
                             <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />

@@ -12,6 +12,7 @@ import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import { useState } from "react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -103,25 +104,35 @@ export function OrganizationMetricsContent() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">Métricas</h1>
-          <p className="text-muted-foreground text-sm">
-            Analiza el rendimiento de tus ofertas y candidatos.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
+      {/* Top row: menu + notification on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+        <NotificationBell notifications={[]} />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
           <NotificationBell notifications={[]} />
-          <Select value={period} onValueChange={(v) => setPeriod(v as MetricsPeriod)}>
-            <SelectTrigger className="w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="week">Esta semana</SelectItem>
-              <SelectItem value="month">Este mes</SelectItem>
-              <SelectItem value="year">Este año</SelectItem>
-            </SelectContent>
-          </Select>
+        </div>
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Métricas</h1>
+            <p className="text-muted-foreground text-sm">
+              Analiza el rendimiento de tus ofertas y candidatos.
+            </p>
+          </div>
+          <div className="hidden lg:block">
+            <Select value={period} onValueChange={(v) => setPeriod(v as MetricsPeriod)}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="week">Esta semana</SelectItem>
+                <SelectItem value="month">Este mes</SelectItem>
+                <SelectItem value="year">Este año</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 

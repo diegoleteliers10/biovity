@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "dev:portless": "portless biovity next dev --turbopack",
     "build": "next build --turbopack",
+    "analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "biome check .",
     "format": "biome format --write .",
@@ -84,6 +85,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
     "@eslint/eslintrc": "^3.3.5",
+    "@next/bundle-analyzer": "^16.2.4",
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query-devtools": "^5.95.2",

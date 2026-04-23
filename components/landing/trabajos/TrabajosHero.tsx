@@ -12,7 +12,7 @@ export function TrabajosHero() {
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed text-pretty">
             Explora oportunidades en biotecnología, bioquímica, química e ingeniería química.
           </p>
         </div>

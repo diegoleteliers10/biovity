@@ -1,19 +1,22 @@
 "use client"
 
-import { File02Icon } from "@hugeicons/core-free-icons"
+import { ArrowDown01Icon, File02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryClient } from "@tanstack/react-query"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import { AIScoreModal } from "@/components/ai/AIScoreModal"
 import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { Button } from "@/components/ui/button"
 import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
+import type { Resume } from "@/lib/api/resumes"
+import { getResumeByUserId } from "@/lib/api/resumes"
 import { formatJobLocation } from "@/lib/api/jobs"
 import {
   applicationsKeys,
@@ -67,6 +70,33 @@ export function OrganizationApplicationsContent() {
     selectedJobId ?? undefined
   )
   const updateStatusMutation = useUpdateApplicationStatusMutation(selectedJobId ?? "")
+
+  const [resumes, setResumes] = useState<Record<string, Resume>>({})
+
+  useEffect(() => {
+    if (!applications?.length) return
+
+    const userIds = applications.map((a) => a.candidateId).filter(Boolean)
+    if (userIds.length === 0) return
+
+    const fetchResume = async (userId: string): Promise<[string, Resume | null]> => {
+      const result = await getResumeByUserId(userId)
+      if (result.isOk()) {
+        return [userId, result.value]
+      }
+      return [userId, null]
+    }
+
+    Promise.all(userIds.map(fetchResume)).then((results) => {
+      const resumesMap: Record<string, Resume> = {}
+      for (const [userId, resume] of results) {
+        if (resume) {
+          resumesMap[userId] = resume
+        }
+      }
+      setResumes(resumesMap)
+    })
+  }, [applications])
 
   // Modal de evento
   const [eventModal, setEventModal] = useState<{
@@ -190,7 +220,7 @@ export function OrganizationApplicationsContent() {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="space-y-1">
-          <h1 className="text-balance text-[28px] font-bold tracking-wide">Aplicaciones</h1>
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Aplicaciones</h1>
           <p className="text-pretty text-muted-foreground text-sm">
             Revisa las postulaciones de candidatos a tus ofertas.
           </p>
@@ -206,45 +236,80 @@ export function OrganizationApplicationsContent() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-start justify-between gap-4">
+      {/* Top row: menu + notification on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+        <NotificationBell notifications={[]} />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
+        </div>
         <div className="space-y-1">
-          <h1 className="text-balance text-[28px] font-bold tracking-wide">Aplicaciones</h1>
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Aplicaciones</h1>
           <p className="text-pretty text-muted-foreground text-sm">
             Revisa las postulaciones de candidatos a tus ofertas.
           </p>
         </div>
-        <NotificationBell notifications={[]} />
       </div>
 
-      <div className="flex min-h-0 flex-1 gap-4">
-        <aside className="flex w-64 shrink-0 flex-col gap-2 overflow-y-auto rounded-lg border bg-muted/20 p-2">
-          <p className="px-2 text-muted-foreground text-xs font-medium">Ofertas</p>
-          {jobsLoading ? (
-            <div className="flex justify-center py-4">
-              <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            </div>
-          ) : jobsError ? (
-            <p className="px-2 text-destructive text-sm">{jobsError.message}</p>
-          ) : !jobList.length ? (
-            <p className="px-2 text-muted-foreground text-sm">No hay ofertas publicadas.</p>
-          ) : (
-            jobList.map((job) => (
-              <button
-                key={job.id}
-                type="button"
-                onClick={() => setSelectedJobId(job.id)}
-                className={cn(
-                  "flex flex-col gap-0.5 rounded-md px-3 py-2 text-left transition-all duration-150 active:scale-[0.98]",
-                  selectedJobId === job.id ? "bg-primary/10 text-primary" : "hover:bg-muted/60"
-                )}
-                aria-pressed={selectedJobId === job.id}
-                aria-label={`Ver aplicaciones de ${job.title}`}
+      <div className="flex min-h-0 flex-1 gap-4 flex-col lg:flex-row">
+        {/* Job selector - sidebar on desktop, dropdown on mobile */}
+        <div className="lg:h-full lg:w-64 shrink-0">
+          {/* Desktop sidebar */}
+          <aside className="hidden lg:flex h-full w-64 shrink-0 flex-col gap-2 overflow-y-auto rounded-lg border bg-muted/20 p-2">
+            <p className="px-2 text-muted-foreground text-xs font-medium">Ofertas</p>
+            {jobsLoading ? (
+              <div className="flex justify-center py-4">
+                <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : jobsError ? (
+              <p className="px-2 text-destructive text-sm">{jobsError.message}</p>
+            ) : !jobList.length ? (
+              <p className="px-2 text-muted-foreground text-sm">No hay ofertas publicadas.</p>
+            ) : (
+              jobList.map((job) => (
+                <button
+                  key={job.id}
+                  type="button"
+                  onClick={() => setSelectedJobId(job.id)}
+                  className={cn(
+                    "flex flex-col gap-0.5 rounded-md px-3 py-2 text-left transition-all duration-150 active:scale-[0.98]",
+                    selectedJobId === job.id ? "bg-primary/10 text-primary" : "hover:bg-muted/60"
+                  )}
+                  aria-pressed={selectedJobId === job.id}
+                  aria-label={`Ver aplicaciones de ${job.title}`}
+                >
+                  <span className="truncate font-medium text-sm">{job.title}</span>
+                </button>
+              ))
+            )}
+          </aside>
+          {/* Mobile dropdown */}
+          <div className="lg:hidden mb-3">
+            <div className="relative">
+              <select
+                value={selectedJobId ?? ""}
+                onChange={(e) => setSelectedJobId(e.target.value || null)}
+                className="w-full appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-12 text-sm"
+                aria-label="Seleccionar oferta"
               >
-                <span className="truncate font-medium text-sm">{job.title}</span>
-              </button>
-            ))
-          )}
-        </aside>
+                <option value="">Selecciona una oferta</option>
+                {jobList.map((job) => (
+                  <option key={job.id} value={job.id}>
+                    {job.title}
+                  </option>
+                ))}
+              </select>
+              <HugeiconsIcon
+                icon={ArrowDown01Icon}
+                aria-hidden="true"
+                className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              />
+            </div>
+          </div>
+        </div>
 
         <section className="min-w-0 max-w-dvw flex-1 overflow-hidden rounded-lg border bg-card">
           {selectedJob ? (
@@ -254,7 +319,7 @@ export function OrganizationApplicationsContent() {
                   <h2 className="font-semibold">{selectedJob.title}</h2>
                   {jobOfferContext && (
                     <AnalyzeButton
-                      onAnalyze={() => analyze(candidates, jobOfferContext)}
+                      onAnalyze={() => analyze(candidates, jobOfferContext, resumes)}
                       isAnalyzing={isAnalyzing}
                       analyzedAt={analyzedAt}
                       onClear={clearScores}
@@ -267,7 +332,7 @@ export function OrganizationApplicationsContent() {
                   {formatJobLocation(selectedJob.location)} · {applicants.length} postulantes
                 </p>
               </div>
-              <div className="flex-1 p-4">
+              <div className="flex-1 p-3 lg:p-4 overflow-y-auto lg:overflow-visible">
                 {appsLoading ? (
                   <div className="flex flex-1 items-center justify-center py-12">
                     <div className="size-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -316,7 +381,7 @@ export function OrganizationApplicationsContent() {
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">Selecciona una oferta</p>
-                <p className="text-muted-foreground text-xs">
+                <p className="px-4 text-muted-foreground text-xs lg:px-0">
                   Elige una oferta de la lista para ver y gestionar las postulaciones en el tablero.
                 </p>
               </div>

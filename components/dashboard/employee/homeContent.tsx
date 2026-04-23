@@ -201,7 +201,7 @@ export const HomeContent = () => {
       />
 
       {/* Metrics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {DATA.metrics.map((metric, i) => (
           <m.div
             key={metric.title}
@@ -215,7 +215,7 @@ export const HomeContent = () => {
       </div>
 
       {/* Recent Applications and Messages */}
-      <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <RecentApplicationsCard
           applications={applications}
           onJobClick={handleJobClick}
@@ -247,7 +247,7 @@ export const HomeContent = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {DATA.recommendedJobs.map((job) => (
             <RecommendedJobCard
               key={job.jobTitle}

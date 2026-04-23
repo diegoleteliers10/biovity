@@ -8,7 +8,7 @@ import React from "react"
 import { Bar, BarChart, Cell, ReferenceLine, XAxis } from "recharts"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { type ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { type ChartConfig, ChartContainer } from "@/components/ui/lazy-chart"
 import { cn } from "@/lib/utils"
 
 const jetBrainsMono = JetBrains_Mono({

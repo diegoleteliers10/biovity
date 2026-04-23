@@ -1,6 +1,5 @@
 import { cookies } from "next/headers"
 import type { ReactNode } from "react"
-import { GlobalAgentSheet } from "@/components/ai/GlobalAgentSheet"
 import { DashboardShellOrganization } from "@/components/dashboard/organization/sidebarshell"
 
 export default async function OrganizationLayout({ children }: { children: ReactNode }) {
@@ -10,7 +9,6 @@ export default async function OrganizationLayout({ children }: { children: React
   return (
     <DashboardShellOrganization defaultOpen={defaultOpen}>
       {children}
-      <GlobalAgentSheet />
     </DashboardShellOrganization>
   )
 }

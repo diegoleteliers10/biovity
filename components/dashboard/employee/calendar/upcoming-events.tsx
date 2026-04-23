@@ -91,10 +91,10 @@ export function UpcomingEvents({ events = [], isLoading, onEdit, onDelete }: Upc
 
   return (
     <Card className="bg-white border border-border/10 h-full">
-      <div className="p-6 h-full flex flex-col">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="p-4 lg:p-6 h-full flex flex-col">
+        <div className="flex items-center gap-2 mb-4 lg:mb-6">
           <HugeiconsIcon icon={Calendar01Icon} className="h-5 w-5 text-secondary" />
-          <h3 className="text-lg font-semibold text-foreground">Próximos Eventos</h3>
+          <h3 className="text-base lg:text-lg font-semibold text-foreground">Próximos</h3>
         </div>
 
         {isLoading ? (

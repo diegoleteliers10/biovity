@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
+import type { Resume } from "@/lib/api/resumes"
 
 type ScoreEntry = {
   score: CandidateScore
@@ -18,17 +19,37 @@ export function useKanbanAIScoring() {
   const [error, setError] = useState<string | null>(null)
 
   const analyze = useCallback(
-    async (candidates: { id: string; data: CandidateContext }[], jobOffer: JobOfferContext) => {
+    async (
+      candidates: { id: string; data: CandidateContext }[],
+      jobOffer: JobOfferContext,
+      resumes?: Record<string, Resume>
+    ) => {
       if (!candidates.length) return
 
       setIsAnalyzing(true)
       setError(null)
 
       try {
+        const candidatesWithResume = candidates.map((c) => {
+          const resume = resumes?.[c.id]
+          return {
+            ...c,
+            data: {
+              ...c.data,
+              resumeUrl: resume?.cvFile?.url,
+              experiences: resume?.experiences?.map((e) =>
+                [e.title, e.company, e.description].filter(Boolean).join(" - ")
+              ).filter(Boolean) ?? [],
+              certifications: resume?.certifications?.map((cert) => cert.name || cert.title).filter(Boolean) ?? [],
+              languages: resume?.languages?.map((lang) => lang.name || lang.language).filter(Boolean) ?? [],
+            },
+          }
+        })
+
         const res = await fetch("/api/ai/score-candidates", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ candidates, jobOffer }),
+          body: JSON.stringify({ candidates: candidatesWithResume, jobOffer }),
         })
 
         if (!res.ok) throw new Error("API error")
