@@ -34,7 +34,7 @@ export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
   }, [user, resume])
 
   return (
-    <SidebarProvider className="pt-2 pl-2 bg-sidebar" defaultOpen={defaultOpen}>
+    <SidebarProvider className="pt-2 px-2 pb-2 bg-sidebar" defaultOpen={defaultOpen}>
       <DashboardSidebar
         navData={navData}
         logoutRedirect="/login"
@@ -43,7 +43,7 @@ export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
         avatarGradient={{ from: "blue-500", to: "purple-600" }}
         profession={user?.profession}
       />
-      <SidebarInset className="rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
+      <SidebarInset className="min-h-0 rounded-tl-lg sm:rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
         {children}
       </SidebarInset>
     </SidebarProvider>

@@ -162,18 +162,18 @@ function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-w-[220px] max-w-[220px] flex-col rounded-lg border bg-muted/30 p-3 transition-colors max-h-full",
+        "flex min-w-[180px] max-w-[180px] lg:min-w-[220px] lg:max-w-[220px] flex-col rounded-lg border bg-muted/30 p-2.5 lg:p-3 transition-colors max-h-full snap-start shrink-0",
         isOver && "border-primary/50 bg-primary/5"
       )}
     >
-      <div className="mb-3 flex items-center gap-2 shrink-0">
+      <div className="mb-2 lg:mb-3 flex items-center gap-1.5 lg:gap-2 shrink-0">
         <HugeiconsIcon
           icon={stage.icon}
-          size={20}
+          size={16}
           strokeWidth={1.5}
-          className="text-muted-foreground"
+          className="text-muted-foreground lg:size-5"
         />
-        <span className="font-medium text-sm">{stage.label}</span>
+        <span className="font-medium text-xs lg:text-sm">{stage.label}</span>
         <span className="tabular-nums text-muted-foreground text-xs">({applicants.length})</span>
       </div>
       <div className="flex flex-col gap-2">
@@ -285,7 +285,8 @@ export function ApplicationsKanban({
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="flex gap-4 overflow-x-auto pb-2" style={{ height: "100%" }}>
+      {/* Desktop: horizontal scroll, Mobile: vertical stack or smaller cards */}
+      <div className="flex gap-3 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible snap-x snap-mandatory lg:snap-none" style={{ height: "100%" }}>
         {STAGES.map((stage) => (
           <KanbanColumn
             key={stage.id}

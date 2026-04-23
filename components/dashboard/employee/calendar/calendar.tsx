@@ -130,16 +130,16 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
   return (
     <div className="relative">
       {/* Week days header */}
-      <div className="grid grid-cols-7 gap-px mb-2">
+      <div className="grid grid-cols-7 gap-px mb-1 lg:mb-2">
         {weekDays.map((day) => (
-          <div key={day} className="p-3 text-center text-sm font-medium text-muted-foreground">
+          <div key={day} className="p-1.5 lg:p-3 text-center text-xs lg:text-sm font-medium text-muted-foreground">
             {day}
           </div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-px bg-[#e2e2e4] rounded-lg overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden lg:gap-[1.5px]">
         {days.map((day, index) => {
           const dateKey = day
             ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
@@ -158,7 +158,7 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
               role={day ? "button" : "presentation"}
               tabIndex={day ? 0 : undefined}
               className={`
-                min-h-[120px] bg-white p-2 flex flex-col
+                min-h-[80px] sm:min-h-[100px] lg:min-h-[120px] bg-card p-1.5 lg:p-2 flex flex-col
                 ${day ? "hover:bg-[#f3f3f5] transition-colors cursor-pointer" : ""}
                 ${isToday ? "ring-2 ring-secondary ring-inset" : ""}
               `}

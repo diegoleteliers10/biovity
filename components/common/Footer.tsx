@@ -55,7 +55,7 @@ export function Footer() {
               <Logo size="sm" />
               <span className="text-xl font-semibold">Biovity</span>
             </div>
-            <p className="text-gray-400 mb-6 leading-relaxed">
+            <p className="text-gray-400 mb-6 leading-relaxed text-pretty">
               La plataforma líder que conecta talento científico con las mejores oportunidades en
               biotecnología, química, farmacia y áreas relacionadas.
             </p>

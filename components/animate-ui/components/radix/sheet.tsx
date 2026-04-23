@@ -57,7 +57,7 @@ type SheetContentProps = SheetContentPrimitiveProps & {
 function SheetContent({
   className,
   children,
-  side = "right",
+  side = "left",
   showCloseButton = true,
   ...props
 }: SheetContentProps) {
@@ -73,6 +73,7 @@ function SheetContent({
           side === "bottom" && "w-full h-[350px] border-t",
           className
         )}
+        side={side}
         {...props}
       >
         {children}

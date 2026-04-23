@@ -117,7 +117,7 @@ export function OrganizationHomeContent() {
         onNotificationClick={handleNotificationClick}
       />
 
-      <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {metricsQuery.isPending ? (
           Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="border border-border/80 bg-white rounded-xl p-6">

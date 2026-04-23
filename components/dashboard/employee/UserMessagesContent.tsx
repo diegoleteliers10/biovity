@@ -2,6 +2,7 @@
 
 import {
   Attachment01Icon,
+  ArrowLeft01Icon,
   Briefcase01Icon,
   BubbleChatIcon,
   Calendar04Icon,
@@ -19,6 +20,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -38,7 +41,7 @@ import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
-import { formatDateChilean } from "@/lib/utils"
+import { cn, formatDateChilean } from "@/lib/utils"
 
 export function UserMessagesContent() {
   const router = useRouter()
@@ -53,6 +56,9 @@ export function UserMessagesContent() {
     defaultValue: "",
   })
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
+
+  // Mobile state: which panel is visible
+  const [mobileView, setMobileView] = useState<"list" | "chat">("list")
 
   const { data: chats = [], isLoading: chatsLoading } = useChatsByProfessional(professionalId)
   useChatListRealtime(chats)
@@ -77,6 +83,28 @@ export function UserMessagesContent() {
     }
     void loadChat()
   }, [chatIdFromUrl, chats])
+  useEffect(() => {
+    if (selectedChat) {
+      setMobileView("chat")
+    } else {
+      setMobileView("list")
+    }
+  }, [selectedChat])
+
+  useEffect(() => {
+    if (chatIdFromUrl) {
+      setMobileView("chat")
+    }
+  }, [chatIdFromUrl])
+
+  const handleBackToList = () => {
+    setSelectedChat(null)
+    setMobileView("list")
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete("chat")
+    router.replace(`/dashboard/messages?${params.toString()}`)
+  }
+
   const [messageInput, setMessageInput] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -143,30 +171,42 @@ export function UserMessagesContent() {
   }
 
   return (
-    <div className="flex flex-1 overflow-hidden">
-      {/* Sidebar */}
-      <div className="flex w-80 flex-col overflow-hidden border-r border-border max-h-dvh">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+      {/* Sidebar - hidden on mobile when chat is selected */}
+      <div className={cn(
+        "flex w-full lg:h-full lg:w-80 flex-col overflow-hidden border-r border-border max-h-dvh transition-all",
+        mobileView === "chat" ? "hidden lg:flex" : "flex"
+      )}>
         <div className="p-4">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Mensajes</h1>
-              <p className="mt-1 text-muted-foreground text-sm">
-                {chatsLoading ? "Cargando..." : `${chats.length} conversaciones activas`}
-              </p>
-            </div>
-            <Button variant="ghost" size="icon" className="size-9" aria-label="Más opciones">
-              <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
-            </Button>
+          {/* Top row: menu + notification on mobile */}
+          <div className="flex items-center justify-between mb-4 lg:mb-6 lg:hidden">
+            <MobileMenuButton />
+            <NotificationBell notifications={[]} />
           </div>
 
-          <div className="relative mb-6">
+          <div className="mb-4 space-y-1 lg:mb-6">
+            <div className="hidden lg:flex justify-end items-center gap-1">
+              <Button variant="ghost" size="icon" className="size-9" aria-label="Más opciones">
+                <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
+              </Button>
+              <NotificationBell notifications={[]} />
+            </div>
+            <div>
+              <h1 className="text-xl lg:text-2xl font-bold text-foreground">Mensajes</h1>
+              <p className="mt-1 text-muted-foreground text-xs lg:text-sm">
+                {chatsLoading ? "Cargando..." : `${chats.length} conversaciones`}
+              </p>
+            </div>
+          </div>
+
+          <div className="relative mb-4 lg:mb-6">
             <HugeiconsIcon
               icon={Search01Icon}
               size={18}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <Input
-              placeholder="Buscar conversaciones..."
+              placeholder="Buscar..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-10 border-muted bg-muted/50 pl-10 transition-colors focus:bg-background"
@@ -194,8 +234,11 @@ export function UserMessagesContent() {
         </div>
       </div>
 
-      {/* Main chat area */}
-      <div className="flex flex-1 flex-col overflow-hidden max-h-dvh">
+      {/* Main chat area - hidden on mobile when list is selected */}
+      <div className={cn(
+        "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
+        mobileView === "list" ? "hidden lg:flex" : "flex"
+      )}>
         {!selectedChat ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="max-w-md rounded-2xl bg-transparent px-6 py-7 text-center">
@@ -219,21 +262,30 @@ export function UserMessagesContent() {
         ) : (
           <>
             {/* Chat header */}
-            <div className="shrink-0 border-b border-border bg-background p-4">
+            <div className="shrink-0 border-b border-border bg-background p-3 lg:p-4">
               <div className="flex items-start justify-between">
-                <div className="flex flex-1 items-start gap-3">
-                  <Avatar className="size-12">
+                <div className="flex flex-1 items-center gap-2 lg:gap-3">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 lg:hidden"
+                    onClick={handleBackToList}
+                    aria-label="Volver a conversaciones"
+                  >
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
+                  </Button>
+                  <Avatar className="size-10 lg:size-12">
                     {recruiter?.avatar && <AvatarImage src={recruiter.avatar} alt="" />}
                     <AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
                       {recruiterInitials}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <h2 className="text-lg font-semibold text-foreground text-balance">
+                  <div className="min-w-0 flex-1 space-y-0.5 lg:space-y-1">
+                    <h2 className="text-base lg:text-lg font-semibold text-foreground text-balance truncate">
                       {recruiterName}
                     </h2>
-                    <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                      <HugeiconsIcon icon={Briefcase01Icon} size={14} className="shrink-0" />
+                    <div className="flex items-center gap-1 text-muted-foreground text-xs lg:text-sm">
+                      <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-14" />
                       <span className="truncate">{recruiter?.profession ?? "—"}</span>
                     </div>
                   </div>

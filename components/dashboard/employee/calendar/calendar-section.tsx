@@ -4,6 +4,8 @@ import { ArrowLeft01Icon, ArrowRight01Icon, PlusSignIcon } from "@hugeicons/core
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import { Button } from "@/components/ui/button"
 import { useEvents } from "@/lib/api/use-events"
 import { authClient } from "@/lib/auth-client"
@@ -85,74 +87,90 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
     userRole === "organization" ? events.filter((e) => e.organizerId === organizerId) : events
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      {/* Calendar Section */}
-      <div className="lg:col-span-3">
-        <div className="bg-white rounded-xl border border-border/10">
-          {/* Calendar Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border/10">
-            <h2 className="text-2xl font-semibold text-card-foreground">
-              {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-            </h2>
-            <div className="flex items-center gap-2">
-              {userRole === "organization" && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => handleCreateEvent()}
-                  className="gap-1.5"
-                >
-                  <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />
-                  Crear evento
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigateMonth("prev")}
-                className="h-8 w-8 p-0"
-              >
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentDate(getChileanDate())}
-                className="text-sm px-3"
-              >
-                Hoy
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigateMonth("next")}
-                className="h-8 w-8 p-0"
-              >
-                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Calendar Grid */}
-          <div className="p-6">
-            <Calendar
-              currentDate={currentDate}
-              events={displayEvents}
-              isLoading={isLoading}
-              onCreateEvent={userRole === "organization" ? handleCreateEvent : undefined}
-            />
-          </div>
-        </div>
+    <div className="flex flex-1 flex-col gap-4 p-4">
+      {/* Top row: menu + notification on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+        <NotificationBell notifications={[]} />
       </div>
 
-      {/* Upcoming Events Sidebar */}
-      <div className="lg:col-span-1">
-        <UpcomingEvents
-          events={displayEvents}
-          isLoading={isLoading}
-          onEdit={handleEditEvent}
-          onDelete={(eventId) => console.log("Delete event:", eventId)}
-        />
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
+        </div>
+        <h1 className="text-2xl font-bold tracking-wide">Calendario</h1>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
+        {/* Calendar Section */}
+        <div className="lg:col-span-3">
+          <div className="bg-white rounded-xl border border-border/10">
+            {/* Calendar Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/10 px-0 py-4 lg:py-6 lg:pr-6">
+              <h2 className="text-lg sm:text-2xl font-semibold text-card-foreground tracking-tight">
+                {months[currentDate.getMonth()]} {currentDate.getFullYear()}
+              </h2>
+              <div className="flex items-center gap-2">
+                {userRole === "organization" && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => handleCreateEvent()}
+                    className="gap-1.5"
+                  >
+                    <HugeiconsIcon icon={PlusSignIcon} className="h-4 w-4" />
+                    <span className="hidden sm:inline">Crear evento</span>
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigateMonth("prev")}
+                  className="h-8 w-8 p-0"
+                >
+                  <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentDate(getChileanDate())}
+                  className="text-sm px-2 sm:px-3"
+                >
+                  <span className="hidden sm:inline">Hoy</span>
+                  <span className="sm:hidden">Hoy</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigateMonth("next")}
+                  className="h-8 w-8 p-0"
+                >
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="px-0 pt-3 pb-3 lg:pt-3 lg:pr-6 lg:pb-6">
+              <Calendar
+                currentDate={currentDate}
+                events={displayEvents}
+                isLoading={isLoading}
+                onCreateEvent={userRole === "organization" ? handleCreateEvent : undefined}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Upcoming Events Sidebar */}
+        <div className="lg:col-span-1">
+          <UpcomingEvents
+            events={displayEvents}
+            isLoading={isLoading}
+            onEdit={handleEditEvent}
+            onDelete={(eventId) => console.log("Delete event:", eventId)}
+          />
+        </div>
       </div>
 
       {/* Create/Edit Event Modal */}

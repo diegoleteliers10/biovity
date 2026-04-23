@@ -23,6 +23,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Avatar } from "@/components/base/avatar/avatar"
 import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
@@ -376,27 +378,37 @@ export function TalentContent() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-balance text-[28px] font-bold tracking-wide">Explorar Talento</h1>
-          <p className="text-pretty text-muted-foreground text-sm">
-            Busca y revisa perfiles de profesionales en la plataforma.
-          </p>
+      {/* Top row: menu on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
         </div>
-        <div className="relative w-full sm:w-72">
-          <HugeiconsIcon
-            icon={Search01Icon}
-            size={18}
-            className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
-            type="search"
-            placeholder="Buscar por nombre o email..."
-            value={inputSearch}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-9"
-            aria-label="Buscar profesionales"
-          />
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between flex-1">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Explorar Talento</h1>
+            <p className="text-pretty text-muted-foreground text-sm">
+              Busca y revisa perfiles de profesionales en la plataforma.
+            </p>
+          </div>
+          <div className="relative w-full sm:w-72">
+            <HugeiconsIcon
+              icon={Search01Icon}
+              size={18}
+              className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
+              type="search"
+              placeholder="Buscar por nombre o email..."
+              value={inputSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-9"
+              aria-label="Buscar profesionales"
+            />
+          </div>
         </div>
       </div>
 
@@ -562,11 +574,11 @@ export function TalentContent() {
             </Table>
           </div>
 
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="tabular-nums text-muted-foreground text-sm">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-muted-foreground lg:text-sm">
               Mostrando {startItem}–{endItem} de {total}
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2 sm:justify-end">
               <Button
                 variant="outline"
                 size="sm"

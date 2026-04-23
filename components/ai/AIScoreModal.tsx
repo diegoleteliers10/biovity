@@ -94,6 +94,16 @@ export function AIScoreModal({ score, jobOffer, candidateName, open, onOpenChang
             </div>
           </div>
 
+          {/* Reason */}
+          {score.reason && (
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <p className="text-xs font-medium text-muted-foreground mb-1">
+                Análisis
+              </p>
+              <p className="text-sm text-foreground">{score.reason}</p>
+            </div>
+          )}
+
           {/* Strengths */}
           {score.strengths.length > 0 && (
             <div className="space-y-2">

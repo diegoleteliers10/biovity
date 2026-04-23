@@ -15,6 +15,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { addTransitionType, startTransition, useState, ViewTransition } from "react"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -149,7 +151,7 @@ export function OfertasContent() {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">Ofertas</h1>
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Ofertas</h1>
           <p className="text-muted-foreground text-sm">
             Gestiona tus vacantes y publica nuevas ofertas de empleo.
           </p>
@@ -165,17 +167,30 @@ export function OfertasContent() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">Ofertas</h1>
-          <p className="text-muted-foreground text-sm">
-            Gestiona tus vacantes y publica nuevas ofertas de empleo.
-          </p>
+      {/* Top row: menu + notification on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+        <NotificationBell notifications={[]} />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
         </div>
-        <Button onClick={handleCreateOffer}>
-          <HugeiconsIcon icon={FileAddIcon} size={18} strokeWidth={1.5} className="mr-2" />
-          Crear oferta
-        </Button>
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Ofertas</h1>
+            <p className="text-muted-foreground text-sm">
+              Gestiona tus vacantes y publica nuevas ofertas de empleo.
+            </p>
+          </div>
+          <div className="hidden lg:block">
+            <Button onClick={handleCreateOffer}>
+              <HugeiconsIcon icon={FileAddIcon} size={18} strokeWidth={1.5} className="mr-2" />
+              Crear oferta
+            </Button>
+          </div>
+        </div>
       </div>
 
       {isLoading ? (
@@ -317,7 +332,7 @@ export function OfertasContent() {
                   <div className="absolute right-2 top-2 z-10">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <HugeiconsIcon icon={MoreHorizontalIcon} size={18} strokeWidth={1.5} onClick={(e) => e.stopPropagation()} className="relative right-2"/>
+                        <HugeiconsIcon icon={MoreHorizontalIcon} size={20} strokeWidth={1.5} onClick={(e) => e.stopPropagation()} className="relative right-2"/>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem

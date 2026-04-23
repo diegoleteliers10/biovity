@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation"
 import { useQueryStates } from "nuqs"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Select } from "@/components/base/select/select"
+import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -196,9 +198,17 @@ export const SearchContent = () => {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-start justify-between gap-4">
+      {/* Top row: menu on mobile */}
+      <div className="flex items-center justify-between lg:hidden">
+        <MobileMenuButton />
+      </div>
+
+      <div className="space-y-1">
+        <div className="hidden lg:flex justify-end">
+          <NotificationBell notifications={[]} />
+        </div>
         <div className="space-y-1">
-          <h1 className="text-[28px] font-bold tracking-wide">Buscar Empleos</h1>
+          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Buscar Empleos</h1>
           <p className="text-muted-foreground text-sm">
             Encuentra oportunidades acorde a tus preferencias.
           </p>
@@ -391,7 +401,7 @@ export const SearchContent = () => {
                   <div className="flex flex-col gap-1.5">
                     {/* Header: Título y Fecha */}
                     <div className="flex items-start justify-between gap-4">
-                      <h2 className="text-xl flex-1 font-bold text-foreground tracking-tight">
+                      <h2 className="text-lg sm:text-xl flex-1 font-bold text-foreground tracking-tight">
                         {job.title}
                       </h2>
                       <div className="flex shrink-0 items-center gap-2">
