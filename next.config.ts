@@ -1,7 +1,6 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['9757-2800-150-112-120a-9df2-e711-16ce-ee7c.ngrok-free.app'],
   experimental: {
     viewTransition: true,
   },
