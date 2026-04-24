@@ -10,8 +10,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Force hard reload if page was restored from bfcache
-    const handlePageshow = (event: PageshowEvent) => {
-      if (event.persisted) {
+    const handlePageshow = (event: Event) => {
+      if ((event as PageTransitionEvent).persisted) {
         window.location.reload()
         return
       }
