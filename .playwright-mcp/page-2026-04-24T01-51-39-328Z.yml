@@ -1,4 +1,0 @@
-- generic [active] [ref=e1]:
-  - status "Cargando" [ref=e2]:
-    - generic [ref=e5]: Verificando…
-  - alert [ref=e6]
