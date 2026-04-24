@@ -55,9 +55,12 @@ export function UserLoginContent() {
         (result.error as { message?: string })?.message ??
         "Credenciales invalidas. Por favor verifica tu email y contrasena."
       setErrors({ general: msg })
+      setIsLoading(false)
+      return
     }
 
-    setIsLoading(false)
+    authClient.$store.notify("$sessionSignal")
+    router.replace("/dashboard")
   }
 
   return (
