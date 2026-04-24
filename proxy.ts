@@ -77,6 +77,11 @@ async function handleAuthenticatedUserRedirect(request: NextRequest) {
     return null
   }
 
+  const sessionCookie = request.cookies.get("better-auth.session_token")
+  if (!sessionCookie?.value) {
+    return null
+  }
+
   const sessionResult = await getSessionSafe(request)
 
   if (sessionResult.isOk() && sessionResult.value?.user) {
