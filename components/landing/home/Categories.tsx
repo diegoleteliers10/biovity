@@ -2,9 +2,9 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import Link from "next/link"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import Link from "next/link"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { CATEGORIES_HOME } from "@/lib/data/home-data"
 import { Button } from "../../ui/button"
@@ -67,7 +67,9 @@ export function Categories() {
                       <HugeiconsIcon icon={category.icon} size={24} className="text-secondary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground text-lg mb-1">{category.title}</h3>
+                      <h3 className="font-semibold text-foreground text-lg mb-1">
+                        {category.title}
+                      </h3>
                       <div className="flex items-center">
                         <span className="text-muted-foreground text-sm">{category.positions}</span>
                       </div>

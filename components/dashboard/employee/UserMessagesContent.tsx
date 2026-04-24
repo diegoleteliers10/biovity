@@ -1,8 +1,8 @@
 "use client"
 
 import {
-  Attachment01Icon,
   ArrowLeft01Icon,
+  Attachment01Icon,
   Briefcase01Icon,
   BubbleChatIcon,
   Calendar04Icon,
@@ -20,8 +20,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useEffect, useRef, useState } from "react"
-import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -173,10 +173,12 @@ export function UserMessagesContent() {
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
       {/* Sidebar - hidden on mobile when chat is selected */}
-      <div className={cn(
-        "flex w-full lg:h-full lg:w-80 flex-col overflow-hidden border-r border-border max-h-dvh transition-all",
-        mobileView === "chat" ? "hidden lg:flex" : "flex"
-      )}>
+      <div
+        className={cn(
+          "flex w-full lg:h-full lg:w-80 flex-col overflow-hidden border-r border-border max-h-dvh transition-all",
+          mobileView === "chat" ? "hidden lg:flex" : "flex"
+        )}
+      >
         <div className="p-4">
           {/* Top row: menu + notification on mobile */}
           <div className="flex items-center justify-between mb-4 lg:mb-6 lg:hidden">
@@ -235,10 +237,12 @@ export function UserMessagesContent() {
       </div>
 
       {/* Main chat area - hidden on mobile when list is selected */}
-      <div className={cn(
-        "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
-        mobileView === "list" ? "hidden lg:flex" : "flex"
-      )}>
+      <div
+        className={cn(
+          "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
+          mobileView === "list" ? "hidden lg:flex" : "flex"
+        )}
+      >
         {!selectedChat ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="max-w-md rounded-2xl bg-transparent px-6 py-7 text-center">
@@ -285,7 +289,11 @@ export function UserMessagesContent() {
                       {recruiterName}
                     </h2>
                     <div className="flex items-center gap-1 text-muted-foreground text-xs lg:text-sm">
-                      <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-14" />
+                      <HugeiconsIcon
+                        icon={Briefcase01Icon}
+                        size={12}
+                        className="shrink-0 lg:size-14"
+                      />
                       <span className="truncate">{recruiter?.profession ?? "—"}</span>
                     </div>
                   </div>

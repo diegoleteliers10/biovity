@@ -19,7 +19,10 @@ export function DashboardShellAdmin({ children, defaultOpen }: DashboardShellAdm
         profileUrl="/dashboard"
         avatarGradient={{ from: "amber-500", to: "orange-600" }}
       />
-      <SidebarInset className="rounded-tl-lg sm:rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
+      <SidebarInset
+        className="rounded-tl-lg sm:rounded-tl-lg"
+        style={{ viewTransitionName: "persistent-nav" }}
+      >
         {children}
       </SidebarInset>
     </SidebarProvider>

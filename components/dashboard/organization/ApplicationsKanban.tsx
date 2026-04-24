@@ -286,7 +286,10 @@ export function ApplicationsKanban({
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       {/* Desktop: horizontal scroll, Mobile: vertical stack or smaller cards */}
-      <div className="flex gap-3 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible snap-x snap-mandatory lg:snap-none" style={{ height: "100%" }}>
+      <div
+        className="flex gap-3 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible snap-x snap-mandatory lg:snap-none"
+        style={{ height: "100%" }}
+      >
         {STAGES.map((stage) => (
           <KanbanColumn
             key={stage.id}

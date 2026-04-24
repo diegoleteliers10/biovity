@@ -4,9 +4,9 @@ import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   type ChartConfig,
-  ChartContainer as LazyChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartContainer as LazyChartContainer,
 } from "@/components/ui/lazy-chart"
 
 import { REGION_CHART_COLORS, REGION_CHART_DATA } from "@/lib/data/salarios-data"

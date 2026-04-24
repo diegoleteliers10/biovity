@@ -10,7 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
@@ -24,8 +24,6 @@ const { signIn } = authClient
 
 export function OrganizationLoginContent() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirectTo = searchParams.get("redirect") || "/dashboard"
   const { useSession } = authClient
   const { data: session, isPending } = useSession()
 
@@ -37,21 +35,20 @@ export function OrganizationLoginContent() {
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [signInSuccess, setSignInSuccess] = useState(false)
 
-  // Redirect on successful sign-in (wait for session to propagate to browser)
   useEffect(() => {
-    if (!signInSuccess || isPending) return
-    if (session?.user) {
-      router.push(redirectTo)
+    if (!isPending && session?.user) {
+      router.replace("/dashboard")
     }
-  }, [signInSuccess, isPending, session, router, redirectTo])
+  }, [session, isPending, router])
 
   if (isPending) {
     return <AuthLoader />
   }
 
-  if (session?.user) return null
+  if (session?.user) {
+    return null
+  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -86,9 +83,6 @@ export function OrganizationLoginContent() {
           (result.error as { message?: string })?.message ??
           "Credenciales inválidas. Por favor verifica tu email y contraseña."
         setErrors({ general: msg })
-      } else {
-        // Set flag to wait for session confirmation before redirecting
-        setSignInSuccess(true)
       }
     } catch (_error) {
       setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." })

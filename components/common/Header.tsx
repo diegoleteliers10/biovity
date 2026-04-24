@@ -2,11 +2,11 @@
 
 import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import * as m from "motion/react-m"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import * as m from "motion/react-m"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 

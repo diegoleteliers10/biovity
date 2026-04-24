@@ -43,7 +43,10 @@ export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
         avatarGradient={{ from: "blue-500", to: "purple-600" }}
         profession={user?.profession}
       />
-      <SidebarInset className="min-h-0 rounded-tl-lg sm:rounded-tl-lg" style={{ viewTransitionName: "persistent-nav" }}>
+      <SidebarInset
+        className="min-h-0 rounded-tl-lg sm:rounded-tl-lg"
+        style={{ viewTransitionName: "persistent-nav" }}
+      >
         {children}
       </SidebarInset>
     </SidebarProvider>

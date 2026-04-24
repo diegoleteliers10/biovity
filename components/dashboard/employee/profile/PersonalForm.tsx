@@ -1,12 +1,12 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel01Icon, UserIcon } from "@hugeicons/core-free-icons"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
-import { EMPTY_PLACEHOLDER, LEVEL_OPTIONS, emptySkill, useProfileContext } from "./profile-context"
+import { EMPTY_PLACEHOLDER, emptySkill, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
 
 export function PersonalForm() {
   const {
@@ -66,62 +66,57 @@ export function PersonalForm() {
           </label>
           {isEditingPersonal ? (
             <div className="space-y-3">
-              {(resumeFormData.skills.length > 0
-                ? resumeFormData.skills
-                : [emptySkill()]
-              ).map((skill, i) => (
-                <div key={i} className="flex gap-2 items-center">
-                  <Input
-                    value={skill.name}
-                    onChange={(e) =>
-                      handleResumeArrayChange("skills", (arr) => {
-                        const next = [...arr]
-                        next[i] = { ...next[i], name: e.target.value }
-                        return next
-                      })
-                    }
-                    placeholder="Nombre de la habilidad"
-                    className="flex-1"
-                  />
-                  <select
-                    value={skill.level ?? ""}
-                    onChange={(e) =>
-                      handleResumeArrayChange("skills", (arr) => {
-                        const next = [...arr]
-                        next[i] = { ...next[i], level: e.target.value || undefined }
-                        return next
-                      })
-                    }
-                    className="h-9 rounded-md border border-input bg-background px-2 text-sm w-28"
-                  >
-                    {LEVEL_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() =>
-                      handleResumeArrayChange("skills", (arr) =>
-                        arr.filter((_, j) => j !== i)
-                      )
-                    }
-                    aria-label="Eliminar"
-                  >
-                    <HugeiconsIcon icon={Cancel01Icon} size={16} />
-                  </Button>
-                </div>
-              ))}
+              {(resumeFormData.skills.length > 0 ? resumeFormData.skills : [emptySkill()]).map(
+                (skill, i) => (
+                  <div key={i} className="flex gap-2 items-center">
+                    <Input
+                      value={skill.name}
+                      onChange={(e) =>
+                        handleResumeArrayChange("skills", (arr) => {
+                          const next = [...arr]
+                          next[i] = { ...next[i], name: e.target.value }
+                          return next
+                        })
+                      }
+                      placeholder="Nombre de la habilidad"
+                      className="flex-1"
+                    />
+                    <select
+                      value={skill.level ?? ""}
+                      onChange={(e) =>
+                        handleResumeArrayChange("skills", (arr) => {
+                          const next = [...arr]
+                          next[i] = { ...next[i], level: e.target.value || undefined }
+                          return next
+                        })
+                      }
+                      className="h-9 rounded-md border border-input bg-background px-2 text-sm w-28"
+                    >
+                      {LEVEL_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() =>
+                        handleResumeArrayChange("skills", (arr) => arr.filter((_, j) => j !== i))
+                      }
+                      aria-label="Eliminar"
+                    >
+                      <HugeiconsIcon icon={Cancel01Icon} size={16} />
+                    </Button>
+                  </div>
+                )
+              )}
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() =>
-                  handleResumeArrayChange("skills", (arr) => [...arr, emptySkill()])
-                }
+                onClick={() => handleResumeArrayChange("skills", (arr) => [...arr, emptySkill()])}
               >
                 Agregar habilidad
               </Button>

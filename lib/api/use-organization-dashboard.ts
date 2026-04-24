@@ -117,8 +117,20 @@ export function getMetricsCards(
 ): Metric[] {
   if (isLoading) {
     return [
-      { title: "Ofertas Activas", value: "-", icon: FileAddIcon, subtitle: "cargando...", href: "/dashboard/ofertas" },
-      { title: "Postulaciones Nuevas", value: "-", icon: File02Icon, subtitle: "cargando...", href: "/dashboard/applications" },
+      {
+        title: "Ofertas Activas",
+        value: "-",
+        icon: FileAddIcon,
+        subtitle: "cargando...",
+        href: "/dashboard/ofertas",
+      },
+      {
+        title: "Postulaciones Nuevas",
+        value: "-",
+        icon: File02Icon,
+        subtitle: "cargando...",
+        href: "/dashboard/applications",
+      },
       {
         title: "Entrevistas",
         value: "-",

@@ -61,7 +61,11 @@ export function OrganizationHomeHeader({
           <AgentSheetTrigger />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative hover:bg-muted/50 active:scale-90 transition-all duration-150">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-muted/50 active:scale-90 transition-all duration-150"
+              >
                 <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
                 {unreadCount > 0 && (
                   <span className="absolute top-0 right-0 h-2 w-2 bg-destructive rounded-full" />
@@ -111,7 +115,11 @@ export function OrganizationHomeHeader({
           <AgentSheetTrigger />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative hover:bg-muted/50 active:scale-90 transition-all duration-150">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-muted/50 active:scale-90 transition-all duration-150"
+              >
                 <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
                 {unreadCount > 0 && (
                   <span className="absolute top-0 right-0 h-2 w-2 bg-destructive rounded-full" />

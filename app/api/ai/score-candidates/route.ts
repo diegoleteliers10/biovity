@@ -42,7 +42,11 @@ function safeParseBatchScore(raw: string): BatchScoreResult | null {
 }
 
 export async function POST(req: NextRequest) {
-  const { candidates, jobOffer }: { candidates: { id: string; data: CandidateContext }[]; jobOffer: JobOfferContext } = await req.json()
+  const {
+    candidates,
+    jobOffer,
+  }: { candidates: { id: string; data: CandidateContext }[]; jobOffer: JobOfferContext } =
+    await req.json()
 
   if (!candidates?.length || !jobOffer) {
     return new Response("Bad request", { status: 400 })
@@ -112,8 +116,12 @@ Devuelve un array JSON con scoring para CADA candidato listado arriba. Usa el ID
         score: 50,
         label: "Regular" as const,
         reason: "Análisis no disponible. Por favor intenta nuevamente.",
-        strengths: c.data.bio ? ["Perfil con experiencia relevante"] : ["Información del perfil incompleta"],
-        gaps: c.data.bio ? ["Se requiere revisión adicional del perfil"] : ["Falta información del candidato"],
+        strengths: c.data.bio
+          ? ["Perfil con experiencia relevante"]
+          : ["Información del perfil incompleta"],
+        gaps: c.data.bio
+          ? ["Se requiere revisión adicional del perfil"]
+          : ["Falta información del candidato"],
         recommendation: "Evaluar" as const,
       })),
     }
