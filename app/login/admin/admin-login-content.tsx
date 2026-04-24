@@ -49,13 +49,14 @@ export function AdminLoginContent() {
         rememberMe,
       },
       {
-        onSuccess: (ctx) => {
+        onSuccess: async (ctx) => {
           const user = ctx.data.user as AuthUser
           if (user.type !== "admin" && !isAdminEmail(formData.email)) {
             setErrors({ general: "Acceso restringido. Solo administradores." })
             setIsLoading(false)
             return
           }
+          await authClient.getSession()
           const redirectPath = createRoleBasedRedirect(user)
           window.location.replace(redirectPath)
         },

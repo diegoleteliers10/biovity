@@ -126,6 +126,7 @@ export default function OrganizationRegisterPage() {
         organizationId: organization.id,
       })
 
+      await authClient.getSession()
       const redirectPath = createRoleBasedRedirect({ type: "organization" } as AuthUser)
       window.location.replace(redirectPath)
     } catch (err) {

@@ -1,5 +1,6 @@
 import { dash } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
+import { nextCookies } from "better-auth/next-js"
 import { APIError, createAuthMiddleware } from "better-auth/api"
 import { headers } from "next/headers"
 import { pool } from "@/lib/db"
@@ -153,6 +154,7 @@ export const auth = betterAuth({
     level: process.env.NODE_ENV === "production" ? "info" : "debug",
   },
   plugins: [
+    nextCookies(),
     ...(process.env.BETTER_AUTH_API_KEY ? [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })] : []),
   ],
 })

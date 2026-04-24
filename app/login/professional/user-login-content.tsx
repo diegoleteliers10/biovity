@@ -50,7 +50,8 @@ export function UserLoginContent() {
         rememberMe,
       },
       {
-        onSuccess: (ctx) => {
+        onSuccess: async (ctx) => {
+          await authClient.getSession()
           const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
           window.location.replace(redirectPath)
         },
