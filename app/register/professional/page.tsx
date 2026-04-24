@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { UserRegisterContent } from "./register-user-content"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Registro de Profesional",
   description:
