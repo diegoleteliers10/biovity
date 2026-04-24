@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { AuthLoader } from "@/components/ui/auth-loader"
+import { SessionRefresher } from "@/components/auth/SessionRefresher"
 import { OrganizationLoginContent } from "./organization-login-content"
 
 export const dynamic = "force-dynamic"
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default function OrganizationLoginPage() {
   return (
     <Suspense fallback={<AuthLoader />}>
+      <SessionRefresher />
       <OrganizationLoginContent />
     </Suspense>
   )
