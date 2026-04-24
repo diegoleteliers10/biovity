@@ -51,9 +51,12 @@ export function AdminLoginContent() {
         (result.error as { message?: string })?.message ??
         "Credenciales invalidas. Verifica tu email y contrasena."
       setErrors({ general: msg })
+      setIsLoading(false)
+      return
     }
 
-    setIsLoading(false)
+    authClient.$store.notify("$sessionSignal")
+    window.location.href = "/dashboard"
   }
 
   return (

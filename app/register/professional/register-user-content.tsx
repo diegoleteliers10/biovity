@@ -109,9 +109,12 @@ export function UserRegisterContent() {
       setErrors({
         general: "Error al crear la cuenta. Intentalo de nuevo.",
       })
+      setIsLoading(false)
+      return
     }
 
-    setIsLoading(false)
+    authClient.$store.notify("$sessionSignal")
+    router.replace("/dashboard")
   }
 
   return (

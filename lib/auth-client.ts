@@ -1,5 +1,4 @@
 import { sentinelClient } from "@better-auth/infra/client"
-import type { QueryClient } from "@tanstack/react-query"
 import { inferAdditionalFields } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
@@ -40,19 +39,27 @@ export const authClient = createAuthClient({
   ],
 })
 
-export const { useSession, signIn, signUp, signOut } = authClient
+export const { useSession, signIn, signOut } = authClient
 
-let globalQueryClient: QueryClient | null = null
+type SessionAtom = {
+  set: (v: { data: null; error: null; isPending: boolean; isRefetching: boolean; refetch: () => void }) => void
+  get: () => { data: unknown; error: unknown; isPending: boolean; isRefetching: boolean; refetch: () => void }
+}
 
-export function setGlobalQueryClient(client: QueryClient) {
-  globalQueryClient = client
+function clearSessionAtom() {
+  const sessionAtom = authClient.$store.atoms["session"] as SessionAtom
+  const current = sessionAtom.get()
+  sessionAtom.set({
+    data: null,
+    error: null,
+    isPending: false,
+    isRefetching: false,
+    refetch: current.refetch,
+  })
 }
 
 export async function signOutAndRedirect(redirectUrl: string): Promise<void> {
-  if (globalQueryClient) {
-    await globalQueryClient.cancelQueries()
-    globalQueryClient.clear()
-  }
+  clearSessionAtom()
   await signOut()
   window.location.href = redirectUrl
 }
