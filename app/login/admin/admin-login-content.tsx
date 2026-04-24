@@ -57,7 +57,7 @@ export function AdminLoginContent() {
             return
           }
           const redirectPath = createRoleBasedRedirect(user)
-          router.push(redirectPath)
+          window.location.replace(redirectPath)
         },
       }
     )

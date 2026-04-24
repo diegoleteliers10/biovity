@@ -6,6 +6,8 @@ export const metadata: Metadata = {
     "Crea tu cuenta como Organizacion en Biovity para postear y gestionar ofertas de empleo en biotecnología y ciencias.",
 }
 
-export default function RegisterOrganizationLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RegisterOrganizationLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return children
 }
