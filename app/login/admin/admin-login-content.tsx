@@ -20,13 +20,12 @@ import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-c
 
 const { signIn } = authClient
 
-export function UserLoginContent() {
+export function AdminLoginContent() {
   const router = useRouter()
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    profession: "",
   })
   const [rememberMe, setRememberMe] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -51,7 +50,13 @@ export function UserLoginContent() {
       },
       {
         onSuccess: (ctx) => {
-          const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
+          const user = ctx.data.user as AuthUser
+          if (user.type !== "admin" && !isAdminEmail(formData.email)) {
+            setErrors({ general: "Acceso restringido. Solo administradores." })
+            setIsLoading(false)
+            return
+          }
+          const redirectPath = createRoleBasedRedirect(user)
           router.push(redirectPath)
         },
       }
@@ -60,7 +65,7 @@ export function UserLoginContent() {
     if (result?.error) {
       const msg =
         (result.error as { message?: string })?.message ??
-        "Credenciales invalidas. Por favor verifica tu email y contrasena."
+        "Credenciales invalidas. Verifica tu email y contrasena."
       setErrors({ general: msg })
     }
 
@@ -69,11 +74,10 @@ export function UserLoginContent() {
 
   return (
     <div className="flex h-dvh">
-      {/* Left: Illustration */}
       <div className="relative hidden w-1/2 overflow-hidden lg:block">
         <Image
           src="/images/ilustrationOG.png"
-          alt="Biovity - Colaboración en ciencias y biotecnología"
+          alt="Biovity - Panel de Administracion"
           fill
           className="object-cover object-center p-2.5 rounded-[20px]"
           priority
@@ -81,23 +85,22 @@ export function UserLoginContent() {
         />
       </div>
 
-      {/* Right: Login form */}
       <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
         <div className="mx-auto w-full max-w-sm space-y-8">
           <div className="space-y-2 text-center">
             <Logo size="lg" className="justify-center" />
             <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
-              Iniciar sesión
+              Panel de Administracion
             </h1>
             <p className="text-center text-muted-foreground">
-              Acceso para profesionales, investigadores y estudiantes
+              Acceso exclusivo para administradores del sistema
             </p>
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-6">
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Correo electrónico
+                Correo electronico
               </label>
               <div className="relative">
                 <HugeiconsIcon
@@ -109,7 +112,7 @@ export function UserLoginContent() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="tu@email.com"
+                  placeholder="admin@biovity.cl"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
@@ -121,7 +124,7 @@ export function UserLoginContent() {
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium text-foreground">
-                Contraseña
+                Contrasena
               </label>
               <div className="relative">
                 <HugeiconsIcon
@@ -142,7 +145,7 @@ export function UserLoginContent() {
                 />
                 <button
                   type="button"
-                  aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-label={isPasswordVisible ? "Ocultar contrasena" : "Mostrar contrasena"}
                   aria-pressed={isPasswordVisible}
                   onClick={() => setIsPasswordVisible((v) => !v)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
@@ -163,66 +166,33 @@ export function UserLoginContent() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 label="Recordarme"
               />
-              <button
-                type="button"
-                className="text-sm text-secondary hover:text-secondary/80 hover:underline"
-              >
-                ¿Olvidaste tu contraseña?
-              </button>
             </div>
             {errors.general && (
               <div className="text-center text-sm text-destructive">{errors.general}</div>
             )}
             <Button type="submit" className="h-11 w-full" disabled={isLoading}>
-              {isLoading ? "Cargando..." : "Iniciar sesión"}
+              {isLoading ? "Cargando..." : "Acceder al panel"}
             </Button>
           </form>
 
-          <div className="space-y-4 border-t border-border/15 pt-6">
+          <div className="border-t border-border/15 pt-6">
             <div className="text-center">
               <Link
                 href="/login"
                 className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
               >
                 <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
-                Volver a selección de acceso
+                Volver a seleccion de acceso
               </Link>
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                ¿No tienes una cuenta?{" "}
-                <Link
-                  href="/register/professional"
-                  className="font-medium text-secondary hover:text-secondary/80 hover:underline"
-                >
-                  Regístrate como usuario
-                </Link>
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                ¿Eres una organización?{" "}
-                <Link
-                  href="/login/organization"
-                  className="font-medium text-accent hover:text-accent/80 hover:underline"
-                >
-                  Acceso organizacional
-                </Link>
-              </p>
-            </div>
           </div>
-
-          <p className="text-center text-sm text-muted-foreground">
-            ¿Necesitas ayuda?{" "}
-            <a
-              href="mailto:support@biovity.com"
-              className="font-medium text-primary hover:underline"
-            >
-              Contactar soporte
-            </a>
-          </p>
         </div>
       </div>
     </div>
   )
+}
+
+function isAdminEmail(email: string): boolean {
+  const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
+  return adminEmails.includes(email)
 }

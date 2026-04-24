@@ -8,7 +8,7 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
-      if (ctx.path !== "/sign-in/email") return
+      if (ctx.path !== "/sign-in/email" && ctx.path !== "/sign-up/email") return
 
       const email = (ctx.body as { email?: string })?.email
       if (!email?.trim()) return
@@ -23,6 +23,11 @@ export const auth = betterAuth({
           message: "Tu cuenta está desactivada. Contacta al administrador.",
         })
       }
+      if (ctx.path === "/sign-up/email" && row) {
+        throw new APIError("CONFLICT", {
+          message: "Ya existe una cuenta con este email.",
+        })
+      }
     }),
   },
   appName: "Biovity", // Define your application name
@@ -32,11 +37,13 @@ export const auth = betterAuth({
     window: 60, // 1 minute
     max: 10, // 10 requests per minute per IP
   },
-  trustedOrigins: [
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-    "https://biovity.cl",
-    "https://www.biovity.cl",
-  ],
+  trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS
+    ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((s) => s.trim())
+    : [
+        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+        "https://biovity.cl",
+        "https://www.biovity.cl",
+      ],
   experimental: {
     joins: true, // Enable database joins for better performance
   },
@@ -47,7 +54,7 @@ export const auth = betterAuth({
     useSecureCookies: process.env.NODE_ENV === "production",
     crossSubDomainCookies: {
       enabled: process.env.NODE_ENV === "production",
-      domain: ".biovity.cl",
+      domain: process.env.BETTER_AUTH_COOKIE_DOMAIN || ".biovity.cl",
     },
     ipAddress: {
       ipAddressHeaders: [
@@ -143,12 +150,10 @@ export const auth = betterAuth({
     enabled: true,
   },
   logger: {
-    level: process.env.NODE_ENV === "production" ? "error" : "debug",
+    level: process.env.NODE_ENV === "production" ? "info" : "debug",
   },
   plugins: [
-    dash({
-      apiKey: process.env.BETTER_AUTH_API_KEY as string,
-    }),
+    ...(process.env.BETTER_AUTH_API_KEY ? [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })] : []),
   ],
 })
 

@@ -23,7 +23,7 @@ import {
   useCreateOrganizationMutation,
   useLinkUserToOrganizationMutation,
 } from "@/lib/api/use-organization-mutations"
-import { authClient } from "@/lib/auth-client"
+import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
 import { organizationRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signUp } = authClient
@@ -94,35 +94,42 @@ export default function OrganizationRegisterPage() {
         avatar: "",
       })
 
-      if (signUpResult.error) {
+      if (signUpResult?.error) {
         setErrors({
-          general: "Error al crear la cuenta organizacional. Inténtalo de nuevo.",
+          general: "Error al crear la cuenta organizacional. Intentalo de nuevo.",
         })
+        setIsLoading(false)
         return
       }
 
       const userId = signUpResult.data?.user?.id
       if (!userId) {
-        setErrors({ general: "Error al obtener el usuario. Inténtalo de nuevo." })
+        setErrors({ general: "Error al obtener el usuario. Intentalo de nuevo." })
+        setIsLoading(false)
         return
       }
 
-      // 2. Create organization via backend API (TanStack Query mutation)
-
-      const organization = await createOrganizationMutation.mutateAsync({
-        name: formData.organizationName,
-        website: formData.organizationWebsite,
-      })
+      const [organization] = await Promise.all([
+        createOrganizationMutation.mutateAsync({
+          name: formData.organizationName,
+          website: formData.organizationWebsite,
+        }),
+        linkUserMutation.mutateAsync({
+          userId,
+          organizationId: "", // placeholder, will be updated
+        }),
+      ])
 
       await linkUserMutation.mutateAsync({
         userId,
         organizationId: organization.id,
       })
 
-      router.push("/dashboard")
+      const redirectPath = createRoleBasedRedirect({ type: "organization" } as AuthUser)
+      router.push(redirectPath)
     } catch (err) {
       setErrors({
-        general: err instanceof Error ? err.message : "Error al registrar. Inténtalo de nuevo.",
+        general: err instanceof Error ? err.message : "Error al registrar. Intentalo de nuevo.",
       })
     } finally {
       setIsLoading(false)

@@ -11,21 +11,18 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { AuthLoader } from "@/components/ui/auth-loader"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
-import { authClient } from "@/lib/auth-client"
+import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
 import { organizationLoginSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signIn } = authClient
 
 export function OrganizationLoginContent() {
   const router = useRouter()
-  const { useSession } = authClient
-  const { data: session, isPending } = useSession()
 
   const [formData, setFormData] = useState({
     email: "",
@@ -36,20 +33,6 @@ export function OrganizationLoginContent() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
-  useEffect(() => {
-    if (!isPending && session?.user) {
-      router.replace("/dashboard")
-    }
-  }, [session, isPending, router])
-
-  if (isPending) {
-    return <AuthLoader />
-  }
-
-  if (session?.user) {
-    return null
-  }
-
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
@@ -58,37 +41,41 @@ export function OrganizationLoginContent() {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const result = validateFormZod(organizationLoginSchema, {
+    const validation = validateFormZod(organizationLoginSchema, {
       email: formData.email,
       password: formData.password,
       rememberMe: rememberMe,
     })
-    if (!result.success) {
-      setErrors(result.errors)
+    if (!validation.success) {
+      setErrors(validation.errors)
       return
     }
 
     setIsLoading(true)
     setErrors({})
 
-    try {
-      const result = await signIn.email({
+    const result = await signIn.email(
+      {
         email: formData.email,
         password: formData.password,
         rememberMe: rememberMe,
-      })
-
-      if (result.error) {
-        const msg =
-          (result.error as { message?: string })?.message ??
-          "Credenciales inválidas. Por favor verifica tu email y contraseña."
-        setErrors({ general: msg })
+      },
+      {
+        onSuccess: (ctx) => {
+          const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
+          router.push(redirectPath)
+        },
       }
-    } catch (_error) {
-      setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." })
-    } finally {
-      setIsLoading(false)
+    )
+
+    if (result?.error) {
+      const msg =
+        (result.error as { message?: string })?.message ??
+        "Credenciales invalidas. Por favor verifica tu email y contrasena."
+      setErrors({ general: msg })
     }
+
+    setIsLoading(false)
   }
 
   return (

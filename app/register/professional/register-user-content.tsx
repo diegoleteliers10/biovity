@@ -12,14 +12,13 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Select } from "@/components/base/select/select"
-import { AuthLoader } from "@/components/ui/auth-loader"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
-import { authClient } from "@/lib/auth-client"
+import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signUp } = authClient
@@ -47,8 +46,6 @@ const professions = [
 
 export function UserRegisterContent() {
   const router = useRouter()
-  const { useSession } = authClient
-  const { data: session, isPending } = useSession()
 
   const [formData, setFormData] = useState({
     name: "",
@@ -62,20 +59,6 @@ export function UserRegisterContent() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmVisible, setIsConfirmVisible] = useState(false)
-
-  useEffect(() => {
-    if (!isPending && session?.user) {
-      router.replace("/dashboard")
-    }
-  }, [session, isPending, router])
-
-  if (isPending) {
-    return <AuthLoader />
-  }
-
-  if (session?.user) {
-    return null
-  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -110,23 +93,29 @@ export function UserRegisterContent() {
     if (!validateForm()) return
 
     setIsLoading(true)
-    setErrors((prev) => ({ ...prev, general: "" }))
+    setErrors((prev) => ({ prev, general: "" }))
 
-    const result = await signUp.email({
-      email: formData.email,
-      password: formData.password,
-      name: formData.name,
-      type: "professional",
-      profession: formData.profession,
-      avatar: "",
-    })
+    const result = await signUp.email(
+      {
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        type: "professional",
+        profession: formData.profession,
+        avatar: "",
+      },
+      {
+        onSuccess: (ctx) => {
+          const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
+          router.push(redirectPath)
+        },
+      }
+    )
 
-    if (result.error) {
+    if (result?.error) {
       setErrors({
-        general: "Error al crear la cuenta. Inténtalo de nuevo.",
+        general: "Error al crear la cuenta. Intentalo de nuevo.",
       })
-    } else {
-      router.push("/dashboard")
     }
 
     setIsLoading(false)
