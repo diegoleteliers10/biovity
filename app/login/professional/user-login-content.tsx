@@ -52,7 +52,7 @@ export function UserLoginContent() {
       {
         onSuccess: (ctx) => {
           const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
-          router.push(redirectPath)
+          window.location.replace(redirectPath)
         },
       }
     )

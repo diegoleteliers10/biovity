@@ -43,5 +43,17 @@ export const { useSession, signIn, signUp, signOut } = authClient
 
 export async function signOutAndRedirect(redirectUrl: string): Promise<void> {
   await signOut()
-  window.location.href = redirectUrl
+  window.location.replace(redirectUrl)
+}
+
+export async function signOutAndHardRedirect(redirectUrl: string): Promise<void> {
+  await signOut()
+  window.location.replace(redirectUrl)
+}
+
+export async function signInWithHardRedirect(
+  ...args: Parameters<typeof signIn.email>
+): Promise<ReturnType<typeof signIn.email>> {
+  const result = await signIn.email(...args)
+  return result
 }

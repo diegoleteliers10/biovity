@@ -127,7 +127,7 @@ export default function OrganizationRegisterPage() {
       })
 
       const redirectPath = createRoleBasedRedirect({ type: "organization" } as AuthUser)
-      router.push(redirectPath)
+      window.location.replace(redirectPath)
     } catch (err) {
       setErrors({
         general: err instanceof Error ? err.message : "Error al registrar. Intentalo de nuevo.",
