@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
-import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth-client"
 
 const { signIn } = authClient
 
@@ -43,20 +43,12 @@ export function UserLoginContent() {
     setIsLoading(true)
     setErrors({})
 
-    const result = await signIn.email(
-      {
-        email: formData.email,
-        password: formData.password,
-        rememberMe,
-      },
-      {
-        onSuccess: async (ctx) => {
-          await authClient.getSession()
-          const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
-          window.location.replace(redirectPath)
-        },
-      }
-    )
+    const result = await signIn.email({
+      email: formData.email,
+      password: formData.password,
+      rememberMe,
+      callbackURL: "/dashboard",
+    })
 
     if (result?.error) {
       const msg =

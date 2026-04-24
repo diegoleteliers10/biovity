@@ -10,19 +10,16 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
-import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth-client"
 
 const { signIn } = authClient
 
 export function AdminLoginContent() {
-  const router = useRouter()
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -42,26 +39,12 @@ export function AdminLoginContent() {
     setIsLoading(true)
     setErrors({})
 
-    const result = await signIn.email(
-      {
-        email: formData.email,
-        password: formData.password,
-        rememberMe,
-      },
-      {
-        onSuccess: async (ctx) => {
-          const user = ctx.data.user as AuthUser
-          if (user.type !== "admin" && !isAdminEmail(formData.email)) {
-            setErrors({ general: "Acceso restringido. Solo administradores." })
-            setIsLoading(false)
-            return
-          }
-          await authClient.getSession()
-          const redirectPath = createRoleBasedRedirect(user)
-          window.location.replace(redirectPath)
-        },
-      }
-    )
+    const result = await signIn.email({
+      email: formData.email,
+      password: formData.password,
+      rememberMe,
+      callbackURL: "/dashboard",
+    })
 
     if (result?.error) {
       const msg =
@@ -193,7 +176,7 @@ export function AdminLoginContent() {
   )
 }
 
-function isAdminEmail(email: string): boolean {
+function _isAdminEmail(email: string): boolean {
   const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
   return adminEmails.includes(email)
 }

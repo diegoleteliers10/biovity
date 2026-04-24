@@ -95,23 +95,15 @@ export function UserRegisterContent() {
     setIsLoading(true)
     setErrors((prev) => ({ ...prev, general: "" }))
 
-    const result = await signUp.email(
-      {
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        type: "professional",
-        profession: formData.profession,
-        avatar: "",
-      },
-      {
-        onSuccess: async (ctx) => {
-          await authClient.getSession()
-          const redirectPath = createRoleBasedRedirect(ctx.data.user as AuthUser)
-          window.location.replace(redirectPath)
-        },
-      }
-    )
+    const result = await signUp.email({
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      type: "professional",
+      profession: formData.profession,
+      avatar: "",
+      callbackURL: "/dashboard",
+    })
 
     if (result?.error) {
       setErrors({
