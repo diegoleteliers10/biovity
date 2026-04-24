@@ -94,22 +94,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const protectedRoutes = ["/dashboard"]
-  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
-
-  if (isProtectedRoute) {
-    const sessionCookie = request.cookies.get("better-auth.session_token")
-    if (!sessionCookie?.value) {
-      return NextResponse.redirect(new URL("/", request.url))
-    }
-
-    const response = NextResponse.next()
-    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private")
-    response.headers.set("Pragma", "no-cache")
-    response.headers.set("Expires", "0")
-    return response
-  }
-
   return NextResponse.next()
 }
 
