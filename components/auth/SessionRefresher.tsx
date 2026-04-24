@@ -6,11 +6,17 @@ import { authClient } from "@/lib/auth-client"
 
 export function SessionRefresher() {
   const pathname = usePathname()
-  const { refetch } = authClient.useSession()
 
   useEffect(() => {
-    refetch()
-  }, [pathname, refetch])
+    const refreshSession = async () => {
+      await authClient.getSession({
+        query: {
+          disableCookieCache: true,
+        },
+      })
+    }
+    refreshSession()
+  }, [pathname])
 
   return null
 }

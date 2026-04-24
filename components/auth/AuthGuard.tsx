@@ -1,12 +1,14 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { authClient } from "@/lib/auth-client"
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending, refetch } = authClient.useSession()
+  const [hasValidSession, setHasValidSession] = useState(false)
+  const [checkComplete, setCheckComplete] = useState(false)
 
   useEffect(() => {
     const handlePageshow = (event: Event) => {
@@ -16,13 +18,30 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       }
     }
     window.addEventListener("pageshow", handlePageshow, false)
+    return () => window.removeEventListener("pageshow", handlePageshow, false)
+  }, [])
 
-    if (!isPending && !session) {
+  useEffect(() => {
+    if (isPending) return
+
+    if (session) {
+      setHasValidSession(true)
+      setCheckComplete(true)
+      return
+    }
+
+    if (!session && !isPending) {
+      setCheckComplete(true)
+    }
+  }, [isPending, session])
+
+  useEffect(() => {
+    if (checkComplete && !hasValidSession && !isPending) {
       router.replace("/")
     }
-  }, [isPending, session, router])
+  }, [checkComplete, hasValidSession, isPending, router])
 
-  if (isPending) {
+  if (isPending || !checkComplete) {
     return (
       <div className="flex h-dvh items-center justify-center">
         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
