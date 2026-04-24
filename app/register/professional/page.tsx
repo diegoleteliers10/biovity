@@ -1,4 +1,7 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
+import { AuthLoader } from "@/components/ui/auth-loader"
+import { SessionRefresher } from "@/components/auth/SessionRefresher"
 import { UserRegisterContent } from "./register-user-content"
 
 export const dynamic = "force-dynamic"
@@ -10,5 +13,10 @@ export const metadata: Metadata = {
 }
 
 export default function UserRegisterPage() {
-  return <UserRegisterContent />
+  return (
+    <Suspense fallback={<AuthLoader />}>
+      <SessionRefresher />
+      <UserRegisterContent />
+    </Suspense>
+  )
 }

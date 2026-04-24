@@ -1,4 +1,7 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
+import { AuthLoader } from "@/components/ui/auth-loader"
+import { SessionRefresher } from "@/components/auth/SessionRefresher"
 import { RegisterContent } from "./register-content"
 
 export const metadata: Metadata = {
@@ -12,5 +15,10 @@ export const metadata: Metadata = {
 }
 
 export default function RegisterPage() {
-  return <RegisterContent />
+  return (
+    <Suspense fallback={<AuthLoader />}>
+      <SessionRefresher />
+      <RegisterContent />
+    </Suspense>
+  )
 }
