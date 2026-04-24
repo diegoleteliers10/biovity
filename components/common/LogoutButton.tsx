@@ -10,17 +10,13 @@ export function LogoutButton() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    try {
-      await signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            router.push("/login")
-          },
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login")
         },
-      })
-    } catch (_error) {
-      router.push("/login")
-    }
+      },
+    })
   }
 
   return (
