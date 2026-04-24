@@ -4,44 +4,52 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { authClient } from "@/lib/auth-client"
 
+type SessionResult = {
+  data?: {
+    user: unknown
+    session: unknown
+  } | null
+  error?: unknown
+}
+
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  const { data: session, isPending, refetch } = authClient.useSession()
-  const [hasValidSession, setHasValidSession] = useState(false)
-  const [checkComplete, setCheckComplete] = useState(false)
+  const [isReady, setIsReady] = useState(false)
+  const [hasSession, setHasSession] = useState(false)
 
   useEffect(() => {
-    const handlePageshow = (event: Event) => {
-      if ((event as PageTransitionEvent).persisted) {
-        window.location.reload()
-        return
+    let cancelled = false
+
+    const initSession = async () => {
+      const result = (await authClient.getSession({
+        query: { disableCookieCache: true },
+      })) as SessionResult | undefined
+
+      if (cancelled) return
+
+      if (result?.data?.user) {
+        setHasSession(true)
+      } else {
+        setHasSession(false)
       }
+      setIsReady(true)
     }
-    window.addEventListener("pageshow", handlePageshow, false)
-    return () => window.removeEventListener("pageshow", handlePageshow, false)
+
+    initSession()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   useEffect(() => {
-    if (isPending) return
-
-    if (session) {
-      setHasValidSession(true)
-      setCheckComplete(true)
-      return
-    }
-
-    if (!session && !isPending) {
-      setCheckComplete(true)
-    }
-  }, [isPending, session])
-
-  useEffect(() => {
-    if (checkComplete && !hasValidSession && !isPending) {
+    if (!isReady) return
+    if (!hasSession) {
       router.replace("/")
     }
-  }, [checkComplete, hasValidSession, isPending, router])
+  }, [isReady, hasSession, router])
 
-  if (isPending || !checkComplete) {
+  if (!isReady) {
     return (
       <div className="flex h-dvh items-center justify-center">
         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
@@ -49,9 +57,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     )
   }
 
-  if (!session) {
-    return null
-  }
+  if (!hasSession) return null
 
   return <>{children}</>
 }
