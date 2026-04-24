@@ -6,8 +6,11 @@ import { authClient } from "@/lib/auth-client"
 
 export function SessionRefresher() {
   const pathname = usePathname()
+  const { refetch } = authClient.useSession()
+
   useEffect(() => {
-    authClient.getSession()
-  }, [pathname])
+    refetch()
+  }, [pathname, refetch])
+
   return null
 }

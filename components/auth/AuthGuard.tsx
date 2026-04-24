@@ -1,20 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import { authClient } from "@/lib/auth-client"
-import type { QueryClient } from "@tanstack/react-query"
-
-let globalQueryClient: QueryClient | null = null
-
-export function setQueryClient(client: QueryClient) {
-  globalQueryClient = client
-}
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
-  const prevUserIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     const handlePageshow = (event: Event) => {
@@ -25,25 +17,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
     window.addEventListener("pageshow", handlePageshow, false)
 
-    return () => {
-      window.removeEventListener("pageshow", handlePageshow, false)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (isPending) return
-
-    const currentUserId = session?.user?.id ?? null
-
-    if (currentUserId && prevUserIdRef.current !== null && currentUserId !== prevUserIdRef.current) {
-      if (globalQueryClient) {
-        globalQueryClient.clear()
-      }
-    }
-
-    prevUserIdRef.current = currentUserId
-
-    if (!session) {
+    if (!isPending && !session) {
       router.replace("/")
     }
   }, [isPending, session, router])
