@@ -93,7 +93,7 @@ export function UserRegisterContent() {
     if (!validateForm()) return
 
     setIsLoading(true)
-    setErrors((prev) => ({ prev, general: "" }))
+    setErrors((prev) => ({ ...prev, general: "" }))
 
     const result = await signUp.email(
       {
