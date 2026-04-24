@@ -8,6 +8,12 @@
   "regions": ["cle1"],
   "headers": [
     {
+      "source": "/api/auth/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate, private" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=86400" }
