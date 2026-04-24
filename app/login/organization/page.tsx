@@ -3,6 +3,8 @@ import { Suspense } from "react"
 import { AuthLoader } from "@/components/ui/auth-loader"
 import { OrganizationLoginContent } from "./organization-login-content"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Iniciar Sesión - Empresa",
   description:
