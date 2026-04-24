@@ -1,4 +1,5 @@
 import { sentinelClient } from "@better-auth/infra/client"
+import type { QueryClient } from "@tanstack/react-query"
 import { inferAdditionalFields } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
@@ -41,19 +42,17 @@ export const authClient = createAuthClient({
 
 export const { useSession, signIn, signUp, signOut } = authClient
 
+let globalQueryClient: QueryClient | null = null
+
+export function setGlobalQueryClient(client: QueryClient) {
+  globalQueryClient = client
+}
+
 export async function signOutAndRedirect(redirectUrl: string): Promise<void> {
+  if (globalQueryClient) {
+    await globalQueryClient.cancelQueries()
+    globalQueryClient.clear()
+  }
   await signOut()
-  window.location.replace(redirectUrl)
-}
-
-export async function signOutAndHardRedirect(redirectUrl: string): Promise<void> {
-  await signOut()
-  window.location.replace(redirectUrl)
-}
-
-export async function signInWithHardRedirect(
-  ...args: Parameters<typeof signIn.email>
-): Promise<ReturnType<typeof signIn.email>> {
-  const result = await signIn.email(...args)
-  return result
+  window.location.href = redirectUrl
 }
