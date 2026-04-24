@@ -136,6 +136,14 @@ export const auth = betterAuth({
     },
     expiresIn: 604800, // 7 days
     updateAge: 86400, // 1 day - sessions refresh after 1 day of activity
+    storeSessionInDatabase: true, // Required for revokeSessions() to work
+    cookieCache: {
+      enabled: true,
+      maxAge: 300, // 5 minutes cache
+      refreshCache: {
+        updateAge: 60, // Refresh when 60 seconds remain
+      },
+    },
   },
   verification: {
     modelName: "verification",
