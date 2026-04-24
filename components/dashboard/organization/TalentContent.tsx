@@ -459,10 +459,7 @@ export function TalentContent() {
                     <TableCell className="font-medium">
                       <HoverCard openDelay={100} closeDelay={200}>
                         <HoverCardTrigger asChild>
-                          <span
-                            className="inline-block cursor-pointer font-medium text-foreground transition-colors hover:text-primary hover:underline"
-                            tabIndex={0}
-                          >
+                          <span className="inline-block cursor-pointer font-medium text-foreground transition-colors hover:text-primary hover:underline">
                             {user.name}
                           </span>
                         </HoverCardTrigger>

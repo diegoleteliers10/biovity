@@ -48,7 +48,6 @@ export function useResumeByUser(userId: string | undefined) {
       return result.value
     },
     enabled: Boolean(userId),
-    staleTime: 0,
   })
 }
 

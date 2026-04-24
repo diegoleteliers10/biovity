@@ -2,8 +2,8 @@
 
 import { SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import dynamic from "next/dynamic"
 import { useState } from "react"
-import { AgentChat } from "@/components/ai/AgentChat"
 import {
   Sheet,
   SheetContent,
@@ -11,6 +11,15 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+
+const AgentChat = dynamic(() => import("@/components/ai/AgentChat").then((m) => m.AgentChat), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  ),
+})
 
 export function GlobalAgentSheet() {
   const [isOpen, setIsOpen] = useState(false)

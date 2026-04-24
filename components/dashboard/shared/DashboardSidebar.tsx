@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/ui/logo"
 import { Skeleton } from "@/components/ui/skeleton"
-import { authClient } from "@/lib/auth-client"
+import { authClient, signOutAndRedirect } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
 
 export type DashboardSidebarProps = {
@@ -61,7 +61,7 @@ export function DashboardSidebar({
   const { state, setOpen, open, setOpenMobile, isMobile } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
-  const { signOut, useSession } = authClient
+  const { useSession } = authClient
   const { data, isPending: sessionPending } = useSession()
   const sessionUser = data?.user as
     | {
@@ -92,20 +92,10 @@ export function DashboardSidebar({
 
   const handleLogout = async () => {
     try {
-      await signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            router.push(logoutRedirect)
-          },
-          onError: (context) => {
-            console.error("Logout error:", context.error)
-            router.push(logoutRedirect)
-          },
-        },
-      })
+      await signOutAndRedirect(logoutRedirect)
     } catch (error) {
       console.error("Unexpected logout error:", error)
-      router.push(logoutRedirect)
+      window.location.href = logoutRedirect
     }
   }
 

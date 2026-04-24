@@ -66,10 +66,26 @@ function getDashboardForUserType(_userType: string | undefined): string {
   return "/dashboard"
 }
 
-function getLoginPathForUserType(_userType: string | undefined): string {
-  if (_userType === "organization") return "/login/organization"
-  if (_userType === "admin") return "/login/professional"
-  return "/login/professional"
+function isAuthPage(pathname: string): boolean {
+  return pathname.startsWith("/login") || pathname.startsWith("/register")
+}
+
+async function handleAuthenticatedUserRedirect(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
+  if (!isAuthPage(pathname)) {
+    return null
+  }
+
+  const sessionResult = await getSessionSafe(request)
+
+  if (sessionResult.isOk() && sessionResult.value?.user) {
+    const user = sessionResult.value.user as { type?: string }
+    const dashboardPath = getDashboardForUserType(user.type)
+    return NextResponse.redirect(new URL(dashboardPath, request.url))
+  }
+
+  return null
 }
 
 export async function proxy(request: NextRequest) {
@@ -79,6 +95,11 @@ export async function proxy(request: NextRequest) {
   const aiResponse = await handleAI_RATE_LIMIT(request)
   if (aiResponse) {
     return aiResponse
+  }
+
+  const authPageRedirect = await handleAuthenticatedUserRedirect(request)
+  if (authPageRedirect) {
+    return authPageRedirect
   }
 
   if (isWaitList) {
@@ -104,32 +125,23 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Protect /dashboard routes - redirect to home if not authenticated
   const protectedRoutes = ["/dashboard"]
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   if (isProtectedRoute) {
     const sessionResult = await getSessionSafe(request)
 
-    if (sessionResult.isOk() && !sessionResult.value?.user) {
-      const loginUrl = new URL("/login", request.url)
-      loginUrl.searchParams.set("redirect", request.nextUrl.pathname)
-      return NextResponse.redirect(loginUrl)
+    if (!sessionResult.isOk() || !sessionResult.value?.user) {
+      return NextResponse.redirect(new URL("/", request.url))
     }
-  }
 
-  if (
-    pathname === "/login" ||
-    pathname === "/register" ||
-    pathname.startsWith("/login/") ||
-    pathname.startsWith("/register/")
-  ) {
-    const sessionResult = await getSessionSafe(request)
-
-    if (sessionResult.isOk() && sessionResult.value?.user) {
-      const user = sessionResult.value.user as { type?: string }
-      const userType = user.type
-      return NextResponse.redirect(new URL(getDashboardForUserType(userType), request.url))
-    }
+    // Prevent browser from caching authenticated pages
+    const response = NextResponse.next()
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private")
+    response.headers.set("Pragma", "no-cache")
+    response.headers.set("Expires", "0")
+    return response
   }
 
   return NextResponse.next()
