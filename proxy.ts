@@ -62,37 +62,6 @@ async function handleAI_RATE_LIMIT(request: NextRequest) {
   return response
 }
 
-function getDashboardForUserType(_userType: string | undefined): string {
-  return "/dashboard"
-}
-
-function isAuthPage(pathname: string): boolean {
-  return pathname.startsWith("/login") || pathname.startsWith("/register")
-}
-
-async function handleAuthenticatedUserRedirect(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
-
-  if (!isAuthPage(pathname)) {
-    return null
-  }
-
-  const sessionCookie = request.cookies.get("better-auth.session_token")
-  if (!sessionCookie?.value) {
-    return null
-  }
-
-  const sessionResult = await getSessionSafe(request)
-
-  if (sessionResult.isOk() && sessionResult.value?.user) {
-    const user = sessionResult.value.user as { type?: string }
-    const dashboardPath = getDashboardForUserType(user.type)
-    return NextResponse.redirect(new URL(dashboardPath, request.url))
-  }
-
-  return null
-}
-
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isWaitList = (process.env.NODE_ENV as string) === "wait-list"
@@ -100,11 +69,6 @@ export async function proxy(request: NextRequest) {
   const aiResponse = await handleAI_RATE_LIMIT(request)
   if (aiResponse) {
     return aiResponse
-  }
-
-  const authPageRedirect = await handleAuthenticatedUserRedirect(request)
-  if (authPageRedirect) {
-    return authPageRedirect
   }
 
   if (isWaitList) {
@@ -130,18 +94,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Protect /dashboard routes - redirect to home if not authenticated
   const protectedRoutes = ["/dashboard"]
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
 
   if (isProtectedRoute) {
-    const sessionResult = await getSessionSafe(request)
-
-    if (!sessionResult.isOk() || !sessionResult.value?.user) {
+    const sessionCookie = request.cookies.get("better-auth.session_token")
+    if (!sessionCookie?.value) {
       return NextResponse.redirect(new URL("/", request.url))
     }
 
-    // Prevent browser from caching authenticated pages
     const response = NextResponse.next()
     response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private")
     response.headers.set("Pragma", "no-cache")
