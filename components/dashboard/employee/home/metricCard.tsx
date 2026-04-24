@@ -62,9 +62,5 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
     )
   }
 
-  return (
-    <Card className="border border-border/80 bg-white">
-      {content}
-    </Card>
-  )
+  return <Card className="border border-border/80 bg-white">{content}</Card>
 })

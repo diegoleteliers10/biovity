@@ -249,18 +249,14 @@ export default function OfertaDetailPage() {
 
         {/* Applicants Section with Tabs */}
         <Tabs defaultValue="applicants" className="w-full flex-col gap-4">
-            <TabsList
-              variant="line"
-            >
-              <TabsTrigger value="applicants">
-                Postulaciones ({applications?.length ?? 0})
-              </TabsTrigger>
-              <TabsTrigger value="questions">
-                Preguntas Postulación
-              </TabsTrigger>
-            </TabsList>
+          <TabsList variant="line">
+            <TabsTrigger value="applicants">
+              Postulaciones ({applications?.length ?? 0})
+            </TabsTrigger>
+            <TabsTrigger value="questions">Preguntas Postulación</TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="applicants">
+          <TabsContent value="applicants">
             {appsLoading ? (
               <div className="rounded-lg border border-border">
                 <div className="h-12 animate-pulse border-b border-border bg-muted/50" />

@@ -14,9 +14,9 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { addTransitionType, startTransition, useState, ViewTransition } from "react"
+import { NotificationBell } from "@/components/common/NotificationBell"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
-import { NotificationBell } from "@/components/common/NotificationBell"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -332,7 +332,13 @@ export function OfertasContent() {
                   <div className="absolute right-2 top-2 z-10">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <HugeiconsIcon icon={MoreHorizontalIcon} size={20} strokeWidth={1.5} onClick={(e) => e.stopPropagation()} className="relative right-2"/>
+                        <HugeiconsIcon
+                          icon={MoreHorizontalIcon}
+                          size={20}
+                          strokeWidth={1.5}
+                          onClick={(e) => e.stopPropagation()}
+                          className="relative right-2"
+                        />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem

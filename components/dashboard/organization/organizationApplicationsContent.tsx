@@ -8,16 +8,16 @@ import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import { AIScoreModal } from "@/components/ai/AIScoreModal"
 import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
-import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { NotificationBell } from "@/components/common/NotificationBell"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
+import { formatJobLocation } from "@/lib/api/jobs"
 import type { Resume } from "@/lib/api/resumes"
 import { getResumeByUserId } from "@/lib/api/resumes"
-import { formatJobLocation } from "@/lib/api/jobs"
 import {
   applicationsKeys,
   useApplicationsByJob,

@@ -65,10 +65,7 @@ export function UserRegisterContent() {
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      const type = (session.user as { type?: string }).type
-      if (type === "professional" || type === "organization" || type === "admin") {
-        router.push("/dashboard")
-      }
+      router.replace("/dashboard")
     }
   }, [session, isPending, router])
 
@@ -76,7 +73,9 @@ export function UserRegisterContent() {
     return <AuthLoader />
   }
 
-  if (session?.user) return null
+  if (session?.user) {
+    return null
+  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))

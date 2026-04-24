@@ -1,18 +1,13 @@
 "use client"
 
+import { Cancel01Icon, Edit01Icon, GraduationScrollIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Cancel01Icon,
-  Edit01Icon,
-  GraduationScrollIcon,
-} from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
 import type { ResumeEducation } from "@/lib/api/resumes"
-import { useProfileContext } from "./profile-context"
-import { emptyEducation } from "./profile-context"
+import { cn } from "@/lib/utils"
+import { emptyEducation, useProfileContext } from "./profile-context"
 
 const getEduDisplay = (edu: ResumeEducation) => ({
   title: edu.title ?? edu.degree ?? "",
@@ -149,9 +144,7 @@ export function EducationForm() {
                     size="icon"
                     className="shrink-0"
                     onClick={() =>
-                      handleResumeArrayChange("education", (arr) =>
-                        arr.filter((_, j) => j !== i)
-                      )
+                      handleResumeArrayChange("education", (arr) => arr.filter((_, j) => j !== i))
                     }
                     aria-label="Eliminar"
                   >
@@ -223,9 +216,7 @@ export function EducationForm() {
                   className="relative pl-6 before:absolute before:left-0 before:top-2 before:size-2 before:rounded-full before:bg-primary"
                 >
                   <p className="font-medium text-foreground">{d.title}</p>
-                  {d.institute && (
-                    <p className="text-sm text-muted-foreground">{d.institute}</p>
-                  )}
+                  {d.institute && <p className="text-sm text-muted-foreground">{d.institute}</p>}
                   <p className="mt-1 text-xs text-muted-foreground tabular-nums">
                     {d.start} — {d.current ? "En curso" : d.end || ""}
                   </p>

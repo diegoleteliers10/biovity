@@ -1,13 +1,16 @@
 "use client"
 
-import {
-  type ResumeCertification,
-  type ResumeEducation,
-  type ResumeExperience,
-  type ResumeLanguage,
-  type ResumeSkill,
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type {
+  ResumeCertification,
+  ResumeEducation,
+  ResumeExperience,
+  ResumeLanguage,
+  ResumeSkill,
 } from "@/lib/api/resumes"
 import {
+  formatUserLocation,
+  parseLocationString,
   useCreateResumeMutation,
   useResumeByUser,
   useUpdateResumeMutation,
@@ -15,13 +18,10 @@ import {
   useUploadAvatarMutation,
   useUploadResumeCvMutation,
   useUser,
-  formatUserLocation,
-  parseLocationString,
 } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 export type SectionId =
   | "sidebar"
@@ -135,13 +135,7 @@ export const LEVEL_OPTIONS = [
   { value: "entry", label: "Básico" },
 ] as const
 
-export {
-  emptyExperience,
-  emptyEducation,
-  emptySkill,
-  emptyCertification,
-  emptyLanguage,
-}
+export { emptyCertification, emptyEducation, emptyExperience, emptyLanguage, emptySkill }
 
 import { createContext, useContext } from "react"
 

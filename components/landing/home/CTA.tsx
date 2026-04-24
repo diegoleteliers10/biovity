@@ -2,9 +2,9 @@
 
 import { ArrowRight01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import Link from "next/link"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import Link from "next/link"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { Button } from "../../ui/button"
 
@@ -62,9 +62,7 @@ export function CTA() {
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="px-8 py-4">
-            <Link href="/register/organization">
-              Soy empresa
-            </Link>
+            <Link href="/register/organization">Soy empresa</Link>
           </Button>
         </m.div>
 

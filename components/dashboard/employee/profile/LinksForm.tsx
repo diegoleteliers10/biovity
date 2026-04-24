@@ -1,6 +1,6 @@
 "use client"
 
-import { HugeiconsIcon } from "@hugeicons/react"
+import type { Briefcase01Icon } from "@hugeicons/core-free-icons"
 import {
   Cancel01Icon,
   GithubIcon,
@@ -8,14 +8,14 @@ import {
   Link01Icon,
   LinkedinIcon,
 } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 import { EditableCard } from "./EditableCard"
 import { useProfileContext } from "./profile-context"
-import { cn } from "@/lib/utils"
-import type { Briefcase01Icon } from "@hugeicons/core-free-icons"
 
 type LinkInfo = { label: string; Icon: typeof GithubIcon }
 

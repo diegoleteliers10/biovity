@@ -132,7 +132,10 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
       {/* Week days header */}
       <div className="grid grid-cols-7 gap-px mb-1 lg:mb-2">
         {weekDays.map((day) => (
-          <div key={day} className="p-1.5 lg:p-3 text-center text-xs lg:text-sm font-medium text-muted-foreground">
+          <div
+            key={day}
+            className="p-1.5 lg:p-3 text-center text-xs lg:text-sm font-medium text-muted-foreground"
+          >
             {day}
           </div>
         ))}

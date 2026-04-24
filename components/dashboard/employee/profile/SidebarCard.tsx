@@ -11,18 +11,18 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import Image from "next/image"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { useProfileContext, EMPTY_PLACEHOLDER } from "./profile-context"
-import { EditableCard } from "./EditableCard"
-import { CardContent } from "@/components/ui/card"
+import Image from "next/image"
+import { DatePicker } from "@/components/common/DatePicker"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { DatePicker } from "@/components/common/DatePicker"
-import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
 import { useUploadAvatarMutation, useUploadResumeCvMutation } from "@/lib/api/use-profile"
+import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
+import { EditableCard } from "./EditableCard"
+import { EMPTY_PLACEHOLDER, useProfileContext } from "./profile-context"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -195,11 +195,7 @@ export function SidebarCard() {
           }
         />
         {user?.organization && (
-          <InfoRow
-            icon={Building06Icon}
-            label="Organización"
-            value={user.organization.name}
-          />
+          <InfoRow icon={Building06Icon} label="Organización" value={user.organization.name} />
         )}
         <InfoRow
           icon={Location01Icon}
@@ -224,9 +220,7 @@ export function SidebarCard() {
             isEditingSidebar ? (
               <DatePicker
                 date={formData.dateOfBirth ? parseLocalDate(formData.dateOfBirth) : undefined}
-                setDate={(d) =>
-                  handleInputChange("dateOfBirth", d ? dateToDateString(d) : "")
-                }
+                setDate={(d) => handleInputChange("dateOfBirth", d ? dateToDateString(d) : "")}
                 className="h-8 text-sm"
               />
             ) : data.dateOfBirth ? (

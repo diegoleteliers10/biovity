@@ -23,9 +23,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+import { Avatar } from "@/components/base/avatar/avatar"
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
-import { Avatar } from "@/components/base/avatar/avatar"
 import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"

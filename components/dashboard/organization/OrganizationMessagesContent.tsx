@@ -13,11 +13,10 @@ import {
   Sent02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { createClientBrowser } from "@/lib/supabase-browser"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
@@ -43,6 +42,7 @@ import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
+import { createClientBrowser } from "@/lib/supabase-browser"
 import { cn, formatDateChilean } from "@/lib/utils"
 
 export function OrganizationMessagesContent() {
@@ -98,14 +98,10 @@ export function OrganizationMessagesContent() {
 
     const channel = supabase
       .channel(`chat-messages-${chatIdFromUrl}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "message" },
-        () => {
-          // Invalidate the chat query to refresh data
-          queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
-        }
-      )
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "message" }, () => {
+        // Invalidate the chat query to refresh data
+        queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
+      })
       .subscribe()
 
     return () => {
@@ -136,7 +132,7 @@ export function OrganizationMessagesContent() {
 
   // Find selected chat: prefer chats list (stable), fallback to chatFromUrl (for reload case)
   const selectedChat = selectedChatId
-    ? chats.find((c) => c.id === selectedChatId) ?? chatFromUrl ?? null
+    ? (chats.find((c) => c.id === selectedChatId) ?? chatFromUrl ?? null)
     : null
 
   const [messageInput, setMessageInput] = useState("")
@@ -207,10 +203,12 @@ export function OrganizationMessagesContent() {
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
       {/* Sidebar - hidden on mobile when chat is selected */}
-      <div className={cn(
-        "flex w-full lg:h-full lg:w-80 flex-col overflow-hidden border-r border-border max-h-dvh transition-all",
-        mobileView === "chat" ? "hidden lg:flex" : "flex"
-      )}>
+      <div
+        className={cn(
+          "flex w-full lg:h-full lg:w-80 flex-col overflow-hidden border-r border-border max-h-dvh transition-all",
+          mobileView === "chat" ? "hidden lg:flex" : "flex"
+        )}
+      >
         <div className="p-4">
           {/* Top row: menu + notification on mobile */}
           <div className="flex items-center justify-between mb-4 lg:mb-6 lg:hidden">
@@ -261,10 +259,12 @@ export function OrganizationMessagesContent() {
       </div>
 
       {/* Main chat area - hidden on mobile when list is selected */}
-      <div className={cn(
-        "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
-        mobileView === "list" ? "hidden lg:flex" : "flex"
-      )}>
+      <div
+        className={cn(
+          "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
+          mobileView === "list" ? "hidden lg:flex" : "flex"
+        )}
+      >
         {!selectedChat ? (
           <div className="flex flex-1 items-center justify-center">
             <div className="max-w-md rounded-2xl bg-transparent px-6 py-7 text-center">
@@ -311,7 +311,11 @@ export function OrganizationMessagesContent() {
                       {professionalName}
                     </h2>
                     <div className="flex items-center gap-1 text-muted-foreground text-xs lg:text-sm">
-                      <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-4" />
+                      <HugeiconsIcon
+                        icon={Briefcase01Icon}
+                        size={12}
+                        className="shrink-0 lg:size-4"
+                      />
                       <span className="truncate">{professional?.profession ?? "—"}</span>
                     </div>
                   </div>

@@ -28,7 +28,10 @@ export default function AppError({ error, reset }: AppErrorProps) {
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Button onClick={reset} className="h-11 min-w-10 active:scale-[0.96] transition-transform">
+          <Button
+            onClick={reset}
+            className="h-11 min-w-10 active:scale-[0.96] transition-transform"
+          >
             <RefreshCw className="mr-2 size-4" aria-hidden />
             Reintentar
           </Button>

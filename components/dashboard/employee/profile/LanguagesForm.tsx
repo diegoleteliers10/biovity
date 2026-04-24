@@ -6,11 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
-import {
-  LEVEL_OPTIONS,
-  emptyLanguage,
-  useProfileContext,
-} from "./profile-context"
+import { emptyLanguage, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
 
 const SectionTitle = ({
   icon: Icon,
@@ -94,9 +90,7 @@ export function LanguagesForm() {
                   variant="ghost"
                   size="icon"
                   onClick={() =>
-                    handleResumeArrayChange("languages", (arr) =>
-                      arr.filter((_, j) => j !== i)
-                    )
+                    handleResumeArrayChange("languages", (arr) => arr.filter((_, j) => j !== i))
                   }
                   aria-label="Eliminar"
                 >
@@ -123,16 +117,12 @@ export function LanguagesForm() {
                 className="rounded-md border border-border bg-muted/50 px-3 py-1.5 text-sm"
               >
                 {lang.name ?? lang.language}
-                {lang.level && (
-                  <span className="ml-1.5 text-muted-foreground">({lang.level})</span>
-                )}
+                {lang.level && <span className="ml-1.5 text-muted-foreground">({lang.level})</span>}
               </span>
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground text-sm">
-            Indica los idiomas que dominas y tu nivel
-          </p>
+          <p className="text-muted-foreground text-sm">Indica los idiomas que dominas y tu nivel</p>
         )}
       </CardContent>
     </EditableCard>

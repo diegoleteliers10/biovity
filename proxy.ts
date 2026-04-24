@@ -62,6 +62,16 @@ async function handleAI_RATE_LIMIT(request: NextRequest) {
   return response
 }
 
+function getDashboardForUserType(_userType: string | undefined): string {
+  return "/dashboard"
+}
+
+function getLoginPathForUserType(_userType: string | undefined): string {
+  if (_userType === "organization") return "/login/organization"
+  if (_userType === "admin") return "/login/professional"
+  return "/login/professional"
+}
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isWaitList = (process.env.NODE_ENV as string) === "wait-list"
@@ -116,7 +126,9 @@ export async function proxy(request: NextRequest) {
     const sessionResult = await getSessionSafe(request)
 
     if (sessionResult.isOk() && sessionResult.value?.user) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
+      const user = sessionResult.value.user as { type?: string }
+      const userType = user.type
+      return NextResponse.redirect(new URL(getDashboardForUserType(userType), request.url))
     }
   }
 

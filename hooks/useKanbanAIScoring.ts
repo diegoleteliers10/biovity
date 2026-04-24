@@ -37,11 +37,15 @@ export function useKanbanAIScoring() {
             data: {
               ...c.data,
               resumeUrl: resume?.cvFile?.url,
-              experiences: resume?.experiences?.map((e) =>
-                [e.title, e.company, e.description].filter(Boolean).join(" - ")
-              ).filter(Boolean) ?? [],
-              certifications: resume?.certifications?.map((cert) => cert.name || cert.title).filter(Boolean) ?? [],
-              languages: resume?.languages?.map((lang) => lang.name || lang.language).filter(Boolean) ?? [],
+              experiences:
+                resume?.experiences
+                  ?.map((e) => [e.title, e.company, e.description].filter(Boolean).join(" - "))
+                  .filter(Boolean) ?? [],
+              certifications:
+                resume?.certifications?.map((cert) => cert.name || cert.title).filter(Boolean) ??
+                [],
+              languages:
+                resume?.languages?.map((lang) => lang.name || lang.language).filter(Boolean) ?? [],
             },
           }
         })

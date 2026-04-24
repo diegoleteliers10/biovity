@@ -2,8 +2,8 @@
 
 import { Award01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { EditableCard } from "./EditableCard"
@@ -25,7 +25,16 @@ const SectionTitle = ({
 )
 
 export function CertificationsForm() {
-  const { resume, resumeFormData, handleResumeArrayChange, editingSection, handleEditSection, handleSaveSection, handleCancelSection, isSaving } = useProfileContext()
+  const {
+    resume,
+    resumeFormData,
+    handleResumeArrayChange,
+    editingSection,
+    handleEditSection,
+    handleSaveSection,
+    handleCancelSection,
+    isSaving,
+  } = useProfileContext()
 
   const isEditingCertifications = editingSection === "certifications"
 
@@ -117,10 +126,7 @@ export function CertificationsForm() {
               variant="outline"
               size="sm"
               onClick={() =>
-                handleResumeArrayChange("certifications", (arr) => [
-                  ...arr,
-                  emptyCertification(),
-                ])
+                handleResumeArrayChange("certifications", (arr) => [...arr, emptyCertification()])
               }
             >
               Agregar certificación

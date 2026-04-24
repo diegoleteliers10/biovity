@@ -1,15 +1,18 @@
 "use client"
 
-import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
-import { SidebarCard } from "@/components/dashboard/employee/profile/SidebarCard"
-import { PersonalForm } from "@/components/dashboard/employee/profile/PersonalForm"
-import { ExperienceForm } from "@/components/dashboard/employee/profile/ExperienceForm"
-import { EducationForm } from "@/components/dashboard/employee/profile/EducationForm"
+import { useEffect, useState } from "react"
 import { CertificationsForm } from "@/components/dashboard/employee/profile/CertificationsForm"
+import { EducationForm } from "@/components/dashboard/employee/profile/EducationForm"
+import { ExperienceForm } from "@/components/dashboard/employee/profile/ExperienceForm"
 import { LanguagesForm } from "@/components/dashboard/employee/profile/LanguagesForm"
 import { LinksForm } from "@/components/dashboard/employee/profile/LinksForm"
-import { ProfileProvider, useProfileContext } from "@/components/dashboard/employee/profile/profile-context"
-import { useEffect, useState } from "react"
+import { PersonalForm } from "@/components/dashboard/employee/profile/PersonalForm"
+import {
+  ProfileProvider,
+  useProfileContext,
+} from "@/components/dashboard/employee/profile/profile-context"
+import { SidebarCard } from "@/components/dashboard/employee/profile/SidebarCard"
+import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 
 function ProfileLoadingSkeleton() {
   return (

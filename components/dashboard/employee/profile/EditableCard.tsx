@@ -1,9 +1,5 @@
+import { Cancel01Icon, Edit01Icon, FloppyDiskIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Edit01Icon,
-  FloppyDiskIcon,
-  Cancel01Icon,
-} from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"

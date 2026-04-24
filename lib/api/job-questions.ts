@@ -63,7 +63,9 @@ export async function getQuestionsByJob(
   const level1: unknown = parsed?.data ?? parsed
   const level1Obj = level1 as Record<string, unknown>
   const level2: unknown = level1Obj?.data ?? level1Obj
-  const questions = Array.isArray(level2) ? level2 : (level2 as { data?: JobQuestion[] })?.data ?? []
+  const questions = Array.isArray(level2)
+    ? level2
+    : ((level2 as { data?: JobQuestion[] })?.data ?? [])
   return R.ok(questions)
 }
 
@@ -79,7 +81,9 @@ export async function getOrgQuestionsByJob(
   const level1: unknown = parsed?.data ?? parsed
   const level1Obj = level1 as Record<string, unknown>
   const level2: unknown = level1Obj?.data ?? level1Obj
-  const questions = Array.isArray(level2) ? level2 : (level2 as { data?: JobQuestion[] })?.data ?? []
+  const questions = Array.isArray(level2)
+    ? level2
+    : ((level2 as { data?: JobQuestion[] })?.data ?? [])
   return R.ok(questions)
 }
 
