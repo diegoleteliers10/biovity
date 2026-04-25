@@ -6,12 +6,10 @@ import { authClient } from "@/lib/auth-client"
 
 export function SessionRefresher() {
   const pathname = usePathname()
-  const prevPathname = useRef(pathname)
+  const prevPathname = useRef<string | null>(null)
+  const mounted = useRef(false)
 
   useEffect(() => {
-    if (pathname === prevPathname.current) return
-    prevPathname.current = pathname
-
     const refreshSession = async () => {
       const sessionAtom = authClient.$store.atoms["session"] as {
         set: (v: { data: null; error: null; isPending: boolean; isRefetching: boolean; refetch: () => void }) => void
@@ -30,7 +28,13 @@ export function SessionRefresher() {
       await authClient.getSession({ query: { disableCookieCache: true } })
       authClient.$store.notify("$sessionSignal")
     }
-    refreshSession()
+
+    // Always refresh on pathname change, including initial mount
+    if (prevPathname.current !== pathname || !mounted.current) {
+      prevPathname.current = pathname
+      mounted.current = true
+      refreshSession()
+    }
   }, [pathname])
 
   return null
