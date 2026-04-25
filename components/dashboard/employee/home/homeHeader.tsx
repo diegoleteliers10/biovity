@@ -17,7 +17,7 @@ import type { Notification } from "@/lib/types/dashboard"
 
 type HomeHeaderProps = {
   firstName: string
-  isPending: boolean
+  isPending?: boolean
   notifications: Notification[]
   unreadCount: number
   onNotificationClick: (id: number) => void

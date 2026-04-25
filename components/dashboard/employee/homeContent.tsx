@@ -9,9 +9,9 @@ import { getLastMessageFromSender } from "@/lib/api/messages"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useChatsByProfessional } from "@/lib/api/use-chats"
 import { getUser } from "@/lib/api/users"
-import { authClient } from "@/lib/auth-client"
 import { DATA } from "@/lib/data/data-test"
 import type { Notification } from "@/lib/types/dashboard"
+import { useDashboardSession } from "../DashboardSessionContext"
 import { HomeHeader } from "./home/homeHeader"
 import { JobAlertsCard } from "./home/jobAlertsCard"
 import { MetricCard } from "./home/metricCard"
@@ -31,8 +31,7 @@ const getCachedUser = cache(async (recruiterId: string) => {
 
 export const HomeContent = () => {
   const router = useRouter()
-  const { useSession } = authClient
-  const { data, isPending } = useSession()
+  const session = useDashboardSession()
 
   const [notifications, setNotifications] = useState<Notification[]>([
     {
@@ -108,9 +107,9 @@ export const HomeContent = () => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
   }, [])
 
-  const firstName = data?.user?.name?.split(" ")[0] || "Usuario"
+  const firstName = session?.user?.name?.split(" ")[0] || "Usuario"
 
-  const professionalId = (data?.user as { id?: string })?.id
+  const professionalId = session?.user?.id
   const {
     data: chats = [],
     isPending: chatsPending,
@@ -194,7 +193,6 @@ export const HomeContent = () => {
       {/* Header */}
       <HomeHeader
         firstName={firstName}
-        isPending={isPending}
         notifications={notifications}
         unreadCount={unreadCount}
         onNotificationClick={handleNotificationClick}

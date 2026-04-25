@@ -6,6 +6,7 @@ import { useResumeByUser, useUser } from "@/lib/api/use-profile"
 import type { ServerSession } from "@/lib/auth"
 import { NAV_DATA } from "@/lib/data/nav-data"
 import { computeProfileCompletion } from "@/lib/utils/profile-completion"
+import { DashboardSessionContext } from "../DashboardSessionContext"
 import { DashboardSidebar } from "../shared/DashboardSidebar"
 
 type DashboardShellProps = {
@@ -34,22 +35,24 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
   }, [user, resume])
 
   return (
-    <SidebarProvider className="pt-2 px-2 pb-2 bg-sidebar" defaultOpen={defaultOpen}>
-      <DashboardSidebar
-        navData={navData}
-        logoutRedirect="/login"
-        profileUrl="/dashboard/profile"
-        avatarUrl={user?.avatar}
-        avatarGradient={{ from: "blue-500", to: "purple-600" }}
-        profession={user?.profession}
-        session={session}
-      />
-      <SidebarInset
-        className="min-h-0 rounded-tl-lg sm:rounded-tl-lg"
-        style={{ viewTransitionName: "persistent-nav" }}
-      >
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <DashboardSessionContext.Provider value={session ?? null}>
+      <SidebarProvider className="pt-2 px-2 pb-2 bg-sidebar" defaultOpen={defaultOpen}>
+        <DashboardSidebar
+          navData={navData}
+          logoutRedirect="/login"
+          profileUrl="/dashboard/profile"
+          avatarUrl={user?.avatar}
+          avatarGradient={{ from: "blue-500", to: "purple-600" }}
+          profession={user?.profession}
+          session={session}
+        />
+        <SidebarInset
+          className="min-h-0 rounded-tl-lg sm:rounded-tl-lg"
+          style={{ viewTransitionName: "persistent-nav" }}
+        >
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </DashboardSessionContext.Provider>
   )
 }
