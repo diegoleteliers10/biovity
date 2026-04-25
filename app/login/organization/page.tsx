@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import { AuthLoader } from "@/components/ui/auth-loader"
 import { SessionRefresher } from "@/components/auth/SessionRefresher"
+import { AuthLoader } from "@/components/ui/auth-loader"
 import { OrganizationLoginContent } from "./organization-login-content"
 
 export const dynamic = "force-dynamic"

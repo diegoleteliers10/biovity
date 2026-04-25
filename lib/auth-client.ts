@@ -42,8 +42,20 @@ export const authClient = createAuthClient({
 export const { useSession, signIn, signOut } = authClient
 
 type SessionAtom = {
-  set: (v: { data: null; error: null; isPending: boolean; isRefetching: boolean; refetch: () => void }) => void
-  get: () => { data: unknown; error: unknown; isPending: boolean; isRefetching: boolean; refetch: () => void }
+  set: (v: {
+    data: null
+    error: null
+    isPending: boolean
+    isRefetching: boolean
+    refetch: () => void
+  }) => void
+  get: () => {
+    data: unknown
+    error: unknown
+    isPending: boolean
+    isRefetching: boolean
+    refetch: () => void
+  }
 }
 
 function clearSessionAtom() {

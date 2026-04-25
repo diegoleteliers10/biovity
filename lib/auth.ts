@@ -1,8 +1,9 @@
 import { dash } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
-import { nextCookies } from "better-auth/next-js"
 import { APIError, createAuthMiddleware } from "better-auth/api"
+import { nextCookies } from "better-auth/next-js"
 import { headers } from "next/headers"
+import { cache } from "react"
 import { pool } from "@/lib/db"
 
 export const auth = betterAuth({
@@ -31,12 +32,12 @@ export const auth = betterAuth({
       }
     }),
   },
-  appName: "Biovity", // Define your application name
+  appName: "Biovity",
   database: pool,
   rateLimit: {
     enabled: true,
-    window: 60, // 1 minute
-    max: 10, // 10 requests per minute per IP
+    window: 60,
+    max: 10,
   },
   trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS
     ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((s) => s.trim())
@@ -46,25 +47,13 @@ export const auth = betterAuth({
         "https://www.biovity.cl",
       ],
   experimental: {
-    joins: true, // Enable database joins for better performance
+    joins: true,
   },
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
     },
     useSecureCookies: process.env.NODE_ENV === "production",
-    crossSubDomainCookies: {
-      enabled: false, // Disabled - only needed if API is on different subdomain than frontend
-      domain: undefined,
-    },
-    ipAddress: {
-      ipAddressHeaders: [
-        "cf-connecting-ip",
-        "x-vercel-forwarded-for",
-        "x-forwarded-for",
-        "x-real-ip",
-      ],
-    },
   },
   account: {
     modelName: "account",
@@ -134,12 +123,9 @@ export const auth = betterAuth({
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
-    expiresIn: 604800, // 7 days
-    updateAge: 86400, // 1 day - sessions refresh after 1 day of activity
-    storeSessionInDatabase: true, // Required for revokeSessions() to work
-    cookieCache: {
-      enabled: false, // Disabled to prevent stale data and session leaks
-    },
+    expiresIn: 604800,
+    updateAge: 86400,
+    storeSessionInDatabase: true,
   },
   verification: {
     modelName: "verification",
@@ -165,7 +151,6 @@ export const auth = betterAuth({
 
 export type UserRole = "admin" | "professional" | "organization"
 
-/** Returns true if session user is admin (ADMIN_EMAILS or user.type === "admin"). */
 export function isAdminSession(session: { user: { email?: string } } | null): boolean {
   if (!session?.user?.email) return false
   const user = session.user as { type?: string }
@@ -173,15 +158,19 @@ export function isAdminSession(session: { user: { email?: string } } | null): bo
   return adminEmails.includes(session.user.email) || user.type === "admin"
 }
 
-/**
- * Server-side role check for conditional routing (e.g. Parallel Routes).
- * Returns user role from session; admin if email is in ADMIN_EMAILS env.
- * Inactive users (isActive === false) are treated as unauthenticated.
- */
-export async function checkUserRole(): Promise<UserRole | null> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+export const getServerSession = cache(async () => {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    })
+    return session
+  } catch {
+    return null
+  }
+})
+
+export async function getServerSessionWithRole() {
+  const session = await getServerSession()
   if (!session?.user) return null
 
   const user = session.user as { type?: string; isActive?: boolean }
@@ -194,4 +183,8 @@ export async function checkUserRole(): Promise<UserRole | null> {
   const userType = user.type
   if (userType === "professional" || userType === "organization") return userType
   return "professional"
+}
+
+export async function checkUserRole() {
+  return getServerSessionWithRole()
 }

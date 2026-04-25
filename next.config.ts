@@ -15,9 +15,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/auth/:path*",
-        headers: [
-          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate, private" },
-        ],
+        headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate, private" }],
       },
       {
         source: "/(.*)",
