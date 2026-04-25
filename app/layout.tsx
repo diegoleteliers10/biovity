@@ -120,11 +120,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
-  // Uncomment and add your verification codes when available
-  // verification: {
-  //   google: "your-google-verification-code",
-  //   yandex: "your-yandex-verification-code",
-  // },
+  ...(process.env.GOOGLE_SITE_VERIFICATION && {
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
+  }),
   category: "technology",
 }
 
