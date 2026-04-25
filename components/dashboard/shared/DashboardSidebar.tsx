@@ -33,8 +33,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/ui/logo"
 import { Skeleton } from "@/components/ui/skeleton"
-import { authClient, signOutAndRedirect } from "@/lib/auth-client"
+import { signOutAndRedirect } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
+import type { ServerSession } from "@/lib/auth"
 
 export type DashboardSidebarProps = {
   navData: NavData
@@ -47,6 +48,7 @@ export type DashboardSidebarProps = {
   }
   logoutHoverContrastOnAccent?: boolean
   profession?: string | null
+  session?: ServerSession | null
 }
 
 export function DashboardSidebar({
@@ -57,13 +59,14 @@ export function DashboardSidebar({
   avatarGradient = { from: "blue-500", to: "purple-600" },
   logoutHoverContrastOnAccent = false,
   profession: professionProp,
+  session,
 }: DashboardSidebarProps) {
   const { state, setOpen, open, setOpenMobile, isMobile } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
-  const { useSession } = authClient
-  const { data, isPending: sessionPending } = useSession()
-  const sessionUser = data?.user as
+  const queryClient = useQueryClient()
+
+  const sessionUser = session?.user as
     | {
         id?: string
         name?: string
@@ -72,7 +75,6 @@ export function DashboardSidebar({
       }
     | undefined
   const userId = sessionUser?.id
-  const queryClient = useQueryClient()
   const avatarUrl = avatarUrlProp ?? sessionUser?.avatar ?? sessionUser?.image
   const userTitle = professionProp ?? navData.user.title
   const initials =
@@ -296,9 +298,7 @@ export function DashboardSidebar({
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                 >
-                  {sessionPending ? (
-                    <Skeleton className="h-8 w-8 rounded-lg bg-muted" />
-                  ) : (
+                  {session ? (
                     <Avatar className="h-8 w-8 rounded-lg">
                       {avatarUrl ? (
                         <AvatarImage
@@ -318,20 +318,22 @@ export function DashboardSidebar({
                         <span className="text-white text-sm font-semibold">{initials}</span>
                       </AvatarFallback>
                     </Avatar>
+                  ) : (
+                    <Skeleton className="h-8 w-8 rounded-lg bg-muted" />
                   )}
                   {state !== "collapsed" && (
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      {sessionPending ? (
+                      {session ? (
                         <>
-                          <Skeleton className="h-4 w-24 bg-muted" />
-                          <Skeleton className="h-3 w-16 mt-1 bg-muted" />
+                          <span className="truncate font-semibold">
+                            {sessionUser?.name ?? navData.user.name}
+                          </span>
+                          <span className="truncate text-xs">{userTitle}</span>
                         </>
                       ) : (
                         <>
-                          <span className="truncate font-semibold">
-                            {data?.user?.name ?? navData.user.name}
-                          </span>
-                          <span className="truncate text-xs">{userTitle}</span>
+                          <Skeleton className="h-4 w-24 bg-muted" />
+                          <Skeleton className="h-3 w-16 mt-1 bg-muted" />
                         </>
                       )}
                     </div>

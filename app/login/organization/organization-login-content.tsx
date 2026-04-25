@@ -71,7 +71,7 @@ export function OrganizationLoginContent() {
     }
 
     authClient.$store.notify("$sessionSignal")
-    router.replace("/dashboard")
+    window.location.href = "/dashboard"
   }
 
   return (
