@@ -3,7 +3,7 @@
 import { type ReactNode, useMemo } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
 import { useResumeByUser, useUser } from "@/lib/api/use-profile"
-import { authClient } from "@/lib/auth-client"
+import type { ServerSession } from "@/lib/auth"
 import { NAV_DATA } from "@/lib/data/nav-data"
 import { computeProfileCompletion } from "@/lib/utils/profile-completion"
 import { DashboardSidebar } from "../shared/DashboardSidebar"
@@ -11,10 +11,10 @@ import { DashboardSidebar } from "../shared/DashboardSidebar"
 type DashboardShellProps = {
   children: ReactNode
   defaultOpen: boolean
+  session?: ServerSession | null
 }
 
-export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
-  const { data: session } = authClient.useSession()
+export function DashboardShell({ children, defaultOpen, session }: DashboardShellProps) {
   const userId = session?.user?.id
   const { data: user } = useUser(userId)
   const { data: resume } = useResumeByUser(userId)
@@ -42,6 +42,7 @@ export function DashboardShell({ children, defaultOpen }: DashboardShellProps) {
         avatarUrl={user?.avatar}
         avatarGradient={{ from: "blue-500", to: "purple-600" }}
         profession={user?.profession}
+        session={session}
       />
       <SidebarInset
         className="min-h-0 rounded-tl-lg sm:rounded-tl-lg"

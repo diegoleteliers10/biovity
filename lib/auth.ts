@@ -188,3 +188,5 @@ export async function getServerSessionWithRole() {
 export async function checkUserRole() {
   return getServerSessionWithRole()
 }
+
+export type ServerSession = NonNullable<Awaited<ReturnType<typeof getServerSession>>>
