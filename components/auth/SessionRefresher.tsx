@@ -12,8 +12,20 @@ export function SessionRefresher() {
   useEffect(() => {
     const refreshSession = async () => {
       const sessionAtom = authClient.$store.atoms["session"] as {
-        set: (v: { data: null; error: null; isPending: boolean; isRefetching: boolean; refetch: () => void }) => void
-        get: () => { data: unknown; error: unknown; isPending: boolean; isRefetching: boolean; refetch: () => void }
+        set: (v: {
+          data: null
+          error: null
+          isPending: boolean
+          isRefetching: boolean
+          refetch: () => void
+        }) => void
+        get: () => {
+          data: unknown
+          error: unknown
+          isPending: boolean
+          isRefetching: boolean
+          refetch: () => void
+        }
       }
       const current = sessionAtom.get()
       if (!current.data) {
