@@ -16,6 +16,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { authClient } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -25,26 +27,38 @@ type AgentSheetTriggerProps = {
 
 export function AgentSheetTrigger({ className }: AgentSheetTriggerProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const { useSession } = authClient
+  const { data: session } = useSession()
+  const userType = (session?.user as { type?: string } | undefined)?.type
+  const isMobile = useIsMobile()
+
+  if (userType !== "organization") return null
+
+  const triggerButton = (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      onClick={() => setIsOpen(true)}
+      className={cn("text-accent", className)}
+      aria-label="Abrir asistente de reclutamiento"
+    >
+      <HugeiconsIcon icon={SparklesIcon} size={20} />
+    </Button>
+  )
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(true)}
-            className={cn("text-accent", className)}
-            aria-label="Abrir asistente de reclutamiento"
-          >
-            <HugeiconsIcon icon={SparklesIcon} size={20} />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>AI Agent</p>
-        </TooltipContent>
-      </Tooltip>
+      {isMobile ? (
+        triggerButton
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild>{triggerButton}</TooltipTrigger>
+          <TooltipContent>
+            <p>AI Agent</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
 
       <SheetContent
         side="right"

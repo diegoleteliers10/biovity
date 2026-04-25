@@ -187,6 +187,8 @@
 @layer base {
     html {
         scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: gray transparent;
     }
 
     * {

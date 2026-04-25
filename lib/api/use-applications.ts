@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
+import type { ApiError, NetworkError } from "@/lib/errors"
 import { getResultErrorMessage } from "@/lib/result"
 import {
   type Application,
@@ -18,6 +19,17 @@ export const applicationsKeys = {
   byCandidate: (candidateId: string) => ["applications", "candidate", candidateId] as const,
   byOrganization: (organizationId: string) =>
     ["applications", "organization", organizationId] as const,
+}
+
+function getCreateApplicationErrorMessage(error: ApiError | NetworkError): string {
+  const base = getResultErrorMessage(error)
+  if (error._tag !== "ApiError") return base
+  const body = error.body
+  if (!body || typeof body !== "object") return base
+  const details = body as { message?: unknown; error?: unknown }
+  if (typeof details.message === "string" && details.message.trim()) return details.message
+  if (typeof details.error === "string" && details.error.trim()) return details.error
+  return base
 }
 
 export function useApplicationsByJob(jobId: string | undefined) {
@@ -46,15 +58,28 @@ export function useApplicationsByCandidate(candidateId: string | undefined) {
   })
 }
 
-export function useCreateApplicationMutation(candidateId: string) {
+export function useCreateApplicationMutation(candidateId: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (jobId: string) => {
-      const result = await createApplication(jobId, candidateId)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+    mutationFn: async (input: {
+      jobId: string
+      coverLetter?: string
+      salaryMin?: number
+      salaryMax?: number
+      salaryCurrency?: string
+      availabilityDate?: string
+      resumeUrl?: string
+      answers?: { questionId: string; value: string }[]
+    }) => {
+      if (!candidateId?.trim()) {
+        throw new Error("No se pudo identificar al candidato. Vuelve a iniciar sesión.")
+      }
+      const result = await createApplication({ ...input, candidateId })
+      if (!Result.isOk(result)) throw new Error(getCreateApplicationErrorMessage(result.error))
       return result.value
     },
     onSuccess: () => {
+      if (!candidateId?.trim()) return
       queryClient.invalidateQueries({ queryKey: applicationsKeys.byCandidate(candidateId) })
     },
   })
@@ -79,12 +104,24 @@ export function useUpdateApplicationStatusMutation(jobId: string) {
   })
 }
 
-export function useApplicationsByOrganization(organizationId: string | undefined) {
+export function useApplicationsByOrganization(
+  organizationId: string | undefined,
+  params?: { page?: number; limit?: number; includeAnswers?: boolean }
+) {
   return useQuery({
-    queryKey: applicationsKeys.byOrganization(organizationId ?? ""),
+    queryKey: [
+      ...applicationsKeys.byOrganization(organizationId ?? ""),
+      params?.page ?? 1,
+      params?.limit ?? 100,
+      params?.includeAnswers ? "with-answers" : "without-answers",
+    ],
     queryFn: async () => {
       if (!organizationId) throw new Error("Organization ID required")
-      const result = await getApplicationsByOrganization(organizationId, { limit: 100 })
+      const result = await getApplicationsByOrganization(organizationId, {
+        page: params?.page,
+        limit: params?.limit ?? 100,
+        includeAnswers: params?.includeAnswers,
+      })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },

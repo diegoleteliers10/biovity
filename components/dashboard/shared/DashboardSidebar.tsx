@@ -4,7 +4,7 @@ import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { usePathname, useRouter } from "next/navigation"
-import { type ReactNode, useState } from "react"
+import type { ReactElement, ReactNode } from "react"
 import {
   Tooltip,
   TooltipContent,
@@ -109,6 +109,17 @@ export function DashboardSidebar({
     ? "cursor-pointer text-red-600 hover:text-accent-foreground focus:text-accent-foreground"
     : "cursor-pointer text-red-600 focus:text-red-600"
 
+  const renderDesktopTooltip = (trigger: ReactElement, content: ReactNode, key?: string) => {
+    if (isMobile) return trigger
+
+    return (
+      <Tooltip key={key} side="right" align="center">
+        <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+        <TooltipContent>{content}</TooltipContent>
+      </Tooltip>
+    )
+  }
+
   return (
     <Sidebar collapsible="icon" className="border-none">
       <SidebarHeader>
@@ -152,8 +163,8 @@ export function DashboardSidebar({
             {navData.navMain.map((item) => {
               const isActive = pathname === item.url
               return (
-                <Tooltip key={item.title} side="right" align="center">
-                  <TooltipTrigger asChild>
+                <div key={item.title}>
+                  {renderDesktopTooltip(
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         asChild
@@ -175,12 +186,11 @@ export function DashboardSidebar({
                           )}
                         </button>
                       </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{item.title}</p>
-                  </TooltipContent>
-                </Tooltip>
+                    </SidebarMenuItem>,
+                    <p>{item.title}</p>,
+                    item.title
+                  )}
+                </div>
               )
             })}
           </SidebarMenu>
@@ -222,26 +232,24 @@ export function DashboardSidebar({
             </div>
             <SidebarGroup className="hidden group-data-[collapsible=icon]:flex">
               <SidebarMenu className="font-mono">
-                <Tooltip side="right" align="center">
-                  <TooltipTrigger asChild>
-                    <SidebarMenuItem>
-                      <button
-                        type="button"
-                        onClick={() => router.push(profileUrl)}
-                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 w-8 h-8 aspect-square hover:bg-primary/20 transition-colors"
-                        aria-label={`Perfil ${navData.profileProgress!.percentage}%`}
-                      >
-                        <span className="text-[10px] font-bold tabular-nums">
-                          {navData.profileProgress.percentage}%
-                        </span>
-                      </button>
-                    </SidebarMenuItem>
-                  </TooltipTrigger>
-                  <TooltipContent>
+                {renderDesktopTooltip(
+                  <SidebarMenuItem>
+                    <button
+                      type="button"
+                      onClick={() => router.push(profileUrl)}
+                      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 w-8 h-8 aspect-square hover:bg-primary/20 transition-colors"
+                      aria-label={`Perfil ${navData.profileProgress!.percentage}%`}
+                    >
+                      <span className="text-[10px] font-bold tabular-nums">
+                        {navData.profileProgress.percentage}%
+                      </span>
+                    </button>
+                  </SidebarMenuItem>,
+                  <>
                     <p>Progreso del Perfil: {navData.profileProgress.percentage}%</p>
                     <p className="text-xs text-secondary-foreground/70">Click para completar</p>
-                  </TooltipContent>
-                </Tooltip>
+                  </>
+                )}
               </SidebarMenu>
             </SidebarGroup>
           </>
@@ -258,8 +266,8 @@ export function DashboardSidebar({
                 const isActive = pathname === item.url
                 const tooltipText = item.tooltipCollapsed ?? item.title
                 return (
-                  <Tooltip key={item.title} side="right" align="center">
-                    <TooltipTrigger asChild>
+                  <div key={item.title}>
+                    {renderDesktopTooltip(
                       <SidebarMenuItem>
                         <SidebarMenuButton
                           asChild
@@ -276,12 +284,11 @@ export function DashboardSidebar({
                             <span>{item.title}</span>
                           </button>
                         </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{state === "collapsed" ? tooltipText : item.title}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                      </SidebarMenuItem>,
+                      <p>{state === "collapsed" ? tooltipText : item.title}</p>,
+                      item.title
+                    )}
+                  </div>
                 )
               })}
             </SidebarMenu>

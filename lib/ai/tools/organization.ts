@@ -1,9 +1,14 @@
 import { tool } from "ai"
 import { Result, type Result as ResultType } from "better-result"
 import { z } from "zod"
-import { getApplicationsByCandidate, getApplicationsByJob } from "@/lib/api/applications"
+import {
+  getApplicationDetail,
+  getApplicationsByCandidate,
+  getApplicationsByJob,
+  getApplicationsByOrganization,
+} from "@/lib/api/applications"
 import { createOrFindChat } from "@/lib/api/chats"
-import { getJob, getJobs } from "@/lib/api/jobs"
+import { getJob, getJobQuestions, getJobs } from "@/lib/api/jobs"
 import { sendMessage } from "@/lib/api/messages"
 import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getResumeByUserId } from "@/lib/api/resumes"
@@ -81,6 +86,38 @@ const hasSkillsMatch = (candidateSkills: string[], requestedSkills: string[]) =>
 const getResultValue = <T, E>(result: ResultType<T, E>): T | null => {
   if (!Result.isOk(result)) return null
   return result.value
+}
+
+const getCvPathFromSignedUrl = (url: string): string | null => {
+  try {
+    const parsed = new URL(url, "http://localhost")
+    const path = parsed.searchParams.get("path")
+    if (!path || !path.startsWith("cv/")) return null
+    return path
+  } catch {
+    return null
+  }
+}
+
+const resolveCvAccessUrl = (args: {
+  applicationResumeUrl?: string | null
+  resumeCvUrl?: string | null
+  resumeCvPath?: string | null
+}): string | null => {
+  if (args.resumeCvPath) {
+    return `/api/cv/signed-url?path=${encodeURIComponent(args.resumeCvPath)}`
+  }
+  if (args.applicationResumeUrl) {
+    const path = getCvPathFromSignedUrl(args.applicationResumeUrl)
+    if (path) return `/api/cv/signed-url?path=${encodeURIComponent(path)}`
+    return args.applicationResumeUrl
+  }
+  if (args.resumeCvUrl) {
+    const path = getCvPathFromSignedUrl(args.resumeCvUrl)
+    if (path) return `/api/cv/signed-url?path=${encodeURIComponent(path)}`
+    return args.resumeCvUrl
+  }
+  return null
 }
 
 export const getCandidatesTool = tool({
@@ -343,6 +380,104 @@ export const listApplicationsTool = tool({
   },
 })
 
+export const getApplicationDossierTool = tool({
+  description:
+    "Obtiene el dossier completo de una postulación: carta, respuestas con pregunta, candidato y CV.",
+  inputSchema: z.object({
+    applicationId: z.string().min(1).max(100),
+  }),
+  execute: async ({ applicationId }) => {
+    validateToolInput("getApplicationDossier", { applicationId })
+    const applicationResult = await getApplicationDetail(applicationId)
+    if (!Result.isOk(applicationResult)) {
+      return {
+        error: "No se pudo obtener la postulación",
+        details: String(applicationResult.error),
+      }
+    }
+
+    const application = applicationResult.value
+    const [resumeResult, questionsResult] = await Promise.all([
+      getResumeByUserId(application.candidateId),
+      getJobQuestions(application.jobId),
+    ])
+
+    const resume = getResultValue(resumeResult)
+    const questions = getResultValue(questionsResult) ?? []
+    const questionLabelById = new Map(questions.map((q) => [q.id, q.label]))
+
+    return {
+      id: application.id,
+      jobId: application.jobId,
+      status: application.status,
+      createdAt: application.createdAt,
+      candidate: application.candidate,
+      coverLetter: application.coverLetter ?? null,
+      salary: {
+        min: application.salaryMin ?? null,
+        max: application.salaryMax ?? null,
+        currency: application.salaryCurrency ?? null,
+      },
+      availabilityDate: application.availabilityDate ?? null,
+      cvUrl: resolveCvAccessUrl({
+        applicationResumeUrl: application.resumeUrl ?? null,
+        resumeCvUrl: resume?.cvFile?.url ?? null,
+        resumeCvPath: resume?.cvFile?.path ?? null,
+      }),
+      answers: (application.answers ?? []).map((answer) => ({
+        id: answer.id,
+        questionId: answer.questionId,
+        question: questionLabelById.get(answer.questionId) ?? "Pregunta",
+        value: answer.value,
+        createdAt: answer.createdAt,
+      })),
+    }
+  },
+})
+
+export const getJobApplicationsWithAnswersTool = tool({
+  description:
+    "Lista postulaciones de una oferta con carta y respuestas, usando el endpoint de organización.",
+  inputSchema: z.object({
+    organizationId: z.string().min(1).max(100),
+    jobId: z.string().min(1).max(100),
+    page: z.number().min(1).max(100).optional().default(1),
+    limit: z.number().min(1).max(100).optional().default(10),
+  }),
+  execute: async ({ organizationId, jobId, page = 1, limit = 10 }) => {
+    validateToolInput("getJobApplicationsWithAnswers", { organizationId, jobId })
+    const [applicationsResult, questionsResult] = await Promise.all([
+      getApplicationsByOrganization(organizationId, { page, limit, includeAnswers: true }),
+      getJobQuestions(jobId),
+    ])
+
+    if (!Result.isOk(applicationsResult)) {
+      return {
+        error: "No se pudieron obtener postulaciones",
+        details: String(applicationsResult.error),
+      }
+    }
+
+    const questionLabelById = new Map(
+      (getResultValue(questionsResult) ?? []).map((q) => [q.id, q.label])
+    )
+    const applications = applicationsResult.value.data.filter((app) => app.jobId === jobId)
+
+    return applications.map((application) => ({
+      id: application.id,
+      candidate: application.candidate,
+      status: application.status,
+      coverLetter: application.coverLetter ?? null,
+      createdAt: application.createdAt,
+      answers: (application.answers ?? []).map((answer) => ({
+        questionId: answer.questionId,
+        question: questionLabelById.get(answer.questionId) ?? "Pregunta",
+        value: answer.value,
+      })),
+    }))
+  },
+})
+
 export const organizationTools = {
   getCandidates: getCandidatesTool,
   getJobOffer: getJobOfferTool,
@@ -353,6 +488,8 @@ export const organizationTools = {
   getOrganizationStats: getOrganizationStatsTool,
   getCandidateDetail: getCandidateDetailTool,
   listApplications: listApplicationsTool,
+  getApplicationDossier: getApplicationDossierTool,
+  getJobApplicationsWithAnswers: getJobApplicationsWithAnswersTool,
 }
 
 export type OrganizationTools = typeof organizationTools

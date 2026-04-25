@@ -88,6 +88,14 @@ export function formatCurrencyCLP(value: number): string {
   return `$${value.toLocaleString("es-CL")}.000`
 }
 
+/** Formats raw CLP amounts (e.g. "800.000"). */
+export function formatAmountCLP(value: number): string {
+  return `$${new Intl.NumberFormat("es-CL", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value)}`
+}
+
 /** Formats salary range for Trabajos (e.g. "$2.500.000 - $3.500.000"). */
 export function formatSalarioRango(min: number, max: number): string {
   const formatNumber = (num: number) =>
