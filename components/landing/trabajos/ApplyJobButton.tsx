@@ -1,28 +1,31 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import {
-  useApplicationsByCandidate,
-  useCreateApplicationMutation,
-} from "@/lib/api/use-applications"
+import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { authClient } from "@/lib/auth-client"
+import { ApplyJobSheet } from "./ApplyJobSheet"
 
 type ApplyJobButtonProps = {
   jobId: string
+  jobTitle?: string
   /** Compact variant for dashboard (inline, no full width) */
   compact?: boolean
 }
 
-export function ApplyJobButton({ jobId, compact }: ApplyJobButtonProps) {
+export function ApplyJobButton({ jobId, jobTitle, compact }: ApplyJobButtonProps) {
   const router = useRouter()
+  const [sheetOpen, setSheetOpen] = useState(false)
   const { useSession } = authClient
   const { data: session } = useSession()
-  const userId = (session?.user as { id?: string })?.id
+  const sessionUserId = (session?.user as { id?: string } | undefined)?.id
+  const sessionTokenUserId = (session as { session?: { userId?: string } } | undefined)?.session
+    ?.userId
+  const userId = sessionUserId ?? sessionTokenUserId
   const userType = (session?.user as { type?: string })?.type
 
-  const { data: myApplications, refetch } = useApplicationsByCandidate(userId)
-  const createMutation = useCreateApplicationMutation(userId ?? "")
+  const { data: myApplications } = useApplicationsByCandidate(userId)
 
   const hasApplied = myApplications?.some((a) => a.jobId === jobId)
   const isProfessional = userType === "professional"
@@ -33,28 +36,31 @@ export function ApplyJobButton({ jobId, compact }: ApplyJobButtonProps) {
       router.push(`/login/professional?redirect=/trabajos/${jobId}`)
       return
     }
-    if (!isProfessional || !userId) return
+    if (!isProfessional) return
     if (hasApplied) return
 
-    createMutation.mutate(jobId, {
-      onError: (err) => {
-        if (err.message.includes("already applied")) {
-          refetch()
-        }
-      },
-    })
+    setSheetOpen(true)
   }
 
   const btnClass = compact
     ? "bg-gray-900 hover:bg-gray-800 text-white px-6"
     : "w-full bg-gray-900 hover:bg-gray-800 text-white"
   const btnSize = compact ? "default" : "lg"
+  const safeJobTitle = jobTitle?.trim() || "esta vacante"
 
   if (!isLoggedIn) {
     return (
-      <Button size={btnSize} className={btnClass} onClick={handleApply}>
-        Postular
-      </Button>
+      <>
+        <Button size={btnSize} className={btnClass} onClick={handleApply}>
+          Postular
+        </Button>
+        <ApplyJobSheet
+          jobId={jobId}
+          jobTitle={safeJobTitle}
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+        />
+      </>
     )
   }
 
@@ -66,7 +72,7 @@ export function ApplyJobButton({ jobId, compact }: ApplyJobButtonProps) {
     )
   }
 
-  if (hasApplied || createMutation.isSuccess) {
+  if (hasApplied) {
     return (
       <Button size={btnSize} className={compact ? "" : "w-full"} variant="secondary" disabled>
         Ya postulaste
@@ -75,18 +81,16 @@ export function ApplyJobButton({ jobId, compact }: ApplyJobButtonProps) {
   }
 
   return (
-    <div className={compact ? "" : "space-y-2"}>
-      <Button
-        size={btnSize}
-        className={btnClass}
-        onClick={handleApply}
-        disabled={createMutation.isPending}
-      >
-        {createMutation.isPending ? "Postulando..." : compact ? "Postular" : "Postular ahora"}
+    <>
+      <Button size={btnSize} className={btnClass} onClick={handleApply}>
+        {compact ? "Postular" : "Postular ahora"}
       </Button>
-      {createMutation.isError && (
-        <p className="text-destructive text-center text-sm">{createMutation.error.message}</p>
-      )}
-    </div>
+      <ApplyJobSheet
+        jobId={jobId}
+        jobTitle={safeJobTitle}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
+    </>
   )
 }

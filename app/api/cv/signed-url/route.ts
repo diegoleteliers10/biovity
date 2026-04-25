@@ -1,36 +1,39 @@
-import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
-import { getSupabaseAdmin } from "@/lib/supabase"
 
 const BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "biovity_bucket"
-const SIGNED_URL_EXPIRES_IN = 60 * 60
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 export async function GET(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session?.user?.id) {
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
-
   const { searchParams } = new URL(request.url)
   const path = searchParams.get("path")
   if (!path || !path.startsWith("cv/")) {
     return NextResponse.json({ error: "Path inválido" }, { status: 400 })
   }
 
-  const userId = session.user.id
-  if (!path.includes(`_${userId}.`)) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 403 })
+  if (!SUPABASE_URL) {
+    return NextResponse.json({ error: "NEXT_PUBLIC_SUPABASE_URL no configurado" }, { status: 500 })
   }
 
-  const supabase = getSupabaseAdmin()
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .createSignedUrl(path, SIGNED_URL_EXPIRES_IN)
-
-  if (error || !data?.signedUrl) {
-    return NextResponse.json({ error: error?.message ?? "Error al generar URL" }, { status: 500 })
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path
+  const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${normalizedPath}`
+  const upstream = await fetch(publicUrl)
+  if (!upstream.ok || !upstream.body) {
+    return NextResponse.json(
+      { error: "No se pudo abrir el CV" },
+      { status: upstream.status || 500 }
+    )
   }
 
-  return NextResponse.redirect(data.signedUrl)
+  const headers = new Headers()
+  const contentType = upstream.headers.get("content-type")
+  if (contentType) headers.set("content-type", contentType)
+  const contentDisposition = upstream.headers.get("content-disposition")
+  if (contentDisposition) headers.set("content-disposition", contentDisposition)
+  const cacheControl = upstream.headers.get("cache-control")
+  if (cacheControl) headers.set("cache-control", cacheControl)
+
+  return new Response(upstream.body, {
+    status: 200,
+    headers,
+  })
 }

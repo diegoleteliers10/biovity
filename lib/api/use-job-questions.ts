@@ -7,7 +7,7 @@ import {
   type CreateQuestionInput,
   createQuestion,
   deleteQuestion,
-  getOrgQuestionsByJob,
+  getQuestionsByJob,
   type JobQuestion,
   publishQuestion,
   type ReorderQuestionItem,
@@ -28,12 +28,12 @@ export function useOrgJobQuestions(orgId: string | undefined, jobId: string | un
   return useQuery({
     queryKey: jobQuestionsKeys.byOrgJob(safeOrgId, safeJobId),
     queryFn: async () => {
-      if (!safeOrgId || !safeJobId) throw new Error("Org ID and Job ID required")
-      const result = await getOrgQuestionsByJob(safeOrgId, safeJobId)
+      if (!safeJobId) throw new Error("Job ID required")
+      const result = await getQuestionsByJob(safeJobId)
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
-    enabled: Boolean(safeOrgId) && Boolean(safeJobId),
+    enabled: Boolean(safeJobId),
   })
 }
 

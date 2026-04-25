@@ -226,7 +226,7 @@ export default function JobDetailPage() {
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-2 border-border/10 border-t pt-4">
-              <ApplyJobButton jobId={job.id} compact />
+              <ApplyJobButton jobId={job.id} jobTitle={job.title} compact />
               <Button
                 variant="ghost"
                 className="px-3 hover:bg-secondary/10"

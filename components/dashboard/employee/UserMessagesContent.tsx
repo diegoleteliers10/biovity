@@ -108,6 +108,7 @@ export function UserMessagesContent() {
   const [messageInput, setMessageInput] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
+  const messageInputRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const { data: recruiter } = useUser(selectedChat?.recruiterId)
@@ -138,6 +139,10 @@ export function UserMessagesContent() {
     if (!messageInput.trim() || !selectedChat || !professionalId) return
     const content = messageInput.trim()
     setMessageInput("")
+    if (messageInputRef.current) {
+      messageInputRef.current.style.height = "40px"
+      messageInputRef.current.style.overflowY = "hidden"
+    }
     scrollToBottom()
     sendMutation.mutate({ chatId: selectedChat.id, senderId: professionalId, content })
   }
@@ -361,7 +366,7 @@ export function UserMessagesContent() {
                     : "Error al enviar"}
                 </p>
               )}
-              <div className="flex items-center gap-2">
+              <div className="flex items-end gap-2">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -404,15 +409,19 @@ export function UserMessagesContent() {
 
                 <div className="relative flex-1">
                   <textarea
+                    ref={messageInputRef}
                     value={messageInput}
                     onChange={(e) => {
-                      setMessageInput(e.target.value)
+                      const nextValue = e.target.value
+                      setMessageInput(nextValue)
                       e.target.style.height = "auto"
-                      e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`
+                      const nextHeight = Math.min(e.target.scrollHeight, 220)
+                      e.target.style.height = `${nextHeight}px`
+                      e.target.style.overflowY = e.target.scrollHeight > 220 ? "auto" : "hidden"
                     }}
                     onKeyDown={handleKeyPress}
                     placeholder="Escribe un mensaje..."
-                    className="w-full min-h-[36px] max-h-[120px] resize-none overflow-y-auto rounded-md border border-input bg-transparent px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full min-h-[40px] max-h-[220px] resize-none overflow-y-hidden rounded-md border border-input bg-transparent px-3 py-2.5 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                     rows={1}
                   />
                 </div>

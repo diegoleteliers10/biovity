@@ -4,7 +4,14 @@ import { useChat } from "@ai-sdk/react"
 import { SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { DefaultChatTransport } from "ai"
-import { BrainIcon, CopyIcon, SendIcon, SquareIcon } from "lucide-react"
+import {
+  BrainIcon,
+  CopyIcon,
+  ExternalLinkIcon,
+  FileTextIcon,
+  SendIcon,
+  SquareIcon,
+} from "lucide-react"
 import type { ReactNode } from "react"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import {
@@ -41,6 +48,67 @@ const getReasoningTriggerPreview = (text: string) => {
   const trimmed = text.trim()
   if (trimmed.length <= REASONING_TRIGGER_PREVIEW_MAX) return trimmed
   return `${trimmed.slice(0, REASONING_TRIGGER_PREVIEW_MAX)}…`
+}
+
+const CV_KEYS = new Set(["cvUrl", "resumeUrl", "cv"])
+
+const getCvUrlsFromOutput = (output: unknown): string[] => {
+  const urls = new Set<string>()
+
+  const walk = (value: unknown): void => {
+    if (typeof value === "string") {
+      if (value.startsWith("/api/cv/") || value.includes("/api/cv/") || value.includes("/cv/")) {
+        urls.add(value)
+      }
+      return
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach(walk)
+      return
+    }
+
+    if (typeof value !== "object" || value === null) return
+
+    for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
+      if (CV_KEYS.has(key) && typeof nestedValue === "string" && nestedValue.length > 0) {
+        urls.add(nestedValue)
+      }
+      walk(nestedValue)
+    }
+  }
+
+  walk(output)
+  return Array.from(urls)
+}
+
+function ToolCvPreview({ cvUrl }: { cvUrl: string }) {
+  const previewUrl = cvUrl.endsWith(".pdf")
+    ? `${cvUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`
+    : cvUrl
+
+  return (
+    <div className="rounded-lg border bg-background p-3">
+      <div className="mb-2 flex items-center gap-2 text-sm">
+        <FileTextIcon className="size-4 text-primary" aria-hidden />
+        <p className="font-medium">Vista previa CV</p>
+      </div>
+      <iframe
+        src={previewUrl}
+        title="Vista previa de CV"
+        className="h-40 w-full rounded-md border bg-muted/20"
+        loading="lazy"
+      />
+      <div className="mt-2 flex justify-end">
+        <Button asChild size="sm" variant="outline">
+          <a href={cvUrl} target="_blank" rel="noreferrer">
+            Abrir CV
+            <ExternalLinkIcon className="ml-1 size-3.5" />
+          </a>
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 function AssistantReasoningTriggerRow({ reasoningText }: { reasoningText: string }) {
@@ -274,6 +342,7 @@ function MessageBubble({
             {toolParts.map((tool, idx) => {
               const rawType = String(tool.type ?? "tool-unknown")
               const toolName = rawType.startsWith("tool-") ? rawType.slice(5) : rawType
+              const cvUrls = getCvUrlsFromOutput(tool.output)
               const toolState =
                 (tool.state as
                   | "input-streaming"
@@ -287,6 +356,13 @@ function MessageBubble({
                   <ToolHeader type="dynamic-tool" state={toolState} toolName={toolName} />
                   <ToolContent>
                     <ToolInput input={tool.input} />
+                    {toolState === "output-available" && cvUrls.length > 0 ? (
+                      <div className="space-y-2">
+                        {cvUrls.slice(0, 1).map((cvUrl) => (
+                          <ToolCvPreview key={cvUrl} cvUrl={cvUrl} />
+                        ))}
+                      </div>
+                    ) : null}
                     {toolState === "output-available" ? (
                       <ToolOutput
                         output={

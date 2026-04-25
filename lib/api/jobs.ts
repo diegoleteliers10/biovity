@@ -271,6 +271,84 @@ export async function deleteJob(id: string): Promise<Result<void, ApiError | Net
   })
 }
 
+export type QuestionType =
+  | "TEXT"
+  | "TEXTAREA"
+  | "NUMBER"
+  | "SELECT"
+  | "MULTISELECT"
+  | "BOOLEAN"
+  | "DATE"
+  | "text"
+  | "textarea"
+  | "number"
+  | "select"
+  | "multiselect"
+  | "boolean"
+  | "date"
+
+export type QuestionStatus = "DRAFT" | "PUBLISHED" | "draft" | "published"
+
+export type JobQuestion = {
+  id: string
+  jobId: string
+  organizationId: string
+  label: string
+  placeholder?: string
+  helperText?: string
+  type: QuestionType
+  options?: string[]
+  required: boolean
+  orderIndex: number
+  status: QuestionStatus
+  createdAt: string
+  updatedAt: string
+}
+
+export async function getJobQuestions(
+  jobId: string
+): Promise<Result<JobQuestion[], ApiError | NetworkError>> {
+  const result = await fetchJson<Record<string, unknown>>(
+    `${API_BASE}/api/v1/jobs/${jobId}/questions`
+  )
+  if (result.isErr()) return R.err(result.error)
+
+  const raw = result.value as {
+    data?: unknown[] | { data?: unknown[] }
+  }
+
+  const rawQuestions = Array.isArray(raw)
+    ? raw
+    : Array.isArray(raw?.data)
+      ? raw.data
+      : Array.isArray((raw?.data as { data?: unknown[] } | undefined)?.data)
+        ? ((raw.data as { data: unknown[] }).data ?? [])
+        : []
+
+  const normalizedQuestions = rawQuestions
+    .filter((q): q is Record<string, unknown> => Boolean(q && typeof q === "object"))
+    .map((q) => ({
+      id: String(q.id ?? ""),
+      jobId: String(q.jobId ?? ""),
+      organizationId: String(q.organizationId ?? ""),
+      label: String(q.label ?? ""),
+      placeholder: typeof q.placeholder === "string" ? q.placeholder : undefined,
+      helperText: typeof q.helperText === "string" ? q.helperText : undefined,
+      type: String(q.type ?? "TEXT").toUpperCase() as JobQuestion["type"],
+      options: Array.isArray(q.options)
+        ? q.options.filter((o: unknown): o is string => typeof o === "string")
+        : undefined,
+      required: Boolean(q.required),
+      orderIndex: Number.isFinite(Number(q.orderIndex)) ? Number(q.orderIndex) : 0,
+      status: String(q.status ?? "DRAFT").toUpperCase() as JobQuestion["status"],
+      createdAt: String(q.createdAt ?? ""),
+      updatedAt: String(q.updatedAt ?? ""),
+    }))
+    .filter((q) => Boolean(q.id) && Boolean(q.label))
+
+  return R.ok(normalizedQuestions)
+}
+
 export function formatJobLocation(loc: JobLocation | null | undefined): string {
   if (!loc) return ""
   if (loc.isRemote) return "Remoto"

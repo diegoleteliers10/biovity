@@ -39,7 +39,7 @@ import type { Job } from "@/lib/api/jobs"
 import { formatJobLocation } from "@/lib/api/jobs"
 import { useDeleteJobMutation, useJobsByOrganization } from "@/lib/api/use-jobs"
 import { authClient } from "@/lib/auth-client"
-import { formatCurrencyCLP, formatDateChilean } from "@/lib/utils"
+import { formatAmountCLP, formatDateChilean } from "@/lib/utils"
 import { CreateJobDialog } from "./CreateJobDialog"
 
 const statusColors: Record<string, string> = {
@@ -69,7 +69,7 @@ function formatJobSalary(job: Job): string {
   if (s.min != null && s.max != null) {
     const currency = s.currency === "USD" ? "USD" : "CLP"
     const period = s.period === "monthly" ? "mes" : (s.period ?? "")
-    return `${formatCurrencyCLP(s.min)} - ${formatCurrencyCLP(s.max)} ${currency}/${period}`
+    return `${formatAmountCLP(s.min)} - ${formatAmountCLP(s.max)} ${currency}/${period}`
   }
   if (s.isNegotiable) return "A convenir"
   return "A convenir"

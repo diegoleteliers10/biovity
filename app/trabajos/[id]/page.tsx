@@ -304,7 +304,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
                   </div>
 
                   <div className="pt-4 border-t">
-                    <ApplyJobButton jobId={job.id} />
+                    <ApplyJobButton jobId={job.id} jobTitle={job.title} />
                   </div>
                 </CardContent>
               </Card>

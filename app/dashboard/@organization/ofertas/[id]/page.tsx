@@ -30,7 +30,7 @@ import type { Job } from "@/lib/api/jobs"
 import { useApplicationsByJob } from "@/lib/api/use-applications"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { formatCurrencyCLP, formatDateChilean } from "@/lib/utils"
+import { formatAmountCLP, formatDateChilean } from "@/lib/utils"
 
 function formatJobSalary(job: Job): string {
   const s = job.salary
@@ -38,7 +38,7 @@ function formatJobSalary(job: Job): string {
   if (s.min != null && s.max != null) {
     const currency = s.currency === "USD" ? "USD" : "CLP"
     const period = s.period === "monthly" ? "mes" : (s.period ?? "")
-    return `${formatCurrencyCLP(s.min)} - ${formatCurrencyCLP(s.max)} ${currency}/${period}`
+    return `${formatAmountCLP(s.min)} - ${formatAmountCLP(s.max)} ${currency}/${period}`
   }
   if (s.isNegotiable) return "A convenir"
   return "A convenir"
@@ -287,7 +287,16 @@ export default function OfertaDetailPage() {
                   </TableHeader>
                   <TableBody>
                     {applications.map((app) => (
-                      <TableRow key={app.id}>
+                      <TableRow
+                        key={app.id}
+                        className="cursor-pointer"
+                        onClick={() => {
+                          startTransition(() => {
+                            addTransitionType("nav-forward")
+                            router.push(`/dashboard/ofertas/${job.id}/postulaciones/${app.id}`)
+                          })
+                        }}
+                      >
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
