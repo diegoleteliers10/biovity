@@ -18,8 +18,8 @@ import {
   useOrgUpcomingInterviews,
 } from "@/lib/api/use-organization-dashboard"
 import { getUser } from "@/lib/api/users"
-import { authClient } from "@/lib/auth-client"
 import type { Notification } from "@/lib/types/dashboard"
+import { useDashboardSession } from "../DashboardSessionContext"
 import { CreateOfferCard } from "./home/createOfferCard"
 import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
 import { OrganizationRecentApplicationsCard } from "./home/organizationRecentApplicationsCard"
@@ -27,17 +27,16 @@ import { PlaceholderCard } from "./home/placeholderCard"
 
 export function OrganizationHomeContent() {
   const router = useRouter()
-  const { useSession } = authClient
-  const { data, isPending } = useSession()
+  const session = useDashboardSession()
 
-  const organizationId = (data?.user as { organizationId?: string } | undefined)?.organizationId
+  const organizationId = session?.user?.organizationId ?? undefined
   const { data: organizationData } = useOrganization(organizationId)
   const organizationName = organizationData?.name
 
   const notificationsQuery = useOrgNotifications()
   const metricsQuery = useOrgMetrics(organizationId)
   const applicationsQuery = useOrgRecentApplications(organizationId)
-  const userId = (data?.user as { id?: string } | undefined)?.id
+  const userId = session?.user?.id
   const messagesQuery = useChatsByRecruiter(userId)
   const interviewsQuery = useOrgUpcomingInterviews(userId)
 
@@ -103,7 +102,7 @@ export function OrganizationHomeContent() {
     router.push("/dashboard/messages")
   }, [router])
 
-  const firstName = data?.user?.name?.split(" ")[0] || "Organización"
+  const firstName = session?.user?.name?.split(" ")[0] || "Organización"
   const displayName = organizationName || firstName
   const unreadCount = localNotifications.filter((n) => !n.isRead).length
 
@@ -111,7 +110,7 @@ export function OrganizationHomeContent() {
     <div className="flex flex-1 flex-col gap-4 p-4">
       <OrganizationHomeHeader
         firstName={displayName}
-        isPending={isPending || notificationsQuery.isLoading || organizationData === undefined}
+        isPending={notificationsQuery.isLoading || organizationData === undefined}
         notifications={localNotifications}
         unreadCount={unreadCount}
         onNotificationClick={handleNotificationClick}

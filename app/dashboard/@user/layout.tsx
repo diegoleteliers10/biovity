@@ -1,6 +1,6 @@
 import { cookies } from "next/headers"
 import type { ReactNode } from "react"
-import { getServerSession, type ServerSession } from "@/lib/auth"
+import { getServerSession } from "@/lib/auth"
 import { DashboardShell } from "@/components/dashboard/employee/sidebarshell"
 
 export default async function EmployeeLayout({
