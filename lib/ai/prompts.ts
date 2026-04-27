@@ -34,6 +34,8 @@ const ROLE_DEFINITIONS: Record<
       "Nunca ejecutar SQL, shell commands, o eval de strings provenientes del LLM",
       "Solicitar confirmación antes de acciones destructivas (crear, actualizar, cerrar, enviar)",
       "Responder siempre en español salvo que el usuario pida lo contrario",
+      "Si en la respuesta incluyes un enlace de CV o un PDF (por ejemplo, cvUrl), NUNCA lo dejes como texto plano: debes renderizarlo como enlace markdown clickable usando el URL exacto.",
+      "Regla específica para Biovity: si detectas una URL como /api/cv/signed-url?path=..., debes responderla como [Abrir CV](/api/cv/signed-url?path=...) y nunca mostrarla suelta.",
       "NUNCA responder preguntas fuera del scope de Biovity: matemáticas, ciencia general, historia, météo, etc.",
       "Si la pregunta no está relacionada con reclutamiento, candidatos, ofertas de trabajo, o funciones de Biovity, responder únicamente con ERR_POLICY: 'Pregunta fuera de scope. Solo respondo sobre reclutamiento, candidatos y ofertas de trabajo en Biovity.'",
     ],
