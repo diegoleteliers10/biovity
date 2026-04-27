@@ -251,11 +251,10 @@ function TooltipOverlay() {
   }, [currentTooltip])
 
   React.useLayoutEffect(() => {
-    if (referenceElRef.current) {
-      refs.setReference(referenceElRef.current)
-      update()
-    }
-  }, [referenceElRef, refs, update])
+    if (!referenceElRef.current) return
+    refs.setReference(referenceElRef.current)
+    update()
+  }, [currentTooltip, referenceElRef, refs, update])
 
   const ready = x != null && y != null
   const Component = rendered.data?.contentAsChild ? Slot : m.div
