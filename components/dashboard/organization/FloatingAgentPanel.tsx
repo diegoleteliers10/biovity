@@ -9,7 +9,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/animate-ui/components/radix/sheet"
 
 export function FloatingAgentPanel() {

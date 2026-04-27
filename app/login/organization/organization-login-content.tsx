@@ -22,7 +22,7 @@ import { organizationLoginSchema, validateForm as validateFormZod } from "@/lib/
 const { signIn } = authClient
 
 export function OrganizationLoginContent() {
-  const router = useRouter()
+  const _router = useRouter()
 
   const [formData, setFormData] = useState({
     email: "",

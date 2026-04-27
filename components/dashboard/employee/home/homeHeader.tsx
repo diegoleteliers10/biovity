@@ -3,7 +3,6 @@
 import { Notification01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Suspense } from "react"
-import { AgentSheetTrigger } from "@/components/ai/AgentSheetTrigger"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import {
@@ -58,7 +57,6 @@ export function HomeHeader({
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
         <div className="flex items-center gap-1">
-          <AgentSheetTrigger />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -112,7 +110,6 @@ export function HomeHeader({
       {/* Desktop: notification top-right, title below */}
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end items-center gap-1">
-          <AgentSheetTrigger />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

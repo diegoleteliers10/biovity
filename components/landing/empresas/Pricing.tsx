@@ -12,12 +12,12 @@ import { Button } from "../../ui/button"
 export function Pricing() {
   const [isAnual, setIsAnual] = useState(false)
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
+  const _t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   const getPrice = (price: string) => {
     if (price === "0" || price === "Personalizado") return price
-    const numPrice = parseInt(price.replace(".", ""))
+    const numPrice = parseInt(price.replace(".", ""), 10)
     if (isAnual) {
       const anualPrice = Math.round(numPrice * 0.8)
       return anualPrice.toLocaleString("es-CL")

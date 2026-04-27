@@ -7,7 +7,7 @@ import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/ani
 export function BlogHeader() {
   const reducedMotion = useReducedMotion()
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
+  const _t = (delay = 0) => getTransition({ delay, reducedMotion })
 
   return (
     <div className="py-16 text-center">

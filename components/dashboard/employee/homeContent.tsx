@@ -62,7 +62,7 @@ export const HomeContent = () => {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length
 
-  const toSlug = useCallback((value: string): string => {
+  const _toSlug = useCallback((value: string): string => {
     return value
       .toLowerCase()
       .replace(/[^\p{L}\p{N}]+/gu, "-")

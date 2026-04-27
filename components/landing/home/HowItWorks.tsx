@@ -169,7 +169,7 @@ export function HowItWorks() {
           </div>
           <div className="hidden md:block">
             {STEPS_HOME.map((step) => (
-              <StepMarker key={step.number} index={parseInt(step.number) - 1} ts={ts} />
+              <StepMarker key={step.number} index={parseInt(step.number, 10) - 1} ts={ts} />
             ))}
           </div>
         </div>

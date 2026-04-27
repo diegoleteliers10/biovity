@@ -255,7 +255,7 @@ function TooltipOverlay() {
       refs.setReference(referenceElRef.current)
       update()
     }
-  }, [referenceElRef, refs, update, rendered.data])
+  }, [referenceElRef, refs, update])
 
   const ready = x != null && y != null
   const Component = rendered.data?.contentAsChild ? Slot : m.div

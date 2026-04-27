@@ -1,19 +1,49 @@
 "use client"
 
 import { useChat } from "@ai-sdk/react"
-import { SparklesIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { DefaultChatTransport } from "ai"
 import {
-  BrainIcon,
-  CopyIcon,
-  ExternalLinkIcon,
-  FileTextIcon,
-  SendIcon,
+  Attachment01Icon,
+  Brain03Icon,
+  Copy01Icon,
+  DocumentAttachmentIcon,
+  // Globe02Icon,
+  Mic02Icon,
+  SentIcon,
   SquareIcon,
-} from "lucide-react"
+  Comment02Icon
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithApprovalResponses } from "ai"
+import { CheckIcon, ExternalLinkIcon, XIcon } from "lucide-react"
+import Image from "next/image"
 import type { ReactNode } from "react"
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
+import {
+  Attachment,
+  AttachmentHoverCard,
+  AttachmentHoverCardContent,
+  AttachmentHoverCardTrigger,
+  AttachmentInfo,
+  AttachmentPreview,
+  AttachmentRemove,
+  Attachments,
+  getAttachmentLabel,
+  getMediaCategory,
+} from "@/components/ai-elements/attachments"
+import {
+  Confirmation,
+  ConfirmationAccepted,
+  ConfirmationAction,
+  ConfirmationActions,
+  ConfirmationRejected,
+  ConfirmationRequest,
+} from "@/components/ai-elements/confirmation"
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation"
 import {
   Message,
   MessageAction,
@@ -21,17 +51,51 @@ import {
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message"
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputButton,
+  PromptInputFooter,
+  PromptInputHeader,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+  usePromptInputAttachments,
+} from "@/components/ai-elements/prompt-input"
 import { Reasoning, ReasoningTrigger, useReasoning } from "@/components/ai-elements/reasoning"
 import { Shimmer } from "@/components/ai-elements/shimmer"
 import { Suggestion } from "@/components/ai-elements/suggestion"
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/components/ai-elements/tool"
 import { Button } from "@/components/ui/button"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { useSession } from "@/lib/auth-client"
 
 type AgentChatProps = {
   jobOfferId?: string
   organizationId?: string
   recruiterUserId?: string
+}
+
+type SpeechRecognitionInstance = {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onend: (() => void) | null
+  onerror: (() => void) | null
+  start: () => void
+  stop: () => void
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance
+
+type WindowWithSpeechRecognition = Window & {
+  SpeechRecognition?: SpeechRecognitionConstructor
+  webkitSpeechRecognition?: SpeechRecognitionConstructor
+}
+
+type ToolApproval = {
+  id: string
 }
 
 const QUICK_ACTIONS = [
@@ -82,6 +146,12 @@ const getCvUrlsFromOutput = (output: unknown): string[] => {
   return Array.from(urls)
 }
 
+const isToolApproval = (value: unknown): value is ToolApproval => {
+  if (!value || typeof value !== "object") return false
+  const maybeApproval = value as { id?: unknown }
+  return typeof maybeApproval.id === "string" && maybeApproval.id.length > 0
+}
+
 function ToolCvPreview({ cvUrl }: { cvUrl: string }) {
   const previewUrl = cvUrl.endsWith(".pdf")
     ? `${cvUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`
@@ -90,7 +160,7 @@ function ToolCvPreview({ cvUrl }: { cvUrl: string }) {
   return (
     <div className="rounded-lg border bg-background p-3">
       <div className="mb-2 flex items-center gap-2 text-sm">
-        <FileTextIcon className="size-4 text-primary" aria-hidden />
+        <HugeiconsIcon icon={DocumentAttachmentIcon} className="size-4 text-primary" aria-hidden />
         <p className="font-medium">Vista previa CV</p>
       </div>
       <iframe
@@ -132,24 +202,101 @@ function AssistantReasoningTriggerRow({ reasoningText }: { reasoningText: string
   return (
     <ReasoningTrigger className="pointer-events-none">
       <span className="flex w-full min-w-0 items-center gap-2 text-left">
-        <BrainIcon className="size-4 shrink-0" aria-hidden />
+        <HugeiconsIcon icon={Brain03Icon} className="size-4 shrink-0" aria-hidden />
         <span className="min-w-0 flex-1">{line}</span>
       </span>
     </ReasoningTrigger>
   )
 }
 
+function AttachmentButton() {
+  const attachments = usePromptInputAttachments()
+  return (
+    <PromptInputButton tooltip="Adjuntar archivos" onClick={attachments.openFileDialog}>
+      <HugeiconsIcon icon={Attachment01Icon} size={16} />
+    </PromptInputButton>
+  )
+}
+
+function AttachmentItem({
+  attachment,
+  onRemove,
+}: {
+  attachment: {
+    id: string
+    type: string
+    url?: string
+    mediaType?: string
+    filename?: string
+    title?: string
+  }
+  onRemove: (id: string) => void
+}) {
+  const mediaCategory = getMediaCategory(attachment as never)
+  const label = getAttachmentLabel(attachment as never)
+  return (
+    <AttachmentHoverCard>
+      <AttachmentHoverCardTrigger asChild>
+        <Attachment data={attachment as never} onRemove={() => onRemove(attachment.id)}>
+          <div className="relative size-5 shrink-0">
+            <div className="absolute inset-0 transition-opacity group-hover:opacity-0">
+              <AttachmentPreview />
+            </div>
+            <AttachmentRemove className="absolute inset-0" />
+          </div>
+          <AttachmentInfo />
+        </Attachment>
+      </AttachmentHoverCardTrigger>
+      <AttachmentHoverCardContent>
+        <div className="space-y-3">
+          {mediaCategory === "image" && attachment.type === "file" && attachment.url && (
+            <div className="flex max-h-96 w-80 items-center justify-center overflow-hidden rounded-md border">
+              <Image
+                alt={label}
+                className="max-h-full max-w-full object-contain"
+                height={384}
+                src={attachment.url}
+                width={320}
+                unoptimized
+              />
+            </div>
+          )}
+          <div className="space-y-1 px-0.5">
+            <h4 className="font-semibold text-sm leading-none">{label}</h4>
+            {attachment.mediaType && (
+              <p className="font-mono text-muted-foreground text-xs">{attachment.mediaType}</p>
+            )}
+          </div>
+        </div>
+      </AttachmentHoverCardContent>
+    </AttachmentHoverCard>
+  )
+}
+
+function AttachmentHeader() {
+  const attachments = usePromptInputAttachments()
+  if (attachments.files.length === 0) return null
+  return (
+    <PromptInputHeader>
+      <Attachments variant="inline">
+        {attachments.files.map((file) => (
+          <AttachmentItem key={file.id} attachment={file} onRemove={attachments.remove} />
+        ))}
+      </Attachments>
+    </PromptInputHeader>
+  )
+}
+
 export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: AgentChatProps) {
-  const [input, setInput] = useState("")
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const messagesScrollRef = useRef<HTMLDivElement>(null)
+  const transcriptRef = useRef("")
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const { data: session } = useSession()
   const sessionOrganizationId = session?.user?.organizationId
   const sessionRecruiterUserId = session?.user?.id
   const resolvedOrganizationId = organizationId ?? sessionOrganizationId
   const resolvedRecruiterUserId = recruiterUserId ?? sessionRecruiterUserId
 
-  const { messages, sendMessage, status, stop, error } = useChat({
+  const { messages, sendMessage, status, stop, addToolApprovalResponse } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/ai/agent",
       body: {
@@ -158,39 +305,22 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
         recruiterUserId: resolvedRecruiterUserId,
       },
     }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
   })
 
   const isLoading = status === "submitted" || status === "streaming"
   const isStreaming = status === "streaming"
   const latestMessageId = useMemo(() => messages.at(-1)?.id, [messages])
   const shouldShowPendingAssistant = isLoading && messages.at(-1)?.role !== "assistant"
-  /** Bumps on every streamed token / part update (not only when message ids change). */
-  const messagesScrollKey = useMemo(() => JSON.stringify(messages), [messages])
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault()
-      const trimmedInput = input.trim()
+    (message: { text: string; files: unknown[] }) => {
+      const trimmedInput = message.text.trim()
       if (!trimmedInput || isLoading) return
 
       sendMessage({ text: trimmedInput })
-      setInput("")
     },
-    [input, isLoading, sendMessage]
-  )
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault()
-        const trimmedInput = input.trim()
-        if (!trimmedInput || isLoading) return
-
-        sendMessage({ text: trimmedInput })
-        setInput("")
-      }
-    },
-    [input, isLoading, sendMessage]
+    [isLoading, sendMessage]
   )
 
   const handleQuickAction = useCallback(
@@ -205,98 +335,173 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
     navigator.clipboard.writeText(text)
   }, [])
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+  // Speech recognition
+  const [isRecording, setIsRecording] = useState(false)
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
+
+  const startRecording = useCallback(() => {
+    if (
+      typeof window === "undefined" ||
+      (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window))
+    ) {
+      return
     }
+
+    const speechWindow = window as WindowWithSpeechRecognition
+    const SpeechRecognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition
+    if (!SpeechRecognition) return
+    const recognition = new SpeechRecognition()
+    recognition.continuous = true
+    recognition.interimResults = true
+    recognition.lang = "es-CL"
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let transcript = ""
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript
+      }
+      if (textareaRef.current) {
+        textareaRef.current.value = transcript
+        textareaRef.current.dispatchEvent(new Event("input", { bubbles: true }))
+      } else {
+        transcriptRef.current = transcript
+      }
+    }
+
+    recognition.onend = () => {
+      setIsRecording(false)
+      const finalTranscript = textareaRef.current?.value || transcriptRef.current
+      if (finalTranscript.trim() && !isLoading) {
+        sendMessage({ text: finalTranscript.trim() })
+        if (textareaRef.current) {
+          textareaRef.current.value = ""
+          textareaRef.current.dispatchEvent(new Event("input", { bubbles: true }))
+        }
+      }
+      transcriptRef.current = ""
+    }
+
+    recognition.onerror = () => {
+      setIsRecording(false)
+      transcriptRef.current = ""
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+    setIsRecording(true)
+  }, [isLoading, sendMessage])
+
+  const stopRecording = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
+      recognitionRef.current = null
+    }
+    setIsRecording(false)
   }, [])
 
-  // Scroll on each streamed chunk (`messagesScrollKey`) and when the pending bubble appears.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: scroll must follow message content, not only status
-  useLayoutEffect(() => {
-    const node = messagesScrollRef.current
-    if (!node) return
-    node.scrollTo({
-      top: node.scrollHeight,
-      behavior: isStreaming || isLoading ? "auto" : "smooth",
-    })
-  }, [messagesScrollKey, isStreaming, isLoading, shouldShowPendingAssistant])
+  const toggleRecording = useCallback(() => {
+    if (isRecording) {
+      stopRecording()
+    } else {
+      startRecording()
+    }
+  }, [isRecording, startRecording, stopRecording])
 
   return (
-    <div className="flex h-full flex-col">
-      <div ref={messagesScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+    <TooltipProvider>
+      <div className="flex h-full flex-col">
+        <Conversation>
+          <ConversationContent>
+            {messages.length === 0 ? (
+              <ConversationEmptyState
+                icon={<HugeiconsIcon icon={Comment02Icon} size={48} />}
+                title="Empieza una conversación"
+                description="Helix te ayuda a gestionar candidatos, analizar ofertas y más."
+              />
+            ) : (
+              <>
+                {messages.map((message) => (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    onCopy={copyToClipboard}
+                    isStreaming={isStreaming && message.id === latestMessageId}
+                    addToolApprovalResponse={addToolApprovalResponse}
+                  />
+                ))}
+                {shouldShowPendingAssistant ? (
+                  <MessageBubble
+                    message={{
+                      id: "pending-assistant",
+                      role: "assistant",
+                      parts: [],
+                    }}
+                    onCopy={copyToClipboard}
+                    isStreaming
+                    addToolApprovalResponse={addToolApprovalResponse}
+                  />
+                ) : null}
+              </>
+            )}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <HugeiconsIcon icon={SparklesIcon} size={32} className="text-muted-foreground mb-3" />
-            <h3 className="font-medium text-sm mb-1">Asistente de Reclutamiento</h3>
-            <p className="text-muted-foreground text-xs mb-4">
-              Puedo ayudarte a gestionar candidatos, analizar ofertas y más.
-            </p>
+          <div className="px-4 pb-2">
+            <div className="flex flex-wrap gap-2">
+              {QUICK_ACTIONS.map((action) => (
+                <Suggestion
+                  key={action}
+                  suggestion={action}
+                  onClick={handleQuickAction}
+                  className="justify-start rounded-lg px-3 py-2.5"
+                />
+              ))}
+            </div>
           </div>
         )}
 
-        {messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            onCopy={copyToClipboard}
-            isStreaming={isStreaming && message.id === latestMessageId}
-          />
-        ))}
-        {shouldShowPendingAssistant ? (
-          <MessageBubble
-            message={{
-              id: "pending-assistant",
-              role: "assistant",
-              parts: [],
-            }}
-            onCopy={copyToClipboard}
-            isStreaming
-          />
-        ) : null}
+        <PromptInput onSubmit={handleSubmit} className="px-4 pb-4">
+          <AttachmentHeader />
+          <PromptInputBody>
+            <PromptInputTextarea
+              placeholder="Pregúntame sobre candidatos, ofertas, métricas..."
+              ref={textareaRef}
+            />
+          </PromptInputBody>
+          <PromptInputFooter>
+            <PromptInputTools>
+              <AttachmentButton />
+              {/*<PromptInputButton tooltip={{ content: "Buscar en la web", shortcut: "⌘K" }}>
+                <HugeiconsIcon icon={Globe02Icon} size={16} />
+              </PromptInputButton>*/}
+              <PromptInputButton
+                tooltip={{
+                  content: isRecording ? "Detener grabación" : "Entrada de voz",
+                  shortcut: "⌘M",
+                  side: "bottom",
+                }}
+                onClick={toggleRecording}
+                variant={isRecording ? "default" : "ghost"}
+              >
+                {isRecording ? (
+                  <HugeiconsIcon icon={SquareIcon} size={16} />
+                ) : (
+                  <HugeiconsIcon icon={Mic02Icon} size={16} />
+                )}
+              </PromptInputButton>
+            </PromptInputTools>
+            <PromptInputSubmit
+              status={isLoading ? "submitted" : "ready"}
+              onStop={isLoading ? stop : undefined}
+            >
+              <HugeiconsIcon icon={SentIcon} size={16} />
+            </PromptInputSubmit>
+          </PromptInputFooter>
+        </PromptInput>
       </div>
-
-      {messages.length === 0 && (
-        <div className="px-4 pb-2">
-          <div className="flex flex-col gap-2">
-            {QUICK_ACTIONS.map((action) => (
-              <Suggestion
-                key={action}
-                suggestion={action}
-                onClick={handleQuickAction}
-                className="w-full justify-start rounded-lg"
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="border-t p-3">
-        <div className="flex items-end gap-2">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Pregúntame sobre candidatos, ofertas, métricas..."
-            disabled={isLoading}
-            rows={1}
-            className="flex-1 resize-none rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-50 max-h-32 overflow-y-auto"
-          />
-          {isLoading ? (
-            <Button type="button" size="icon" variant="outline" onClick={() => stop()}>
-              <SquareIcon size={16} />
-            </Button>
-          ) : (
-            <Button type="submit" size="icon" disabled={!input.trim()}>
-              <SendIcon size={16} />
-            </Button>
-          )}
-        </div>
-        {error ? <p className="mt-2 text-xs text-destructive">{error.message}</p> : null}
-      </form>
-    </div>
+    </TooltipProvider>
   )
 }
 
@@ -304,6 +509,7 @@ function MessageBubble({
   message,
   onCopy,
   isStreaming,
+  addToolApprovalResponse,
 }: {
   message: {
     id: string
@@ -312,6 +518,11 @@ function MessageBubble({
   }
   onCopy: (text: string) => void
   isStreaming: boolean
+  addToolApprovalResponse?: (options: {
+    id: string
+    approved: boolean
+    reason?: string
+  }) => void | PromiseLike<void>
 }) {
   const isUser = message.role === "user"
   const renderedText = message.parts
@@ -347,9 +558,48 @@ function MessageBubble({
                 (tool.state as
                   | "input-streaming"
                   | "input-available"
+                  | "approval-requested"
+                  | "approval-responded"
                   | "output-available"
+                  | "output-denied"
                   | undefined) ?? "input-available"
               const toolKey = `${toolName}-${idx}-${JSON.stringify(tool.input ?? "").slice(0, 20)}`
+              const isDestructive = ["delete", "create", "update", "edit", "remove"].some((kw) =>
+                toolName.toLowerCase().includes(kw)
+              )
+              const approval = isToolApproval(tool.approval) ? tool.approval : null
+
+              if (isDestructive && approval && toolState === "approval-requested") {
+                return (
+                  <Confirmation key={toolKey} approval={approval} state={toolState}>
+                    <ConfirmationRequest>
+                      Esta accion quiere ejecutar: <code>{toolName}</code>
+                    </ConfirmationRequest>
+                    <ConfirmationAccepted>
+                      <CheckIcon className="size-4" />
+                      <span>Accion aprobada</span>
+                    </ConfirmationAccepted>
+                    <ConfirmationRejected>
+                      <XIcon className="size-4" />
+                      <span>Accion rechazada</span>
+                    </ConfirmationRejected>
+                    <ConfirmationActions>
+                      <ConfirmationAction
+                        variant="outline"
+                        onClick={() => addToolApprovalResponse?.({ id: approval.id, approved: false })}
+                      >
+                        Rechazar
+                      </ConfirmationAction>
+                      <ConfirmationAction
+                        variant="default"
+                        onClick={() => addToolApprovalResponse?.({ id: approval.id, approved: true })}
+                      >
+                        Aprobar
+                      </ConfirmationAction>
+                    </ConfirmationActions>
+                  </Confirmation>
+                )
+              }
 
               return (
                 <Tool key={toolKey}>
@@ -392,7 +642,7 @@ function MessageBubble({
         {!isUser && renderedText ? (
           <MessageActions>
             <MessageAction tooltip="Copiar" onClick={() => onCopy(renderedText)}>
-              <CopyIcon size={14} />
+              <HugeiconsIcon icon={Copy01Icon} size={14} />
             </MessageAction>
           </MessageActions>
         ) : null}

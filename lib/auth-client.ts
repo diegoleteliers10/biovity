@@ -59,7 +59,7 @@ type SessionAtom = {
 }
 
 function clearSessionAtom() {
-  const sessionAtom = authClient.$store.atoms["session"] as SessionAtom
+  const sessionAtom = authClient.$store.atoms.session as SessionAtom
   const current = sessionAtom.get()
   sessionAtom.set({
     data: null,

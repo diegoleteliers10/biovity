@@ -243,7 +243,7 @@ export function OrganizationProfileContent() {
   }, [organization, editingSection])
 
   const syncFormForSection = useCallback(
-    (section: SectionId) => {
+    (_section: SectionId) => {
       setUserForm(profileData)
       if (organization) {
         setOrgForm({
@@ -423,12 +423,12 @@ export function OrganizationProfileContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} />
+        <NotificationBell notifications={[]} showAgentTrigger />
       </div>
 
       <header>
         <div className="hidden lg:flex items-center justify-end mb-2">
-          <NotificationBell notifications={[]} />
+          <NotificationBell notifications={[]} showAgentTrigger />
         </div>
         <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
         <p className="text-muted-foreground text-sm mt-1">

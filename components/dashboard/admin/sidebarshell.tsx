@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
-import { NAV_DATA_ADMIN } from "@/lib/data/nav-data"
 import type { ServerSession } from "@/lib/auth"
+import { NAV_DATA_ADMIN } from "@/lib/data/nav-data"
 import { DashboardSessionContext } from "../DashboardSessionContext"
 import { DashboardSidebar } from "../shared/DashboardSidebar"
 

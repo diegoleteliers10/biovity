@@ -1,14 +1,7 @@
 "use client"
 
-import {
-  Analytics01Icon,
-  Calendar03Icon,
-  File02Icon,
-  FileAddIcon,
-  User02Icon,
-  ViewIcon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
+import { Calendar03Icon, File02Icon, FileAddIcon, ViewIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { NotificationBell } from "@/components/common/NotificationBell"
@@ -23,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useOrganization } from "@/lib/api/use-organization"
 import { useOrganizationMetrics } from "@/lib/api/use-organization-dashboard"
 import { authClient } from "@/lib/auth-client"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
@@ -107,12 +99,12 @@ export function OrganizationMetricsContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} />
+        <NotificationBell notifications={[]} showAgentTrigger />
       </div>
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <NotificationBell notifications={[]} showAgentTrigger />
         </div>
         <div className="flex items-end justify-between gap-4">
           <div className="space-y-1">
@@ -138,19 +130,17 @@ export function OrganizationMetricsContent() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {isPending ? (
-          <>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardHeader className="pb-2">
-                  <Skeleton className="h-4 w-32" />
-                </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-8 w-16 mb-1" />
-                  <Skeleton className="h-3 w-20" />
-                </CardContent>
-              </Card>
-            ))}
-          </>
+          Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <Skeleton className="h-4 w-32" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-3 w-20" />
+              </CardContent>
+            </Card>
+          ))
         ) : (
           <>
             <KpiCard

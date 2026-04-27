@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
-import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth-client"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signUp } = authClient

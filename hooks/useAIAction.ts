@@ -28,7 +28,8 @@ export function useAIAction({ onChunk, onDone, onError }: Options = {}) {
 
         if (!res.ok) throw new Error("API error")
 
-        const reader = res.body!.getReader()
+        const reader = res.body?.getReader()
+        if (!reader) throw new Error("Empty response body")
         const decoder = new TextDecoder()
 
         while (true) {

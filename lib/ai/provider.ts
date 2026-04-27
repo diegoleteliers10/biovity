@@ -1,13 +1,11 @@
-import { createOpenAI } from "@ai-sdk/openai"
+import { createAnthropic } from "@ai-sdk/anthropic"
 import { generateText, streamText } from "ai"
 
-export const AI_MODEL = "minimax/MiniMax-M2.7" as const
-
-export const openrouter = createOpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY ?? "",
-  baseURL: "https://openrouter.ai/api/v1",
+const minimax = createAnthropic({
+  baseURL: "https://api.minimax.io/anthropic/v1",
+  apiKey: process.env.MINIMAX_API_KEY,
 })
 
-export const model = openrouter.chat(AI_MODEL)
+export const model = minimax("MiniMax-M2.7")
 
 export { generateText, streamText }

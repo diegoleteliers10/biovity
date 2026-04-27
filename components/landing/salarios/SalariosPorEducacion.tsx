@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/lazy-chart"
 
 import { EDUCACION_CHART_COLORS, EDUCACION_CHART_DATA } from "@/lib/data/salarios-data"
-import { formatCurrencyCLP } from "@/lib/utils"
 
 const chartConfig = {
   promedio: {

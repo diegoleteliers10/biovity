@@ -23,7 +23,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { AIScoreBadge, AIScoreBadgeSkeleton } from "@/components/ai/AIScoreBadge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   DropdownMenu,

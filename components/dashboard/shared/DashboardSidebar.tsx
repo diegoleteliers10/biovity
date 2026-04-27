@@ -2,7 +2,6 @@
 
 import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useQueryClient } from "@tanstack/react-query"
 import { usePathname, useRouter } from "next/navigation"
 import type { ReactElement, ReactNode } from "react"
 import {
@@ -33,9 +32,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/ui/logo"
 import { Skeleton } from "@/components/ui/skeleton"
+import type { ServerSession } from "@/lib/auth"
 import { signOutAndRedirect } from "@/lib/auth-client"
 import type { NavData } from "@/lib/types/nav"
-import type { ServerSession } from "@/lib/auth"
 
 export type DashboardSidebarProps = {
   navData: NavData
@@ -64,7 +63,6 @@ export function DashboardSidebar({
   const { state, setOpen, open, setOpenMobile, isMobile } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
-  const queryClient = useQueryClient()
 
   const sessionUser = session?.user as
     | {
@@ -74,7 +72,6 @@ export function DashboardSidebar({
         avatar?: string
       }
     | undefined
-  const userId = sessionUser?.id
   const avatarUrl = avatarUrlProp ?? sessionUser?.avatar ?? sessionUser?.image
   const userTitle = professionProp ?? navData.user.title
   const initials =
@@ -238,7 +235,7 @@ export function DashboardSidebar({
                       type="button"
                       onClick={() => router.push(profileUrl)}
                       className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 w-8 h-8 aspect-square hover:bg-primary/20 transition-colors"
-                      aria-label={`Perfil ${navData.profileProgress!.percentage}%`}
+                      aria-label={`Perfil ${navData.profileProgress?.percentage}%`}
                     >
                       <span className="text-[10px] font-bold tabular-nums">
                         {navData.profileProgress.percentage}%

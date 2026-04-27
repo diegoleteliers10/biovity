@@ -1,6 +1,6 @@
 "use client"
 
-import { BubbleChatIcon, Calendar03Icon, File02Icon, FileAddIcon } from "@hugeicons/core-free-icons"
+import { Calendar03Icon, File02Icon, FileAddIcon } from "@hugeicons/core-free-icons"
 import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getApplicationsByOrganization } from "@/lib/api/applications"

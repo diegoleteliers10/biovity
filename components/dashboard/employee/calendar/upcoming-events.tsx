@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Card } from "@/components/ui/card"
 import type { Event } from "@/lib/types/events"
-import { formatDateChilean, formatDateTimeChilean, getChileanDate } from "@/lib/utils"
+import { formatDateChilean, getChileanDate } from "@/lib/utils"
 
 type UpcomingEventsProps = {
   events?: Event[]
@@ -70,7 +70,7 @@ export function UpcomingEvents({ events = [], isLoading, onEdit, onDelete }: Upc
     }
   }
 
-  const getEventTypeLabel = (type: Event["type"]) => {
+  const _getEventTypeLabel = (type: Event["type"]) => {
     switch (type) {
       case "interview":
         return "Entrevista"

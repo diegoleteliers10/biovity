@@ -6,7 +6,6 @@ import {
   Briefcase01Icon,
   BubbleChatIcon,
   Calendar04Icon,
-  CheckmarkCircle02Icon,
   Image01Icon,
   MoreHorizontalIcon,
   Search01Icon,
@@ -15,8 +14,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
@@ -35,8 +32,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { ChatListItem, MessageBubble } from "@/components/ui/message-bubble"
 import { useDebounce } from "@/hooks/use-debounce"
-import { type Chat, getChatById } from "@/lib/api/chats"
-import type { Message } from "@/lib/api/messages"
+import { getChatById } from "@/lib/api/chats"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
 import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
@@ -163,7 +159,7 @@ export function OrganizationMessagesContent() {
       const timeout = setTimeout(() => scrollToBottom(), 50)
       return () => clearTimeout(timeout)
     }
-  }, [selectedChat?.id, messagesLoading, messages.length])
+  }, [selectedChat?.id, messagesLoading, messages.length, scrollToBottom])
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !recruiterId) return
@@ -218,12 +214,12 @@ export function OrganizationMessagesContent() {
           {/* Top row: menu + notification on mobile */}
           <div className="flex items-center justify-between mb-4 lg:mb-6 lg:hidden">
             <MobileMenuButton />
-            <NotificationBell notifications={[]} />
+            <NotificationBell notifications={[]} showAgentTrigger />
           </div>
 
           <div className="mb-4 space-y-1 lg:mb-6">
             <div className="hidden lg:flex justify-end">
-              <NotificationBell notifications={[]} />
+              <NotificationBell notifications={[]} showAgentTrigger />
             </div>
             <h1 className="text-xl lg:text-2xl font-bold text-foreground">Mensajes</h1>
           </div>

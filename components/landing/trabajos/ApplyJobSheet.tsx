@@ -1,20 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { Result } from "better-result"
 import { useQuery } from "@tanstack/react-query"
-import { authClient } from "@/lib/auth-client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
+import { Result } from "better-result"
+import { useState } from "react"
 import {
   Sheet,
   SheetContent,
@@ -22,9 +10,21 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { getQuestionsByJob, type JobQuestion } from "@/lib/api/job-questions"
-import { getResultErrorMessage } from "@/lib/result"
 import { useCreateApplicationMutation } from "@/lib/api/use-applications"
+import { authClient } from "@/lib/auth-client"
+import { getResultErrorMessage } from "@/lib/result"
 
 type ApplyJobSheetProps = {
   jobId: string
@@ -198,7 +198,7 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
           </Select>
         )
 
-      case "MULTISELECT":
+      case "MULTISELECT": {
         const selected = value ? value.split(",") : []
         return (
           <div className="flex flex-wrap gap-2">
@@ -223,6 +223,7 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
             })}
           </div>
         )
+      }
 
       case "BOOLEAN":
         return (

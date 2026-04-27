@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock01Icon, Location05Icon } from "@hugeicons/core-free-icons"
+import { Clock01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"

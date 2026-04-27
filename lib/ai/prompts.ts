@@ -1,4 +1,3 @@
-import { AI_LIMITS } from "./env"
 import type { AIActionType } from "./types"
 
 export type AgentRole = "recruiter_assistant" | "scorer" | "action_agent"
@@ -108,7 +107,7 @@ export function buildSystemPrompt(config: SystemPromptConfig): string {
 }
 
 export function getSystemPrompt(action: AIActionType): string {
-  const actionToRole: Record<AIActionType, AgentRole> = {
+  const _actionToRole: Record<AIActionType, AgentRole> = {
     summarize_candidates: "action_agent",
     generate_reply: "action_agent",
     generate_job_description: "action_agent",

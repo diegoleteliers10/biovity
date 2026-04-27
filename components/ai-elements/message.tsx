@@ -269,10 +269,19 @@ export type MessageResponseProps = ComponentProps<typeof Streamdown>
 
 const streamdownPlugins = { cjk, code, math, mermaid }
 
+const safeComponents = {
+  a: ({ children, href, ...props }) => (
+    <a href={href} rel="noopener noreferrer" target="_blank" {...props}>
+      {children}
+    </a>
+  ),
+} satisfies NonNullable<MessageResponseProps["components"]>
+
 export const MessageResponse = memo(
   ({ className, ...props }: MessageResponseProps) => (
     <Streamdown
       className={cn("size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0", className)}
+      components={safeComponents}
       plugins={streamdownPlugins}
       {...props}
     />

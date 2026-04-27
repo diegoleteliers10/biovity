@@ -3,15 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getResultErrorMessage } from "@/lib/result"
-import type {
-  CreateEventInput,
-  Event,
-  EventNote,
-  EventStatus,
-  EventType,
-  EventWithParticipants,
-  UpdateEventInput,
-} from "@/lib/types/events"
+import type { CreateEventInput, EventStatus, EventType, UpdateEventInput } from "@/lib/types/events"
 import {
   addEventParticipant,
   createEvent,

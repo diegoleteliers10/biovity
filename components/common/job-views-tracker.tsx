@@ -30,7 +30,7 @@ export function JobViewsTracker({ jobId, jobOrganizationId }: JobViewsTrackerPro
       }
 
       const userOrgId = (user as { organizationId?: string }).organizationId
-      const userId = (user as { id?: string }).id
+      const _userId = (user as { id?: string }).id
       const userType = (user as { type?: string }).type
 
       if (userType === "organization") {

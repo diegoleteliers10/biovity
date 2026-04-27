@@ -8,7 +8,7 @@ import {
   MoreVerticalIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -45,7 +45,6 @@ import {
   useUnpublishQuestionMutation,
   useUpdateQuestionMutation,
 } from "@/lib/api/use-job-questions"
-import { cn } from "@/lib/utils"
 
 const QUESTION_TYPES: { value: QuestionType; label: string }[] = [
   { value: "text", label: "Texto corto" },

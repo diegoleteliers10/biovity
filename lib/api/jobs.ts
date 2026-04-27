@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson, fetchNoContent, fetchWithFallback, getErrorMessage } from "@/lib/result"
+import { fetchJson, fetchNoContent, fetchWithFallback } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"

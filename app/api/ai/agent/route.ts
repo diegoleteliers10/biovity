@@ -1,4 +1,4 @@
-import { convertToModelMessages, smoothStream, stepCountIs, type UIMessage } from "ai"
+import { convertToModelMessages, stepCountIs, type UIMessage } from "ai"
 import { headers } from "next/headers"
 import type { NextRequest } from "next/server"
 import { AIAuditService, aiAuditService } from "@/lib/ai/audit"
@@ -91,10 +91,6 @@ export async function POST(req: NextRequest) {
     model,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(AI_LIMITS.DEFAULT_MAX_STEPS),
-    experimental_transform: smoothStream({
-      delayInMs: 20,
-      chunking: "word",
-    }),
     tools: allTools,
     system: systemPrompt,
   })

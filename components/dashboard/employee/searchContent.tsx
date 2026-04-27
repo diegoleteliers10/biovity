@@ -37,12 +37,7 @@ import {
 } from "@/lib/api/use-saved-jobs"
 import { authClient } from "@/lib/auth-client"
 import { employeeSearchParsers } from "@/lib/parsers/employee-search"
-import {
-  formatFechaRelativa,
-  formatSalarioRango,
-  getFormatoBadgeColor,
-  getModalidadBadgeColor,
-} from "@/lib/utils"
+import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
 
 function getJobModalidad(job: Job): string {
   const loc = job.location
@@ -379,7 +374,7 @@ export const SearchContent = () => {
             const locationStr = formatJobLocation(job.location) || "Sin especificar"
             const postedStr = job.createdAt ? formatFechaRelativa(new Date(job.createdAt)) : "—"
             const modalidad = getJobModalidad(job)
-            const employmentTypeKey = job.employmentType.toLowerCase()
+            const _employmentTypeKey = job.employmentType.toLowerCase()
             const isSaved = isJobSaved(job.id)
 
             return (

@@ -12,7 +12,7 @@ export const messagesKeys = {
 
 export function useMessages(chatId: string | undefined) {
   const queryClient = useQueryClient()
-  const effectiveChatId = chatId && chatId.trim() ? chatId : ""
+  const effectiveChatId = chatId?.trim() ? chatId : ""
 
   const query = useQuery({
     queryKey: messagesKeys.byChat(effectiveChatId),
