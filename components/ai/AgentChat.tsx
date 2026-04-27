@@ -116,13 +116,49 @@ const getReasoningTriggerPreview = (text: string) => {
 
 const CV_KEYS = new Set(["cvUrl", "resumeUrl", "cv"])
 
+const buildInternalCvUrl = (path: string): string => {
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path
+  return `/api/cv/signed-url?path=${encodeURIComponent(normalizedPath)}`
+}
+
+const extractCvPathFromUrl = (rawUrl: string): string | null => {
+  const trimmed = rawUrl.trim()
+  if (!trimmed) return null
+  if (trimmed.startsWith("cv/")) return trimmed
+
+  try {
+    const parsed = new URL(trimmed, "http://localhost")
+    const signedPath = parsed.searchParams.get("path")
+    if (signedPath?.startsWith("cv/")) return signedPath
+
+    const marker = "/storage/v1/object/public/"
+    const markerIndex = parsed.pathname.indexOf(marker)
+    if (markerIndex < 0) return null
+
+    const storagePath = parsed.pathname.slice(markerIndex + marker.length)
+    const firstSlash = storagePath.indexOf("/")
+    if (firstSlash < 0) return null
+
+    const objectPath = storagePath.slice(firstSlash + 1)
+    return objectPath.startsWith("cv/") ? objectPath : null
+  } catch {
+    return null
+  }
+}
+
+const normalizeCvUrl = (rawUrl: string): string => {
+  const cvPath = extractCvPathFromUrl(rawUrl)
+  if (cvPath) return buildInternalCvUrl(cvPath)
+  return rawUrl
+}
+
 const getCvUrlsFromOutput = (output: unknown): string[] => {
   const urls = new Set<string>()
 
   const walk = (value: unknown): void => {
     if (typeof value === "string") {
       if (value.startsWith("/api/cv/") || value.includes("/api/cv/") || value.includes("/cv/")) {
-        urls.add(value)
+        urls.add(normalizeCvUrl(value))
       }
       return
     }
@@ -136,7 +172,7 @@ const getCvUrlsFromOutput = (output: unknown): string[] => {
 
     for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
       if (CV_KEYS.has(key) && typeof nestedValue === "string" && nestedValue.length > 0) {
-        urls.add(nestedValue)
+        urls.add(normalizeCvUrl(nestedValue))
       }
       walk(nestedValue)
     }
