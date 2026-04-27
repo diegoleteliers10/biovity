@@ -52,7 +52,6 @@ function getStatusStyles(status: string): {
         border: "border-secondary/20",
         label: "Contratado",
       }
-    case "rechazado":
     default:
       return {
         bg: "bg-destructive/10",

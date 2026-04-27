@@ -20,7 +20,6 @@ import {
   useUser,
 } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
-import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 export type SectionId =

@@ -14,12 +14,7 @@ import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { TipoBeneficio, Trabajo } from "@/lib/types/trabajos"
-import {
-  formatFechaRelativa,
-  formatSalarioRango,
-  getFormatoBadgeColor,
-  getModalidadBadgeColor,
-} from "@/lib/utils"
+import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
 
 type TrabajosListProps = {
   trabajos: Trabajo[]

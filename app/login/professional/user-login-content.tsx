@@ -21,7 +21,7 @@ import { authClient } from "@/lib/auth-client"
 const { signIn } = authClient
 
 export function UserLoginContent() {
-  const router = useRouter()
+  const _router = useRouter()
 
   const [formData, setFormData] = useState({
     email: "",

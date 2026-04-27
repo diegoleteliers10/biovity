@@ -54,7 +54,7 @@ export function validateAIResponse(response: unknown, schema?: z.ZodSchema): Val
   }
 }
 
-export function createSafeResponse<T>(data: T, fallback: unknown): unknown {
+export function createSafeResponse<T>(data: T, _fallback: unknown): unknown {
   return data
 }
 

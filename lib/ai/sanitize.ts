@@ -1,4 +1,4 @@
-import { createHash } from "crypto"
+import { createHash } from "node:crypto"
 import { MAX_INPUT_LENGTH } from "./env"
 import { PromptInjectionError, UnauthorizedToolAccessError } from "./errors"
 

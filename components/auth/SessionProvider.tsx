@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, type ReactNode } from "react"
+import { createContext, type ReactNode, useContext } from "react"
 import type { ServerSession } from "@/lib/auth"
 
 type SessionContextValue = {
@@ -16,11 +16,7 @@ export function SessionProvider({
   children: ReactNode
   session: ServerSession | null
 }) {
-  return (
-    <SessionContext.Provider value={{ session }}>
-      {children}
-    </SessionContext.Provider>
-  )
+  return <SessionContext.Provider value={{ session }}>{children}</SessionContext.Provider>
 }
 
 export function useServerSession() {

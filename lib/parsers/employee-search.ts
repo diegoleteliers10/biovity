@@ -1,4 +1,4 @@
-import { parseAsBoolean, parseAsInteger, parseAsString } from "nuqs/server"
+import { parseAsBoolean, parseAsString } from "nuqs/server"
 
 export const employeeSearchParsers = {
   q: parseAsString.withDefault(""),

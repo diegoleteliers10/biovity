@@ -4,23 +4,18 @@ import { z } from "zod"
 import {
   type ApplicationStatus,
   getApplicationDetail,
-  getApplicationsByCandidate,
-  getApplicationsByJob,
   updateApplicationStatus,
 } from "@/lib/api/applications"
-import { createOrFindChat, getChatById, getChatsByRecruiter } from "@/lib/api/chats"
-import { createEvent, getEventById, getEvents, updateEvent } from "@/lib/api/events"
+import { createOrFindChat, getChatsByRecruiter } from "@/lib/api/chats"
+import { createEvent, getEvents, updateEvent } from "@/lib/api/events"
 import {
   type CreateJobInput,
   createJob,
   getJob,
-  getJobs,
-  getJobsByOrganization,
   type UpdateJobInput,
   updateJob,
 } from "@/lib/api/jobs"
 import { getMessagesByChatId, type SendMessageInput, sendMessage } from "@/lib/api/messages"
-import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getOrganization } from "@/lib/api/organizations"
 import type { CreateEventInput, EventStatus, EventType, UpdateEventInput } from "@/lib/types/events"
 
@@ -79,7 +74,7 @@ export const getJobViewsTool = tool({
 
 export const createJobTool = tool({
   description:
-    "Crea una nueva oferta de trabajo para la organización. IMPORTANTE: Esta acción modifica datos. Requiere confirmación del usuario.",
+    "Crea una nueva oferta de trabajo para la organización. IMPORTANTE: Esta acción modifica datos.",
   inputSchema: z.object({
     organizationId: z.string().min(1).max(100),
     title: z.string().min(1).max(200),
@@ -113,8 +108,8 @@ export const createJobTool = tool({
       )
       .max(20)
       .optional(),
-    confirm: z.boolean().default(false),
   }),
+  needsApproval: true,
   execute: async ({
     organizationId,
     title,
@@ -124,16 +119,8 @@ export const createJobTool = tool({
     salary,
     location,
     benefits,
-    confirm,
   }) => {
     validateToolInput("createJob", { organizationId, title, description })
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `¿Confirmas que deseas crear la siguiente oferta de trabajo?\n\n**Título:** ${title}\n**Tipo:** ${employmentType}\n**Nivel:** ${experienceLevel}${salary ? `\n**Salario:** ${salary.min ?? "?"} - ${salary.max ?? "?"} ${salary.currency}/${salary.period}` : ""}${location ? `\n**Ubicación:** ${location.isRemote ? "Remoto" : location.isHybrid ? "Híbrido" : [location.city, location.state, location.country].filter(Boolean).join(", ")}` : ""}\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: { title, employmentType, experienceLevel, organizationId },
-      }
-    }
 
     const input: CreateJobInput = {
       organizationId,
@@ -198,7 +185,6 @@ export const updateJobTool = tool({
       })
       .optional(),
     status: z.enum(["active", "closed", "paused", "draft"]).optional(),
-    confirm: z.boolean().default(false),
   }),
   execute: async ({
     jobId,
@@ -209,26 +195,8 @@ export const updateJobTool = tool({
     salary,
     location,
     status,
-    confirm,
   }) => {
     validateToolInput("updateJob", { jobId, title, description })
-    const changes: string[] = []
-    if (title) changes.push(`título: "${title}"`)
-    if (description) changes.push("descripción")
-    if (employmentType) changes.push(`tipo: ${employmentType}`)
-    if (experienceLevel) changes.push(`nivel: ${experienceLevel}`)
-    if (salary) changes.push("salario")
-    if (location) changes.push("ubicación")
-    if (status) changes.push(`estado: ${status}`)
-
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `¿Confirmas los siguientes cambios para el job ${jobId}?\n\n${changes.map((c) => `• ${c}`).join("\n")}\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: { jobId, changes },
-      }
-    }
-
     const input: UpdateJobInput = {}
     if (title !== undefined) input.title = title
     if (description !== undefined) input.description = description
@@ -264,17 +232,10 @@ export const closeJobTool = tool({
     "Cierra una oferta de trabajo (la marca como no activa). IMPORTANTE: Esta acción no puede deshacerse fácilmente.",
   inputSchema: z.object({
     jobId: z.string().min(1).max(100),
-    confirm: z.boolean().default(false),
   }),
-  execute: async ({ jobId, confirm }) => {
+  needsApproval: true,
+  execute: async ({ jobId }) => {
     validateToolInput("closeJob", { jobId })
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `⚠️ ¿Estás seguro de que deseas cerrar la oferta de trabajo ${jobId}?\n\nLas ofertas cerradas dejan de ser visibles para nuevos candidatos. Esta acción puede revertirse editando el estado.\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: { jobId, action: "close" },
-      }
-    }
 
     const result = await updateJob(jobId, { status: "closed" })
     if (!Result.isOk(result)) {
@@ -330,7 +291,7 @@ export const getEventsByOrganizationTool = tool({
 
 export const createEventTool = tool({
   description:
-    "Crea un nuevo evento como una entrevista, tarea o anuncio. IMPORTANTE: Esta acción crea datos. Requiere confirmación.",
+    "Crea un nuevo evento como una entrevista, tarea o anuncio. IMPORTANTE: Esta acción crea datos.",
   inputSchema: z.object({
     organizerId: z.string().min(1).max(100),
     organizationId: z.string().max(100).optional(),
@@ -343,8 +304,8 @@ export const createEventTool = tool({
     meetingUrl: z.string().url().max(500).optional(),
     candidateId: z.string().max(100).optional(),
     applicationId: z.string().max(100).optional(),
-    confirm: z.boolean().default(false),
   }),
+  needsApproval: true,
   execute: async ({
     organizerId,
     organizationId,
@@ -357,16 +318,8 @@ export const createEventTool = tool({
     meetingUrl,
     candidateId,
     applicationId,
-    confirm,
   }) => {
     validateToolInput("createEvent", { title, description })
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `¿Confirmas crear el siguiente evento?\n\n**Título:** ${title}\n**Tipo:** ${type}\n**Fecha:** ${new Date(startAt).toLocaleString("es-CL")}${endAt ? ` - ${new Date(endAt).toLocaleString("es-CL")}` : ""}${location ? `\n**Ubicación:** ${location}` : ""}${meetingUrl ? `\n**Link:** ${meetingUrl}` : ""}\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: { title, type, startAt, organizerId },
-      }
-    }
 
     const input: CreateEventInput = {
       title,
@@ -416,8 +369,8 @@ export const updateEventTool = tool({
     location: z.string().max(300).optional(),
     meetingUrl: z.string().url().max(500).optional(),
     status: z.enum(["scheduled", "completed", "cancelled"]).optional(),
-    confirm: z.boolean().default(false),
   }),
+  needsApproval: true,
   execute: async ({
     eventId,
     title,
@@ -428,26 +381,8 @@ export const updateEventTool = tool({
     location,
     meetingUrl,
     status,
-    confirm,
   }) => {
     validateToolInput("updateEvent", { eventId, title, description })
-    const changes: string[] = []
-    if (title) changes.push(`título: "${title}"`)
-    if (description !== undefined) changes.push("descripción")
-    if (type) changes.push(`tipo: ${type}`)
-    if (startAt) changes.push(`inicio: ${new Date(startAt).toLocaleString("es-CL")}`)
-    if (endAt) changes.push(`fin: ${new Date(endAt).toLocaleString("es-CL")}`)
-    if (location !== undefined) changes.push(`ubicación: ${location}`)
-    if (meetingUrl !== undefined) changes.push("link de reunión")
-    if (status) changes.push(`estado: ${status}`)
-
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `¿Confirmas los siguientes cambios para el evento ${eventId}?\n\n${changes.map((c) => `• ${c}`).join("\n")}\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: { eventId, changes },
-      }
-    }
 
     const input: UpdateEventInput = {}
     if (title !== undefined) input.title = title
@@ -487,18 +422,10 @@ export const updateApplicationStatusTool = tool({
     applicationId: z.string().min(1).max(100),
     newStatus: z.enum(["pendiente", "entrevista", "oferta", "rechazado", "contratado"]),
     reason: z.string().max(500).optional(),
-    confirm: z.boolean().default(false),
   }),
-  execute: async ({ applicationId, newStatus, reason, confirm }) => {
+  needsApproval: true,
+  execute: async ({ applicationId, newStatus, reason }) => {
     validateToolInput("updateApplicationStatus", { applicationId })
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `¿Confirmas mover esta postulación al estado **"${newStatus}"**?${reason ? `\n\n**Motivo:** ${reason}` : ""}\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: { applicationId, newStatus },
-      }
-    }
-
     const result = await updateApplicationStatus(applicationId, newStatus as ApplicationStatus)
     if (!Result.isOk(result)) {
       return {
@@ -587,20 +514,10 @@ export const sendDirectMessageTool = tool({
     senderId: z.string().min(1).max(100),
     content: z.string().min(1).max(5000),
     chatId: z.string().max(100).optional(),
-    confirm: z.boolean().default(false),
   }),
-  execute: async ({ professionalId, senderId, content, chatId, confirm }) => {
+  needsApproval: true,
+  execute: async ({ professionalId, senderId, content, chatId }) => {
     validateToolInput("sendDirectMessage", { content })
-    if (!confirm) {
-      return {
-        confirmation_required: true,
-        message: `¿Confirmas enviar el siguiente mensaje al candidato?\n\n**Mensaje:** ${content}\n\nResponde "sí" o "confirmar" para proceder.`,
-        preview: {
-          professionalId,
-          content: content.slice(0, 100) + (content.length > 100 ? "..." : ""),
-        },
-      }
-    }
 
     let targetChatId = chatId
     if (!targetChatId) {

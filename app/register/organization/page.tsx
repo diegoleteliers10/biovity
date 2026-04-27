@@ -30,7 +30,7 @@ import { organizationRegistrationSchema, validateForm as validateFormZod } from 
 const { signUp } = authClient
 
 export default function OrganizationRegisterPage() {
-  const router = useRouter()
+  const _router = useRouter()
   const createOrganizationMutation = useCreateOrganizationMutation()
   const linkUserMutation = useLinkUserToOrganizationMutation()
   const [formData, setFormData] = useState({

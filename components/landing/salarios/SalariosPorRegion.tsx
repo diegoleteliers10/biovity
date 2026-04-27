@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/lazy-chart"
 
 import { REGION_CHART_COLORS, REGION_CHART_DATA } from "@/lib/data/salarios-data"
-import { formatCurrencyCLP } from "@/lib/utils"
 
 const chartConfig = {
   promedio: {

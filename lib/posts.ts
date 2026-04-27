@@ -1,8 +1,8 @@
+import fs from "node:fs"
+import path from "node:path"
 import { Result as R, Result } from "better-result"
-import fs from "fs"
 import { glob } from "glob"
 import matter from "gray-matter"
-import path from "path"
 import { NotFoundError, ParseError } from "@/lib/errors"
 import type { Post } from "@/lib/types/posts"
 

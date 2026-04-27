@@ -40,7 +40,7 @@ const getCurrentStageIndex = (status: string): number => {
 }
 
 export const ApplicationsContent = () => {
-  const router = useRouter()
+  const _router = useRouter()
   const { useSession } = authClient
   const { data: session } = useSession()
   const userId = (session?.user as { id?: string })?.id

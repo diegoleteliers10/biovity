@@ -3,7 +3,7 @@
 import { Briefcase01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import type { ResumeExperience } from "@/lib/api/resumes"
 import { cn } from "@/lib/utils"

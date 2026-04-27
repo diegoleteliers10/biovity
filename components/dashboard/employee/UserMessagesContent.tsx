@@ -6,7 +6,6 @@ import {
   Briefcase01Icon,
   BubbleChatIcon,
   Calendar04Icon,
-  CheckmarkCircle02Icon,
   Image01Icon,
   MoreHorizontalIcon,
   Search01Icon,
@@ -14,8 +13,6 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Result } from "better-result"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
@@ -35,7 +32,6 @@ import { Input } from "@/components/ui/input"
 import { ChatListItem, MessageBubble } from "@/components/ui/message-bubble"
 import { useDebounce } from "@/hooks/use-debounce"
 import { type Chat, getChatById } from "@/lib/api/chats"
-import type { Message } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByProfessional } from "@/lib/api/use-chats"
 import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
@@ -133,7 +129,7 @@ export function UserMessagesContent() {
       const timeout = setTimeout(() => scrollToBottom(), 50)
       return () => clearTimeout(timeout)
     }
-  }, [selectedChat?.id, messagesLoading, messages.length])
+  }, [selectedChat?.id, messagesLoading, messages.length, scrollToBottom])
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !professionalId) return

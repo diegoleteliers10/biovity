@@ -1,7 +1,7 @@
 "use client"
 
 import { TradeDownIcon, TradeUpIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { memo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

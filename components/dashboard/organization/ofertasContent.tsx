@@ -11,7 +11,6 @@ import {
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { addTransitionType, startTransition, useState, ViewTransition } from "react"
 import { NotificationBell } from "@/components/common/NotificationBell"
@@ -28,7 +27,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +35,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { Job } from "@/lib/api/jobs"
-import { formatJobLocation } from "@/lib/api/jobs"
 import { useDeleteJobMutation, useJobsByOrganization } from "@/lib/api/use-jobs"
 import { authClient } from "@/lib/auth-client"
 import { formatAmountCLP, formatDateChilean } from "@/lib/utils"
@@ -75,7 +73,7 @@ function formatJobSalary(job: Job): string {
   return "A convenir"
 }
 
-function getJobModalidad(loc: Job["location"]): string {
+function _getJobModalidad(loc: Job["location"]): string {
   if (!loc) return "Presencial"
   if (loc.isRemote) return "Remoto"
   if (loc.isHybrid) return "Híbrido"
@@ -170,12 +168,12 @@ export function OfertasContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} />
+        <NotificationBell notifications={[]} showAgentTrigger />
       </div>
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <NotificationBell notifications={[]} showAgentTrigger />
         </div>
         <div className="flex items-end justify-between gap-4">
           <div className="space-y-1">

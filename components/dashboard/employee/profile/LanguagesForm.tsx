@@ -3,7 +3,7 @@
 import { Cancel01Icon, Globe02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
 import { emptyLanguage, LEVEL_OPTIONS, useProfileContext } from "./profile-context"

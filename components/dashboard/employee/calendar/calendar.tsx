@@ -1,7 +1,6 @@
 "use client"
 
 import { format } from "date-fns"
-import { es } from "date-fns/locale"
 import type React from "react"
 import { useState } from "react"
 import type { Event } from "@/lib/types/events"

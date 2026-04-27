@@ -208,6 +208,7 @@ export const updateCandidateStatusTool = tool({
     newStatus: z.enum(["applied", "reviewing", "interview", "offer", "rejected"]),
     reason: z.string().min(1).max(500),
   }),
+  needsApproval: true,
   execute: async ({ applicationId, newStatus, reason }) => {
     validateToolInput("updateCandidateStatus", { applicationId })
     const { updateApplicationStatus } = await import("@/lib/api/applications")
@@ -238,6 +239,7 @@ export const sendMessageToCandidateTool = tool({
     subject: z.string().min(1).max(200),
     body: z.string().min(1).max(5000),
   }),
+  needsApproval: true,
   execute: async ({ candidateId, recruiterId, subject, body }) => {
     validateToolInput("sendMessageToCandidate", { candidateId, subject, body })
     const chatResult = await createOrFindChat(candidateId)

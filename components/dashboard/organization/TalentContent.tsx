@@ -385,7 +385,7 @@ export function TalentContent() {
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <NotificationBell notifications={[]} showAgentTrigger />
         </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between flex-1">
           <div className="space-y-1">

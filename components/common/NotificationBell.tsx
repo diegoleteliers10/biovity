@@ -16,16 +16,18 @@ type NotificationBellProps = {
   notifications: Notification[]
   unreadCount?: number
   onNotificationClick?: (id: number) => void
+  showAgentTrigger?: boolean
 }
 
 export function NotificationBell({
   notifications = [],
   unreadCount = 0,
   onNotificationClick,
+  showAgentTrigger = false,
 }: NotificationBellProps) {
   return (
     <div className="flex items-center gap-1">
-      <AgentSheetTrigger />
+      {showAgentTrigger ? <AgentSheetTrigger /> : null}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="relative">

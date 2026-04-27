@@ -155,8 +155,8 @@ export const MultiSelectBase = ({
   const onResize = useCallback(() => {
     if (!placeholderRef.current) return
     const divRect = placeholderRef.current?.getBoundingClientRect()
-    setPopoverWidth(divRect.width + "px")
-  }, [placeholderRef, setPopoverWidth])
+    setPopoverWidth(`${divRect.width}px`)
+  }, [])
 
   useResizeObserver({
     ref: placeholderRef,
@@ -227,7 +227,7 @@ const InnerMultiSelect = ({
   placeholder,
 }: Omit<MultiSelectProps, "selectedItems" | "children">) => {
   const focusManager = useFocusManager()
-  const comboBoxContext = useContext(ComboboxContext)
+  const _comboBoxContext = useContext(ComboboxContext)
   const comboBoxStateContext = useContext(ComboBoxStateContext)
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {

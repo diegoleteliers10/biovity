@@ -10,8 +10,6 @@ import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
-import { Button } from "@/components/ui/button"
-import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
@@ -30,7 +28,7 @@ import type { EventType } from "@/lib/types/events"
 import { cn, formatDateChilean } from "@/lib/utils"
 import { ApplicationsKanban } from "./ApplicationsKanban"
 
-function applicantToCandidateContext(app: Application): CandidateContext {
+function _applicantToCandidateContext(app: Application): CandidateContext {
   return {
     name: app.candidate?.name ?? "Sin nombre",
     education: app.candidate?.education ?? "",
@@ -152,7 +150,7 @@ export function OrganizationApplicationsContent() {
     (candidateId: string) => {
       const entry = getScore(candidateId)
       if (entry) {
-        const app = applications?.find((a) => a.candidateId === candidateId)
+        const _app = applications?.find((a) => a.candidateId === candidateId)
         setScoreModal({
           isOpen: true,
           candidateId,
@@ -192,7 +190,7 @@ export function OrganizationApplicationsContent() {
   )
 
   const handleEventSuccess = useCallback(
-    async (eventId: string) => {
+    async (_eventId: string) => {
       if (!eventModal.applicant) return
       // Actualizar el estado de la postulación
       const newStage: ApplicationStage =
@@ -239,12 +237,12 @@ export function OrganizationApplicationsContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} />
+        <NotificationBell notifications={[]} showAgentTrigger />
       </div>
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <NotificationBell notifications={[]} showAgentTrigger />
         </div>
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Aplicaciones</h1>

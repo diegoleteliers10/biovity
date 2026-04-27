@@ -30,7 +30,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateEvent, useDeleteEvent, useUpdateEvent } from "@/lib/api/use-events"
 import type { Event, EventType } from "@/lib/types/events"
-import { cn } from "@/lib/utils"
 
 type EventFormModalProps = {
   isOpen: boolean

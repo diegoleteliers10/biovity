@@ -16,7 +16,6 @@ import {
   ListBox as AriaListBox,
   ComboBoxStateContext,
 } from "react-aria-components"
-import { HintText } from "@/components/base/input/hint-text"
 import { Label } from "@/components/base/input/label"
 import { Popover } from "@/components/base/select/popover"
 import {
@@ -128,8 +127,8 @@ export const ComboBox = ({
 
     const divRect = placeholderRef.current?.getBoundingClientRect()
 
-    setPopoverWidth(divRect.width + "px")
-  }, [placeholderRef, setPopoverWidth])
+    setPopoverWidth(`${divRect.width}px`)
+  }, [])
 
   useResizeObserver({
     ref: placeholderRef,

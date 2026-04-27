@@ -27,7 +27,7 @@ export function getChileanDate(date: Date | string | number = new Date()): Date 
     d = new Date(date)
   }
   // Ensure invalid dates do not crash the app, return current date in that case
-  if (isNaN(d.getTime())) return toZonedTime(new Date(), TIMEZONE_CL)
+  if (Number.isNaN(d.getTime())) return toZonedTime(new Date(), TIMEZONE_CL)
   return toZonedTime(d, TIMEZONE_CL)
 }
 
@@ -45,7 +45,7 @@ export function formatDateTimeChilean(date: Date | string | number): string {
 /** Relative date for lists: "Hoy", "Ayer", "hace X días". */
 export function formatFechaRelativa(fecha: Date | string | number): string {
   const zonedDate = getChileanDate(fecha)
-  const today = getChileanDate(new Date())
+  const _today = getChileanDate(new Date())
 
   // Use custom logic for Hoy/Ayer if preferred, else fallback to distance
   if (isToday(zonedDate)) return "Hoy"

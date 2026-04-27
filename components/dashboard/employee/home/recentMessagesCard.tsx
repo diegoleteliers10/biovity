@@ -83,7 +83,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
           </div>
         ) : hasLegacyMessages ? (
           <div className="space-y-4">
-            {messages!.slice(0, 5).map((msg, i) => (
+            {messages?.slice(0, 5).map((msg, i) => (
               <div key={i} className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-foreground truncate">{msg.sender}</p>

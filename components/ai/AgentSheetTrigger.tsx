@@ -5,20 +5,14 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { AgentChat } from "@/components/ai/AgentChat"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/animate-ui/components/animate/tooltip"
-import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { authClient } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 
 type AgentSheetTriggerProps = {
@@ -27,38 +21,29 @@ type AgentSheetTriggerProps = {
 
 export function AgentSheetTrigger({ className }: AgentSheetTriggerProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const userType = (session?.user as { type?: string } | undefined)?.type
   const isMobile = useIsMobile()
-
-  if (userType !== "organization") return null
 
   const triggerButton = (
     <Button
       type="button"
       variant="ghost"
-      size="icon"
+      size={isMobile ? "icon" : "sm"}
       onClick={() => setIsOpen(true)}
-      className={cn("text-accent", className)}
-      aria-label="Abrir asistente de reclutamiento"
+      className={cn(
+        "cursor-pointer text-accent hover:bg-transparent hover:text-accent focus-visible:bg-transparent focus-visible:text-accent",
+        !isMobile && "gap-2 px-3",
+        className
+      )}
+      aria-label="AI Helix"
     >
-      <HugeiconsIcon icon={SparklesIcon} size={20} />
+      <HugeiconsIcon icon={SparklesIcon} size={28} />
+      {!isMobile ? <span className="font-medium text-sm">AI Helix</span> : null}
     </Button>
   )
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      {isMobile ? (
-        triggerButton
-      ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>{triggerButton}</TooltipTrigger>
-          <TooltipContent>
-            <p>AI Agent</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
+      {triggerButton}
 
       <SheetContent
         side="right"

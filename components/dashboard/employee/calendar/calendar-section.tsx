@@ -38,7 +38,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   const [currentDate, setCurrentDate] = useState(getChileanDate())
   const [showEventModal, setShowEventModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | null>(null)
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [_selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   const { useSession } = authClient
   const { data: session } = useSession()
