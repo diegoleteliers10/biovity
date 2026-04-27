@@ -119,7 +119,7 @@ function SidebarProvider({
 
   return (
     <LocalSidebarProvider value={contextValue}>
-      <TooltipProvider openDelay={0}>
+      <TooltipProvider openDelay={0} closeDelay={0}>
         <div
           data-slot="sidebar-wrapper"
           style={
