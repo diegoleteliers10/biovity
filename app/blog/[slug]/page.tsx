@@ -6,7 +6,7 @@ import { MDXRemote } from "next-mdx-remote/rsc"
 import { mdxComponents } from "@/components/blog/mdx-components"
 import { SocialShare } from "@/components/blog/SocialShare"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd"
+import { BlogPostingJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -85,7 +85,7 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <LandingLayout>
-      <ArticleJsonLd
+      <BlogPostingJsonLd
         title={post.frontmatter.title}
         description={post.frontmatter.excerpt}
         authorName={post.frontmatter.author}

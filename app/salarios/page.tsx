@@ -6,7 +6,13 @@ import { SalariosPorEducacion } from "@/components/landing/salarios/SalariosPorE
 import { SalariosPorIndustria } from "@/components/landing/salarios/SalariosPorIndustria"
 import { SalariosPorRegion } from "@/components/landing/salarios/SalariosPorRegion"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, FAQJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import {
+  BreadcrumbJsonLd,
+  DatasetJsonLd,
+  FAQJsonLd,
+  OrganizationJsonLd,
+  WebSiteJsonLd,
+} from "@/components/seo/JsonLd"
 import { FAQS_SALARIOS } from "@/lib/data/salarios-data"
 
 export const metadata: Metadata = {
@@ -50,6 +56,21 @@ export const metadata: Metadata = {
 export default function SalariosPage() {
   return (
     <LandingLayout>
+      <WebSiteJsonLd />
+      <DatasetJsonLd
+        name="Estudio de Sueldos en Biociencias | Biovity"
+        description="Analisis exhaustivo de remuneraciones en el sector de biociencias en Chile. Datos por carrera, industria, region y nivel educativo."
+        url="https://biovity.cl/salarios"
+        creatorName="Biovity"
+        datePublished="2025-01-01"
+        keywords={[
+          "sueldos biotecnologia Chile",
+          "salarios bioinformatica",
+          "remuneraciones ingenieria quimica",
+          "sueldos por region Chile",
+          "biociencias salarios",
+        ]}
+      />
       <OrganizationJsonLd />
       <FAQJsonLd faqs={FAQS_SALARIOS} />
       <BreadcrumbJsonLd

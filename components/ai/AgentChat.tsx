@@ -4,13 +4,13 @@ import { useChat } from "@ai-sdk/react"
 import {
   Attachment01Icon,
   Brain03Icon,
+  Comment02Icon,
   Copy01Icon,
   DocumentAttachmentIcon,
   // Globe02Icon,
   Mic02Icon,
   SentIcon,
   SquareIcon,
-  Comment02Icon
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithApprovalResponses } from "ai"
@@ -622,13 +622,17 @@ function MessageBubble({
                     <ConfirmationActions>
                       <ConfirmationAction
                         variant="outline"
-                        onClick={() => addToolApprovalResponse?.({ id: approval.id, approved: false })}
+                        onClick={() =>
+                          addToolApprovalResponse?.({ id: approval.id, approved: false })
+                        }
                       >
                         Rechazar
                       </ConfirmationAction>
                       <ConfirmationAction
                         variant="default"
-                        onClick={() => addToolApprovalResponse?.({ id: approval.id, approved: true })}
+                        onClick={() =>
+                          addToolApprovalResponse?.({ id: approval.id, approved: true })
+                        }
                       >
                         Aprobar
                       </ConfirmationAction>

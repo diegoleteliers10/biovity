@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { BlogGrid } from "@/components/blog/BlogGrid"
 import { BlogHeader } from "@/components/blog/BlogHeader"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, CollectionJsonLd } from "@/components/seo/JsonLd"
+import { BlogCollectionJsonLd, BreadcrumbJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 import { getAllPosts } from "@/lib/posts"
 
 export const metadata: Metadata = {
@@ -48,11 +48,13 @@ export default async function BlogPage() {
   const blogItems = posts.map((post) => ({
     name: post.frontmatter.title,
     url: `${siteUrl}/blog/${post.slug}`,
+    datePublished: post.frontmatter.date,
   }))
 
   return (
     <LandingLayout>
-      <CollectionJsonLd
+      <WebSiteJsonLd />
+      <BlogCollectionJsonLd
         name="Blog de Biovity"
         description="Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile."
         url={`${siteUrl}/blog`}

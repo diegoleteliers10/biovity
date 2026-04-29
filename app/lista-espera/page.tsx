@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
+import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 import { ListaEsperaContent } from "./lista-espera-content"
 
 export const metadata: Metadata = {
   title: "Lista de Espera | Biovity",
   description:
-    "Únete a la lista de espera de Biovity y sé el primero en conocer las nuevas oportunidades en biotecnología y ciencias en Chile.",
+    "Unete a la lista de espera de Biovity y se el primero en conocer las nuevas oportunidades en biotecnologia y ciencias en Chile.",
   openGraph: {
     title: "Lista de Espera | Biovity",
     description:
-      "Únete a la lista de espera de Biovity y sé el primero en conocer las nuevas oportunidades en biotecnología y ciencias en Chile.",
+      "Unete a la lista de espera de Biovity y se el primero en conocer las nuevas oportunidades en biotecnologia y ciencias en Chile.",
     url: "/lista-espera",
     images: [
       {
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "Lista de Espera | Biovity",
     description:
-      "Únete a la lista de espera de Biovity y sé el primero en conocer las nuevas oportunidades en biotecnología y ciencias.",
+      "Unete a la lista de espera de Biovity y se el primero en conocer las nuevas oportunidades en biotecnologia y ciencias.",
     images: ["/og/home.png"],
   },
   alternates: {
@@ -31,5 +32,11 @@ export const metadata: Metadata = {
 }
 
 export default function ListaEsperaPage() {
-  return <ListaEsperaContent />
+  return (
+    <>
+      <WebSiteJsonLd />
+      <OrganizationJsonLd />
+      <ListaEsperaContent />
+    </>
+  )
 }

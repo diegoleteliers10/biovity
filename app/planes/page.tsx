@@ -1,7 +1,12 @@
 import type { Metadata } from "next"
 import { Pricing } from "@/components/landing/empresas/Pricing"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import {
+  BreadcrumbJsonLd,
+  OrganizationJsonLd,
+  SoftwareApplicationJsonLd,
+  WebSiteJsonLd,
+} from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
   title: "Planes y Precios para Empresas | Biovity",
@@ -42,7 +47,9 @@ export const metadata: Metadata = {
 export default function PlanesPage() {
   return (
     <LandingLayout>
+      <WebSiteJsonLd />
       <OrganizationJsonLd />
+      <SoftwareApplicationJsonLd />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

@@ -66,6 +66,10 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  other: {
+    "geo.region": "CL",
+    "geo.placename": "Chile",
+  },
   openGraph: {
     type: "website",
     locale: "es_CL",

@@ -1,5 +1,6 @@
 import { Result } from "better-result"
 import type { MetadataRoute } from "next"
+import { getJobs } from "@/lib/api/jobs"
 import { getAllPosts } from "@/lib/posts"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
@@ -66,5 +67,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticPages, ...blogUrls]
+  const jobsResult = await getJobs({ status: "published", limit: 1000 })
+  const jobUrls: MetadataRoute.Sitemap = Result.isOk(jobsResult)
+    ? jobsResult.value
+        .filter((job) => job.status === "published")
+        .map((job) => ({
+          url: `${siteUrl}/trabajos/${job.id}`,
+          lastModified: new Date(job.updatedAt),
+          changeFrequency: "daily" as const,
+          priority: 0.8,
+        }))
+    : []
+
+  return [...staticPages, ...blogUrls, ...jobUrls]
 }

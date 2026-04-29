@@ -7,6 +7,16 @@ import Link from "next/link"
 import { Fragment } from "react"
 import { Button } from "@/components/ui/button"
 
+export const metadata = {
+  title: "404 - Pagina no encontrada | Biovity",
+  description:
+    "La pagina que buscas no existe. Explora oportunidades laborales en biotecnologia, bioquimica y ciencias en Chile.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
+
 const HEXAGON_BONDS = [
   { x1: 250, y1: 170, x2: 320, y2: 210 },
   { x1: 320, y1: 210, x2: 320, y2: 290 },
