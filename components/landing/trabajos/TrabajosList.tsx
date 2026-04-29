@@ -10,9 +10,9 @@ import {
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import type { TipoBeneficio, Trabajo } from "@/lib/types/trabajos"
 import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
 
@@ -36,8 +36,6 @@ const getBeneficioIcon = (tipo: TipoBeneficio) => {
 }
 
 export function TrabajosList({ trabajos }: TrabajosListProps) {
-  const router = useRouter()
-
   if (trabajos.length === 0) {
     return (
       <section className="py-16 bg-white">
@@ -70,18 +68,10 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
         </div>
         <div className="space-y-6">
           {trabajos.map((trabajo) => (
-            <Card
+            <Link
               key={trabajo.id}
-              onClick={() => router.push(`/trabajos/${trabajo.slug}`)}
-              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 hover:bg-secondary/5 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
-              role="link"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault()
-                  router.push(`/trabajos/${trabajo.slug}`)
-                }
-              }}
+              href={`/trabajos/${trabajo.slug}`}
+              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/30 bg-muted/20 hover:bg-secondary/5 transition-colors duration-200 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99] block"
               aria-label={`Ver detalles de ${trabajo.titulo}`}
             >
               <CardContent className="px-6 py-3">
@@ -169,7 +159,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </Link>
           ))}
         </div>
       </div>
