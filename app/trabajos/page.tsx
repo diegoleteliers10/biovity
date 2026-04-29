@@ -2,7 +2,13 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { TrabajosPageContent } from "@/components/landing/trabajos/TrabajosPageContent"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, FAQJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import {
+  BreadcrumbJsonLd,
+  FAQJsonLd,
+  JobBoardJsonLd,
+  OrganizationJsonLd,
+  WebSiteJsonLd,
+} from "@/components/seo/JsonLd"
 
 const FAQS_TRABAJOS = [
   {
@@ -74,6 +80,8 @@ export const metadata: Metadata = {
 export default function TrabajosPage() {
   return (
     <LandingLayout>
+      <WebSiteJsonLd />
+      <JobBoardJsonLd />
       <OrganizationJsonLd />
       <FAQJsonLd faqs={FAQS_TRABAJOS} />
       <BreadcrumbJsonLd

@@ -2,11 +2,51 @@
 User-agent: *
 Allow: /
 
+# Disallow API routes
+Disallow: /api/
+
 # Disallow dashboard routes (private area)
 Disallow: /dashboard/
 
-# Disallow admin login (no index)
+# Disallow admin login
 Disallow: /login/admin
+
+# Disallow auth routes
+Disallow: /register/
+
+# Specific bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: YandexImages
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: SeznamBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
 
 # AI Training Crawlers - Allow by default (opt-out by uncommenting)
 # If you want to BLOCK AI training crawlers, uncomment these lines:
@@ -30,3 +70,4 @@ User-agent: Google-Extended
 Allow: /
 
 Sitemap: https://biovity.cl/sitemap.xml
+Host: https://biovity.cl

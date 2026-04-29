@@ -5,7 +5,12 @@ import { HistoriaMision } from "@/components/landing/nosotros/HistoriaMision"
 import { NosotrosHero } from "@/components/landing/nosotros/NosotrosHero"
 import { ProblemaSolucion } from "@/components/landing/nosotros/ProblemaSolucion"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "../../components/seo/JsonLd"
+import {
+  AboutPageJsonLd,
+  BreadcrumbJsonLd,
+  OrganizationJsonLd,
+  WebSiteJsonLd,
+} from "../../components/seo/JsonLd"
 
 export const metadata: Metadata = {
   title: "Nosotros | Conectando Talento Científico en Biovity",
@@ -49,6 +54,7 @@ export default function NosotrosPage() {
     <LandingLayout>
       <OrganizationJsonLd />
       <WebSiteJsonLd />
+      <AboutPageJsonLd />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

@@ -139,6 +139,7 @@ export function ArticleJsonLd({
   title,
   description,
   authorName,
+  authorUrl,
   datePublished,
   dateModified,
   image,
@@ -155,12 +156,20 @@ export function ArticleJsonLd({
     author: {
       "@type": "Person",
       name: authorName,
-      url: authorName.toLowerCase().replace(/\s+/g, "-"),
+      url:
+        authorUrl ||
+        `https://biovity.cl/blog/author/${authorName.toLowerCase().replace(/\s+/g, "-")}`,
     },
     publisher: {
       "@type": "Organization",
       name: "Biovity",
       url: "https://biovity.cl",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://biovity.cl/logoIconBiovity.png",
+        width: 200,
+        height: 60,
+      },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -169,6 +178,123 @@ export function ArticleJsonLd({
   }
 
   return <JsonLd data={articleData} />
+}
+
+// BlogPosting schema for individual blog posts
+export type BlogPostingJsonLdProps = {
+  title: string
+  description: string
+  authorName: string
+  authorUrl?: string
+  datePublished: string
+  dateModified?: string
+  image: string
+  url: string
+}
+
+export function BlogPostingJsonLd({
+  title,
+  description,
+  authorName,
+  authorUrl,
+  datePublished,
+  dateModified,
+  image,
+  url,
+}: BlogPostingJsonLdProps) {
+  const articleData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    image,
+    datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      "@type": "Person",
+      name: authorName,
+      url:
+        authorUrl ||
+        `https://biovity.cl/blog/author/${authorName.toLowerCase().replace(/\s+/g, "-")}`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Biovity",
+      url: "https://biovity.cl",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://biovity.cl/logoIconBiovity.png",
+        width: 200,
+        height: 60,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    articleSection: "Blog",
+    wordCount: description.split(" ").length * 5,
+  }
+
+  return <JsonLd data={articleData} />
+}
+
+// Dataset schema for salary data pages
+type DatasetJsonLdProps = {
+  name: string
+  description: string
+  url: string
+  creatorName: string
+  datePublished: string
+  keywords: string[]
+}
+
+export function DatasetJsonLd({
+  name,
+  description,
+  url,
+  creatorName,
+  datePublished,
+  keywords,
+}: DatasetJsonLdProps) {
+  const datasetData = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name,
+    description,
+    url,
+    creator: {
+      "@type": "Organization",
+      name: creatorName,
+      url: "https://biovity.cl",
+    },
+    datePublished,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    keywords: keywords.join(", "),
+    measurementTechnique: "https://schema.org/measurementTechnique/Survey",
+    variableMeasured: [
+      {
+        "@type": "PropertyValue",
+        name: "Salario Promedio",
+        unitCode: "CLP",
+        description: "Sueldo promedio mensual en pesos chilenos",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Salario Minimo",
+        unitCode: "CLP",
+        description: "Sueldo minimo del rango",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Salario Maximo",
+        unitCode: "CLP",
+        description: "Sueldo maximo del rango",
+      },
+    ],
+  }
+
+  return <JsonLd data={datasetData} />
 }
 
 export type PersonJsonLdProps = {
@@ -416,4 +542,117 @@ export function BreadcrumbJsonLd({ items }: BreadcrumbJsonLdProps) {
   }
 
   return <JsonLd data={breadcrumbData} />
+}
+
+// WebApplication schema
+export function WebApplicationJsonLd() {
+  const webAppData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Biovity",
+    url: "https://biovity.cl",
+    description:
+      "Portal de empleo especializado en biotecnología, bioquímica, química, ingeniería química y salud en Chile.",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web Browser",
+    browserRequirements: "Requires JavaScript enabled",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "CLP",
+      description: "Free for job seekers",
+    },
+  }
+
+  return <JsonLd data={webAppData} />
+}
+
+// AboutPage schema for nosotros page
+export function AboutPageJsonLd() {
+  const aboutData = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "Nosotros | Biovity",
+    description:
+      "Conoce a Biovity y su misión de conectar talento científico con oportunidades significativas en el sector de biociencias en Chile.",
+    url: "https://biovity.cl/nosotros",
+    mainEntity: {
+      "@type": "Organization",
+      name: "Biovity",
+      url: "https://biovity.cl",
+      logo: "https://biovity.cl/logoIconBiovity.png",
+      description:
+        "Portal de empleo especializado en biotecnología, bioquímica, química, ingeniería química y salud en Chile.",
+      foundingDate: "2024",
+      areaServed: {
+        "@type": "Country",
+        name: "Chile",
+      },
+      sameAs: [],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        availableLanguage: ["Spanish"],
+      },
+    },
+  }
+
+  return <JsonLd data={aboutData} />
+}
+
+// FAQPage schema (QAPage) for general use
+export function QAPageJsonLd({ faqs }: { faqs: Array<{ question: string; answer: string }> }) {
+  const qaData = {
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    name: "Preguntas Frecuentes | Biovity",
+    description: "Respuestas a las preguntas más frecuentes sobre Biovity",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  }
+
+  return <JsonLd data={qaData} />
+}
+
+// CollectionPage for blog
+type BlogCollectionJsonLdProps = {
+  name: string
+  description: string
+  url: string
+  items: Array<{
+    name: string
+    url: string
+    datePublished?: string
+  }>
+}
+
+export function BlogCollectionJsonLd({ name, description, url, items }: BlogCollectionJsonLdProps) {
+  const collectionData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name,
+    description,
+    url,
+    about: items.map((item) => ({
+      "@type": "BlogPosting",
+      name: item.name,
+      url: item.url,
+      ...(item.datePublished ? { datePublished: item.datePublished } : {}),
+    })),
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: item.url,
+      name: item.name,
+    })),
+  }
+
+  return <JsonLd data={collectionData} />
 }
