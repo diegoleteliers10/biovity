@@ -39,37 +39,52 @@ const FAQS_TRABAJOS = [
 ]
 
 export const metadata: Metadata = {
-  title: "Trabajos en Ciencias | Biovity",
+  title: "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity Chile",
   description:
-    "Encuentra oportunidades laborales en biotecnología, bioquímica, química e ingeniería química en Chile. Portal de empleo especializado en ciencias.",
+    "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
   keywords: [
-    "empleo biotecnología Chile",
-    "trabajo bioquímica",
-    "ofertas empleo química",
-    "trabajo ingeniería química",
-    "empleo laboratorio",
-    "trabajo investigación científica",
-    "portal empleo científico Chile",
-    "buscar trabajo ciencias",
+    "empleos biotecnología chile",
+    "empleos bioquímica chile",
+    "empleos química chile",
+    "empleos ingeniería química chile",
+    "empleos salud chile",
+    "empleos laboratorio chile",
+    "empleos farmacéutico chile",
+    "empleos I+D chile",
+    "empleos investigación chile",
+    "empleos biotech chile",
+    "empleos food science chile",
+    "empleos microbiología chile",
+    "portal empleo biotecnología",
+    "portal empleo biociencias",
+    "portal empleo científico",
+    "buscar empleo ciencias chile",
+    "ofertas trabajo biotecnología",
+    "ofertas trabajo bioquímica",
+    "ofertas trabajo laboratorio",
+    "vacantes biotecnología chile",
+    "vacantes bioquímica chile",
+    "bolsa empleo biotecnología",
+    "bolsa empleo ciencias chile",
   ],
   openGraph: {
-    title: "Trabajos en Ciencias | Biovity",
+    title: "Empleos en Biotecnología y Biociencias | Biovity Chile",
     description:
-      "Encuentra oportunidades laborales en biotecnología, bioquímica, química e ingeniería química en Chile.",
+      "Encuentra ofertas de empleo en biotecnología, bioquímica, química, ingeniería química y salud en Chile. Búsqueda avanzada por área, ubicación y modalidad.",
     url: "/trabajos",
     images: [
       {
         url: "/og/home.png",
         width: 1200,
         height: 630,
-        alt: "Biovity - Trabajos en Ciencias",
+        alt: "Biovity - Empleos en Biotecnología y Biociencias Chile",
       },
     ],
   },
   twitter: {
-    title: "Trabajos en Ciencias | Biovity",
+    title: "Empleos en Biotecnología y Biociencias | Biovity Chile",
     description:
-      "Portal de empleo especializado en biotecnología, bioquímica, química e ingeniería química en Chile.",
+      "Portal de empleo especializado en biotecnología, bioquímica, química y ciencias. Encuentra tu próximo trabajo en Chile.",
     images: ["/og/home.png"],
   },
   alternates: {
