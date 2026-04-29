@@ -14,27 +14,36 @@ import {
   FAQJsonLd,
   OrganizationJsonLd,
   SoftwareApplicationJsonLd,
+  WebSiteJsonLd,
 } from "../../components/seo/JsonLd"
 import { FAQS_EMPRESAS } from "../../lib/data/empresas-data"
 
 export const metadata: Metadata = {
-  title: "Para Empresas | Recluta Talento Científico con Biovity",
+  title: "Recluta Talento en Biotecnología y Biociencias | Biovity para Empresas",
   description:
-    "Simplifica tu proceso de reclutamiento y accede a profesionales cualificados en biotecnología, bioquímica, química e ingeniería química. ATS especializado en ciencias.",
+    "ATS y portal de empleo para reclutar científicos en biotecnología, bioquímica, química, ingeniería química y salud. Encuentra candidatos cualificados en Chile.",
   keywords: [
-    "reclutar científicos Chile",
-    "ATS biotecnología",
-    "contratar bioquímicos",
-    "reclutamiento químicos",
-    "portal empleo empresas científicas",
-    "talento científico Chile",
-    "contratar ingenieros químicos",
-    "software reclutamiento ciencias",
+    "reclutar empleados biotecnología chile",
+    "reclutar bioquímicos chile",
+    "reclutar químicos chile",
+    "reclutar ingenieros químicos chile",
+    "ATS biotecnología chile",
+    "software reclutamiento ciencias chile",
+    "talento científico chile",
+    "contratar bioquímicos chile",
+    "contratar biotecnólogos chile",
+    "empleos para empresas ciencias chile",
+    "portal empresas biotecnología",
+    "contratar personal laboratorio chile",
+    "contratar investigadores chile",
+    "reclutamiento científico chile",
+    "reclutamiento biotech chile",
+    "reclutamiento bioquímica chile",
   ],
   openGraph: {
-    title: "Para Empresas | Recluta Talento Científico con Biovity",
+    title: "Recluta Talento en Biotecnología y Biociencias | Biovity Empresas",
     description:
-      "Conecta con el nuevo talento científico de Chile. ATS especializado para empresas en biotecnología, bioquímica y química.",
+      "ATS especializado para reclutar talento científico en biotecnología, bioquímica, química e ingeniería química en Chile.",
     url: "/empresas",
     images: [
       {
@@ -46,9 +55,9 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    title: "Para Empresas | Recluta Talento Científico con Biovity",
+    title: "Recluta Talento en Biotecnología | Biovity Empresas",
     description:
-      "Conecta con el nuevo talento científico de Chile. ATS especializado para biotecnología, bioquímica y química.",
+      "Conecta con el nuevo talento científico de Chile. ATS especializado para empresas en biotecnología, bioquímica y química.",
     images: ["/og/empresas.png"],
   },
   alternates: {
@@ -59,6 +68,7 @@ export const metadata: Metadata = {
 export default function EmpresasPage() {
   return (
     <LandingLayout>
+      <WebSiteJsonLd />
       <OrganizationJsonLd />
       <SoftwareApplicationJsonLd />
       <FAQJsonLd faqs={FAQS_EMPRESAS} />
