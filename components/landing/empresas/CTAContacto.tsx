@@ -125,7 +125,7 @@ export function CTAContacto() {
                   <h3 className="text-2xl font-bold text-foreground mb-6">Contacta con ventas</h3>
 
                   {Object.keys(errors).length > 0 && (
-                    <div className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
+                    <div role="alert" className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
                       <p className="text-sm text-accent">{Object.values(errors)[0]}</p>
                     </div>
                   )}

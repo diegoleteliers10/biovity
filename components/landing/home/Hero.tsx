@@ -59,6 +59,7 @@ export function Hero() {
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
                   />
                   <Input
+                    aria-label="Buscar puesto"
                     placeholder="¿Qué puesto buscas?"
                     className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
                   />
@@ -69,6 +70,7 @@ export function Hero() {
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
                   />
                   <Input
+                    aria-label="Buscar ubicación"
                     placeholder="¿Dónde?"
                     className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
                   />
