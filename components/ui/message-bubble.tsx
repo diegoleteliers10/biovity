@@ -313,7 +313,8 @@ export function ChatListItem({
   if (searchQuery) {
     const query = searchQuery.toLowerCase()
     const matchesName = contactName.toLowerCase().includes(query)
-    if (!matchesName) return null
+    const matchesLastMessage = chat.lastMessage?.toLowerCase().includes(query)
+    if (!matchesName && !matchesLastMessage) return null
   }
 
   const unreadCount = chat.unreadCountProfessional ?? chat.unreadCountRecruiter ?? 0
