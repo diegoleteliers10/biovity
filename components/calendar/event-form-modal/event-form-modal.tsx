@@ -21,7 +21,7 @@ const EVENT_TYPES: { value: EventType; label: string }[] = [
   { value: "onboarding", label: "Onboarding" },
 ]
 
-type EventFormModalProps = {
+export type EventFormModalProps = {
   isOpen: boolean
   onClose: () => void
   organizerId: string
@@ -153,7 +153,7 @@ export function EventFormModal({
     onClose()
   }
 
-  const isValid = title.trim() && startDate && startTime
+  const isValid = !!(title.trim() && startDate && startTime)
 
   const eventError =
     createEvent.error instanceof Error
