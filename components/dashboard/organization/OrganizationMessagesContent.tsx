@@ -1,6 +1,6 @@
 "use client"
 
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useQueryState } from "nuqs"
 import type * as React from "react"

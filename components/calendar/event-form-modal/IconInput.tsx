@@ -1,12 +1,13 @@
 "use client"
 
+import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Input } from "@/components/ui/input"
 
 type IconInputProps = {
   id: string
   label: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: IconSvgElement
   value: string
   onChange: (value: string) => void
   placeholder?: string

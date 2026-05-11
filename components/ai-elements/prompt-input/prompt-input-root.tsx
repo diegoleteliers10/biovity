@@ -34,20 +34,23 @@ import { cn } from "@/lib/utils"
 import { captureScreenshot } from "./lib/utils/prompt-input-utils"
 
 export type { AttachmentsContext } from "./contexts/attachments-context"
+export {
+  ProviderAttachmentsContext,
+  useOptionalProviderAttachments,
+  useProviderAttachments,
+} from "./contexts/attachments-context"
 export type { PromptInputControllerProps, TextInputContext } from "./contexts/controller-context"
 export {
-  LocalReferencedSourcesContext,
-  ProviderAttachmentsContext,
   useOptionalPromptInputController,
-  useOptionalProviderAttachments,
   usePromptInputController,
-  usePromptInputReferencedSources,
-  useProviderAttachments,
 } from "./contexts/controller-context"
+export {
+  LocalReferencedSourcesContext,
+  usePromptInputReferencedSources,
+} from "./contexts/referenced-sources-context"
 export type { ReferencedSourcesContext } from "./contexts/referenced-sources-context"
 export { useDragDrop } from "./hooks/use-drag-drop"
 export { LocalAttachmentsContext, usePromptInputAttachments } from "./hooks/use-file-handling"
-export type { PromptInputMessage } from "./hooks/use-prompt-submit"
 export { convertBlobUrlToDataUrl } from "./lib/utils/prompt-input-utils"
 export { PromptInputButton } from "./prompt-input-button"
 export { PromptInputProvider } from "./prompt-input-provider"
@@ -55,8 +58,16 @@ export { PromptInputSubmit } from "./prompt-input-submit"
 export { PromptInputTextarea } from "./prompt-input-textarea"
 export { usePromptSubmit }
 
+import { PromptInputButton } from "./prompt-input-button"
+import { useDragDrop } from "./hooks/use-drag-drop"
+import { useOptionalPromptInputController } from "./contexts/controller-context"
 import type { AttachmentsContext } from "./contexts/attachments-context"
 import type { ReferencedSourcesContext } from "./contexts/referenced-sources-context"
+import {
+  LocalReferencedSourcesContext,
+  usePromptInputReferencedSources,
+} from "./contexts/referenced-sources-context"
+import { usePromptInputAttachments } from "./hooks/use-file-handling"
 import { usePromptSubmit } from "./hooks/use-prompt-submit"
 
 const LocalAttachmentsContext = createContext<AttachmentsContext | null>(null)
@@ -394,7 +405,6 @@ export const PromptInput = ({
   )
 
   const handleSubmit = usePromptSubmit({
-    formRef,
     usingProvider,
     controller,
     files,

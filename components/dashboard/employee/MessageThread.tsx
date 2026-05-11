@@ -1,13 +1,13 @@
 "use client"
 
-import type * as React from "react"
+import * as React from "react"
 import { useCallback, useRef } from "react"
 import { ChatHeader } from "@/components/dashboard/employee/ChatHeader"
 import { MessageInput } from "@/components/dashboard/employee/MessageInput"
 import { Button } from "@/components/ui/button"
 import { MessageBubble } from "@/components/ui/message-bubble"
 import type { MessageType } from "@/lib/api/messages"
-import type { UseSendMessageMutation } from "@/lib/api/use-messages"
+import { useSendMessageMutation } from "@/lib/api/use-messages"
 import type { User } from "@/lib/api/users"
 
 type Message = {
@@ -33,7 +33,7 @@ type MessageThreadProps = {
   refetchMessages: () => void
   onBackToList: () => void
   formatTime: (iso: string) => string
-  sendMutation: ReturnType<UseSendMessageMutation>
+  sendMutation: ReturnType<typeof useSendMessageMutation>
 }
 
 export function MessageThread({
