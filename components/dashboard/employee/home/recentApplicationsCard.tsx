@@ -92,13 +92,13 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
       <CardContent>
         {isLoading ? (
           <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map((i) => (
+            {[1, 2, 3, 4, 5].map((n) => (
               <div
-                key={i}
+                key={n}
                 className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60 animate-pulse"
               >
                 <div className="space-y-2">
-                  <div className="h-4 w-40 rounded bg-muted" />
+                  <div className="size-40 rounded bg-muted" />
                   <div className="h-3 w-24 rounded bg-muted" />
                 </div>
                 <div className="space-y-1 text-right">
@@ -117,21 +117,17 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
             {applications.slice(0, 5).map((app) => {
               const status = getStatusStyles(app.status)
               return (
-                <div
+                <button
+                  type="button"
                   key={app.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80"
+                  className="flex items-center justify-between w-full p-3 rounded-lg bg-muted/30 hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80"
                   onClick={() => handleJobClick(app.jobId)}
                   onKeyDown={(e) => handleKeyDown(e, app.jobId)}
-                  tabIndex={0}
-                  role="button"
                   aria-label={`Ver detalles del trabajo ${app.job?.title}`}
                 >
                   <div className="space-y-1 min-w-0 flex-1">
-                    <p className="text-sm font-medium leading-none text-foreground truncate">
+                    <p className="text-sm font-medium leading-none text-foreground truncate text-left">
                       {app.job?.title ?? "Sin título"}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {app.candidate?.profession ?? "Organización"}
                     </p>
                   </div>
                   <div className="text-right space-y-1 shrink-0 ml-4">
@@ -144,7 +140,7 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
                       {status.label}
                     </span>
                   </div>
-                </div>
+                </button>
               )
             })}
           </div>

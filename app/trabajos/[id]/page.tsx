@@ -111,14 +111,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TrabajoDetailPage({ params }: Props) {
   const { id } = await params
-  const headersList = await headers()
+  const [headersList, jobResult] = await Promise.all([headers(), getJob(id)])
   const referer = headersList.get("referer")
-  const result = await getJob(id)
-  if (!Result.isOk(result)) {
+  if (!Result.isOk(jobResult)) {
     notFound()
   }
 
-  const job = result.value
+  const job = jobResult.value
   let organizationName = job.organization?.name
   if (!organizationName && job.organizationId) {
     const orgResult = await getOrganization(job.organizationId)
@@ -186,12 +185,12 @@ export default async function TrabajoDetailPage({ params }: Props) {
           {/* Hero del trabajo */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4">
-              <div className="h-12 w-12 rounded-lg bg-primary/10 text-primary grid place-items-center">
+              <div className="size-12 rounded-lg bg-primary/10 text-primary grid place-items-center">
                 <HugeiconsIcon
                   icon={Briefcase01Icon}
                   size={24}
                   strokeWidth={1.5}
-                  className="h-6 w-6"
+                  className="size-6"
                 />
               </div>
               <div>
@@ -200,12 +199,12 @@ export default async function TrabajoDetailPage({ params }: Props) {
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-zinc-900 mb-6">
               {job.title}
             </h1>
 
             {/* Meta información */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-600 mb-6">
               <div className="flex items-center gap-2">
                 <HugeiconsIcon icon={Location05Icon} size={20} className="text-muted-foreground" />
                 <span>{ubicacion}</span>
@@ -217,17 +216,19 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 {job.employmentType}
               </Badge>
               {job.experienceLevel && (
-                <Badge className="bg-gray-100 text-gray-800 capitalize">
+                <Badge className="bg-zinc-100 text-zinc-800 capitalize">
                   {job.experienceLevel === "Mid-Senior" ? "Semi Senior" : job.experienceLevel}
                 </Badge>
               )}
-              <div className="flex items-center gap-2 font-semibold text-gray-900">
+              <div className="flex items-center gap-2 font-semibold text-zinc-900">
                 <HugeiconsIcon icon={Cash02Icon} size={20} className="text-muted-foreground" />
                 <span>{salaryStr}</span>
               </div>
               <div className="flex items-center gap-2">
                 <HugeiconsIcon icon={Clock01Icon} size={20} className="text-muted-foreground" />
-                <span>Publicado {formatFechaLarga(new Date(job.createdAt))}</span>
+                <span suppressHydrationWarning>
+                  Publicado {formatFechaLarga(new Date(job.createdAt))}
+                </span>
               </div>
               {"views" in job && typeof job.views === "number" && job.views > 0 && (
                 <div className="flex items-center gap-2">
@@ -244,8 +245,8 @@ export default async function TrabajoDetailPage({ params }: Props) {
             <div className="space-y-8">
               {/* Descripción */}
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Descripción</h2>
-                <div className="text-gray-700 leading-relaxed prose prose-gray max-w-none">
+                <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Descripción</h2>
+                <div className="text-zinc-700 leading-relaxed prose prose-gray max-w-none">
                   {job.description ? (
                     <p className="whitespace-pre-wrap">{job.description}</p>
                   ) : (
@@ -257,16 +258,16 @@ export default async function TrabajoDetailPage({ params }: Props) {
               {/* Beneficios */}
               {job.benefits && job.benefits.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Beneficios</h2>
+                  <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Beneficios</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {job.benefits.map((beneficio) => (
                       <div
                         key={beneficio.title}
-                        className="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg"
+                        className="flex flex-col gap-1 p-3 bg-zinc-50 rounded-lg"
                       >
-                        <span className="font-medium text-gray-900">{beneficio.title}</span>
+                        <span className="font-medium text-zinc-900">{beneficio.title}</span>
                         {beneficio.description && (
-                          <span className="text-gray-600 text-sm">{beneficio.description}</span>
+                          <span className="text-zinc-600 text-sm">{beneficio.description}</span>
                         )}
                       </div>
                     ))}
@@ -280,25 +281,25 @@ export default async function TrabajoDetailPage({ params }: Props) {
               <Card className="shadow-lg border-0">
                 <CardContent className="p-6 space-y-4">
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Información del Trabajo</h3>
-                    <div className="space-y-2 text-sm text-gray-600">
+                    <h3 className="font-semibold text-zinc-900 mb-2">Información del Trabajo</h3>
+                    <div className="space-y-2 text-sm text-zinc-600">
                       <div className="flex justify-between">
                         <span>Ubicación:</span>
-                        <span className="font-medium text-gray-900">{ubicacion}</span>
+                        <span className="font-medium text-zinc-900">{ubicacion}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Modalidad:</span>
-                        <span className="font-medium text-gray-900 capitalize">
+                        <span className="font-medium text-zinc-900 capitalize">
                           {modalidad === "hibrido" ? "Híbrido" : modalidad}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Formato:</span>
-                        <span className="font-medium text-gray-900">{job.employmentType}</span>
+                        <span className="font-medium text-zinc-900">{job.employmentType}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Salario:</span>
-                        <span className="font-medium text-gray-900">{salaryStr}</span>
+                        <span className="font-medium text-zinc-900">{salaryStr}</span>
                       </div>
                     </div>
                   </div>

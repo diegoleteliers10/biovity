@@ -3,7 +3,7 @@
 import { Briefcase01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type { FocusEventHandler, PointerEventHandler, RefAttributes, RefObject } from "react"
-import { useCallback, useContext, useRef, useState } from "react"
+import { use, useCallback, useRef, useState } from "react"
 import type {
   ComboBoxProps as AriaComboBoxProps,
   GroupProps as AriaGroupProps,
@@ -54,7 +54,7 @@ const ComboBoxValue = ({
   shortcutClassName,
   ...otherProps
 }: ComboBoxValueProps) => {
-  const state = useContext(ComboBoxStateContext)
+  const state = use(ComboBoxStateContext)
 
   const value = state?.selectedItem?.value || null
   const inputValue = state?.inputValue || null
@@ -79,7 +79,7 @@ const ComboBoxValue = ({
         <>
           <HugeiconsIcon
             icon={Briefcase01Icon}
-            className="pointer-events-none text-gray-400 w-4 h-4"
+            className="pointer-events-none text-neutral-400 size-4"
           />
 
           <div className="relative flex w-full items-center gap-2">

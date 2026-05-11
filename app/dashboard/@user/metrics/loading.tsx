@@ -18,11 +18,11 @@ export default function Loading() {
 
       {/* Metrics Cards skeleton */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="border border-border/80 bg-white rounded-lg p-6">
-            <div className="flex flex-row items-center justify-between space-y-0 pb-2">
+        {[1, 2, 3, 4, 5, 6].map((n) => (
+          <div key={n} className="border border-border/80 bg-white rounded-lg p-6">
+            <div className="flex flex-row items-center justify-between pb-2">
               <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-4 rounded" />
+              <Skeleton className="size-4 rounded" />
             </div>
             <Skeleton className="h-8 w-16 mb-2" />
             <Skeleton className="h-3 w-20" />

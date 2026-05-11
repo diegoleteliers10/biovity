@@ -8,15 +8,7 @@ import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
 import { emptyLanguage, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
 
-const SectionTitle = ({
-  icon: Icon,
-  title,
-  className,
-}: {
-  icon: typeof Globe02Icon
-  title: string
-  className?: string
-}) => (
+const SectionTitle = ({ icon: Icon, title }: { icon: typeof Globe02Icon; title: string }) => (
   <div className="flex items-center gap-2">
     <HugeiconsIcon icon={Icon} size={20} className="text-muted-foreground" />
     <h3 className="text-sm font-semibold text-foreground">{title}</h3>
@@ -55,7 +47,10 @@ export function LanguagesForm() {
               ? resumeFormData.languages
               : [emptyLanguage()]
             ).map((lang, i) => (
-              <div key={i} className="flex gap-2 items-center">
+              <div
+                key={`lang-edit-${lang.name ?? lang.language ?? ""}`}
+                className="flex gap-2 items-center"
+              >
                 <Input
                   value={lang.name ?? lang.language ?? ""}
                   onChange={(e) =>
@@ -111,9 +106,9 @@ export function LanguagesForm() {
           </div>
         ) : (resume?.languages?.length ?? 0) > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {(resume?.languages ?? []).map((lang, i) => (
+            {(resume?.languages ?? []).map((lang, _i) => (
               <span
-                key={i}
+                key={`lang-display-${lang.name ?? lang.language}`}
                 className="rounded-md border border-border bg-muted/50 px-3 py-1.5 text-sm"
               >
                 {lang.name ?? lang.language}

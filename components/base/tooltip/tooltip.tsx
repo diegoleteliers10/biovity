@@ -85,7 +85,9 @@ export const Tooltip = ({
                 <svg
                   viewBox="0 0 100 100"
                   className="size-2.5 fill-bg-primary-solid in-placement-left:-rotate-90 in-placement-right:rotate-90 in-placement-top:rotate-0 in-placement-bottom:rotate-180"
+                  aria-labelledby="tooltip-arrow-title"
                 >
+                  <title id="tooltip-arrow-title">Tooltip arrow</title>
                   <path d="M0,0 L35.858,35.858 Q50,50 64.142,35.858 L100,0 Z" />
                 </svg>
               </AriaOverlayArrow>

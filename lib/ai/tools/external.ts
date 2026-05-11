@@ -424,7 +424,7 @@ export const updateApplicationStatusTool = tool({
     reason: z.string().max(500).optional(),
   }),
   needsApproval: true,
-  execute: async ({ applicationId, newStatus, reason }) => {
+  execute: async ({ applicationId, newStatus }) => {
     validateToolInput("updateApplicationStatus", { applicationId })
     const result = await updateApplicationStatus(applicationId, newStatus as ApplicationStatus)
     if (!Result.isOk(result)) {

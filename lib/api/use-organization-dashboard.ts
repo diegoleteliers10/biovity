@@ -57,7 +57,8 @@ export function useOrgMetrics(organizationId: string | undefined) {
   return useQuery({
     queryKey: orgDashboardKeys.metrics,
     queryFn: async () => {
-      const result = await getOrganizationMetrics(organizationId!, { period: "month" })
+      if (!organizationId) throw new Error("organizationId is required")
+      const result = await getOrganizationMetrics(organizationId, { period: "month" })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return getMetricsCards(result.value.dashboard, false)
     },
@@ -84,6 +85,8 @@ export function useOrganizationMetrics(
           },
           topJobs: [],
           recentTrend: [],
+          geographicDistribution: [],
+          avgHiringTimeDays: 0,
         }
       }
       const result = await getOrganizationMetrics(organizationId, { period })
@@ -97,6 +100,8 @@ export function useOrganizationMetrics(
           },
           topJobs: [],
           recentTrend: [],
+          geographicDistribution: [],
+          avgHiringTimeDays: 0,
         }
       }
       return result.value

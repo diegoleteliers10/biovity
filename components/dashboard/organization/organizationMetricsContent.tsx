@@ -1,9 +1,24 @@
 "use client"
 
-import { Calendar03Icon, File02Icon, FileAddIcon, ViewIcon } from "@hugeicons/core-free-icons"
+import {
+  Calendar03Icon,
+  ClockIcon,
+  File02Icon,
+  FileAddIcon,
+  ViewIcon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useState } from "react"
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { useId, useState } from "react"
+
+const [LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis] = await Promise.all([
+  import("recharts").then((m) => m.LineChart),
+  import("recharts").then((m) => m.Line),
+  import("recharts").then((m) => m.ResponsiveContainer),
+  import("recharts").then((m) => m.Tooltip),
+  import("recharts").then((m) => m.XAxis),
+  import("recharts").then((m) => m.YAxis),
+])
+
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Badge } from "@/components/ui/badge"
@@ -48,13 +63,13 @@ type KpiCardProps = {
 function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: KpiCardProps) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <HugeiconsIcon
           icon={Icon}
           size={24}
           strokeWidth={1.5}
-          className="h-4 w-4 text-muted-foreground"
+          className="size-4 text-muted-foreground"
         />
       </CardHeader>
       <CardContent>
@@ -75,6 +90,7 @@ export function OrganizationMetricsContent() {
 
   const [period, setPeriod] = useState<MetricsPeriod>("month")
   const { data: metrics, isPending, isError } = useOrganizationMetrics(organizationId, period)
+  const skeletonId = useId()
 
   const totalViews = metrics?.topJobs.reduce((sum, job) => sum + job.views, 0) ?? 0
 
@@ -108,7 +124,7 @@ export function OrganizationMetricsContent() {
         </div>
         <div className="flex items-end justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Métricas</h1>
+            <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Métricas</h1>
             <p className="text-muted-foreground text-sm">
               Analiza el rendimiento de tus ofertas y candidatos.
             </p>
@@ -131,7 +147,7 @@ export function OrganizationMetricsContent() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {isPending ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i}>
+            <Card key={`${skeletonId}-${i}`}>
               <CardHeader className="pb-2">
                 <Skeleton className="h-4 w-32" />
               </CardHeader>
@@ -158,7 +174,7 @@ export function OrganizationMetricsContent() {
                 period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
               }
               icon={File02Icon}
-              trend={`${(metrics?.dashboard.applicationsTrend ?? 0 > 0) ? "+" : ""}${metrics?.dashboard.applicationsTrend ?? 0}%`}
+              trend={`${(metrics?.dashboard.applicationsTrend ?? 0) > 0 ? "+" : ""}${metrics?.dashboard.applicationsTrend ?? 0}%`}
               trendPositive={(metrics?.dashboard.applicationsTrend ?? 0) >= 0}
             />
             <KpiCard
@@ -168,7 +184,7 @@ export function OrganizationMetricsContent() {
                 period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
               }
               icon={Calendar03Icon}
-              trend={`${(metrics?.dashboard.interviewsTrend ?? 0 > 0) ? "+" : ""}${metrics?.dashboard.interviewsTrend ?? 0}%`}
+              trend={`${(metrics?.dashboard.interviewsTrend ?? 0) > 0 ? "+" : ""}${metrics?.dashboard.interviewsTrend ?? 0}%`}
               trendPositive={(metrics?.dashboard.interviewsTrend ?? 0) >= 0}
             />
             <KpiCard
@@ -178,6 +194,12 @@ export function OrganizationMetricsContent() {
                 period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
               }
               icon={ViewIcon}
+            />
+            <KpiCard
+              title="Tiempo medio de contratación"
+              value={`${metrics?.avgHiringTimeDays ?? 0} días`}
+              subtitle="desde postulación"
+              icon={ClockIcon}
             />
           </>
         )}
@@ -270,8 +292,11 @@ export function OrganizationMetricsContent() {
           {isPending ? (
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <Skeleton className="h-4 w-48" />
+                <div
+                  key={`${skeletonId}-topjob-${i}`}
+                  className="flex items-center justify-between"
+                >
+                  <Skeleton className="size-48" />
                   <Skeleton className="h-4 w-20" />
                 </div>
               ))}
@@ -300,6 +325,34 @@ export function OrganizationMetricsContent() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">No hay ofertas con postulaciones.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Distribución geográfica</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isPending ? (
+            <Skeleton className="h-[200px] w-full" />
+          ) : metrics?.geographicDistribution && metrics.geographicDistribution.length > 0 ? (
+            <div className="space-y-3">
+              {metrics.geographicDistribution.map((geo) => (
+                <div key={geo.city} className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{geo.city}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-primary" style={{ width: `${geo.percentage}%` }} />
+                    </div>
+                    <span className="text-sm font-medium w-8">{geo.count}</span>
+                    <span className="text-xs text-muted-foreground w-10">{geo.percentage}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No hay datos geográficos disponibles.</p>
           )}
         </CardContent>
       </Card>

@@ -21,7 +21,7 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { AIScoreBadge, AIScoreBadgeSkeleton } from "@/components/ai/AIScoreBadge"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -55,7 +55,7 @@ function ApplicantCard({
   applicant,
   getScore,
   isAnalyzing: analyzing,
-  jobOffer,
+  jobOffer: _jobOffer,
   onScoreClick,
 }: ApplicantCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -145,7 +145,6 @@ function KanbanColumn({
   applicants,
   getScore,
   isAnalyzing,
-  jobOffer,
   onScoreClick,
 }: {
   stage: (typeof STAGES)[number]
@@ -182,7 +181,6 @@ function KanbanColumn({
             applicant={a}
             getScore={getScore}
             isAnalyzing={isAnalyzing}
-            jobOffer={jobOffer}
             onScoreClick={onScoreClick}
           />
         ))}
@@ -212,25 +210,20 @@ export function ApplicationsKanban({
   jobOffer?: JobOfferContext
   onScoreClick?: (candidateId: string) => void
 }) {
-  const [applicants, setApplicants] = useState<Applicant[]>(initialApplicants)
   const [activeApplicant, setActiveApplicant] = useState<Applicant | null>(null)
-
-  useEffect(() => {
-    setApplicants(initialApplicants)
-  }, [initialApplicants])
 
   const applicantsByStage = useMemo(() => {
     const map = new Map<ApplicationStage, Applicant[]>()
     for (const s of STAGES) {
       map.set(s.id, [])
     }
-    for (const a of applicants) {
+    for (const a of initialApplicants) {
       const list = map.get(a.stage) ?? []
       list.push(a)
       map.set(a.stage, list)
     }
     return map
-  }, [applicants])
+  }, [initialApplicants])
 
   const handleDragStart = useCallback((event: DragEndEvent) => {
     const data = event.active.data.current as { applicant: Applicant } | undefined
@@ -251,7 +244,7 @@ export function ApplicationsKanban({
       if (STAGES.some((s) => s.id === over.id)) {
         targetStage = over.id as ApplicationStage
       } else {
-        const targetApplicant = applicants.find((a) => a.id === over.id)
+        const targetApplicant = initialApplicants.find((a) => a.id === over.id)
         if (!targetApplicant) return
         targetStage = targetApplicant.stage
       }
@@ -260,20 +253,14 @@ export function ApplicationsKanban({
 
       if (targetStage === "entrevista" || targetStage === "contratado") {
         const eventType = targetStage === "entrevista" ? "interview" : "onboarding"
-        setApplicants((prev) =>
-          prev.map((a) => (a.id === data.applicant.id ? { ...a, stage: targetStage } : a))
-        )
         onStatusChange?.(data.applicant.id, targetStage)
         onCreateEvent?.(data.applicant, eventType)
         return
       }
 
-      setApplicants((prev) =>
-        prev.map((a) => (a.id === data.applicant.id ? { ...a, stage: targetStage } : a))
-      )
       onStatusChange?.(data.applicant.id, targetStage)
     },
-    [applicants, onStatusChange, onCreateEvent]
+    [onStatusChange, onCreateEvent, initialApplicants.find]
   )
 
   const sensors = useSensors(
@@ -305,7 +292,7 @@ export function ApplicationsKanban({
         {activeApplicant ? (
           <div className="cursor-grabbing rotate-2 opacity-90">
             <Card className="border-2 border-primary shadow-2xl">
-              <CardContent className="relative px-4 py-4">
+              <CardContent className="relative p-4">
                 <div className="min-w-0 flex-1">
                   <p className="font-medium leading-tight">{activeApplicant.candidateName}</p>
                   <p className="mt-0.5 truncate text-sm text-muted-foreground">

@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
-import { useState } from "react"
+import { useReducer } from "react"
 import {
   Sheet,
   SheetContent,
@@ -13,24 +13,76 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { getQuestionsByJob, type JobQuestion } from "@/lib/api/job-questions"
+import { getQuestionsByJob } from "@/lib/api/job-questions"
 import { useCreateApplicationMutation } from "@/lib/api/use-applications"
 import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
+import { QuestionField } from "./question-field"
 
 type ApplyJobSheetProps = {
   jobId: string
   jobTitle: string
   open: boolean
   onOpenChange: (open: boolean) => void
+}
+
+type ApplicationFormState = {
+  answers: Record<string, string>
+  coverLetter: string
+  salaryMin: string
+  salaryMax: string
+  availabilityDate: string
+  error: string | null
+}
+
+type ApplicationFormAction =
+  | { type: "SET_ANSWER"; questionId: string; value: string }
+  | { type: "SET_COVER_LETTER"; value: string }
+  | { type: "SET_SALARY_MIN"; value: string }
+  | { type: "SET_SALARY_MAX"; value: string }
+  | { type: "SET_AVAILABILITY_DATE"; value: string }
+  | { type: "SET_ERROR"; error: string | null }
+  | { type: "RESET" }
+
+const applicationFormReducer = (
+  state: ApplicationFormState,
+  action: ApplicationFormAction
+): ApplicationFormState => {
+  switch (action.type) {
+    case "SET_ANSWER":
+      return { ...state, answers: { ...state.answers, [action.questionId]: action.value } }
+    case "SET_COVER_LETTER":
+      return { ...state, coverLetter: action.value }
+    case "SET_SALARY_MIN":
+      return { ...state, salaryMin: action.value }
+    case "SET_SALARY_MAX":
+      return { ...state, salaryMax: action.value }
+    case "SET_AVAILABILITY_DATE":
+      return { ...state, availabilityDate: action.value }
+    case "SET_ERROR":
+      return { ...state, error: action.error }
+    case "RESET":
+      return {
+        answers: {},
+        coverLetter: "",
+        salaryMin: "",
+        salaryMax: "",
+        availabilityDate: "",
+        error: null,
+      }
+    default:
+      return state
+  }
+}
+
+const initialApplicationFormState: ApplicationFormState = {
+  answers: {},
+  coverLetter: "",
+  salaryMin: "",
+  salaryMax: "",
+  availabilityDate: "",
+  error: null,
 }
 
 export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobSheetProps) {
@@ -41,12 +93,7 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
     ?.userId
   const userId = sessionUserId ?? sessionTokenUserId
 
-  const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [coverLetter, setCoverLetter] = useState("")
-  const [salaryMin, setSalaryMin] = useState("")
-  const [salaryMax, setSalaryMax] = useState("")
-  const [availabilityDate, setAvailabilityDate] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [formState, dispatch] = useReducer(applicationFormReducer, initialApplicationFormState)
 
   const normalizeSalaryInput = (value: string): string => {
     const onlyDigits = value.replace(/\D/g, "")
@@ -83,23 +130,19 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
   const loadingQuestions = questionsQuery.isLoading
   const queryError = questionsQuery.error?.message ?? null
 
-  const handleAnswerChange = (questionId: string, value: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }))
-  }
-
   const requiredQuestions = questions.filter((q) => q.required)
-  const missingRequired = requiredQuestions.filter((q) => !answers[q.id]?.trim())
+  const missingRequired = requiredQuestions.filter((q) => !formState.answers[q.id]?.trim())
 
   const handleSubmit = async () => {
     if (!userId) return
 
     if (missingRequired.length > 0) {
-      setError("Por favor responde todas las preguntas obligatorias")
+      dispatch({ type: "SET_ERROR", error: "Por favor responde todas las preguntas obligatorias" })
       return
     }
 
-    const salaryMinValue = parseSalaryInput(salaryMin)
-    const salaryMaxValue = parseSalaryInput(salaryMax)
+    const salaryMinValue = parseSalaryInput(formState.salaryMin)
+    const salaryMaxValue = parseSalaryInput(formState.salaryMax)
 
     if (
       salaryMinValue != null &&
@@ -108,24 +151,32 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
       Number.isFinite(salaryMaxValue) &&
       salaryMinValue > salaryMaxValue
     ) {
-      setError("El salario mínimo no puede ser mayor al salario máximo.")
+      dispatch({
+        type: "SET_ERROR",
+        error: "El salario mínimo no puede ser mayor al salario máximo.",
+      })
       return
     }
 
-    setError(null)
-    const answerList = Object.entries(answers)
-      .filter(([, value]) => value.trim())
-      .map(([questionId, value]) => ({ questionId, value }))
+    dispatch({ type: "SET_ERROR", error: null })
+    const answerList = Object.entries(formState.answers).reduce<
+      { questionId: string; value: string }[]
+    >((acc, [questionId, value]) => {
+      if (value.trim()) {
+        acc.push({ questionId, value })
+      }
+      return acc
+    }, [])
 
     createMutation.mutate(
       {
         jobId,
-        coverLetter: coverLetter.trim() || undefined,
+        coverLetter: formState.coverLetter.trim() || undefined,
         salaryMin: salaryMinValue,
         salaryMax: salaryMaxValue,
         salaryCurrency:
           salaryMinValue !== undefined || salaryMaxValue !== undefined ? "CLP" : undefined,
-        availabilityDate: availabilityDate || undefined,
+        availabilityDate: formState.availabilityDate || undefined,
         answers: answerList.length > 0 ? answerList : undefined,
       },
       {
@@ -133,130 +184,10 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
           onOpenChange(false)
         },
         onError: (err: Error) => {
-          setError(err.message || "Error al enviar la postulación")
+          dispatch({ type: "SET_ERROR", error: err.message || "Error al enviar la postulación" })
         },
       }
     )
-  }
-
-  const renderQuestion = (question: JobQuestion) => {
-    const value = answers[question.id] ?? ""
-    const isRequired = question.required
-    const questionType = question.type.toUpperCase()
-
-    switch (questionType) {
-      case "TEXT":
-        return (
-          <Input
-            key={question.id}
-            placeholder={question.placeholder || "Ingresa tu respuesta"}
-            value={value}
-            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-            aria-label={question.label}
-            aria-required={isRequired}
-          />
-        )
-
-      case "TEXTAREA":
-        return (
-          <Textarea
-            key={question.id}
-            placeholder={question.placeholder || "Ingresa tu respuesta"}
-            value={value}
-            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-            aria-label={question.label}
-            aria-required={isRequired}
-          />
-        )
-
-      case "NUMBER":
-        return (
-          <Input
-            key={question.id}
-            type="number"
-            placeholder={question.placeholder || "Ingresa un número"}
-            value={value}
-            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-            aria-label={question.label}
-            aria-required={isRequired}
-          />
-        )
-
-      case "SELECT":
-        return (
-          <Select value={value} onValueChange={(v) => handleAnswerChange(question.id, v)}>
-            <SelectTrigger aria-label={question.label} aria-required={isRequired}>
-              <SelectValue placeholder={question.placeholder || "Selecciona una opción"} />
-            </SelectTrigger>
-            <SelectContent>
-              {(question.options ?? []).map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )
-
-      case "MULTISELECT": {
-        const selected = value ? value.split(",") : []
-        return (
-          <div className="flex flex-wrap gap-2">
-            {(question.options ?? []).map((option) => {
-              const isSelected = selected.includes(option)
-              return (
-                <Button
-                  key={option}
-                  type="button"
-                  variant={isSelected ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
-                    const newSelected = isSelected
-                      ? selected.filter((s) => s !== option)
-                      : [...selected, option]
-                    handleAnswerChange(question.id, newSelected.join(","))
-                  }}
-                >
-                  {option}
-                </Button>
-              )
-            })}
-          </div>
-        )
-      }
-
-      case "BOOLEAN":
-        return (
-          <div className="flex gap-4">
-            {["Sí", "No"].map((option) => (
-              <Button
-                key={option}
-                type="button"
-                variant={value === option ? "default" : "outline"}
-                size="sm"
-                onClick={() => handleAnswerChange(question.id, option)}
-              >
-                {option}
-              </Button>
-            ))}
-          </div>
-        )
-
-      case "DATE":
-        return (
-          <Input
-            key={question.id}
-            type="date"
-            value={value}
-            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-            aria-label={question.label}
-            aria-required={isRequired}
-          />
-        )
-
-      default:
-        return null
-    }
   }
 
   return (
@@ -272,24 +203,36 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
 
         <div className="mt-6 space-y-6 px-6 pb-6 sm:px-8">
           {loadingQuestions && (
-            <div className="text-center py-4 text-muted-foreground">Cargando preguntas...</div>
+            <div className="text-center py-4 text-muted-foreground">Cargando preguntas…</div>
           )}
 
           {!loadingQuestions && questions.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-foreground">Preguntas del trabajo</h3>
-              {questions.map((question) => (
-                <div key={question.id} className="space-y-2">
-                  <label className="text-sm font-medium">
-                    {question.label}
-                    {question.required && <span className="text-destructive ml-1">*</span>}
-                  </label>
-                  {question.helperText && (
-                    <p className="text-xs text-muted-foreground">{question.helperText}</p>
-                  )}
-                  {renderQuestion(question)}
-                </div>
-              ))}
+              {questions.map((question) => {
+                const fieldId = `question-${question.id}`
+                return (
+                  <div key={question.id} className="space-y-2">
+                    <label htmlFor={fieldId} className="text-sm font-medium">
+                      {question.label}
+                      {question.required && <span className="text-destructive ml-1">*</span>}
+                    </label>
+                    {question.helperText && (
+                      <p id={`${fieldId}-helper`} className="text-xs text-muted-foreground">
+                        {question.helperText}
+                      </p>
+                    )}
+                    <QuestionField
+                      question={question}
+                      id={fieldId}
+                      value={formState.answers[question.id] ?? ""}
+                      onChange={(questionId, value) =>
+                        dispatch({ type: "SET_ANSWER", questionId, value })
+                      }
+                    />
+                  </div>
+                )
+              })}
             </div>
           )}
 
@@ -301,11 +244,13 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
               <Textarea
                 id="coverLetter"
                 placeholder="Cuéntanos por qué te interesa este trabajo..."
-                value={coverLetter}
-                onChange={(e) => setCoverLetter(e.target.value)}
+                value={formState.coverLetter}
+                onChange={(e) => dispatch({ type: "SET_COVER_LETTER", value: e.target.value })}
                 maxLength={2000}
               />
-              <p className="text-xs text-muted-foreground text-right">{coverLetter.length}/2000</p>
+              <p className="text-xs text-muted-foreground text-right">
+                {formState.coverLetter.length}/2000
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -316,10 +261,10 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
                   type="text"
                   inputMode="numeric"
                   placeholder="Ej: 800.000"
-                  value={salaryMin}
+                  value={formState.salaryMin}
                   onChange={(e) => {
                     const normalized = normalizeSalaryInput(e.target.value)
-                    setSalaryMin(formatSalaryInput(normalized))
+                    dispatch({ type: "SET_SALARY_MIN", value: formatSalaryInput(normalized) })
                   }}
                 />
               </div>
@@ -330,10 +275,10 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
                   type="text"
                   inputMode="numeric"
                   placeholder="Ej: 1.200.000"
-                  value={salaryMax}
+                  value={formState.salaryMax}
                   onChange={(e) => {
                     const normalized = normalizeSalaryInput(e.target.value)
-                    setSalaryMax(formatSalaryInput(normalized))
+                    dispatch({ type: "SET_SALARY_MAX", value: formatSalaryInput(normalized) })
                   }}
                 />
               </div>
@@ -344,8 +289,8 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
               <Input
                 id="availabilityDate"
                 type="date"
-                value={availabilityDate}
-                onChange={(e) => setAvailabilityDate(e.target.value)}
+                value={formState.availabilityDate}
+                onChange={(e) => dispatch({ type: "SET_AVAILABILITY_DATE", value: e.target.value })}
               />
             </div>
           </div>
@@ -355,8 +300,8 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
             nuevamente. Si no está adjunto, nos basaremos únicamente en la información de tu perfil.
           </div>
 
-          {(error || queryError) && (
-            <p className="text-sm text-destructive text-center">{error || queryError}</p>
+          {(formState.error || queryError) && (
+            <p className="text-sm text-destructive text-center">{formState.error || queryError}</p>
           )}
 
           <div className="flex justify-end gap-3 pt-4 border-t">

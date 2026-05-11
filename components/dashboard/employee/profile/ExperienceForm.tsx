@@ -65,7 +65,10 @@ export function ExperienceForm() {
               ? resumeFormData.experiences
               : [emptyExperience()]
             ).map((exp, i) => (
-              <div key={i} className="rounded-md border border-border p-4 space-y-3">
+              <div
+                key={`exp-edit-${exp.title ?? exp.position ?? ""}-${exp.company ?? ""}`}
+                className="rounded-md border border-border p-4 space-y-3"
+              >
                 <div className="flex justify-between items-start gap-2">
                   <div className="grid gap-2 flex-1 sm:grid-cols-2">
                     <Input
@@ -177,17 +180,17 @@ export function ExperienceForm() {
           </div>
         ) : (resume?.experiences?.length ?? 0) > 0 ? (
           <ul className="space-y-6">
-            {(resume?.experiences ?? []).map((exp, i) => {
+            {(resume?.experiences ?? []).map((exp, _i) => {
               const d = getExpDisplay(exp)
               return (
                 <li
-                  key={i}
+                  key={`exp-display-${d.title}-${d.company}`}
                   className="relative pl-6 before:absolute before:left-0 before:top-2 before:size-2 before:rounded-full before:bg-primary"
                 >
                   <p className="font-medium text-foreground">{d.title || d.company}</p>
                   {d.company && <p className="text-sm text-muted-foreground">{d.company}</p>}
                   <p className="mt-1 text-xs text-muted-foreground tabular-nums">
-                    {d.start} — {d.current ? "Actualidad" : d.end || ""}
+                    {d.start} – {d.current ? "Actualidad" : d.end || ""}
                   </p>
                   {exp.description && (
                     <p className="mt-2 text-sm text-muted-foreground text-pretty">

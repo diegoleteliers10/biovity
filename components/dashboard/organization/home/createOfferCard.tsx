@@ -7,17 +7,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export function CreateOfferCard() {
-  const router = useRouter()
+  const { push } = useRouter()
 
   const handleCreateOffer = () => {
-    router.push("/dashboard/ofertas")
+    push("/dashboard/ofertas")
   }
 
   return (
     <Card>
       <CardContent className="p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
             <HugeiconsIcon
               icon={FileAddIcon}
               size={24}

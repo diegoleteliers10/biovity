@@ -38,7 +38,7 @@ export function JobAlertsCard({ onCreateAlert }: JobAlertsCardProps) {
               icon={Notification01Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-4 w-4 mr-2"
+              className="size-4 mr-2"
             />
             Crear Nueva Alerta
           </Button>
@@ -49,7 +49,7 @@ export function JobAlertsCard({ onCreateAlert }: JobAlertsCardProps) {
               icon={IdeaIcon}
               size={24}
               strokeWidth={1.5}
-              className="h-4 w-4 text-accent mt-0.5 shrink-0"
+              className="size-4 text-accent mt-0.5 shrink-0"
             />
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Consejo:</span> Crea múltiples alertas

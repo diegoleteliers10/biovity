@@ -21,11 +21,11 @@ export function FloatingAgentPanel() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all"
+        className="fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all"
         aria-label="Abrir asistente de IA"
       >
         <HugeiconsIcon icon={SparklesIcon} size={20} />
-        <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="absolute -top-1 -right-1 size-3 rounded-full bg-emerald-500 animate-pulse" />
       </button>
 
       {/* Sheet panel */}

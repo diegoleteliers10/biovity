@@ -1,7 +1,7 @@
 "use client"
 
+import { domAnimation, LazyMotion, m } from "framer-motion"
 import { ArrowLeft, FlaskConical, Search } from "lucide-react"
-import { motion } from "motion/react"
 import Image from "next/image"
 import Link from "next/link"
 import { Fragment } from "react"
@@ -81,7 +81,7 @@ const itemVariants = {
 const MoleculeIllustration = () => {
   return (
     <div className="relative size-full">
-      <svg viewBox="0 0 500 500" className="size-full overflow-visible" aria-hidden>
+      <svg viewBox="0 0 500 500" className="size-full overflow-visible" aria-hidden="true">
         <defs>
           <linearGradient id="nf-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#006b5e" stopOpacity="0.9" />
@@ -111,7 +111,7 @@ const MoleculeIllustration = () => {
           </filter>
         </defs>
 
-        <motion.circle
+        <m.circle
           cx="250"
           cy="250"
           r="120"
@@ -121,7 +121,7 @@ const MoleculeIllustration = () => {
           animate={{ scale: [1, 1.15, 1], opacity: [0.06, 0.1, 0.06] }}
           transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
         />
-        <motion.circle
+        <m.circle
           cx="250"
           cy="250"
           r="80"
@@ -138,8 +138,8 @@ const MoleculeIllustration = () => {
         />
 
         {HEXAGON_BONDS.map((line, i) => (
-          <motion.line
-            key={`hex-${line.x1}-${line.y1}-${i}`}
+          <m.line
+            key={`hex-${line.x1}-${line.y1}-${line.x2}-${line.y2}`}
             x1={line.x1}
             y1={line.y1}
             x2={line.x2}
@@ -153,9 +153,9 @@ const MoleculeIllustration = () => {
           />
         ))}
 
-        {EXTENDED_BONDS.map((line, i) => (
-          <motion.line
-            key={`ext-${line.x1}-${line.y1}-${i}`}
+        {EXTENDED_BONDS.map((line) => (
+          <m.line
+            key={`ext-${line.x1}-${line.y1}-${line.x2}-${line.y2}`}
             x1={line.x1}
             y1={line.y1}
             x2={line.x2}
@@ -170,15 +170,15 @@ const MoleculeIllustration = () => {
           />
         ))}
 
-        {VERTEX_NODES.map((node, i) => (
-          <Fragment key={`node-${node.cx}-${node.cy}-${i}`}>
-            <motion.circle
+        {VERTEX_NODES.map((node) => (
+          <Fragment key={`node-${node.cx}-${node.cy}-${node.r}`}>
+            <m.circle
               cx={node.cx}
               cy={node.cy}
               r={node.r + 6}
               fill={node.color}
               opacity="0.15"
-              initial={{ scale: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: [1, 1.3, 1] }}
               transition={{
                 duration: 3,
@@ -187,23 +187,23 @@ const MoleculeIllustration = () => {
                 delay: node.delay + 2,
               }}
             />
-            <motion.circle
+            <m.circle
               cx={node.cx}
               cy={node.cy}
               r={node.r}
               fill={node.color}
               filter="url(#nf-glow)"
-              initial={{ scale: 0, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.8 + node.delay * 0.3, ease: "easeOut" }}
             />
-            <motion.circle
+            <m.circle
               cx={node.cx}
               cy={node.cy}
               r={node.r * 0.4}
               fill="white"
               opacity="0.5"
-              initial={{ scale: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.3, delay: 1 + node.delay * 0.3, ease: "easeOut" }}
             />
@@ -211,14 +211,14 @@ const MoleculeIllustration = () => {
         ))}
 
         {OUTER_NODES.map((node, i) => (
-          <motion.circle
-            key={`outer-${node.cx}-${node.cy}-${i}`}
+          <m.circle
+            key={`outer-${node.cx}-${node.cy}`}
             cx={node.cx}
             cy={node.cy}
             r={node.r}
             fill={node.color}
             filter="url(#nf-glow)"
-            initial={{ scale: 0, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 0.8, ...node.anim }}
             transition={{
               scale: { duration: 0.5, delay: 1.5 + i * 0.15, ease: "easeOut" },
@@ -229,7 +229,7 @@ const MoleculeIllustration = () => {
           />
         ))}
 
-        <motion.line
+        <m.line
           x1="320"
           y1="290"
           x2="355"
@@ -246,19 +246,19 @@ const MoleculeIllustration = () => {
             delay: 2.5,
           }}
         />
-        <motion.circle
+        <m.circle
           cx="365"
           cy="310"
           r="5"
           fill="#ff6b6b"
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: [0, 0.9, 0.5], scale: [0, 1.2, 1], x: [0, 8, 5], y: [0, 5, 3] }}
           transition={{ duration: 2, delay: 2.8, ease: "easeOut" }}
         />
 
-        {PARTICLES.map((particle, i) => (
-          <motion.circle
-            key={`particle-${particle.cx}-${particle.cy}-${i}`}
+        {PARTICLES.map((particle) => (
+          <m.circle
+            key={`particle-${particle.cx}-${particle.cy}`}
             cx={particle.cx}
             cy={particle.cy}
             r={particle.r}
@@ -280,140 +280,142 @@ const MoleculeIllustration = () => {
 
 export default function NotFound() {
   return (
-    <div className="relative flex min-h-dvh w-full flex-col overflow-hidden bg-[#fafbfc] font-sans">
-      <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,55,74,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,55,74,0.08) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <motion.div
-          animate={{ x: [0, 50, 0], y: [0, -40, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-          className="absolute top-[-20%] left-[-10%] h-[50vw] w-[50vw] rounded-full bg-[#006b5e] opacity-[0.08] blur-[100px]"
-        />
-        <motion.div
-          animate={{ x: [0, -40, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
-          transition={{
-            duration: 25,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-            delay: 3,
+    <LazyMotion features={domAnimation}>
+      <div className="relative flex min-h-dvh w-full flex-col overflow-hidden bg-[#fafbfc] font-sans">
+        <div
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(0,55,74,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,55,74,0.08) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
           }}
-          className="absolute right-[-10%] bottom-[-15%] h-[55vw] w-[55vw] rounded-full bg-[#8483d4] opacity-[0.1] blur-[100px]"
         />
-        <motion.div
-          animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
-          transition={{
-            duration: 18,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-            delay: 6,
-          }}
-          className="absolute top-[40%] right-[-5%] h-[35vw] w-[35vw] rounded-full bg-[#00374a] opacity-[0.06] blur-[80px]"
-        />
-        <motion.div
-          animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
-          transition={{
-            duration: 22,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-            delay: 4,
-          }}
-          className="absolute top-[10%] left-[40%] h-[30vw] w-[30vw] rounded-full bg-[#006b5e] opacity-[0.05] blur-[90px]"
-        />
-      </div>
 
-      <header className="relative z-20 flex w-full items-center justify-between p-6 md:p-8">
-        <Link href="/" className="transition-opacity hover:opacity-80">
-          <Image src="/logoIcon.png" alt="Biovity" width={120} height={40} priority />
-        </Link>
-      </header>
-
-      <main className="relative z-10 flex flex-1 items-center justify-center px-6 pb-16 md:px-12">
-        <div className="flex w-full max-w-6xl flex-col items-center gap-4 lg:flex-row lg:gap-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, rotate: -5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1.4, ease: "easeOut" }}
-            className="h-56 w-56 shrink-0 sm:h-72 sm:w-72 md:h-80 md:w-80 lg:h-[420px] lg:w-[420px]"
-          >
-            <MoleculeIllustration />
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="flex max-w-xl flex-col items-center text-center lg:items-start lg:text-left"
-          >
-            <motion.div
-              variants={itemVariants}
-              className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#8483d4]/10 px-4 py-1.5 text-xs font-semibold uppercase text-[#8483d4]"
-            >
-              <FlaskConical size={14} aria-hidden />
-              Error 404
-            </motion.div>
-
-            <motion.h1
-              variants={itemVariants}
-              className="mb-4 bg-gradient-to-br from-[#00374a] via-[#006b5e] to-[#8483d4] bg-clip-text text-[5.5rem] leading-[0.85] font-bold text-transparent sm:text-[7rem] md:text-[9rem] lg:text-[11rem]"
-            >
-              404
-            </motion.h1>
-
-            <motion.h2
-              variants={itemVariants}
-              className="mb-4 text-balance text-2xl leading-tight font-semibold text-[#00374A] sm:text-3xl md:text-[2.5rem]"
-            >
-              Pagina no encontrada
-            </motion.h2>
-
-            <motion.div variants={itemVariants} className="mb-6 flex gap-1.5">
-              <div className="h-1 w-10 rounded-full bg-[#006b5e]" />
-              <div className="h-1 w-4 rounded-full bg-[#8483d4]" />
-              <div className="h-1 w-2 rounded-full bg-[#00374a]" />
-            </motion.div>
-
-            <motion.p
-              variants={itemVariants}
-              className="mb-10 text-pretty text-base leading-relaxed text-[#71787d] md:text-lg"
-            >
-              Esta secuencia no existe en nuestro genoma. Vuelve al inicio para descubrir nuevas
-              oportunidades en biotecnologia, bioquimica y ciencias de la salud.
-            </motion.p>
-
-            <motion.div
-              variants={itemVariants}
-              className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row lg:items-start"
-            >
-              <Button
-                asChild
-                className="h-12 rounded-full border-none bg-[#006b5e] px-8 text-base font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#005a4e]"
-              >
-                <Link href="/" aria-label="Volver al inicio">
-                  <ArrowLeft size={18} aria-hidden />
-                  Volver al inicio
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="ghost"
-                className="h-12 rounded-full px-8 text-base font-medium text-[#00374A] transition-all duration-300 hover:bg-[#006b5e]/8 hover:text-[#006b5e]"
-              >
-                <Link href="/trabajos" aria-label="Explorar trabajos">
-                  <Search size={18} aria-hidden />
-                  Explorar trabajos
-                </Link>
-              </Button>
-            </motion.div>
-          </motion.div>
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+          <m.div
+            animate={{ x: [0, 50, 0], y: [0, -40, 0], scale: [1, 1.1, 1] }}
+            transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+            className="absolute top-[-20%] left-[-10%] size-[50vw] rounded-full bg-[#006b5e] opacity-[0.08] blur-[100px]"
+          />
+          <m.div
+            animate={{ x: [0, -40, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
+            transition={{
+              duration: 25,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 3,
+            }}
+            className="absolute right-[-10%] bottom-[-15%] size-[55vw] rounded-full bg-[#8483d4] opacity-[0.1] blur-[100px]"
+          />
+          <m.div
+            animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
+            transition={{
+              duration: 18,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 6,
+            }}
+            className="absolute top-[40%] right-[-5%] size-[35vw] rounded-full bg-[#00374a] opacity-[0.06] blur-[80px]"
+          />
+          <m.div
+            animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
+            transition={{
+              duration: 22,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 4,
+            }}
+            className="absolute top-[10%] left-[40%] size-[30vw] rounded-full bg-[#006b5e] opacity-[0.05] blur-[90px]"
+          />
         </div>
-      </main>
-    </div>
+
+        <header className="relative z-20 flex w-full items-center justify-between p-6 md:p-8">
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <Image src="/logoIcon.png" alt="Biovity" width={120} height={40} priority />
+          </Link>
+        </header>
+
+        <main className="relative z-10 flex flex-1 items-center justify-center px-6 pb-16 md:px-12">
+          <div className="flex w-full max-w-6xl flex-col items-center gap-4 lg:flex-row lg:gap-20">
+            <m.div
+              initial={{ opacity: 0, scale: 0.85, rotate: -5 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ duration: 1.4, ease: "easeOut" }}
+              className="size-56 shrink-0 sm:h-72 sm:w-72 md:h-80 md:w-80 lg:h-[420px] lg:w-[420px]"
+            >
+              <MoleculeIllustration />
+            </m.div>
+
+            <m.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex max-w-xl flex-col items-center text-center lg:items-start lg:text-left"
+            >
+              <m.div
+                variants={itemVariants}
+                className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#8483d4]/10 px-4 py-1.5 text-xs font-semibold uppercase text-[#8483d4]"
+              >
+                <FlaskConical size={14} aria-hidden />
+                Error 404
+              </m.div>
+
+              <m.h1
+                variants={itemVariants}
+                className="mb-4 text-[#00374a] text-[5.5rem] leading-[0.85] font-semibold sm:text-[7rem] md:text-[9rem] lg:text-[11rem]"
+              >
+                404
+              </m.h1>
+
+              <m.h2
+                variants={itemVariants}
+                className="mb-4 text-balance text-2xl leading-tight font-semibold text-[#00374A] sm:text-3xl md:text-[2.5rem]"
+              >
+                Pagina no encontrada
+              </m.h2>
+
+              <m.div variants={itemVariants} className="mb-6 flex gap-1.5">
+                <div className="size-10 rounded-full bg-[#006b5e]" />
+                <div className="h-1 w-4 rounded-full bg-[#8483d4]" />
+                <div className="h-1 w-2 rounded-full bg-[#00374a]" />
+              </m.div>
+
+              <m.p
+                variants={itemVariants}
+                className="mb-10 text-pretty text-base leading-relaxed text-[#71787d] md:text-lg"
+              >
+                Esta secuencia no existe en nuestro genoma. Vuelve al inicio para descubrir nuevas
+                oportunidades en biotecnologia, bioquimica y ciencias de la salud.
+              </m.p>
+
+              <m.div
+                variants={itemVariants}
+                className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row lg:items-start"
+              >
+                <Button
+                  asChild
+                  className="h-12 rounded-full border-none bg-[#006b5e] px-8 text-base font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#005a4e]"
+                >
+                  <Link href="/" aria-label="Volver al inicio">
+                    <ArrowLeft size={18} aria-hidden />
+                    Volver al inicio
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="h-12 rounded-full px-8 text-base font-medium text-[#00374A] transition-all duration-300 hover:bg-[#006b5e]/8 hover:text-[#006b5e]"
+                >
+                  <Link href="/trabajos" aria-label="Explorar trabajos">
+                    <Search size={18} aria-hidden />
+                    Explorar trabajos
+                  </Link>
+                </Button>
+              </m.div>
+            </m.div>
+          </div>
+        </main>
+      </div>
+    </LazyMotion>
   )
 }

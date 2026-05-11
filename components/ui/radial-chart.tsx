@@ -1,6 +1,9 @@
 "use client"
 
-import { RadialBar, RadialBarChart } from "recharts"
+const [RadialBarChart, RadialBar] = await Promise.all([
+  import("recharts").then((m) => m.RadialBarChart),
+  import("recharts").then((m) => m.RadialBar),
+])
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {

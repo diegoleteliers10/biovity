@@ -2,17 +2,6 @@
 
 import { DashboardSquare02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LabelList,
-  Pie,
-  PieChart,
-  XAxis,
-} from "recharts"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -21,8 +10,26 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/lazy-chart"
+import type { MetricsPeriod } from "@/lib/types/organization-metrics"
+import type { UserMetrics } from "@/lib/types/user-metrics"
 
-type TimeRange = "3m" | "6m" | "12m"
+const [Area, AreaChart, Bar, BarChart, CartesianGrid, LabelList, PieChart, Pie, XAxis] =
+  await Promise.all([
+    import("recharts").then((m) => m.Area),
+    import("recharts").then((m) => m.AreaChart),
+    import("recharts").then((m) => m.Bar),
+    import("recharts").then((m) => m.BarChart),
+    import("recharts").then((m) => m.CartesianGrid),
+    import("recharts").then((m) => m.LabelList),
+    import("recharts").then((m) => m.PieChart),
+    import("recharts").then((m) => m.Pie),
+    import("recharts").then((m) => m.XAxis),
+  ])
+
+type ChartsGridProps = {
+  metricsData: UserMetrics | undefined
+  period: MetricsPeriod
+}
 
 const DottedBackgroundPattern = ({ patternId }: { patternId: string }) => {
   return (
@@ -63,43 +70,19 @@ const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: st
   )
 }
 
-const CustomDuotoneBarMultiple = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
-  const { fill, x, y, width, height, dataKey } = props
-
-  return (
-    <>
-      <rect
-        rx={4}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        stroke="none"
-        fill={`url(#duotone-bar-pattern-${dataKey})`}
-      />
-      <defs>
-        <linearGradient
-          key={dataKey}
-          id={`duotone-bar-pattern-${dataKey}`}
-          x1="0"
-          y1="0"
-          x2="1"
-          y2="0"
-        >
-          <stop offset="50%" stopColor={fill} stopOpacity={0.5} />
-          <stop offset="50%" stopColor={fill} />
-        </linearGradient>
-      </defs>
-    </>
-  )
-}
-
 type ApplicationsChartProps = {
   data: Array<{ month: string; applications: number }>
   config: ChartConfig
 }
 
-export function ApplicationsChart({ data, config }: ApplicationsChartProps) {
+function ApplicationsChart({ data, config }: ApplicationsChartProps) {
+  if (data.length === 0) {
+    return (
+      <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
+        Sin datos disponibles
+      </div>
+    )
+  }
   return (
     <ChartContainer config={config}>
       <AreaChart accessibilityLayer data={data}>
@@ -137,7 +120,14 @@ type ResponseTimeChartProps = {
   config: ChartConfig
 }
 
-export function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
+function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
+  if (data.length === 0) {
+    return (
+      <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
+        Sin datos disponibles
+      </div>
+    )
+  }
   return (
     <ChartContainer config={config}>
       <BarChart accessibilityLayer data={data}>
@@ -159,7 +149,7 @@ type PipelineChartProps = {
   totalPipeline: number
 }
 
-export function PipelineChart({ data, config, totalPipeline }: PipelineChartProps) {
+function PipelineChart({ data, config, totalPipeline }: PipelineChartProps) {
   return (
     <>
       <CardHeader>
@@ -192,7 +182,7 @@ export function PipelineChart({ data, config, totalPipeline }: PipelineChartProp
             <Bar
               dataKey="count"
               fill="var(--color-count)"
-              shape={<CustomDuotoneBarMultiple />}
+              shape={<CustomDuotoneBar />}
               radius={4}
             />
           </BarChart>
@@ -207,7 +197,14 @@ type IndustriesChartProps = {
   config: ChartConfig
 }
 
-export function IndustriesChart({ data, config }: IndustriesChartProps) {
+function IndustriesChart({ data, config }: IndustriesChartProps) {
+  if (data.length === 0) {
+    return (
+      <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
+        Sin datos disponibles
+      </div>
+    )
+  }
   return (
     <ChartContainer
       config={config}
@@ -238,41 +235,18 @@ export function IndustriesChart({ data, config }: IndustriesChartProps) {
   )
 }
 
-type ChartsGridProps = {
-  timeRange: TimeRange
-}
+const ChartsGridSkeleton = (
+  <div className="grid gap-4 lg:grid-cols-3">
+    <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
+    <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
+  </div>
+)
 
-export function ChartsGrid({ timeRange }: ChartsGridProps) {
-  const applicationsOverTimeData =
-    timeRange === "3m"
-      ? [
-          { month: "Feb", applications: 8 },
-          { month: "Mar", applications: 14 },
-          { month: "Apr", applications: 10 },
-        ]
-      : timeRange === "6m"
-        ? [
-            { month: "Nov", applications: 9 },
-            { month: "Dec", applications: 13 },
-            { month: "Jan", applications: 5 },
-            { month: "Feb", applications: 8 },
-            { month: "Mar", applications: 14 },
-            { month: "Apr", applications: 10 },
-          ]
-        : [
-            { month: "May", applications: 8 },
-            { month: "Jun", applications: 11 },
-            { month: "Jul", applications: 7 },
-            { month: "Aug", applications: 10 },
-            { month: "Sep", applications: 6 },
-            { month: "Oct", applications: 12 },
-            { month: "Nov", applications: 9 },
-            { month: "Dec", applications: 13 },
-            { month: "Jan", applications: 5 },
-            { month: "Feb", applications: 8 },
-            { month: "Mar", applications: 14 },
-            { month: "Apr", applications: 10 },
-          ]
+export function ChartsGrid({ metricsData, period: _period }: ChartsGridProps) {
+  const applicationsTrend = metricsData?.applicationsTrend ?? []
+  const responseTimeDistribution = metricsData?.responseTimeDistribution
+  const hiringFunnel = metricsData?.hiringFunnel
+  const industriesApplied = metricsData?.industriesApplied ?? []
 
   const applicationsChartConfig = {
     applications: {
@@ -281,12 +255,14 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
     },
   } satisfies ChartConfig
 
-  const responseTimeData = [
-    { period: "< 24h", count: 12 },
-    { period: "1-3d", count: 18 },
-    { period: "4-7d", count: 8 },
-    { period: "> 7d", count: 4 },
-  ]
+  const responseTimeData = responseTimeDistribution
+    ? [
+        { period: "< 24h", count: responseTimeDistribution.lessThan24h },
+        { period: "1-3d", count: responseTimeDistribution.oneToThreeDays },
+        { period: "4-7d", count: responseTimeDistribution.threeToSevenDays },
+        { period: "> 7d", count: responseTimeDistribution.moreThanSevenDays },
+      ]
+    : []
 
   const responseTimeChartConfig = {
     count: {
@@ -295,13 +271,14 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
     },
   } satisfies ChartConfig
 
-  const pipelineData = [
-    { stage: "Aplicado", count: 42 },
-    { stage: "Revisión", count: 28 },
-    { stage: "Entrevista", count: 9 },
-    { stage: "Oferta", count: 2 },
-    { stage: "Contratado", count: 1 },
-  ]
+  const pipelineData = hiringFunnel
+    ? [
+        { stage: "Aplicado", count: hiringFunnel.aplicado.count },
+        { stage: "Entrevista", count: hiringFunnel.entrevista.count },
+        { stage: "Oferta", count: hiringFunnel.oferta.count },
+        { stage: "Contratado", count: hiringFunnel.contratado.count },
+      ]
+    : []
 
   const pipelineChartConfig = {
     count: {
@@ -312,30 +289,23 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
 
   const totalPipeline = pipelineData.reduce((sum, s) => sum + s.count, 0)
 
-  const industriesData = [
-    { industry: "Biotech", count: 18 },
-    { industry: "Farmacéutica", count: 11 },
-    { industry: "Investigación", count: 8 },
-    { industry: "Salud", count: 7 },
-    { industry: "Educación", count: 4 },
-  ]
-
-  const industriesDataWithColors = industriesData.map((entry, index) => ({
+  const industriesDataWithColors = industriesApplied.map((entry, index) => ({
     ...entry,
     fill: `var(--chart-${(index % 5) + 1})`,
   }))
 
   const industriesChartConfig = (() => {
     const config: Record<string, { label: string; color: string }> = {}
-    industriesData.forEach((_, i) => {
+    industriesApplied.forEach((_, i) => {
       config[`chart${i + 1}`] = { label: "", color: `var(--chart-${i + 1})` }
     })
     return config
   })()
 
+  if (!metricsData) return ChartsGridSkeleton
+
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      {/* Applications over time */}
       <Card className="border border-border/80 bg-white lg:col-span-2">
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -345,11 +315,10 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
           <CardDescription>Evolución de postulaciones en el período seleccionado</CardDescription>
         </CardHeader>
         <CardContent>
-          <ApplicationsChart data={applicationsOverTimeData} config={applicationsChartConfig} />
+          <ApplicationsChart data={applicationsTrend} config={applicationsChartConfig} />
         </CardContent>
       </Card>
 
-      {/* Response time */}
       <Card className="border border-border/80 bg-white">
         <CardHeader>
           <CardTitle className="text-foreground">Tiempo de respuesta</CardTitle>
@@ -360,7 +329,6 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
         </CardContent>
       </Card>
 
-      {/* Pipeline */}
       <Card className="border border-border/80 bg-white lg:col-span-2">
         <PipelineChart
           data={pipelineData}
@@ -369,7 +337,6 @@ export function ChartsGrid({ timeRange }: ChartsGridProps) {
         />
       </Card>
 
-      {/* Industries */}
       <Card className="border border-border/80 bg-white flex flex-col">
         <CardHeader className="items-center pb-0">
           <CardTitle className="text-foreground">Industrias aplicadas</CardTitle>

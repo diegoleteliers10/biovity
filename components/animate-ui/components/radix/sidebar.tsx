@@ -67,6 +67,7 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
+  // eslint-disable-next-line react-doctor/no-derived-useState -- controlled/uncontrolled pattern, internal default
   const [_open, _setOpen] = React.useState(defaultOpen)
   const open = openProp ?? _open
   const setOpen = React.useCallback(
@@ -79,6 +80,7 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
+      /* biome-ignore lint/suspicious/noDocumentCookie: cookie set for sidebar state persistence */
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
     [setOpenProp, open]
@@ -659,10 +661,7 @@ type SidebarMenuSkeletonProps = React.ComponentProps<"div"> & {
 }
 
 function SidebarMenuSkeleton({ className, showIcon = false, ...props }: SidebarMenuSkeletonProps) {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+  const width = `${Math.floor(Math.random() * 40) + 50}%`
 
   return (
     <div

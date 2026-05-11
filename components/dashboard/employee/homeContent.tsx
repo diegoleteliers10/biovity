@@ -1,5 +1,6 @@
 "use client"
 
+import { Calendar03Icon, File02Icon, Pulse01Icon } from "@hugeicons/core-free-icons"
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
 import * as m from "motion/react-m"
@@ -8,6 +9,7 @@ import { cache, useCallback, useMemo, useState } from "react"
 import { getLastMessageFromSender } from "@/lib/api/messages"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useChatsByProfessional } from "@/lib/api/use-chats"
+import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import { getUser } from "@/lib/api/users"
 import { DATA } from "@/lib/data/data-test"
 import type { Notification } from "@/lib/types/dashboard"
@@ -30,7 +32,7 @@ const getCachedUser = cache(async (recruiterId: string) => {
 })
 
 export const HomeContent = () => {
-  const router = useRouter()
+  const { push } = useRouter()
   const session = useDashboardSession()
 
   const [notifications, setNotifications] = useState<Notification[]>([
@@ -71,9 +73,9 @@ export const HomeContent = () => {
 
   const handleJobClick = useCallback(
     (jobId: string) => {
-      router.push(`/dashboard/job/${jobId}`)
+      push(`/dashboard/job/${jobId}`)
     },
-    [router]
+    [push]
   )
 
   const handleApplyJob = useCallback((_jobId: number, _jobTitle: string, _company: string) => {
@@ -87,16 +89,16 @@ export const HomeContent = () => {
   }, [])
 
   const handleViewAllJobs = useCallback(() => {
-    router.push("/dashboard/jobs")
-  }, [router])
+    push("/dashboard/jobs")
+  }, [push])
 
   const handleViewAllMessages = useCallback(() => {
-    router.push("/dashboard/messages")
-  }, [router])
+    push("/dashboard/messages")
+  }, [push])
 
   const handleViewAllApplications = useCallback(() => {
-    router.push("/dashboard/applications")
-  }, [router])
+    push("/dashboard/applications")
+  }, [push])
 
   const handleCreateAlert = useCallback(() => {
     // TODO: Implement alert creation logic
@@ -110,31 +112,24 @@ export const HomeContent = () => {
   const firstName = session?.user?.name?.split(" ")[0] || "Usuario"
 
   const professionalId = session?.user?.id
-  const {
-    data: chats = [],
-    isPending: chatsPending,
-    isSuccess: chatsSuccess,
-  } = useChatsByProfessional(professionalId)
-
-  const {
-    data: applications = [],
-    isPending: applicationsPending,
-    isSuccess: applicationsSuccess,
-  } = useApplicationsByCandidate(professionalId)
+  const { data: quickMetrics } = useUserMetrics(professionalId, "month")
+  const { data: chats = [] } = useChatsByProfessional(professionalId)
+  const { data: recentApplications = [], isLoading: applicationsLoading } =
+    useApplicationsByCandidate(professionalId)
 
   // Deduplicate recruiter IDs to avoid redundant queries
   // Per async-parallel rule: parallelize independent operations
   // Per server-parallel-nested-fetching rule: deduplicate before fetching
   const uniqueRecruiterIds = useMemo(() => {
     const seen = new Set<string>()
-    return (chats ?? [])
-      .map((c) => c.recruiterId)
-      .filter((id): id is string => {
-        if (!id) return false
-        if (seen.has(id)) return false
+    return (chats ?? []).reduce<string[]>((acc, c) => {
+      const id = c.recruiterId
+      if (id && !seen.has(id)) {
         seen.add(id)
-        return true
-      })
+        acc.push(id)
+      }
+      return acc
+    }, [])
   }, [chats])
 
   const recruiterQueries = useQueries({
@@ -183,10 +178,7 @@ export const HomeContent = () => {
     })
   }, [chats, lastRecruiterMessageQueries])
 
-  const isInitialLoad =
-    !chatsSuccess ||
-    !applicationsSuccess ||
-    (chats.length > 0 && lastRecruiterMessageQueries.some((q) => q.isFetching))
+  const isInitialLoad = chats.length === 0 && lastRecruiterMessageQueries.some((q) => q.isFetching)
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -200,25 +192,51 @@ export const HomeContent = () => {
 
       {/* Metrics Cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {DATA.metrics.map((metric, i) => (
-          <m.div
-            key={metric.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05, duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <MetricCard metric={metric} />
-          </m.div>
-        ))}
+        {quickMetrics
+          ? [
+              {
+                title: "Total postulaciones",
+                value: quickMetrics.quickMetrics.totalApplications,
+                subtitle: "total",
+                icon: File02Icon,
+              },
+              {
+                title: "Postulaciones activas",
+                value: quickMetrics.quickMetrics.activeApplications,
+                subtitle: "en proceso",
+                icon: Calendar03Icon,
+              },
+              {
+                title: "Tasa de respuesta",
+                value: `${quickMetrics.quickMetrics.responseRate}%`,
+                subtitle: "respuestas recibidas",
+                icon: Pulse01Icon,
+              },
+            ].map((metric, i) => (
+              <m.div
+                key={metric.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              >
+                <MetricCard metric={metric} />
+              </m.div>
+            ))
+          : [0, 1, 2].map((n) => (
+              <div
+                key={n}
+                className="border border-border/80 bg-white rounded-lg h-24 animate-pulse"
+              />
+            ))}
       </div>
 
       {/* Recent Applications and Messages */}
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <RecentApplicationsCard
-          applications={applications}
+          applications={recentApplications}
           onJobClick={handleJobClick}
           onViewAll={handleViewAllApplications}
-          isLoading={!applicationsSuccess}
+          isLoading={applicationsLoading}
         />
         <RecentMessagesCard
           chats={enrichedChats}

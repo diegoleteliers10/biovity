@@ -19,8 +19,10 @@ type NotificationBellProps = {
   showAgentTrigger?: boolean
 }
 
+const EMPTY_NOTIFICATIONS: Notification[] = []
+
 export function NotificationBell({
-  notifications = [],
+  notifications = EMPTY_NOTIFICATIONS,
   unreadCount = 0,
   onNotificationClick,
   showAgentTrigger = false,
@@ -33,7 +35,7 @@ export function NotificationBell({
           <Button variant="ghost" size="icon" className="relative">
             <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
             {unreadCount > 0 && (
-              <span className="absolute top-0 right-0 h-2 w-2 bg-destructive rounded-full" />
+              <span className="absolute top-0 right-0 size-2 bg-destructive rounded-full" />
             )}
           </Button>
         </DropdownMenuTrigger>
@@ -46,13 +48,14 @@ export function NotificationBell({
           ) : (
             <div className="p-2 space-y-2 max-h-[300px] overflow-y-auto">
               {notifications.map((notification) => (
-                <div
+                <button
                   key={notification.id}
-                  className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                  type="button"
+                  className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors w-full text-left"
                   onClick={() => onNotificationClick?.(notification.id)}
                 >
                   <div
-                    className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
+                    className={`size-2 rounded-full mt-2 shrink-0 ${
                       notification.isRead
                         ? "bg-muted-foreground/30"
                         : notification.type === "application"
@@ -71,7 +74,7 @@ export function NotificationBell({
                     <p className="text-xs text-muted-foreground">{notification.message}</p>
                     <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}

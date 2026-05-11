@@ -13,12 +13,12 @@ export function Hero() {
   return (
     <section className="relative min-h-svh sm:h-svh flex items-center justify-center overflow-hidden lg:contain-paint">
       <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
-        <div className="absolute top-[20%] left-[12%] h-[16rem] w-[16rem] rounded-full bg-[#00374a]/18 blur-2xl will-change-transform sm:top-[5%] sm:left-[10%] sm:h-[22rem] sm:w-[22rem] sm:bg-[#00374a]/25 sm:blur-3xl"></div>
-        <div className="absolute top-[15%] right-[15%] w-[18rem] h-[18rem] bg-[#00374a]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[55%] left-[5%] w-[20rem] h-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[65%] right-[10%] w-[24rem] h-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute bottom-[15%] left-[25%] w-[19rem] h-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[35%] right-[30%] w-[16rem] h-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
+        <div className="absolute top-[20%] left-[12%] size-[16rem] rounded-full bg-[#00374a]/18 blur-2xl will-change-transform sm:top-[5%] sm:left-[10%] sm:size-[22rem] sm:bg-[#00374a]/25 sm:blur-3xl"></div>
+        <div className="absolute top-[15%] right-[15%] size-[18rem] bg-[#00374a]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
+        <div className="absolute top-[55%] left-[5%] size-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
+        <div className="absolute top-[65%] right-[10%] size-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
+        <div className="absolute bottom-[15%] left-[25%] size-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
+        <div className="absolute top-[35%] right-[30%] size-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
       </div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-safe-top md:pt-24">
         <div className="text-center max-w-4xl mx-auto">
@@ -29,10 +29,7 @@ export function Hero() {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
           >
             Donde el talento y la
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              {" "}
-              ciencia{" "}
-            </span>
+            <span className="text-accent font-semibold"> ciencia </span>
             se encuentran
           </m.h1>
 
@@ -56,9 +53,10 @@ export function Hero() {
                 <div className="flex-1 relative">
                   <HugeiconsIcon
                     icon={Briefcase01Icon}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
                   />
                   <Input
+                    aria-label="Buscar puesto"
                     placeholder="¿Qué puesto buscas?"
                     className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
                   />
@@ -66,15 +64,16 @@ export function Hero() {
                 <div className="flex-1 relative">
                   <HugeiconsIcon
                     icon={Location05Icon}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
                   />
                   <Input
+                    aria-label="Buscar ubicación"
                     placeholder="¿Dónde?"
                     className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
                   />
                 </div>
                 <Button variant="secondary" size="lg" className="h-12 px-8 w-full sm:w-auto">
-                  <HugeiconsIcon icon={Search01Icon} className="w-5 h-5" />
+                  <HugeiconsIcon icon={Search01Icon} className="size-5" />
                   Buscar
                 </Button>
               </div>
@@ -86,7 +85,7 @@ export function Hero() {
                 size="sm"
                 className="text-xs sm:text-sm text-muted-foreground"
               >
-                <HugeiconsIcon icon={Briefcase01Icon} className="w-4 h-4 mr-2" />
+                <HugeiconsIcon icon={Briefcase01Icon} className="size-4 mr-2" />
                 Para Profesionales
               </Button>
               <Button
@@ -94,7 +93,7 @@ export function Hero() {
                 size="sm"
                 className="text-xs sm:text-sm text-muted-foreground"
               >
-                <HugeiconsIcon icon={Search01Icon} className="w-4 h-4 mr-2" />
+                <HugeiconsIcon icon={Search01Icon} className="size-4 mr-2" />
                 Para Empresas
               </Button>
             </div>

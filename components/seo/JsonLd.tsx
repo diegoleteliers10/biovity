@@ -1,16 +1,15 @@
-import Script from "next/script"
-
 type JsonLdProps = {
   data: Record<string, unknown>
 }
 
+/* eslint-disable react-doctor/no-danger -- JSON-LD structured data must be injected via dangerouslySetInnerHTML in script tags */
 export function JsonLd({ data }: JsonLdProps) {
   return (
-    <Script
+    <script
       id="json-ld"
       type="application/ld+json"
+      suppressHydrationWarning
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-      strategy="afterInteractive"
     />
   )
 }

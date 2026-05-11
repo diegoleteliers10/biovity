@@ -1,5 +1,6 @@
 "use client"
 
+/* eslint-disable react-doctor/no-giant-component -- large component, intentional */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type {
   ResumeCertification,
@@ -136,12 +137,12 @@ export const LEVEL_OPTIONS = [
 
 export { emptyCertification, emptyEducation, emptyExperience, emptyLanguage, emptySkill }
 
-import { createContext, useContext } from "react"
+import { createContext, use } from "react"
 
 export const ProfileContext = createContext<ProfileContextValue | null>(null)
 
 export function useProfileContext() {
-  const ctx = useContext(ProfileContext)
+  const ctx = use(ProfileContext)
   if (!ctx) throw new Error("useProfileContext must be used within ProfileProvider")
   return ctx
 }
@@ -170,8 +171,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   }, [])
 
   const [editingSection, setEditingSection] = useState<SectionId | null>(null)
-  const [resumeFormData, setResumeFormData] = useState<ResumeFormData>(emptyResumeFormData())
-  const [formData, setFormData] = useState<FormData>(emptyFormData())
+  const [resumeFormData, setResumeFormData] = useState<ResumeFormData>(() => emptyResumeFormData())
+  const [formData, setFormData] = useState<FormData>(() => emptyFormData())
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const profileData = useMemo<FormData>(() => {
@@ -190,58 +191,47 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     }
   }, [user, session, resume])
 
+  const resumeFormDataFromProfile = useMemo<ResumeFormData>(() => {
+    if (!resume) return emptyResumeFormData()
+    return {
+      experiences: (resume.experiences ?? []).map((e) => ({
+        title: e.title ?? e.position,
+        company: e.company,
+        startYear: e.startYear ?? e.startDate?.slice(0, 4),
+        endYear: e.endYear ?? e.endDate?.slice(0, 4),
+        stillWorking: e.stillWorking ?? e.current,
+        description: e.description,
+      })),
+      education: (resume.education ?? []).map((e) => ({
+        title: e.title ?? e.degree,
+        institute: e.institute ?? e.institution,
+        startYear: e.startYear ?? e.startDate?.slice(0, 4),
+        endYear: e.endYear ?? e.endDate?.slice(0, 4),
+        stillStudying: e.stillStudying,
+      })),
+      skills: (resume.skills ?? []).map((s) =>
+        typeof s === "string" ? { name: s } : { name: s.name, level: s.level }
+      ),
+      certifications: (resume.certifications ?? []).map((c) => ({
+        title: c.title ?? c.name,
+        company: c.company ?? c.issuer,
+        date: c.date,
+        link: c.link,
+      })),
+      languages: (resume.languages ?? []).map((l) => ({
+        name: l.name ?? l.language,
+        level: l.level,
+      })),
+      links: (resume.links ?? []).map((l) => ({ url: l.url })),
+    }
+  }, [resume])
+
   useEffect(() => {
     if (!editingSection && (user ?? session)) {
-      setFormData({
-        name: user?.name ?? (session?.user?.name as string) ?? "",
-        email: user?.email ?? (session?.user?.email as string) ?? "",
-        phone: user?.phone ?? "",
-        location: user ? formatUserLocation(user.location) : "",
-        profession: user?.profession ?? "",
-        bio: resume?.summary ?? "",
-        skills: Array.isArray(resume?.skills)
-          ? resume.skills.map((s): string => (typeof s === "string" ? s : s.name))
-          : [],
-        avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
-        dateOfBirth: user?.birthday ? user.birthday.slice(0, 10) : "",
-      })
-      if (resume) {
-        setResumeFormData({
-          experiences: (resume.experiences ?? []).map((e) => ({
-            title: e.title ?? e.position,
-            company: e.company,
-            startYear: e.startYear ?? e.startDate?.slice(0, 4),
-            endYear: e.endYear ?? e.endDate?.slice(0, 4),
-            stillWorking: e.stillWorking ?? e.current,
-            description: e.description,
-          })),
-          education: (resume.education ?? []).map((e) => ({
-            title: e.title ?? e.degree,
-            institute: e.institute ?? e.institution,
-            startYear: e.startYear ?? e.startDate?.slice(0, 4),
-            endYear: e.endYear ?? e.endDate?.slice(0, 4),
-            stillStudying: e.stillStudying,
-          })),
-          skills: (resume.skills ?? []).map((s) =>
-            typeof s === "string" ? { name: s } : { name: s.name, level: s.level }
-          ),
-          certifications: (resume.certifications ?? []).map((c) => ({
-            title: c.title ?? c.name,
-            company: c.company ?? c.issuer,
-            date: c.date,
-            link: c.link,
-          })),
-          languages: (resume.languages ?? []).map((l) => ({
-            name: l.name ?? l.language,
-            level: l.level,
-          })),
-          links: (resume.links ?? []).map((l) => ({ url: l.url })),
-        })
-      } else {
-        setResumeFormData(emptyResumeFormData())
-      }
+      setFormData(profileData)
+      setResumeFormData(resumeFormDataFromProfile)
     }
-  }, [user, session, resume, editingSection])
+  }, [user, session, editingSection, profileData, resumeFormDataFromProfile])
 
   const syncFormForSection = useCallback(
     (section: SectionId) => {
@@ -321,43 +311,85 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   const resumePayload = useCallback(
     () => ({
       summary: formData.bio || undefined,
-      experiences: resumeFormData.experiences
-        .filter((e) => (e.title ?? e.position)?.trim())
-        .map((e) => ({
-          title: (e.title ?? e.position)?.trim(),
-          company: e.company?.trim(),
-          startYear: e.startYear?.trim(),
-          endYear: e.endYear?.trim(),
-          stillWorking: e.stillWorking ?? e.current,
-          description: e.description?.trim(),
-        })),
-      education: resumeFormData.education
-        .filter((e) => (e.title ?? e.degree)?.trim())
-        .map((e) => ({
-          title: (e.title ?? e.degree)?.trim(),
-          institute: (e.institute ?? e.institution)?.trim(),
-          startYear: e.startYear?.trim(),
-          endYear: e.endYear?.trim(),
-          stillStudying: e.stillStudying,
-        })),
-      skills: resumeFormData.skills
-        .filter((s) => s.name?.trim())
-        .map((s) => ({ name: s.name.trim(), level: s.level || undefined })),
-      certifications: resumeFormData.certifications
-        .filter((c) => (c.title ?? c.name)?.trim())
-        .map((c) => ({
-          title: (c.title ?? c.name)?.trim(),
-          company: (c.company ?? c.issuer)?.trim(),
-          date: c.date?.trim(),
-          link: c.link?.trim(),
-        })),
-      languages: resumeFormData.languages
-        .filter((l) => (l.name ?? l.language)?.trim())
-        .map((l) => ({
-          name: (l.name ?? l.language)?.trim(),
-          level: l.level || undefined,
-        })),
-      links: resumeFormData.links.filter((l) => l.url?.trim()).map((l) => ({ url: l.url.trim() })),
+      experiences: resumeFormData.experiences.reduce<
+        {
+          title: string
+          company?: string
+          startYear?: string
+          endYear?: string
+          stillWorking?: boolean
+          description?: string
+        }[]
+      >((acc, e) => {
+        const title = (e.title ?? e.position)?.trim()
+        if (title) {
+          acc.push({
+            title,
+            company: e.company?.trim(),
+            startYear: e.startYear?.trim(),
+            endYear: e.endYear?.trim(),
+            stillWorking: e.stillWorking ?? e.current,
+            description: e.description?.trim(),
+          })
+        }
+        return acc
+      }, []),
+      education: resumeFormData.education.reduce<
+        {
+          title: string
+          institute?: string
+          startYear?: string
+          endYear?: string
+          stillStudying?: boolean
+        }[]
+      >((acc, e) => {
+        const title = (e.title ?? e.degree)?.trim()
+        if (title) {
+          acc.push({
+            title,
+            institute: (e.institute ?? e.institution)?.trim(),
+            startYear: e.startYear?.trim(),
+            endYear: e.endYear?.trim(),
+            stillStudying: e.stillStudying,
+          })
+        }
+        return acc
+      }, []),
+      skills: resumeFormData.skills.reduce<{ name: string; level?: string }[]>((acc, s) => {
+        const name = s.name?.trim()
+        if (name) {
+          acc.push({ name, level: s.level || undefined })
+        }
+        return acc
+      }, []),
+      certifications: resumeFormData.certifications.reduce<
+        { title: string; company?: string; date?: string; link?: string }[]
+      >((acc, c) => {
+        const title = (c.title ?? c.name)?.trim()
+        if (title) {
+          acc.push({
+            title,
+            company: (c.company ?? c.issuer)?.trim(),
+            date: c.date?.trim(),
+            link: c.link?.trim(),
+          })
+        }
+        return acc
+      }, []),
+      languages: resumeFormData.languages.reduce<{ name: string; level?: string }[]>((acc, l) => {
+        const name = (l.name ?? l.language)?.trim()
+        if (name) {
+          acc.push({ name, level: l.level || undefined })
+        }
+        return acc
+      }, []),
+      links: resumeFormData.links.reduce<{ url: string }[]>((acc, l) => {
+        const url = l.url?.trim()
+        if (url) {
+          acc.push({ url })
+        }
+        return acc
+      }, []),
     }),
     [formData.bio, resumeFormData]
   )

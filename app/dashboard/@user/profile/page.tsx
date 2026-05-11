@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 import { CertificationsForm } from "@/components/dashboard/employee/profile/CertificationsForm"
 import { EducationForm } from "@/components/dashboard/employee/profile/EducationForm"
 import { ExperienceForm } from "@/components/dashboard/employee/profile/ExperienceForm"
@@ -98,13 +98,13 @@ function ProfileContent() {
 }
 
 function EmployeeProfile() {
-  const [ready, setReady] = useState(false)
+  const readyRef = useRef(false)
 
   useEffect(() => {
-    setReady(true)
+    readyRef.current = true
   }, [])
 
-  if (!ready) {
+  if (!readyRef.current) {
     return <ProfileLoadingSkeleton />
   }
 

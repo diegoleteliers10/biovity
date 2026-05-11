@@ -9,11 +9,8 @@ export function SalariosConclusiones() {
     <section className="py-16 md:py-24 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 tracking-tight">
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Conclusiones
-            </span>{" "}
-            y Tendencias
+          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 tracking-tight">
+            <span className="text-accent font-semibold">Conclusiones</span> y Tendencias
           </h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>

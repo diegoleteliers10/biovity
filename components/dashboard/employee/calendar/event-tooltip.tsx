@@ -109,7 +109,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
             </div>
 
             <div className="flex items-center gap-2 text-muted-foreground">
-              <HugeiconsIcon icon={Clock01Icon} className="h-3.5 w-3.5" />
+              <HugeiconsIcon icon={Clock01Icon} className="size-3.5" />
               <span className="text-sm font-medium">{formatEventDateTime(event.startAt)}</span>
             </div>
           </div>

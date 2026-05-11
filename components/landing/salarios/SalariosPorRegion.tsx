@@ -1,6 +1,13 @@
 "use client"
 
-import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
+const [BarChart, Bar, Cell, XAxis, YAxis] = await Promise.all([
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.Bar),
+  import("recharts").then((m) => m.Cell),
+  import("recharts").then((m) => m.XAxis),
+  import("recharts").then((m) => m.YAxis),
+])
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   type ChartConfig,
@@ -23,11 +30,8 @@ export function SalariosPorRegion() {
     <section className="py-16 md:py-24 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 tracking-tight">
-            Comparativa Salarial por{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Región
-            </span>
+          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 tracking-tight">
+            Comparativa Salarial por <span className="text-accent font-semibold">Región</span>
           </h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>

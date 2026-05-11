@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, type ReactNode, useContext } from "react"
+import { createContext, type ReactNode, use } from "react"
 import type { ServerSession } from "@/lib/auth"
 
 type SessionContextValue = {
@@ -20,5 +20,5 @@ export function SessionProvider({
 }
 
 export function useServerSession() {
-  return useContext(SessionContext)
+  return use(SessionContext)
 }

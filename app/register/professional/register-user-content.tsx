@@ -1,5 +1,6 @@
 "use client"
 
+/* eslint-disable react-doctor/no-giant-component -- large component, intentional */
 import {
   ArrowLeft01Icon,
   Mail01Icon,
@@ -12,7 +13,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useReducer } from "react"
 import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -22,6 +23,74 @@ import { authClient } from "@/lib/auth-client"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 const { signUp } = authClient
+
+type RegisterFormState = {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
+  profession: string
+  acceptTerms: boolean
+  isLoading: boolean
+  isPasswordVisible: boolean
+  isConfirmVisible: boolean
+  errors: Record<string, string>
+}
+
+type RegisterFormAction =
+  | {
+      type: "SET_FIELD"
+      field: keyof RegisterFormState
+      value: RegisterFormState[keyof RegisterFormState]
+    }
+  | { type: "CLEAR_ERROR"; field: string }
+  | { type: "SET_GENERAL_ERROR"; error: string }
+  | { type: "CLEAR_GENERAL_ERROR" }
+  | { type: "RESET" }
+
+const registerFormReducer = (
+  state: RegisterFormState,
+  action: RegisterFormAction
+): RegisterFormState => {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value }
+    case "CLEAR_ERROR":
+      return { ...state, errors: { ...state.errors, [action.field]: "" } }
+    case "SET_GENERAL_ERROR":
+      return { ...state, errors: { ...state.errors, general: action.error } }
+    case "CLEAR_GENERAL_ERROR":
+      return { ...state, errors: { ...state.errors, general: "" } }
+    case "RESET":
+      return {
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        profession: "",
+        acceptTerms: false,
+        isLoading: false,
+        isPasswordVisible: false,
+        isConfirmVisible: false,
+        errors: {},
+      }
+    default:
+      return state
+  }
+}
+
+const initialRegisterFormState: RegisterFormState = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  profession: "",
+  acceptTerms: false,
+  isLoading: false,
+  isPasswordVisible: false,
+  isConfirmVisible: false,
+  errors: {},
+}
 
 const professions = [
   { label: "Biotecnólogo", id: "biotecnologo" },
@@ -45,24 +114,15 @@ const professions = [
 ]
 
 export function UserRegisterContent() {
-  const router = useRouter()
+  const { replace } = useRouter()
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    profession: "",
-  })
-  const [acceptTerms, setAcceptTerms] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false)
+  const [formState, dispatch] = useReducer(registerFormReducer, initialRegisterFormState)
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
+    dispatch({ type: "SET_FIELD", field: field as keyof RegisterFormState, value })
+    if (formState.errors[field]) {
+      dispatch({ type: "CLEAR_ERROR", field })
+    }
   }
 
   const handleProfessionChange = (value: string | number | null) => {
@@ -71,16 +131,16 @@ export function UserRegisterContent() {
 
   const validateForm = () => {
     const result = validateFormZod(userRegistrationSchema, {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
-      profession: formData.profession,
-      acceptTerms: acceptTerms,
+      name: formState.name,
+      email: formState.email,
+      password: formState.password,
+      confirmPassword: formState.confirmPassword,
+      profession: formState.profession,
+      acceptTerms: formState.acceptTerms,
     })
 
     if (!result.success) {
-      setErrors(result.errors)
+      dispatch({ type: "SET_FIELD", field: "errors", value: result.errors })
       return false
     }
 
@@ -92,29 +152,31 @@ export function UserRegisterContent() {
 
     if (!validateForm()) return
 
-    setIsLoading(true)
-    setErrors((prev) => ({ ...prev, general: "" }))
+    dispatch({ type: "SET_FIELD", field: "isLoading", value: true })
+    dispatch({ type: "CLEAR_GENERAL_ERROR" })
 
     const result = await signUp.email({
-      email: formData.email,
-      password: formData.password,
-      name: formData.name,
+      email: formState.email,
+      password: formState.password,
+      name: formState.name,
       type: "professional",
-      profession: formData.profession,
+      profession: formState.profession,
       avatar: "",
       callbackURL: "/dashboard",
     })
 
     if (result?.error) {
-      setErrors({
-        general: "Error al crear la cuenta. Intentalo de nuevo.",
+      dispatch({
+        type: "SET_FIELD",
+        field: "errors",
+        value: { general: "Error al crear la cuenta. Intentalo de nuevo." },
       })
-      setIsLoading(false)
+      dispatch({ type: "SET_FIELD", field: "isLoading", value: false })
       return
     }
 
     authClient.$store.notify("$sessionSignal")
-    router.replace("/dashboard")
+    replace("/dashboard")
   }
 
   return (
@@ -136,7 +198,7 @@ export function UserRegisterContent() {
         <div className="mx-auto w-full max-w-lg space-y-8">
           <div className="space-y-2 text-center">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
               Crear cuenta de usuario
             </h1>
             <p className="text-center text-muted-foreground">
@@ -161,14 +223,16 @@ export function UserRegisterContent() {
                   name="name"
                   type="text"
                   placeholder="Tu nombre completo"
-                  value={formData.name}
+                  value={formState.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  className={`pl-10 ${errors.name ? "border-destructive" : ""}`}
+                  className={`pl-10 ${formState.errors.name ? "border-destructive" : ""}`}
                   required
                   autoComplete="name"
                 />
               </div>
-              {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+              {formState.errors.name && (
+                <p className="text-sm text-destructive">{formState.errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -179,7 +243,7 @@ export function UserRegisterContent() {
                 isRequired
                 placeholder="Buscar tu profesión..."
                 items={professions}
-                selectedKey={formData.profession}
+                selectedKey={formState.profession}
                 onSelectionChange={handleProfessionChange}
                 className="w-full"
               >
@@ -189,7 +253,9 @@ export function UserRegisterContent() {
                   </Select.Item>
                 )}
               </Select.ComboBox>
-              {errors.profession && <p className="text-sm text-destructive">{errors.profession}</p>}
+              {formState.errors.profession && (
+                <p className="text-sm text-destructive">{formState.errors.profession}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -208,14 +274,16 @@ export function UserRegisterContent() {
                   name="email"
                   type="email"
                   placeholder="tu@email.com"
-                  value={formData.email}
+                  value={formState.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                  className={`pl-10 ${formState.errors.email ? "border-destructive" : ""}`}
                   required
                   autoComplete="email"
                 />
               </div>
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              {formState.errors.email && (
+                <p className="text-sm text-destructive">{formState.errors.email}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -233,29 +301,39 @@ export function UserRegisterContent() {
                   <Input
                     id="password"
                     name="password"
-                    type={isPasswordVisible ? "text" : "password"}
+                    type={formState.isPasswordVisible ? "text" : "password"}
                     placeholder="••••••••"
-                    value={formData.password}
+                    value={formState.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
-                    className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
+                    className={`pl-10 pr-10 ${formState.errors.password ? "border-destructive" : ""}`}
                     required
                     autoComplete="new-password"
                   />
                   <button
                     type="button"
-                    aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
-                    aria-pressed={isPasswordVisible}
-                    onClick={() => setIsPasswordVisible((v) => !v)}
+                    aria-label={
+                      formState.isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"
+                    }
+                    aria-pressed={formState.isPasswordVisible}
+                    onClick={() =>
+                      dispatch({
+                        type: "SET_FIELD",
+                        field: "isPasswordVisible",
+                        value: !formState.isPasswordVisible,
+                      })
+                    }
                     className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                   >
                     <HugeiconsIcon
-                      icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                      icon={formState.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
                       size={18}
                       strokeWidth={1.75}
                     />
                   </button>
                 </div>
-                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                {formState.errors.password && (
+                  <p className="text-sm text-destructive">{formState.errors.password}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -272,30 +350,38 @@ export function UserRegisterContent() {
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={isConfirmVisible ? "text" : "password"}
+                    type={formState.isConfirmVisible ? "text" : "password"}
                     placeholder="••••••••"
-                    value={formData.confirmPassword}
+                    value={formState.confirmPassword}
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                    className={`pl-10 pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
+                    className={`pl-10 pr-10 ${formState.errors.confirmPassword ? "border-destructive" : ""}`}
                     required
                     autoComplete="new-password"
                   />
                   <button
                     type="button"
-                    aria-label={isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
-                    aria-pressed={isConfirmVisible}
-                    onClick={() => setIsConfirmVisible((v) => !v)}
+                    aria-label={
+                      formState.isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"
+                    }
+                    aria-pressed={formState.isConfirmVisible}
+                    onClick={() =>
+                      dispatch({
+                        type: "SET_FIELD",
+                        field: "isConfirmVisible",
+                        value: !formState.isConfirmVisible,
+                      })
+                    }
                     className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                   >
                     <HugeiconsIcon
-                      icon={isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
+                      icon={formState.isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
                       size={18}
                       strokeWidth={1.75}
                     />
                   </button>
                 </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+                {formState.errors.confirmPassword && (
+                  <p className="text-sm text-destructive">{formState.errors.confirmPassword}</p>
                 )}
               </div>
             </div>
@@ -304,8 +390,10 @@ export function UserRegisterContent() {
               <Checkbox
                 id="terms"
                 name="terms"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
+                checked={formState.acceptTerms}
+                onChange={(e) =>
+                  dispatch({ type: "SET_FIELD", field: "acceptTerms", value: e.target.checked })
+                }
                 label={
                   <span className="text-sm text-foreground">
                     Acepto los{" "}
@@ -325,19 +413,19 @@ export function UserRegisterContent() {
                   </span>
                 }
               />
-              {errors.acceptTerms && (
-                <p className="text-sm text-destructive">{errors.acceptTerms}</p>
+              {formState.errors.acceptTerms && (
+                <p className="text-sm text-destructive">{formState.errors.acceptTerms}</p>
               )}
             </div>
 
-            {errors.general && (
+            {formState.errors.general && (
               <div className="rounded-md bg-destructive/10 p-3 text-center text-sm text-destructive">
-                {errors.general}
+                {formState.errors.general}
               </div>
             )}
 
-            <Button type="submit" className="h-11 w-full" disabled={isLoading}>
-              {isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
+            <Button type="submit" className="h-11 w-full" disabled={formState.isLoading}>
+              {formState.isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
             </Button>
           </form>
 

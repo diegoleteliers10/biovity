@@ -226,7 +226,7 @@ export function TrabajosPageContent() {
                 <div className="animate-spin">
                   <HugeiconsIcon icon={Briefcase01Icon} size={24} />
                 </div>
-                <span>Cargando ofertas...</span>
+                <span>Cargando ofertas…</span>
               </div>
             </div>
           </div>

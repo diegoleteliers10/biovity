@@ -36,7 +36,7 @@ export function ForStudents() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={t(LANDING_ANIMATION.sequenceDelay)}
-              className="text-3xl md:text-5xl font-bold text-foreground mb-6 text-balance"
+              className="text-3xl md:text-5xl font-semibold text-foreground mb-6 text-balance"
             >
               Da tu primer paso en la ciencia
             </m.h2>
@@ -66,7 +66,7 @@ export function ForStudents() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
                   transition={ts(index * LANDING_ANIMATION.chainStagger)}
-                  className="flex items-start space-x-3 p-4 bg-[#f3f3f5] rounded-xl hover:bg-[#e2e2e4] transition-colors"
+                  className="flex items-start gap-3 p-4 bg-[#f3f3f5] rounded-xl hover:bg-[#e2e2e4] transition-colors"
                 >
                   <div className="p-2 rounded-lg bg-secondary/10 flex-shrink-0">
                     <HugeiconsIcon icon={benefit.icon} size={20} className="text-secondary" />
@@ -84,7 +84,7 @@ export function ForStudents() {
               className="inline-flex items-center px-8 py-4 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full font-medium transition-all duration-200 hover:-translate-y-1"
             >
               Explorar oportunidades
-              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
             </button>
           </m.div>
 
@@ -97,12 +97,9 @@ export function ForStudents() {
           >
             <div className="bg-accent/5 rounded-3xl p-8">
               <div className="bg-white rounded-2xl p-8">
-                <div className="flex items-center space-x-4 mb-8">
-                  <div className="w-20 h-20 bg-secondary/10 rounded-2xl flex items-center justify-center">
-                    <HugeiconsIcon
-                      icon={GraduationScrollIcon}
-                      className="w-10 h-10 text-secondary"
-                    />
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="size-20 bg-secondary/10 rounded-2xl flex items-center justify-center">
+                    <HugeiconsIcon icon={GraduationScrollIcon} className="size-10 text-secondary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground text-xl">Estudiantes</h3>

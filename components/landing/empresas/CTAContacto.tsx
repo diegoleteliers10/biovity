@@ -66,7 +66,7 @@ export function CTAContacto() {
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(0)}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight text-balance">
+            <h2 className="text-4xl md:text-5xl font-semibold text-foreground mb-6 tracking-tight text-balance">
               ¿Listo para encontrar tu próximo talento?
             </h2>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed text-pretty">
@@ -76,19 +76,19 @@ export function CTAContacto() {
 
             <div className="flex items-center gap-4 mb-8">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-secondary" />
+                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-secondary" />
                 <span className="text-foreground">empresas@biovity.cl</span>
               </div>
             </div>
             <div className="flex items-center gap-2 mb-12">
-              <HugeiconsIcon icon={CallIcon} className="w-5 h-5 text-secondary" />
+              <HugeiconsIcon icon={CallIcon} className="size-5 text-secondary" />
               <span className="text-foreground">+56 9 1234 5678</span>
             </div>
 
             <Button size="lg" variant="outline" asChild>
               <Link href="/register/organization">
                 Comienza gratis
-                <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
               </Link>
             </Button>
           </m.div>
@@ -108,10 +108,10 @@ export function CTAContacto() {
             >
               {isSubmitted ? (
                 <div className="bg-white rounded-2xl p-8 border border-border/10 text-center">
-                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-8 h-8 text-accent" />
+                  <div className="size-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-8 text-accent" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">¡Mensaje enviado!</h3>
+                  <h3 className="text-2xl font-semibold text-foreground mb-2">¡Mensaje enviado!</h3>
                   <p className="text-muted-foreground text-pretty">
                     Nos pondremos en contacto contigo pronto. Gracias por tu interés en Biovity.
                   </p>
@@ -122,10 +122,15 @@ export function CTAContacto() {
                   onSubmit={handleSubmit}
                   className="bg-white rounded-2xl p-8 border border-border/10"
                 >
-                  <h3 className="text-2xl font-bold text-foreground mb-6">Contacta con ventas</h3>
+                  <h3 className="text-2xl font-semibold text-foreground mb-6">
+                    Contacta con ventas
+                  </h3>
 
                   {Object.keys(errors).length > 0 && (
-                    <div className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
+                    <div
+                      role="alert"
+                      className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg"
+                    >
                       <p className="text-sm text-accent">{Object.values(errors)[0]}</p>
                     </div>
                   )}
@@ -142,7 +147,7 @@ export function CTAContacto() {
                         <div className="relative">
                           <HugeiconsIcon
                             icon={UserIcon}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
                           />
                           <Input
                             id="nombre"
@@ -180,7 +185,7 @@ export function CTAContacto() {
                       <div className="relative">
                         <HugeiconsIcon
                           icon={Mail01Icon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
                         />
                         <Input
                           id="email"
@@ -203,7 +208,7 @@ export function CTAContacto() {
                       <div className="relative">
                         <HugeiconsIcon
                           icon={Building02Icon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
                         />
                         <Input
                           id="empresa"
@@ -225,7 +230,7 @@ export function CTAContacto() {
                       <div className="relative">
                         <HugeiconsIcon
                           icon={CallIcon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
                         />
                         <Input
                           id="telefono"
@@ -256,13 +261,13 @@ export function CTAContacto() {
                     <Button type="submit" disabled={isSubmitting} className="w-full h-12">
                       {isSubmitting ? (
                         <>
-                          <span className="w-5 h-5 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
-                          Enviando...
+                          <span className="size-5 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
+                          Enviando…
                         </>
                       ) : (
                         <>
                           Enviar mensaje
-                          <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+                          <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
                         </>
                       )}
                     </Button>

@@ -1,5 +1,8 @@
 "use client"
 
+import DOMPurify from "dompurify"
+import parse from "html-react-parser"
+
 type HtmlContentProps = {
   html: string
   className?: string
@@ -110,13 +113,13 @@ export function HtmlContent({ html, className }: HtmlContentProps) {
     )
   }
 
+  const sanitizedHtml = DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
+  const parsedContent = parse(sanitizedHtml)
+
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: CONTENT_CSS }} />
-      <div
-        className={`job-description ${className ?? ""}`}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <style suppressHydrationWarning>{CONTENT_CSS}</style>
+      <div className={`job-description ${className ?? ""}`}>{parsedContent}</div>
     </>
   )
 }

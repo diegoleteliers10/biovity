@@ -68,7 +68,7 @@ export function PersonalForm() {
             <div className="space-y-3">
               {(resumeFormData.skills.length > 0 ? resumeFormData.skills : [emptySkill()]).map(
                 (skill, i) => (
-                  <div key={i} className="flex gap-2 items-center">
+                  <div key={`skill-edit-${skill.name}`} className="flex gap-2 items-center">
                     <Input
                       value={skill.name}
                       onChange={(e) =>
@@ -123,12 +123,12 @@ export function PersonalForm() {
             </div>
           ) : (resume?.skills?.length ?? 0) > 0 ? (
             <div className="flex flex-wrap gap-2">
-              {(resume?.skills ?? []).map((skill, i) => {
+              {(resume?.skills ?? []).map((skill, _i) => {
                 const name = typeof skill === "string" ? skill : skill.name
                 const level = typeof skill === "string" ? undefined : skill.level
                 return (
                   <span
-                    key={i}
+                    key={`skill-display-${name}`}
                     className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
                   >
                     {name}

@@ -19,8 +19,8 @@ import type {
 import {
   Children,
   createContext,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -59,6 +59,9 @@ import { Spinner } from "@/components/ui/spinner"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
+import { useDropHandlers } from "./hooks/use-drop-handlers"
+import { useFileAttachmentManager } from "./hooks/use-file-attachment-manager"
+
 // ============================================================================
 // Helpers
 // ============================================================================
@@ -67,7 +70,6 @@ const convertBlobUrlToDataUrl = async (url: string): Promise<string | null> => {
   try {
     const response = await fetch(url)
     const blob = await response.blob()
-    // FileReader uses callback-based API, wrapping in Promise is necessary
     // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
     return new Promise((resolve) => {
       const reader = new FileReader()
@@ -100,7 +102,6 @@ const captureScreenshot = async (): Promise<File | null> => {
 
     video.srcObject = stream
 
-    // Video element uses callback-based API, wrapping in Promise is necessary
     // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
     await new Promise<void>((resolve, reject) => {
       // oxlint-disable-next-line eslint-plugin-unicorn(prefer-add-event-listener)
@@ -126,7 +127,6 @@ const captureScreenshot = async (): Promise<File | null> => {
     }
 
     context.drawImage(video, 0, 0, width, height)
-    // canvas.toBlob uses callback-based API, wrapping in Promise is necessary
     // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
     const blob = await new Promise<Blob | null>((resolve) => {
       canvas.toBlob(resolve, "image/png")
@@ -160,7 +160,7 @@ const captureScreenshot = async (): Promise<File | null> => {
 // Provider Context & Types
 // ============================================================================
 
-export type AttachmentsContext = {
+export interface AttachmentsContext {
   files: (FileUIPart & { id: string })[]
   add: (files: File[] | FileList) => void
   remove: (id: string) => void
@@ -169,15 +169,16 @@ export type AttachmentsContext = {
   fileInputRef: RefObject<HTMLInputElement | null>
 }
 
-export type TextInputContext = {
+export interface TextInputContext {
   value: string
   setInput: (v: string) => void
   clear: () => void
 }
 
-export type PromptInputControllerProps = {
+export interface PromptInputControllerProps {
   textInput: TextInputContext
   attachments: AttachmentsContext
+  /** INTERNAL: Allows PromptInput to register its file textInput + "open" callback */
   __registerFileInput: (ref: RefObject<HTMLInputElement | null>, open: () => void) => void
 }
 
@@ -185,7 +186,7 @@ const PromptInputController = createContext<PromptInputControllerProps | null>(n
 const ProviderAttachmentsContext = createContext<AttachmentsContext | null>(null)
 
 export const usePromptInputController = () => {
-  const ctx = useContext(PromptInputController)
+  const ctx = use(PromptInputController)
   if (!ctx) {
     throw new Error(
       "Wrap your component inside <PromptInputProvider> to use usePromptInputController()."
@@ -195,10 +196,10 @@ export const usePromptInputController = () => {
 }
 
 // Optional variants (do NOT throw). Useful for dual-mode components.
-const useOptionalPromptInputController = () => useContext(PromptInputController)
+const useOptionalPromptInputController = () => use(PromptInputController)
 
 export const useProviderAttachments = () => {
-  const ctx = useContext(ProviderAttachmentsContext)
+  const ctx = use(ProviderAttachmentsContext)
   if (!ctx) {
     throw new Error(
       "Wrap your component inside <PromptInputProvider> to use useProviderAttachments()."
@@ -207,7 +208,7 @@ export const useProviderAttachments = () => {
   return ctx
 }
 
-const useOptionalProviderAttachments = () => useContext(ProviderAttachmentsContext)
+const useOptionalProviderAttachments = () => use(ProviderAttachmentsContext)
 
 export type PromptInputProviderProps = PropsWithChildren<{
   initialInput?: string
@@ -217,12 +218,9 @@ export type PromptInputProviderProps = PropsWithChildren<{
  * Optional global provider that lifts PromptInput state outside of PromptInput.
  * If you don't use it, PromptInput stays fully self-managed.
  */
-export const PromptInputProvider = ({
-  initialInput: initialTextInput = "",
-  children,
-}: PromptInputProviderProps) => {
+export const PromptInputProvider = ({ initialInput = "", children }: PromptInputProviderProps) => {
   // ----- textInput state
-  const [textInput, setTextInput] = useState(initialTextInput)
+  const [textInput, setTextInput] = useState("")
   const clearInput = useCallback(() => setTextInput(""), [])
 
   // ----- attachments state (global when wrapped)
@@ -344,7 +342,7 @@ const LocalAttachmentsContext = createContext<AttachmentsContext | null>(null)
 export const usePromptInputAttachments = () => {
   // Prefer local context (inside PromptInput) as it has validation, fall back to provider
   const provider = useOptionalProviderAttachments()
-  const local = useContext(LocalAttachmentsContext)
+  const local = use(LocalAttachmentsContext)
   const context = local ?? provider
   if (!context) {
     throw new Error(
@@ -358,7 +356,7 @@ export const usePromptInputAttachments = () => {
 // Referenced Sources (Local to PromptInput)
 // ============================================================================
 
-export type ReferencedSourcesContext = {
+export interface ReferencedSourcesContext {
   sources: (SourceDocumentUIPart & { id: string })[]
   add: (sources: SourceDocumentUIPart[] | SourceDocumentUIPart) => void
   remove: (id: string) => void
@@ -368,7 +366,7 @@ export type ReferencedSourcesContext = {
 export const LocalReferencedSourcesContext = createContext<ReferencedSourcesContext | null>(null)
 
 export const usePromptInputReferencedSources = () => {
-  const ctx = useContext(LocalReferencedSourcesContext)
+  const ctx = use(LocalReferencedSourcesContext)
   if (!ctx) {
     throw new Error(
       "usePromptInputReferencedSources must be used within a LocalReferencedSourcesContext.Provider"
@@ -446,7 +444,7 @@ export const PromptInputActionAddScreenshot = ({
   )
 }
 
-export type PromptInputMessage = {
+export interface PromptInputMessage {
   text: string
   files: FileUIPart[]
 }
@@ -466,6 +464,10 @@ export type PromptInputProps = Omit<HTMLAttributes<HTMLFormElement>, "onSubmit" 
   onError?: (err: { code: "max_files" | "max_file_size" | "accept"; message: string }) => void
   onSubmit: (message: PromptInputMessage, event: FormEvent<HTMLFormElement>) => void | Promise<void>
 }
+
+// ============================================================================
+// PromptInput
+// ============================================================================
 
 export const PromptInput = ({
   className,
@@ -504,152 +506,68 @@ export const PromptInput = ({
     filesRef.current = files
   }, [files])
 
+  // ----- File attachment manager hook
+  const { addWithValidation, removeLocal, clearLocal } = useFileAttachmentManager({
+    maxFiles,
+    maxFileSize,
+    accept,
+    onError,
+    controller,
+    usingProvider,
+  })
+
   const openFileDialogLocal = useCallback(() => {
     inputRef.current?.click()
   }, [])
 
-  const matchesAccept = useCallback(
-    (f: File) => {
-      if (!accept || accept.trim() === "") {
-        return true
-      }
-
-      const patterns = accept
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-
-      return patterns.some((pattern) => {
-        if (pattern.endsWith("/*")) {
-          // e.g: image/* -> image/
-          const prefix = pattern.slice(0, -1)
-          return f.type.startsWith(prefix)
-        }
-        return f.type === pattern
-      })
-    },
-    [accept]
-  )
-
-  const addLocal = useCallback(
-    (fileList: File[] | FileList) => {
-      const incoming = [...fileList]
-      const accepted = incoming.filter((f) => matchesAccept(f))
-      if (incoming.length && accepted.length === 0) {
-        onError?.({
-          code: "accept",
-          message: "No files match the accepted types.",
+  // Local add function that updates items state
+  const addLocal = useCallback((fileList: File[] | FileList) => {
+    setItems((prev) => {
+      const next: (FileUIPart & { id: string })[] = []
+      for (const file of fileList) {
+        next.push({
+          filename: file.name,
+          id: nanoid(),
+          mediaType: file.type,
+          type: "file",
+          url: URL.createObjectURL(file),
         })
-        return
       }
-      const withinSize = (f: File) => (maxFileSize ? f.size <= maxFileSize : true)
-      const sized = accepted.filter(withinSize)
-      if (accepted.length > 0 && sized.length === 0) {
-        onError?.({
-          code: "max_file_size",
-          message: "All files exceed the maximum size.",
-        })
-        return
-      }
-
-      setItems((prev) => {
-        const capacity =
-          typeof maxFiles === "number" ? Math.max(0, maxFiles - prev.length) : undefined
-        const capped = typeof capacity === "number" ? sized.slice(0, capacity) : sized
-        if (typeof capacity === "number" && sized.length > capacity) {
-          onError?.({
-            code: "max_files",
-            message: "Too many files. Some were not added.",
-          })
-        }
-        const next: (FileUIPart & { id: string })[] = []
-        for (const file of capped) {
-          next.push({
-            filename: file.name,
-            id: nanoid(),
-            mediaType: file.type,
-            type: "file",
-            url: URL.createObjectURL(file),
-          })
-        }
-        return [...prev, ...next]
-      })
-    },
-    [matchesAccept, maxFiles, maxFileSize, onError]
-  )
-
-  const removeLocal = useCallback(
-    (id: string) =>
-      setItems((prev) => {
-        const found = prev.find((file) => file.id === id)
-        if (found?.url) {
-          URL.revokeObjectURL(found.url)
-        }
-        return prev.filter((file) => file.id !== id)
-      }),
-    []
-  )
+      return [...prev, ...next]
+    })
+  }, [])
 
   // Wrapper that validates files before calling provider's add
   const addWithProviderValidation = useCallback(
     (fileList: File[] | FileList) => {
-      const incoming = [...fileList]
-      const accepted = incoming.filter((f) => matchesAccept(f))
-      if (incoming.length && accepted.length === 0) {
-        onError?.({
-          code: "accept",
-          message: "No files match the accepted types.",
-        })
-        return
-      }
-      const withinSize = (f: File) => (maxFileSize ? f.size <= maxFileSize : true)
-      const sized = accepted.filter(withinSize)
-      if (accepted.length > 0 && sized.length === 0) {
-        onError?.({
-          code: "max_file_size",
-          message: "All files exceed the maximum size.",
-        })
-        return
-      }
-
-      const currentCount = files.length
-      const capacity =
-        typeof maxFiles === "number" ? Math.max(0, maxFiles - currentCount) : undefined
-      const capped = typeof capacity === "number" ? sized.slice(0, capacity) : sized
-      if (typeof capacity === "number" && sized.length > capacity) {
-        onError?.({
-          code: "max_files",
-          message: "Too many files. Some were not added.",
-        })
-      }
-
-      if (capped.length > 0) {
-        controller?.attachments.add(capped)
-      }
+      addWithValidation(fileList, (files) => controller?.attachments.add(files), files.length)
     },
-    [matchesAccept, maxFileSize, maxFiles, onError, files.length, controller]
+    [addWithValidation, controller, files.length]
   )
 
-  const clearAttachments = useCallback(
-    () =>
-      usingProvider
-        ? controller?.attachments.clear()
-        : setItems((prev) => {
-            for (const file of prev) {
-              if (file.url) {
-                URL.revokeObjectURL(file.url)
-              }
-            }
-            return []
-          }),
-    [usingProvider, controller]
+  const removeLocalFn = useCallback(
+    (id: string) => {
+      setItems((prev) => removeLocal(id, prev))
+    },
+    [removeLocal]
   )
+
+  const clearAttachmentsLocal = useCallback(() => {
+    setItems((prev) => {
+      clearLocal(prev)
+      return []
+    })
+  }, [clearLocal])
+
+  const clearAttachments = usingProvider ? controller.attachments.clear : clearAttachmentsLocal
+
+  const remove = usingProvider ? controller.attachments.remove : removeLocalFn
+
+  const openFileDialog = usingProvider ? controller.attachments.openFileDialog : openFileDialogLocal
 
   const clearReferencedSources = useCallback(() => setReferencedSources([]), [])
 
   const add = usingProvider ? addWithProviderValidation : addLocal
-  const remove = usingProvider ? controller.attachments.remove : removeLocal
-  const openFileDialog = usingProvider ? controller.attachments.openFileDialog : openFileDialogLocal
 
   const clear = useCallback(() => {
     clearAttachments()
@@ -672,63 +590,21 @@ export const PromptInput = ({
     }
   }, [files, syncHiddenInput])
 
+  // ----- Drop handlers
+  const { attachFormDropHandlers, attachDocumentDropHandlers } = useDropHandlers({
+    add,
+    globalDrop,
+  })
+
   // Attach drop handlers on nearest form and document (opt-in)
   useEffect(() => {
     const form = formRef.current
-    if (!form) {
-      return
-    }
-    if (globalDrop) {
-      // when global drop is on, let the document-level handler own drops
-      return
-    }
-
-    const onDragOver = (e: DragEvent) => {
-      if (e.dataTransfer?.types?.includes("Files")) {
-        e.preventDefault()
-      }
-    }
-    const onDrop = (e: DragEvent) => {
-      if (e.dataTransfer?.types?.includes("Files")) {
-        e.preventDefault()
-      }
-      if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
-        add(e.dataTransfer.files)
-      }
-    }
-    form.addEventListener("dragover", onDragOver)
-    form.addEventListener("drop", onDrop)
-    return () => {
-      form.removeEventListener("dragover", onDragOver)
-      form.removeEventListener("drop", onDrop)
-    }
-  }, [add, globalDrop])
+    return attachFormDropHandlers(form)
+  }, [attachFormDropHandlers])
 
   useEffect(() => {
-    if (!globalDrop) {
-      return
-    }
-
-    const onDragOver = (e: DragEvent) => {
-      if (e.dataTransfer?.types?.includes("Files")) {
-        e.preventDefault()
-      }
-    }
-    const onDrop = (e: DragEvent) => {
-      if (e.dataTransfer?.types?.includes("Files")) {
-        e.preventDefault()
-      }
-      if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
-        add(e.dataTransfer.files)
-      }
-    }
-    document.addEventListener("dragover", onDragOver)
-    document.addEventListener("drop", onDrop)
-    return () => {
-      document.removeEventListener("dragover", onDragOver)
-      document.removeEventListener("drop", onDrop)
-    }
-  }, [add, globalDrop])
+    return attachDocumentDropHandlers()
+  }, [attachDocumentDropHandlers])
 
   useEffect(
     () => () => {
@@ -743,12 +619,11 @@ export const PromptInput = ({
     [usingProvider]
   )
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+  const handleFileSelect: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
       if (event.currentTarget.files) {
         add(event.currentTarget.files)
       }
-      // Reset input value to allow selecting files that were previously removed
       event.currentTarget.value = ""
     },
     [add]
@@ -850,7 +725,7 @@ export const PromptInput = ({
         aria-label="Upload files"
         className="hidden"
         multiple={multiple}
-        onChange={handleChange}
+        onChange={handleFileSelect}
         ref={inputRef}
         title="Upload files"
         type="file"
@@ -874,6 +749,10 @@ export const PromptInput = ({
     </LocalAttachmentsContext.Provider>
   )
 }
+
+// ============================================================================
+// Sub-components
+// ============================================================================
 
 export type PromptInputBodyProps = HTMLAttributes<HTMLDivElement>
 
@@ -1133,7 +1012,7 @@ export const PromptInputSubmit = ({
     Icon = <XIcon className="size-4" />
   }
 
-  const handleClick = useCallback(
+  const handleSubmitOrStop = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       if (isGenerating && onStop) {
         e.preventDefault()
@@ -1149,7 +1028,7 @@ export const PromptInputSubmit = ({
     <InputGroupButton
       aria-label={isGenerating ? "Stop" : "Submit"}
       className={cn(className)}
-      onClick={handleClick}
+      onClick={handleSubmitOrStop}
       size={size}
       type={isGenerating && onStop ? "button" : "submit"}
       variant={variant}
@@ -1234,12 +1113,22 @@ export const PromptInputTab = ({ className, ...props }: PromptInputTabProps) => 
   <div className={cn(className)} {...props} />
 )
 
-export type PromptInputTabLabelProps = HTMLAttributes<HTMLHeadingElement>
+export type PromptInputTabLabelProps = HTMLAttributes<HTMLHeadingElement> & {
+  children?: ReactNode
+}
 
-export const PromptInputTabLabel = ({ className, ...props }: PromptInputTabLabelProps) => (
-  // Content provided via children in props
-  // oxlint-disable-next-line eslint-plugin-jsx-a11y(heading-has-content)
-  <h3 className={cn("mb-2 px-3 font-medium text-muted-foreground text-xs", className)} {...props} />
+export const PromptInputTabLabel = ({
+  className,
+  children,
+  ...props
+}: PromptInputTabLabelProps) => (
+  <h3
+    className={cn("mb-2 px-3 font-medium text-muted-foreground text-xs", className)}
+    aria-hidden={!children}
+    {...props}
+  >
+    {children}
+  </h3>
 )
 
 export type PromptInputTabBodyProps = HTMLAttributes<HTMLDivElement>

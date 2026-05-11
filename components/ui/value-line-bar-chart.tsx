@@ -5,11 +5,18 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { AnimatePresence, useMotionValueEvent, useSpring } from "motion/react"
 import { JetBrains_Mono } from "next/font/google"
 import React from "react"
-import { Bar, BarChart, Cell, ReferenceLine, XAxis } from "recharts"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer } from "@/components/ui/lazy-chart"
 import { cn } from "@/lib/utils"
+
+const [BarChart, Bar, Cell, ReferenceLine, XAxis] = await Promise.all([
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.Bar),
+  import("recharts").then((m) => m.Cell),
+  import("recharts").then((m) => m.ReferenceLine),
+  import("recharts").then((m) => m.XAxis),
+])
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -84,7 +91,7 @@ export function ValueLineBarChart() {
             ${maxValueIndex.value}
           </span>
           <Badge variant="secondary">
-            <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeUpIcon} className="size-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

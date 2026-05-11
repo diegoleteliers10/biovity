@@ -31,7 +31,7 @@ const StepCard = ({
         <div className="transform transition-transform duration-500 group-hover:scale-105 bg-[#f3f3f5] p-6 rounded-xl">
           {/* Mobile step indicator */}
           <div className="flex items-center mb-4 md:hidden">
-            <div className="w-10 h-10 rounded-full bg-[#f3f3f5] flex items-center justify-center ring-2 ring-white mr-3">
+            <div className="size-10 rounded-full bg-[#f3f3f5] flex items-center justify-center ring-2 ring-white mr-3">
               <HugeiconsIcon icon={step.icon} size={20} className="text-muted-foreground" />
             </div>
             <span className="text-sm font-semibold text-secondary bg-secondary/10 px-3 py-1 rounded-full">
@@ -67,7 +67,7 @@ const RoadmapLine = () => (
         const y = idx * (dashHeight + dashGap)
         return (
           <rect
-            key={`dash-${idx}`}
+            key={y}
             x="0"
             y={y}
             width="2"
@@ -113,7 +113,7 @@ const StepMarker = ({
       viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
       transition={ts(markerDelay)}
     >
-      <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center ring-4 ring-white">
+      <div className="size-16 rounded-full bg-secondary flex items-center justify-center ring-4 ring-white">
         <HugeiconsIcon
           icon={STEPS_HOME[index].icon}
           size={32}
@@ -144,7 +144,7 @@ export function HowItWorks() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight text-balance"
+            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance"
           >
             Tu Camino hacia el Éxito Profesional
           </m.h2>

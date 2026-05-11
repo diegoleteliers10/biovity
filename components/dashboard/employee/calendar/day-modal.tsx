@@ -61,11 +61,11 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
         </DialogDescription>
         <DialogHeader className="p-6 pb-4 border-b border-border/10">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 bg-secondary/10 rounded-xl shrink-0">
-              <HugeiconsIcon icon={Calendar01Icon} className="w-6 h-6 text-secondary" />
+            <div className="flex items-center justify-center size-12 bg-secondary/10 rounded-xl shrink-0">
+              <HugeiconsIcon icon={Calendar01Icon} className="size-6 text-secondary" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-card-foreground">{day}</h2>
+              <h2 className="text-2xl font-semibold text-card-foreground">{day}</h2>
               <p className="text-sm text-muted-foreground">{dayName}</p>
             </div>
           </div>
@@ -74,8 +74,8 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
         <div className="p-6 max-h-[60vh] overflow-y-auto">
           {events.length === 0 ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <HugeiconsIcon icon={Calendar01Icon} className="w-8 h-8 text-muted-foreground" />
+              <div className="size-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <HugeiconsIcon icon={Calendar01Icon} className="size-8 text-muted-foreground" />
               </div>
               <p className="text-muted-foreground">No hay eventos programados para este día</p>
             </div>
@@ -108,7 +108,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
 
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <HugeiconsIcon icon={Clock03Icon} className="w-4 h-4" />
+                          <HugeiconsIcon icon={Clock03Icon} className="size-4" />
                           <span className="font-medium">{formatEventTime(event.startAt)}</span>
                         </div>
                       </div>

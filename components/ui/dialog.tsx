@@ -60,12 +60,11 @@ function DialogContent({
       >
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close
-            data-slot="dialog-close"
-            className="absolute top-2 right-2 inline-flex size-8 shrink-0 items-center justify-center rounded-md hover:bg-muted/50 active:scale-[0.97] transition-all duration-150 cursor-pointer"
-          >
-            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="size-4" />
-            <span className="sr-only">Close</span>
+          <DialogPrimitive.Close data-slot="dialog-close" asChild>
+            <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">
+              <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+              <span className="sr-only">Close</span>
+            </Button>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

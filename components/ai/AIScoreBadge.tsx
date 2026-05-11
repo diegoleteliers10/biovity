@@ -2,7 +2,7 @@
 
 import { Cancel01Icon, CheckmarkCircle02Icon, Target02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { motion } from "motion/react"
+import { domAnimation, LazyMotion, m } from "framer-motion"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import { cn } from "@/lib/utils"
 
@@ -40,16 +40,18 @@ export function AIScoreBadge({ score }: Props) {
 
 export function AIScoreBadgeSkeleton() {
   return (
-    <motion.span
-      animate={{ backgroundPosition: ["200% center", "-200% center"] }}
-      className="inline-flex rounded-full border w-14 h-5 px-4 py-1 text-xs font-medium bg-muted/90 relative overflow-hidden"
-      transition={{ duration: 4, ease: "linear", repeat: Number.POSITIVE_INFINITY }}
-      style={{
-        backgroundImage:
-          "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%)",
-        backgroundSize: "200% 100%",
-        backgroundPosition: "200% center",
-      }}
-    ></motion.span>
+    <LazyMotion features={domAnimation}>
+      <m.span
+        animate={{ backgroundPosition: ["200% center", "-200% center"] }}
+        className="inline-flex rounded-full border w-14 h-5 px-4 py-1 text-xs font-medium bg-muted/90 relative overflow-hidden"
+        transition={{ duration: 4, ease: "linear", repeat: Number.POSITIVE_INFINITY }}
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.7) 50%, transparent 100%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% center",
+        }}
+      ></m.span>
+    </LazyMotion>
   )
 }

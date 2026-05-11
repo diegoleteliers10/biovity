@@ -10,39 +10,85 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useReducer } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
 
+type LoginState = {
+  formData: { email: string; password: string }
+  rememberMe: boolean
+  isLoading: boolean
+  errors: Record<string, string>
+  isPasswordVisible: boolean
+}
+
+type LoginAction =
+  | { type: "SET_FORM_FIELD"; field: "email" | "password"; value: string }
+  | { type: "SET_REMEMBER_ME"; value: boolean }
+  | { type: "SET_LOADING"; value: boolean }
+  | { type: "SET_ERRORS"; errors: Record<string, string> }
+  | { type: "CLEAR_ERROR"; field: string }
+  | { type: "TOGGLE_PASSWORD_VISIBILITY" }
+  | { type: "RESET" }
+
+const loginReducer = (state: LoginState, action: LoginAction): LoginState => {
+  switch (action.type) {
+    case "SET_FORM_FIELD":
+      return {
+        ...state,
+        formData: { ...state.formData, [action.field]: action.value },
+        errors: { ...state.errors, [action.field]: "" },
+      }
+    case "SET_REMEMBER_ME":
+      return { ...state, rememberMe: action.value }
+    case "SET_LOADING":
+      return { ...state, isLoading: action.value }
+    case "SET_ERRORS":
+      return { ...state, errors: action.errors }
+    case "CLEAR_ERROR":
+      return { ...state, errors: { ...state.errors, [action.field]: "" } }
+    case "TOGGLE_PASSWORD_VISIBILITY":
+      return { ...state, isPasswordVisible: !state.isPasswordVisible }
+    case "RESET":
+      return {
+        formData: { email: "", password: "" },
+        rememberMe: true,
+        isLoading: false,
+        errors: {},
+        isPasswordVisible: false,
+      }
+  }
+}
+
+const initialLoginState: LoginState = {
+  formData: { email: "", password: "" },
+  rememberMe: true,
+  isLoading: false,
+  errors: {},
+  isPasswordVisible: false,
+}
+
 const { signIn } = authClient
 
 export function AdminLoginContent() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
-  const [rememberMe, setRememberMe] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [state, dispatch] = useReducer(loginReducer, initialLoginState)
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
+  const handleInputChange = (field: "email" | "password", value: string) => {
+    dispatch({ type: "SET_FORM_FIELD", field, value })
   }
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    setErrors({})
+    dispatch({ type: "SET_LOADING", value: true })
+    dispatch({ type: "SET_ERRORS", errors: {} })
 
     const result = await signIn.email({
-      email: formData.email,
-      password: formData.password,
-      rememberMe,
+      email: state.formData.email,
+      password: state.formData.password,
+      rememberMe: state.rememberMe,
       callbackURL: "/dashboard",
     })
 
@@ -50,8 +96,8 @@ export function AdminLoginContent() {
       const msg =
         (result.error as { message?: string })?.message ??
         "Credenciales invalidas. Verifica tu email y contrasena."
-      setErrors({ general: msg })
-      setIsLoading(false)
+      dispatch({ type: "SET_ERRORS", errors: { general: msg } })
+      dispatch({ type: "SET_LOADING", value: false })
       return
     }
 
@@ -76,7 +122,7 @@ export function AdminLoginContent() {
         <div className="mx-auto w-full max-w-sm space-y-8">
           <div className="space-y-2 text-center">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
               Panel de Administracion
             </h1>
             <p className="text-center text-muted-foreground">
@@ -100,14 +146,16 @@ export function AdminLoginContent() {
                   id="email"
                   type="email"
                   placeholder="admin@biovity.cl"
-                  value={formData.email}
+                  value={state.formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                  className={`pl-10 ${state.errors.email ? "border-destructive" : ""}`}
                   required
                   autoComplete="email"
                 />
               </div>
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              {state.errors.email && (
+                <p className="text-sm text-destructive">{state.errors.email}</p>
+              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium text-foreground">
@@ -122,43 +170,45 @@ export function AdminLoginContent() {
                 />
                 <Input
                   id="password"
-                  type={isPasswordVisible ? "text" : "password"}
+                  type={state.isPasswordVisible ? "text" : "password"}
                   placeholder="••••••••"
-                  value={formData.password}
+                  value={state.formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
+                  className={`pl-10 pr-10 ${state.errors.password ? "border-destructive" : ""}`}
                   required
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
-                  aria-label={isPasswordVisible ? "Ocultar contrasena" : "Mostrar contrasena"}
-                  aria-pressed={isPasswordVisible}
-                  onClick={() => setIsPasswordVisible((v) => !v)}
+                  aria-label={state.isPasswordVisible ? "Ocultar contrasena" : "Mostrar contrasena"}
+                  aria-pressed={state.isPasswordVisible}
+                  onClick={() => dispatch({ type: "TOGGLE_PASSWORD_VISIBILITY" })}
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
                 >
                   <HugeiconsIcon
-                    icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                    icon={state.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
                     size={18}
                     strokeWidth={1.75}
                   />
                 </button>
               </div>
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              {state.errors.password && (
+                <p className="text-sm text-destructive">{state.errors.password}</p>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <Checkbox
                 id="remember"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
+                checked={state.rememberMe}
+                onChange={(e) => dispatch({ type: "SET_REMEMBER_ME", value: e.target.checked })}
                 label="Recordarme"
               />
             </div>
-            {errors.general && (
-              <div className="text-center text-sm text-destructive">{errors.general}</div>
+            {state.errors.general && (
+              <div className="text-center text-sm text-destructive">{state.errors.general}</div>
             )}
-            <Button type="submit" className="h-11 w-full" disabled={isLoading}>
-              {isLoading ? "Cargando..." : "Acceder al panel"}
+            <Button type="submit" className="h-11 w-full" disabled={state.isLoading}>
+              {state.isLoading ? "Cargando..." : "Acceder al panel"}
             </Button>
           </form>
 

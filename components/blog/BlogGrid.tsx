@@ -43,7 +43,7 @@ export function BlogGrid({ posts }: BlogGridProps) {
           <PostCard key={post.slug} post={post} />
         ))}
         {filteredPosts.length === 0 && (
-          <p className="col-span-full text-center text-gray-500">No se encontraron artículos.</p>
+          <p className="col-span-full text-center text-neutral-500">No se encontraron artículos.</p>
         )}
       </div>
     </div>

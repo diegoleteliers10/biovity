@@ -77,7 +77,7 @@ export function LinksForm() {
           <div className="space-y-4">
             {(resumeFormData.links.length > 0 ? resumeFormData.links : [{ url: "" }]).map(
               (link, i) => (
-                <div key={i} className="flex gap-2">
+                <div key={`link-edit-${link.url || "new"}`} className="flex gap-2">
                   <Input
                     value={link.url}
                     onChange={(e) =>
@@ -115,11 +115,11 @@ export function LinksForm() {
           </div>
         ) : (resume?.links?.length ?? 0) > 0 ? (
           <ul className="space-y-2">
-            {(resume?.links ?? []).map((link, i) => {
+            {(resume?.links ?? []).map((link, _i) => {
               const { label, Icon } = getLinkInfo(link.url)
               const IconComponent = Icon
               return (
-                <li key={i}>
+                <li key={`link-display-${link.url}`}>
                   <Link
                     href={link.url}
                     target="_blank"

@@ -4,7 +4,7 @@ import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Result } from "better-result"
 import { useQueryStates } from "nuqs"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useReducer, useRef } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,7 @@ import {
 import { setUserActive } from "@/lib/api/users"
 import { adminOrganizationsParsers } from "@/lib/parsers/admin-organizations"
 import { getResultErrorMessage } from "@/lib/result"
+import { formatDateChilean } from "@/lib/utils"
 
 type AdminUser = {
   id: string
@@ -29,8 +30,6 @@ type AdminUser = {
   createdAt: string
 }
 
-import { formatDateChilean } from "@/lib/utils"
-
 function formatDate(iso: string): string {
   try {
     return formatDateChilean(iso, "d MMM yyyy")
@@ -39,13 +38,55 @@ function formatDate(iso: string): string {
   }
 }
 
+type OrgsState = {
+  users: AdminUser[]
+  total: number
+  loading: boolean
+  togglingId: string | null
+  inputSearch: string
+}
+
+type OrgsAction =
+  | { type: "SET_USERS"; users: AdminUser[]; total: number }
+  | { type: "SET_LOADING"; loading: boolean }
+  | { type: "SET_TOGGLING_ID"; id: string | null }
+  | { type: "SET_INPUT_SEARCH"; value: string }
+  | { type: "UPDATE_USER"; id: string; isActive: boolean }
+  | { type: "CLEAR_USERS" }
+
+const orgsReducer = (state: OrgsState, action: OrgsAction): OrgsState => {
+  switch (action.type) {
+    case "SET_USERS":
+      return { ...state, users: action.users, total: action.total }
+    case "SET_LOADING":
+      return { ...state, loading: action.loading }
+    case "SET_TOGGLING_ID":
+      return { ...state, togglingId: action.id }
+    case "SET_INPUT_SEARCH":
+      return { ...state, inputSearch: action.value }
+    case "UPDATE_USER":
+      return {
+        ...state,
+        users: state.users.map((u) =>
+          u.id === action.id ? { ...u, isActive: action.isActive } : u
+        ),
+      }
+    case "CLEAR_USERS":
+      return { ...state, users: [], total: 0 }
+  }
+}
+
+const initialOrgsState: OrgsState = {
+  users: [],
+  total: 0,
+  loading: true,
+  togglingId: null,
+  inputSearch: "",
+}
+
 const SEARCH_DEBOUNCE_MS = 400
 
 export function AdminOrganizationsContent() {
-  const [users, setUsers] = useState<AdminUser[]>([])
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [togglingId, setTogglingId] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [urlState, setUrlState] = useQueryStates(adminOrganizationsParsers, {
@@ -54,14 +95,10 @@ export function AdminOrganizationsContent() {
   })
   const { page, search } = urlState
 
-  const [inputSearch, setInputSearch] = useState(search)
-
-  useEffect(() => {
-    setInputSearch(search)
-  }, [search])
+  const [state, dispatch] = useReducer(orgsReducer, initialOrgsState)
 
   const fetchOrganizations = useCallback(async () => {
-    setLoading(true)
+    dispatch({ type: "SET_LOADING", loading: true })
     try {
       const params = new URLSearchParams()
       params.set("page", String(page))
@@ -74,14 +111,12 @@ export function AdminOrganizationsContent() {
       if (!res.ok) {
         throw new Error((data as { error?: string })?.error ?? "Error al cargar organizaciones")
       }
-      setUsers(data.data ?? [])
-      setTotal(data.total ?? 0)
+      dispatch({ type: "SET_USERS", users: data.data ?? [], total: data.total ?? 0 })
     } catch (err) {
       console.error(err)
-      setUsers([])
-      setTotal(0)
+      dispatch({ type: "CLEAR_USERS" })
     } finally {
-      setLoading(false)
+      dispatch({ type: "SET_LOADING", loading: false })
     }
   }, [page, search])
 
@@ -91,7 +126,7 @@ export function AdminOrganizationsContent() {
 
   const handleSearchChange = useCallback(
     (value: string) => {
-      setInputSearch(value)
+      dispatch({ type: "SET_INPUT_SEARCH", value })
       if (debounceRef.current) clearTimeout(debounceRef.current)
       debounceRef.current = setTimeout(() => {
         setUrlState({ search: value, page: 1 })
@@ -108,27 +143,25 @@ export function AdminOrganizationsContent() {
   }, [])
 
   const handleToggleActive = async (user: AdminUser) => {
-    setTogglingId(user.id)
+    dispatch({ type: "SET_TOGGLING_ID", id: user.id })
     try {
       const result = await setUserActive(user.id, !user.isActive)
       if (!Result.isOk(result)) {
         alert(getResultErrorMessage(result.error))
         return
       }
-      setUsers((prev) =>
-        prev.map((u) => (u.id === user.id ? { ...u, isActive: result.value.isActive } : u))
-      )
+      dispatch({ type: "UPDATE_USER", id: user.id, isActive: result.value.isActive })
     } finally {
-      setTogglingId(null)
+      dispatch({ type: "SET_TOGGLING_ID", id: null })
     }
   }
 
-  const totalPages = Math.ceil(total / 20)
+  const totalPages = Math.ceil(state.total / 20)
 
   return (
     <div className="flex flex-col gap-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold">Organizaciones</h1>
+        <h1 className="text-2xl font-semibold">Organizaciones</h1>
         <p className="mt-1 text-muted-foreground">
           Usuarios con tipo organización. Gestiona el estado de activación.
         </p>
@@ -137,7 +170,7 @@ export function AdminOrganizationsContent() {
       <div className="flex flex-wrap gap-4">
         <Input
           placeholder="Buscar por email o nombre..."
-          value={inputSearch}
+          value={state.inputSearch}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="max-w-sm"
           aria-label="Buscar organizaciones"
@@ -145,11 +178,11 @@ export function AdminOrganizationsContent() {
       </div>
 
       <div className="rounded-lg border">
-        {loading ? (
+        {state.loading ? (
           <div className="flex items-center justify-center p-12 text-muted-foreground">
-            Cargando...
+            Cargando…
           </div>
-        ) : users.length === 0 ? (
+        ) : state.users.length === 0 ? (
           <div className="flex items-center justify-center p-12 text-muted-foreground">
             No hay organizaciones
           </div>
@@ -165,7 +198,7 @@ export function AdminOrganizationsContent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {state.users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.email}</TableCell>
                   <TableCell>{user.name || "—"}</TableCell>
@@ -180,10 +213,10 @@ export function AdminOrganizationsContent() {
                       variant="outline"
                       size="sm"
                       onClick={() => handleToggleActive(user)}
-                      disabled={togglingId === user.id}
+                      disabled={state.togglingId === user.id}
                       aria-label={user.isActive ? "Desactivar" : "Activar"}
                     >
-                      {togglingId === user.id
+                      {state.togglingId === user.id
                         ? "Actualizando..."
                         : user.isActive
                           ? "Desactivar"
@@ -200,7 +233,7 @@ export function AdminOrganizationsContent() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Página {page} de {totalPages} ({total} organizaciones)
+            Página {page} de {totalPages} ({state.total} organizaciones)
           </p>
           <div className="flex gap-2">
             <Button

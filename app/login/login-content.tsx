@@ -28,7 +28,7 @@ export function LoginContent() {
         <div className="mx-auto w-full max-w-sm space-y-8">
           <div className="space-y-2 text-center lg:text-left">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
               Bienvenido a Biovity
             </h1>
             <p className="text-center text-muted-foreground">
@@ -36,11 +36,11 @@ export function LoginContent() {
             </p>
           </div>
 
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col gap-2">
             <Link href="/login/professional">
               <Card className="group cursor-pointer border border-border/10 bg-white hover:border-border/30 hover:bg-secondary/5 transition-all duration-200">
                 <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary/20">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary/20">
                     <HugeiconsIcon icon={UserIcon} size={22} strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 flex-1 text-left">
@@ -63,7 +63,7 @@ export function LoginContent() {
             <Link href="/login/organization">
               <Card className="group cursor-pointer border border-border/10 bg-white hover:border-border/30 hover:bg-accent/5 transition-all duration-200">
                 <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
                     <HugeiconsIcon icon={Building06Icon} size={22} strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 flex-1 text-left">

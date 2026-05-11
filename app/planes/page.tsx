@@ -60,7 +60,7 @@ export default function PlanesPage() {
       <main className="flex flex-col relative">
         <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden bg-white pt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-16 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4 tracking-tight">
               Planes y Precios
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

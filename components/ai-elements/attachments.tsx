@@ -11,7 +11,7 @@ import {
   XIcon,
 } from "lucide-react"
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react"
-import { createContext, useCallback, useContext, useMemo } from "react"
+import { createContext, use, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { cn } from "@/lib/utils"
@@ -78,6 +78,7 @@ export const getAttachmentLabel = (data: AttachmentData): string => {
 }
 
 const renderAttachmentImage = (url: string, filename: string | undefined, isGrid: boolean) =>
+  /* eslint-disable react-doctor/nextjs-no-img-element -- attachment images use blob URLs that need native img */
   isGrid ? (
     <img
       alt={filename || "Image"}
@@ -119,11 +120,10 @@ const AttachmentContext = createContext<AttachmentContextValue | null>(null)
 // Hooks
 // ============================================================================
 
-export const useAttachmentsContext = () =>
-  useContext(AttachmentsContext) ?? { variant: "grid" as const }
+export const useAttachmentsContext = () => use(AttachmentsContext) ?? { variant: "grid" as const }
 
 export const useAttachmentContext = () => {
-  const ctx = useContext(AttachmentContext)
+  const ctx = use(AttachmentContext)
   if (!ctx) {
     throw new Error("Attachment components must be used within <Attachment>")
   }
@@ -215,32 +215,38 @@ export type AttachmentPreviewProps = HTMLAttributes<HTMLDivElement> & {
   fallbackIcon?: ReactNode
 }
 
-export const AttachmentPreview = ({
+function AttachmentContent({
   fallbackIcon,
-  className,
-  ...props
-}: AttachmentPreviewProps) => {
-  const { data, mediaCategory, variant } = useAttachmentContext()
-
+  variant,
+}: {
+  fallbackIcon?: ReactNode
+  variant: AttachmentVariant
+}) {
+  const { data, mediaCategory } = useAttachmentContext()
   const iconSize = variant === "inline" ? "size-3" : "size-4"
 
   const renderIcon = (Icon: typeof ImageIcon) => (
     <Icon className={cn(iconSize, "text-muted-foreground")} />
   )
 
-  const renderContent = () => {
-    if (mediaCategory === "image" && data.type === "file" && data.url) {
-      return renderAttachmentImage(data.url, data.filename, variant === "grid")
-    }
-
-    if (mediaCategory === "video" && data.type === "file" && data.url) {
-      return <video className="size-full object-cover" muted src={data.url} />
-    }
-
-    const Icon = mediaCategoryIcons[mediaCategory]
-    return fallbackIcon ?? renderIcon(Icon)
+  if (mediaCategory === "image" && data.type === "file" && data.url) {
+    return renderAttachmentImage(data.url, data.filename, variant === "grid")
   }
 
+  if (mediaCategory === "video" && data.type === "file" && data.url) {
+    return <video className="size-full object-cover" muted src={data.url} />
+  }
+
+  const Icon = mediaCategoryIcons[mediaCategory]
+  return fallbackIcon ?? renderIcon(Icon)
+}
+
+export const AttachmentPreview = ({
+  fallbackIcon,
+  className,
+  ...props
+}: AttachmentPreviewProps) => {
+  const { variant } = useAttachmentsContext()
   return (
     <div
       className={cn(
@@ -252,7 +258,7 @@ export const AttachmentPreview = ({
       )}
       {...props}
     >
-      {renderContent()}
+      <AttachmentContent fallbackIcon={fallbackIcon} variant={variant} />
     </div>
   )
 }
@@ -303,7 +309,7 @@ export const AttachmentRemove = ({
 }: AttachmentRemoveProps) => {
   const { onRemove, variant } = useAttachmentContext()
 
-  const handleClick = useCallback(
+  const handleRemoveClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       onRemove?.()
@@ -334,7 +340,7 @@ export const AttachmentRemove = ({
         variant === "list" && ["size-8 shrink-0 rounded p-0", "[&>svg]:size-4"],
         className
       )}
-      onClick={handleClick}
+      onClick={handleRemoveClick}
       type="button"
       variant="ghost"
       {...props}

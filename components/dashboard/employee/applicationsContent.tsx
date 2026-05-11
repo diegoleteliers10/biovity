@@ -60,7 +60,7 @@ export const ApplicationsContent = () => {
           <NotificationBell notifications={[]} />
         </div>
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Mis Postulaciones</h1>
+          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Mis Postulaciones</h1>
           <p className="text-muted-foreground text-sm">
             Sigue el estado y progreso de tus aplicaciones.
           </p>
@@ -73,9 +73,9 @@ export const ApplicationsContent = () => {
         </div>
       ) : isPending ? (
         <div className="grid grid-cols-1 gap-8">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {[0, 1, 2].map((n) => (
             <Card
-              key={i}
+              key={n}
               className="relative overflow-hidden flex flex-col border border-border/80 bg-white"
             >
               <CardHeader className="p-6 pb-2">
@@ -84,20 +84,25 @@ export const ApplicationsContent = () => {
                     <Skeleton className="h-5 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
                   </div>
-                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                  <Skeleton className="size-10 rounded-full shrink-0" />
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-2">
-                <Skeleton className="h-3 w-32 mb-5" />
+                <Skeleton className="size-32 mb-5" />
                 <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-message-hide pb-2 -mx-2 px-2 mt-2">
-                  {STAGES.map((_, idx) => (
-                    <div key={idx} className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <Skeleton className="h-7 w-20 rounded-full" />
-                      {idx < STAGES.length - 1 && (
-                        <Skeleton className="h-[1.5px] w-4 rounded-full" />
-                      )}
-                    </div>
-                  ))}
+                  {STAGES.map((stage, stageIdx) => {
+                    return (
+                      <div
+                        key={`stage-${stage.id}`}
+                        className="flex items-center gap-2 sm:gap-3 shrink-0"
+                      >
+                        <Skeleton className="h-7 w-20 rounded-full" />
+                        {stageIdx < STAGES.length - 1 && (
+                          <Skeleton className="h-[1.5px] w-4 rounded-full" />
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -106,12 +111,12 @@ export const ApplicationsContent = () => {
       ) : applications.length === 0 ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
           <div className="flex flex-col items-center justify-center text-center gap-3 py-12">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+            <div className="flex size-20 items-center justify-center rounded-full bg-muted">
               <HugeiconsIcon
                 icon={File02Icon}
                 size={44}
                 strokeWidth={1.5}
-                className="h-11 w-11 text-muted-foreground"
+                className="size-11 text-muted-foreground"
               />
             </div>
             <div className="space-y-1">
@@ -134,7 +139,7 @@ export const ApplicationsContent = () => {
 }
 
 function ApplicationCard({ app }: { app: Application }) {
-  const router = useRouter()
+  const { push } = useRouter()
   const jobTitle = app.job?.title ?? "Trabajo"
   const { data: org } = useOrganization(app.job?.organizationId)
   const company = org?.name ?? "Organización"
@@ -154,9 +159,9 @@ function ApplicationCard({ app }: { app: Application }) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 rounded-full bg-muted hover:bg-secondary hover:text-secondary-foreground active:scale-90 transition-all duration-150"
+              className="size-10 rounded-full bg-muted hover:bg-secondary hover:text-secondary-foreground active:scale-90 transition-all duration-150"
               title="Ver detalle del trabajo"
-              onClick={() => router.push(`/dashboard/job/${app.jobId}`)}
+              onClick={() => push(`/dashboard/job/${app.jobId}`)}
             >
               <HugeiconsIcon icon={Share05Icon} size={20} strokeWidth={1.5} />
             </Button>

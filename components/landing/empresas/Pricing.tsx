@@ -49,7 +49,7 @@ export function Pricing() {
             aria-label={isAnual ? "Cambiar a mensual" : "Cambiar a anual"}
           >
             <span
-              className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ${
+              className={`absolute top-1 left-1 size-5 bg-white rounded-full shadow-md transition-transform duration-300 ${
                 isAnual ? "translate-x-7" : "translate-x-0"
               }`}
             />
@@ -131,7 +131,7 @@ export function Pricing() {
                   <li key={feature} className="flex items-start gap-2">
                     <HugeiconsIcon
                       icon={Tick02Icon}
-                      className={`w-5 h-5 flex-shrink-0 ${
+                      className={`size-5 flex-shrink-0 ${
                         plan.highlighted ? "text-accent" : "text-secondary"
                       }`}
                     />
@@ -156,7 +156,7 @@ export function Pricing() {
               >
                 <a href={plan.href}>
                   {plan.cta}
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 ml-2" />
                 </a>
               </Button>
             </m.div>

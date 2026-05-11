@@ -2,7 +2,15 @@
 
 import { Award01Icon, GraduationScrollIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts"
+
+const [BarChart, Bar, Cell, XAxis, YAxis] = await Promise.all([
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.Bar),
+  import("recharts").then((m) => m.Cell),
+  import("recharts").then((m) => m.XAxis),
+  import("recharts").then((m) => m.YAxis),
+])
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   type ChartConfig,
@@ -56,11 +64,8 @@ export function SalariosPorEducacion() {
     <section className="py-16 md:py-24 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 tracking-tight">
-            Impacto del{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Nivel Educativo
-            </span>{" "}
+          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 tracking-tight">
+            Impacto del <span className="text-accent font-semibold">Nivel Educativo</span>{" "}
             (Postgrado)
           </h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -177,7 +182,7 @@ export function SalariosPorEducacion() {
                 <div className="flex items-start gap-3">
                   <HugeiconsIcon
                     icon={GraduationScrollIcon}
-                    className="w-5 h-5 text-secondary mt-0.5 shrink-0"
+                    className="size-5 text-secondary mt-0.5 shrink-0"
                   />
                   <div>
                     <p className="font-semibold text-sm">Postgrado marca diferencia</p>

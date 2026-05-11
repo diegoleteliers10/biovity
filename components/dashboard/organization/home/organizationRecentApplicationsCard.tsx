@@ -23,7 +23,7 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
     router.push("/dashboard/applications")
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const _handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault()
       handleApplicationClick()
@@ -53,13 +53,11 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
             </p>
           ) : (
             applications.map((app) => (
-              <div
+              <button
+                type="button"
                 key={`${app.candidateName}-${app.position}`}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80 w-full text-left"
                 onClick={handleApplicationClick}
-                onKeyDown={handleKeyDown}
-                tabIndex={0}
-                role="button"
                 aria-label={`Ver aplicación de ${app.candidateName} para ${app.position}`}
               >
                 <div className="space-y-2">
@@ -76,7 +74,7 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
                     {app.status}
                   </span>
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>

@@ -34,78 +34,6 @@ export function MessageBubble({
   formatTime,
   onEventAction,
 }: MessageBubbleProps) {
-  const renderContent = () => {
-    switch (message.type) {
-      case "event": {
-        const event = message.contentType as {
-          eventId: string
-          title: string
-          description?: string
-          type: string
-          startAt: string
-          endAt?: string
-          location?: string
-          meetingUrl?: string
-          status: string
-          participantStatus: string
-          candidateName: string
-        } | null
-        if (!event) return null
-        return <EventMessageCard event={event} isOwn={isOwn} onAction={onEventAction} />
-      }
-      case "image": {
-        const img = message.contentType as {
-          url: string
-          thumbnailUrl?: string
-          alt?: string
-        } | null
-        return (
-          <div className="space-y-2">
-            {img?.url && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={img.url}
-                alt={img.alt ?? "Imagen"}
-                className="max-w-[280px] rounded-lg object-cover"
-              />
-            )}
-            {message.content && message.content !== "Imagen" && (
-              <p className="break-words">{message.content}</p>
-            )}
-          </div>
-        )
-      }
-      case "file": {
-        const file = message.contentType as {
-          url: string
-          name: string
-          size: number
-          mimeType: string
-        } | null
-        return (
-          <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={Calendar04Icon} size={16} className="shrink-0" />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium">{file?.name ?? "Archivo"}</p>
-              {file?.size && (
-                <p className="text-xs opacity-70">{(file.size / 1024).toFixed(1)} KB</p>
-              )}
-            </div>
-          </div>
-        )
-      }
-      case "audio":
-        return (
-          <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={Calendar04Icon} size={16} className="shrink-0" />
-            <p className="text-sm italic opacity-70">Audio</p>
-          </div>
-        )
-      default:
-        return <p className="break-words">{message.content}</p>
-    }
-  }
-
   return (
     <div className={cn("flex w-full", isOwn ? "justify-end" : "justify-start")}>
       <div className={cn("flex max-w-[75%] gap-2", isOwn ? "flex-row-reverse" : "flex-row")}>
@@ -140,7 +68,7 @@ export function MessageBubble({
                 : "bg-muted text-foreground rounded-tl-sm"
             )}
           >
-            {renderContent()}
+            <MessageContent message={message} isOwn={isOwn} onEventAction={onEventAction} />
 
             {/* Read receipt for own messages */}
             {isOwn && message.type === "text" && (
@@ -153,6 +81,84 @@ export function MessageBubble({
       </div>
     </div>
   )
+}
+
+function MessageContent({
+  message,
+  isOwn,
+  onEventAction,
+}: {
+  message: MessageBubbleProps["message"]
+  isOwn: boolean
+  onEventAction?: (eventId: string, action: "accept" | "decline") => void
+}) {
+  switch (message.type) {
+    case "event": {
+      const event = message.contentType as {
+        eventId: string
+        title: string
+        description?: string
+        type: string
+        startAt: string
+        endAt?: string
+        location?: string
+        meetingUrl?: string
+        status: string
+        participantStatus: string
+        candidateName: string
+      } | null
+      if (!event) return null
+      return <EventMessageCard event={event} isOwn={isOwn} onAction={onEventAction} />
+    }
+    case "image": {
+      const img = message.contentType as {
+        url: string
+        thumbnailUrl?: string
+        alt?: string
+      } | null
+      return (
+        <div className="space-y-2">
+          {img?.url && (
+            /* eslint-disable react-doctor/nextjs-no-img-element -- attachment images use blob URLs that need native img */
+            <img
+              src={img.url}
+              alt={img.alt ?? "Imagen"}
+              className="max-w-[280px] rounded-lg object-cover"
+            />
+          )}
+          {message.content && message.content !== "Imagen" && (
+            <p className="break-words">{message.content}</p>
+          )}
+        </div>
+      )
+    }
+    case "file": {
+      const file = message.contentType as {
+        url: string
+        name: string
+        size: number
+        mimeType: string
+      } | null
+      return (
+        <div className="flex items-center gap-2">
+          <HugeiconsIcon icon={Calendar04Icon} size={16} className="shrink-0" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{file?.name ?? "Archivo"}</p>
+            {file?.size && <p className="text-xs opacity-70">{(file.size / 1024).toFixed(1)} KB</p>}
+          </div>
+        </div>
+      )
+    }
+    case "audio":
+      return (
+        <div className="flex items-center gap-2">
+          <HugeiconsIcon icon={Calendar04Icon} size={16} className="shrink-0" />
+          <p className="text-sm italic opacity-70">Audio</p>
+        </div>
+      )
+    default:
+      return <p className="break-words">{message.content}</p>
+  }
 }
 
 function EventMessageCard({
@@ -217,7 +223,7 @@ function EventMessageCard({
           <HugeiconsIcon icon={Calendar04Icon} size={12} />
           <span>{formatEventDate(event.startAt)}</span>
         </div>
-        {event.endAt && <p className="pl-5">— {formatEventDate(event.endAt)}</p>}
+        {event.endAt && <p className="pl-5">– {formatEventDate(event.endAt)}</p>}
         {event.location && <p className="pl-5">{event.location}</p>}
         {event.meetingUrl && (
           <p className="pl-5 truncate">
@@ -313,15 +319,15 @@ export function ChatListItem({
   if (searchQuery) {
     const query = searchQuery.toLowerCase()
     const matchesName = contactName.toLowerCase().includes(query)
-    if (!matchesName) return null
+    const matchesLastMessage = chat.lastMessage?.toLowerCase().includes(query)
+    if (!matchesName && !matchesLastMessage) return null
   }
 
   const unreadCount = chat.unreadCountProfessional ?? chat.unreadCountRecruiter ?? 0
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={onSelect}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -330,13 +336,12 @@ export function ChatListItem({
         }
       }}
       className={cn(
-        "cursor-pointer border-b border-border p-4 transition-colors",
+        "cursor-pointer border-b border-border p-4 transition-colors text-left w-full",
         "hover:bg-muted/30 focus-visible:bg-muted/50",
         isSelected && "bg-muted/50"
       )}
     >
       <div className="flex items-start gap-3">
-        {/* Avatar with online indicator */}
         <div className="relative shrink-0">
           <Avatar className="size-12">
             {contact?.avatar && <AvatarImage src={contact.avatar} alt="" />}
@@ -349,7 +354,6 @@ export function ChatListItem({
           )}
         </div>
 
-        {/* Content */}
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center justify-between gap-2">
             <h3 className="truncate text-sm font-semibold text-foreground">{contactName}</h3>
@@ -365,6 +369,6 @@ export function ChatListItem({
           )}
         </div>
       </div>
-    </div>
+    </button>
   )
 }

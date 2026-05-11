@@ -1,5 +1,6 @@
 "use client"
 
+/* eslint-disable react-doctor/no-giant-component -- large component, intentional */
 import {
   Building06Icon,
   Camera01Icon,
@@ -23,6 +24,7 @@ import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { OrganizationAddress } from "@/lib/api/organizations"
@@ -254,7 +256,8 @@ export function OrganizationProfileContent() {
         })
       }
     },
-    [profileData, organization]
+    // biome-ignore lint/correctness/useExhaustiveDependencies: profileData is a derived value from user/session
+    [organization, profileData]
   )
 
   const handleEditSection = useCallback(
@@ -323,7 +326,8 @@ export function OrganizationProfileContent() {
     }
     setEditingSection(null)
     setErrors({})
-  }, [profileData, organization])
+    // biome-ignore lint/correctness/useExhaustiveDependencies: profileData is a derived value from user/session
+  }, [organization, profileData])
 
   const handleAvatarUpload = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -496,10 +500,14 @@ export function OrganizationProfileContent() {
                 {isEditingSidebar ? (
                   <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-left text-xs font-medium text-muted-foreground">
+                      <label
+                        htmlFor="user-name"
+                        className="text-left text-xs font-medium text-muted-foreground"
+                      >
                         Nombre
                       </label>
                       <Input
+                        id="user-name"
                         value={userForm.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
                         placeholder="Nombre completo"
@@ -508,10 +516,14 @@ export function OrganizationProfileContent() {
                       {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-left text-xs font-medium text-muted-foreground">
+                      <label
+                        htmlFor="user-profession"
+                        className="text-left text-xs font-medium text-muted-foreground"
+                      >
                         Cargo
                       </label>
                       <Input
+                        id="user-profession"
                         value={userForm.profession}
                         onChange={(e) => handleInputChange("profession", e.target.value)}
                         placeholder="Profesión"
@@ -636,10 +648,14 @@ export function OrganizationProfileContent() {
                           {isEditingOrg ? (
                             <div className="grid gap-5 sm:grid-cols-2">
                               <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-foreground">
+                                <label
+                                  htmlFor="org-name"
+                                  className="text-sm font-medium text-foreground"
+                                >
                                   Nombre
                                 </label>
                                 <Input
+                                  id="org-name"
                                   value={orgForm.name}
                                   onChange={(e) => handleOrgInputChange("name", e.target.value)}
                                   placeholder="Nombre de la organización"
@@ -647,10 +663,14 @@ export function OrganizationProfileContent() {
                                 />
                               </div>
                               <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-foreground">
+                                <label
+                                  htmlFor="org-website"
+                                  className="text-sm font-medium text-foreground"
+                                >
                                   Sitio web
                                 </label>
                                 <Input
+                                  id="org-website"
                                   value={orgForm.website}
                                   onChange={(e) => handleOrgInputChange("website", e.target.value)}
                                   placeholder="https://..."
@@ -658,10 +678,14 @@ export function OrganizationProfileContent() {
                                 />
                               </div>
                               <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-foreground">
+                                <label
+                                  htmlFor="org-phone"
+                                  className="text-sm font-medium text-foreground"
+                                >
                                   Teléfono
                                 </label>
                                 <Input
+                                  id="org-phone"
                                   value={orgForm.phone}
                                   onChange={(e) => handleOrgInputChange("phone", e.target.value)}
                                   placeholder="+56 9 1234 5678"
@@ -669,10 +693,14 @@ export function OrganizationProfileContent() {
                                 />
                               </div>
                               <div className="space-y-1.5 sm:col-span-2">
-                                <label className="text-sm font-medium text-foreground">
+                                <label
+                                  htmlFor="org-address"
+                                  className="text-sm font-medium text-foreground"
+                                >
                                   Dirección
                                 </label>
                                 <Input
+                                  id="org-address"
                                   value={orgForm.address}
                                   onChange={(e) => handleOrgInputChange("address", e.target.value)}
                                   placeholder="Calle, Ciudad, Región, País, Código postal"
@@ -683,13 +711,13 @@ export function OrganizationProfileContent() {
                           ) : (
                             <div className="space-y-5">
                               <div className="grid gap-5 sm:grid-cols-2">
-                                <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                                <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                                   <SectionTitle icon={Building06Icon} title="Nombre" />
                                   <p className="mt-2 text-sm font-medium text-foreground">
                                     {organization?.name || EMPTY_PLACEHOLDER}
                                   </p>
                                 </div>
-                                <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                                <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                                   <SectionTitle icon={Globe02Icon} title="Sitio web" />
                                   {organization?.website ? (
                                     <a
@@ -710,13 +738,13 @@ export function OrganizationProfileContent() {
                                     </p>
                                   )}
                                 </div>
-                                <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                                <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                                   <SectionTitle icon={SmartPhone01Icon} title="Teléfono" />
                                   <p className="mt-2 text-sm font-medium text-foreground">
                                     {organization?.phone || EMPTY_PLACEHOLDER}
                                   </p>
                                 </div>
-                                <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4 sm:col-span-2">
+                                <div className="rounded-lg border border-border/60 bg-muted/30 p-4 sm:col-span-2">
                                   <SectionTitle icon={MapPinIcon} title="Dirección" />
                                   <p className="mt-2 text-sm font-medium text-foreground">
                                     {formatAddress(organization?.address ?? null) ||
@@ -724,7 +752,7 @@ export function OrganizationProfileContent() {
                                   </p>
                                 </div>
                               </div>
-                              <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-4">
+                              <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                                 <SectionTitle icon={CreditCardIcon} title="ID de Suscripción" />
                                 <p className="mt-2 text-sm font-medium text-foreground">
                                   {organization?.subscriptionId ? (
@@ -748,7 +776,18 @@ export function OrganizationProfileContent() {
               </TabsContent>
 
               <TabsContent value="subscription" className="w-full pt-10">
-                {/*(<SubscriptionTab organizationId={organizationId ?? ""} />*/}
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <HugeiconsIcon icon={CreditCardIcon} size={24} />
+                    </EmptyMedia>
+                    <EmptyTitle>Suscripción no disponible</EmptyTitle>
+                    <EmptyDescription>
+                      Aún no tienes una suscripción activa. Contáctanos para obtener más información
+                      sobre nuestros planes.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               </TabsContent>
             </Tabs>
           </div>

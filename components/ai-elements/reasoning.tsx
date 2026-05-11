@@ -7,16 +7,7 @@ import { math } from "@streamdown/math"
 import { mermaid } from "@streamdown/mermaid"
 import { BrainIcon, ChevronDownIcon } from "lucide-react"
 import type { ComponentProps, ReactNode } from "react"
-import {
-  createContext,
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import { createContext, memo, use, useCallback, useEffect, useMemo, useRef } from "react"
 import { Streamdown } from "streamdown"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
@@ -33,7 +24,7 @@ type ReasoningContextValue = {
 const ReasoningContext = createContext<ReasoningContextValue | null>(null)
 
 export const useReasoning = () => {
-  const context = useContext(ReasoningContext)
+  const context = use(ReasoningContext)
   if (!context) {
     throw new Error("Reasoning components must be used within Reasoning")
   }
@@ -77,10 +68,10 @@ export const Reasoning = memo(
     })
 
     const hasEverStreamedRef = useRef(isStreaming)
-    const [hasAutoClosed, setHasAutoClosed] = useState(false)
     const startTimeRef = useRef<number | null>(null)
 
     // Track when streaming starts and compute duration
+    /* eslint-disable react-doctor/no-effect-event-handler -- streaming state tracking, not event-driven */
     useEffect(() => {
       if (isStreaming) {
         hasEverStreamedRef.current = true
@@ -101,16 +92,18 @@ export const Reasoning = memo(
     }, [isStreaming, isOpen, setIsOpen, isExplicitlyClosed])
 
     // Auto-close when streaming ends (once only, and only if it ever streamed)
+    // Use ref to track hasAutoClosed to avoid cascading setState
+    const hasAutoClosedRef = useRef(false)
     useEffect(() => {
-      if (hasEverStreamedRef.current && !isStreaming && isOpen && !hasAutoClosed) {
+      if (hasEverStreamedRef.current && !isStreaming && isOpen && !hasAutoClosedRef.current) {
         const timer = setTimeout(() => {
           setIsOpen(false)
-          setHasAutoClosed(true)
+          hasAutoClosedRef.current = true
         }, AUTO_CLOSE_DELAY)
 
         return () => clearTimeout(timer)
       }
-    }, [isStreaming, isOpen, setIsOpen, hasAutoClosed])
+    }, [isStreaming, isOpen, setIsOpen])
 
     const handleOpenChange = useCallback(
       (newOpen: boolean) => {
@@ -145,7 +138,7 @@ export type ReasoningTriggerProps = ComponentProps<typeof CollapsibleTrigger> & 
 
 const defaultGetThinkingMessage = (isStreaming: boolean, duration?: number) => {
   if (isStreaming || duration === 0) {
-    return <Shimmer duration={1}>Thinking...</Shimmer>
+    return <Shimmer duration={1}>Thinking…</Shimmer>
   }
   if (duration === undefined) {
     return <p>Thought for a few seconds</p>

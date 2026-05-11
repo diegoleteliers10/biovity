@@ -33,7 +33,7 @@ export function CTA() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight text-balance"
+            className="text-4xl md:text-5xl font-semibold text-foreground mb-6 leading-tight text-balance"
           >
             ¿Listo para dar el siguiente paso?
           </m.h2>
@@ -58,7 +58,7 @@ export function CTA() {
           <Button asChild variant="default" size="lg" className="px-8 py-4">
             <Link href="/register/professional">
               Crear cuenta gratis
-              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="px-8 py-4">
@@ -84,7 +84,7 @@ export function CTA() {
             >
               <HugeiconsIcon
                 icon={CheckmarkCircle02Icon}
-                className="w-4 h-4 mr-2 text-muted-foreground"
+                className="size-4 mr-2 text-muted-foreground"
               />
               {benefit}
             </m.div>

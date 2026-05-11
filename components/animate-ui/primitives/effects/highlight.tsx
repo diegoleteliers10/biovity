@@ -39,7 +39,7 @@ type HighlightContextType<T extends string> = {
 const HighlightContext = React.createContext<HighlightContextType<string> | undefined>(undefined)
 
 function useHighlight<T extends string>(): HighlightContextType<T> {
-  const context = React.useContext(HighlightContext)
+  const context = React.use(HighlightContext)
   if (!context) {
     throw createHighlightError("useHighlight must be used within a HighlightProvider")
   }
@@ -141,16 +141,21 @@ function Highlight<T extends React.ElementType = "div">({ ref, ...props }: Highl
     [activeValue, onValueChange]
   )
 
-  const safeSetBounds = React.useCallback(
-    (bounds: DOMRect) => {
-      if (!localRef.current) return
-
-      const boundsOffset = (props as ParentModeHighlightProps)?.boundsOffset ?? {
+  const boundsOffset = React.useMemo(
+    () =>
+      (props as ParentModeHighlightProps)?.boundsOffset ?? {
         top: 0,
         left: 0,
         width: 0,
         height: 0,
-      }
+      },
+    // biome-ignore lint/correctness/useExhaustiveDependencies: props boundsOffset only read once on mount
+    [props]
+  )
+
+  const safeSetBounds = React.useCallback(
+    (bounds: DOMRect) => {
+      if (!localRef.current) return
 
       const containerRect = localRef.current.getBoundingClientRect()
       const newBounds: Bounds = {
@@ -173,7 +178,7 @@ function Highlight<T extends React.ElementType = "div">({ ref, ...props }: Highl
         return newBounds
       })
     },
-    [props]
+    [boundsOffset]
   )
 
   const clearBounds = React.useCallback(() => {
@@ -187,22 +192,30 @@ function Highlight<T extends React.ElementType = "div">({ ref, ...props }: Highl
 
   const id = React.useId()
 
+  const onScroll = React.useEffectEvent(() => {
+    if (mode !== "parent" || !activeValue) return
+    const container = localRef.current
+    if (!container) return
+    const activeEl = container.querySelector<HTMLElement>(
+      `[data-value="${activeValue}"][data-highlight="true"]`
+    )
+    if (activeEl) safeSetBounds(activeEl.getBoundingClientRect())
+  })
+
   React.useEffect(() => {
     if (mode !== "parent") return
     const container = localRef.current
     if (!container) return
 
-    const onScroll = () => {
-      if (!activeValue) return
-      const activeEl = container.querySelector<HTMLElement>(
-        `[data-value="${activeValue}"][data-highlight="true"]`
-      )
-      if (activeEl) safeSetBounds(activeEl.getBoundingClientRect())
-    }
-
     container.addEventListener("scroll", onScroll, { passive: true })
     return () => container.removeEventListener("scroll", onScroll)
-  }, [mode, activeValue, safeSetBounds])
+  }, [mode])
+
+  const containerClassName = React.useMemo(
+    () => (props as ParentModeHighlightProps)?.containerClassName,
+    // biome-ignore lint/correctness/useExhaustiveDependencies: props containerClassName only read once on mount
+    [props]
+  )
 
   const render = React.useCallback(
     (children: React.ReactNode) => {
@@ -212,7 +225,7 @@ function Highlight<T extends React.ElementType = "div">({ ref, ...props }: Highl
             ref={localRef}
             data-slot="motion-highlight-container"
             style={{ position: "relative", zIndex: 1 }}
-            className={(props as ParentModeHighlightProps)?.containerClassName}
+            className={containerClassName}
           >
             <AnimatePresence initial={false} mode="wait">
               {boundsState && (
@@ -255,7 +268,7 @@ function Highlight<T extends React.ElementType = "div">({ ref, ...props }: Highl
     [
       mode,
       Component,
-      props,
+      containerClassName,
       boundsState,
       transition,
       exitDelay,

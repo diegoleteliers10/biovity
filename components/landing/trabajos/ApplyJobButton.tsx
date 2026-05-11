@@ -15,7 +15,7 @@ type ApplyJobButtonProps = {
 }
 
 export function ApplyJobButton({ jobId, jobTitle, compact }: ApplyJobButtonProps) {
-  const router = useRouter()
+  const { push } = useRouter()
   const [sheetOpen, setSheetOpen] = useState(false)
   const { useSession } = authClient
   const { data: session } = useSession()
@@ -33,7 +33,7 @@ export function ApplyJobButton({ jobId, jobTitle, compact }: ApplyJobButtonProps
 
   const handleApply = () => {
     if (!isLoggedIn) {
-      router.push(`/login/professional?redirect=/trabajos/${jobId}`)
+      push(`/login/professional?redirect=/trabajos/${jobId}`)
       return
     }
     if (!isProfessional) return

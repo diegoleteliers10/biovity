@@ -157,7 +157,7 @@ export function RichTextEditor({
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: EDITOR_CONTENT_CSS }} />
+      <style suppressHydrationWarning>{EDITOR_CONTENT_CSS}</style>
       <div
         className={cn(
           "rounded-lg border border-input bg-background text-sm ring-offset-background relative",
@@ -166,7 +166,7 @@ export function RichTextEditor({
         )}
       >
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-0.5 border-b border-border px-1 py-1">
+        <div className="flex flex-wrap items-center gap-0.5 border-b border-border p-1">
           <MenuButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive("bold")}
@@ -254,7 +254,7 @@ export function RichTextEditor({
                 <div className="rich-text-shimmer h-4 w-24 rounded" />
                 <div className="rich-text-shimmer h-4 w-20 rounded" />
               </div>
-              <div className="rich-text-shimmer mt-1 h-4 w-4/5 rounded" />
+              <div className="rich-text-shimmer mt-1 size-4/5 rounded" />
             </div>
           )}
         </div>

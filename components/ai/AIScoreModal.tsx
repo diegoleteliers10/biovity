@@ -110,8 +110,8 @@ export function AIScoreModal({ score, jobOffer, candidateName, open, onOpenChang
                 Fortalezas
               </p>
               <ul className="space-y-1">
-                {score.strengths.map((s, i) => (
-                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                {score.strengths.map((s) => (
+                  <li key={s} className="text-sm text-muted-foreground flex items-start gap-2">
                     <span className="text-emerald-600 mt-0.5">•</span>
                     {s}
                   </li>
@@ -128,8 +128,8 @@ export function AIScoreModal({ score, jobOffer, candidateName, open, onOpenChang
                 Gaps a evaluar
               </p>
               <ul className="space-y-1">
-                {score.gaps.map((g, i) => (
-                  <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                {score.gaps.map((g) => (
+                  <li key={g} className="text-sm text-muted-foreground flex items-start gap-2">
                     <span className="text-amber-600 mt-0.5">•</span>
                     {g}
                   </li>

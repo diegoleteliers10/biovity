@@ -2,7 +2,14 @@
 
 import { TradeDownIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+
+const [LineChart, Line, CartesianGrid, XAxis] = await Promise.all([
+  import("recharts").then((m) => m.LineChart),
+  import("recharts").then((m) => m.Line),
+  import("recharts").then((m) => m.CartesianGrid),
+  import("recharts").then((m) => m.XAxis),
+])
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -39,7 +46,7 @@ export function DottedMultiLineChart() {
         <CardTitle>
           Multi Line Chart
           <Badge variant="outline" className="text-red-500 bg-red-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TradeDownIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeDownIcon} className="size-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>

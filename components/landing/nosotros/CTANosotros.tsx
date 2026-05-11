@@ -26,13 +26,9 @@ export function CTANosotros() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight text-balance"
+            className="text-4xl md:text-5xl font-semibold text-foreground mb-6 leading-tight text-balance"
           >
-            ¿Listo para{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              unirte
-            </span>
-            ?
+            ¿Listo para <span className="text-accent font-semibold">unirte</span>?
           </m.h2>
           <m.p
             initial={{ opacity: 0 }}
@@ -63,7 +59,7 @@ export function CTANosotros() {
               className="inline-flex items-center justify-center gap-2"
             >
               Soy empresa
-              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 shrink-0" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 shrink-0" />
             </Link>
           </Button>
         </m.div>

@@ -11,7 +11,7 @@ import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Image from "next/image"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
@@ -24,11 +24,22 @@ const ROLE_OPTIONS: { value: Role; label: string; icon: IconSvgElement }[] = [
   { value: "organization", label: "Empresa", icon: Building06Icon },
 ]
 
+const BackgroundBlobs = (
+  <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
+    <div className="absolute top-[5%] left-[10%] size-[22rem] bg-[#00374a]/25 rounded-full blur-3xl"></div>
+    <div className="absolute top-[15%] right-[15%] size-[18rem] bg-[#00374a]/20 rounded-full blur-2xl"></div>
+    <div className="absolute top-[55%] left-[5%] size-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl"></div>
+    <div className="absolute top-[65%] right-[10%] size-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl"></div>
+    <div className="absolute bottom-[15%] left-[25%] size-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl"></div>
+    <div className="absolute top-[35%] right-[30%] size-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl"></div>
+  </div>
+)
+
 export function ListaEsperaContent() {
   const [role, setRole] = useState<Role>("professional")
   const [email, setEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const isSubmittedRef = useRef(false)
   const [error, setError] = useState<string | null>(null)
   const reducedMotion = useReducedMotion()
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
@@ -48,7 +59,7 @@ export function ListaEsperaContent() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? "Error al registrar")
-      setIsSubmitted(true)
+      isSubmittedRef.current = true
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al registrar. Intenta de nuevo.")
     } finally {
@@ -56,21 +67,10 @@ export function ListaEsperaContent() {
     }
   }
 
-  const backgroundBlobs = (
-    <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
-      <div className="absolute top-[5%] left-[10%] w-[22rem] h-[22rem] bg-[#00374a]/25 rounded-full blur-3xl"></div>
-      <div className="absolute top-[15%] right-[15%] w-[18rem] h-[18rem] bg-[#00374a]/20 rounded-full blur-2xl"></div>
-      <div className="absolute top-[55%] left-[5%] w-[20rem] h-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl"></div>
-      <div className="absolute top-[65%] right-[10%] w-[24rem] h-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl"></div>
-      <div className="absolute bottom-[15%] left-[25%] w-[19rem] h-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl"></div>
-      <div className="absolute top-[35%] right-[30%] w-[16rem] h-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl"></div>
-    </div>
-  )
-
-  if (isSubmitted) {
+  if (isSubmittedRef.current) {
     return (
       <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-        {backgroundBlobs}
+        {BackgroundBlobs}
         <m.div
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -85,10 +85,10 @@ export function ListaEsperaContent() {
             className="mx-auto mb-6"
             priority
           />
-          <div className="w-20 h-20 rounded-full bg-[#006b5e]/20 flex items-center justify-center mx-auto mb-6">
+          <div className="size-20 rounded-full bg-[#006b5e]/20 flex items-center justify-center mx-auto mb-6">
             <HugeiconsIcon icon={CheckmarkCircle02Icon} size={40} className="text-[#006b5e]" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
+          <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance">
             ¡Estás en la lista!
           </h1>
           <p className="text-lg text-muted-foreground text-pretty">
@@ -102,7 +102,7 @@ export function ListaEsperaContent() {
 
   return (
     <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-      {backgroundBlobs}
+      {BackgroundBlobs}
 
       <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6">
         <m.div
@@ -119,11 +119,8 @@ export function ListaEsperaContent() {
             className="mx-auto mb-6"
             priority
           />
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight text-balance">
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Biovity
-            </span>{" "}
-            llega pronto
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 leading-tight text-balance">
+            <span className="text-accent font-semibold">Biovity</span> llega pronto
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground text-pretty">
             El portal de empleo para biotecnología, bioquímica y ciencias en Chile está en
@@ -200,7 +197,7 @@ export function ListaEsperaContent() {
             type="submit"
             disabled={isSubmitting}
             size="lg"
-            className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-semibold"
+            className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold"
           >
             {isSubmitting ? (
               <>
@@ -210,7 +207,7 @@ export function ListaEsperaContent() {
                   className="animate-spin"
                   aria-hidden
                 />
-                Registrando...
+                Registrando…
               </>
             ) : (
               "Unirme a la lista"
