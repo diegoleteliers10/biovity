@@ -2,7 +2,13 @@
 
 import { TradeDownIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Bar, BarChart, XAxis } from "recharts"
+
+const [BarChart, Bar, XAxis] = await Promise.all([
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.Bar),
+  import("recharts").then((m) => m.XAxis),
+])
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -39,7 +45,7 @@ export function DuotoneBarMultipleChart() {
         <CardTitle>
           Bar Chart - Multiple
           <Badge variant="outline" className="text-red-500 bg-red-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TradeDownIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeDownIcon} className="size-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>

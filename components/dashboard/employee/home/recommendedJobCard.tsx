@@ -69,7 +69,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 pt-0 flex-1 flex flex-col">
+      <CardContent className="gap-3 pt-0 flex-1 flex flex-col">
         {/* Job Details */}
         <div className="space-y-2 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
@@ -77,7 +77,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Location05Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 shrink-0 text-muted-foreground"
+              className="size-3 shrink-0 text-muted-foreground"
             />
             <span className="truncate">{job.location}</span>
           </div>
@@ -86,7 +86,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Cash02Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 shrink-0 text-muted-foreground"
+              className="size-3 shrink-0 text-muted-foreground"
             />
             <span className="truncate">{job.salary}</span>
           </div>
@@ -95,7 +95,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
               icon={Clock01Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3 w-3 shrink-0"
+              className="size-3 shrink-0"
             />
             <span className="truncate">{job.postedTime}</span>
           </div>
@@ -124,7 +124,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
                 icon={CheckmarkCircle02Icon}
                 size={24}
                 strokeWidth={1.5}
-                className="h-3 w-3 mr-1"
+                className="size-3 mr-1"
               />
               Aplicar
             </Button>
@@ -133,7 +133,7 @@ export const RecommendedJobCard = memo(function RecommendedJobCard({
                 icon={Bookmark02Icon}
                 size={24}
                 strokeWidth={1.5}
-                className={`h-3 w-3 ${job.isSaved ? "fill-current" : ""}`}
+                className={`size-3 ${job.isSaved ? "fill-current" : ""}`}
               />
             </Button>
           </div>

@@ -25,8 +25,8 @@ function OfertaDetailSkeleton() {
         <div className="space-y-3">
           <div className="h-5 w-40 animate-pulse rounded bg-muted" />
           <div className="space-y-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-14 animate-pulse rounded-lg bg-muted" />
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="h-14 animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
         </div>

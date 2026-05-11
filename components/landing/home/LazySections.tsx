@@ -14,8 +14,8 @@ const TransparencyGuarantee = dynamic(
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-8 w-64 bg-muted rounded mx-auto mb-8" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-48 bg-muted/50 rounded-xl" />
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="h-48 bg-muted/50 rounded-xl" />
             ))}
           </div>
         </div>
@@ -33,8 +33,8 @@ const HowItWorks = dynamic(
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-8 w-48 bg-muted rounded mx-auto mb-12" />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 bg-muted/50 rounded-lg" />
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="h-32 bg-muted/50 rounded-lg" />
             ))}
           </div>
         </div>
@@ -70,8 +70,8 @@ const Categories = dynamic(
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-8 w-48 bg-muted rounded mx-auto mb-12" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="h-28 bg-muted/50 rounded-lg" />
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+              <div key={n} className="h-28 bg-muted/50 rounded-lg" />
             ))}
           </div>
         </div>

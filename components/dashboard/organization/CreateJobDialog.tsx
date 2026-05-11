@@ -1,139 +1,155 @@
 "use client"
 
-import { Edit01Icon, FileAddIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useState } from "react"
-import { AIJobDescriptionWriter } from "@/components/ai/AIJobDescriptionWriter"
+import { useCallback, useEffect, useReducer } from "react"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
 } from "@/components/animate-ui/components/radix/dialog"
-import { RichTextEditor } from "@/components/dashboard/shared/lazy-rich-text-editor"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox"
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import type { Job, JobBenefitInput } from "@/lib/api/jobs"
 import { useCreateJobMutation, useUpdateJobMutation } from "@/lib/api/use-jobs"
+import {
+  BENEFIT_OPTIONS,
+  JobBenefitsSelector,
+  JobContractFields,
+  JobDescriptionField,
+  JobFormActions,
+  JobFormHeader,
+  JobLocationField,
+  JobSalaryFields,
+  JobTitleField,
+} from "./create-job/form"
 
-const BENEFIT_OPTIONS: JobBenefitInput[] = [
-  { tipo: "salud", label: "Seguro de salud y dental" },
-  { tipo: "vacaciones", label: "Vacaciones pagadas" },
-  { tipo: "formacion", label: "Presupuesto para formación" },
-  { tipo: "equipo", label: "Equipo y trabajo híbrido" },
-  { tipo: "bonos", label: "Bonos por desempeño" },
-  { tipo: "horario", label: "Horario flexible" },
-  { tipo: "teletrabajo", label: "Teletrabajo" },
-  { tipo: "estacionamiento", label: "Estacionamiento" },
-  { tipo: "gimnasio", label: "Gimnasio o wellness" },
-  { tipo: "almuerzo", label: "Almuerzo o colación" },
-  { tipo: "transporte", label: "Bono transporte" },
-  { tipo: "otro", label: "Otros beneficios" },
-]
+type JobFormState = {
+  title: string
+  description: string
+  employmentType: string
+  experienceLevel: string
+  city: string
+  country: string
+  isRemote: boolean
+  salaryMin: string
+  salaryMax: string
+  benefits: JobBenefitInput[]
+  isGeneratingDescription: boolean
+}
 
-const EMPLOYMENT_TYPES = [
-  { value: "Full-time", label: "Tiempo completo" },
-  { value: "Part-time", label: "Medio tiempo" },
-  { value: "Contrato", label: "Contrato" },
-  { value: "Practica", label: "Práctica" },
-] as const
+type JobFormAction =
+  | { type: "SET_FIELD"; field: keyof JobFormState; value: JobFormState[keyof JobFormState] }
+  | { type: "RESET" }
+  | { type: "SET_ALL"; payload: Partial<JobFormState> }
 
-const EXPERIENCE_LEVELS = [
-  { value: "Entrante", label: "Entrante" },
-  { value: "Junior", label: "Junior" },
-  { value: "Mid-Senior", label: "Semi Senior" },
-  { value: "Senior", label: "Senior" },
-  { value: "Ejecutivo", label: "Ejecutivo" },
-] as const
+const initialFormState: JobFormState = {
+  title: "",
+  description: "",
+  employmentType: "",
+  experienceLevel: "",
+  city: "",
+  country: "",
+  isRemote: false,
+  salaryMin: "",
+  salaryMax: "",
+  benefits: [],
+  isGeneratingDescription: false,
+}
+
+function jobFormReducer(state: JobFormState, action: JobFormAction): JobFormState {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value }
+    case "RESET":
+      return initialFormState
+    case "SET_ALL":
+      return { ...state, ...action.payload }
+    default:
+      return state
+  }
+}
 
 type CreateJobDialogProps = {
   organizationId: string
   open: boolean
   onOpenChange: (open: boolean) => void
-  /** When provided, dialog opens in edit mode with this job's data */
   job?: Job | null
 }
 
 export function CreateJobDialog({ organizationId, open, onOpenChange, job }: CreateJobDialogProps) {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [employmentType, setEmploymentType] = useState<string>("")
-  const [experienceLevel, setExperienceLevel] = useState<string>("")
-  const [city, setCity] = useState("")
-  const [country, setCountry] = useState("")
-  const [isRemote, setIsRemote] = useState(false)
-  const [salaryMin, setSalaryMin] = useState("")
-  const [salaryMax, setSalaryMax] = useState("")
-  const [benefits, setBenefits] = useState<JobBenefitInput[]>([])
-  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false)
-  const benefitsAnchorRef = useComboboxAnchor()
+  const [form, dispatch] = useReducer(jobFormReducer, initialFormState)
 
   const createMutation = useCreateJobMutation(organizationId)
   const updateMutation = useUpdateJobMutation(organizationId)
   const isEdit = Boolean(job?.id)
 
   const resetForm = useCallback(() => {
-    setTitle("")
-    setDescription("")
-    setEmploymentType("")
-    setExperienceLevel("")
-    setCity("")
-    setCountry("")
-    setIsRemote(false)
-    setSalaryMin("")
-    setSalaryMax("")
-    setBenefits([])
+    dispatch({ type: "RESET" })
   }, [])
+
+  const setField = useCallback(
+    (field: keyof JobFormState, value: JobFormState[keyof JobFormState]) => {
+      dispatch({ type: "SET_FIELD", field, value })
+    },
+    []
+  )
+
+  const parsedBenefits =
+    (job?.benefits as { tipo?: string; title?: string }[] | undefined)?.reduce<JobBenefitInput[]>(
+      (acc, b) => {
+        const label = b.title ?? (b.tipo === "otro" ? "Otro" : b.tipo)
+        if (label) {
+          acc.push({ tipo: b.tipo || "otro", label })
+        }
+        return acc
+      },
+      []
+    ) ?? []
+
+  const effectiveTitle = job?.title ?? ""
+  const effectiveDescription = job?.description ?? ""
+  const effectiveEmploymentType = job?.employmentType ?? ""
+  const effectiveExperienceLevel = job?.experienceLevel ?? ""
+  const effectiveCity = job?.location?.city ?? ""
+  const effectiveCountry = job?.location?.country ?? ""
+  const effectiveIsRemote = job?.location?.isRemote ?? false
+  const effectiveSalaryMin = job?.salary?.min != null ? String(job.salary.min) : ""
+  const effectiveSalaryMax = job?.salary?.max != null ? String(job.salary.max) : ""
+  const effectiveBenefits = job ? parsedBenefits : []
 
   useEffect(() => {
     if (!open) return
     if (job) {
-      setTitle(job.title)
-      setDescription(job.description)
-      setEmploymentType(job.employmentType)
-      setExperienceLevel(job.experienceLevel)
-      setCity(job.location?.city ?? "")
-      setCountry(job.location?.country ?? "")
-      setIsRemote(job.location?.isRemote ?? false)
-      setSalaryMin(job.salary?.min != null ? String(job.salary.min) : "")
-      setSalaryMax(job.salary?.max != null ? String(job.salary.max) : "")
-      setBenefits(
-        (job.benefits as { tipo?: string; title?: string }[] | undefined)
-          ?.map(
-            (b): JobBenefitInput =>
-              b.tipo && b.title
-                ? { tipo: b.tipo, label: b.title }
-                : { tipo: "otro", label: b.title ?? "Otro" }
-          )
-          .filter((b) => b.label) ?? []
-      )
+      dispatch({
+        type: "SET_ALL",
+        payload: {
+          title: effectiveTitle,
+          description: effectiveDescription,
+          employmentType: effectiveEmploymentType,
+          experienceLevel: effectiveExperienceLevel,
+          city: effectiveCity,
+          country: effectiveCountry,
+          isRemote: effectiveIsRemote,
+          salaryMin: effectiveSalaryMin,
+          salaryMax: effectiveSalaryMax,
+          benefits: effectiveBenefits,
+        },
+      })
     } else {
       resetForm()
     }
-  }, [open, job, resetForm])
+  }, [
+    open,
+    job,
+    effectiveTitle,
+    effectiveDescription,
+    effectiveEmploymentType,
+    effectiveExperienceLevel,
+    effectiveCity,
+    effectiveCountry,
+    effectiveIsRemote,
+    effectiveSalaryMin,
+    effectiveSalaryMax,
+    effectiveBenefits,
+    resetForm,
+  ])
 
   const handleOpenChange = useCallback(
     (next: boolean) => {
@@ -146,33 +162,39 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "").trim()
 
   const payload = {
-    title: title.trim(),
-    description: description.trim(),
-    employmentType,
-    experienceLevel,
+    title: form.title.trim(),
+    description: form.description.trim(),
+    employmentType: form.employmentType,
+    experienceLevel: form.experienceLevel,
     status: "active",
     location: {
-      city: city.trim() || undefined,
-      country: country.trim() || undefined,
-      isRemote,
+      city: form.city.trim() || undefined,
+      country: form.country.trim() || undefined,
+      isRemote: form.isRemote,
       isHybrid: false,
     },
     salary:
-      salaryMin || salaryMax
+      form.salaryMin || form.salaryMax
         ? {
-            min: salaryMin ? Number(salaryMin) : undefined,
-            max: salaryMax ? Number(salaryMax) : undefined,
+            min: form.salaryMin ? Number(form.salaryMin) : undefined,
+            max: form.salaryMax ? Number(form.salaryMax) : undefined,
             currency: "CLP",
             period: "monthly",
             isNegotiable: false,
           }
         : undefined,
-    benefits: benefits.length > 0 ? benefits : undefined,
+    benefits: form.benefits.length > 0 ? form.benefits : undefined,
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim() || !stripHtml(description) || !employmentType || !experienceLevel) return
+    if (
+      !form.title.trim() ||
+      !stripHtml(form.description) ||
+      !form.employmentType ||
+      !form.experienceLevel
+    )
+      return
 
     if (isEdit && job) {
       updateMutation.mutate(
@@ -193,174 +215,57 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   }
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending
-  const canSubmit = title.trim() && stripHtml(description) && employmentType && experienceLevel
+  const canSubmit =
+    form.title.trim() && stripHtml(form.description) && form.employmentType && form.experienceLevel
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <HugeiconsIcon icon={isEdit ? Edit01Icon : FileAddIcon} size={20} />
-            {isEdit ? "Editar oferta" : "Crear oferta"}
-          </DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? "Modifica los datos y guarda para actualizar la vacante."
-              : "Completa los datos para publicar una nueva vacante."}
-          </DialogDescription>
+          <JobFormHeader isEdit={isEdit} />
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Field>
-            <FieldLabel htmlFor="job-title">Título *</FieldLabel>
-            <Input
-              id="job-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ej: Desarrollador Full Stack Senior"
-              required
-            />
-          </Field>
+          <JobTitleField value={form.title} onChange={(v) => setField("title", v)} />
 
-          <Field>
-            <FieldLabel>Descripción *</FieldLabel>
-            <RichTextEditor
-              content={description}
-              onChange={setDescription}
-              placeholder="Describe el puesto, requisitos y responsabilidades..."
-              className="min-h-[160px]"
-              isGenerating={isGeneratingDescription}
-              toolbarSuffix={
-                <AIJobDescriptionWriter
-                  jobTitle={title}
-                  companyName=""
-                  area={experienceLevel}
-                  skills={[]}
-                  contractType={employmentType}
-                  modality={isRemote ? "remoto" : "presencial"}
-                  currentDescription={description}
-                  onGenerated={(generatedDescription) => {
-                    setDescription(generatedDescription)
-                  }}
-                  onGeneratingChange={setIsGeneratingDescription}
-                />
-              }
-            />
-          </Field>
+          <JobDescriptionField
+            value={form.description}
+            isGenerating={form.isGeneratingDescription}
+            jobTitle={form.title}
+            experienceLevel={form.experienceLevel}
+            employmentType={form.employmentType}
+            isRemote={form.isRemote}
+            onChange={(v) => setField("description", v)}
+            onGeneratingChange={(v) => setField("isGeneratingDescription", v)}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <Field>
-              <FieldLabel>Tipo de contrato *</FieldLabel>
-              <Select value={employmentType} onValueChange={setEmploymentType}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  {EMPLOYMENT_TYPES.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field>
-              <FieldLabel>Nivel de experiencia *</FieldLabel>
-              <Select value={experienceLevel} onValueChange={setExperienceLevel}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  {EXPERIENCE_LEVELS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
+          <JobContractFields
+            employmentType={form.employmentType}
+            experienceLevel={form.experienceLevel}
+            onEmploymentTypeChange={(v) => setField("employmentType", v)}
+            onExperienceLevelChange={(v) => setField("experienceLevel", v)}
+          />
 
-          <Field>
-            <FieldLabel>Ubicación</FieldLabel>
-            <div className="space-y-3">
-              <Checkbox
-                checked={isRemote}
-                onChange={(e) => setIsRemote(e.target.checked)}
-                label="Trabajo remoto"
-              />
-              {!isRemote && (
-                <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="Ciudad"
-                  />
-                  <Input
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    placeholder="País"
-                  />
-                </div>
-              )}
-            </div>
-          </Field>
+          <JobLocationField
+            isRemote={form.isRemote}
+            city={form.city}
+            country={form.country}
+            onRemoteChange={(v) => setField("isRemote", v)}
+            onCityChange={(v) => setField("city", v)}
+            onCountryChange={(v) => setField("country", v)}
+          />
 
-          <Field>
-            <FieldLabel>Salario (opcional)</FieldLabel>
-            <div className="flex gap-2 items-center">
-              <Input
-                type="number"
-                value={salaryMin}
-                onChange={(e) => setSalaryMin(e.target.value)}
-                placeholder="Mín"
-                min={0}
-              />
-              <span className="text-muted-foreground">—</span>
-              <Input
-                type="number"
-                value={salaryMax}
-                onChange={(e) => setSalaryMax(e.target.value)}
-                placeholder="Máx"
-                min={0}
-              />
-              <span className="text-muted-foreground text-xs shrink-0">CLP/mes</span>
-            </div>
-          </Field>
+          <JobSalaryFields
+            salaryMin={form.salaryMin}
+            salaryMax={form.salaryMax}
+            onSalaryMinChange={(v) => setField("salaryMin", v)}
+            onSalaryMaxChange={(v) => setField("salaryMax", v)}
+          />
 
-          <Field>
-            <FieldLabel>Beneficios</FieldLabel>
-            <Combobox
-              multiple
-              value={benefits}
-              onValueChange={(v) => setBenefits((v as JobBenefitInput[]) ?? [])}
-              items={BENEFIT_OPTIONS}
-              isItemEqualToValue={(a, b) => a.tipo === b.tipo && a.label === b.label}
-            >
-              <ComboboxChips ref={benefitsAnchorRef} className="w-full">
-                <ComboboxValue>
-                  {(values: JobBenefitInput[]) => (
-                    <>
-                      {values.map((v) => (
-                        <ComboboxChip key={v.tipo}>{v.label}</ComboboxChip>
-                      ))}
-                      <ComboboxChipsInput placeholder="Seleccionar beneficios..." />
-                    </>
-                  )}
-                </ComboboxValue>
-              </ComboboxChips>
-              <ComboboxContent anchor={benefitsAnchorRef} className="w-(--anchor-width)">
-                <ComboboxList>
-                  {BENEFIT_OPTIONS.map((opt) => (
-                    <ComboboxItem key={opt.tipo} value={opt}>
-                      {opt.label}
-                    </ComboboxItem>
-                  ))}
-                </ComboboxList>
-                <ComboboxEmpty>Sin resultados</ComboboxEmpty>
-              </ComboboxContent>
-            </Combobox>
-          </Field>
+          <JobBenefitsSelector
+            benefits={form.benefits}
+            onBenefitsChange={(v) => setField("benefits", v)}
+          />
 
           {(createMutation.isError || updateMutation.isError) && (
             <p className="text-destructive text-sm">
@@ -368,27 +273,16 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
             </p>
           )}
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={!canSubmit || isSubmitting}>
-              {isSubmitting
-                ? isEdit
-                  ? "Guardando..."
-                  : "Creando..."
-                : isEdit
-                  ? "Guardar cambios"
-                  : "Crear oferta"}
-            </Button>
-          </DialogFooter>
+          <JobFormActions
+            isSubmitting={isSubmitting}
+            isEdit={isEdit}
+            canSubmit={canSubmit}
+            onCancel={() => handleOpenChange(false)}
+          />
         </form>
       </DialogContent>
     </Dialog>
   )
 }
+
+export { BENEFIT_OPTIONS, type JobFormAction, type JobFormState }

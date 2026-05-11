@@ -74,8 +74,8 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
       <CardContent>
         {isLoading ? (
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse space-y-2">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="animate-pulse space-y-2">
                 <div className="h-4 w-32 rounded bg-muted" />
                 <div className="h-3 w-48 rounded bg-muted" />
               </div>
@@ -83,8 +83,8 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
           </div>
         ) : hasLegacyMessages ? (
           <div className="space-y-4">
-            {messages?.slice(0, 5).map((msg, i) => (
-              <div key={i} className="space-y-1">
+            {messages?.slice(0, 5).map((msg) => (
+              <div key={msg.sender + msg.time} className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-foreground truncate">{msg.sender}</p>
                   <p className="text-xs text-muted-foreground shrink-0">{msg.time}</p>
@@ -106,12 +106,11 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
               const participantName = namesMap[participantId] ?? defaultName
 
               return (
-                <div
+                <button
+                  type="button"
                   key={chat.id}
-                  className="space-y-1 cursor-pointer hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-all duration-150 active:scale-[0.98]"
+                  className="gap-1 cursor-pointer hover:bg-muted/30 rounded-lg -mx-2 p-2 transition-all duration-150 active:scale-[0.98] w-full text-left"
                   onClick={() => handleChatClick(chat.id)}
-                  role="button"
-                  tabIndex={0}
                   onKeyDown={(e) =>
                     (e.key === "Enter" || e.key === " ") && handleChatClick(chat.id)
                   }
@@ -129,15 +128,15 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
                   <p className="text-xs truncate">
                     {isItemLoading ? (
                       <span className="text-muted-foreground/50 animate-pulse">
-                        Cargando mensaje...
+                        Cargando mensaje…
                       </span>
                     ) : hasRecruiterMessage ? (
                       <span className="text-muted-foreground">{chat.lastMessageFromRecruiter}</span>
                     ) : (
-                      <span className="text-secondary italic">Esperando respuesta...</span>
+                      <span className="text-secondary italic">Esperando respuesta…</span>
                     )}
                   </p>
-                </div>
+                </button>
               )
             })}
           </div>

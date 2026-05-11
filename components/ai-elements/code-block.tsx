@@ -2,16 +2,7 @@
 
 import { CheckIcon, CopyIcon } from "lucide-react"
 import type { ComponentProps, CSSProperties, HTMLAttributes } from "react"
-import {
-  createContext,
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import { createContext, memo, use, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { BundledLanguage, BundledTheme, HighlighterGeneric, ThemedToken } from "shiki"
 import { createHighlighter } from "shiki"
 import { Button } from "@/components/ui/button"
@@ -441,7 +432,7 @@ export const CodeBlockCopyButton = ({
 }: CodeBlockCopyButtonProps) => {
   const [isCopied, setIsCopied] = useState(false)
   const timeoutRef = useRef<number>(0)
-  const { code } = useContext(CodeBlockContext)
+  const { code } = use(CodeBlockContext)
 
   const copyToClipboard = useCallback(async () => {
     if (typeof window === "undefined" || !navigator?.clipboard?.writeText) {

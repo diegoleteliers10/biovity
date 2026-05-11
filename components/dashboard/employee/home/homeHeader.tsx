@@ -22,6 +22,28 @@ type HomeHeaderProps = {
   onNotificationClick: (id: number) => void
 }
 
+function HeaderContent({ isPending, firstName }: { isPending?: boolean; firstName: string }) {
+  if (isPending) {
+    return (
+      <div className="space-y-2">
+        <Skeleton className="h-9 w-full max-w-[280px] sm:max-w-[320px]" />
+        <Skeleton className="h-5 w-full max-w-[240px] sm:max-w-[384px]" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide text-foreground">
+        ¡Bienvenido/a de vuelta, {firstName}!
+      </h1>
+      <p className="text-muted-foreground text-sm sm:text-base">
+        Aquí está lo que está pasando con tus aplicaciones de trabajo hoy.
+      </p>
+    </div>
+  )
+}
+
 export function HomeHeader({
   firstName,
   isPending,
@@ -29,28 +51,6 @@ export function HomeHeader({
   unreadCount,
   onNotificationClick,
 }: HomeHeaderProps) {
-  const HeaderContent = () => {
-    if (isPending) {
-      return (
-        <div className="space-y-2">
-          <Skeleton className="h-9 w-full max-w-[280px] sm:max-w-[320px]" />
-          <Skeleton className="h-5 w-full max-w-[240px] sm:max-w-[384px]" />
-        </div>
-      )
-    }
-
-    return (
-      <div className="space-y-2">
-        <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide text-foreground">
-          ¡Bienvenido/a de vuelta, {firstName}!
-        </h1>
-        <p className="text-muted-foreground text-sm sm:text-base">
-          Aquí está lo que está pasando con tus aplicaciones de trabajo hoy.
-        </p>
-      </div>
-    )
-  }
-
   return (
     <div className="flex flex-col gap-4">
       {/* Top row: menu + notification on mobile */}
@@ -66,7 +66,7 @@ export function HomeHeader({
               >
                 <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-destructive rounded-full" />
+                  <span className="absolute top-0 right-0 size-2 bg-destructive rounded-full" />
                 )}
               </Button>
             </DropdownMenuTrigger>
@@ -74,13 +74,14 @@ export function HomeHeader({
               <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
               <div className="p-2 space-y-2">
                 {notifications.map((notification) => (
-                  <div
+                  <button
                     key={notification.id}
-                    className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                    type="button"
+                    className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors w-full text-left"
                     onClick={() => onNotificationClick(notification.id)}
                   >
                     <div
-                      className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
+                      className={`size-2 rounded-full mt-2 shrink-0 ${
                         notification.isRead
                           ? "bg-muted-foreground/30"
                           : notification.type === "application"
@@ -99,7 +100,7 @@ export function HomeHeader({
                       <p className="text-xs text-muted-foreground">{notification.message}</p>
                       <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </DropdownMenuContent>
@@ -119,7 +120,7 @@ export function HomeHeader({
               >
                 <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
                 {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-destructive rounded-full" />
+                  <span className="absolute top-0 right-0 size-2 bg-destructive rounded-full" />
                 )}
               </Button>
             </DropdownMenuTrigger>
@@ -127,13 +128,14 @@ export function HomeHeader({
               <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
               <div className="p-2 space-y-2">
                 {notifications.map((notification) => (
-                  <div
+                  <button
                     key={notification.id}
-                    className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                    type="button"
+                    className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors w-full text-left"
                     onClick={() => onNotificationClick(notification.id)}
                   >
                     <div
-                      className={`w-2 h-2 rounded-full mt-2 shrink-0 ${
+                      className={`size-2 rounded-full mt-2 shrink-0 ${
                         notification.isRead
                           ? "bg-muted-foreground/30"
                           : notification.type === "application"
@@ -152,7 +154,7 @@ export function HomeHeader({
                       <p className="text-xs text-muted-foreground">{notification.message}</p>
                       <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </DropdownMenuContent>
@@ -166,7 +168,7 @@ export function HomeHeader({
             </div>
           }
         >
-          <HeaderContent />
+          <HeaderContent isPending={isPending} firstName={firstName} />
         </Suspense>
       </div>
     </div>

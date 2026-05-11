@@ -34,7 +34,155 @@ import { Logo } from "@/components/ui/logo"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { ServerSession } from "@/lib/auth"
 import { signOutAndRedirect } from "@/lib/auth-client"
-import type { NavData } from "@/lib/types/nav"
+import type { NavData, NavExploreItem, NavItem } from "@/lib/types/nav"
+
+function NavTooltip({
+  trigger,
+  content,
+  key: _key,
+}: {
+  trigger: ReactElement
+  content: ReactNode
+  key?: string
+}) {
+  return (
+    <Tooltip side="right" align="center">
+      <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+      <TooltipContent>{content}</TooltipContent>
+    </Tooltip>
+  )
+}
+
+function NavItemWithTooltip({
+  item,
+  pathname,
+  isMobile,
+  onNavigate,
+}: {
+  item: NavItem
+  pathname: string
+  isMobile: boolean
+  onNavigate: (url: string) => void
+}) {
+  const isActive = pathname === item.url
+  if (isMobile) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive}
+          size="default"
+          className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+        >
+          <button
+            type="button"
+            onClick={() => onNavigate(item.url)}
+            className="flex items-center w-full focus:outline-none cursor-pointer"
+          >
+            <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
+            <span>{item.title}</span>
+            {"badge" in item && item.badge != null && (
+              <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                {item.badge}
+              </span>
+            )}
+          </button>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    )
+  }
+  return (
+    <NavTooltip
+      trigger={
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            isActive={isActive}
+            size="default"
+            className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+          >
+            <button
+              type="button"
+              onClick={() => onNavigate(item.url)}
+              className="flex items-center w-full focus:outline-none cursor-pointer"
+            >
+              <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
+              <span>{item.title}</span>
+              {"badge" in item && item.badge != null && (
+                <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                  {item.badge}
+                </span>
+              )}
+            </button>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      }
+      content={<p>{item.title}</p>}
+    />
+  )
+}
+
+function ExploreItemWithTooltip({
+  item,
+  pathname,
+  state,
+  isMobile,
+  onNavigate,
+}: {
+  item: NavExploreItem
+  pathname: string
+  state: "expanded" | "collapsed"
+  isMobile: boolean
+  onNavigate: (url: string) => void
+}) {
+  const isActive = pathname === item.url
+  const tooltipText = item.tooltipCollapsed ?? item.title
+  if (isMobile) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive}
+          size="sm"
+          className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+        >
+          <button
+            type="button"
+            onClick={() => onNavigate(item.url)}
+            className="flex items-center w-full focus:outline-none cursor-pointer"
+          >
+            <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
+            <span>{item.title}</span>
+          </button>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    )
+  }
+  return (
+    <NavTooltip
+      trigger={
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            isActive={isActive}
+            size="sm"
+            className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+          >
+            <button
+              type="button"
+              onClick={() => onNavigate(item.url)}
+              className="flex items-center w-full focus:outline-none cursor-pointer"
+            >
+              <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
+              <span>{item.title}</span>
+            </button>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      }
+      content={<p>{state === "collapsed" ? tooltipText : item.title}</p>}
+    />
+  )
+}
 
 export type DashboardSidebarProps = {
   navData: NavData
@@ -62,7 +210,7 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const { state, setOpen, open, setOpenMobile, isMobile } = useSidebar()
   const pathname = usePathname()
-  const router = useRouter()
+  const { push } = useRouter()
 
   const sessionUser = session?.user as
     | {
@@ -86,7 +234,7 @@ export function DashboardSidebar({
     if (isMobile) {
       setOpenMobile(false)
     }
-    router.push(url)
+    push(url)
   }
 
   const handleLogout = async () => {
@@ -105,17 +253,6 @@ export function DashboardSidebar({
   const logoutItemClassName = logoutHoverContrastOnAccent
     ? "cursor-pointer text-red-600 hover:text-accent-foreground focus:text-accent-foreground"
     : "cursor-pointer text-red-600 focus:text-red-600"
-
-  const renderDesktopTooltip = (trigger: ReactElement, content: ReactNode, key?: string) => {
-    if (isMobile) return trigger
-
-    return (
-      <Tooltip key={key} side="right" align="center">
-        <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-        <TooltipContent>{content}</TooltipContent>
-      </Tooltip>
-    )
-  }
 
   return (
     <Sidebar collapsible="icon" className="border-none">
@@ -157,39 +294,16 @@ export function DashboardSidebar({
         {/* Main Navigation */}
         <SidebarGroup>
           <SidebarMenu className="font-mono">
-            {navData.navMain.map((item) => {
-              const isActive = pathname === item.url
-              return (
-                <div key={item.title}>
-                  {renderDesktopTooltip(
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive}
-                        size="default"
-                        className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => handleNavigate(item.url)}
-                          className="flex items-center w-full focus:outline-none cursor-pointer"
-                        >
-                          <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
-                          <span>{item.title}</span>
-                          {"badge" in item && item.badge != null && (
-                            <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                              {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>,
-                    <p>{item.title}</p>,
-                    item.title
-                  )}
-                </div>
-              )
-            })}
+            {navData.navMain.map((item) => (
+              <div key={item.title}>
+                <NavItemWithTooltip
+                  item={item}
+                  pathname={pathname}
+                  isMobile={isMobile}
+                  onNavigate={handleNavigate}
+                />
+              </div>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
 
@@ -205,7 +319,7 @@ export function DashboardSidebar({
                     {navData.profileProgress.subtitle}
                   </p>
                 </div>
-                <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                <div className="flex items-center justify-center size-8 bg-primary/10 rounded-full">
                   <span className="text-xs font-bold text-primary">
                     {navData.profileProgress.percentage}%
                   </span>
@@ -220,7 +334,7 @@ export function DashboardSidebar({
               <button
                 className="w-full text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-1"
                 type="button"
-                onClick={() => router.push(profileUrl)}
+                onClick={() => push(profileUrl)}
                 tabIndex={0}
                 aria-label={`${navData.profileProgress.actionText} - ${navData.profileProgress.percentage}%`}
               >
@@ -229,23 +343,42 @@ export function DashboardSidebar({
             </div>
             <SidebarGroup className="hidden group-data-[collapsible=icon]:flex">
               <SidebarMenu className="font-mono">
-                {renderDesktopTooltip(
+                {isMobile ? (
                   <SidebarMenuItem>
                     <button
                       type="button"
-                      onClick={() => router.push(profileUrl)}
-                      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 w-8 h-8 aspect-square hover:bg-primary/20 transition-colors"
+                      onClick={() => push(profileUrl)}
+                      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 size-8 aspect-square hover:bg-primary/20 transition-colors"
                       aria-label={`Perfil ${navData.profileProgress?.percentage}%`}
                     >
                       <span className="text-[10px] font-bold tabular-nums">
                         {navData.profileProgress.percentage}%
                       </span>
                     </button>
-                  </SidebarMenuItem>,
-                  <>
-                    <p>Progreso del Perfil: {navData.profileProgress.percentage}%</p>
-                    <p className="text-xs text-secondary-foreground/70">Click para completar</p>
-                  </>
+                  </SidebarMenuItem>
+                ) : (
+                  <NavTooltip
+                    trigger={
+                      <SidebarMenuItem>
+                        <button
+                          type="button"
+                          onClick={() => push(profileUrl)}
+                          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 size-8 aspect-square hover:bg-primary/20 transition-colors"
+                          aria-label={`Perfil ${navData.profileProgress?.percentage}%`}
+                        >
+                          <span className="text-[10px] font-bold tabular-nums">
+                            {navData.profileProgress.percentage}%
+                          </span>
+                        </button>
+                      </SidebarMenuItem>
+                    }
+                    content={
+                      <>
+                        <p>Progreso del Perfil: {navData.profileProgress.percentage}%</p>
+                        <p className="text-xs text-secondary-foreground/70">Click para completar</p>
+                      </>
+                    }
+                  />
                 )}
               </SidebarMenu>
             </SidebarGroup>
@@ -259,35 +392,17 @@ export function DashboardSidebar({
               Explorar
             </SidebarGroupLabel>
             <SidebarMenu className="font-mono">
-              {navData.explore.map((item) => {
-                const isActive = pathname === item.url
-                const tooltipText = item.tooltipCollapsed ?? item.title
-                return (
-                  <div key={item.title}>
-                    {renderDesktopTooltip(
-                      <SidebarMenuItem>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={isActive}
-                          size="sm"
-                          className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
-                        >
-                          <button
-                            type="button"
-                            onClick={() => handleNavigate(item.url)}
-                            className="flex items-center w-full focus:outline-none cursor-pointer"
-                          >
-                            <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
-                            <span>{item.title}</span>
-                          </button>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>,
-                      <p>{state === "collapsed" ? tooltipText : item.title}</p>,
-                      item.title
-                    )}
-                  </div>
-                )
-              })}
+              {navData.explore.map((item) => (
+                <div key={item.title}>
+                  <ExploreItemWithTooltip
+                    item={item}
+                    pathname={pathname}
+                    state={state}
+                    isMobile={isMobile}
+                    onNavigate={handleNavigate}
+                  />
+                </div>
+              ))}
             </SidebarMenu>
           </SidebarGroup>
         )}
@@ -303,7 +418,7 @@ export function DashboardSidebar({
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                 >
                   {session ? (
-                    <Avatar className="h-8 w-8 rounded-lg">
+                    <Avatar className="size-8 rounded-lg">
                       {avatarUrl ? (
                         <AvatarImage
                           src={avatarUrl}
@@ -323,7 +438,7 @@ export function DashboardSidebar({
                       </AvatarFallback>
                     </Avatar>
                   ) : (
-                    <Skeleton className="h-8 w-8 rounded-lg bg-muted" />
+                    <Skeleton className="size-8 rounded-lg bg-muted" />
                   )}
                   {state !== "collapsed" && (
                     <div className="grid flex-1 text-left text-sm leading-tight">

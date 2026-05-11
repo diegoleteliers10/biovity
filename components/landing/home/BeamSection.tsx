@@ -26,7 +26,7 @@ export function ConexionTalento() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight"
+            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight"
           >
             Conectamos talento con empresas
           </m.h2>
@@ -61,10 +61,10 @@ export function ConexionTalento() {
               transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
               className="text-center p-6"
             >
-              <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-secondary">1</span>
+              <div className="size-14 flex items-center justify-center mx-auto mb-4">
+                <span className="text-6xl font-semibold text-secondary">1</span>
               </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">Empresas publican</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Empresas publican</h3>
               <p className="text-muted-foreground">
                 Publica ofertas de trabajo dirigidas específicamente al sector científico.
               </p>
@@ -77,10 +77,10 @@ export function ConexionTalento() {
               transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
               className="text-center p-6"
             >
-              <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-secondary">2</span>
+              <div className="size-14 flex items-center justify-center mx-auto mb-4">
+                <span className="text-6xl font-semibold text-secondary">2</span>
               </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">Candidatos postulan</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Candidatos postulan</h3>
               <p className="text-muted-foreground">
                 Profesionales especializados encuentran y postulan a las mejores oportunidades.
               </p>
@@ -93,13 +93,13 @@ export function ConexionTalento() {
               transition={ts(LANDING_ANIMATION.sequenceDelay * 4)}
               className="text-center p-6"
             >
-              <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-bold text-accent">3</span>
+              <div className="size-14 flex items-center justify-center mx-auto mb-4">
+                <span className="text-6xl font-semibold text-accent">3</span>
               </div>
               <Badge variant="secondary" className="mb-2">
                 AI Matching
               </Badge>
-              <h3 className="text-lg font-bold text-foreground mb-2">Match perfecto</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Match perfecto</h3>
               <p className="text-muted-foreground">
                 Nuestro AI Matching conecta a los candidatos ideales con tu empresa.
               </p>

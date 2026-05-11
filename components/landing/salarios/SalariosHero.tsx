@@ -14,12 +14,9 @@ export function SalariosHero() {
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 md:mb-6 leading-tight text-balance tracking-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4 md:mb-6 leading-tight text-balance tracking-tight"
           >
-            Estudio de{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Salarios en Biociencias
-            </span>
+            Estudio de <span className="text-accent font-semibold">Salarios en Biociencias</span>
           </m.h1>
 
           <m.p
@@ -38,7 +35,7 @@ export function SalariosHero() {
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
             className="text-center text-sm text-muted-foreground mb-12"
           >
-            <HugeiconsIcon icon={TradeUpIcon} className="w-5 h-5 text-accent inline-block mr-2" />
+            <HugeiconsIcon icon={TradeUpIcon} className="size-5 text-accent inline-block mr-2" />
             <span>Datos actualizados 2024-2025</span>
           </m.div>
 

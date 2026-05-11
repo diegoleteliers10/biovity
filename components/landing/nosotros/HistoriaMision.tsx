@@ -26,12 +26,9 @@ export function HistoriaMision() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-3xl md:text-4xl font-bold text-foreground mb-6 text-balance"
+            className="text-3xl md:text-4xl font-semibold text-foreground mb-6 text-balance"
           >
-            Nuestra{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Historia
-            </span>
+            Nuestra <span className="text-accent font-semibold">Historia</span>
           </m.h2>
           <m.p
             initial={{ opacity: 0 }}
@@ -78,11 +75,11 @@ export function HistoriaMision() {
                 className="group bg-[#f3f3f5] rounded-2xl p-8 border border-border/10 hover:border-secondary/20 hover:bg-secondary/5 transition-all duration-200"
               >
                 <div
-                  className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${iconBg}`}
+                  className={`size-14 rounded-xl flex items-center justify-center mb-5 ${iconBg}`}
                 >
                   <HugeiconsIcon icon={item.icon} size={32} className={`${iconColor}`} />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </m.div>
             )

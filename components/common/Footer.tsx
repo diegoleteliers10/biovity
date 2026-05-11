@@ -46,32 +46,32 @@ const FOOTER_SECTIONS = [
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-neutral-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company info */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-6">
+            <div className="flex items-center gap-2 mb-6">
               <Logo size="sm" />
               <span className="text-xl font-semibold">Biovity</span>
             </div>
-            <p className="text-gray-400 mb-6 leading-relaxed text-pretty">
+            <p className="text-neutral-400 mb-6 leading-relaxed text-pretty">
               La plataforma líder que conecta talento científico con las mejores oportunidades en
               biotecnología, química, farmacia y áreas relacionadas.
             </p>
 
             {/* Contact info */}
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 text-gray-400">
-                <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-neutral-400">
+                <HugeiconsIcon icon={Mail01Icon} className="size-4" />
                 <span>contacto@biovity.com</span>
               </div>
-              <div className="flex items-center space-x-3 text-gray-400">
-                <HugeiconsIcon icon={CallIcon} className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-neutral-400">
+                <HugeiconsIcon icon={CallIcon} className="size-4" />
                 <span>+56 2 2345 6789</span>
               </div>
-              <div className="flex items-center space-x-3 text-gray-400">
-                <HugeiconsIcon icon={MapPinIcon} className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-neutral-400">
+                <HugeiconsIcon icon={MapPinIcon} className="size-4" />
                 <span>Santiago, Chile</span>
               </div>
             </div>
@@ -86,7 +86,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-gray-400 hover:text-white transition-colors"
+                      className="text-neutral-400 hover:text-white transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -98,49 +98,49 @@ export function Footer() {
         </div>
 
         {/* Bottom section */}
-        <div className="border-t border-gray-800 mt-12 pt-8">
+        <div className="border-t border-neutral-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="text-gray-400 mb-4 md:mb-0">
+            <div className="text-neutral-400 mb-4 md:mb-0">
               © 2024 Biovity. Todos los derechos reservados.
             </div>
 
             {/* Social links - placeholder until social URLs are configured */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <Link
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-neutral-400 hover:text-white transition-colors"
                 aria-label="Facebook"
               >
-                <HugeiconsIcon icon={Facebook01Icon} className="w-5 h-5" />
+                <HugeiconsIcon icon={Facebook01Icon} className="size-5" />
               </Link>
               <Link
                 href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-neutral-400 hover:text-white transition-colors"
                 aria-label="X (formerly Twitter)"
               >
-                <HugeiconsIcon icon={TwitterIcon} className="w-5 h-5" />
+                <HugeiconsIcon icon={TwitterIcon} className="size-5" />
               </Link>
               <Link
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-neutral-400 hover:text-white transition-colors"
                 aria-label="LinkedIn"
               >
-                <HugeiconsIcon icon={Linkedin02Icon} className="w-5 h-5" />
+                <HugeiconsIcon icon={Linkedin02Icon} className="size-5" />
               </Link>
               <Link
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-neutral-400 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
-                <HugeiconsIcon icon={InstagramIcon} className="w-5 h-5" />
+                <HugeiconsIcon icon={InstagramIcon} className="size-5" />
               </Link>
             </div>
           </div>

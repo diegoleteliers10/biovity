@@ -2,7 +2,14 @@
 
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
+
+const [RadarChart, PolarAngleAxis, PolarGrid, Radar] = await Promise.all([
+  import("recharts").then((m) => m.RadarChart),
+  import("recharts").then((m) => m.PolarAngleAxis),
+  import("recharts").then((m) => m.PolarGrid),
+  import("recharts").then((m) => m.Radar),
+])
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -45,7 +52,7 @@ export function StrokeMultipleRadarChart() {
         <CardTitle>
           Radar Chart
           <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeUpIcon} className="size-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

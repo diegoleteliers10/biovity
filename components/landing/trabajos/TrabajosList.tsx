@@ -78,7 +78,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                 <div className="flex flex-col gap-1.5">
                   {/* Header: Título y Fecha */}
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-xl flex-1 font-bold text-foreground tracking-tight">
+                    <h2 className="text-xl flex-1 font-semibold text-foreground tracking-tight">
                       {trabajo.titulo}
                     </h2>
                     <div className="flex shrink-0 items-center gap-2">

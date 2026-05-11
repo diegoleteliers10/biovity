@@ -25,7 +25,7 @@ export function PropuestaValor() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight text-balance"
+            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance"
           >
             ¿Por qué elegir Biovity?
           </m.h2>
@@ -70,11 +70,11 @@ export function PropuestaValor() {
                 className="bg-white rounded-2xl p-6 border border-border/10 hover:bg-secondary/5 transition-all duration-200 group"
               >
                 <div
-                  className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200 ${iconBg}`}
+                  className={`size-14 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200 ${iconBg}`}
                 >
                   <HugeiconsIcon icon={beneficio.icon} size={36} className={iconColor} />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{beneficio.title}</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-2">{beneficio.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{beneficio.description}</p>
               </m.div>
             )

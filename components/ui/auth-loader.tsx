@@ -8,7 +8,7 @@ export function AuthLoader() {
       role="status"
     >
       <div className="flex flex-col items-center gap-3">
-        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+        <div className="size-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
         <span className="text-xs text-muted-foreground">Verificando…</span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import type { CandidateContext, FitScoreResult, JobOfferContext } from "@/lib/ai/types"
+import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
+import { useFitScoreQuery } from "@/lib/api/use-fit-score"
 
 type Props = {
   candidate: CandidateContext
@@ -9,21 +9,9 @@ type Props = {
 }
 
 export function FitScoreBadge({ candidate, jobOffer }: Props) {
-  const [score, setScore] = useState<FitScoreResult | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: score, isLoading } = useFitScoreQuery(candidate, jobOffer)
 
-  useEffect(() => {
-    fetch("/api/ai/score", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ candidate, jobOffer }),
-    })
-      .then((r) => r.json())
-      .then((data: FitScoreResult) => setScore(data))
-      .finally(() => setLoading(false))
-  }, [candidate, jobOffer])
-
-  if (loading) return <div className="h-5 w-16 animate-pulse rounded-full bg-muted" />
+  if (isLoading) return <div className="h-5 w-16 animate-pulse rounded-full bg-muted" />
   if (!score) return null
 
   const color =

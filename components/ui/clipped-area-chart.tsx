@@ -4,7 +4,14 @@ import { TradeDownIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useMotionValueEvent, useSpring } from "motion/react"
 import { useRef, useState } from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+
+const [AreaChart, Area, CartesianGrid, XAxis] = await Promise.all([
+  import("recharts").then((m) => m.AreaChart),
+  import("recharts").then((m) => m.Area),
+  import("recharts").then((m) => m.CartesianGrid),
+  import("recharts").then((m) => m.XAxis),
+])
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer } from "@/components/ui/lazy-chart"
@@ -55,7 +62,7 @@ export function ClippedAreaChart() {
         <CardTitle>
           ${springY.get().toFixed(0)}
           <Badge variant="secondary" className="ml-2">
-            <HugeiconsIcon icon={TradeDownIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeDownIcon} className="size-4" />
             <span>-5.2%</span>
           </Badge>
         </CardTitle>

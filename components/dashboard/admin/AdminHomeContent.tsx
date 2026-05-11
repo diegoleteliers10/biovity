@@ -116,7 +116,7 @@ export function AdminHomeContent() {
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Panel de administración</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Panel de administración</h1>
         <p className="mt-1 text-muted-foreground">
           Resumen de la plataforma Biovity: usuarios, lista de espera y métricas de la API externa.
         </p>
@@ -130,8 +130,8 @@ export function AdminHomeContent() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {statsLoading
-          ? Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i}>
+          ? [0, 1, 2, 3, 4, 5].map((n) => (
+              <Card key={n}>
                 <CardHeader className="pb-2">
                   <Skeleton className="h-4 w-24" />
                 </CardHeader>
@@ -167,8 +167,8 @@ export function AdminHomeContent() {
           <CardContent>
             {usersLoading ? (
               <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <Skeleton key={i} className="h-10 w-full" />
+                {[0, 1, 2].map((n) => (
+                  <Skeleton key={n} className="h-10 w-full" />
                 ))}
               </div>
             ) : recentUsers && recentUsers.length > 0 ? (

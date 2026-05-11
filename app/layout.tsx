@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist_Mono } from "next/font/google"
+import { Geist_Mono, Instrument_Serif, Rubik } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
@@ -10,6 +10,18 @@ import { QueryProvider } from "@/components/providers/QueryProvider"
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+})
+
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+})
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: ["400"],
 })
 
 // Use deployment URL on Vercel so OG image is reachable from the same origin
@@ -170,6 +182,8 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/images/ios/180.webp" sizes="180x180" />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        {/* Satoshi font from Fontshare - not available via next/font, loaded via CSS import */}
+        {/* eslint-disable-next-line react-doctor/nextjs-no-css-link */}
         <link
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
           rel="stylesheet"
@@ -177,18 +191,10 @@ export default function RootLayout({
         <link rel="preload" href="/images/ilustrationOG.png" as="image" />
         <link rel="preload" href="/ilustracionRegistroOrganization.png" as="image" />
         <link rel="preload" href="/ilustracionRegistroUsers.png" as="image" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-          rel="stylesheet"
-        />
       </head>
-      <body className={`${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistMono.variable} ${rubik.variable} ${instrumentSerif.variable} antialiased`}
+      >
         <NuqsAdapter>
           <QueryProvider>
             <MotionProvider>{children}</MotionProvider>

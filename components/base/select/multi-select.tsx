@@ -9,7 +9,7 @@ import type {
   RefAttributes,
   RefObject,
 } from "react"
-import { createContext, useCallback, useContext, useRef, useState } from "react"
+import { createContext, use, useCallback, useRef, useState } from "react"
 import { FocusScope, useFilter, useFocusManager } from "react-aria"
 import type {
   ComboBoxProps as AriaComboBoxProps,
@@ -227,8 +227,8 @@ const InnerMultiSelect = ({
   placeholder,
 }: Omit<MultiSelectProps, "selectedItems" | "children">) => {
   const focusManager = useFocusManager()
-  const _comboBoxContext = useContext(ComboboxContext)
-  const comboBoxStateContext = useContext(ComboBoxStateContext)
+  const _comboBoxContext = use(ComboboxContext)
+  const comboBoxStateContext = use(ComboBoxStateContext)
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     const isCaretAtStart =

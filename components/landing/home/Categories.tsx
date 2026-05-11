@@ -36,7 +36,7 @@ export function Categories() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-3xl md:text-5xl font-bold text-foreground mb-4 text-balance"
+            className="text-3xl md:text-5xl font-semibold text-foreground mb-4 text-balance"
           >
             Explora Oportunidades
           </m.h2>
@@ -65,8 +65,8 @@ export function Categories() {
                 className="block"
               >
                 <Card className="group p-6 cursor-pointer bg-white hover:bg-secondary/5 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className="shrink-0 w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                  <div className="flex items-center gap-4">
+                    <div className="shrink-0 size-12 bg-secondary/10 rounded-xl flex items-center justify-center">
                       <HugeiconsIcon icon={category.icon} size={24} className="text-secondary" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -79,7 +79,7 @@ export function Categories() {
                     </div>
                     <HugeiconsIcon
                       icon={ArrowRight01Icon}
-                      className="w-5 h-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all shrink-0"
+                      className="size-5 text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all shrink-0"
                     />
                   </div>
                 </Card>
@@ -92,7 +92,7 @@ export function Categories() {
           <Button asChild size="lg" variant="secondary" className="px-8 py-3">
             <Link href="/trabajos">
               Ver todas las especialidades
-              <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 ml-2" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
             </Link>
           </Button>
         </div>

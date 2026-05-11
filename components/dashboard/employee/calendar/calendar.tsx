@@ -26,7 +26,13 @@ type CalendarProps = {
   onCreateEvent?: (date: Date) => void
 }
 
-export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }: CalendarProps) {
+const EMPTY_CALENDAR_EVENTS: Event[] = []
+
+export function Calendar({
+  currentDate,
+  events = EMPTY_CALENDAR_EVENTS,
+  onCreateEvent,
+}: CalendarProps) {
   const [hoveredEvent, setHoveredEvent] = useState<{
     event: CalendarEvent
     position: { x: number; y: number }
@@ -155,12 +161,12 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
             nowChile.getFullYear() === year
 
           return (
-            <div
+            <button
               key={dateKey ?? `empty-${index}`}
-              role={day ? "button" : "presentation"}
-              tabIndex={day ? 0 : undefined}
+              type="button"
+              disabled={!day}
               className={`
-                min-h-[80px] sm:min-h-[100px] lg:min-h-[120px] bg-card p-1.5 lg:p-2 flex flex-col
+                min-h-[80px] sm:min-h-[100px] lg:min-h-[120px] bg-card p-1.5 lg:p-2 flex flex-col text-left
                 ${day ? "hover:bg-[#f3f3f5] transition-colors cursor-pointer" : ""}
                 ${isToday ? "ring-2 ring-secondary ring-inset" : ""}
               `}
@@ -187,39 +193,33 @@ export function Calendar({ currentDate, events = [], isLoading, onCreateEvent }:
                   >
                     {day}
                     {dayEvents.length > 2 && (
-                      <span className="absolute -top-1 -right-1 text-accent/60 text-[10px] w-6 h-6 flex items-center justify-center font-medium">
+                      <span className="absolute -top-1 -right-1 text-accent/60 text-[10px] size-6 flex items-center justify-center font-medium">
                         +{dayEvents.length - 2}
                       </span>
                     )}
                   </div>
                   <div className="flex-1 space-y-1">
                     {dayEvents.slice(0, 2).map((event) => (
-                      <div
+                      <button
                         key={event.id}
-                        role="button"
-                        tabIndex={0}
+                        type="button"
                         className={`
                           text-xs px-2 py-1 rounded-md cursor-pointer
-                          transition-all duration-200 hover:scale-105
+                          transition-all duration-200 hover:scale-105 w-full text-left
                           ${getEventTypeColor(event.type)}
                         `}
                         onMouseEnter={(e) => handleEventHover(event, e)}
                         onMouseLeave={handleEventLeave}
                         onClick={(e) => e.stopPropagation()}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.stopPropagation()
-                          }
-                        }}
                       >
                         <div className="font-medium truncate">{event.title}</div>
                         <div className="opacity-80">{formatEventTime(event.startAt)}</div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </>
               )}
-            </div>
+            </button>
           )
         })}
       </div>

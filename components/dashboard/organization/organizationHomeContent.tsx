@@ -4,7 +4,7 @@ import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -26,7 +26,7 @@ import { OrganizationRecentApplicationsCard } from "./home/organizationRecentApp
 import { PlaceholderCard } from "./home/placeholderCard"
 
 export function OrganizationHomeContent() {
-  const router = useRouter()
+  const { push } = useRouter()
   const session = useDashboardSession()
 
   const organizationId = session?.user?.organizationId ?? undefined
@@ -68,25 +68,14 @@ export function OrganizationHomeContent() {
   const candidatesQuery = useOrgFeaturedCandidates()
 
   const [localNotifications, setLocalNotifications] = useState<Notification[]>([])
-  const [showSkeletons, setShowSkeletons] = useState(true)
-  const [showMessagesSkeletons, setShowMessagesSkeletons] = useState(true)
 
   const hasOrgId = Boolean(organizationId && organizationId.length > 0)
 
-  useEffect(() => {
-    if (
-      hasOrgId &&
-      !applicationsQuery.isPending &&
-      applicationsQuery.data !== undefined &&
-      !messagesQuery.isPending
-    ) {
-      setShowSkeletons(false)
-      setShowMessagesSkeletons(false)
-    } else {
-      setShowSkeletons(true)
-      setShowMessagesSkeletons(true)
-    }
-  }, [hasOrgId, applicationsQuery.isPending, applicationsQuery.data, messagesQuery.isPending])
+  // Derive skeleton visibility directly from query states instead of useEffect + setState
+  const showSkeletons = hasOrgId
+    ? applicationsQuery.isPending || applicationsQuery.data === undefined || messagesQuery.isPending
+    : true
+  const showMessagesSkeletons = showSkeletons
 
   useEffect(() => {
     if (notificationsQuery.data) {
@@ -99,12 +88,14 @@ export function OrganizationHomeContent() {
   }, [])
 
   const handleViewAllMessages = useCallback(() => {
-    router.push("/dashboard/messages")
-  }, [router])
+    push("/dashboard/messages")
+  }, [push])
 
   const firstName = session?.user?.name?.split(" ")[0] || "Organización"
   const displayName = organizationName || firstName
   const unreadCount = localNotifications.filter((n) => !n.isRead).length
+
+  const skeletonId = useId()
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
@@ -119,10 +110,13 @@ export function OrganizationHomeContent() {
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {metricsQuery.isPending ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="border border-border/80 bg-white rounded-xl p-6">
+            <div
+              key={`${skeletonId}-${i}`}
+              className="border border-border/80 bg-white rounded-xl p-6"
+            >
               <div className="flex items-center justify-between pb-2">
                 <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-4" />
+                <Skeleton className="size-4" />
               </div>
               <Skeleton className="h-8 w-20" />
               <Skeleton className="h-3 w-24 mt-1" />
@@ -147,12 +141,12 @@ export function OrganizationHomeContent() {
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
-                  key={i}
+                  key={`${skeletonId}-app-${i}`}
                   className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60"
                 >
                   <div className="space-y-2">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-3 w-32" />
+                    <Skeleton className="size-48" />
+                    <Skeleton className="size-32" />
                   </div>
                   <div className="space-y-1 text-right">
                     <Skeleton className="h-3 w-20 ml-auto" />
@@ -178,7 +172,7 @@ export function OrganizationHomeContent() {
             </div>
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="space-y-2">
+                <div key={`${skeletonId}-msg-${i}`} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Skeleton className="h-4 w-36" />
                     <Skeleton className="h-3 w-12" />
@@ -268,7 +262,10 @@ export function OrganizationHomeContent() {
           {candidatesQuery.isLoading ? (
             <div className="space-y-3 mt-2">
               {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="flex flex-col gap-2 p-3 rounded-lg border border-border/60">
+                <div
+                  key={`${skeletonId}-candidate-${i}`}
+                  className="flex flex-col gap-2 p-3 rounded-lg border border-border/60"
+                >
                   <div className="flex justify-between items-center">
                     <Skeleton className="h-4 w-36" />
                     <Skeleton className="h-4 w-14" />

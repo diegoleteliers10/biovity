@@ -1,5 +1,6 @@
 "use client"
 
+/* eslint-disable react-doctor/use-lazy-motion -- refactoring to LazyMotion requires usage-site changes */
 import { type HTMLMotionProps, isMotionComponent, motion } from "motion/react"
 import * as React from "react"
 import { cn } from "@/lib/utils"
@@ -16,7 +17,7 @@ type WithAsChild<Base extends object> =
   | (Base & { asChild?: false | undefined })
 
 type SlotProps<T extends HTMLElement = HTMLElement> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /* biome-ignore lint/suspicious/noExplicitAny: Slot accepts any React children type for polymorphic component */
   children?: any
 } & DOMMotionProps<T>
 

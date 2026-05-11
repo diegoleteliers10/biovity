@@ -79,7 +79,7 @@ function getStatusLabel(status: string): string {
 }
 
 export default function OfertaDetailPage() {
-  const router = useRouter()
+  const { push } = useRouter()
   const params = useParams<{ id: string }>()
   const jobId = params?.id ?? undefined
   const { data: job, isLoading: jobLoading, error } = useJob(jobId)
@@ -112,7 +112,7 @@ export default function OfertaDetailPage() {
           onClick={() => {
             startTransition(() => {
               addTransitionType("nav-back")
-              router.push("/dashboard/ofertas")
+              push("/dashboard/ofertas")
             })
           }}
           className="text-primary text-sm hover:underline bg-transparent border-none p-0 font-inherit cursor-pointer"
@@ -136,7 +136,7 @@ export default function OfertaDetailPage() {
           onClick={() => {
             startTransition(() => {
               addTransitionType("nav-back")
-              router.push("/dashboard/ofertas")
+              push("/dashboard/ofertas")
             })
           }}
           className="flex items-center gap-2 text-muted-foreground text-sm hover:text-foreground bg-transparent border-none p-0 font-inherit cursor-pointer"
@@ -169,12 +169,7 @@ export default function OfertaDetailPage() {
             {/* Job meta */}
             <div className="flex flex-wrap items-center gap-3 text-muted-foreground text-xs">
               <span className="inline-flex items-center gap-1">
-                <HugeiconsIcon
-                  icon={Home02Icon}
-                  size={13}
-                  strokeWidth={1.5}
-                  className="h-3.5 w-3.5"
-                />
+                <HugeiconsIcon icon={Home02Icon} size={13} strokeWidth={1.5} className="size-3.5" />
                 {locationStr}
               </span>
               <span className="text-muted-foreground/30">·</span>
@@ -187,7 +182,7 @@ export default function OfertaDetailPage() {
                   icon={Briefcase01Icon}
                   size={13}
                   strokeWidth={1.5}
-                  className="h-3.5 w-3.5"
+                  className="size-3.5"
                 />
                 {job.employmentType}
               </span>
@@ -201,7 +196,7 @@ export default function OfertaDetailPage() {
                 icon={Cash02Icon}
                 size={16}
                 strokeWidth={1.5}
-                className="h-4 w-4 text-secondary"
+                className="size-4 text-secondary"
               />
               <span className="text-sm font-medium text-foreground">{salaryStr}</span>
             </div>
@@ -213,7 +208,7 @@ export default function OfertaDetailPage() {
                   icon={UserGroupIcon}
                   size={15}
                   strokeWidth={1.5}
-                  className="h-4 w-4 text-secondary"
+                  className="size-4 text-secondary"
                 />
                 <span className="text-sm font-medium text-foreground">
                   {applications?.length ?? 0}
@@ -225,7 +220,7 @@ export default function OfertaDetailPage() {
                   icon={EyeIcon}
                   size={15}
                   strokeWidth={1.5}
-                  className="h-4 w-4 text-muted-foreground"
+                  className="size-4 text-muted-foreground"
                 />
                 <span className="text-sm font-medium text-foreground">{job.views ?? 0}</span>
                 <span className="text-sm text-muted-foreground">vistas</span>
@@ -236,7 +231,7 @@ export default function OfertaDetailPage() {
                     icon={Clock01Icon}
                     size={15}
                     strokeWidth={1.5}
-                    className="h-4 w-4 text-muted-foreground"
+                    className="size-4 text-muted-foreground"
                   />
                   <span className="text-sm text-muted-foreground">
                     Expira {formatDateChilean(job.expiresAt, "d MMM yyyy")}
@@ -269,7 +264,7 @@ export default function OfertaDetailPage() {
                   icon={UserGroupIcon}
                   size={32}
                   strokeWidth={1.5}
-                  className="mb-2 h-8 w-8 text-muted-foreground"
+                  className="mb-2 size-8 text-muted-foreground"
                 />
                 <p className="text-sm text-muted-foreground">
                   Aún no hay postulaciones para esta oferta.
@@ -293,13 +288,13 @@ export default function OfertaDetailPage() {
                         onClick={() => {
                           startTransition(() => {
                             addTransitionType("nav-forward")
-                            router.push(`/dashboard/ofertas/${job.id}/postulaciones/${app.id}`)
+                            push(`/dashboard/ofertas/${job.id}/postulaciones/${app.id}`)
                           })
                         }}
                       >
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
+                            <Avatar className="size-8">
                               <AvatarFallback className="bg-secondary/10 text-secondary text-xs font-semibold">
                                 {app.candidate?.name?.charAt(0).toUpperCase() ?? "?"}
                               </AvatarFallback>

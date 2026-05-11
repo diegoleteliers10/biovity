@@ -5,11 +5,8 @@ export function TrabajosHero() {
     <section className="relative w-full pt-32 md:pt-40 pb-16 md:pb-20">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 md:mb-4 leading-tight">
-            Encuentra tu Próximo{" "}
-            <span className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
-              Trabajo en Ciencias
-            </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-3 md:mb-4 leading-tight">
+            Encuentra tu Próximo <span className="text-secondary">Trabajo en Ciencias</span>
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed text-pretty">

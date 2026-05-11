@@ -2,7 +2,13 @@
 
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { LabelList, Pie, PieChart } from "recharts"
+
+const [PieChart, Pie, LabelList] = await Promise.all([
+  import("recharts").then((m) => m.PieChart),
+  import("recharts").then((m) => m.Pie),
+  import("recharts").then((m) => m.LabelList),
+])
+
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -55,7 +61,7 @@ export function RoundedPieChart() {
         <CardTitle>
           Pie Chart
           <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeUpIcon} className="size-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

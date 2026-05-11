@@ -33,7 +33,7 @@ export const Header = () => {
         <div className="mx-auto mt-4 max-w-4xl rounded-2xl border bg-background/50 px-6 backdrop-blur-lg transition-all duration-300 lg:px-5">
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Link href="/" aria-label="home" className="flex items-center space-x-2">
+              <Link href="/" aria-label="home" className="flex items-center gap-2">
                 <Image
                   src="/logoIcon.png"
                   alt="Biovity Logo"
@@ -128,7 +128,7 @@ export const Header = () => {
                   })}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+              <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-3 md:w-fit">
                 <Button asChild variant="outline" size="sm">
                   <Link href="/login">
                     <span>Login</span>

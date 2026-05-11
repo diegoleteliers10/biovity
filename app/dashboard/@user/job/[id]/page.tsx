@@ -1,5 +1,6 @@
 "use client"
 
+/* eslint-disable react-doctor/no-giant-component -- large component, intentional */
 import {
   AirplaneLanding01Icon,
   Bookmark02Icon,
@@ -82,7 +83,7 @@ function getBenefitIcon(benefit: JobBenefit) {
 }
 
 export default function JobDetailPage() {
-  const router = useRouter()
+  const { back } = useRouter()
   const params = useParams<{ id: string }>()
   const jobId = params?.id ?? undefined
   const { data: job, isLoading, error } = useJob(jobId)
@@ -133,7 +134,7 @@ export default function JobDetailPage() {
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
-        <p className="text-muted-foreground text-sm">Cargando vacante...</p>
+        <p className="text-muted-foreground text-sm">Cargando vacante…</p>
       </div>
     )
   }
@@ -144,7 +145,7 @@ export default function JobDetailPage() {
         <p className="text-destructive text-sm">{error?.message ?? "No se encontró la vacante."}</p>
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => back()}
           className="text-primary text-sm hover:underline bg-transparent border-none p-0 font-inherit cursor-pointer"
           aria-label="Volver"
         >
@@ -169,7 +170,7 @@ export default function JobDetailPage() {
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <button
                 type="button"
-                onClick={() => router.back()}
+                onClick={() => back()}
                 className="hover:text-foreground cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit"
                 aria-label="Volver"
               >
@@ -181,14 +182,14 @@ export default function JobDetailPage() {
 
             <div className="mt-4 flex items-center gap-3">
               <div
-                className="grid h-10 w-10 place-items-center rounded-lg border border-border/30 bg-card text-primary"
+                className="grid size-10 place-items-center rounded-lg border border-border/30 bg-card text-primary"
                 aria-hidden
               >
                 <HugeiconsIcon
                   icon={Briefcase01Icon}
                   size={24}
                   strokeWidth={1.5}
-                  className="h-5 w-5"
+                  className="size-5"
                 />
               </div>
               <div>
@@ -207,7 +208,7 @@ export default function JobDetailPage() {
                   icon={Location05Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="h-3.5 w-3.5"
+                  className="size-3.5"
                 />
                 {locationStr} · {modalidad}
               </span>
@@ -219,7 +220,7 @@ export default function JobDetailPage() {
                   icon={Cash02Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="h-3.5 w-3.5 text-secondary"
+                  className="size-3.5 text-secondary"
                 />
                 {salaryStr}
               </span>
@@ -240,7 +241,7 @@ export default function JobDetailPage() {
                   icon={Bookmark02Icon}
                   size={24}
                   strokeWidth={1.5}
-                  className={`h-4 w-4 ${isSaved ? "fill-current text-secondary" : ""}`}
+                  className={`size-4 ${isSaved ? "fill-current text-secondary" : ""}`}
                 />
               </Button>
               <div className="ml-auto flex items-center gap-2 text-sm">
@@ -252,7 +253,7 @@ export default function JobDetailPage() {
                         icon={Share05Icon}
                         size={24}
                         strokeWidth={1.5}
-                        className="h-4 w-4"
+                        className="size-4"
                       />
                     </Button>
                   </DropdownMenuTrigger>
@@ -270,7 +271,7 @@ export default function JobDetailPage() {
                         icon={Link04Icon}
                         size={24}
                         strokeWidth={1.5}
-                        className="mr-2 h-4 w-4"
+                        className="mr-2 size-4"
                       />
                       Copiar enlace
                     </DropdownMenuItem>
@@ -288,7 +289,7 @@ export default function JobDetailPage() {
                         icon={Linkedin02Icon}
                         size={24}
                         strokeWidth={1.5}
-                        className="mr-2 h-4 w-4"
+                        className="mr-2 size-4"
                       />
                       LinkedIn
                     </DropdownMenuItem>
@@ -303,7 +304,7 @@ export default function JobDetailPage() {
                         icon={Mail01Icon}
                         size={24}
                         strokeWidth={1.5}
-                        className="mr-2 h-4 w-4"
+                        className="mr-2 size-4"
                       />
                       Email
                     </DropdownMenuItem>
@@ -318,7 +319,7 @@ export default function JobDetailPage() {
                         icon={WhatsappIcon}
                         size={24}
                         strokeWidth={1.5}
-                        className="mr-2 h-4 w-4"
+                        className="mr-2 size-4"
                       />
                       WhatsApp
                     </DropdownMenuItem>
@@ -353,7 +354,7 @@ export default function JobDetailPage() {
                 <ul className="space-y-2 text-sm text-muted-foreground/95">
                   {job.benefits.map((b) => (
                     <li key={b.title} className="flex items-start gap-2.5">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
+                      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-secondary" />
                       <span className="leading-6">
                         <span className="font-medium text-foreground/95">{b.title}</span>
                         {b.description ? (
@@ -398,7 +399,7 @@ export default function JobDetailPage() {
                       icon={Clock01Icon}
                       size={24}
                       strokeWidth={1.5}
-                      className="h-4 w-4 text-muted-foreground/80"
+                      className="size-4 text-muted-foreground/80"
                     />
                     {formatDateShort(job.createdAt)}
                   </span>
@@ -435,7 +436,7 @@ export default function JobDetailPage() {
                       >
                         <HugeiconsIcon
                           icon={Icon}
-                          className="h-4 w-4 shrink-0 text-accent"
+                          className="size-4 shrink-0 text-accent"
                           aria-hidden
                         />
                         <span className="line-clamp-1">{b.title}</span>

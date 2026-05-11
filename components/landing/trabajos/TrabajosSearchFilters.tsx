@@ -2,7 +2,7 @@
 
 import { Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useReducer } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -27,67 +27,81 @@ type TrabajosSearchFiltersProps = {
   onFiltrosChange: (filtros: FiltrosTrabajos) => void
 }
 
-export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSearchFiltersProps) {
-  const [query, setQuery] = useState(filtros.query)
-  const [ubicacion, setUbicacion] = useState(filtros.ubicacion)
-  const [modalidad, setModalidad] = useState(filtros.modalidad)
-  const [formato, setFormato] = useState(filtros.formato)
-  const [salarioMin, setSalarioMin] = useState(filtros.salarioMin?.toString() || "")
-  const [salarioMax, setSalarioMax] = useState(filtros.salarioMax?.toString() || "")
-  const [experiencia, setExperiencia] = useState(filtros.experiencia)
-  const [categoria, setCategoria] = useState(filtros.categoria || "Categoría")
+type FilterFormState = {
+  query: string
+  ubicacion: string
+  modalidad: string
+  formato: string
+  salarioMin: string
+  salarioMax: string
+  experiencia: string
+  categoria: string
+}
 
-  useEffect(() => {
-    setQuery(filtros.query)
-    setUbicacion(filtros.ubicacion)
-    setModalidad(filtros.modalidad)
-    setFormato(filtros.formato)
-    setSalarioMin(filtros.salarioMin?.toString() || "")
-    setSalarioMax(filtros.salarioMax?.toString() || "")
-    setExperiencia(filtros.experiencia)
-    setCategoria(filtros.categoria || "Categoría")
-  }, [filtros])
+type FilterFormAction =
+  | { type: "SET_FIELD"; field: keyof FilterFormState; value: string }
+  | { type: "RESET" }
+
+const filterFormReducer = (state: FilterFormState, action: FilterFormAction): FilterFormState => {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value }
+    case "RESET":
+      return {
+        query: "",
+        ubicacion: "",
+        modalidad: "",
+        formato: "",
+        salarioMin: "",
+        salarioMax: "",
+        experiencia: "",
+        categoria: "",
+      }
+    default:
+      return state
+  }
+}
+
+export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSearchFiltersProps) {
+  const [filterState, dispatch] = useReducer(filterFormReducer, {
+    query: filtros.query,
+    ubicacion: filtros.ubicacion,
+    modalidad: filtros.modalidad,
+    formato: filtros.formato,
+    salarioMin: filtros.salarioMin?.toString() || "",
+    salarioMax: filtros.salarioMax?.toString() || "",
+    experiencia: filtros.experiencia,
+    categoria: filtros.categoria || "",
+  })
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
-      query,
-      ubicacion,
-      modalidad: modalidad as FiltrosTrabajos["modalidad"],
-      formato: formato as FiltrosTrabajos["formato"],
-      salarioMin: salarioMin ? Number(salarioMin.replace(/[^0-9]/g, "")) : null,
-      salarioMax: salarioMax ? Number(salarioMax.replace(/[^0-9]/g, "")) : null,
-      experiencia: experiencia as FiltrosTrabajos["experiencia"],
-      categoria: categoria === "todas" || categoria === "Categoría" ? null : categoria,
+      query: filterState.query,
+      ubicacion: filterState.ubicacion,
+      modalidad: filterState.modalidad as FiltrosTrabajos["modalidad"],
+      formato: filterState.formato as FiltrosTrabajos["formato"],
+      salarioMin: filterState.salarioMin
+        ? Number(filterState.salarioMin.replace(/[^0-9]/g, ""))
+        : null,
+      salarioMax: filterState.salarioMax
+        ? Number(filterState.salarioMax.replace(/[^0-9]/g, ""))
+        : null,
+      experiencia: filterState.experiencia as FiltrosTrabajos["experiencia"],
+      categoria:
+        filterState.categoria === "todas" || !filterState.categoria ? null : filterState.categoria,
     })
-  }, [
-    query,
-    ubicacion,
-    modalidad,
-    formato,
-    salarioMin,
-    salarioMax,
-    experiencia,
-    categoria,
-    onFiltrosChange,
-  ])
+  }, [filterState, onFiltrosChange])
 
   const handleLimpiar = useCallback(() => {
-    setQuery("")
-    setUbicacion("")
-    setModalidad("Modalidad")
-    setFormato("Formato")
-    setSalarioMin("")
-    setSalarioMax("")
-    setExperiencia("Experiencia")
-    setCategoria("Categoría")
+    dispatch({ type: "RESET" })
     onFiltrosChange({
       query: "",
       ubicacion: "",
-      modalidad: "Modalidad",
-      formato: "Formato",
+      modalidad: "" as FiltrosTrabajos["modalidad"],
+      formato: "" as FiltrosTrabajos["formato"],
       salarioMin: null,
       salarioMax: null,
-      experiencia: "Experiencia",
+      experiencia: "" as FiltrosTrabajos["experiencia"],
       categoria: null,
     })
   }, [onFiltrosChange])
@@ -109,8 +123,10 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   type="text"
                   placeholder="Buscar por título, empresa o palabras clave"
                   className="pl-11 pr-4 py-2 w-full h-12 bg-white"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  value={filterState.query}
+                  onChange={(e) =>
+                    dispatch({ type: "SET_FIELD", field: "query", value: e.target.value })
+                  }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       handleBuscar()
@@ -133,15 +149,19 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   type="text"
                   placeholder="Ubicación"
                   className="pl-10 bg-white"
-                  value={ubicacion}
-                  onChange={(e) => setUbicacion(e.target.value)}
+                  value={filterState.ubicacion}
+                  onChange={(e) =>
+                    dispatch({ type: "SET_FIELD", field: "ubicacion", value: e.target.value })
+                  }
                 />
               </div>
 
               {/* Modalidad */}
               <Select
-                value={modalidad}
-                onValueChange={(value) => setModalidad(value as FiltrosTrabajos["modalidad"])}
+                value={filterState.modalidad}
+                onValueChange={(value) =>
+                  dispatch({ type: "SET_FIELD", field: "modalidad", value })
+                }
               >
                 <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Modalidad" />
@@ -157,8 +177,8 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
 
               {/* Formato */}
               <Select
-                value={formato}
-                onValueChange={(value) => setFormato(value as FiltrosTrabajos["formato"])}
+                value={filterState.formato}
+                onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "formato", value })}
               >
                 <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Formato" />
@@ -177,8 +197,10 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 type="text"
                 inputMode="numeric"
                 placeholder="Salario mínimo (CLP)"
-                value={salarioMin}
-                onChange={(e) => setSalarioMin(e.target.value)}
+                value={filterState.salarioMin}
+                onChange={(e) =>
+                  dispatch({ type: "SET_FIELD", field: "salarioMin", value: e.target.value })
+                }
                 className="placeholder:text-muted-foreground bg-white"
                 aria-label="Salario mínimo en pesos chilenos"
               />
@@ -188,16 +210,20 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 type="text"
                 inputMode="numeric"
                 placeholder="Salario máximo (CLP)"
-                value={salarioMax}
-                onChange={(e) => setSalarioMax(e.target.value)}
+                value={filterState.salarioMax}
+                onChange={(e) =>
+                  dispatch({ type: "SET_FIELD", field: "salarioMax", value: e.target.value })
+                }
                 className="placeholder:text-muted-foreground bg-white"
                 aria-label="Salario máximo en pesos chilenos"
               />
 
               {/* Experiencia */}
               <Select
-                value={experiencia}
-                onValueChange={(value) => setExperiencia(value as FiltrosTrabajos["experiencia"])}
+                value={filterState.experiencia}
+                onValueChange={(value) =>
+                  dispatch({ type: "SET_FIELD", field: "experiencia", value })
+                }
               >
                 <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Experiencia" />
@@ -212,7 +238,12 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
               </Select>
 
               {/* Categoría */}
-              <Select value={categoria} onValueChange={(value) => setCategoria(value)}>
+              <Select
+                value={filterState.categoria}
+                onValueChange={(value) =>
+                  dispatch({ type: "SET_FIELD", field: "categoria", value })
+                }
+              >
                 <SelectTrigger className={cn("w-full !h-9 bg-white")}>
                   <SelectValue placeholder="Categoría" />
                 </SelectTrigger>

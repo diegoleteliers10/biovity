@@ -56,7 +56,10 @@ export function CertificationsForm() {
               ? resumeFormData.certifications
               : [emptyCertification()]
             ).map((cert, i) => (
-              <div key={i} className="rounded-md border border-border p-4 space-y-2">
+              <div
+                key={`cert-edit-${cert.title ?? cert.name ?? ""}-${cert.company ?? cert.issuer ?? ""}`}
+                className="rounded-md border border-border p-4 space-y-2"
+              >
                 <div className="flex justify-between gap-2">
                   <Input
                     value={cert.title ?? cert.name ?? ""}
@@ -134,9 +137,9 @@ export function CertificationsForm() {
           </div>
         ) : (resume?.certifications?.length ?? 0) > 0 ? (
           <ul className="space-y-3">
-            {(resume?.certifications ?? []).map((cert, i) => (
+            {(resume?.certifications ?? []).map((cert, _i) => (
               <li
-                key={i}
+                key={`cert-display-${cert.title ?? cert.name ?? ""}-${cert.company ?? cert.issuer ?? ""}`}
                 className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
               >
                 <span className="font-medium text-foreground">{cert.title ?? cert.name}</span>

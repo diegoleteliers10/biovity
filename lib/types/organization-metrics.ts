@@ -34,11 +34,19 @@ export type RecentTrendMetrics = {
   interviews: number
 }
 
+export type GeographicDistributionEntry = {
+  city: string
+  count: number
+  percentage: number
+}
+
 export type OrganizationMetrics = {
   dashboard: DashboardMetrics
   pipeline: PipelineMetrics
   topJobs: TopJobMetrics[]
   recentTrend: RecentTrendMetrics[]
+  geographicDistribution: GeographicDistributionEntry[]
+  avgHiringTimeDays: number
 }
 
 export type OrganizationMetricsFilters = {

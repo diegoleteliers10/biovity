@@ -2,7 +2,7 @@
 
 import type { ToolUIPart } from "ai"
 import type { ComponentProps, ReactNode } from "react"
-import { createContext, useContext, useMemo } from "react"
+import { createContext, use, useMemo } from "react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -43,7 +43,7 @@ interface ConfirmationContextValue {
 const ConfirmationContext = createContext<ConfirmationContextValue | null>(null)
 
 const useConfirmation = () => {
-  const context = useContext(ConfirmationContext)
+  const context = use(ConfirmationContext)
 
   if (!context) {
     throw new Error("Confirmation components must be used within Confirmation")

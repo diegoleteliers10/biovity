@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable react-doctor/design-no-em-dash-in-jsx-text -- em dashes are correct Spanish punctuation in narrative text */
+
 import { AlertCircleIcon, Target01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
@@ -25,13 +27,9 @@ export function ProblemaSolucion() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-3xl md:text-4xl font-bold text-foreground mb-6 text-balance"
+            className="text-3xl md:text-4xl font-semibold text-foreground mb-6 text-balance"
           >
-            Por qué existe{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Biovity
-            </span>
-            ?
+            Por qué existe <span className="text-accent font-semibold">Biovity</span>?
           </m.h2>
           <m.p
             initial={{ opacity: 0 }}
@@ -55,10 +53,10 @@ export function ProblemaSolucion() {
             className="bg-white rounded-2xl p-8 border border-border/10 hover:shadow-ambient transition-shadow"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
+              <div className="size-10 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
                 <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-destructive" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">El Problema</h3>
+              <h3 className="text-xl font-semibold text-foreground">El Problema</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed text-pretty">
               Profesionales enfrentan pocas ofertas dispersas en múltiples plataformas. Sin un
@@ -76,10 +74,10 @@ export function ProblemaSolucion() {
             className="bg-white rounded-2xl p-8 border border-border/10 hover:shadow-ambient transition-shadow"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
+              <div className="size-10 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
                 <HugeiconsIcon icon={Target01Icon} size={20} className="text-secondary" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">Nuestra Solución</h3>
+              <h3 className="text-xl font-semibold text-foreground">Nuestra Solución</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed text-pretty">
               Un espacio centralizado donde profesionales encuentran empleos, comparan salarios del

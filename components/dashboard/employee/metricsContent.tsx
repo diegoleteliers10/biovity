@@ -9,19 +9,24 @@ import {
   User02Icon,
 } from "@hugeicons/core-free-icons"
 import dynamic from "next/dynamic"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { NotificationBell } from "@/components/common/NotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import { authClient } from "@/lib/auth-client"
 import type { Metric } from "@/lib/types/dashboard"
+import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 import { MetricCard } from "./home/metricCard"
 
-type TimeRange = "3m" | "6m" | "12m"
-
-// Dynamic import for heavy chart components - defer recharts bundle loading
-// Per bundle-dynamic-imports: use next/dynamic for heavy components not needed on initial render
 const ChartsGrid = dynamic(() => import("./metrics/MetricsCharts").then((mod) => mod.ChartsGrid), {
   ssr: false,
   loading: () => (
@@ -32,57 +37,83 @@ const ChartsGrid = dynamic(() => import("./metrics/MetricsCharts").then((mod) =>
   ),
 })
 
-const MOCK_METRICS: Metric[] = [
-  {
-    title: "Postulaciones",
-    value: 42,
-    subtitle: "Últimos 30 días",
-    icon: File02Icon,
-  },
-  {
-    title: "Tasa de respuesta",
-    value: "68%",
-    subtitle: "Sobre total de postulaciones",
-    icon: Pulse01Icon,
-  },
-  {
-    title: "Entrevistas",
-    value: 9,
-    subtitle: "Agendadas / realizadas",
-    icon: Calendar03Icon,
-  },
-  {
-    title: "Ofertas recibidas",
-    value: 2,
-    subtitle: "Periodo actual",
-    icon: CheckmarkCircle02Icon,
-  },
-  {
-    title: "Tiempo medio de respuesta",
-    value: "4.2 días",
-    subtitle: "Desde postulación",
-    icon: Clock01Icon,
-  },
-  {
-    title: "Vistas de perfil",
-    value: 76,
-    subtitle: "Reclutadores únicos",
-    icon: User02Icon,
-  },
-]
+function KpiSkeletonCard() {
+  return (
+    <Card className="border border-border/80 bg-white">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <Skeleton className="h-4 w-28" />
+        <Skeleton className="size-4" />
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-8 w-16 mb-1" />
+        <Skeleton className="h-3 w-20" />
+      </CardContent>
+    </Card>
+  )
+}
 
 export const MetricsContent = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>("6m")
+  const [period, setPeriod] = useState<MetricsPeriod>("month")
 
   const { useSession } = authClient
   const { data: session, isPending: sessionPending } = useSession()
+  const userId = session?.user?.id
+
+  const { data: metrics, isPending: metricsPending } = useUserMetrics(userId, period)
+
   const firstName = session?.user?.name?.split(" ")[0] || "Usuario"
 
-  const handleSetRange = useCallback((range: TimeRange) => setTimeRange(range), [])
+  const kpis = metrics?.kpis
+
+  const kpiCards: Metric[] =
+    metricsPending || !kpis
+      ? []
+      : [
+          {
+            title: "Postulaciones",
+            value: kpis.applicationsLast30Days,
+            subtitle:
+              period === "week"
+                ? "esta semana"
+                : period === "year"
+                  ? "este año"
+                  : "últimos 30 días",
+            icon: File02Icon,
+          },
+          {
+            title: "Tasa de respuesta",
+            value: `${kpis.responseRate}%`,
+            subtitle: "Sobre total de postulaciones",
+            icon: Pulse01Icon,
+          },
+          {
+            title: "Entrevistas",
+            value: kpis.interviews,
+            subtitle: "Agendadas / realizadas",
+            icon: Calendar03Icon,
+          },
+          {
+            title: "Ofertas recibidas",
+            value: kpis.offers,
+            subtitle: "Periodo actual",
+            icon: CheckmarkCircle02Icon,
+          },
+          {
+            title: "Tiempo medio de respuesta",
+            value: `${kpis.avgResponseTimeDays} días`,
+            subtitle: "Desde postulación",
+            icon: Clock01Icon,
+          },
+          {
+            title: "Vistas de perfil",
+            value: kpis.profileViews,
+            subtitle: "Reclutadores únicos",
+            icon: User02Icon,
+          },
+        ]
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      {/* Top row: menu button on mobile (notification not present on employee metrics) */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
       </div>
@@ -99,51 +130,34 @@ export const MetricsContent = () => {
             </div>
           ) : (
             <div className="space-y-1">
-              <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide text-foreground">
-                ¡Bienvenido/a de vuelta, {firstName}!
-              </h1>
+              <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Métricas</h1>
               <p className="text-muted-foreground text-sm sm:text-base">
                 Seguimiento de postulaciones, embudo de contratación y rendimiento reciente.
               </p>
             </div>
           )}
-          <div className="hidden lg:flex items-center gap-2 rounded-lg border p-1 bg-white">
-            <Button
-              variant={timeRange === "3m" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => handleSetRange("3m")}
-              aria-label="Rango 3 meses"
-            >
-              3M
-            </Button>
-            <Button
-              variant={timeRange === "6m" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => handleSetRange("6m")}
-              aria-label="Rango 6 meses"
-            >
-              6M
-            </Button>
-            <Button
-              variant={timeRange === "12m" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => handleSetRange("12m")}
-              aria-label="Rango 12 meses"
-            >
-              12M
-            </Button>
+          <div className="hidden lg:block">
+            <Select value={period} onValueChange={(v) => setPeriod(v as MetricsPeriod)}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="week">Esta semana</SelectItem>
+                <SelectItem value="month">Este mes</SelectItem>
+                <SelectItem value="year">Este año</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {MOCK_METRICS.map((metric) => (
-          <MetricCard key={metric.title} metric={metric} />
-        ))}
+        {metricsPending
+          ? [0, 1, 2, 3, 4, 5].map((n) => <KpiSkeletonCard key={n} />)
+          : kpiCards.map((metric) => <MetricCard key={metric.title} metric={metric} />)}
       </div>
 
-      {/* Dynamic charts - loaded lazily to defer recharts bundle */}
-      <ChartsGrid timeRange={timeRange} />
+      <ChartsGrid metricsData={metrics} period={period} />
     </div>
   )
 }

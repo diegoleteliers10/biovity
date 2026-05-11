@@ -15,7 +15,7 @@ export function BlogHeader() {
         initial={{ opacity: 0, y: 28, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={ts(0)}
-        className="text-5xl font-bold text-foreground text-balance"
+        className="text-5xl font-semibold text-foreground text-balance"
       >
         Nuestro Blog
       </m.h1>

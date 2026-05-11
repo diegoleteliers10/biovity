@@ -29,7 +29,7 @@ export function SocialShare({ className }: { className?: string }) {
         >
           <HugeiconsIcon
             icon={TwitterIcon}
-            className="h-4 w-4 text-muted-foreground hover:text-secondary"
+            className="size-4 text-muted-foreground hover:text-secondary"
           />
         </a>
       </Button>
@@ -42,7 +42,7 @@ export function SocialShare({ className }: { className?: string }) {
         >
           <HugeiconsIcon
             icon={Linkedin02Icon}
-            className="h-4 w-4 text-muted-foreground hover:text-secondary"
+            className="size-4 text-muted-foreground hover:text-secondary"
           />
         </a>
       </Button>

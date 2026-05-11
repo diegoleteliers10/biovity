@@ -16,11 +16,12 @@ export function PostCard({ post }: PostCardProps) {
             src={post.frontmatter.featuredImage}
             alt={post.frontmatter.title}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
           />
         </div>
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-foreground group-hover:text-secondary transition-colors duration-300">
+          <h2 className="text-2xl font-semibold text-foreground group-hover:text-secondary transition-colors duration-300">
             {post.frontmatter.title}
           </h2>
           <p className="mt-2 text-muted-foreground">{post.frontmatter.excerpt}</p>

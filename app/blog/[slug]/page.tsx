@@ -124,7 +124,7 @@ export default async function PostPage({ params }: Props) {
             </BreadcrumbList>
           </Breadcrumb>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-left text-foreground tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold mb-4 text-left text-foreground tracking-tight">
             {post.frontmatter.title}
           </h1>
 

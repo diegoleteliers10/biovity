@@ -80,7 +80,7 @@ function getCandidateInitials(name: string | undefined): string {
 }
 
 export default function OrganizationApplicationDetailPage() {
-  const router = useRouter()
+  const { push } = useRouter()
   const params = useParams<{ id: string; applicationId: string }>()
   const jobId = params?.id
   const applicationId = params?.applicationId
@@ -149,7 +149,7 @@ export default function OrganizationApplicationDetailPage() {
   if (applicationQuery.isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
-        <p className="text-sm text-muted-foreground">Cargando postulación...</p>
+        <p className="text-sm text-muted-foreground">Cargando postulación…</p>
       </div>
     )
   }
@@ -167,7 +167,7 @@ export default function OrganizationApplicationDetailPage() {
           onClick={() => {
             startTransition(() => {
               addTransitionType("nav-back")
-              router.push(`/dashboard/ofertas/${jobId}`)
+              push(`/dashboard/ofertas/${jobId}`)
             })
           }}
         >
@@ -188,7 +188,7 @@ export default function OrganizationApplicationDetailPage() {
           onClick={() => {
             startTransition(() => {
               addTransitionType("nav-back")
-              router.push(`/dashboard/ofertas/${jobId}`)
+              push(`/dashboard/ofertas/${jobId}`)
             })
           }}
         >
@@ -206,7 +206,7 @@ export default function OrganizationApplicationDetailPage() {
           onClick={() => {
             startTransition(() => {
               addTransitionType("nav-back")
-              router.push(`/dashboard/ofertas/${jobId}`)
+              push(`/dashboard/ofertas/${jobId}`)
             })
           }}
           className="flex items-center gap-2 bg-transparent p-0 text-sm text-muted-foreground hover:text-foreground"
@@ -222,7 +222,7 @@ export default function OrganizationApplicationDetailPage() {
           <CardContent className="space-y-6">
             <div className="flex flex-col gap-4 rounded-lg border border-border/60 bg-muted/20 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
+                <Avatar className="size-12">
                   {application.candidate?.avatar && (
                     <AvatarImage src={application.candidate.avatar} alt="" />
                   )}

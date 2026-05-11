@@ -2,7 +2,6 @@
 
 import { TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Bar, BarChart, XAxis } from "recharts"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -11,6 +10,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/lazy-chart"
+
+const [BarChart, Bar, XAxis] = await Promise.all([
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.Bar),
+  import("recharts").then((m) => m.XAxis),
+])
 
 const chartData = [
   { month: "January", desktop: 342 },
@@ -41,7 +46,7 @@ export function DuotoneBarChart() {
         <CardTitle>
           Bar Chart
           <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
-            <HugeiconsIcon icon={TradeUpIcon} className="h-4 w-4" />
+            <HugeiconsIcon icon={TradeUpIcon} className="size-4" />
             <span>5.2%</span>
           </Badge>
         </CardTitle>

@@ -11,7 +11,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -29,7 +29,7 @@ export function OrganizationLoginContent() {
     password: "",
   })
   const [rememberMe, setRememberMe] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
@@ -51,27 +51,27 @@ export function OrganizationLoginContent() {
       return
     }
 
-    setIsLoading(true)
-    setErrors({})
+    startTransition(async () => {
+      setErrors({})
 
-    const result = await signIn.email({
-      email: formData.email,
-      password: formData.password,
-      rememberMe: rememberMe,
-      callbackURL: "/dashboard",
+      const result = await signIn.email({
+        email: formData.email,
+        password: formData.password,
+        rememberMe,
+        callbackURL: "/dashboard",
+      })
+
+      if (result?.error) {
+        const msg =
+          (result.error as { message?: string })?.message ??
+          "Credenciales invalidas. Por favor verifica tu email y contrasena."
+        setErrors({ general: msg })
+        return
+      }
+
+      authClient.$store.notify("$sessionSignal")
+      window.location.href = "/dashboard"
     })
-
-    if (result?.error) {
-      const msg =
-        (result.error as { message?: string })?.message ??
-        "Credenciales invalidas. Por favor verifica tu email y contrasena."
-      setErrors({ general: msg })
-      setIsLoading(false)
-      return
-    }
-
-    authClient.$store.notify("$sessionSignal")
-    window.location.href = "/dashboard"
   }
 
   return (
@@ -93,7 +93,7 @@ export function OrganizationLoginContent() {
         <div className="mx-auto w-full max-w-sm space-y-8">
           <div className="space-y-2 text-center">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
               Iniciar sesión
             </h1>
             <p className="text-center text-muted-foreground">
@@ -183,8 +183,8 @@ export function OrganizationLoginContent() {
             {errors.general && (
               <div className="text-center text-sm text-destructive">{errors.general}</div>
             )}
-            <Button type="submit" variant="default" className="h-11 w-full" disabled={isLoading}>
-              {isLoading ? "Cargando..." : "Acceder al portal"}
+            <Button type="submit" variant="default" className="h-11 w-full" disabled={isPending}>
+              {isPending ? "Cargando..." : "Acceder al portal"}
             </Button>
           </form>
 

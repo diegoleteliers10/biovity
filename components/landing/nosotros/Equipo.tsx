@@ -25,12 +25,9 @@ export function Equipo() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance"
+            className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance"
           >
-            Nuestro{" "}
-            <span className="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
-              Equipo
-            </span>
+            Nuestro <span className="text-accent font-semibold">Equipo</span>
           </m.h2>
           <m.p
             initial={{ opacity: 0 }}
@@ -52,8 +49,8 @@ export function Equipo() {
         >
           <div className="bg-[#f3f3f5] rounded-2xl p-8 border border-border/10 max-w-md w-full text-center hover:bg-secondary/5 transition-colors">
             {/* Photo/Avatar */}
-            <div className="mx-auto mb-6 w-28 h-28 rounded-full bg-secondary flex items-center justify-center">
-              <span className="text-4xl font-bold text-white">DL</span>
+            <div className="mx-auto mb-6 size-28 rounded-full bg-secondary flex items-center justify-center">
+              <span className="text-4xl font-semibold text-white">DL</span>
             </div>
 
             {/* Name and Role */}
@@ -62,7 +59,7 @@ export function Equipo() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={t(LANDING_ANIMATION.sequenceDelay * 3)}
-              className="text-2xl font-bold text-foreground mb-1"
+              className="text-2xl font-semibold text-foreground mb-1"
             >
               Diego Letelier
             </m.h3>
@@ -82,7 +79,7 @@ export function Equipo() {
               className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors font-medium align-center"
               aria-label="Ir al perfil de LinkedIn de Diego Letelier"
             >
-              <HugeiconsIcon icon={Linkedin02Icon} className="w-4 h-4" />
+              <HugeiconsIcon icon={Linkedin02Icon} className="size-4" />
             </a>
           </div>
         </m.div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 import { authClient } from "@/lib/auth-client"
 
 type SessionResult = {
@@ -13,9 +13,9 @@ type SessionResult = {
 }
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const [isReady, setIsReady] = useState(false)
-  const [hasSession, setHasSession] = useState(false)
+  const { replace } = useRouter()
+  const isReadyRef = useRef(false)
+  const hasSessionRef = useRef(false)
 
   useEffect(() => {
     let cancelled = false
@@ -27,12 +27,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
       if (cancelled) return
 
-      if (result?.data?.user) {
-        setHasSession(true)
-      } else {
-        setHasSession(false)
-      }
-      setIsReady(true)
+      isReadyRef.current = true
+      hasSessionRef.current = Boolean(result?.data?.user)
     }
 
     initSession()
@@ -42,17 +38,20 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const isReady = isReadyRef.current
+  const hasSession = hasSessionRef.current
+
   useEffect(() => {
     if (!isReady) return
     if (!hasSession) {
-      router.replace("/")
+      replace("/")
     }
-  }, [isReady, hasSession, router])
+  }, [isReady, hasSession, replace])
 
   if (!isReady) {
     return (
       <div className="flex h-dvh items-center justify-center">
-        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+        <div className="size-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
       </div>
     )
   }

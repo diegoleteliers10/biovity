@@ -41,7 +41,7 @@ function getPostedDisplay(iso: string | null | undefined): string {
 }
 
 function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
-  const router = useRouter()
+  const { push } = useRouter()
   const removeMutation = useRemoveSavedJobMutation()
 
   const { data: job, isLoading: jobLoading } = useJob(jobId)
@@ -56,7 +56,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
   }
 
   const handleOpenJob = () => {
-    router.push(`/dashboard/job/${jobId}`)
+    push(`/dashboard/job/${jobId}`)
   }
 
   const organizationName = job?.organization?.name ?? organization?.name ?? "Organización"
@@ -97,20 +97,20 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
               disabled={removeMutation.isPending || jobLoading}
               aria-label="Quitar de guardados"
             >
-              <HugeiconsIcon icon={Delete01Icon} size={24} strokeWidth={1.5} className="h-4 w-4" />
+              <HugeiconsIcon icon={Delete01Icon} size={24} strokeWidth={1.5} className="size-4" />
             </Button>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 pt-3 flex-1 flex flex-col">
+      <CardContent className="gap-3 pt-3 flex-1 flex flex-col">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-muted-foreground/90">
           <div className="flex items-center gap-1.5">
             <HugeiconsIcon
               icon={Location05Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3.5 w-3.5 text-muted-foreground/80"
+              className="size-3.5 text-muted-foreground/80"
             />
             <span className="truncate">{locationStr}</span>
           </div>
@@ -119,7 +119,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
               icon={Clock01Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3.5 w-3.5 text-muted-foreground/80"
+              className="size-3.5 text-muted-foreground/80"
             />
             <span className="truncate">{postedStr}</span>
           </div>
@@ -128,7 +128,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
               icon={Cash02Icon}
               size={24}
               strokeWidth={1.5}
-              className="h-3.5 w-3.5 text-secondary"
+              className="size-3.5 text-secondary"
             />
             <span className="truncate font-medium">{salaryStr}</span>
           </div>
@@ -148,10 +148,14 @@ export const SavedContent = () => {
     limit: 50,
   })
 
-  const jobIds = savedJobs?.data.map((j) => j.jobId).filter((id) => Boolean(id)) ?? []
+  const jobIds =
+    savedJobs?.data.reduce<string[]>((acc, j) => {
+      if (j.jobId) acc.push(j.jobId)
+      return acc
+    }, []) ?? []
   const hasJobs = jobIds.length > 0
 
-  const router = useRouter()
+  const { push } = useRouter()
 
   const isPending = sessionPending || savedJobsLoading || savedJobs === undefined
 
@@ -165,9 +169,9 @@ export const SavedContent = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {[0, 1, 2, 3, 4, 5].map((n) => (
             <Card
-              key={i}
+              key={n}
               className="relative overflow-hidden flex flex-col border border-border/80 bg-white"
             >
               <CardHeader className="pb-0">
@@ -176,20 +180,20 @@ export const SavedContent = () => {
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />
                   </div>
-                  <Skeleton className="h-7 w-7 rounded-md shrink-0" />
+                  <Skeleton className="size-7 rounded-md shrink-0" />
                 </div>
               </CardHeader>
-              <CardContent className="space-y-2 pt-3 flex-1 flex flex-col">
+              <CardContent className="gap-2 pt-3 flex-1 flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <Skeleton className="h-3.5 w-3.5 rounded" />
+                  <Skeleton className="size-3.5 rounded" />
                   <Skeleton className="h-3 w-24" />
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Skeleton className="h-3.5 w-3.5 rounded" />
+                  <Skeleton className="size-3.5 rounded" />
                   <Skeleton className="h-3 w-16" />
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Skeleton className="h-3.5 w-3.5 rounded" />
+                  <Skeleton className="size-3.5 rounded" />
                   <Skeleton className="h-3 w-28" />
                 </div>
               </CardContent>
@@ -224,7 +228,7 @@ export const SavedContent = () => {
           <NotificationBell notifications={[]} />
         </div>
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-bold tracking-wide">Empleos Guardados</h1>
+          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Empleos Guardados</h1>
           <p className="text-muted-foreground text-sm">
             Revisa rápidamente los empleos que marcaste para ver más tarde.
           </p>
@@ -234,12 +238,12 @@ export const SavedContent = () => {
       {!hasJobs ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
           <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+            <div className="flex size-20 items-center justify-center rounded-full bg-muted">
               <HugeiconsIcon
                 icon={Bookmark02Icon}
                 size={44}
                 strokeWidth={1.5}
-                className="h-11 w-11 text-muted-foreground"
+                className="size-11 text-muted-foreground"
               />
             </div>
             <div className="space-y-1">
@@ -250,7 +254,7 @@ export const SavedContent = () => {
             </div>
             <button
               type="button"
-              onClick={() => router.push("/dashboard/jobs")}
+              onClick={() => push("/dashboard/jobs")}
               className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-colors hover:bg-secondary/90"
             >
               Ver todos los empleos

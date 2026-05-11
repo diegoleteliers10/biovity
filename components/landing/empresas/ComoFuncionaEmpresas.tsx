@@ -25,7 +25,7 @@ export function ComoFuncionaEmpresas() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight text-balance"
+            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance"
           >
             Cómo funciona para empresas
           </m.h2>
@@ -58,14 +58,14 @@ export function ComoFuncionaEmpresas() {
             >
               <div className="bg-[#f3f3f5] rounded-2xl p-6 h-full border border-border/10 hover:border-secondary/20 hover:bg-secondary/5 transition-all">
                 <div className="flex items-center justify-between mb-5">
-                  <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center">
+                  <div className="size-14 rounded-xl bg-secondary flex items-center justify-center">
                     <HugeiconsIcon icon={paso.icon} size={28} className="text-white" />
                   </div>
-                  <span className="text-4xl font-bold text-[#e2e2e4] group-hover:text-secondary/30 transition-colors duration-200">
+                  <span className="text-4xl font-semibold text-[#e2e2e4] group-hover:text-secondary/30 transition-colors duration-200">
                     {paso.number}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{paso.title}</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-2">{paso.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{paso.description}</p>
               </div>
               {/* Connector line for desktop */}

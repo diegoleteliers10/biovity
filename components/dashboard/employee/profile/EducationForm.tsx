@@ -112,7 +112,10 @@ export function EducationForm() {
               ? resumeFormData.education
               : [emptyEducation()]
             ).map((edu, i) => (
-              <div key={i} className="rounded-md border border-border p-4 space-y-3">
+              <div
+                key={`edu-edit-${edu.title ?? edu.degree ?? ""}-${edu.institute ?? edu.institution ?? ""}`}
+                className="rounded-md border border-border p-4 space-y-3"
+              >
                 <div className="flex justify-between items-start gap-2">
                   <div className="grid gap-2 flex-1 sm:grid-cols-2">
                     <Input
@@ -208,17 +211,17 @@ export function EducationForm() {
           </div>
         ) : (resume?.education?.length ?? 0) > 0 ? (
           <ul className="space-y-6">
-            {(resume?.education ?? []).map((edu, i) => {
+            {(resume?.education ?? []).map((edu, _i) => {
               const d = getEduDisplay(edu)
               return (
                 <li
-                  key={i}
+                  key={`edu-display-${d.title}-${d.institute}`}
                   className="relative pl-6 before:absolute before:left-0 before:top-2 before:size-2 before:rounded-full before:bg-primary"
                 >
                   <p className="font-medium text-foreground">{d.title}</p>
                   {d.institute && <p className="text-sm text-muted-foreground">{d.institute}</p>}
                   <p className="mt-1 text-xs text-muted-foreground tabular-nums">
-                    {d.start} — {d.current ? "En curso" : d.end || ""}
+                    {d.start} – {d.current ? "En curso" : d.end || ""}
                   </p>
                 </li>
               )
