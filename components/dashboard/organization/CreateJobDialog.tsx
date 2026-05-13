@@ -216,7 +216,10 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending
   const canSubmit = !!(
-    form.title.trim() && stripHtml(form.description) && form.employmentType && form.experienceLevel
+    form.title.trim() &&
+    stripHtml(form.description) &&
+    form.employmentType &&
+    form.experienceLevel
   )
 
   return (

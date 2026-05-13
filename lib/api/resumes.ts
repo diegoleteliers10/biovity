@@ -8,6 +8,7 @@ const API_BASE =
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
 export type ResumeExperience = {
+  id?: string
   title?: string
   position?: string
   company?: string
@@ -21,6 +22,7 @@ export type ResumeExperience = {
 }
 
 export type ResumeEducation = {
+  id?: string
   title?: string
   degree?: string
   institution?: string
@@ -33,11 +35,13 @@ export type ResumeEducation = {
 }
 
 export type ResumeSkill = {
+  id?: string
   name: string
   level?: string
 }
 
 export type ResumeCertification = {
+  id?: string
   title?: string
   name?: string
   issuer?: string
@@ -47,6 +51,7 @@ export type ResumeCertification = {
 }
 
 export type ResumeLanguage = {
+  id?: string
   name?: string
   language?: string
   level?: string

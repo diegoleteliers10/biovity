@@ -57,7 +57,7 @@ export function CertificationsForm() {
               : [emptyCertification()]
             ).map((cert, i) => (
               <div
-                key={`cert-edit-${cert.title ?? cert.name ?? ""}-${cert.company ?? cert.issuer ?? ""}`}
+                key={cert.id ?? `cert-new-${i}`}
                 className="rounded-md border border-border p-4 space-y-2"
               >
                 <div className="flex justify-between gap-2">

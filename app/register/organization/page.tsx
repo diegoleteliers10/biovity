@@ -25,20 +25,14 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
-import {
-  useCreateOrganizationMutation,
-  useLinkUserToOrganizationMutation,
-} from "@/lib/api/use-organization-mutations"
+import { useCreateOrganizationMutation } from "@/lib/api/use-organization-mutations"
 import { type AuthUser, authClient, createRoleBasedRedirect } from "@/lib/auth-client"
 import { organizationRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
-
-const { signUp } = authClient
 
 export default function OrganizationRegisterPage() {
   const _router = useRouter()
   const [isPending, startTransition] = useTransition()
   const createOrganizationMutation = useCreateOrganizationMutation()
-  const linkUserMutation = useLinkUserToOrganizationMutation()
   const [formData, setFormData] = useState({
     contactName: "",
     contactEmail: "",
@@ -91,38 +85,27 @@ export default function OrganizationRegisterPage() {
 
     startTransition(async () => {
       try {
-        const signUpResult = await signUp.email({
-          email: formData.contactEmail,
-          password: formData.contactPassword,
-          name: formData.contactName,
-          type: "organization",
-          profession: formData.contactPosition || "Representante",
-          avatar: "",
+        const response = await fetch("/api/register/organization", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contactName: formData.contactName,
+            contactEmail: formData.contactEmail,
+            contactPassword: formData.contactPassword,
+            contactPosition: formData.contactPosition,
+            organizationName: formData.organizationName,
+            organizationWebsite: formData.organizationWebsite,
+          }),
         })
 
-        if (signUpResult?.error) {
-          setErrors({
-            general: "Error al crear la cuenta organizacional. Intentalo de nuevo.",
-          })
+        const data = await response.json()
+
+        if (!response.ok) {
+          setErrors({ general: data.error || "Error al registrar. Intentalo de nuevo." })
           return
         }
 
-        const userId = signUpResult.data?.user?.id
-        if (!userId) {
-          setErrors({ general: "Error al obtener el usuario. Intentalo de nuevo." })
-          return
-        }
-
-        const organization = await createOrganizationMutation.mutateAsync({
-          name: formData.organizationName,
-          website: formData.organizationWebsite,
-        })
-
-        await linkUserMutation.mutateAsync({
-          userId,
-          organizationId: organization.id,
-        })
-
+        // Refresh session
         await authClient.getSession()
         authClient.$store.notify("$sessionSignal")
         const redirectPath = createRoleBasedRedirect({ type: "organization" } as AuthUser)
@@ -432,11 +415,9 @@ export default function OrganizationRegisterPage() {
                 type="submit"
                 variant="default"
                 className="h-11 w-full"
-                disabled={
-                  isPending || createOrganizationMutation.isPending || linkUserMutation.isPending
-                }
+                disabled={isPending || createOrganizationMutation.isPending}
               >
-                {isPending || createOrganizationMutation.isPending || linkUserMutation.isPending
+                {isPending || createOrganizationMutation.isPending
                   ? "Registrando organización..."
                   : "Registrar Organización"}
               </Button>

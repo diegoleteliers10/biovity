@@ -7,7 +7,7 @@ import { MessageInput } from "@/components/dashboard/employee/MessageInput"
 import { Button } from "@/components/ui/button"
 import { MessageBubble } from "@/components/ui/message-bubble"
 import type { MessageType } from "@/lib/api/messages"
-import { useSendMessageMutation } from "@/lib/api/use-messages"
+import type { useSendMessageMutation } from "@/lib/api/use-messages"
 import type { User } from "@/lib/api/users"
 
 type Message = {

@@ -1,6 +1,5 @@
 "use client"
 
-/* eslint-disable react-doctor/no-giant-component -- large component, intentional */
 import {
   Building06Icon,
   Camera01Icon,
@@ -16,9 +15,12 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+/* eslint-disable react-doctor/no-giant-component -- large component, intentional */
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { NotificationBell } from "@/components/common/NotificationBell"
+import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 // import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { Badge } from "@/components/ui/badge"
@@ -26,18 +28,24 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { OrganizationAddress } from "@/lib/api/organizations"
 import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
 import {
-  formatUserLocation,
-  parseLocationString,
+  locationToFormData,
+  useDeleteAvatarMutation,
   useUpdateUserMutation,
   useUploadAvatarMutation,
   useUser,
 } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
+
+const SearchAddress = dynamic(
+  () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
+  { ssr: false }
+)
 
 const EMPTY_PLACEHOLDER = "No especificado"
 
@@ -47,7 +55,7 @@ type UserFormData = {
   name: string
   email: string
   phone: string
-  location: string
+  location: { street: string; city: string; country: string }
   profession: string
   avatar: string
 }
@@ -56,7 +64,7 @@ type OrgFormData = {
   name: string
   website: string
   phone: string
-  address: string
+  address: { street: string; city: string; country: string; state?: string; zipCode?: string }
 }
 
 function InfoRow({
@@ -120,7 +128,9 @@ const EditableCard = ({
 }) => (
   <Card
     className={cn(
-      "group relative bg-white border border-border/10 hover:bg-secondary/5 transition-colors duration-300",
+      "group relative bg-white transition-all duration-200",
+      "hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)]",
+      isEditing && "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)]",
       className
     )}
   >
@@ -129,11 +139,11 @@ const EditableCard = ({
         type="button"
         variant="ghost"
         size="icon"
-        className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+        className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 text-muted-foreground hover:text-foreground hover:bg-transparent"
         onClick={onEdit}
         aria-label="Editar sección"
       >
-        <HugeiconsIcon icon={Edit01Icon} size={18} />
+        <HugeiconsIcon icon={Edit01Icon} size={16} strokeWidth={1.5} />
       </Button>
     )}
     {children}
@@ -158,14 +168,14 @@ function formatAddress(addr: OrganizationAddress | null | undefined): string {
   return parts.join(", ")
 }
 
-function parseAddressString(value: string): OrganizationAddress {
-  const parts = value.split(",").map((s) => s.trim())
+function addressToFormData(addr: OrganizationAddress | null | undefined): OrgFormData["address"] {
+  if (!addr) return { street: "", city: "", country: "" }
   return {
-    street: parts[0] || undefined,
-    city: parts[1] || undefined,
-    state: parts[2] || undefined,
-    country: parts[3] || undefined,
-    zipCode: parts[4] || undefined,
+    street: addr.street ?? "",
+    city: addr.city ?? "",
+    country: addr.country ?? "",
+    state: addr.state,
+    zipCode: addr.zipCode,
   }
 }
 
@@ -185,6 +195,7 @@ export function OrganizationProfileContent() {
   const updateUserMutation = useUpdateUserMutation(userId ?? "")
   const updateOrgMutation = useUpdateOrganizationMutation(organizationId ?? "")
   const uploadAvatarMutation = useUploadAvatarMutation(userId ?? "")
+  const deleteAvatarMutation = useDeleteAvatarMutation(userId ?? "")
 
   // Hydration guard: skip SSR render of auth-dependent UI to prevent flash
   const mounted = useRef(false)
@@ -194,12 +205,13 @@ export function OrganizationProfileContent() {
 
   const [editingSection, setEditingSection] = useState<SectionId | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false)
 
   const [userForm, setUserForm] = useState<UserFormData>({
     name: "",
     email: "",
     phone: "",
-    location: "",
+    location: { street: "", city: "", country: "" },
     profession: "",
     avatar: "",
   })
@@ -208,14 +220,14 @@ export function OrganizationProfileContent() {
     name: "",
     website: "",
     phone: "",
-    address: "",
+    address: { street: "", city: "", country: "" },
   })
 
   const profileData: UserFormData = {
     name: user?.name ?? session?.user?.name ?? "",
     email: user?.email ?? session?.user?.email ?? "",
     phone: user?.phone ?? "",
-    location: user ? formatUserLocation(user.location) : "",
+    location: user ? locationToFormData(user.location) : { street: "", city: "", country: "" },
     profession: user?.profession ?? "",
     avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
   }
@@ -226,7 +238,7 @@ export function OrganizationProfileContent() {
         name: user?.name ?? (session?.user?.name as string) ?? "",
         email: user?.email ?? (session?.user?.email as string) ?? "",
         phone: user?.phone ?? "",
-        location: user ? formatUserLocation(user.location) : "",
+        location: user ? locationToFormData(user.location) : { street: "", city: "", country: "" },
         profession: user?.profession ?? "",
         avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
       })
@@ -239,7 +251,7 @@ export function OrganizationProfileContent() {
         name: organization.name ?? "",
         website: organization.website ?? "",
         phone: organization.phone ?? "",
-        address: formatAddress(organization.address),
+        address: addressToFormData(organization.address),
       })
     }
   }, [organization, editingSection])
@@ -252,11 +264,10 @@ export function OrganizationProfileContent() {
           name: organization.name ?? "",
           website: organization.website ?? "",
           phone: organization.phone ?? "",
-          address: formatAddress(organization.address),
+          address: addressToFormData(organization.address),
         })
       }
     },
-    // biome-ignore lint/correctness/useExhaustiveDependencies: profileData is a derived value from user/session
     [organization, profileData]
   )
 
@@ -268,39 +279,69 @@ export function OrganizationProfileContent() {
     [syncFormForSection]
   )
 
-  const handleInputChange = useCallback((field: keyof UserFormData, value: string) => {
-    setUserForm((prev) => ({ ...prev, [field]: value }))
-    setErrors((prev) => {
-      if (prev[field]) {
-        const next = { ...prev }
-        delete next[field]
-        return next
-      }
-      return prev
-    })
-  }, [])
+  const handleInputChange = useCallback(
+    (
+      field: keyof UserFormData,
+      value: string | { street: string; city: string; country: string }
+    ) => {
+      setUserForm((prev) => ({ ...prev, [field]: value }))
+      setErrors((prev) => {
+        if (prev[field]) {
+          const next = { ...prev }
+          delete next[field]
+          return next
+        }
+        return prev
+      })
+    },
+    []
+  )
 
-  const handleOrgInputChange = useCallback((field: keyof OrgFormData, value: string) => {
-    setOrgForm((prev) => ({ ...prev, [field]: value }))
-  }, [])
+  const handleOrgInputChange = useCallback(
+    (
+      field: keyof OrgFormData,
+      value: string | { street: string; city: string; country: string }
+    ) => {
+      setOrgForm((prev) => ({ ...prev, [field]: value }))
+    },
+    []
+  )
 
   const handleSaveSection = useCallback(
     async (section: SectionId) => {
       try {
         if (section === "sidebar") {
+          const hasLocation =
+            userForm.location.street || userForm.location.city || userForm.location.country
           await updateUserMutation.mutateAsync({
             name: userForm.name,
             profession: userForm.profession || undefined,
             phone: userForm.phone || undefined,
             avatar: userForm.avatar || undefined,
-            location: userForm.location ? parseLocationString(userForm.location) : undefined,
+            location: hasLocation
+              ? {
+                  street: userForm.location.street || undefined,
+                  city: userForm.location.city || undefined,
+                  country: userForm.location.country || undefined,
+                }
+              : undefined,
           })
         } else {
+          const hasAddress =
+            orgForm.address.street || orgForm.address.city || orgForm.address.country
           await updateOrgMutation.mutateAsync({
             name: orgForm.name,
             website: orgForm.website || undefined,
             phone: orgForm.phone || undefined,
-            address: orgForm.address ? parseAddressString(orgForm.address) : undefined,
+            address: hasAddress
+              ? {
+                  street: orgForm.address.street || undefined,
+                  city: orgForm.address.city || undefined,
+                  country: orgForm.address.country || undefined,
+                  state: orgForm.address.state,
+                  zipCode: orgForm.address.zipCode,
+                }
+              : undefined,
           })
         }
         setEditingSection(null)
@@ -321,17 +362,15 @@ export function OrganizationProfileContent() {
         name: organization.name ?? "",
         website: organization.website ?? "",
         phone: organization.phone ?? "",
-        address: formatAddress(organization.address),
+        address: addressToFormData(organization.address),
       })
     }
     setEditingSection(null)
     setErrors({})
-    // biome-ignore lint/correctness/useExhaustiveDependencies: profileData is a derived value from user/session
   }, [organization, profileData])
 
   const handleAvatarUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0]
+    (file: File) => {
       if (file && userId) {
         uploadAvatarMutation.mutate(file, {
           onSuccess: (updatedUser) => {
@@ -344,10 +383,18 @@ export function OrganizationProfileContent() {
           },
         })
       }
-      event.target.value = ""
     },
     [userId, uploadAvatarMutation]
   )
+
+  const handleAvatarDelete = useCallback(() => {
+    if (!userId) return
+    deleteAvatarMutation.mutate(undefined, {
+      onSuccess: () => {
+        setUserForm((prev) => ({ ...prev, avatar: "" }))
+      },
+    })
+  }, [userId, deleteAvatarMutation])
 
   const isLoading = userLoading || orgLoading
   const isSaving = updateUserMutation.isPending || updateOrgMutation.isPending
@@ -451,51 +498,49 @@ export function OrganizationProfileContent() {
             className="overflow-hidden"
           >
             <div className="relative pt-8 pb-6">
-              <div
-                className={cn(
-                  "relative mx-auto size-24 rounded-full overflow-hidden ring-2 ring-border bg-muted flex items-center justify-center"
-                )}
-              >
-                {data.avatar ? (
-                  <Image
-                    src={data.avatar}
-                    alt=""
-                    width={96}
-                    height={96}
-                    className="size-24 object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <HugeiconsIcon icon={UserIcon} size={40} className="text-muted-foreground" />
-                )}
-                {isEditingSidebar && (
-                  <label
-                    className={cn(
-                      "absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100",
-                      uploadAvatarMutation.isPending && "opacity-100 cursor-wait"
-                    )}
-                    aria-label="Cambiar foto"
-                  >
-                    {uploadAvatarMutation.isPending ? (
-                      <span className="text-white text-xs">Subiendo…</span>
-                    ) : (
-                      <HugeiconsIcon icon={Camera01Icon} size={24} className="text-white" />
-                    )}
-                    <input
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/gif"
-                      onChange={handleAvatarUpload}
-                      className="sr-only"
-                      disabled={uploadAvatarMutation.isPending}
+              <div className="relative mx-auto size-24">
+                <div
+                  className={cn(
+                    "relative size-24 rounded-full overflow-hidden ring-2 ring-border bg-muted flex items-center justify-center"
+                  )}
+                >
+                  {data.avatar ? (
+                    <Image
+                      src={data.avatar}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="size-24 object-cover"
+                      unoptimized
                     />
-                  </label>
-                )}
+                  ) : (
+                    <HugeiconsIcon icon={UserIcon} size={40} className="text-muted-foreground" />
+                  )}
+                  {isEditingSidebar && (
+                    <button
+                      type="button"
+                      onClick={() => setAvatarModalOpen(true)}
+                      className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity"
+                      aria-label="Editar foto"
+                    >
+                      <HugeiconsIcon icon={Camera01Icon} size={24} className="text-white" />
+                    </button>
+                  )}
+                </div>
               </div>
               {uploadAvatarMutation.isError && (
                 <p className="mt-2 text-center text-xs text-destructive px-6">
                   {uploadAvatarMutation.error?.message}
                 </p>
               )}
+              <AvatarEditModal
+                avatar={data.avatar}
+                open={avatarModalOpen}
+                onOpenChange={setAvatarModalOpen}
+                onUpload={handleAvatarUpload}
+                onDelete={handleAvatarDelete}
+                isUploading={uploadAvatarMutation.isPending}
+              />
               <div className="mt-4 px-6">
                 {isEditingSidebar ? (
                   <div className="space-y-3">
@@ -554,11 +599,11 @@ export function OrganizationProfileContent() {
                 label="Teléfono"
                 value={
                   isEditingSidebar ? (
-                    <Input
+                    <PhoneInput
                       value={userForm.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      onChange={(value) => handleInputChange("phone", value)}
                       placeholder="+56 9 1234 5678"
-                      className="h-8 w-full text-sm border-0 bg-muted/50 px-2 -ml-1.5"
+                      className="h-8 text-sm"
                     />
                   ) : (
                     data.phone || EMPTY_PLACEHOLDER
@@ -573,14 +618,31 @@ export function OrganizationProfileContent() {
                 label="Ubicación"
                 value={
                   isEditingSidebar ? (
-                    <Input
-                      value={userForm.location}
-                      onChange={(e) => handleInputChange("location", e.target.value)}
-                      placeholder="Ciudad, País"
-                      className="h-8 w-full text-sm border-0 bg-muted/50 px-2 -ml-1.5"
+                    <SearchAddress
+                      onSelectLocation={(parsed) => {
+                        if (parsed) {
+                          handleInputChange("location", {
+                            street: parsed.street,
+                            city: parsed.city,
+                            country: parsed.country,
+                          })
+                        }
+                      }}
                     />
+                  ) : data.location.street || data.location.city ? (
+                    <span>
+                      {data.location.street && <span>{data.location.street}</span>}
+                      {data.location.street && data.location.city && <span>, </span>}
+                      {data.location.city && <span>{data.location.city}</span>}
+                      {data.location.country && (
+                        <span>
+                          {data.location.street || data.location.city ? ", " : ""}
+                          {data.location.country}
+                        </span>
+                      )}
+                    </span>
                   ) : (
-                    data.location || EMPTY_PLACEHOLDER
+                    EMPTY_PLACEHOLDER
                   )
                 }
               />
@@ -684,12 +746,31 @@ export function OrganizationProfileContent() {
                                 >
                                   Teléfono
                                 </label>
-                                <Input
+                                <PhoneInput
                                   id="org-phone"
                                   value={orgForm.phone}
-                                  onChange={(e) => handleOrgInputChange("phone", e.target.value)}
+                                  onChange={(value) => handleOrgInputChange("phone", value)}
                                   placeholder="+56 9 1234 5678"
                                   className="h-10"
+                                />
+                              </div>
+                              <div className="space-y-1.5 sm:col-span-2">
+                                <label
+                                  htmlFor="user-location"
+                                  className="text-sm font-medium text-foreground"
+                                >
+                                  Ubicacion
+                                </label>
+                                <SearchAddress
+                                  onSelectLocation={(parsed) => {
+                                    if (parsed) {
+                                      handleInputChange("location", {
+                                        street: parsed.street,
+                                        city: parsed.city,
+                                        country: parsed.country,
+                                      })
+                                    }
+                                  }}
                                 />
                               </div>
                               <div className="space-y-1.5 sm:col-span-2">
@@ -697,14 +778,18 @@ export function OrganizationProfileContent() {
                                   htmlFor="org-address"
                                   className="text-sm font-medium text-foreground"
                                 >
-                                  Dirección
+                                  Direccion de la organizacion
                                 </label>
-                                <Input
-                                  id="org-address"
-                                  value={orgForm.address}
-                                  onChange={(e) => handleOrgInputChange("address", e.target.value)}
-                                  placeholder="Calle, Ciudad, Región, País, Código postal"
-                                  className="h-10"
+                                <SearchAddress
+                                  onSelectLocation={(parsed) => {
+                                    if (parsed) {
+                                      handleOrgInputChange("address", {
+                                        street: parsed.street,
+                                        city: parsed.city,
+                                        country: parsed.country,
+                                      })
+                                    }
+                                  }}
                                 />
                               </div>
                             </div>
