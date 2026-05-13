@@ -23,6 +23,7 @@ export type TransparencyFeatureItem = {
 }
 
 export type CategoryHomeItem = {
+  id: string
   icon: IconSvgElement
   title: string
   positions: string

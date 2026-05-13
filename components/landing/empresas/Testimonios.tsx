@@ -3,36 +3,12 @@
 import { QuoteDownIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import * as m from "motion/react-m"
-
-// TODO: Reemplazar con testimonios reales de clientes
-const testimonios = [
-  {
-    quote:
-      "Biovity nos ayudó a encontrar un investigador senior en tiempo récord. La calidad de los candidatos es excelente.",
-    author: "María González",
-    role: "Directora de RRHH",
-    company: "Laboratorio XYZ",
-    image: "/testimonials/persona1.jpg",
-  },
-  {
-    quote:
-      "El ATS es muy intuitivo y nos ha permitido reducir el tiempo de contratación en un 40%. Muy recomendable.",
-    author: "Carlos Rodríguez",
-    role: "Gerente de Talento",
-    company: "Biotech Chile",
-    image: "/testimonials/persona2.jpg",
-  },
-  {
-    quote:
-      "Por fin una plataforma enfocada en nuestro sector. Los filtros por especialidad son exactamente lo que necesitábamos.",
-    author: "Andrea Muñoz",
-    role: "CEO",
-    company: "Pharma Solutions",
-    image: "/testimonials/persona3.jpg",
-  },
-]
+import Image from "next/image"
+import { TESTIMONIOS_EMPRESAS } from "@/lib/data/empresas-data"
 
 export function Testimonios() {
+  if (TESTIMONIOS_EMPRESAS.length === 0) return null
+
   return (
     <section className="py-24 bg-zinc-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -70,7 +46,7 @@ export function Testimonios() {
           transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
-          {testimonios.map((testimonio, index) => {
+          {TESTIMONIOS_EMPRESAS.map((testimonio, index) => {
             return (
               <m.div
                 key={testimonio.author}
@@ -94,10 +70,19 @@ export function Testimonios() {
                       {testimonio.role} en {testimonio.company}
                     </p>
                   </div>
-                  {/* TODO: Reemplazar con <Image src={testimonio.image} alt={testimonio.author} /> */}
-                  <div className="size-12 rounded-full bg-gradient-to-br from-blue-400 to-zinc-600 flex items-center justify-center text-white font-semibold">
-                    {testimonio.author.charAt(0)}
-                  </div>
+                  {testimonio.image ? (
+                    <Image
+                      src={testimonio.image}
+                      alt={testimonio.author}
+                      width={48}
+                      height={48}
+                      className="size-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="size-12 rounded-full bg-gradient-to-br from-blue-400 to-zinc-600 flex items-center justify-center text-white font-semibold">
+                      {testimonio.author.charAt(0)}
+                    </div>
+                  )}
                 </div>
               </m.div>
             )

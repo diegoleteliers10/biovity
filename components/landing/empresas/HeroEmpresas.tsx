@@ -2,13 +2,37 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery } from "@tanstack/react-query"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { HERO_STATS_EMPRESAS } from "@/lib/data/empresas-data"
 import { Button } from "../../ui/button"
 
+type EmpresasStatsResponse = {
+  organizations: number | null
+  specialties: number | null
+}
+
 export function HeroEmpresas() {
   const ease = [0.23, 1, 0.32, 1] as const
+
+  const { data: stats } = useQuery({
+    queryKey: ["landing", "empresas", "stats"],
+    queryFn: async (): Promise<EmpresasStatsResponse> => {
+      const res = await fetch("/api/landing/empresas/stats")
+      if (!res.ok) throw new Error("Error al cargar estadísticas")
+      return res.json()
+    },
+    staleTime: 60 * 1000,
+  })
+
+  const formatNumber = (value: number) => new Intl.NumberFormat("es-CL").format(value)
+
+  const resolveValue = (index: number, fallback: string) => {
+    if (index === 0 && stats?.specialties != null) return `+${formatNumber(stats.specialties)}`
+    if (index === 2 && stats?.organizations != null) return `+${formatNumber(stats.organizations)}`
+    return fallback
+  }
 
   const scrollToContacto = () => {
     const contactSection = document.getElementById("contacto")
@@ -98,7 +122,9 @@ export function HeroEmpresas() {
                     <HugeiconsIcon icon={stat.icon} size={28} className={iconColor} />
                   </div>
                   <div className="text-left">
-                    <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {resolveValue(index, stat.value)}
+                    </p>
                     <p className="text-sm text-muted-foreground">{stat.label}</p>
                   </div>
                 </m.div>
