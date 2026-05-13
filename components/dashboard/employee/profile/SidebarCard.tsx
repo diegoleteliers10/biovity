@@ -4,6 +4,7 @@ import {
   BirthdayCakeIcon,
   Building06Icon,
   Camera01Icon,
+  Delete01Icon,
   FileAttachmentIcon,
   Location01Icon,
   Mail01Icon,
@@ -13,15 +14,24 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+import dynamic from "next/dynamic"
 import Image from "next/image"
+import { useCallback, useState } from "react"
 import { DatePicker } from "@/components/common/DatePicker"
 import { Badge } from "@/components/ui/badge"
 import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { useUploadAvatarMutation, useUploadResumeCvMutation } from "@/lib/api/use-profile"
 import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
+import { AvatarEditModal } from "./AvatarEditModal"
 import { EditableCard } from "./EditableCard"
 import { EMPTY_PLACEHOLDER, useProfileContext } from "./profile-context"
+
+const SearchAddress = dynamic(
+  () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
+  { ssr: false }
+)
 
 const API_BASE =
   typeof window !== "undefined"
@@ -68,14 +78,22 @@ export function SidebarCard() {
     handleCancelSection,
     handleAvatarUpload,
     handleCvUpload,
+    handleAvatarDelete,
+    handleCvDelete,
     userId,
   } = useProfileContext()
+
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false)
 
   const uploadAvatarMutation = useUploadAvatarMutation(userId ?? "")
   const uploadCvMutation = useUploadResumeCvMutation(resume?.id ?? "", userId ?? "")
 
   const isEditingSidebar = editingSection === "sidebar"
   const data = profileData
+
+  const handleAvatarEditClick = useCallback(() => {
+    setAvatarModalOpen(true)
+  }, [])
 
   return (
     <EditableCard
@@ -84,54 +102,51 @@ export function SidebarCard() {
       onSave={() => handleSaveSection("sidebar")}
       onCancel={handleCancelSection}
       isSaving={isSaving}
-      className="overflow-hidden"
     >
       <div className="relative pt-8 pb-6">
-        <div
-          className={cn(
-            "relative mx-auto size-24 rounded-full overflow-hidden ring-2 ring-border bg-muted flex items-center justify-center"
-          )}
-        >
-          {data.avatar ? (
-            <Image
-              src={data.avatar}
-              alt=""
-              width={96}
-              height={96}
-              className="size-24 object-cover"
-              unoptimized
-            />
-          ) : (
-            <HugeiconsIcon icon={UserIcon} size={40} className="text-muted-foreground" />
-          )}
-          {isEditingSidebar && (
-            <label
-              className={cn(
-                "absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100",
-                uploadAvatarMutation.isPending && "opacity-100 cursor-wait"
-              )}
-              aria-label="Cambiar foto"
-            >
-              {uploadAvatarMutation.isPending ? (
-                <span className="text-white text-xs">Subiendo…</span>
-              ) : (
-                <HugeiconsIcon icon={Camera01Icon} size={24} className="text-white" />
-              )}
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                onChange={handleAvatarUpload}
-                className="sr-only"
-                disabled={uploadAvatarMutation.isPending}
+        <div className="relative mx-auto size-24">
+          <div
+            className={cn(
+              "relative size-24 rounded-full overflow-hidden ring-2 ring-border bg-muted flex items-center justify-center"
+            )}
+          >
+            {data.avatar ? (
+              <Image
+                src={data.avatar}
+                alt=""
+                width={96}
+                height={96}
+                className="size-24 object-cover"
+                unoptimized
               />
-            </label>
-          )}
+            ) : (
+              <HugeiconsIcon icon={UserIcon} size={40} className="text-muted-foreground" />
+            )}
+            {isEditingSidebar && (
+              <button
+                type="button"
+                onClick={handleAvatarEditClick}
+                className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity"
+                aria-label="Editar foto"
+              >
+                <HugeiconsIcon icon={Camera01Icon} size={24} className="text-white" />
+              </button>
+            )}
+          </div>
         </div>
         {uploadAvatarMutation.isError && (
           <p className="mt-2 text-center text-xs text-destructive px-6">
             {uploadAvatarMutation.error?.message}
           </p>
         )}
+        <AvatarEditModal
+          avatar={data.avatar}
+          open={avatarModalOpen}
+          onOpenChange={setAvatarModalOpen}
+          onUpload={handleAvatarUpload}
+          onDelete={handleAvatarDelete}
+          isUploading={uploadAvatarMutation.isPending}
+        />
         <div className="mt-4 text-center px-6">
           {isEditingSidebar ? (
             <>
@@ -182,11 +197,11 @@ export function SidebarCard() {
           label="Teléfono"
           value={
             isEditingSidebar ? (
-              <Input
+              <PhoneInput
                 value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
+                onChange={(value) => handleInputChange("phone", value)}
                 placeholder="+56 9 1234 5678"
-                className="h-8 w-full text-sm border-0 bg-muted/50 px-2 -ml-1.5"
+                className="h-8 text-sm"
               />
             ) : (
               data.phone
@@ -201,14 +216,31 @@ export function SidebarCard() {
           label="Ubicación"
           value={
             isEditingSidebar ? (
-              <Input
-                value={formData.location}
-                onChange={(e) => handleInputChange("location", e.target.value)}
-                placeholder="Ciudad, País"
-                className="h-8 w-full text-sm border-0 bg-muted/50 px-2 -ml-1.5"
+              <SearchAddress
+                onSelectLocation={(parsed) => {
+                  if (parsed) {
+                    handleInputChange("location", {
+                      street: parsed.street,
+                      city: parsed.city,
+                      country: parsed.country,
+                    })
+                  }
+                }}
               />
+            ) : data.location.street || data.location.city ? (
+              <span>
+                {data.location.street && <span>{data.location.street}</span>}
+                {data.location.street && data.location.city && <span>, </span>}
+                {data.location.city && <span>{data.location.city}</span>}
+                {data.location.country && (
+                  <span>
+                    {data.location.street || data.location.city ? ", " : ""}
+                    {data.location.country}
+                  </span>
+                )}
+              </span>
             ) : (
-              data.location
+              EMPTY_PLACEHOLDER
             )
           }
         />
@@ -233,52 +265,71 @@ export function SidebarCard() {
           icon={FileAttachmentIcon}
           label="CV"
           value={
-            isEditingSidebar && !resume?.id ? (
-              <span className="text-muted-foreground text-sm">
-                Guarda el perfil para poder subir tu CV
-              </span>
-            ) : isEditingSidebar && resume?.id ? (
+            isEditingSidebar ? (
               <div className="flex flex-col gap-1 min-w-0">
                 {resume?.cvFile ? (
-                  <a
-                    href={resume.cvFile.url ?? `${API_BASE}/api/v1/resumes/${resume.id}/cv`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline truncate"
-                  >
-                    {resume.cvFile.originalName ?? "Descargar"}
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={resume.cvFile.url ?? `${API_BASE}/api/v1/resumes/${resume.id}/cv`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline truncate"
+                    >
+                      {resume.cvFile.originalName ?? "Descargar"}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCvDelete}
+                      className="text-destructive hover:text-destructive/80 shrink-0 p-1 rounded hover:bg-destructive/10 transition-colors"
+                      aria-label="Eliminar CV"
+                    >
+                      <HugeiconsIcon icon={Delete01Icon} size={16} />
+                    </button>
+                  </div>
                 ) : (
-                  <span className="text-muted-foreground">No subido</span>
-                )}
-                <label className="text-xs text-primary hover:underline cursor-pointer">
-                  {resume?.cvFile ? "Reemplazar CV" : "Subir CV"}
-                  <input
-                    type="file"
-                    accept=".pdf,application/pdf"
-                    onChange={handleCvUpload}
-                    className="sr-only"
-                    aria-label="Subir archivo CV"
-                  />
-                </label>
-                {uploadCvMutation.isPending && (
-                  <span className="text-xs text-muted-foreground">Subiendo…</span>
-                )}
-                {uploadCvMutation.isError && (
-                  <span className="text-xs text-destructive">
-                    {uploadCvMutation.error?.message ?? "Error al subir"}
-                  </span>
+                  <>
+                    <label className="text-xs text-primary hover:underline cursor-pointer">
+                      Subir CV
+                      <input
+                        type="file"
+                        accept=".pdf,application/pdf"
+                        onChange={handleCvUpload}
+                        className="sr-only"
+                        aria-label="Subir archivo CV"
+                      />
+                    </label>
+                    {uploadCvMutation.isPending && (
+                      <span className="text-xs text-muted-foreground">Subiendo…</span>
+                    )}
+                    {uploadCvMutation.isError && (
+                      <span className="text-xs text-destructive">
+                        {uploadCvMutation.error?.message ?? "Error al subir"}
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
             ) : resume?.cvFile ? (
-              <a
-                href={resume.cvFile.url ?? `${API_BASE}/api/v1/resumes/${resume.id}/cv`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                {resume.cvFile.originalName ?? "Descargar"}
-              </a>
+              <div className="flex items-center gap-2">
+                <a
+                  href={resume.cvFile.url ?? `${API_BASE}/api/v1/resumes/${resume.id}/cv`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {resume.cvFile.originalName ?? "Descargar"}
+                </a>
+                {isEditingSidebar && (
+                  <button
+                    type="button"
+                    onClick={handleCvDelete}
+                    className="text-destructive hover:text-destructive/80 shrink-0 p-1 rounded hover:bg-destructive/10 transition-colors"
+                    aria-label="Eliminar CV"
+                  >
+                    <HugeiconsIcon icon={Delete01Icon} size={16} />
+                  </button>
+                )}
+              </div>
             ) : (
               <span className="text-muted-foreground">No subido</span>
             )

@@ -8,6 +8,7 @@ const API_BASE =
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
 export type UserLocation = {
+  street?: string
   city?: string
   country?: string
 }
@@ -74,10 +75,11 @@ function normalizeUser(raw: unknown): User | null {
   if (loc && typeof loc === "object") {
     const l = loc as Record<string, unknown>
     location = {
+      street: typeof l.street === "string" ? l.street : undefined,
       city: typeof l.city === "string" ? l.city : undefined,
       country: typeof l.country === "string" ? l.country : undefined,
     }
-    if (!location.city && !location.country) location = null
+    if (!location.street && !location.city && !location.country) location = null
   } else if (typeof loc === "string" && loc.trim()) {
     const [city, country] = loc.split(",").map((s) => s.trim())
     location = { city: city || undefined, country: country || undefined }

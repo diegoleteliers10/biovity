@@ -66,7 +66,7 @@ export function ExperienceForm() {
               : [emptyExperience()]
             ).map((exp, i) => (
               <div
-                key={`exp-edit-${exp.title ?? exp.position ?? ""}-${exp.company ?? ""}`}
+                key={exp.id ?? `exp-new-${i}`}
                 className="rounded-md border border-border p-4 space-y-3"
               >
                 <div className="flex justify-between items-start gap-2">

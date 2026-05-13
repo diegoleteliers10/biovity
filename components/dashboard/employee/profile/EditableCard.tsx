@@ -26,7 +26,9 @@ export function EditableCard({
   return (
     <Card
       className={cn(
-        "group relative bg-white border border-border/10 hover:bg-secondary/5 transition-colors duration-300",
+        "group relative bg-white transition-all duration-200",
+        "hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)]",
+        isEditing && "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)]",
         className
       )}
     >
@@ -35,11 +37,11 @@ export function EditableCard({
           type="button"
           variant="ghost"
           size="icon"
-          className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+          className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus:opacity-100 transition-opacity duration-200 text-muted-foreground hover:text-foreground hover:bg-transparent"
           onClick={onEdit}
           aria-label="Editar sección"
         >
-          <HugeiconsIcon icon={Edit01Icon} size={18} />
+          <HugeiconsIcon icon={Edit01Icon} size={16} strokeWidth={1.5} />
         </Button>
       )}
       {children}

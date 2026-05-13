@@ -1,5 +1,5 @@
-import type { IconSvgElement } from "@hugeicons/react"
 import { Loading03Icon } from "@hugeicons/core-free-icons"
+import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { cn } from "@/lib/utils"
 

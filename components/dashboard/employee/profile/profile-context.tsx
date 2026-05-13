@@ -1,7 +1,7 @@
 "use client"
 
 /* eslint-disable react-doctor/no-giant-component -- large component, intentional */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type {
   ResumeCertification,
   ResumeEducation,
@@ -11,8 +11,10 @@ import type {
 } from "@/lib/api/resumes"
 import {
   formatUserLocation,
-  parseLocationString,
+  locationToFormData,
   useCreateResumeMutation,
+  useDeleteAvatarMutation,
+  useDeleteCvMutation,
   useResumeByUser,
   useUpdateResumeMutation,
   useUpdateUserMutation,
@@ -22,6 +24,28 @@ import {
 } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
+
+// Minimal session type for client component - mirrors ServerSession shape
+export type ClientSession = {
+  user: {
+    id?: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    type?: string
+    profession?: string
+    avatar?: string | null
+  }
+  session?: {
+    id: string
+    expiresAt: Date
+    token: string
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date
+    updatedAt?: Date
+  } | null
+}
 
 export type SectionId =
   | "sidebar"
@@ -36,7 +60,7 @@ export type FormData = {
   name: string
   email: string
   phone: string
-  location: string
+  location: { street: string; city: string; country: string }
   profession: string
   bio: string
   skills: readonly string[]
@@ -66,22 +90,27 @@ type ProfileContextValue = {
   profileData: FormData
   userError: ReturnType<typeof useUser>["error"]
   handleEditSection: (section: SectionId) => void
-  handleInputChange: (field: keyof FormData, value: string | readonly string[]) => void
+  handleInputChange: (
+    field: keyof FormData,
+    value: string | readonly string[] | { street: string; city: string; country: string }
+  ) => void
   handleResumeArrayChange: <K extends keyof ResumeFormData>(
     key: K,
     updater: (arr: ResumeFormData[K]) => ResumeFormData[K]
   ) => void
   handleSaveSection: (section: SectionId) => Promise<void>
   handleCancelSection: () => void
-  handleAvatarUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleAvatarUpload: (file: File) => void
   handleCvUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleAvatarDelete: () => void
+  handleCvDelete: () => void
 }
 
 const emptyFormData = (): FormData => ({
   name: "",
   email: "",
   phone: "",
-  location: "",
+  location: { street: "", city: "", country: "" },
   profession: "",
   bio: "",
   skills: [],
@@ -98,7 +127,11 @@ const emptyResumeFormData = (): ResumeFormData => ({
   links: [],
 })
 
+let _idCounter = 0
+const genId = () => `__id_${++_idCounter}_${Date.now()}`
+
 const emptyExperience = (): ResumeExperience => ({
+  id: genId(),
   title: "",
   company: "",
   startYear: "",
@@ -108,6 +141,7 @@ const emptyExperience = (): ResumeExperience => ({
 })
 
 const emptyEducation = (): ResumeEducation => ({
+  id: genId(),
   title: "",
   institute: "",
   startYear: "",
@@ -115,16 +149,17 @@ const emptyEducation = (): ResumeEducation => ({
   stillStudying: false,
 })
 
-const emptySkill = (): ResumeSkill => ({ name: "" })
+const emptySkill = (): ResumeSkill => ({ id: genId(), name: "" })
 
 const emptyCertification = (): ResumeCertification => ({
+  id: genId(),
   title: "",
   company: "",
   date: "",
   link: "",
 })
 
-const emptyLanguage = (): ResumeLanguage => ({ name: "", level: "" })
+const emptyLanguage = (): ResumeLanguage => ({ id: genId(), name: "", level: "" })
 
 export const EMPTY_PLACEHOLDER = "No especificado"
 
@@ -149,12 +184,15 @@ export function useProfileContext() {
 
 type ProfileProviderProps = {
   children: React.ReactNode
+  session?: ClientSession | null
 }
 
-export function ProfileProvider({ children }: ProfileProviderProps) {
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const userId = (session?.user as { id?: string })?.id
+export function ProfileProvider({ children, session: serverSession }: ProfileProviderProps) {
+  // The session is passed as a prop from the server (getServerSession in the page)
+  // This ensures hydration matches between server and client
+  // No client-side useSession needed since we already have the server session
+  const session = serverSession
+  const userId = session?.user?.id
 
   const { data: user, isLoading: userLoading, error: userError } = useUser(userId)
   const { data: resume, isLoading: resumeLoading } = useResumeByUser(userId)
@@ -164,11 +202,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   const updateResumeMutation = useUpdateResumeMutation(resume?.id ?? "", userId ?? "")
   const uploadCvMutation = useUploadResumeCvMutation(resume?.id ?? "", userId ?? "")
   const uploadAvatarMutation = useUploadAvatarMutation(userId ?? "")
-
-  const mounted = useRef(false)
-  useEffect(() => {
-    mounted.current = true
-  }, [])
+  const deleteAvatarMutation = useDeleteAvatarMutation(userId ?? "")
+  const deleteCvMutation = useDeleteCvMutation(resume?.id ?? "", userId ?? "")
 
   const [editingSection, setEditingSection] = useState<SectionId | null>(null)
   const [resumeFormData, setResumeFormData] = useState<ResumeFormData>(() => emptyResumeFormData())
@@ -180,7 +215,7 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
       name: user?.name ?? session?.user?.name ?? "",
       email: user?.email ?? session?.user?.email ?? "",
       phone: user?.phone ?? "",
-      location: user ? formatUserLocation(user.location) : "",
+      location: user ? locationToFormData(user.location) : { street: "", city: "", country: "" },
       profession: user?.profession ?? "",
       bio: resume?.summary ?? "",
       skills: Array.isArray(resume?.skills)
@@ -194,7 +229,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   const resumeFormDataFromProfile = useMemo<ResumeFormData>(() => {
     if (!resume) return emptyResumeFormData()
     return {
-      experiences: (resume.experiences ?? []).map((e) => ({
+      experiences: (resume.experiences ?? []).map((e, idx) => ({
+        id: e.id ?? `exp-${idx}`,
         title: e.title ?? e.position,
         company: e.company,
         startYear: e.startYear ?? e.startDate?.slice(0, 4),
@@ -202,23 +238,28 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
         stillWorking: e.stillWorking ?? e.current,
         description: e.description,
       })),
-      education: (resume.education ?? []).map((e) => ({
+      education: (resume.education ?? []).map((e, idx) => ({
+        id: e.id ?? `edu-${idx}`,
         title: e.title ?? e.degree,
         institute: e.institute ?? e.institution,
         startYear: e.startYear ?? e.startDate?.slice(0, 4),
         endYear: e.endYear ?? e.endDate?.slice(0, 4),
         stillStudying: e.stillStudying,
       })),
-      skills: (resume.skills ?? []).map((s) =>
-        typeof s === "string" ? { name: s } : { name: s.name, level: s.level }
+      skills: (resume.skills ?? []).map((s, idx) =>
+        typeof s === "string"
+          ? { id: `skill-${idx}`, name: s }
+          : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
       ),
-      certifications: (resume.certifications ?? []).map((c) => ({
+      certifications: (resume.certifications ?? []).map((c, idx) => ({
+        id: c.id ?? `cert-${idx}`,
         title: c.title ?? c.name,
         company: c.company ?? c.issuer,
         date: c.date,
         link: c.link,
       })),
-      languages: (resume.languages ?? []).map((l) => ({
+      languages: (resume.languages ?? []).map((l, idx) => ({
+        id: l.id ?? `lang-${idx}`,
         name: l.name ?? l.language,
         level: l.level,
       })),
@@ -238,7 +279,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
       setFormData(profileData)
       if (resume && section !== "sidebar") {
         setResumeFormData({
-          experiences: (resume.experiences ?? []).map((e) => ({
+          experiences: (resume.experiences ?? []).map((e, idx) => ({
+            id: e.id ?? `exp-${idx}`,
             title: e.title ?? e.position,
             company: e.company,
             startYear: e.startYear ?? e.startDate?.slice(0, 4),
@@ -246,23 +288,28 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
             stillWorking: e.stillWorking ?? e.current,
             description: e.description,
           })),
-          education: (resume.education ?? []).map((e) => ({
+          education: (resume.education ?? []).map((e, idx) => ({
+            id: e.id ?? `edu-${idx}`,
             title: e.title ?? e.degree,
             institute: e.institute ?? e.institution,
             startYear: e.startYear ?? e.startDate?.slice(0, 4),
             endYear: e.endYear ?? e.endDate?.slice(0, 4),
             stillStudying: e.stillStudying,
           })),
-          skills: (resume.skills ?? []).map((s) =>
-            typeof s === "string" ? { name: s } : { name: s.name, level: s.level }
+          skills: (resume.skills ?? []).map((s, idx) =>
+            typeof s === "string"
+              ? { id: `skill-${idx}`, name: s }
+              : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
           ),
-          certifications: (resume.certifications ?? []).map((c) => ({
+          certifications: (resume.certifications ?? []).map((c, idx) => ({
+            id: c.id ?? `cert-${idx}`,
             title: c.title ?? c.name,
             company: c.company ?? c.issuer,
             date: c.date,
             link: c.link,
           })),
-          languages: (resume.languages ?? []).map((l) => ({
+          languages: (resume.languages ?? []).map((l, idx) => ({
+            id: l.id ?? `lang-${idx}`,
             name: l.name ?? l.language,
             level: l.level,
           })),
@@ -284,7 +331,10 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   )
 
   const handleInputChange = useCallback(
-    (field: keyof FormData, value: string | readonly string[]) => {
+    (
+      field: keyof FormData,
+      value: string | readonly string[] | { street: string; city: string; country: string }
+    ) => {
       setFormData((prev) => ({ ...prev, [field]: value }))
       setErrors((prev) => {
         if (prev[field]) {
@@ -408,14 +458,21 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
           setErrors(result.errors)
           return
         }
-        const location = formData.location.trim()
+        const hasLocation =
+          formData.location.street || formData.location.city || formData.location.country
         await updateUserMutation.mutateAsync({
           name: formData.name,
           profession: formData.profession || undefined,
           phone: formData.phone || undefined,
           avatar: formData.avatar || undefined,
           birthday: formData.dateOfBirth || undefined,
-          location: location ? parseLocationString(formData.location) : undefined,
+          location: hasLocation
+            ? {
+                street: formData.location.street || undefined,
+                city: formData.location.city || undefined,
+                country: formData.location.country || undefined,
+              }
+            : undefined,
         })
       } else {
         const payload = resumePayload()
@@ -443,7 +500,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     setFormData(profileData)
     if (resume) {
       setResumeFormData({
-        experiences: (resume.experiences ?? []).map((e) => ({
+        experiences: (resume.experiences ?? []).map((e, idx) => ({
+          id: e.id ?? `exp-${idx}`,
           title: e.title ?? e.position,
           company: e.company,
           startYear: e.startYear ?? e.startDate?.slice(0, 4),
@@ -451,23 +509,28 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
           stillWorking: e.stillWorking ?? e.current,
           description: e.description,
         })),
-        education: (resume.education ?? []).map((e) => ({
+        education: (resume.education ?? []).map((e, idx) => ({
+          id: e.id ?? `edu-${idx}`,
           title: e.title ?? e.degree,
           institute: e.institute ?? e.institution,
           startYear: e.startYear ?? e.startDate?.slice(0, 4),
           endYear: e.endYear ?? e.endDate?.slice(0, 4),
           stillStudying: e.stillStudying,
         })),
-        skills: (resume.skills ?? []).map((s) =>
-          typeof s === "string" ? { name: s } : { name: s.name, level: s.level }
+        skills: (resume.skills ?? []).map((s, idx) =>
+          typeof s === "string"
+            ? { id: `skill-${idx}`, name: s }
+            : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
         ),
-        certifications: (resume.certifications ?? []).map((c) => ({
+        certifications: (resume.certifications ?? []).map((c, idx) => ({
+          id: c.id ?? `cert-${idx}`,
           title: c.title ?? c.name,
           company: c.company ?? c.issuer,
           date: c.date,
           link: c.link,
         })),
-        languages: (resume.languages ?? []).map((l) => ({
+        languages: (resume.languages ?? []).map((l, idx) => ({
+          id: l.id ?? `lang-${idx}`,
           name: l.name ?? l.language,
           level: l.level,
         })),
@@ -479,8 +542,7 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   }, [profileData, resume])
 
   const handleAvatarUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0]
+    (file: File) => {
       if (file && userId) {
         uploadAvatarMutation.mutate(file, {
           onSuccess: (updatedUser) => {
@@ -490,7 +552,6 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
           },
         })
       }
-      event.target.value = ""
     },
     [userId, uploadAvatarMutation]
   )
@@ -505,6 +566,20 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     },
     [resume?.id, uploadCvMutation]
   )
+
+  const handleAvatarDelete = useCallback(() => {
+    if (!userId) return
+    deleteAvatarMutation.mutate(undefined, {
+      onSuccess: () => {
+        setFormData((prev) => ({ ...prev, avatar: "" }))
+      },
+    })
+  }, [userId, deleteAvatarMutation])
+
+  const handleCvDelete = useCallback(() => {
+    if (!resume?.id || !resume?.cvFile?.path) return
+    deleteCvMutation.mutate(resume.cvFile.path)
+  }, [resume?.id, resume?.cvFile?.path, deleteCvMutation])
 
   const isLoading = userLoading || resumeLoading
   const isSaving =
@@ -529,6 +604,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     handleCancelSection,
     handleAvatarUpload,
     handleCvUpload,
+    handleAvatarDelete,
+    handleCvDelete,
   }
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>

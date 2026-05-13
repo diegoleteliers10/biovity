@@ -19,10 +19,9 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
+import { createResume } from "@/lib/api/resumes"
 import { authClient } from "@/lib/auth-client"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
-
-const { signUp } = authClient
 
 type RegisterFormState = {
   name: string
@@ -93,24 +92,24 @@ const initialRegisterFormState: RegisterFormState = {
 }
 
 const professions = [
-  { label: "Biotecnólogo", id: "biotecnologo" },
-  { label: "Bioinformático", id: "bioinformatico" },
-  { label: "Investigador", id: "investigador" },
+  { label: "Biotecnólogo/a", id: "biotecnologo" },
+  { label: "Bioinformático/a", id: "bioinformatico" },
+  { label: "Investigador/a", id: "investigador" },
   { label: "Analista de Laboratorio", id: "analista-lab" },
-  { label: "Ingeniero Biomédico", id: "ing-biomedico" },
-  { label: "Microbiólogo", id: "microbiologo" },
+  { label: "Ingeniero/a Biomédico/a", id: "ing-biomedico" },
+  { label: "Microbiólogo/a", id: "microbiologo" },
   { label: "Genetista", id: "genetista" },
-  { label: "Bioquímico", id: "bioquimico" },
+  { label: "Bioquímico/a", id: "bioquimico" },
   { label: "Especialista en Calidad", id: "calidad" },
-  { label: "Técnico de Laboratorio", id: "tecnico-lab" },
+  { label: "Técnico/a de Laboratorio", id: "tecnico-lab" },
   { label: "Gerente de Proyectos", id: "gerente-proyectos" },
-  { label: "Científico de Datos", id: "cientifico-datos" },
-  { label: "Especialista Regulatorio", id: "regulatorio" },
-  { label: "Bioestadístico", id: "bioestadistico" },
-  { label: "Consultor", id: "consultor" },
+  { label: "Científico/a de Datos", id: "cientifico-datos" },
+  { label: "Especialista Regulatorio/a", id: "regulatorio" },
+  { label: "Bioestadístico/a", id: "bioestadistico" },
+  { label: "Consultor/a", id: "consultor" },
   { label: "Docente/Profesor", id: "docente" },
   { label: "Estudiante", id: "estudiante" },
-  { label: "Otro", id: "otro" },
+  { label: "Otro/a", id: "otro" },
 ]
 
 export function UserRegisterContent() {
@@ -155,28 +154,47 @@ export function UserRegisterContent() {
     dispatch({ type: "SET_FIELD", field: "isLoading", value: true })
     dispatch({ type: "CLEAR_GENERAL_ERROR" })
 
-    const result = await signUp.email({
-      email: formState.email,
-      password: formState.password,
-      name: formState.name,
-      type: "professional",
-      profession: formState.profession,
-      avatar: "",
-      callbackURL: "/dashboard",
-    })
+    try {
+      const response = await fetch("/api/register/professional", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formState.email,
+          password: formState.password,
+          name: formState.name,
+          profession: formState.profession,
+        }),
+      })
 
-    if (result?.error) {
+      const data = await response.json()
+
+      if (!response.ok) {
+        dispatch({
+          type: "SET_FIELD",
+          field: "errors",
+          value: { general: data.error || "Error al crear la cuenta. Intentalo de nuevo." },
+        })
+        dispatch({ type: "SET_FIELD", field: "isLoading", value: false })
+        return
+      }
+
+      // Create resume for the new user
+      if (data.user?.id) {
+        await createResume({ userId: data.user.id })
+      }
+
+      // Refresh session
+      await authClient.getSession()
+      authClient.$store.notify("$sessionSignal")
+      replace("/dashboard")
+    } catch {
       dispatch({
         type: "SET_FIELD",
         field: "errors",
         value: { general: "Error al crear la cuenta. Intentalo de nuevo." },
       })
       dispatch({ type: "SET_FIELD", field: "isLoading", value: false })
-      return
     }
-
-    authClient.$store.notify("$sessionSignal")
-    replace("/dashboard")
   }
 
   return (

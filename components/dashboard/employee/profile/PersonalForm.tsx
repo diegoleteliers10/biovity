@@ -68,7 +68,7 @@ export function PersonalForm() {
             <div className="space-y-3">
               {(resumeFormData.skills.length > 0 ? resumeFormData.skills : [emptySkill()]).map(
                 (skill, i) => (
-                  <div key={`skill-edit-${skill.name}`} className="flex gap-2 items-center">
+                  <div key={skill.id ?? `skill-new-${i}`} className="flex gap-2 items-center">
                     <Input
                       value={skill.name}
                       onChange={(e) =>

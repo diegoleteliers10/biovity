@@ -14,7 +14,7 @@ export function JobAlertsCard({ onCreateAlert }: JobAlertsCardProps) {
   return (
     <Card className="border border-border/80 bg-white">
       <CardContent className="p-4 flex gap-4">
-        <div className="space-y-4 mx-auto w-full">
+        <div className="space-y-4 mx-auto w-full" suppressHydrationWarning>
           <div className="space-y-2">
             <label htmlFor="keywords" className="text-sm font-medium text-foreground">
               Palabras clave

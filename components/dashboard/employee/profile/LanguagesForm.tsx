@@ -47,10 +47,7 @@ export function LanguagesForm() {
               ? resumeFormData.languages
               : [emptyLanguage()]
             ).map((lang, i) => (
-              <div
-                key={`lang-edit-${lang.name ?? lang.language ?? ""}`}
-                className="flex gap-2 items-center"
-              >
+              <div key={lang.id ?? `lang-new-${i}`} className="flex gap-2 items-center">
                 <Input
                   value={lang.name ?? lang.language ?? ""}
                   onChange={(e) =>
