@@ -36,47 +36,34 @@ function extractTotal(raw: unknown): number | null {
   return null
 }
 
-async function fetchJobsCountWithLimit(
-  search: string,
-  limit: number
-): Promise<{ raw: unknown } | null> {
+async function fetchJobsCountByCategory(
+  categoryId: string
+): Promise<number | null> {
   const searchParams = new URLSearchParams()
   searchParams.set("status", "active")
-  searchParams.set("search", search)
-  searchParams.set("limit", String(limit))
+  searchParams.set("category", categoryId)
+  searchParams.set("limit", "1")
 
   const url = `${API_BASE}/api/v1/jobs?${searchParams.toString()}`
   const result = await fetchJson<unknown>(url, { next: { revalidate } })
   if (result.isErr()) return null
-  return { raw: result.value }
-}
 
-function extractArrayLength(raw: unknown): number | null {
-  if (Array.isArray(raw)) return raw.length
-  if (!raw || typeof raw !== "object") return null
-  const obj = raw as Record<string, unknown>
-  const data = obj.data
-  if (Array.isArray(data)) return data.length
-  return null
-}
-
-async function fetchJobsCount(search: string): Promise<number | null> {
-  const small = await fetchJobsCountWithLimit(search, 1)
-  if (!small) return null
-
-  const total = extractTotal(small.raw)
+  const raw = result.value
+  const total = extractTotal(raw)
   if (total != null) return total
 
-  const big = await fetchJobsCountWithLimit(search, 1000)
-  if (!big) return null
-
-  return extractArrayLength(big.raw)
+  const arr = Array.isArray(raw)
+    ? raw
+    : Array.isArray((raw as { data?: unknown[] })?.data)
+      ? (raw as { data: unknown[] }).data
+      : []
+  return arr.length
 }
 
 export async function GET() {
   const countsEntries = await Promise.all(
     CATEGORIES_HOME.map(async (category) => {
-      const count = await fetchJobsCount(category.title)
+      const count = await fetchJobsCountByCategory(category.id)
       return [category.id, count] as const
     })
   ).catch(() => [])

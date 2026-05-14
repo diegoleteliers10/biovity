@@ -17,8 +17,8 @@ import {
 export const jobsKeys = {
   list: (organizationId?: string) => ["jobs", organizationId ?? ""] as const,
   byOrganization: (organizationId: string) => ["jobs", "organization", organizationId] as const,
-  search: (params?: { search?: string; page?: number }) =>
-    ["jobs", "search", params?.search ?? "", params?.page ?? 1] as const,
+  search: (params?: { search?: string; page?: number; category?: string }) =>
+    ["jobs", "search", params?.search ?? "", params?.page ?? 1, params?.category ?? ""] as const,
   detail: (id: string) => ["jobs", "detail", id] as const,
 }
 
@@ -28,7 +28,7 @@ export function useJobs(organizationId: string | undefined) {
     queryFn: async () => {
       const result = await getJobs({ organizationId })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
-      let jobs = result.value
+      let jobs = result.value.data
       if (organizationId && jobs.length > 0) {
         jobs = jobs.filter((j) => j.organizationId === organizationId)
       }
@@ -63,14 +63,16 @@ export function useJobsByOrganization(
   })
 }
 
-export function useJobsSearch(search?: string) {
+export function useJobsSearch(params?: { search?: string; category?: string; page?: number }) {
   return useQuery({
-    queryKey: jobsKeys.search({ search }),
+    queryKey: jobsKeys.search(params),
     queryFn: async () => {
       const result = await getJobs({
         status: "active",
         limit: 100,
-        ...(search?.trim() && { search: search.trim() }),
+        ...(params?.search?.trim() && { search: params.search.trim() }),
+        ...(params?.category && { category: params.category }),
+        page: params?.page,
       })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value

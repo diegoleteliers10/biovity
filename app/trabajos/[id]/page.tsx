@@ -1,7 +1,11 @@
 import {
+  AirplaneLanding01Icon,
   Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
+  GraduationScrollIcon,
+  HeartAddIcon,
+  LaptopIcon,
   Location05Icon,
   ViewIcon,
 } from "@hugeicons/core-free-icons"
@@ -14,6 +18,7 @@ import { Fragment } from "react"
 import { JobViewsTracker } from "@/components/common/job-views-tracker"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
+import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
@@ -24,7 +29,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Card, CardContent } from "@/components/ui/card"
-import { formatJobLocation, getJob, type Job, type JobLocation } from "@/lib/api/jobs"
+import { formatJobLocation, getJob, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
 import { getOrganization } from "@/lib/api/organizations"
 import {
   formatFechaLarga,
@@ -50,6 +55,16 @@ function formatJobSalaryDisplay(job: Job): string {
   if (s.min != null && s.max != null) return formatSalarioRango(s.min, s.max)
   if (s.isNegotiable) return "A convenir"
   return "A convenir"
+}
+
+function getBenefitIcon(benefit: JobBenefit) {
+  const t = benefit.title.toLowerCase()
+  if (/salud|médico|medico|dental|seguro/.test(t)) return HeartAddIcon
+  if (/vacacion|vacation/.test(t)) return AirplaneLanding01Icon
+  if (/formación|formacion|capacitación|aprendizaje|learning/.test(t))
+    return GraduationScrollIcon
+  if (/equipo|laptop|remoto|equipment|teletrabajo|computador/.test(t)) return LaptopIcon
+  return LaptopIcon
 }
 
 type BreadcrumbSegment = { label: string; href?: string }
@@ -111,7 +126,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TrabajoDetailPage({ params }: Props) {
   const { id } = await params
-  const [headersList, jobResult] = await Promise.all([headers(), getJob(id)])
+  const [headersList, jobResult] = await Promise.all([await headers(), getJob(id)])
   const referer = headersList.get("referer")
   if (!Result.isOk(jobResult)) {
     notFound()
@@ -248,7 +263,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Descripción</h2>
                 <div className="text-zinc-700 leading-relaxed prose prose-gray max-w-none">
                   {job.description ? (
-                    <p className="whitespace-pre-wrap">{job.description}</p>
+                    <HtmlContent html={job.description} className="text-base leading-7 md:text-[15px]" />
                   ) : (
                     <p className="text-muted-foreground">Sin descripción.</p>
                   )}
@@ -260,17 +275,29 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <section>
                   <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Beneficios</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {job.benefits.map((beneficio) => (
-                      <div
-                        key={beneficio.title}
-                        className="flex flex-col gap-1 p-3 bg-zinc-50 rounded-lg"
-                      >
-                        <span className="font-medium text-zinc-900">{beneficio.title}</span>
-                        {beneficio.description && (
-                          <span className="text-zinc-600 text-sm">{beneficio.description}</span>
-                        )}
-                      </div>
-                    ))}
+                    {job.benefits.map((beneficio) => {
+                      const Icon = getBenefitIcon(beneficio)
+                      return (
+                        <div
+                          key={beneficio.title}
+                          className="flex items-center gap-2.5 rounded-lg bg-[#f3f3f5] px-2.5 py-2 text-sm text-foreground/95"
+                        >
+                          <HugeiconsIcon
+                            icon={Icon}
+                            size={24}
+                            strokeWidth={1.5}
+                            className="size-4 shrink-0 text-accent"
+                            aria-hidden
+                          />
+                          <span className="line-clamp-1">
+                          <span className="font-medium text-foreground/95">{beneficio.title}</span>
+                          {beneficio.description ? (
+                            <span className="text-muted-foreground/90">{` — ${beneficio.description}`}</span>
+                          ) : null}
+                        </span>
+                        </div>
+                      )
+                    })}
                   </div>
                 </section>
               )}

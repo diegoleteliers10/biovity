@@ -118,7 +118,7 @@ export const TRANSPARENCY_FEATURES: TransparencyFeatureItem[] = [
 export const CATEGORIES_HOME: CategoryHomeItem[] = [
   {
     icon: MicroscopeIcon,
-    id: "biotecnologia",
+    id: "Biotecnología",
     title: "Biotecnología",
     positions: "— empleos",
     color: "from-blue-500 to-blue-600",
@@ -126,7 +126,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: TestTubeIcon,
-    id: "bioquimica",
+    id: "Bioquímica",
     title: "Bioquímica",
     positions: "— empleos",
     color: "from-green-500 to-green-600",
@@ -134,7 +134,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: Atom01Icon,
-    id: "quimica",
+    id: "Química",
     title: "Química",
     positions: "— empleos",
     color: "from-purple-500 to-purple-600",
@@ -142,7 +142,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: Chemistry01Icon,
-    id: "ingenieria-quimica",
+    id: "Ingeniería Química",
     title: "Ingeniería Química",
     positions: "— empleos",
     color: "from-orange-500 to-orange-600",
@@ -150,7 +150,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: StethoscopeIcon,
-    id: "salud-medicina",
+    id: "Salud y Medicina",
     title: "Salud y Medicina",
     positions: "— empleos",
     color: "from-red-500 to-red-600",
@@ -158,7 +158,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: PillIcon,
-    id: "id-farmaceutica",
+    id: "I+D Farmacéutica",
     title: "I+D Farmacéutica",
     positions: "— empleos",
     color: "from-teal-500 to-teal-600",

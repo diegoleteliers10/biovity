@@ -1,4 +1,4 @@
-import { parseAsInteger, parseAsString } from "nuqs/server"
+import { parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs/server"
 
 export const trabajosParsers = {
   q: parseAsString.withDefault(""),
@@ -7,6 +7,7 @@ export const trabajosParsers = {
   formato: parseAsString.withDefault(""),
   salarioMin: parseAsInteger,
   salarioMax: parseAsInteger,
+  moneda: parseAsStringLiteral(["CLP", "USD"] as const).withDefault("CLP"),
   experiencia: parseAsString.withDefault(""),
   categoria: parseAsString,
 }

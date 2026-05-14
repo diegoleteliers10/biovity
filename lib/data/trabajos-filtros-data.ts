@@ -20,6 +20,7 @@ export const FORMATOS_TRABAJOS: FiltroOption[] = [
   { id: "full-time", label: "Full Time" },
   { id: "part-time", label: "Part Time" },
   { id: "contrato", label: "Contrato" },
+  { id: "practica", label: "Práctica" },
 ]
 
 export const EXPERIENCIAS_TRABAJOS: FiltroOption[] = [
@@ -33,9 +34,9 @@ export const EXPERIENCIAS_TRABAJOS: FiltroOption[] = [
 export const CATEGORIAS_TRABAJOS: FiltroOption[] = [
   { id: PLACEHOLDER_CATEGORIA, label: PLACEHOLDER_CATEGORIA },
   { id: "todas", label: "Todas" },
-  { id: "biotecnologia", label: "Biotecnología" },
-  { id: "bioquimica", label: "Bioquímica" },
-  { id: "quimica", label: "Química" },
-  { id: "ingenieria-quimica", label: "Ingeniería Química" },
-  { id: "alimentos", label: "Ingeniería en Alimentos" },
+  { id: "Biotecnología", label: "Biotecnología" },
+  { id: "Bioquímica", label: "Bioquímica" },
+  { id: "Química", label: "Química" },
+  { id: "Ingeniería Química", label: "Ingeniería Química" },
+  { id: "Ingeniería en Alimentos", label: "Ingeniería en Alimentos" },
 ]

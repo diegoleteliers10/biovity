@@ -346,27 +346,6 @@ export default function JobDetailPage() {
             </div>
             <HtmlContent html={job.description} className="text-sm leading-7 md:text-[15px]" />
 
-            {job.benefits && job.benefits.length > 0 && (
-              <section className="space-y-3 rounded-xl bg-[#f3f3f5] p-4 md:p-5">
-                <h3 className="text-sm font-semibold tracking-tight text-foreground">
-                  Beneficios incluidos
-                </h3>
-                <ul className="space-y-2 text-sm text-muted-foreground/95">
-                  {job.benefits.map((b) => (
-                    <li key={b.title} className="flex items-start gap-2.5">
-                      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-secondary" />
-                      <span className="leading-6">
-                        <span className="font-medium text-foreground/95">{b.title}</span>
-                        {b.description ? (
-                          <span className="text-muted-foreground/90">{` — ${b.description}`}</span>
-                        ) : null}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
             <section className="space-y-3">
               <h3 className="text-sm font-semibold tracking-tight text-foreground">Detalles</h3>
               <div className="flex flex-wrap gap-2">
