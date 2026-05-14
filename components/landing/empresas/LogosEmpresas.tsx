@@ -1,18 +1,12 @@
 "use client"
 
 import * as m from "motion/react-m"
-
-// TODO: Reemplazar con logos reales de empresas clientes
-const placeholderLogos = [
-  { name: "Empresa 1", logo: "/logos/empresa1.svg" },
-  { name: "Empresa 2", logo: "/logos/empresa2.svg" },
-  { name: "Empresa 3", logo: "/logos/empresa3.svg" },
-  { name: "Empresa 4", logo: "/logos/empresa4.svg" },
-  { name: "Empresa 5", logo: "/logos/empresa5.svg" },
-  { name: "Empresa 6", logo: "/logos/empresa6.svg" },
-]
+import Image from "next/image"
+import { LOGOS_EMPRESAS } from "@/lib/data/empresas-data"
 
 export function LogosEmpresas() {
+  if (LOGOS_EMPRESAS.length === 0) return null
+
   return (
     <section className="py-16 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,7 +26,7 @@ export function LogosEmpresas() {
           transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
           className="flex flex-wrap items-center justify-center gap-8 md:gap-12"
         >
-          {placeholderLogos.map((company, index) => {
+          {LOGOS_EMPRESAS.map((company, index) => {
             return (
               <m.div
                 key={company.name}
@@ -42,8 +36,13 @@ export function LogosEmpresas() {
                 transition={{ delay: index * 0.03, duration: 0.2, ease: "easeOut" }}
                 className="w-24 h-12 md:w-32 md:h-16 bg-gray-100 rounded-lg flex items-center justify-center"
               >
-                {/* TODO: Reemplazar con <Image src={company.logo} alt={company.name} /> */}
-                <span className="text-xs text-gray-400 font-medium">{company.name}</span>
+                <Image
+                  src={company.logo}
+                  alt={company.name}
+                  width={128}
+                  height={64}
+                  className="w-full h-full object-contain p-3"
+                />
               </m.div>
             )
           })}

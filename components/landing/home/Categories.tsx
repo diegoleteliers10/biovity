@@ -2,6 +2,7 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery } from "@tanstack/react-query"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
@@ -10,15 +11,30 @@ import { CATEGORIES_HOME } from "@/lib/data/home-data"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 
+type CategoriesCountsResponse = {
+  counts: Record<string, number | null>
+}
+
 export function Categories() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-  const getCategorySlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "")
+
+  const { data } = useQuery({
+    queryKey: ["landing", "home", "categoriesCounts"],
+    queryFn: async (): Promise<CategoriesCountsResponse> => {
+      const res = await fetch("/api/landing/home/categories")
+      if (!res.ok) throw new Error("Error al cargar conteos")
+      return res.json()
+    },
+    staleTime: 60 * 1000,
+  })
+
+  const formatPositions = (categoryId: string, fallback: string) => {
+    const count = data?.counts?.[categoryId]
+    if (count == null) return fallback
+    const formatted = new Intl.NumberFormat("es-CL").format(count)
+    return `${formatted} ${count === 1 ? "empleo" : "empleos"}`
   }
 
   return (
@@ -61,7 +77,7 @@ export function Categories() {
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
             >
               <Link
-                href={`/trabajos?categoria=${getCategorySlug(category.title)}`}
+                href={`/trabajos?categoria=${category.id}`}
                 className="block"
               >
                 <Card className="group p-6 cursor-pointer bg-white hover:bg-secondary/5 transition-colors">
@@ -74,7 +90,9 @@ export function Categories() {
                         {category.title}
                       </h3>
                       <div className="flex items-center">
-                        <span className="text-muted-foreground text-sm">{category.positions}</span>
+                        <span className="text-muted-foreground text-sm">
+                          {formatPositions(category.id, category.positions)}
+                        </span>
                       </div>
                     </div>
                     <HugeiconsIcon

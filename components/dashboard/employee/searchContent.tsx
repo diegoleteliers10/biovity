@@ -34,11 +34,11 @@ export const SearchContent = () => {
   const { q: query, location, jobType, experience, remoteOnly } = urlState
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const { data: jobs, isLoading, error } = useJobsSearch(query.trim() || undefined)
+  const { data: jobsResult, isLoading, error } = useJobsSearch({ search: query.trim() || undefined })
 
   const filteredJobs = useMemo(() => {
-    if (!jobs) return []
-    let result = jobs
+    if (!jobsResult) return []
+    let result = jobsResult?.data ?? []
 
     const normalizedLocation = location.trim().toLowerCase()
     if (normalizedLocation) {
@@ -57,7 +57,7 @@ export const SearchContent = () => {
       result = result.filter((job) => job.experienceLevel === experience)
     }
     return result
-  }, [jobs, location, remoteOnly, jobType, experience])
+  }, [jobsResult, location, remoteOnly, jobType, experience])
 
   const _handleSearch = useCallback(() => {}, [])
 
