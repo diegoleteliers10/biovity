@@ -18,7 +18,7 @@ export type Notification = {
 export type Metric = {
   title: string
   value: string | number
-  trend?: string
+  trend?: number | string
   trendPositive?: boolean
   subtitle?: string
   icon: IconSvgElement
