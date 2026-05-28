@@ -28,11 +28,11 @@ export async function GET(request: NextRequest) {
   }
 
   const wrapped = result.value as unknown as {
-    data?: { data?: unknown; [key: string]: unknown }
+    data?: unknown
+    total?: unknown
     [key: string]: unknown
   }
-  const inner = wrapped.data
-  const payload = inner?.data as { data?: unknown; total?: unknown; [key: string]: unknown } | undefined
+  const payload = wrapped
 
   if (!payload) {
     return NextResponse.json({ error: "Formato inesperado" }, { status: 502 })

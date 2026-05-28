@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const period = searchParams.get("period") === "90" ? 90 : 30
 
-  const result = await fetchJson<RegistrationsTrendResponse>(
+  const result = await fetchJson<unknown>(
     `${API_BASE}/api/v1/admin/analytics/registrations?period=${period}`,
     { next: { revalidate: 120 } },
   )
@@ -27,23 +27,35 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  const wrapped = result.value as unknown as {
-    data?: { data?: unknown; [key: string]: unknown }
-    [key: string]: unknown
+  // Dev triple: { data: { data: { data: [], totals: {} }, ts, path }, ts, path }
+  // Prod double: { data: { data: [], totals: {} }, ts, path }
+  const raw = result.value as Record<string, unknown>
+  const candidates = [
+    (raw.data as Record<string, unknown>)?.data as Record<string, unknown>,
+    raw.data as Record<string, unknown>,
+    raw,
+  ]
+
+  let payload: Record<string, unknown> | undefined
+  for (const c of candidates) {
+    if (c?.data && typeof c.data === "object" && !Array.isArray(c.data)) {
+      const inner = (c.data as Record<string, unknown>)?.data
+      const totals = (c.data as Record<string, unknown>)?.totals
+      if (Array.isArray(inner) && totals) {
+        payload = { data: inner, totals }
+        break
+      }
+    }
+    if (Array.isArray(c?.data)) {
+      payload = c as Record<string, unknown>
+      break
+    }
   }
-  const inner = wrapped.data
-  const payload = inner?.data as
-    | { data?: unknown; totals?: unknown; [key: string]: unknown }
-    | undefined
 
   if (!payload) {
+    console.error("[admin/analytics/registrations] Formato inesperado:", result.value)
     return NextResponse.json({ error: "Formato inesperado" }, { status: 502 })
   }
 
   return NextResponse.json(payload)
-}
-
-interface RegistrationsTrendResponse {
-  data: Array<{ date: string; professionals: number; organizations: number }>
-  totals: { professionals: number; organizations: number }
 }
