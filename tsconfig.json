@@ -33,3 +33,4 @@
   ],
   "exclude": ["node_modules"]
 }
+npm install -D typescript@npm:@typescript/typescript6
