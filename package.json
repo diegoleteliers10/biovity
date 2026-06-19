@@ -6,12 +6,13 @@
     "dev": "next dev --turbopack",
     "dev:portless": "portless biovity next dev --turbopack",
     "build": "next build --turbopack",
-    "analyze": "ANALYZE=true next build",
+    "analyze": "NODE_OPTIONS='--max-old-space-size=4096' ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",

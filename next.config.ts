@@ -1,8 +1,22 @@
 import type { NextConfig } from "next"
+import withBundleAnalyzer from "@next/bundle-analyzer"
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+  },
   experimental: {
     viewTransition: true,
+    optimizePackageImports: [
+      "@hugeicons/core-free-icons",
+      "@hugeicons/react",
+      "recharts",
+      "@dnd-kit/core",
+      "@dnd-kit/utilities",
+      "date-fns",
+      "date-fns-tz",
+    ],
   },
   async headers() {
     const securityHeaders = [
@@ -25,4 +39,9 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+const withAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+})
+
+export default withAnalyzer(nextConfig)
+
