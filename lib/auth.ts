@@ -53,6 +53,12 @@ export const auth = betterAuth({
       generateId: () => crypto.randomUUID(),
     },
     useSecureCookies: process.env.NODE_ENV === "production",
+    ipAddress: {
+      ipAddressHeaders:
+        process.env.NODE_ENV === "production"
+          ? ["x-vercel-forwarded-for", "x-forwarded-for"]
+          : [],
+    },
   },
   account: {
     modelName: "account",
