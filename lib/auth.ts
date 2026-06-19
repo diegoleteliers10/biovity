@@ -1,4 +1,4 @@
-import { dash } from "@better-auth/infra"
+import { dash, sentinel } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
 import { APIError, createAuthMiddleware } from "better-auth/api"
 import { nextCookies } from "better-auth/next-js"
@@ -146,6 +146,52 @@ export const auth = betterAuth({
   plugins: [
     nextCookies(),
     ...(process.env.BETTER_AUTH_API_KEY ? [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })] : []),
+    ...(process.env.BETTER_AUTH_IDENTIFY_URL
+      ? [
+          sentinel({
+            apiKey: process.env.BETTER_AUTH_API_KEY,
+            apiUrl: process.env.BETTER_AUTH_API_URL,
+            kvUrl: process.env.BETTER_AUTH_IDENTIFY_URL,
+            security: {
+              unknownDeviceNotification: true,
+              credentialStuffing: {
+                enabled: true,
+                thresholds: { challenge: 3, block: 5 },
+                windowSeconds: 3600,
+                cooldownSeconds: 900,
+              },
+              compromisedPassword: {
+                enabled: true,
+                action: "block",
+                minBreachCount: 1,
+              },
+              emailValidation: {
+                enabled: true,
+                strictness: "medium",
+                action: "challenge",
+              },
+              emailNormalization: { enabled: true },
+              impossibleTravel: {
+                enabled: true,
+                maxSpeedKmh: 1000,
+                action: "challenge",
+              },
+              botBlocking: { action: "challenge" },
+              suspiciousIpBlocking: { action: "challenge" },
+              velocity: {
+                enabled: true,
+                thresholds: { challenge: 10, block: 20 },
+                maxSignupsPerVisitor: 5,
+                maxSignInsPerIp: 50,
+                maxPasswordResetsPerIp: 10,
+                windowSeconds: 3600,
+                action: "challenge",
+              },
+              challengeDifficulty: 18,
+            },
+          }),
+        ]
+      : []),
   ],
 })
 
