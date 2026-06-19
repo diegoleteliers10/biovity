@@ -122,6 +122,7 @@ export async function GET() {
   return new NextResponse(content, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
+      "X-Robots-Tag": "noindex, nofollow",
     },
   })
 }

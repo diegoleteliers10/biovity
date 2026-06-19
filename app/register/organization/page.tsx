@@ -105,7 +105,6 @@ export default function OrganizationRegisterPage() {
           return
         }
 
-        // Refresh session
         await authClient.getSession()
         authClient.$store.notify("$sessionSignal")
         const redirectPath = createRoleBasedRedirect({ type: "organization" } as AuthUser)
@@ -122,7 +121,6 @@ export default function OrganizationRegisterPage() {
     <>
       <SessionRefresher />
       <div className="flex h-dvh">
-        {/* Left: Illustration */}
         <div className="relative hidden w-1/2 overflow-hidden lg:block">
           <Image
             src="/ilustracionRegistroOrganization.png"
@@ -134,7 +132,6 @@ export default function OrganizationRegisterPage() {
           />
         </div>
 
-        {/* Right: Registration form */}
         <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
           <div className="mx-auto w-full max-w-lg space-y-8">
             <div className="space-y-2 text-center">
