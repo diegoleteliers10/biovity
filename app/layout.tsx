@@ -188,9 +188,6 @@ export default function RootLayout({
           href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
           rel="stylesheet"
         />
-        <link rel="preload" href="/images/ilustrationOG.png" as="image" />
-        <link rel="preload" href="/ilustracionRegistroOrganization.png" as="image" />
-        <link rel="preload" href="/ilustracionRegistroUsers.png" as="image" />
       </head>
       <body
         className={`${geistMono.variable} ${rubik.variable} ${instrumentSerif.variable} antialiased`}

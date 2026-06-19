@@ -3,7 +3,17 @@
 import { SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
-import { AgentChat } from "@/components/ai/AgentChat"
+import dynamic from "next/dynamic"
+
+const AgentChat = dynamic(() => import("@/components/ai/AgentChat").then((mod) => mod.AgentChat), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center p-8">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    </div>
+  ),
+})
+
 import {
   Sheet,
   SheetContent,
