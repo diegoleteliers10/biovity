@@ -97,18 +97,18 @@ export function useSearchAddress({
     // parts[4] = province, parts[5] = region, parts[6] = postcode, parts[7] = country
 
     const numberPart = parts.find((p: string) => /^\d+$/.test(p)) || ""
-    const streetPart = parts.find(
-      (p: string) =>
-        p.toLowerCase().includes("avenida") ||
-        p.toLowerCase().includes("calle") ||
-        p.toLowerCase().includes("av ") ||
-        p.toLowerCase().includes("pasaje") ||
-        p.toLowerCase().includes("jiron")
-    ) || ""
+    const streetPart =
+      parts.find(
+        (p: string) =>
+          p.toLowerCase().includes("avenida") ||
+          p.toLowerCase().includes("calle") ||
+          p.toLowerCase().includes("av ") ||
+          p.toLowerCase().includes("pasaje") ||
+          p.toLowerCase().includes("jiron")
+      ) || ""
 
-    const street = streetPart && numberPart
-      ? `${streetPart} ${numberPart}`
-      : streetPart || parts[1] || ""
+    const street =
+      streetPart && numberPart ? `${streetPart} ${numberPart}` : streetPart || parts[1] || ""
 
     // City: use parts[5] from the address parts array (positions 0-7)
     const city = parts[5] || ""

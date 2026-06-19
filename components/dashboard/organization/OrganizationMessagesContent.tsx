@@ -9,10 +9,10 @@ import { getChatById } from "@/lib/api/chats"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
 import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
-import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import { formatDateChilean } from "@/lib/utils"
+import { useDashboardSession } from "../DashboardSessionContext"
 import { ChatListPanel } from "./ChatListPanel"
 import { ChatView } from "./ChatView"
 
@@ -21,9 +21,8 @@ export function OrganizationMessagesContent() {
     defaultValue: "",
   })
 
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const recruiterId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const recruiterId = session?.user?.id ?? undefined
 
   const { data: chats = [] } = useChatsByRecruiter(recruiterId)
   useChatListRealtime(chats)

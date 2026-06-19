@@ -5,7 +5,7 @@ import { NotificationBell } from "@/components/common/NotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import type { Job } from "@/lib/api/jobs"
 import { useJobsByOrganization } from "@/lib/api/use-jobs"
-import { authClient } from "@/lib/auth-client"
+import { useDashboardSession } from "../DashboardSessionContext"
 import { CreateJobDialog } from "./CreateJobDialog"
 import { DeleteJobAlertDialog } from "./ofertas/DeleteJobAlertDialog"
 import { EmptyJobsState, JobsGrid } from "./ofertas/JobsGrid"
@@ -14,9 +14,9 @@ import { OfertasErrorState } from "./ofertas/OfertasErrorState"
 import { OfertasHeader } from "./ofertas/OfertasHeader"
 
 export function OfertasContent() {
-  const { useSession } = authClient
-  const { data: session, isPending: sessionPending } = useSession()
-  const organizationId = (session?.user as { organizationId?: string })?.organizationId
+  const session = useDashboardSession()
+  const sessionPending = false
+  const organizationId = session?.user?.organizationId ?? undefined
 
   const { data: orgJobs, isLoading, error } = useJobsByOrganization(organizationId)
   const jobList = orgJobs?.data ?? []

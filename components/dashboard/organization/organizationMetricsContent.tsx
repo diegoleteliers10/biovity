@@ -32,8 +32,8 @@ import {
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useOrganizationMetrics } from "@/lib/api/use-organization-dashboard"
-import { authClient } from "@/lib/auth-client"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
+import { useDashboardSession } from "../DashboardSessionContext"
 
 const statusLabels: Record<string, string> = {
   pendiente: "Pendiente",
@@ -84,9 +84,8 @@ function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: K
 }
 
 export function OrganizationMetricsContent() {
-  const { useSession } = authClient
-  const { data } = useSession()
-  const organizationId = (data?.user as { organizationId?: string } | undefined)?.organizationId
+  const session = useDashboardSession()
+  const organizationId = session?.user?.organizationId ?? undefined
 
   const [period, setPeriod] = useState<MetricsPeriod>("month")
   const { data: metrics, isPending, isError } = useOrganizationMetrics(organizationId, period)

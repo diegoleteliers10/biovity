@@ -6,6 +6,6 @@ const minimax = createAnthropic({
   apiKey: process.env.MINIMAX_API_KEY,
 })
 
-export const model = minimax("MiniMax-M2.7")
+export const model = minimax("MiniMax-M3")
 
 export { generateText, streamText }

@@ -2,8 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { fetchJson } from "@/lib/result"
 
-const API_BASE =
-  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({ headers: request.headers })
@@ -16,22 +15,24 @@ export async function GET(request: NextRequest) {
 
   const result = await fetchJson<unknown>(
     `${API_BASE}/api/v1/admin/analytics/top-jobs?limit=${limit}`,
-    { next: { revalidate: 120 } },
+    { next: { revalidate: 120 } }
   )
 
   if (result.isErr()) {
     console.error("[admin/analytics/top-jobs] Error:", result.error)
-    return NextResponse.json(
-      { error: "Error al obtener top jobs" },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: "Error al obtener top jobs" }, { status: 500 })
   }
 
   // Dev: { data: { data: { data: [...] } }, ts, path }
   // Prod: { data: { data: [...] }, ts, path }
   const raw = result.value as Record<string, unknown>
   const candidates = [
-    (((raw.data as Record<string, unknown>)?.data as Record<string, unknown>)?.data as Record<string, unknown>)?.data,
+    (
+      ((raw.data as Record<string, unknown>)?.data as Record<string, unknown>)?.data as Record<
+        string,
+        unknown
+      >
+    )?.data,
     ((raw.data as Record<string, unknown>)?.data as Record<string, unknown>)?.data,
     (raw.data as Record<string, unknown>)?.data,
   ]

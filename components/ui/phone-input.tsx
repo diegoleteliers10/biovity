@@ -1,10 +1,10 @@
 "use client"
 
-import * as React from "react"
+import { Command as CommandPrimitive } from "cmdk"
 import { CheckIcon, ChevronsUpDown } from "lucide-react"
+import * as React from "react"
 import * as RPNInput from "react-phone-number-input"
 import flags from "react-phone-number-input/flags"
-import { Command as CommandPrimitive } from "cmdk"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -15,18 +15,11 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Input } from "@/components/ui/input"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 
-type PhoneInputProps = Omit<
-  React.ComponentProps<"input">,
-  "onChange" | "value" | "ref"
-> &
+type PhoneInputProps = Omit<React.ComponentProps<"input">, "onChange" | "value" | "ref"> &
   Omit<RPNInput.Props<typeof RPNInput.default>, "onChange"> & {
     onChange?: (value: RPNInput.Value) => void
   }
@@ -94,10 +87,7 @@ const CountrySelect = ({
         >
           <FlagComponent country={selectedCountry} countryName={selectedCountry} />
           <ChevronsUpDown
-            className={cn(
-              "-mr-2 size-4 opacity-50",
-              disabled ? "hidden" : "opacity-100"
-            )}
+            className={cn("-mr-2 size-4 opacity-50", disabled ? "hidden" : "opacity-100")}
           />
         </Button>
       </PopoverTrigger>
@@ -172,10 +162,10 @@ const CountrySelectOption = ({
     >
       <FlagComponent country={country} countryName={countryName} />
       <span className="flex-1">{countryName}</span>
-      <span className="text-xs text-muted-foreground">+{RPNInput.getCountryCallingCode(country)}</span>
-      {country === selectedCountry && (
-        <CheckIcon className="size-4 opacity-100" />
-      )}
+      <span className="text-xs text-muted-foreground">
+        +{RPNInput.getCountryCallingCode(country)}
+      </span>
+      {country === selectedCountry && <CheckIcon className="size-4 opacity-100" />}
     </CommandPrimitive.Item>
   )
 }
@@ -190,5 +180,5 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   )
 }
 
-export { PhoneInput }
 export type { PhoneInputProps }
+export { PhoneInput }

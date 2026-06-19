@@ -1,5 +1,5 @@
-import type { NextConfig } from "next"
 import withBundleAnalyzer from "@next/bundle-analyzer"
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate, private" }],
       },
       {
-        source: "/(.*)",
+        source: "/:path*",
         headers: securityHeaders,
       },
     ]
@@ -44,4 +44,3 @@ const withAnalyzer = withBundleAnalyzer({
 })
 
 export default withAnalyzer(nextConfig)
-

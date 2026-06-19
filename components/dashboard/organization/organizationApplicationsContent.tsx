@@ -19,10 +19,10 @@ import {
   useUpdateApplicationStatusMutation,
 } from "@/lib/api/use-applications"
 import { useJobs } from "@/lib/api/use-jobs"
-import { authClient } from "@/lib/auth-client"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import type { EventType } from "@/lib/types/events"
 import { formatDateChilean } from "@/lib/utils"
+import { useDashboardSession } from "../DashboardSessionContext"
 import { ApplicationsKanban } from "./ApplicationsKanban"
 import { JobSelector, NoApplicantsEmptyState, NoJobSelectedState } from "./applicationsUtils"
 
@@ -43,10 +43,10 @@ function applicationToApplicant(app: Application): Applicant {
 
 export function OrganizationApplicationsContent() {
   const queryClient = useQueryClient()
-  const { useSession } = authClient
-  const { data: session, isPending: sessionPending } = useSession()
-  const organizationId = (session?.user as { organizationId?: string })?.organizationId
-  const recruiterId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const sessionPending = false
+  const organizationId = session?.user?.organizationId ?? undefined
+  const recruiterId = session?.user?.id ?? undefined
 
   const { data: jobs, isLoading: jobsLoading, error: jobsError } = useJobs(organizationId)
   const jobList = jobs ?? []
