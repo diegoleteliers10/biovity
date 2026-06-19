@@ -9,8 +9,8 @@ import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton
 import { useTalentSearch } from "@/hooks/use-talent-search"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useProfessionalUsers } from "@/lib/api/use-talent"
-import { authClient } from "@/lib/auth-client"
 import { talentParsers } from "@/lib/parsers/talent"
+import { useDashboardSession } from "../DashboardSessionContext"
 
 export function TalentContent() {
   const [urlState, setUrlState] = useQueryStates(talentParsers, {
@@ -26,9 +26,8 @@ export function TalentContent() {
     },
   })
 
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const recruiterId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const recruiterId = session?.user?.id ?? undefined
   const createChatMutation = useCreateOrFindChatMutation(recruiterId)
 
   const { data: paginated, isLoading, error } = useProfessionalUsers(page, search)

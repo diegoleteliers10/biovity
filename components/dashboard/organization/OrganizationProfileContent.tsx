@@ -39,8 +39,8 @@ import {
   useUploadAvatarMutation,
   useUser,
 } from "@/lib/api/use-profile"
-import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
+import { useDashboardSession } from "../DashboardSessionContext"
 
 const SearchAddress = dynamic(
   () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
@@ -180,10 +180,10 @@ function addressToFormData(addr: OrganizationAddress | null | undefined): OrgFor
 }
 
 export function OrganizationProfileContent() {
-  const { useSession } = authClient
-  const { data: session, isPending } = useSession()
-  const userId = (session?.user as { id?: string })?.id
-  const organizationId = (session?.user as { organizationId?: string })?.organizationId
+  const session = useDashboardSession()
+  const isPending = false
+  const userId = session?.user?.id ?? undefined
+  const organizationId = session?.user?.organizationId ?? undefined
 
   const { data: user, isLoading: userLoading, error: userError } = useUser(userId)
   const {

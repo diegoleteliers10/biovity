@@ -2,8 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { fetchJson } from "@/lib/result"
 
-const API_BASE =
-  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({ headers: request.headers })
@@ -16,15 +15,12 @@ export async function GET(request: NextRequest) {
 
   const result = await fetchJson<ApplicationsTrendResponse>(
     `${API_BASE}/api/v1/admin/analytics/applications-trend?period=${period}`,
-    { next: { revalidate: 120 } },
+    { next: { revalidate: 120 } }
   )
 
   if (result.isErr()) {
     console.error("[admin/analytics/applications-trend] Error:", result.error)
-    return NextResponse.json(
-      { error: "Error al obtener trend de postulaciones" },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: "Error al obtener trend de postulaciones" }, { status: 500 })
   }
 
   const wrapped = result.value as unknown as {

@@ -1,30 +1,30 @@
 "use client"
 
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell,
-} from "recharts"
-import {
   Building02Icon,
   File02Icon,
   FileAddIcon,
+  TradeDownIcon,
+  TradeUpIcon,
   User02Icon,
   UserGroupIcon,
-  TradeUpIcon,
-  TradeDownIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useState } from "react"
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts"
 
 type AdminStats = {
   users: {
@@ -47,14 +47,10 @@ type AdminStats = {
     totalOrganizations: number
   }
 }
+
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Metric } from "@/lib/types/dashboard"
 
@@ -67,9 +63,7 @@ async function fetchStats(): Promise<AdminStats> {
   return data
 }
 
-async function fetchRegistrationsTrend(
-  period: 30 | 90,
-): Promise<RegistrationsTrendResponse> {
+async function fetchRegistrationsTrend(period: 30 | 90): Promise<RegistrationsTrendResponse> {
   const res = await fetch(`/api/admin/analytics/registrations?period=${period}`)
   const data = await res.json().catch(() => null)
   if (!res.ok) {
@@ -78,9 +72,7 @@ async function fetchRegistrationsTrend(
   return data
 }
 
-async function fetchTopJobs(
-  limit: number,
-): Promise<TopJobsResponse> {
+async function fetchTopJobs(limit: number): Promise<TopJobsResponse> {
   const res = await fetch(`/api/admin/analytics/top-jobs?limit=${limit}`)
   const data = await res.json().catch(() => null)
   if (!res.ok) {
@@ -113,11 +105,7 @@ function TrendBadge({ value }: { value: number }) {
         positive ? "text-green-600" : "text-red-600"
       }`}
     >
-      <HugeiconsIcon
-        icon={positive ? TradeUpIcon : TradeDownIcon}
-        size={12}
-        strokeWidth={2}
-      />
+      <HugeiconsIcon icon={positive ? TradeUpIcon : TradeDownIcon} size={12} strokeWidth={2} />
       {positive ? "+" : ""}
       {value}%
     </span>
@@ -155,18 +143,13 @@ export function AdminHomeContent() {
         {
           title: "Usuarios activos",
           value: stats.users.active,
-          subtitle:
-            stats.users.inactive > 0
-              ? `${stats.users.inactive} inactivos`
-              : undefined,
+          subtitle: stats.users.inactive > 0 ? `${stats.users.inactive} inactivos` : undefined,
           icon: UserGroupIcon,
         },
         {
           title: "Nuevos (7d)",
           value: stats.users.recentCount,
-          subtitle: stats.users.recentTrend !== 0
-            ? `vs período anterior`
-            : undefined,
+          subtitle: stats.users.recentTrend !== 0 ? `vs período anterior` : undefined,
           icon: User02Icon,
           trend: `${stats.users.recentTrend >= 0 ? "+" : ""}${stats.users.recentTrend}%`,
           trendPositive: stats.users.recentTrend >= 0,
@@ -204,9 +187,7 @@ export function AdminHomeContent() {
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Panel de administración
-        </h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Panel de administración</h1>
         <p className="mt-1 text-muted-foreground">
           Resumen de la plataforma Biovity: usuarios, lista de espera y métricas de la API externa.
         </p>
@@ -224,9 +205,7 @@ export function AdminHomeContent() {
                 </CardContent>
               </Card>
             ))
-          : metrics.map((metric) => (
-              <MetricCard key={metric.title} metric={metric} />
-            ))}
+          : metrics.map((metric) => <MetricCard key={metric.title} metric={metric} />)}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -235,9 +214,8 @@ export function AdminHomeContent() {
             <div>
               <CardTitle className="text-base">Registros</CardTitle>
               <p className="text-xs text-muted-foreground">
-                {trend?.totals.professionals ?? 0} prof. ·{" "}
-                {trend?.totals.organizations ?? 0} org. en{" "}
-                {period === 30 ? "30 días" : "90 días"}
+                {trend?.totals.professionals ?? 0} prof. · {trend?.totals.organizations ?? 0} org.
+                en {period === 30 ? "30 días" : "90 días"}
               </p>
             </div>
             <div className="flex gap-1">
@@ -308,9 +286,7 @@ export function AdminHomeContent() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Top Jobs</CardTitle>
-            <p className="text-xs text-muted-foreground">
-              Jobs más aplicados en la plataforma
-            </p>
+            <p className="text-xs text-muted-foreground">Jobs más aplicados en la plataforma</p>
           </CardHeader>
           <CardContent>
             {topJobsLoading ? (
@@ -326,7 +302,11 @@ export function AdminHomeContent() {
                   layout="vertical"
                   margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-muted"
+                    horizontal={false}
+                  />
                   <XAxis type="number" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
                   <YAxis
                     dataKey="title"
@@ -342,7 +322,12 @@ export function AdminHomeContent() {
                     labelStyle={{ fontWeight: 600 }}
                     formatter={(value, name) => [`${value} postulaciones`, name]}
                   />
-                  <Bar dataKey="applications" name="Postulaciones" fill="#10b981" radius={[0, 4, 4, 0]}>
+                  <Bar
+                    dataKey="applications"
+                    name="Postulaciones"
+                    fill="#10b981"
+                    radius={[0, 4, 4, 0]}
+                  >
                     {topJobs.data.map((_, index) => (
                       <Cell key={index} fill={BAR_COLORS[index % BAR_COLORS.length]} />
                     ))}
@@ -359,9 +344,7 @@ export function AdminHomeContent() {
       {stats && stats.users.recentCount > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Nuevos registros (últimos 7 días)
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Nuevos registros (últimos 7 días)</CardTitle>
             <p className="text-xs text-muted-foreground">
               {stats.users.recentCount} usuario
               {stats.users.recentCount !== 1 ? "s" : ""} registrado
@@ -388,8 +371,7 @@ export function AdminHomeContent() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Total: {stats?.users.total ?? "—"} usuarios (
-              {stats?.users.active ?? "—"} activos)
+              Total: {stats?.users.total ?? "—"} usuarios ({stats?.users.active ?? "—"} activos)
             </p>
           </CardContent>
         </Card>

@@ -41,10 +41,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS
     ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((s) => s.trim())
-    : [
-        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-        "https://biovity.cl",
-      ],
+    : [process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000", "https://biovity.cl"],
   experimental: {
     joins: true,
   },
@@ -55,9 +52,7 @@ export const auth = betterAuth({
     useSecureCookies: process.env.NODE_ENV === "production",
     ipAddress: {
       ipAddressHeaders:
-        process.env.NODE_ENV === "production"
-          ? ["x-vercel-forwarded-for", "x-forwarded-for"]
-          : [],
+        process.env.NODE_ENV === "production" ? ["x-vercel-forwarded-for", "x-forwarded-for"] : [],
     },
   },
   account: {
