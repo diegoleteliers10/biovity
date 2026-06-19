@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate, private" }],
       },
       {
-        source: "/(.*)",
+        source: "/:path*",
         headers: securityHeaders,
       },
     ]
