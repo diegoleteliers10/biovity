@@ -50,10 +50,31 @@ export function CTAContacto() {
     }
 
     setIsSubmitting(true)
-    // TODO: Send data to API
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    setErrors({})
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+
+      const payload = (await response.json().catch(() => ({}))) as {
+        error?: string
+        success?: boolean
+      }
+
+      if (!response.ok || !payload.success) {
+        setErrors({ form: payload.error || "No pudimos enviar tu mensaje. Intenta de nuevo." })
+        return
+      }
+
+      setIsSubmitted(true)
+    } catch (err) {
+      console.error("[CTAContacto] submit error:", err)
+      setErrors({ form: "Error de conexión. Verifica tu red e intenta de nuevo." })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
