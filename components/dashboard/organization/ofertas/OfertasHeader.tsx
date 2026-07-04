@@ -2,7 +2,7 @@
 
 import { FileAddIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { Button } from "@/components/ui/button"
 
 interface OfertasHeaderProps {
@@ -13,7 +13,7 @@ export function OfertasHeader({ onCreateOffer }: OfertasHeaderProps) {
   return (
     <div className="space-y-1">
       <div className="hidden lg:flex justify-end">
-        <NotificationBell notifications={[]} showAgentTrigger />
+        <ConnectedNotificationBell showAgentTrigger />
       </div>
       <div className="flex items-end justify-between gap-4">
         <div className="space-y-1">

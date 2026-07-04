@@ -58,24 +58,34 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Error al obtener el usuario" }, { status: 500 })
     }
 
-    // Create organization
-    const orgResult = await pool.query<{ id: string }>(
-      `INSERT INTO organization (name, website, created_at, updated_at)
-       VALUES ($1, $2, NOW(), NOW())
-       RETURNING id`,
-      [parsed.organizationName, parsed.organizationWebsite || null]
-    )
-
-    const organizationId = orgResult.rows[0]?.id
-    if (!organizationId) {
+    // Create organization + link user atomically
+    const client = await pool.connect()
+    let organizationId: string | undefined
+    try {
+      await client.query("BEGIN")
+      const orgResult = await client.query<{ id: string }>(
+        `INSERT INTO organization (name, website, "createdAt", "updatedAt")
+         VALUES ($1, $2, NOW(), NOW())
+         RETURNING id`,
+        [parsed.organizationName, parsed.organizationWebsite || null]
+      )
+      organizationId = orgResult.rows[0]?.id
+      if (!organizationId) {
+        await client.query("ROLLBACK")
+        return NextResponse.json({ error: "Error al crear la organización" }, { status: 500 })
+      }
+      await client.query(`UPDATE "user" SET "organizationId" = $1 WHERE id = $2`, [
+        organizationId,
+        userId,
+      ])
+      await client.query("COMMIT")
+    } catch (err) {
+      await client.query("ROLLBACK")
+      console.error("[register/organization] tx", err)
       return NextResponse.json({ error: "Error al crear la organización" }, { status: 500 })
+    } finally {
+      client.release()
     }
-
-    // Link user to organization
-    await pool.query(`UPDATE "user" SET organization_id = $1 WHERE id = $2`, [
-      organizationId,
-      userId,
-    ])
 
     const responseHeaders = new Headers()
     if (setCookie) {

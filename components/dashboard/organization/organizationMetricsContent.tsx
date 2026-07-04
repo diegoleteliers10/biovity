@@ -19,7 +19,7 @@ const [LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis] = await Prom
   import("recharts").then((m) => m.YAxis),
 ])
 
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -114,12 +114,12 @@ export function OrganizationMetricsContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} showAgentTrigger />
+        <ConnectedNotificationBell showAgentTrigger />
       </div>
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} showAgentTrigger />
+          <ConnectedNotificationBell showAgentTrigger />
         </div>
         <div className="flex items-end justify-between gap-4">
           <div className="space-y-1">

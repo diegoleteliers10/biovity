@@ -1,9 +1,11 @@
 "use client"
 
 import { Location05Icon, VideoCameraAiIcon } from "@hugeicons/core-free-icons"
-import { useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { Sheet, SheetContent } from "@/components/animate-ui/components/radix/sheet"
+import { Input } from "@/components/ui/input"
 import { useCreateEvent, useDeleteEvent, useUpdateEvent } from "@/lib/api/use-events"
+import { useProfessionalUsers } from "@/lib/api/use-talent"
 import type { Event, EventType } from "@/lib/types/events"
 import { DateTimeInput } from "./DateTimeInput"
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog"
@@ -75,6 +77,17 @@ export function EventFormModal({
   const [location, setLocation] = useState(effectiveLocation)
   const [meetingUrl, setMeetingUrl] = useState(effectiveMeetingUrl)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | undefined>(candidateId)
+  const [candidateSearch, setCandidateSearch] = useState("")
+  const [showCandidateDropdown, setShowCandidateDropdown] = useState(false)
+
+  useEffect(() => {
+    if (!candidateId && candidateSearch.trim()) {
+      setShowCandidateDropdown(true)
+    }
+  }, [candidateSearch, candidateId])
+
+  const { data: candidateResults } = useProfessionalUsers(1, candidateSearch.trim() || undefined)
 
   const [isPending, startTransition] = useTransition()
   const isLoading =
@@ -116,7 +129,7 @@ export function EventFormModal({
             meetingUrl: meetingUrl.trim() || undefined,
             organizerId,
             ...(organizationId && { organizationId }),
-            ...(candidateId && { candidateId }),
+            ...(selectedCandidateId && { candidateId: selectedCandidateId }),
             ...(applicationId && { applicationId }),
           })
           onSuccess?.(result.id)
@@ -150,6 +163,9 @@ export function EventFormModal({
     setEndTime("")
     setLocation("")
     setMeetingUrl("")
+    setSelectedCandidateId(candidateId)
+    setCandidateSearch("")
+    setShowCandidateDropdown(false)
     onClose()
   }
 
@@ -247,6 +263,71 @@ export function EventFormModal({
             placeholder="https://meet.google.com/..."
             type="url"
           />
+
+          {!candidateId && (
+            <div className="space-y-1.5">
+              <label
+                htmlFor="event-participant"
+                className="text-xs font-medium text-muted-foreground"
+              >
+                Participante
+              </label>
+              <div className="relative">
+                <Input
+                  id="event-participant"
+                  placeholder="Buscar por nombre..."
+                  value={candidateSearch}
+                  onChange={(e) => setCandidateSearch(e.target.value)}
+                  onFocus={() => {
+                    if (candidateResults?.data && candidateResults.data.length > 0) {
+                      setShowCandidateDropdown(true)
+                    }
+                  }}
+                  onBlur={() => setTimeout(() => setShowCandidateDropdown(false), 200)}
+                />
+                {showCandidateDropdown &&
+                  candidateResults?.data &&
+                  candidateResults.data.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-border/30 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {candidateResults.data.map((user) => (
+                        <button
+                          key={user.id}
+                          type="button"
+                          className={`w-full px-3 py-2 text-left text-sm transition-colors ${
+                            selectedCandidateId === user.id
+                              ? "bg-primary/10 text-primary"
+                              : "hover:bg-muted"
+                          }`}
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            setSelectedCandidateId(user.id)
+                            setCandidateSearch(user.name ?? "")
+                            setShowCandidateDropdown(false)
+                          }}
+                        >
+                          {user.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+              </div>
+              {selectedCandidateId && candidateSearch && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>Seleccionado: {candidateSearch}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCandidateId(undefined)
+                      setCandidateSearch("")
+                    }}
+                    className="text-destructive hover:underline"
+                  >
+                    Quitar
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <EventFormError error={eventError} />
 

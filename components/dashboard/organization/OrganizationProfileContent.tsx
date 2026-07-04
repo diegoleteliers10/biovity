@@ -19,7 +19,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 // import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
@@ -34,6 +34,7 @@ import type { OrganizationAddress } from "@/lib/api/organizations"
 import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
 import {
   locationToFormData,
+  parseLocationString,
   useDeleteAvatarMutation,
   useUpdateUserMutation,
   useUploadAvatarMutation,
@@ -55,7 +56,7 @@ type UserFormData = {
   name: string
   email: string
   phone: string
-  location: { street: string; city: string; country: string }
+  location: string
   profession: string
   avatar: string
 }
@@ -211,7 +212,7 @@ export function OrganizationProfileContent() {
     name: "",
     email: "",
     phone: "",
-    location: { street: "", city: "", country: "" },
+    location: "",
     profession: "",
     avatar: "",
   })
@@ -227,7 +228,7 @@ export function OrganizationProfileContent() {
     name: user?.name ?? session?.user?.name ?? "",
     email: user?.email ?? session?.user?.email ?? "",
     phone: user?.phone ?? "",
-    location: user ? locationToFormData(user.location) : { street: "", city: "", country: "" },
+    location: user ? locationToFormData(user.location) : "",
     profession: user?.profession ?? "",
     avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
   }
@@ -238,7 +239,7 @@ export function OrganizationProfileContent() {
         name: user?.name ?? (session?.user?.name as string) ?? "",
         email: user?.email ?? (session?.user?.email as string) ?? "",
         phone: user?.phone ?? "",
-        location: user ? locationToFormData(user.location) : { street: "", city: "", country: "" },
+        location: user ? locationToFormData(user.location) : "",
         profession: user?.profession ?? "",
         avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
       })
@@ -279,23 +280,17 @@ export function OrganizationProfileContent() {
     [syncFormForSection]
   )
 
-  const handleInputChange = useCallback(
-    (
-      field: keyof UserFormData,
-      value: string | { street: string; city: string; country: string }
-    ) => {
-      setUserForm((prev) => ({ ...prev, [field]: value }))
-      setErrors((prev) => {
-        if (prev[field]) {
-          const next = { ...prev }
-          delete next[field]
-          return next
-        }
-        return prev
-      })
-    },
-    []
-  )
+  const handleInputChange = useCallback((field: keyof UserFormData, value: string) => {
+    setUserForm((prev) => ({ ...prev, [field]: value }))
+    setErrors((prev) => {
+      if (prev[field]) {
+        const next = { ...prev }
+        delete next[field]
+        return next
+      }
+      return prev
+    })
+  }, [])
 
   const handleOrgInputChange = useCallback(
     (
@@ -311,20 +306,14 @@ export function OrganizationProfileContent() {
     async (section: SectionId) => {
       try {
         if (section === "sidebar") {
-          const hasLocation =
-            userForm.location.street || userForm.location.city || userForm.location.country
+          const location = parseLocationString(userForm.location)
+          const hasLocation = location.city || location.country
           await updateUserMutation.mutateAsync({
             name: userForm.name,
             profession: userForm.profession || undefined,
             phone: userForm.phone || undefined,
             avatar: userForm.avatar || undefined,
-            location: hasLocation
-              ? {
-                  street: userForm.location.street || undefined,
-                  city: userForm.location.city || undefined,
-                  country: userForm.location.country || undefined,
-                }
-              : undefined,
+            location: hasLocation ? location : undefined,
           })
         } else {
           const hasAddress =
@@ -474,12 +463,12 @@ export function OrganizationProfileContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} showAgentTrigger />
+        <ConnectedNotificationBell showAgentTrigger />
       </div>
 
       <header>
         <div className="hidden lg:flex items-center justify-end mb-2">
-          <NotificationBell notifications={[]} showAgentTrigger />
+          <ConnectedNotificationBell showAgentTrigger />
         </div>
         <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
         <p className="text-muted-foreground text-sm mt-1">
@@ -618,31 +607,14 @@ export function OrganizationProfileContent() {
                 label="Ubicación"
                 value={
                   isEditingSidebar ? (
-                    <SearchAddress
-                      onSelectLocation={(parsed) => {
-                        if (parsed) {
-                          handleInputChange("location", {
-                            street: parsed.street,
-                            city: parsed.city,
-                            country: parsed.country,
-                          })
-                        }
-                      }}
+                    <Input
+                      value={userForm.location}
+                      onChange={(e) => handleInputChange("location", e.target.value)}
+                      placeholder="Ciudad, Pais"
+                      className="h-8 text-sm"
                     />
-                  ) : data.location.street || data.location.city ? (
-                    <span>
-                      {data.location.street && <span>{data.location.street}</span>}
-                      {data.location.street && data.location.city && <span>, </span>}
-                      {data.location.city && <span>{data.location.city}</span>}
-                      {data.location.country && (
-                        <span>
-                          {data.location.street || data.location.city ? ", " : ""}
-                          {data.location.country}
-                        </span>
-                      )}
-                    </span>
                   ) : (
-                    EMPTY_PLACEHOLDER
+                    data.location || EMPTY_PLACEHOLDER
                   )
                 }
               />
@@ -761,16 +733,12 @@ export function OrganizationProfileContent() {
                                 >
                                   Ubicacion
                                 </label>
-                                <SearchAddress
-                                  onSelectLocation={(parsed) => {
-                                    if (parsed) {
-                                      handleInputChange("location", {
-                                        street: parsed.street,
-                                        city: parsed.city,
-                                        country: parsed.country,
-                                      })
-                                    }
-                                  }}
+                                <Input
+                                  id="user-location"
+                                  value={userForm.location}
+                                  onChange={(e) => handleInputChange("location", e.target.value)}
+                                  placeholder="Ciudad, Pais"
+                                  className="h-10"
                                 />
                               </div>
                               <div className="space-y-1.5 sm:col-span-2">

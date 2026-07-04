@@ -3,7 +3,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getResultErrorMessage } from "@/lib/result"
-import type { CreateEventInput, EventStatus, EventType, UpdateEventInput } from "@/lib/types/events"
+import type {
+  CreateEventInput,
+  EventStatus,
+  EventType,
+  ParticipantStatus,
+  UpdateEventInput,
+} from "@/lib/types/events"
 import {
   addEventParticipant,
   createEvent,
@@ -12,8 +18,10 @@ import {
   getEventById,
   getEventNotes,
   getEvents,
+  getParticipantStatuses,
   removeEventParticipant,
   updateEvent,
+  updateParticipantStatus,
 } from "./events"
 
 export const eventsKeys = {
@@ -160,6 +168,34 @@ export function useRemoveEventParticipant() {
   })
 }
 
+export function useUpdateParticipantStatus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      eventId,
+      userId,
+      status,
+    }: {
+      eventId: string
+      userId: string
+      status: ParticipantStatus
+    }) => {
+      const result = await updateParticipantStatus(eventId, userId, status)
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
+    },
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(eventsKeys.detail(data.id), data)
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+      queryClient.setQueriesData<Record<string, ParticipantStatus>>(
+        { queryKey: ["events", "participant-statuses"] },
+        (old) => ({ ...old, [variables.eventId]: variables.status })
+      )
+    },
+  })
+}
+
 export function useEventNotes(eventId: string | undefined) {
   const query = useQuery({
     queryKey: eventsKeys.notes(eventId ?? ""),
@@ -202,4 +238,22 @@ export function useCreateEventNote() {
       void queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
     },
   })
+}
+
+export function useParticipantStatuses(eventIds: string[]) {
+  const query = useQuery({
+    queryKey: ["events", "participant-statuses", eventIds] as const,
+    queryFn: async () => {
+      const result = await getParticipantStatuses(eventIds)
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
+    },
+    enabled: eventIds.length > 0,
+    staleTime: 30_000,
+  })
+
+  return {
+    statuses: query.data ?? {},
+    isLoading: query.isLoading,
+  }
 }

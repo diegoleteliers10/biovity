@@ -1,34 +1,51 @@
-import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
+export type WorkMode = "onsite" | "remote" | "hybrid"
+
+const WORK_MODES = [
+  { value: "onsite" as const, label: "Presencial" },
+  { value: "remote" as const, label: "Remoto" },
+  { value: "hybrid" as const, label: "Hibrido" },
+]
+
 interface JobLocationFieldProps {
-  isRemote: boolean
+  workMode: WorkMode
   city: string
   country: string
-  onRemoteChange: (checked: boolean) => void
+  onWorkModeChange: (mode: WorkMode) => void
   onCityChange: (value: string) => void
   onCountryChange: (value: string) => void
 }
 
 export function JobLocationField({
-  isRemote,
+  workMode,
   city,
   country,
-  onRemoteChange,
+  onWorkModeChange,
   onCityChange,
   onCountryChange,
 }: JobLocationFieldProps) {
   return (
     <Field>
-      <FieldLabel>Ubicación</FieldLabel>
+      <FieldLabel>Ubicacion</FieldLabel>
       <div className="space-y-3">
-        <Checkbox
-          checked={isRemote}
-          onChange={(e) => onRemoteChange(e.target.checked)}
-          label="Trabajo remoto"
-        />
-        {!isRemote && (
+        <div className="flex gap-4">
+          {WORK_MODES.map((mode) => (
+            <label key={mode.value} className="flex items-center gap-2 text-xs">
+              <input
+                type="radio"
+                name="workMode"
+                value={mode.value}
+                checked={workMode === mode.value}
+                onChange={() => onWorkModeChange(mode.value)}
+                className="size-3.5 accent-foreground"
+              />
+              {mode.label}
+            </label>
+          ))}
+        </div>
+        {workMode !== "remote" && (
           <div className="grid grid-cols-2 gap-3">
             <Input
               value={city}
@@ -38,7 +55,7 @@ export function JobLocationField({
             <Input
               value={country}
               onChange={(e) => onCountryChange(e.target.value)}
-              placeholder="País"
+              placeholder="Pais"
             />
           </div>
         )}

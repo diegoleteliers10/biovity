@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import type { Job } from "@/lib/api/jobs"
-import { useJobsByOrganization } from "@/lib/api/use-jobs"
+import { useJobsByOrganization, useUpdateJobMutation } from "@/lib/api/use-jobs"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { CreateJobDialog } from "./CreateJobDialog"
 import { DeleteJobAlertDialog } from "./ofertas/DeleteJobAlertDialog"
@@ -23,6 +23,7 @@ export function OfertasContent() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingJob, setEditingJob] = useState<Job | null>(null)
   const [deleteConfirmJob, setDeleteConfirmJob] = useState<Job | null>(null)
+  const updateJobMutation = useUpdateJobMutation(organizationId ?? "")
 
   const handleCreateOffer = () => {
     setEditingJob(null)
@@ -36,6 +37,10 @@ export function OfertasContent() {
 
   const handleDeleteClick = (job: Job) => {
     setDeleteConfirmJob(job)
+  }
+
+  const handlePublishJob = (job: Job) => {
+    updateJobMutation.mutate({ id: job.id, input: { status: "active" } })
   }
 
   const handleDialogOpenChange = (open: boolean) => {
@@ -77,7 +82,7 @@ export function OfertasContent() {
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} showAgentTrigger />
+        <ConnectedNotificationBell showAgentTrigger />
       </div>
 
       <OfertasHeader onCreateOffer={handleCreateOffer} />
@@ -93,6 +98,7 @@ export function OfertasContent() {
           jobs={jobList}
           onEdit={handleEditJob}
           onDelete={handleDeleteClick}
+          onPublish={handlePublishJob}
           onCreate={handleCreateOffer}
         />
       )}

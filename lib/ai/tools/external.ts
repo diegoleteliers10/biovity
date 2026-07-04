@@ -103,7 +103,7 @@ export const createJobTool = tool({
       .array(
         z.object({
           tipo: z.string().max(50),
-          label: z.string().max(200),
+          title: z.string().max(200),
         })
       )
       .max(20)

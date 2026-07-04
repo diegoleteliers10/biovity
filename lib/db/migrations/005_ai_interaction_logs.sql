@@ -25,3 +25,8 @@ CREATE INDEX IF NOT EXISTS idx_ai_interaction_logs_timestamp ON ai_interaction_l
 
 -- Index for endpoint queries
 CREATE INDEX IF NOT EXISTS idx_ai_interaction_logs_endpoint ON ai_interaction_logs(endpoint);
+
+-- Register migration
+INSERT INTO migrations (timestamp, name)
+SELECT 1737450000004, '005_ai_interaction_logs'
+WHERE NOT EXISTS (SELECT 1 FROM migrations WHERE name = '005_ai_interaction_logs');

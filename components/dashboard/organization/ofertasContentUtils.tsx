@@ -7,6 +7,7 @@ import {
   Edit01Icon,
   EyeIcon,
   FileAddIcon,
+  Globe02Icon,
   MoreHorizontalIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
@@ -72,9 +73,10 @@ interface OfertaCardProps {
   job: Job
   onEdit: (job: Job) => void
   onDelete: (job: Job) => void
+  onPublish: (job: Job) => void
 }
 
-export function OfertaCard({ job, onEdit, onDelete }: OfertaCardProps) {
+export function OfertaCard({ job, onEdit, onDelete, onPublish }: OfertaCardProps) {
   const { push } = useRouter()
   const salaryStr = formatJobSalary(job)
 
@@ -172,6 +174,18 @@ export function OfertaCard({ job, onEdit, onDelete }: OfertaCardProps) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
+            {job.status === "draft" && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onPublish(job)
+                }}
+              >
+                <HugeiconsIcon icon={Globe02Icon} size={18} strokeWidth={1.5} className="mr-2" />
+                Publicar
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={(e) => {

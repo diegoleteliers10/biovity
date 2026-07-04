@@ -92,6 +92,8 @@ function SheetContent({
   transition = { type: "spring", stiffness: 200, damping: 25 },
   exitTransition = { duration: 0.2, ease: "easeOut" },
   style,
+  onPointerDownOutside,
+  onInteractOutside,
   ...props
 }: SheetContentProps) {
   const axis = side === "left" || side === "right" ? "x" : "y"
@@ -111,7 +113,13 @@ function SheetContent({
   }
 
   return (
-    <SheetPrimitive.Content asChild forceMount {...props}>
+    <SheetPrimitive.Content
+      asChild
+      forceMount
+      onPointerDownOutside={onPointerDownOutside}
+      onInteractOutside={onInteractOutside}
+      {...props}
+    >
       <m.div
         key="sheet-content"
         data-slot="sheet-content"

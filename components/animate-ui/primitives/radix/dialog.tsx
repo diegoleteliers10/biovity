@@ -1,6 +1,6 @@
 "use client"
 
-import { AnimatePresence, domAnimation, type HTMLMotionProps, LazyMotion, m } from "framer-motion"
+import { AnimatePresence, type HTMLMotionProps, motion } from "motion/react"
 import { Dialog as DialogPrimitive } from "radix-ui"
 import type * as React from "react"
 
@@ -33,11 +33,7 @@ function Dialog(props: DialogProps) {
 type DialogTriggerProps = React.ComponentProps<typeof DialogPrimitive.Trigger>
 
 function DialogTrigger(props: DialogTriggerProps) {
-  return (
-    <LazyMotion features={domAnimation}>
-      <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
-    </LazyMotion>
-  )
+  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
 type DialogPortalProps = Omit<React.ComponentProps<typeof DialogPrimitive.Portal>, "forceMount">
@@ -46,11 +42,9 @@ function DialogPortal(props: DialogPortalProps) {
   const { isOpen } = useDialog()
 
   return (
-    <LazyMotion features={domAnimation}>
-      <AnimatePresence>
-        {isOpen && <DialogPrimitive.Portal data-slot="dialog-portal" forceMount {...props} />}
-      </AnimatePresence>
-    </LazyMotion>
+    <AnimatePresence>
+      {isOpen && <DialogPrimitive.Portal data-slot="dialog-portal" forceMount {...props} />}
+    </AnimatePresence>
   )
 }
 
@@ -61,22 +55,20 @@ type DialogOverlayProps = Omit<
   HTMLMotionProps<"div">
 
 function DialogOverlay({
-  transition = { duration: 0.2, ease: "easeOut" },
+  transition = { duration: 0.2, ease: "easeInOut" },
   ...props
 }: DialogOverlayProps) {
   return (
-    <LazyMotion features={domAnimation}>
-      <DialogPrimitive.Overlay data-slot="dialog-overlay" asChild forceMount>
-        <m.div
-          key="dialog-overlay"
-          initial={{ opacity: 0, filter: "blur(2px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          exit={{ opacity: 0, filter: "blur(2px)" }}
-          transition={transition}
-          {...props}
-        />
-      </DialogPrimitive.Overlay>
-    </LazyMotion>
+    <DialogPrimitive.Overlay data-slot="dialog-overlay" asChild forceMount>
+      <motion.div
+        key="dialog-overlay"
+        initial={{ opacity: 0, filter: "blur(4px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        exit={{ opacity: 0, filter: "blur(4px)" }}
+        transition={transition}
+        {...props}
+      />
+    </DialogPrimitive.Overlay>
   )
 }
 
@@ -114,29 +106,27 @@ function DialogContent({
       onPointerDownOutside={onPointerDownOutside}
       onInteractOutside={onInteractOutside}
     >
-      <LazyMotion features={domAnimation}>
-        <m.div
-          key="dialog-content"
-          data-slot="dialog-content"
-          initial={{
-            opacity: 0,
-            filter: "blur(2px)",
-            transform: `perspective(500px) ${rotateAxis}(${initialRotation}) scale(0.95)`,
-          }}
-          animate={{
-            opacity: 1,
-            filter: "blur(0px)",
-            transform: `perspective(500px) ${rotateAxis}(0deg) scale(1)`,
-          }}
-          exit={{
-            opacity: 0,
-            filter: "blur(2px)",
-            transform: `perspective(500px) ${rotateAxis}(${initialRotation}) scale(0.95)`,
-          }}
-          transition={transition}
-          {...props}
-        />
-      </LazyMotion>
+      <motion.div
+        key="dialog-content"
+        data-slot="dialog-content"
+        initial={{
+          opacity: 0,
+          filter: "blur(4px)",
+          transform: `perspective(500px) ${rotateAxis}(${initialRotation}) scale(0.8)`,
+        }}
+        animate={{
+          opacity: 1,
+          filter: "blur(0px)",
+          transform: `perspective(500px) ${rotateAxis}(0deg) scale(1)`,
+        }}
+        exit={{
+          opacity: 0,
+          filter: "blur(4px)",
+          transform: `perspective(500px) ${rotateAxis}(${initialRotation}) scale(0.8)`,
+        }}
+        transition={transition}
+        {...props}
+      />
     </DialogPrimitive.Content>
   )
 }

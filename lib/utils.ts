@@ -81,6 +81,22 @@ export function formatFechaLarga(fecha: Date | string | number): string {
   return formatDateChilean(fecha, "PPP")
 }
 
+/** Tailwind dot color for a notification by type + read state. */
+export function notificationDotColor(type: string, isRead: boolean): string {
+  if (isRead) return "bg-muted-foreground/30"
+  switch (type) {
+    case "interview":
+      return "bg-primary"
+    case "message":
+      return "bg-accent"
+    case "job_alert":
+    case "application":
+      return "bg-secondary"
+    default:
+      return "bg-accent"
+  }
+}
+
 // --- Formatting (Single Responsibility: one concern per function) ---
 
 /** Formats value as CLP thousands for Salarios charts (e.g. "2.550.000"). */

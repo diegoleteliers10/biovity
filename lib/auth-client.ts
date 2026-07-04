@@ -42,7 +42,9 @@ export const authClient = createAuthClient({
         verificationToken: { type: "string", required: false },
       },
     }),
-    sentinelClient(),
+    sentinelClient({
+      identifyUrl: process.env.NEXT_PUBLIC_BETTER_AUTH_IDENTIFY_URL,
+    }),
   ],
 })
 

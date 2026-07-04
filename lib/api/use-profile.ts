@@ -131,19 +131,9 @@ export function parseLocationString(value: string): UserLocation {
 
 export { formatUserLocation }
 
-export function locationToFormData(
-  loc: { street?: string; city?: string; country?: string } | null
-): {
-  street: string
-  city: string
-  country: string
-} {
-  if (!loc) return { street: "", city: "", country: "" }
-  return {
-    street: loc.street ?? "",
-    city: loc.city ?? "",
-    country: loc.country ?? "",
-  }
+export function locationToFormData(loc: { country?: string; city?: string } | null): string {
+  if (!loc) return ""
+  return [loc.city, loc.country].filter(Boolean).join(", ")
 }
 
 export async function deleteAvatar(): Promise<R<void, ApiError | NetworkError>> {

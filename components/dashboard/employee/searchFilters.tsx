@@ -207,7 +207,7 @@ export function SearchFilters({
                   <Checkbox
                     aria-label="Solo remoto"
                     checked={remoteOnly}
-                    onChange={(e) => onRemoteOnlyChange(e.currentTarget.checked)}
+                    onCheckedChange={(checked) => onRemoteOnlyChange(checked === true)}
                   />
                 </div>
               </div>

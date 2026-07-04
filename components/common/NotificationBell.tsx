@@ -11,11 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { Notification } from "@/lib/types/dashboard"
+import { formatFechaRelativa, notificationDotColor } from "@/lib/utils"
 
 type NotificationBellProps = {
   notifications: Notification[]
   unreadCount?: number
-  onNotificationClick?: (id: number) => void
+  onNotificationClick?: (id: string) => void
   showAgentTrigger?: boolean
 }
 
@@ -55,15 +56,10 @@ export function NotificationBell({
                   onClick={() => onNotificationClick?.(notification.id)}
                 >
                   <div
-                    className={`size-2 rounded-full mt-2 shrink-0 ${
+                    className={`size-2 rounded-full mt-2 shrink-0 ${notificationDotColor(
+                      notification.type,
                       notification.isRead
-                        ? "bg-muted-foreground/30"
-                        : notification.type === "application"
-                          ? "bg-secondary"
-                          : notification.type === "interview"
-                            ? "bg-primary"
-                            : "bg-accent"
-                    }`}
+                    )}`}
                   />
                   <div className="flex-1 min-w-0">
                     <p
@@ -71,8 +67,10 @@ export function NotificationBell({
                     >
                       {notification.title}
                     </p>
-                    <p className="text-xs text-muted-foreground">{notification.message}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                    <p className="text-xs text-muted-foreground">{notification.body}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatFechaRelativa(notification.createdAt)}
+                    </p>
                   </div>
                 </button>
               ))}

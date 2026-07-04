@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Notification } from "@/lib/types/dashboard"
+import { formatFechaRelativa, notificationDotColor } from "@/lib/utils"
 
 type OrganizationHomeHeaderProps = {
   firstName: string
   isPending?: boolean
   notifications: Notification[]
   unreadCount: number
-  onNotificationClick: (id: number) => void
+  onNotificationClick: (id: string) => void
 }
 
 function HeaderContent({ isPending, firstName }: { isPending?: boolean; firstName: string }) {
@@ -83,15 +84,10 @@ export function OrganizationHomeHeader({
                     onClick={() => onNotificationClick(notification.id)}
                   >
                     <div
-                      className={`size-2 rounded-full mt-2 shrink-0 ${
+                      className={`size-2 rounded-full mt-2 shrink-0 ${notificationDotColor(
+                        notification.type,
                         notification.isRead
-                          ? "bg-muted-foreground/30"
-                          : notification.type === "application"
-                            ? "bg-secondary"
-                            : notification.type === "interview"
-                              ? "bg-primary"
-                              : "bg-accent"
-                      }`}
+                      )}`}
                     />
                     <div className="flex-1 min-w-0">
                       <p
@@ -99,8 +95,10 @@ export function OrganizationHomeHeader({
                       >
                         {notification.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">{notification.message}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                      <p className="text-xs text-muted-foreground">{notification.body}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {formatFechaRelativa(notification.createdAt)}
+                      </p>
                     </div>
                   </button>
                 ))}
@@ -138,15 +136,10 @@ export function OrganizationHomeHeader({
                     onClick={() => onNotificationClick(notification.id)}
                   >
                     <div
-                      className={`size-2 rounded-full mt-2 shrink-0 ${
+                      className={`size-2 rounded-full mt-2 shrink-0 ${notificationDotColor(
+                        notification.type,
                         notification.isRead
-                          ? "bg-muted-foreground/30"
-                          : notification.type === "application"
-                            ? "bg-secondary"
-                            : notification.type === "interview"
-                              ? "bg-primary"
-                              : "bg-accent"
-                      }`}
+                      )}`}
                     />
                     <div className="flex-1 min-w-0">
                       <p
@@ -154,8 +147,10 @@ export function OrganizationHomeHeader({
                       >
                         {notification.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">{notification.message}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                      <p className="text-xs text-muted-foreground">{notification.body}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {formatFechaRelativa(notification.createdAt)}
+                      </p>
                     </div>
                   </button>
                 ))}

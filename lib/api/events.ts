@@ -1,5 +1,5 @@
-import type { Result } from "better-result"
-import type { ApiError, NetworkError } from "@/lib/errors"
+import { Result } from "better-result"
+import { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent } from "@/lib/result"
 import type {
   CreateEventInput,
@@ -8,6 +8,7 @@ import type {
   EventNote,
   EventWithParticipants,
   PaginatedEventsResponse,
+  ParticipantStatus,
   UpdateEventInput,
 } from "@/lib/types/events"
 
@@ -38,28 +39,34 @@ export async function getEvents(
 export async function getEventById(
   id: string
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  return fetchJson<EventWithParticipants>(`${API_BASE}/api/v1/events/${id}`)
+  const result = await fetchJson<{ data: EventWithParticipants }>(`${API_BASE}/api/v1/events/${id}`)
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
 }
 
 export async function createEvent(
   input: CreateEventInput
 ): Promise<Result<Event, ApiError | NetworkError>> {
-  return fetchJson<Event>(`${API_BASE}/api/v1/events`, {
+  const result = await fetchJson<{ data: Event }>(`${API_BASE}/api/v1/events`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
 }
 
 export async function updateEvent(
   id: string,
   input: UpdateEventInput
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  return fetchJson<EventWithParticipants>(`${API_BASE}/api/v1/events/${id}`, {
+  const result = await fetchJson<{ data: EventWithParticipants }>(`${API_BASE}/api/v1/events/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
 }
 
 export async function deleteEvent(id: string): Promise<Result<void, ApiError | NetworkError>> {
@@ -73,11 +80,13 @@ export async function addEventParticipant(
   userId: string,
   role: "attendee" | "guest" = "attendee"
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  return fetchJson<EventWithParticipants>(`${API_BASE}/api/v1/events/${eventId}/participants`, {
+  const result = await fetchJson<{ data: EventWithParticipants }>(`${API_BASE}/api/v1/events/${eventId}/participants`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, role }),
   })
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
 }
 
 export async function removeEventParticipant(
@@ -89,10 +98,29 @@ export async function removeEventParticipant(
   })
 }
 
+export async function updateParticipantStatus(
+  eventId: string,
+  userId: string,
+  status: ParticipantStatus
+): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
+  const result = await fetchJson<{ data: EventWithParticipants }>(
+    `${API_BASE}/api/v1/events/${eventId}/participants/${userId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    }
+  )
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
+}
+
 export async function getEventNotes(
   eventId: string
 ): Promise<Result<EventNote[], ApiError | NetworkError>> {
-  return fetchJson<EventNote[]>(`${API_BASE}/api/v1/events/${eventId}/notes`)
+  const result = await fetchJson<{ data: EventNote[] }>(`${API_BASE}/api/v1/events/${eventId}/notes`)
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
 }
 
 export async function createEventNote(
@@ -100,9 +128,34 @@ export async function createEventNote(
   authorId: string,
   content: string
 ): Promise<Result<EventNote, ApiError | NetworkError>> {
-  return fetchJson<EventNote>(`${API_BASE}/api/v1/events/${eventId}/notes`, {
+  const result = await fetchJson<{ data: EventNote }>(`${API_BASE}/api/v1/events/${eventId}/notes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ content, authorId }),
   })
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
+}
+
+export async function getParticipantStatuses(
+  eventIds: string[]
+): Promise<Result<Record<string, ParticipantStatus>, ApiError | NetworkError>> {
+  const base =
+    typeof window !== "undefined"
+      ? ""
+      : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
+  const res = await fetch(`${base}/api/events/participant-statuses`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ eventIds }),
+  })
+  if (!res.ok) {
+    return Result.err(
+      new NetworkError({
+        message: `HTTP ${res.status}`,
+      })
+    )
+  }
+  const json = (await res.json()) as { statuses: Record<string, string> }
+  return Result.ok(json.statuses as Record<string, ParticipantStatus>)
 }

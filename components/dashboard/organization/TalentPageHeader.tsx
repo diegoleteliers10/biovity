@@ -1,6 +1,6 @@
 "use client"
 
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { TalentSearchBar } from "./TalentSearchBar"
 
 interface TalentPageHeaderProps {
@@ -12,7 +12,7 @@ export function TalentPageHeader({ searchValue, onSearchChange }: TalentPageHead
   return (
     <div className="space-y-1">
       <div className="hidden lg:flex justify-end">
-        <NotificationBell notifications={[]} showAgentTrigger />
+        <ConnectedNotificationBell showAgentTrigger />
       </div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between flex-1">
         <div className="space-y-1">

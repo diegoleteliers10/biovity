@@ -7,7 +7,7 @@ import {
   type CreateQuestionInput,
   createQuestion,
   deleteQuestion,
-  getQuestionsByJob,
+  getOrgQuestionsByJob,
   type JobQuestion,
   publishQuestion,
   type ReorderQuestionItem,
@@ -29,7 +29,7 @@ export function useOrgJobQuestions(orgId: string | undefined, jobId: string | un
     queryKey: jobQuestionsKeys.byOrgJob(safeOrgId, safeJobId),
     queryFn: async () => {
       if (!safeJobId) throw new Error("Job ID required")
-      const result = await getQuestionsByJob(safeJobId)
+      const result = await getOrgQuestionsByJob(safeOrgId, safeJobId)
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },

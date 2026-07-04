@@ -176,7 +176,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563EB" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Biovity" />
         <link rel="apple-touch-icon" href="/images/ios/180.webp" sizes="180x180" />

@@ -74,7 +74,7 @@ export async function getOrgQuestionsByJob(
   jobId: string
 ): Promise<Result<JobQuestion[], ApiError | NetworkError>> {
   const result = await fetchJson<{ data?: JobQuestion[] } | JobQuestion[]>(
-    `${API_BASE}/api/v1/organizations/${orgId}/jobs/${jobId}/questions`
+    `${API_BASE}/api/v1/organizations/${orgId}/jobs/${jobId}/questions?status=all`
   )
   if (result.isErr()) return R.err(result.error)
   const parsed = result.value as Record<string, unknown>

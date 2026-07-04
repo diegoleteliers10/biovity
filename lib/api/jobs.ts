@@ -32,7 +32,7 @@ export type JobBenefit = {
 /** Benefit format for create/update payload (tipo + label) */
 export type JobBenefitInput = {
   tipo: string
-  label: string
+  title: string
 }
 
 export type JobOrganization = {
@@ -205,7 +205,7 @@ export async function createJob(
   const body = {
     ...rest,
     benefits: benefits?.length
-      ? benefits.map((b) => ({ tipo: b.tipo, title: b.label }))
+      ? benefits.map((b) => ({ tipo: b.tipo, title: b.title }))
       : undefined,
     salary: input.salary
       ? {
@@ -241,7 +241,7 @@ export async function updateJob(
   const body = {
     ...rest,
     benefits: benefits?.length
-      ? benefits.map((b) => ({ tipo: b.tipo, title: b.label }))
+      ? benefits.map((b) => ({ tipo: b.tipo, title: b.title }))
       : undefined,
     salary: input.salary
       ? {
@@ -259,7 +259,7 @@ export async function updateJob(
   }
 
   return fetchJson<Job>(`${API_BASE}/api/v1/jobs/${id}`, {
-    method: "PUT",
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   })

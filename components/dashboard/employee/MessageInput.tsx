@@ -2,7 +2,7 @@
 
 import {
   Attachment01Icon,
-  Calendar04Icon,
+  Calendar01Icon,
   Image01Icon,
   Sent02Icon,
 } from "@hugeicons/core-free-icons"
@@ -27,6 +27,12 @@ type MessageInputProps = {
   messageInputRef: React.RefObject<HTMLTextAreaElement | null>
   fileInputRef: React.RefObject<HTMLInputElement | null>
   imageInputRef: React.RefObject<HTMLInputElement | null>
+  onSelectImage: () => void
+  onSelectFile: () => void
+  onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  isUploading: boolean
+  onCreateEvent?: () => void
 }
 
 export function MessageInput({
@@ -38,6 +44,12 @@ export function MessageInput({
   messageInputRef,
   fileInputRef,
   imageInputRef,
+  onSelectImage,
+  onSelectFile,
+  onImageChange,
+  onFileChange,
+  isUploading,
+  onCreateEvent,
 }: MessageInputProps) {
   return (
     <div className="shrink-0 border-t border-border bg-background p-4">
@@ -46,46 +58,49 @@ export function MessageInput({
           {sendMutation.error instanceof Error ? sendMutation.error.message : "Error al enviar"}
         </p>
       )}
+      {isUploading && <p className="mb-2 text-muted-foreground text-sm">Subiendo archivo…</p>}
       <div className="flex items-end gap-2">
         <input
           ref={fileInputRef}
           type="file"
-          multiple
           accept=".pdf,.doc,.docx,.txt,.zip,.rar"
           className="hidden"
           aria-label="Seleccionar archivos"
+          onChange={onFileChange}
         />
         <input
           ref={imageInputRef}
           type="file"
-          multiple
           accept="image/*"
           className="hidden"
           aria-label="Seleccionar imágenes"
+          onChange={onImageChange}
         />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Adjuntar">
+            <Button variant="ghost" size="icon" aria-label="Adjuntar" disabled={isUploading}>
               <HugeiconsIcon icon={Attachment01Icon} size={20} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-56">
             <DropdownMenuLabel>Adjuntar</DropdownMenuLabel>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onSelect={onSelectImage}>
               <HugeiconsIcon icon={Image01Icon} size={18} className="mr-2 size-4" />
               Imágenes
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <HugeiconsIcon icon={Calendar04Icon} size={18} className="mr-2 size-4" />
-              Reunión
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onSelect={onSelectFile}>
               <HugeiconsIcon icon={Attachment01Icon} size={18} className="mr-2 size-4" />
               Archivos
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {onCreateEvent && (
+          <Button variant="ghost" size="icon" aria-label="Crear evento" onClick={onCreateEvent}>
+            <HugeiconsIcon icon={Calendar01Icon} size={20} />
+          </Button>
+        )}
 
         <div className="relative flex-1">
           <textarea
@@ -108,7 +123,7 @@ export function MessageInput({
 
         <Button
           onClick={onSendMessage}
-          disabled={!messageInput.trim() || sendMutation.isPending}
+          disabled={!messageInput.trim() || sendMutation.isPending || isUploading}
           size="icon"
           aria-label="Enviar"
         >

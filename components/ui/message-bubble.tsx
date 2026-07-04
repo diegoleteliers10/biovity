@@ -1,6 +1,13 @@
 "use client"
 
-import { Calendar04Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import {
+  Calendar04Icon,
+  CheckmarkCircle02Icon,
+  Download04Icon,
+  Edit01Icon,
+  File02Icon,
+  Pdf01Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -23,6 +30,7 @@ type MessageBubbleProps = {
   senderAvatar?: string | null
   formatTime: (iso: string) => string
   onEventAction?: (eventId: string, action: "accept" | "decline") => void
+  onEditEvent?: (eventId: string) => void
 }
 
 export function MessageBubble({
@@ -33,6 +41,7 @@ export function MessageBubble({
   senderAvatar,
   formatTime,
   onEventAction,
+  onEditEvent,
 }: MessageBubbleProps) {
   return (
     <div className={cn("flex w-full", isOwn ? "justify-end" : "justify-start")}>
@@ -68,7 +77,12 @@ export function MessageBubble({
                 : "bg-muted text-foreground rounded-tl-sm"
             )}
           >
-            <MessageContent message={message} isOwn={isOwn} onEventAction={onEventAction} />
+            <MessageContent
+              message={message}
+              isOwn={isOwn}
+              onEventAction={onEventAction}
+              onEditEvent={onEditEvent}
+            />
 
             {/* Read receipt for own messages */}
             {isOwn && message.type === "text" && (
@@ -87,10 +101,12 @@ function MessageContent({
   message,
   isOwn,
   onEventAction,
+  onEditEvent,
 }: {
   message: MessageBubbleProps["message"]
   isOwn: boolean
   onEventAction?: (eventId: string, action: "accept" | "decline") => void
+  onEditEvent?: (eventId: string) => void
 }) {
   switch (message.type) {
     case "event": {
@@ -108,7 +124,14 @@ function MessageContent({
         candidateName: string
       } | null
       if (!event) return null
-      return <EventMessageCard event={event} isOwn={isOwn} onAction={onEventAction} />
+      return (
+        <EventMessageCard
+          event={event}
+          isOwn={isOwn}
+          onAction={onEventAction}
+          onEdit={onEditEvent}
+        />
+      )
     }
     case "image": {
       const img = message.contentType as {
@@ -119,12 +142,14 @@ function MessageContent({
       return (
         <div className="space-y-2">
           {img?.url && (
-            /* eslint-disable react-doctor/nextjs-no-img-element -- attachment images use blob URLs that need native img */
-            <img
-              src={img.url}
-              alt={img.alt ?? "Imagen"}
-              className="max-w-[280px] rounded-lg object-cover"
-            />
+            <a href={img.url} target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable react-doctor/nextjs-no-img-element -- attachment images use blob URLs that need native img */}
+              <img
+                src={img.url}
+                alt={img.alt ?? "Imagen"}
+                className="max-w-[280px] rounded-lg object-cover transition-opacity hover:opacity-90"
+              />
+            </a>
           )}
           {message.content && message.content !== "Imagen" && (
             <p className="break-words">{message.content}</p>
@@ -139,14 +164,30 @@ function MessageContent({
         size: number
         mimeType: string
       } | null
+      if (!file?.url) {
+        return <p className="break-words">{message.content}</p>
+      }
+      const isPdf = file.mimeType === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
+      const sizeLabel = file.size ? `${(file.size / 1024).toFixed(1)} KB` : null
       return (
-        <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={Calendar04Icon} size={16} className="shrink-0" />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{file?.name ?? "Archivo"}</p>
-            {file?.size && <p className="text-xs opacity-70">{(file.size / 1024).toFixed(1)} KB</p>}
-          </div>
-        </div>
+        <a
+          href={file.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="-mx-1 flex min-w-[220px] items-center gap-3 rounded-lg px-1 py-0.5 transition-colors hover:bg-black/5"
+        >
+          <span className="shrink-0 rounded-md bg-black/10 p-1.5">
+            <HugeiconsIcon icon={isPdf ? Pdf01Icon : File02Icon} size={20} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-medium">{file.name}</span>
+            <span className="block text-xs opacity-70">
+              {isPdf ? "PDF" : "Archivo"}
+              {sizeLabel ? ` · ${sizeLabel}` : ""}
+            </span>
+          </span>
+          <HugeiconsIcon icon={Download04Icon} size={16} className="shrink-0 opacity-60" />
+        </a>
       )
     }
     case "audio":
@@ -165,6 +206,7 @@ function EventMessageCard({
   event,
   isOwn,
   onAction,
+  onEdit,
 }: {
   event: {
     eventId: string
@@ -181,6 +223,7 @@ function EventMessageCard({
   }
   isOwn: boolean
   onAction?: (eventId: string, action: "accept" | "decline") => void
+  onEdit?: (eventId: string) => void
 }) {
   const formatEventDate = (iso: string) => {
     try {
@@ -271,6 +314,21 @@ function EventMessageCard({
       )}
       {event.participantStatus === "declined" && (
         <p className="text-xs text-destructive font-medium">✗ No asistirás</p>
+      )}
+
+      {/* Edit button for creator */}
+      {isOwn && onEdit && (
+        <div className="flex gap-2 pt-2 border-t border-current/10 mt-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-xs flex items-center gap-1 hover:bg-current/10 text-inherit font-medium px-2"
+            onClick={() => onEdit(event.eventId)}
+          >
+            <HugeiconsIcon icon={Edit01Icon} className="size-3.5" />
+            Editar Evento
+          </Button>
+        </div>
       )}
     </div>
   )
