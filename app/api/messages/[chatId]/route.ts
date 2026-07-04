@@ -6,9 +6,20 @@ import { getSupabaseAdmin } from "@/lib/supabase"
 const DEFAULT_LIMIT = 30
 const MAX_LIMIT = 50
 
-function mapMessageRow(row: Record<string, unknown>) {
+interface MessageRow {
+  id: string
+  chatId: string
+  senderId: string
+  content: string
+  type: string
+  content_type: Record<string, unknown> | null
+  isRead: boolean
+  createdAt: string
+}
+
+function mapMessageRow(row: MessageRow) {
   const { content_type, ...rest } = row
-  return { ...rest, contentType: (content_type as Record<string, unknown> | null) ?? null }
+  return { ...rest, contentType: content_type ?? null }
 }
 
 export async function GET(
