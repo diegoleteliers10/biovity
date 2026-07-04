@@ -12,6 +12,7 @@ import type {
 import {
   formatUserLocation,
   locationToFormData,
+  parseLocationString,
   useCreateResumeMutation,
   useDeleteAvatarMutation,
   useDeleteCvMutation,
@@ -60,7 +61,7 @@ export type FormData = {
   name: string
   email: string
   phone: string
-  location: { street: string; city: string; country: string }
+  location: string
   profession: string
   bio: string
   skills: readonly string[]
@@ -90,10 +91,7 @@ type ProfileContextValue = {
   profileData: FormData
   userError: ReturnType<typeof useUser>["error"]
   handleEditSection: (section: SectionId) => void
-  handleInputChange: (
-    field: keyof FormData,
-    value: string | readonly string[] | { street: string; city: string; country: string }
-  ) => void
+  handleInputChange: (field: keyof FormData, value: string | readonly string[]) => void
   handleResumeArrayChange: <K extends keyof ResumeFormData>(
     key: K,
     updater: (arr: ResumeFormData[K]) => ResumeFormData[K]
@@ -110,7 +108,7 @@ const emptyFormData = (): FormData => ({
   name: "",
   email: "",
   phone: "",
-  location: { street: "", city: "", country: "" },
+  location: "",
   profession: "",
   bio: "",
   skills: [],
@@ -215,7 +213,7 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
       name: user?.name ?? session?.user?.name ?? "",
       email: user?.email ?? session?.user?.email ?? "",
       phone: user?.phone ?? "",
-      location: user ? locationToFormData(user.location) : { street: "", city: "", country: "" },
+      location: user ? locationToFormData(user.location) : "",
       profession: user?.profession ?? "",
       bio: resume?.summary ?? "",
       skills: Array.isArray(resume?.skills)
@@ -331,10 +329,7 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
   )
 
   const handleInputChange = useCallback(
-    (
-      field: keyof FormData,
-      value: string | readonly string[] | { street: string; city: string; country: string }
-    ) => {
+    (field: keyof FormData, value: string | readonly string[]) => {
       setFormData((prev) => ({ ...prev, [field]: value }))
       setErrors((prev) => {
         if (prev[field]) {
@@ -458,21 +453,15 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
           setErrors(result.errors)
           return
         }
-        const hasLocation =
-          formData.location.street || formData.location.city || formData.location.country
+        const location = parseLocationString(formData.location)
+        const hasLocation = location.city || location.country
         await updateUserMutation.mutateAsync({
           name: formData.name,
           profession: formData.profession || undefined,
           phone: formData.phone || undefined,
           avatar: formData.avatar || undefined,
           birthday: formData.dateOfBirth || undefined,
-          location: hasLocation
-            ? {
-                street: formData.location.street || undefined,
-                city: formData.location.city || undefined,
-                country: formData.location.country || undefined,
-              }
-            : undefined,
+          location: hasLocation ? location : undefined,
         })
       } else {
         const payload = resumePayload()

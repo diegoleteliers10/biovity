@@ -10,7 +10,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import dynamic from "next/dynamic"
 import { useState } from "react"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
@@ -120,7 +120,7 @@ export const MetricsContent = () => {
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <ConnectedNotificationBell />
         </div>
         <div className="flex items-end justify-between gap-4">
           {sessionPending ? (

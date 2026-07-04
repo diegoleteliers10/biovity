@@ -197,12 +197,16 @@ export function AdminLoginContent() {
               )}
             </div>
             <div className="flex items-center justify-between">
-              <Checkbox
-                id="remember"
-                checked={state.rememberMe}
-                onChange={(e) => dispatch({ type: "SET_REMEMBER_ME", value: e.target.checked })}
-                label="Recordarme"
-              />
+              <label className="flex items-center gap-2 text-xs">
+                <Checkbox
+                  id="remember"
+                  checked={state.rememberMe}
+                  onCheckedChange={(checked) =>
+                    dispatch({ type: "SET_REMEMBER_ME", value: checked === true })
+                  }
+                />
+                Recordarme
+              </label>
             </div>
             {state.errors.general && (
               <div className="text-center text-sm text-destructive">{state.errors.general}</div>

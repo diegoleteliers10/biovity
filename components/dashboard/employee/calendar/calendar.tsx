@@ -6,6 +6,7 @@ import { useState } from "react"
 import type { Event } from "@/lib/types/events"
 import { getChileanDate } from "@/lib/utils"
 import { DayModal } from "./day-modal"
+import { EventDetailModal } from "./event-detail-modal"
 import { EventTooltip } from "./event-tooltip"
 
 type CalendarEvent = {
@@ -24,6 +25,7 @@ type CalendarProps = {
   events?: Event[]
   isLoading?: boolean
   onCreateEvent?: (date: Date) => void
+  onSelectEvent?: (event: Event) => void
 }
 
 const EMPTY_CALENDAR_EVENTS: Event[] = []
@@ -32,6 +34,7 @@ export function Calendar({
   currentDate,
   events = EMPTY_CALENDAR_EVENTS,
   onCreateEvent,
+  onSelectEvent,
 }: CalendarProps) {
   const [hoveredEvent, setHoveredEvent] = useState<{
     event: CalendarEvent
@@ -43,6 +46,7 @@ export function Calendar({
     date: Date
     events: CalendarEvent[]
   } | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
@@ -200,9 +204,11 @@ export function Calendar({
                   </div>
                   <div className="flex-1 space-y-1">
                     {dayEvents.slice(0, 2).map((event) => (
-                      <button
+                      // biome-ignore lint/a11y/useSemanticElements: cannot nest <button> inside day cell <button>
+                      <div
                         key={event.id}
-                        type="button"
+                        role="button"
+                        tabIndex={0}
                         className={`
                           text-xs px-2 py-1 rounded-md cursor-pointer
                           transition-all duration-200 hover:scale-105 w-full text-left
@@ -210,11 +216,27 @@ export function Calendar({
                         `}
                         onMouseEnter={(e) => handleEventHover(event, e)}
                         onMouseLeave={handleEventLeave}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          const fullEvent = events.find((ev) => ev.id === event.id)
+                          if (fullEvent && onSelectEvent) {
+                            onSelectEvent(fullEvent)
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            const fullEvent = events.find((ev) => ev.id === event.id)
+                            if (fullEvent && onSelectEvent) {
+                              onSelectEvent(fullEvent)
+                            }
+                          }
+                        }}
                       >
                         <div className="font-medium truncate">{event.title}</div>
                         <div className="opacity-80">{formatEventTime(event.startAt)}</div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </>
@@ -235,6 +257,14 @@ export function Calendar({
           day={selectedDay.day}
           dayName={selectedDay.dayName}
           events={selectedDay.events}
+        />
+      )}
+
+      {selectedEvent && (
+        <EventDetailModal
+          event={selectedEvent}
+          isOpen={true}
+          onClose={() => setSelectedEvent(null)}
         />
       )}
     </div>

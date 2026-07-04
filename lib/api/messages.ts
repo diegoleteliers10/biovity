@@ -103,6 +103,41 @@ export async function sendMessage(
   return R.ok(data as Message)
 }
 
+export type UploadedAttachment = {
+  url: string
+  path: string
+  name: string
+  size: number
+  mimeType: string
+}
+
+export async function uploadMessageAttachment(
+  file: File,
+  chatId: string
+): Promise<Result<UploadedAttachment, ApiError | NetworkError>> {
+  const base = getBaseUrl()
+  const formData = new FormData()
+  formData.append("file", file)
+  formData.append("chatId", chatId)
+
+  const result = await fetchJson<{ error?: string } & UploadedAttachment>(
+    `${base}/api/upload/message-attachment`,
+    { method: "POST", body: formData, credentials: "include" }
+  )
+
+  if (result.isErr()) return R.err(result.error)
+
+  const value = result.value
+  if (value.error) {
+    return R.err(new ApiError({ status: 400, message: value.error }))
+  }
+  if (!value.url) {
+    return R.err(new ApiError({ status: 200, message: "Respuesta inválida" }))
+  }
+
+  return R.ok(value)
+}
+
 export async function getLastMessageFromSender(
   chatId: string,
   senderId: string

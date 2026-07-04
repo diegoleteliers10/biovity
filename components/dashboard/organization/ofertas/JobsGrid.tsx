@@ -14,15 +14,22 @@ interface JobsGridProps {
   jobs: Job[]
   onEdit: (job: Job) => void
   onDelete: (job: Job) => void
+  onPublish: (job: Job) => void
   onCreate: () => void
 }
 
-export function JobsGrid({ jobs, onEdit, onDelete, onCreate }: JobsGridProps) {
+export function JobsGrid({ jobs, onEdit, onDelete, onPublish, onCreate }: JobsGridProps) {
   return (
     <DirectionalTransition>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {jobs.map((job) => (
-          <OfertaCard key={job.id} job={job} onEdit={onEdit} onDelete={onDelete} />
+          <OfertaCard
+            key={job.id}
+            job={job}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onPublish={onPublish}
+          />
         ))}
         {jobs.length > 0 && <CreateOfferCard onClick={onCreate} />}
       </div>

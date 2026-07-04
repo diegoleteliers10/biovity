@@ -4,21 +4,20 @@ import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useId, useMemo, useState } from "react"
+import { useCallback, useId, useMemo } from "react"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChatsByRecruiter } from "@/lib/api/use-chats"
+import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
 import { useOrganization } from "@/lib/api/use-organization"
 import {
   useOrgFeaturedCandidates,
   useOrgMetrics,
-  useOrgNotifications,
   useOrgRecentApplications,
   useOrgUpcomingInterviews,
 } from "@/lib/api/use-organization-dashboard"
 import { getUser } from "@/lib/api/users"
-import type { Notification } from "@/lib/types/dashboard"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { CreateOfferCard } from "./home/createOfferCard"
 import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
@@ -33,7 +32,8 @@ export function OrganizationHomeContent() {
   const { data: organizationData } = useOrganization(organizationId)
   const organizationName = organizationData?.name
 
-  const notificationsQuery = useOrgNotifications()
+  const { data: notificationsData } = useNotifications()
+  const markRead = useMarkNotificationRead()
   const metricsQuery = useOrgMetrics(organizationId)
   const applicationsQuery = useOrgRecentApplications(organizationId)
   const userId = session?.user?.id
@@ -67,7 +67,8 @@ export function OrganizationHomeContent() {
 
   const candidatesQuery = useOrgFeaturedCandidates()
 
-  const [localNotifications, setLocalNotifications] = useState<Notification[]>([])
+  const notifications = notificationsData?.data ?? []
+  const unreadCount = notificationsData?.unreadCount ?? 0
 
   const hasOrgId = Boolean(organizationId && organizationId.length > 0)
 
@@ -77,15 +78,14 @@ export function OrganizationHomeContent() {
     : true
   const showMessagesSkeletons = showSkeletons
 
-  useEffect(() => {
-    if (notificationsQuery.data) {
-      setLocalNotifications(notificationsQuery.data as Notification[])
-    }
-  }, [notificationsQuery.data])
-
-  const handleNotificationClick = useCallback((id: number) => {
-    setLocalNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
-  }, [])
+  const handleNotificationClick = useCallback(
+    (id: string) => {
+      markRead.mutate(id)
+      const target = notifications.find((n) => n.id === id)
+      if (target?.link) push(target.link)
+    },
+    [markRead, notifications, push]
+  )
 
   const handleViewAllMessages = useCallback(() => {
     push("/dashboard/messages")
@@ -93,7 +93,6 @@ export function OrganizationHomeContent() {
 
   const firstName = session?.user?.name?.split(" ")[0] || "Organización"
   const displayName = organizationName || firstName
-  const unreadCount = localNotifications.filter((n) => !n.isRead).length
 
   const skeletonId = useId()
 
@@ -101,8 +100,8 @@ export function OrganizationHomeContent() {
     <div className="flex flex-1 flex-col gap-4 p-4">
       <OrganizationHomeHeader
         firstName={displayName}
-        isPending={notificationsQuery.isLoading || organizationData === undefined}
-        notifications={localNotifications}
+        isPending={organizationData === undefined}
+        notifications={notifications}
         unreadCount={unreadCount}
         onNotificationClick={handleNotificationClick}
       />

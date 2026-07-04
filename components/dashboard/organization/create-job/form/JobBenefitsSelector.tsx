@@ -14,18 +14,18 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import type { JobBenefitInput } from "@/lib/api/jobs"
 
 const BENEFIT_OPTIONS: JobBenefitInput[] = [
-  { tipo: "salud", label: "Seguro de salud y dental" },
-  { tipo: "vacaciones", label: "Vacaciones pagadas" },
-  { tipo: "formacion", label: "Presupuesto para formación" },
-  { tipo: "equipo", label: "Equipo y trabajo híbrido" },
-  { tipo: "bonos", label: "Bonos por desempeño" },
-  { tipo: "horario", label: "Horario flexible" },
-  { tipo: "teletrabajo", label: "Teletrabajo" },
-  { tipo: "estacionamiento", label: "Estacionamiento" },
-  { tipo: "gimnasio", label: "Gimnasio o wellness" },
-  { tipo: "almuerzo", label: "Almuerzo o colación" },
-  { tipo: "transporte", label: "Bono transporte" },
-  { tipo: "otro", label: "Otros beneficios" },
+  { tipo: "salud", title: "Seguro de salud y dental" },
+  { tipo: "vacaciones", title: "Vacaciones pagadas" },
+  { tipo: "formacion", title: "Presupuesto para formación" },
+  { tipo: "equipo", title: "Equipo y trabajo híbrido" },
+  { tipo: "bonos", title: "Bonos por desempeño" },
+  { tipo: "horario", title: "Horario flexible" },
+  { tipo: "teletrabajo", title: "Teletrabajo" },
+  { tipo: "estacionamiento", title: "Estacionamiento" },
+  { tipo: "gimnasio", title: "Gimnasio o wellness" },
+  { tipo: "almuerzo", title: "Almuerzo o colación" },
+  { tipo: "transporte", title: "Bono transporte" },
+  { tipo: "otro", title: "Otros beneficios" },
 ]
 
 export { BENEFIT_OPTIONS }
@@ -46,14 +46,14 @@ export function JobBenefitsSelector({ benefits, onBenefitsChange }: JobBenefitsS
         value={benefits}
         onValueChange={(v) => onBenefitsChange((v as JobBenefitInput[]) ?? [])}
         items={BENEFIT_OPTIONS}
-        isItemEqualToValue={(a, b) => a.tipo === b.tipo && a.label === b.label}
+        isItemEqualToValue={(a, b) => a.tipo === b.tipo && a.title === b.title}
       >
         <ComboboxChips ref={benefitsAnchorRef} className="w-full">
           <ComboboxValue>
             {(values: JobBenefitInput[]) => (
               <>
                 {values.map((v) => (
-                  <ComboboxChip key={v.tipo}>{v.label}</ComboboxChip>
+                  <ComboboxChip key={v.tipo}>{v.title}</ComboboxChip>
                 ))}
                 <ComboboxChipsInput placeholder="Seleccionar beneficios..." />
               </>
@@ -64,7 +64,7 @@ export function JobBenefitsSelector({ benefits, onBenefitsChange }: JobBenefitsS
           <ComboboxList>
             {BENEFIT_OPTIONS.map((opt) => (
               <ComboboxItem key={opt.tipo} value={opt}>
-                {opt.label}
+                {opt.title}
               </ComboboxItem>
             ))}
           </ComboboxList>

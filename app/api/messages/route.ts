@@ -1,6 +1,7 @@
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
+import { createNotification } from "@/lib/notifications"
 import { getSupabaseAdmin } from "@/lib/supabase"
 import { createMessageSchema } from "@/lib/validations/messages"
 
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error?.message || "Datos inválidos" }, { status: 400 })
   }
 
-  const { chatId, content } = parsed.data
+  const { chatId, content, type, contentType } = parsed.data
   const senderId = session.user.id
 
   const supabase = getSupabaseAdmin()
@@ -39,13 +40,16 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from("message")
-    .insert({ chatId, senderId, content })
-    .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
+    .insert({ chatId, senderId, content, type, content_type: contentType ?? null })
+    .select('"id", "chatId", "senderId", "content", "type", "content_type", "isRead", "createdAt"')
     .single()
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  const { content_type, ...rest } = data
+  const message = { ...rest, contentType: content_type ?? null }
 
   const apiBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
   fetch(`${apiBase}/api/v1/chats/${chatId}`, {
@@ -54,5 +58,27 @@ export async function POST(request: Request) {
     body: JSON.stringify({ lastMessage: content }),
   }).catch(() => {})
 
-  return NextResponse.json(data)
+  const recipientId = chat.recruiterId === senderId ? chat.professionalId : chat.recruiterId
+  const notifBody =
+    type === "text"
+      ? content.length > 120
+        ? `${content.slice(0, 117)}...`
+        : content
+      : type === "image"
+        ? "Imagen"
+        : type === "file"
+          ? "Archivo"
+          : type === "audio"
+            ? "Audio"
+            : "Mensaje"
+  createNotification({
+    userId: recipientId,
+    type: "message",
+    title: "Nuevo mensaje",
+    body: notifBody,
+    link: `/dashboard/messages?chat=${chatId}`,
+    data: { chatId, senderId, messageType: type },
+  }).catch(() => {})
+
+  return NextResponse.json(message)
 }

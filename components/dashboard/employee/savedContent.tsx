@@ -10,7 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import type * as React from "react"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -225,7 +225,7 @@ export const SavedContent = () => {
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <ConnectedNotificationBell />
         </div>
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Empleos Guardados</h1>

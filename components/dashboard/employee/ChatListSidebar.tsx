@@ -3,7 +3,7 @@
 import { MoreHorizontalIcon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryState } from "nuqs"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -42,7 +42,7 @@ export function ChatListSidebar({
       <div className="p-4">
         <div className="flex items-center justify-between mb-4 lg:mb-6 lg:hidden">
           <MobileMenuButton />
-          <NotificationBell notifications={[]} />
+          <ConnectedNotificationBell />
         </div>
 
         <div className="mb-4 space-y-1 lg:mb-6">
@@ -50,7 +50,7 @@ export function ChatListSidebar({
             <Button variant="ghost" size="icon" className="size-9" aria-label="Mas opciones">
               <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
             </Button>
-            <NotificationBell notifications={[]} />
+            <ConnectedNotificationBell />
           </div>
           <div>
             <h1 className="text-xl lg:text-2xl font-semibold text-foreground">Mensajes</h1>

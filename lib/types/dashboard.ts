@@ -4,15 +4,17 @@
 
 import type { IconSvgElement } from "@hugeicons/react"
 
-export type NotificationType = "application" | "interview" | "recommendation"
+export type NotificationType = "application" | "interview" | "message" | "job_alert" | "system"
 
 export type Notification = {
-  id: number
-  title: string
-  message: string
-  time: string
-  isRead: boolean
+  id: string
   type: NotificationType
+  title: string
+  body?: string
+  link?: string
+  data?: Record<string, unknown>
+  isRead: boolean
+  createdAt: string
 }
 
 export type Metric = {

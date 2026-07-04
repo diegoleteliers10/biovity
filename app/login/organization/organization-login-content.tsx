@@ -167,12 +167,14 @@ export function OrganizationLoginContent() {
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
             <div className="flex items-center justify-between">
-              <Checkbox
-                id="remember"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                label="Recordar sesión"
-              />
+              <label className="flex items-center gap-2 text-xs">
+                <Checkbox
+                  id="remember"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked === true)}
+                />
+                Recordar sesión
+              </label>
               <button
                 type="button"
                 className="text-sm text-accent hover:text-accent/80 hover:underline"

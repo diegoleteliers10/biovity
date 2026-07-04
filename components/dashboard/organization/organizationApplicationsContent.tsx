@@ -6,7 +6,7 @@ import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import { AIScoreModal } from "@/components/ai/AIScoreModal"
 import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
@@ -220,12 +220,12 @@ export function OrganizationApplicationsContent() {
     <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <NotificationBell notifications={[]} showAgentTrigger />
+        <ConnectedNotificationBell showAgentTrigger />
       </div>
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} showAgentTrigger />
+          <ConnectedNotificationBell showAgentTrigger />
         </div>
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Aplicaciones</h1>

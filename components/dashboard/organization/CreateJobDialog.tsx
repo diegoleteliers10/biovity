@@ -1,11 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useReducer } from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-} from "@/components/animate-ui/components/radix/dialog"
+import { useCallback, useEffect, useMemo, useReducer } from "react"
+import { createPortal } from "react-dom"
+import { Sheet, SheetContent, SheetHeader } from "@/components/animate-ui/components/radix/sheet"
 import type { Job, JobBenefitInput } from "@/lib/api/jobs"
 import { useCreateJobMutation, useUpdateJobMutation } from "@/lib/api/use-jobs"
 import {
@@ -19,6 +16,7 @@ import {
   JobSalaryFields,
   JobTitleField,
 } from "./create-job/form"
+import type { WorkMode } from "./create-job/form/JobLocationField"
 
 type JobFormState = {
   title: string
@@ -27,7 +25,7 @@ type JobFormState = {
   experienceLevel: string
   city: string
   country: string
-  isRemote: boolean
+  workMode: WorkMode
   salaryMin: string
   salaryMax: string
   benefits: JobBenefitInput[]
@@ -39,6 +37,8 @@ type JobFormAction =
   | { type: "RESET" }
   | { type: "SET_ALL"; payload: Partial<JobFormState> }
 
+const EMPTY_ARRAY: JobBenefitInput[] = []
+
 const initialFormState: JobFormState = {
   title: "",
   description: "",
@@ -46,7 +46,7 @@ const initialFormState: JobFormState = {
   experienceLevel: "",
   city: "",
   country: "",
-  isRemote: false,
+  workMode: "onsite",
   salaryMin: "",
   salaryMax: "",
   benefits: [],
@@ -91,17 +91,20 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     []
   )
 
-  const parsedBenefits =
-    (job?.benefits as { tipo?: string; title?: string }[] | undefined)?.reduce<JobBenefitInput[]>(
-      (acc, b) => {
-        const label = b.title ?? (b.tipo === "otro" ? "Otro" : b.tipo)
-        if (label) {
-          acc.push({ tipo: b.tipo || "otro", label })
-        }
-        return acc
-      },
-      []
-    ) ?? []
+  const parsedBenefits = useMemo(
+    () =>
+      (job?.benefits as { tipo?: string; title?: string }[] | undefined)?.reduce<JobBenefitInput[]>(
+        (acc, b) => {
+          const title = b.title ?? (b.tipo === "otro" ? "Otro" : b.tipo)
+          if (title) {
+            acc.push({ tipo: b.tipo || "otro", title })
+          }
+          return acc
+        },
+        []
+      ) ?? EMPTY_ARRAY,
+    [job?.benefits]
+  )
 
   const effectiveTitle = job?.title ?? ""
   const effectiveDescription = job?.description ?? ""
@@ -109,10 +112,14 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   const effectiveExperienceLevel = job?.experienceLevel ?? ""
   const effectiveCity = job?.location?.city ?? ""
   const effectiveCountry = job?.location?.country ?? ""
-  const effectiveIsRemote = job?.location?.isRemote ?? false
+  const effectiveWorkMode: WorkMode = job?.location?.isRemote
+    ? "remote"
+    : job?.location?.isHybrid
+      ? "hybrid"
+      : "onsite"
   const effectiveSalaryMin = job?.salary?.min != null ? String(job.salary.min) : ""
   const effectiveSalaryMax = job?.salary?.max != null ? String(job.salary.max) : ""
-  const effectiveBenefits = job ? parsedBenefits : []
+  const effectiveBenefits = job ? parsedBenefits : EMPTY_ARRAY
 
   useEffect(() => {
     if (!open) return
@@ -126,7 +133,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
           experienceLevel: effectiveExperienceLevel,
           city: effectiveCity,
           country: effectiveCountry,
-          isRemote: effectiveIsRemote,
+          workMode: effectiveWorkMode,
           salaryMin: effectiveSalaryMin,
           salaryMax: effectiveSalaryMax,
           benefits: effectiveBenefits,
@@ -144,7 +151,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     effectiveExperienceLevel,
     effectiveCity,
     effectiveCountry,
-    effectiveIsRemote,
+    effectiveWorkMode,
     effectiveSalaryMin,
     effectiveSalaryMax,
     effectiveBenefits,
@@ -166,12 +173,11 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     description: form.description.trim(),
     employmentType: form.employmentType,
     experienceLevel: form.experienceLevel,
-    status: "active",
     location: {
       city: form.city.trim() || undefined,
       country: form.country.trim() || undefined,
-      isRemote: form.isRemote,
-      isHybrid: false,
+      isRemote: form.workMode === "remote",
+      isHybrid: form.workMode === "hybrid",
     },
     salary:
       form.salaryMin || form.salaryMax
@@ -223,69 +229,105 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   )
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <JobFormHeader isEdit={isEdit} />
-        </DialogHeader>
+    <>
+      {open &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[110] bg-black/50 animate-in fade-in duration-200"
+            onClick={() => onOpenChange(false)}
+            aria-hidden="true"
+          />,
+          document.body
+        )}
+      <Sheet open={open} onOpenChange={handleOpenChange} modal={false}>
+        <SheetContent
+          side="right"
+          className="w-full sm:max-w-lg z-[120]"
+          onPointerDownOutside={(e) => {
+            const target = e.target as HTMLElement
+            if (
+              target.closest("[data-slot='select-content']") ||
+              target.closest("[data-slot='combobox-content']")
+            ) {
+              e.preventDefault()
+            }
+          }}
+          onInteractOutside={(e) => {
+            const target = e.target as HTMLElement
+            if (
+              target.closest("[data-slot='select-content']") ||
+              target.closest("[data-slot='combobox-content']")
+            ) {
+              e.preventDefault()
+            }
+          }}
+        >
+          <SheetHeader>
+            <JobFormHeader isEdit={isEdit} />
+          </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <JobTitleField value={form.title} onChange={(v) => setField("title", v)} />
+          <form
+            key={job?.id ?? "new"}
+            onSubmit={handleSubmit}
+            className="space-y-4 overflow-y-auto px-4 pb-4"
+          >
+            <JobTitleField value={form.title} onChange={(v) => setField("title", v)} />
 
-          <JobDescriptionField
-            value={form.description}
-            isGenerating={form.isGeneratingDescription}
-            jobTitle={form.title}
-            experienceLevel={form.experienceLevel}
-            employmentType={form.employmentType}
-            isRemote={form.isRemote}
-            onChange={(v) => setField("description", v)}
-            onGeneratingChange={(v) => setField("isGeneratingDescription", v)}
-          />
+            <JobDescriptionField
+              value={form.description}
+              isGenerating={form.isGeneratingDescription}
+              jobTitle={form.title}
+              experienceLevel={form.experienceLevel}
+              employmentType={form.employmentType}
+              isRemote={form.workMode === "remote"}
+              onChange={(v) => setField("description", v)}
+              onGeneratingChange={(v) => setField("isGeneratingDescription", v)}
+            />
 
-          <JobContractFields
-            employmentType={form.employmentType}
-            experienceLevel={form.experienceLevel}
-            onEmploymentTypeChange={(v) => setField("employmentType", v)}
-            onExperienceLevelChange={(v) => setField("experienceLevel", v)}
-          />
+            <JobContractFields
+              employmentType={form.employmentType}
+              experienceLevel={form.experienceLevel}
+              onEmploymentTypeChange={(v) => setField("employmentType", v)}
+              onExperienceLevelChange={(v) => setField("experienceLevel", v)}
+            />
 
-          <JobLocationField
-            isRemote={form.isRemote}
-            city={form.city}
-            country={form.country}
-            onRemoteChange={(v) => setField("isRemote", v)}
-            onCityChange={(v) => setField("city", v)}
-            onCountryChange={(v) => setField("country", v)}
-          />
+            <JobLocationField
+              workMode={form.workMode}
+              city={form.city}
+              country={form.country}
+              onWorkModeChange={(v) => setField("workMode", v)}
+              onCityChange={(v) => setField("city", v)}
+              onCountryChange={(v) => setField("country", v)}
+            />
 
-          <JobSalaryFields
-            salaryMin={form.salaryMin}
-            salaryMax={form.salaryMax}
-            onSalaryMinChange={(v) => setField("salaryMin", v)}
-            onSalaryMaxChange={(v) => setField("salaryMax", v)}
-          />
+            <JobSalaryFields
+              salaryMin={form.salaryMin}
+              salaryMax={form.salaryMax}
+              onSalaryMinChange={(v) => setField("salaryMin", v)}
+              onSalaryMaxChange={(v) => setField("salaryMax", v)}
+            />
 
-          <JobBenefitsSelector
-            benefits={form.benefits}
-            onBenefitsChange={(v) => setField("benefits", v)}
-          />
+            <JobBenefitsSelector
+              benefits={form.benefits}
+              onBenefitsChange={(v) => setField("benefits", v)}
+            />
 
-          {(createMutation.isError || updateMutation.isError) && (
-            <p className="text-destructive text-sm">
-              {(createMutation.error ?? updateMutation.error)?.message}
-            </p>
-          )}
+            {(createMutation.isError || updateMutation.isError) && (
+              <p className="text-destructive text-sm">
+                {(createMutation.error ?? updateMutation.error)?.message}
+              </p>
+            )}
 
-          <JobFormActions
-            isSubmitting={isSubmitting}
-            isEdit={isEdit}
-            canSubmit={canSubmit}
-            onCancel={() => handleOpenChange(false)}
-          />
-        </form>
-      </DialogContent>
-    </Dialog>
+            <JobFormActions
+              isSubmitting={isSubmitting}
+              isEdit={isEdit}
+              canSubmit={canSubmit}
+              onCancel={() => handleOpenChange(false)}
+            />
+          </form>
+        </SheetContent>
+      </Sheet>
+    </>
   )
 }
 

@@ -144,7 +144,6 @@ export const auth = betterAuth({
     level: process.env.NODE_ENV === "production" ? "info" : "debug",
   },
   plugins: [
-    nextCookies(),
     ...(process.env.BETTER_AUTH_API_KEY ? [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })] : []),
     ...(process.env.BETTER_AUTH_IDENTIFY_URL
       ? [
@@ -192,6 +191,7 @@ export const auth = betterAuth({
           }),
         ]
       : []),
+    nextCookies(),
   ],
 })
 

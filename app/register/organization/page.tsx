@@ -374,29 +374,30 @@ export default function OrganizationRegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Checkbox
-                  id="terms"
-                  checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
-                  label={
-                    <span className="text-sm text-foreground">
-                      En nombre de la organización, acepto los{" "}
-                      <button
-                        type="button"
-                        className="text-accent hover:text-accent/80 hover:underline"
-                      >
-                        términos y condiciones empresariales
-                      </button>{" "}
-                      y la{" "}
-                      <button
-                        type="button"
-                        className="text-accent hover:text-accent/80 hover:underline"
-                      >
-                        política de privacidad
-                      </button>
-                    </span>
-                  }
-                />
+                <label className="flex items-start gap-2 text-xs">
+                  <Checkbox
+                    id="terms"
+                    checked={acceptTerms}
+                    onCheckedChange={(checked) => setAcceptTerms(checked === true)}
+                    className="mt-0.5"
+                  />
+                  <span className="text-sm text-foreground">
+                    En nombre de la organización, acepto los{" "}
+                    <button
+                      type="button"
+                      className="text-accent hover:text-accent/80 hover:underline"
+                    >
+                      términos y condiciones empresariales
+                    </button>{" "}
+                    y la{" "}
+                    <button
+                      type="button"
+                      className="text-accent hover:text-accent/80 hover:underline"
+                    >
+                      política de privacidad
+                    </button>
+                  </span>
+                </label>
                 {errors.acceptTerms && (
                   <p className="text-sm text-destructive">{errors.acceptTerms}</p>
                 )}

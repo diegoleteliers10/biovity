@@ -1,14 +1,18 @@
 "use client"
 
+import { Result } from "better-result"
 import * as React from "react"
 import { useCallback, useRef } from "react"
+
 import { ChatHeader } from "@/components/dashboard/employee/ChatHeader"
 import { MessageInput } from "@/components/dashboard/employee/MessageInput"
 import { Button } from "@/components/ui/button"
 import { MessageBubble } from "@/components/ui/message-bubble"
-import type { MessageType } from "@/lib/api/messages"
+import { type MessageType, uploadMessageAttachment } from "@/lib/api/messages"
+import { useUpdateParticipantStatus } from "@/lib/api/use-events"
 import type { useSendMessageMutation } from "@/lib/api/use-messages"
 import type { User } from "@/lib/api/users"
+import { getResultErrorMessage } from "@/lib/result"
 
 type Message = {
   id: string
@@ -83,6 +87,67 @@ export function MessageThread({
     }
   }
 
+  const [isUploading, setIsUploading] = React.useState(false)
+
+  const handleSendAttachment = useCallback(
+    async (file: File, kind: "image" | "file") => {
+      if (!selectedChat || !professionalId) return
+      setIsUploading(true)
+      const result = await uploadMessageAttachment(file, selectedChat.id)
+      setIsUploading(false)
+      if (!Result.isOk(result)) {
+        console.error(getResultErrorMessage(result.error))
+        return
+      }
+      const att = result.value
+      sendMutation.mutate({
+        chatId: selectedChat.id,
+        senderId: professionalId,
+        content: kind === "image" ? "" : att.name,
+        type: kind,
+        contentType: { url: att.url, name: att.name, size: att.size, mimeType: att.mimeType },
+      })
+    },
+    [selectedChat, professionalId, sendMutation]
+  )
+
+  const handleSelectImage = useCallback(() => imageInputRef.current?.click(), [])
+  const handleSelectFile = useCallback(() => fileInputRef.current?.click(), [])
+
+  const handleImageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) void handleSendAttachment(file, "image")
+      e.target.value = ""
+    },
+    [handleSendAttachment]
+  )
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) void handleSendAttachment(file, "file")
+      e.target.value = ""
+    },
+    [handleSendAttachment]
+  )
+
+  const updateParticipantStatus = useUpdateParticipantStatus()
+
+
+
+  const handleEventAction = useCallback(
+    (eventId: string, action: "accept" | "decline") => {
+      if (!professionalId) return
+      updateParticipantStatus.mutate({
+        eventId,
+        userId: professionalId,
+        status: action === "accept" ? "accepted" : "declined",
+      })
+    },
+    [professionalId, updateParticipantStatus]
+  )
+
   if (!selectedChat) return null
 
   return (
@@ -134,6 +199,7 @@ export function MessageThread({
                     : recruiter?.avatar) ?? undefined
                 }
                 formatTime={formatTime}
+                onEventAction={handleEventAction}
               />
             ))}
             <div ref={messagesEndRef} />
@@ -150,6 +216,11 @@ export function MessageThread({
         messageInputRef={messageInputRef}
         fileInputRef={fileInputRef}
         imageInputRef={imageInputRef}
+        onSelectImage={handleSelectImage}
+        onSelectFile={handleSelectFile}
+        onImageChange={handleImageChange}
+        onFileChange={handleFileChange}
+        isUploading={isUploading}
       />
     </>
   )

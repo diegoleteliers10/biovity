@@ -2,6 +2,8 @@
 
 import {
   Calendar01Icon,
+  Cancel01Icon,
+  CheckmarkCircle01Icon,
   ChevronDown,
   Clock01Icon,
   Delete01Icon,
@@ -23,14 +25,33 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Card } from "@/components/ui/card"
-import type { Event } from "@/lib/types/events"
+import { useEvent } from "@/lib/api/use-events"
+import type { Event, EventStatus, ParticipantStatus } from "@/lib/types/events"
 import { formatDateChilean, getChileanDate } from "@/lib/utils"
+
+const PARTICIPANT_STATUS_LABELS: Record<ParticipantStatus, string> = {
+  pending: "Pendiente",
+  accepted: "Aceptado",
+  declined: "Rechazado",
+}
+
+const PARTICIPANT_STATUS_COLORS: Record<ParticipantStatus, string> = {
+  pending: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  accepted: "bg-green-50 text-green-700 border-green-200",
+  declined: "bg-red-50 text-red-600 border-red-200",
+}
 
 type UpcomingEventsProps = {
   events?: Event[]
   isLoading?: boolean
+  userRole?: "professional" | "organization"
+  currentUserId?: string
+  rsvpStatuses?: Record<string, ParticipantStatus>
   onEdit?: (event: Event) => void
   onDelete?: (eventId: string) => void
+  onStatusChange?: (eventId: string, status: EventStatus) => void
+  onRSVP?: (eventId: string, status: ParticipantStatus) => void
+  isUpdating?: boolean
 }
 
 const EMPTY_EVENTS: Event[] = []
@@ -38,15 +59,28 @@ const EMPTY_EVENTS: Event[] = []
 export function UpcomingEvents({
   events = EMPTY_EVENTS,
   isLoading,
+  userRole,
+  currentUserId,
+  rsvpStatuses,
   onEdit,
   onDelete,
+  onStatusChange,
+  onRSVP,
+  isUpdating,
 }: UpcomingEventsProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null)
+  const [completeEventId, setCompleteEventId] = useState<string | null>(null)
+  const [cancelEventId, setCancelEventId] = useState<string | null>(null)
+
+  const { event: expandedEvent } = useEvent(expandedId ?? undefined)
+  const myParticipant = currentUserId
+    ? expandedEvent?.participants?.find((p) => p.userId === currentUserId)
+    : undefined
 
   const now = getChileanDate()
   const upcoming = events
-    .filter((e) => getChileanDate(e.startAt) >= now)
+    .filter((e) => getChileanDate(e.startAt) >= now && e.status !== "cancelled")
     .sort((a, b) => getChileanDate(a.startAt).getTime() - getChileanDate(b.startAt).getTime())
     .slice(0, 5)
 
@@ -225,29 +259,129 @@ export function UpcomingEvents({
                                 </div>
                               )}
 
-                              <div className="flex gap-2 pt-2">
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    onEdit?.(event)
-                                  }}
-                                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
-                                >
-                                  <HugeiconsIcon icon={Edit01Icon} className="size-3.5" />
-                                  Editar
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setDeleteEventId(event.id)
-                                  }}
-                                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors"
-                                >
-                                  <HugeiconsIcon icon={Delete01Icon} className="size-3.5" />
-                                  Eliminar
-                                </button>
+                              <div className="flex flex-wrap gap-2 pt-2">
+                                {userRole === "organization" && (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        onEdit?.(event)
+                                      }}
+                                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                                    >
+                                      <HugeiconsIcon icon={Edit01Icon} className="size-3.5" />
+                                      Editar
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        setDeleteEventId(event.id)
+                                      }}
+                                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors"
+                                    >
+                                      <HugeiconsIcon icon={Delete01Icon} className="size-3.5" />
+                                      Eliminar
+                                    </button>
+                                    {event.status === "scheduled" && (
+                                      <>
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            setCompleteEventId(event.id)
+                                          }}
+                                          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-green-600 transition-colors"
+                                        >
+                                          <HugeiconsIcon
+                                            icon={CheckmarkCircle01Icon}
+                                            className="size-3.5"
+                                          />
+                                          Completar
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation()
+                                            setCancelEventId(event.id)
+                                          }}
+                                          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-destructive transition-colors"
+                                        >
+                                          <HugeiconsIcon icon={Cancel01Icon} className="size-3.5" />
+                                          Cancelar
+                                        </button>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                                {userRole === "professional" &&
+                                expandedId === event.id &&
+                                currentUserId &&
+                                event.candidateId === currentUserId &&
+                                (rsvpStatuses?.[event.id] ?? myParticipant?.status ?? "pending") ===
+                                  "pending" ? (
+                                  <>
+                                    <button
+                                      type="button"
+                                      disabled={isUpdating}
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        onRSVP?.(event.id, "accepted")
+                                      }}
+                                      className="flex items-center gap-1.5 text-xs font-medium text-green-700 hover:text-green-800 transition-colors disabled:opacity-50"
+                                    >
+                                      <HugeiconsIcon
+                                        icon={CheckmarkCircle01Icon}
+                                        className="size-3.5"
+                                      />
+                                      Aceptar
+                                    </button>
+                                    <button
+                                      type="button"
+                                      disabled={isUpdating}
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        onRSVP?.(event.id, "declined")
+                                      }}
+                                      className="flex items-center gap-1.5 text-xs font-medium text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
+                                    >
+                                      <HugeiconsIcon icon={Cancel01Icon} className="size-3.5" />
+                                      Rechazar
+                                    </button>
+                                  </>
+                                ) : userRole === "professional" &&
+                                  expandedId === event.id &&
+                                  currentUserId &&
+                                  event.candidateId === currentUserId &&
+                                  (rsvpStatuses?.[event.id] ?? myParticipant?.status) ? (
+                                  <span
+                                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-md border ${
+                                      PARTICIPANT_STATUS_COLORS[
+                                        rsvpStatuses?.[event.id] ??
+                                          myParticipant?.status ??
+                                          "pending"
+                                      ]
+                                    }`}
+                                  >
+                                    <HugeiconsIcon
+                                      icon={
+                                        (rsvpStatuses?.[event.id] ?? myParticipant?.status) ===
+                                        "accepted"
+                                          ? CheckmarkCircle01Icon
+                                          : Cancel01Icon
+                                      }
+                                      className="size-3.5"
+                                    />
+                                    {
+                                      PARTICIPANT_STATUS_LABELS[
+                                        rsvpStatuses?.[event.id] ??
+                                          myParticipant?.status ??
+                                          "pending"
+                                      ]
+                                    }
+                                  </span>
+                                ) : null}
                               </div>
                             </div>
                           </m.div>
@@ -284,6 +418,63 @@ export function UpcomingEvents({
                 }}
               >
                 Eliminar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog
+          open={completeEventId !== null}
+          onOpenChange={(open) => !open && setCompleteEventId(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Marcar como completado?</AlertDialogTitle>
+              <AlertDialogDescription>El evento se marcara como completado.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setCompleteEventId(null)}>
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (completeEventId) {
+                    onStatusChange?.(completeEventId, "completed")
+                    setCompleteEventId(null)
+                  }
+                }}
+              >
+                Completar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog
+          open={cancelEventId !== null}
+          onOpenChange={(open) => !open && setCancelEventId(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Cancelar evento?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta accion no se puede deshacer. El evento sera cancelado.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setCancelEventId(null)}>
+                No, volver
+              </AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                onClick={() => {
+                  if (cancelEventId) {
+                    onStatusChange?.(cancelEventId, "cancelled")
+                    setCancelEventId(null)
+                  }
+                }}
+              >
+                Cancelar evento
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -6,6 +6,7 @@ import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getChatById } from "@/lib/api/chats"
+import { uploadMessageAttachment } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
 import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
@@ -119,6 +120,48 @@ export function OrganizationMessagesContent() {
     }
   }
 
+  const [isUploading, setIsUploading] = useState(false)
+
+  const handleSendAttachment = useCallback(
+    async (file: File, kind: "image" | "file") => {
+      if (!selectedChat || !recruiterId) return
+      setIsUploading(true)
+      const result = await uploadMessageAttachment(file, selectedChat.id)
+      setIsUploading(false)
+      if (!Result.isOk(result)) {
+        console.error(getResultErrorMessage(result.error))
+        return
+      }
+      const att = result.value
+      sendMutation.mutate({
+        chatId: selectedChat.id,
+        senderId: recruiterId,
+        content: kind === "image" ? "" : att.name,
+        type: kind,
+        contentType: { url: att.url, name: att.name, size: att.size, mimeType: att.mimeType },
+      })
+    },
+    [selectedChat, recruiterId, sendMutation]
+  )
+
+  const handleImageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) void handleSendAttachment(file, "image")
+      e.target.value = ""
+    },
+    [handleSendAttachment]
+  )
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) void handleSendAttachment(file, "file")
+      e.target.value = ""
+    },
+    [handleSendAttachment]
+  )
+
   const formatMessageTime = (iso: string) => {
     try {
       const d = new Date(iso)
@@ -146,6 +189,7 @@ export function OrganizationMessagesContent() {
         professional={professional}
         recruiterProfile={recruiterProfile}
         recruiterId={recruiterId}
+        organizationId={session?.user?.organizationId ?? recruiterProfile?.organizationId ?? undefined}
         messages={messages}
         messagesLoading={messagesLoading}
         messagesError={messagesError}
@@ -159,6 +203,9 @@ export function OrganizationMessagesContent() {
         onKeyPress={handleKeyPress}
         isPending={sendMutation.isPending}
         sendError={sendMutation.error}
+        onImageChange={handleImageChange}
+        onFileChange={handleFileChange}
+        isUploading={isUploading}
         messagesEndRef={messagesEndRef}
       />
     </div>

@@ -405,32 +405,32 @@ export function UserRegisterContent() {
             </div>
 
             <div className="space-y-2">
-              <Checkbox
-                id="terms"
-                name="terms"
-                checked={formState.acceptTerms}
-                onChange={(e) =>
-                  dispatch({ type: "SET_FIELD", field: "acceptTerms", value: e.target.checked })
-                }
-                label={
-                  <span className="text-sm text-foreground">
-                    Acepto los{" "}
-                    <button
-                      type="button"
-                      className="text-secondary hover:text-secondary/80 hover:underline"
-                    >
-                      términos y condiciones
-                    </button>{" "}
-                    y la{" "}
-                    <button
-                      type="button"
-                      className="text-secondary hover:text-secondary/80 hover:underline"
-                    >
-                      política de privacidad
-                    </button>
-                  </span>
-                }
-              />
+              <label className="flex items-start gap-2 text-xs">
+                <Checkbox
+                  id="terms"
+                  checked={formState.acceptTerms}
+                  onCheckedChange={(checked) =>
+                    dispatch({ type: "SET_FIELD", field: "acceptTerms", value: checked === true })
+                  }
+                  className="mt-0.5"
+                />
+                <span className="text-sm text-foreground">
+                  Acepto los{" "}
+                  <button
+                    type="button"
+                    className="text-secondary hover:text-secondary/80 hover:underline"
+                  >
+                    términos y condiciones
+                  </button>{" "}
+                  y la{" "}
+                  <button
+                    type="button"
+                    className="text-secondary hover:text-secondary/80 hover:underline"
+                  >
+                    política de privacidad
+                  </button>
+                </span>
+              </label>
               {formState.errors.acceptTerms && (
                 <p className="text-sm text-destructive">{formState.errors.acceptTerms}</p>
               )}

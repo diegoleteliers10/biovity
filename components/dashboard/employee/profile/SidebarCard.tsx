@@ -14,7 +14,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
-import dynamic from "next/dynamic"
 import Image from "next/image"
 import { useCallback, useState } from "react"
 import { DatePicker } from "@/components/common/DatePicker"
@@ -27,11 +26,6 @@ import { cn, dateToDateString, parseLocalDate } from "@/lib/utils"
 import { AvatarEditModal } from "./AvatarEditModal"
 import { EditableCard } from "./EditableCard"
 import { EMPTY_PLACEHOLDER, useProfileContext } from "./profile-context"
-
-const SearchAddress = dynamic(
-  () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
-  { ssr: false }
-)
 
 const API_BASE =
   typeof window !== "undefined"
@@ -216,31 +210,14 @@ export function SidebarCard() {
           label="Ubicación"
           value={
             isEditingSidebar ? (
-              <SearchAddress
-                onSelectLocation={(parsed) => {
-                  if (parsed) {
-                    handleInputChange("location", {
-                      street: parsed.street,
-                      city: parsed.city,
-                      country: parsed.country,
-                    })
-                  }
-                }}
+              <Input
+                value={formData.location}
+                onChange={(e) => handleInputChange("location", e.target.value)}
+                placeholder="Ciudad, Pais"
+                className="h-8 text-sm"
               />
-            ) : data.location.street || data.location.city ? (
-              <span>
-                {data.location.street && <span>{data.location.street}</span>}
-                {data.location.street && data.location.city && <span>, </span>}
-                {data.location.city && <span>{data.location.city}</span>}
-                {data.location.country && (
-                  <span>
-                    {data.location.street || data.location.city ? ", " : ""}
-                    {data.location.country}
-                  </span>
-                )}
-              </span>
             ) : (
-              EMPTY_PLACEHOLDER
+              data.location || EMPTY_PLACEHOLDER
             )
           }
         />

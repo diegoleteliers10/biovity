@@ -5,14 +5,14 @@ import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
 import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
-import { cache, useCallback, useMemo, useState } from "react"
+import { cache, useCallback, useMemo } from "react"
 import { getLastMessageFromSender } from "@/lib/api/messages"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useChatsByProfessional } from "@/lib/api/use-chats"
+import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
 import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import { getUser } from "@/lib/api/users"
 import { DATA } from "@/lib/data/data-test"
-import type { Notification } from "@/lib/types/dashboard"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { HomeHeader } from "./home/homeHeader"
 import { JobAlertsCard } from "./home/jobAlertsCard"
@@ -35,34 +35,10 @@ export const HomeContent = () => {
   const { push } = useRouter()
   const session = useDashboardSession()
 
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: "Nueva aplicación recibida",
-      message: "TechCorp ha revisado tu aplicación para Desarrollador Senior",
-      time: "Hace 2 horas",
-      isRead: false,
-      type: "application",
-    },
-    {
-      id: 2,
-      title: "Entrevista programada",
-      message: "BioCorp ha programado una entrevista para mañana",
-      time: "Hace 4 horas",
-      isRead: false,
-      type: "interview",
-    },
-    {
-      id: 3,
-      title: "Nuevo empleo recomendado",
-      message: "Hemos encontrado 3 empleos que podrían interesarte",
-      time: "Hace 1 día",
-      isRead: true,
-      type: "recommendation",
-    },
-  ])
-
-  const unreadCount = notifications.filter((n) => !n.isRead).length
+  const { data: notificationsData } = useNotifications()
+  const notifications = notificationsData?.data ?? []
+  const unreadCount = notificationsData?.unreadCount ?? 0
+  const markRead = useMarkNotificationRead()
 
   const _toSlug = useCallback((value: string): string => {
     return value
@@ -105,9 +81,14 @@ export const HomeContent = () => {
     console.log("Create alert")
   }, [])
 
-  const handleNotificationClick = useCallback((id: number) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)))
-  }, [])
+  const handleNotificationClick = useCallback(
+    (id: string) => {
+      markRead.mutate(id)
+      const target = notifications.find((n) => n.id === id)
+      if (target?.link) push(target.link)
+    },
+    [markRead, notifications, push]
+  )
 
   const firstName = session?.user?.name?.split(" ")[0] || "Usuario"
 

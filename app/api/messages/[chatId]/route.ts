@@ -6,6 +6,11 @@ import { getSupabaseAdmin } from "@/lib/supabase"
 const DEFAULT_LIMIT = 30
 const MAX_LIMIT = 50
 
+function mapMessageRow(row: Record<string, unknown>) {
+  const { content_type, ...rest } = row
+  return { ...rest, contentType: (content_type as Record<string, unknown> | null) ?? null }
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ chatId: string }> }
@@ -45,7 +50,9 @@ export async function GET(
   if (cursor) {
     const { data, error } = await supabase
       .from("message")
-      .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
+      .select(
+        '"id", "chatId", "senderId", "content", "type", "content_type", "isRead", "createdAt"'
+      )
       .eq("chatId", chatId)
       .lt("createdAt", cursor)
       .order("createdAt", { ascending: false })
@@ -55,7 +62,7 @@ export async function GET(
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    const messages = (data ?? []).reverse()
+    const messages = (data ?? []).reverse().map(mapMessageRow)
     const nextCursor = messages.length >= limit ? (messages[0]?.createdAt ?? null) : null
 
     return NextResponse.json({ data: messages, nextCursor })
@@ -63,7 +70,7 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("message")
-    .select('"id", "chatId", "senderId", "content", "isRead", "createdAt"')
+    .select('"id", "chatId", "senderId", "content", "type", "content_type", "isRead", "createdAt"')
     .eq("chatId", chatId)
     .order("createdAt", { ascending: false })
     .limit(limit)
@@ -72,7 +79,7 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const messages = (data ?? []).reverse()
+  const messages = (data ?? []).reverse().map(mapMessageRow)
   const nextCursor = messages.length >= limit ? messages[0]?.createdAt : null
 
   return NextResponse.json({ data: messages, nextCursor })

@@ -2,7 +2,7 @@
 
 import { useQueryStates } from "nuqs"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { NotificationBell } from "@/components/common/NotificationBell"
+import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
@@ -151,7 +151,7 @@ export const SearchContent = () => {
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
-          <NotificationBell notifications={[]} />
+          <ConnectedNotificationBell />
         </div>
         <div className="space-y-1">
           <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Buscar Empleos</h1>

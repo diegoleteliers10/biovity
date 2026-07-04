@@ -3,6 +3,9 @@
 import { BubbleChatIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import type * as React from "react"
+import { useCallback, useState } from "react"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
+import { useEvent } from "@/lib/api/use-events"
 import { Button } from "@/components/ui/button"
 import { MessageBubble } from "@/components/ui/message-bubble"
 import type { Message } from "@/lib/api/messages"
@@ -17,6 +20,7 @@ interface ChatViewProps {
     | undefined
   recruiterProfile: { name?: string | null; avatar?: string | null } | undefined
   recruiterId: string | undefined
+  organizationId?: string
   messages: Message[]
   messagesLoading: boolean
   messagesError: boolean
@@ -30,6 +34,9 @@ interface ChatViewProps {
   onKeyPress: (e: React.KeyboardEvent) => void
   isPending: boolean
   sendError: Error | null
+  onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  isUploading: boolean
   messagesEndRef: React.RefObject<HTMLDivElement | null>
 }
 
@@ -38,6 +45,7 @@ export function ChatView({
   professional,
   recruiterProfile,
   recruiterId,
+  organizationId,
   messages,
   messagesLoading,
   messagesError,
@@ -51,6 +59,9 @@ export function ChatView({
   onKeyPress,
   isPending,
   sendError,
+  onImageChange,
+  onFileChange,
+  isUploading,
   messagesEndRef,
 }: ChatViewProps) {
   const professionalName = professional?.name ?? "Profesional"
@@ -60,6 +71,20 @@ export function ChatView({
     .join("")
     .slice(0, 2)
     .toUpperCase()
+
+  const [showEventModal, setShowEventModal] = useState(false)
+  const [editingEventId, setEditingEventId] = useState<string | null>(null)
+  const { event: editingEventData } = useEvent(editingEventId ?? undefined)
+
+  const handleCreateEventFromChat = useCallback(() => {
+    setEditingEventId(null)
+    setShowEventModal(true)
+  }, [])
+
+  const handleEditEventFromChat = useCallback((eventId: string) => {
+    setEditingEventId(eventId)
+    setShowEventModal(true)
+  }, [])
 
   return (
     <div
@@ -94,6 +119,7 @@ export function ChatView({
             recruiterProfile={recruiterProfile}
             formatMessageTime={formatMessageTime}
             messagesEndRef={messagesEndRef}
+            onEditEvent={handleEditEventFromChat}
           />
 
           <MessageInput
@@ -103,8 +129,36 @@ export function ChatView({
             onKeyPress={onKeyPress}
             isPending={isPending}
             sendError={sendError}
+            onImageChange={onImageChange}
+            onFileChange={onFileChange}
+            isUploading={isUploading}
+            onCreateEvent={handleCreateEventFromChat}
           />
         </>
+      )}
+
+      {showEventModal && selectedChat && recruiterId && (!editingEventId || editingEventData) && (
+        <EventFormModal
+          key={`${selectedChat.id}-${recruiterId}-${editingEventId ?? "new"}`}
+          isOpen={showEventModal}
+          onClose={() => {
+            setShowEventModal(false)
+            setEditingEventId(null)
+          }}
+          organizerId={recruiterId}
+          organizationId={organizationId}
+          candidateId={selectedChat.professionalId}
+          lockedType="interview"
+          editEvent={editingEventData}
+          onSuccess={() => {
+            setShowEventModal(false)
+            setEditingEventId(null)
+          }}
+          onDelete={() => {
+            setShowEventModal(false)
+            setEditingEventId(null)
+          }}
+        />
       )}
     </div>
   )
@@ -147,6 +201,7 @@ interface MessageListSectionProps {
   recruiterProfile?: { name?: string | null; avatar?: string | null } | undefined
   formatMessageTime: (iso: string) => string
   messagesEndRef: React.RefObject<HTMLDivElement | null>
+  onEditEvent?: (eventId: string) => void
 }
 
 export function MessageListSection({
@@ -162,6 +217,7 @@ export function MessageListSection({
   recruiterProfile,
   formatMessageTime,
   messagesEndRef,
+  onEditEvent,
 }: MessageListSectionProps) {
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0">
@@ -203,6 +259,7 @@ export function MessageListSection({
                 undefined
               }
               formatTime={formatMessageTime}
+              onEditEvent={onEditEvent}
             />
           ))}
           <div ref={messagesEndRef} />
