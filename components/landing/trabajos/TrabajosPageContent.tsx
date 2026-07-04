@@ -9,7 +9,6 @@ import { formatJobLocation } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
 import { trabajosParsers } from "@/lib/parsers/trabajos"
 import type { FiltrosTrabajos, Trabajo } from "@/lib/types/trabajos"
-import { TrabajosHero } from "./TrabajosHero"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
 
@@ -20,6 +19,7 @@ function urlStateToFiltros(state: {
   formato: string
   salarioMin: number | null
   salarioMax: number | null
+  moneda: "CLP" | "USD"
   experiencia: string
   categoria: string | null
 }): FiltrosTrabajos {
@@ -42,6 +42,7 @@ function urlStateToFiltros(state: {
     formato: toFormato(state.formato),
     salarioMin: state.salarioMin,
     salarioMax: state.salarioMax,
+    moneda: state.moneda ?? "CLP",
     experiencia: toExperiencia(state.experiencia),
     categoria: state.categoria && state.categoria !== "todas" ? state.categoria : null,
   }
@@ -67,6 +68,7 @@ function filtrosToUrlState(filtros: FiltrosTrabajos) {
     formato: toFormato(filtros.formato),
     salarioMin: filtros.salarioMin,
     salarioMax: filtros.salarioMax,
+    moneda: filtros.moneda,
     experiencia: toExperiencia(filtros.experiencia),
     categoria: filtros.categoria,
   }
@@ -90,11 +92,12 @@ function normalizeEmploymentType(type: string): "remoto" | "hibrido" | "presenci
   return "presencial"
 }
 
-function normalizeFormato(type: string): "full-time" | "part-time" | "contrato" {
+function normalizeFormato(type: string): "full-time" | "part-time" | "contrato" | "practica" {
   const normalized = type.toLowerCase()
   if (normalized.includes("full") || normalized.includes("tiempo completo")) return "full-time"
   if (normalized.includes("part") || normalized.includes("medio")) return "part-time"
   if (normalized.includes("contract") || normalized.includes("contrato")) return "contrato"
+  if (normalized.includes("practica") || normalized.includes("práctica")) return "practica"
   return "full-time"
 }
 
@@ -120,7 +123,7 @@ function jobToTrabajo(job: Job): Trabajo {
     rangoSalarial: {
       min: job.salary?.min ?? 0,
       max: job.salary?.max ?? 0,
-      moneda: "CLP",
+      moneda: (job.salary?.currency as "CLP" | "USD") ?? "CLP",
     },
     beneficios:
       job.benefits?.map((b) => ({
@@ -130,7 +133,7 @@ function jobToTrabajo(job: Job): Trabajo {
     descripcion: job.description,
     requisitos: [],
     responsabilidades: [],
-    categoria: undefined,
+    categoria: job.category,
     experiencia: undefined,
     slug: job.id,
   }
@@ -146,7 +149,9 @@ export function TrabajosPageContent() {
 
   const filtros = useMemo(() => urlStateToFiltros(urlState), [urlState])
 
-  const { data: jobs, isLoading, isError, error } = useJobsSearch(urlState.q || undefined)
+  const { data: jobsResult, isLoading, isError, error } = useJobsSearch({ search: urlState.q || undefined, category: filtros.categoria ?? undefined })
+
+  const jobs = jobsResult?.data
 
   const apiTrabajos = useMemo(() => {
     if (!jobs) return []
@@ -187,13 +192,17 @@ export function TrabajosPageContent() {
         }
       }
 
+      if (trabajo.rangoSalarial.moneda !== filtros.moneda) {
+        return false
+      }
+
       if (filtros.salarioMin !== null) {
-        if (trabajo.rangoSalarial.max < filtros.salarioMin) {
+        if (trabajo.rangoSalarial.min < filtros.salarioMin) {
           return false
         }
       }
       if (filtros.salarioMax !== null) {
-        if (trabajo.rangoSalarial.min > filtros.salarioMax) {
+        if (trabajo.rangoSalarial.max > filtros.salarioMax) {
           return false
         }
       }
@@ -216,10 +225,9 @@ export function TrabajosPageContent() {
 
   return (
     <>
-      <TrabajosHero />
       <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
       {isLoading && (
-        <section className="py-16 bg-white">
+        <section className="bg-white pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center py-12">
               <div className="flex items-center gap-3 text-muted-foreground">
@@ -233,7 +241,7 @@ export function TrabajosPageContent() {
         </section>
       )}
       {isError && (
-        <section className="py-16 bg-white">
+        <section className="bg-white pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <p className="text-lg text-destructive font-medium">
@@ -247,7 +255,7 @@ export function TrabajosPageContent() {
         </section>
       )}
       {!isLoading && !isError && apiTrabajos.length === 0 && (
-        <section className="py-16 bg-white">
+        <section className="bg-white pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <p className="text-lg text-foreground font-medium">

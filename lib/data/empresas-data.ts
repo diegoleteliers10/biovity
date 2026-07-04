@@ -252,7 +252,24 @@ export const BENEFICIOS_EMPRESAS: BeneficioEmpresaItem[] = [
 ]
 
 export const HERO_STATS_EMPRESAS: HeroStatEmpresaItem[] = [
-  { icon: Chemistry01Icon, value: "+50", label: "especialidades" },
+  { icon: Chemistry01Icon, value: "—", label: "especialidades" },
   { icon: Target01Icon, value: "100%", label: "enfocado en ciencias" },
-  { icon: Building03Icon, value: "+120", label: "empresas registradas" },
+  { icon: Building03Icon, value: "—", label: "empresas registradas" },
 ]
+
+export type EmpresaLogoItem = {
+  name: string
+  logo: string
+}
+
+export const LOGOS_EMPRESAS: EmpresaLogoItem[] = []
+
+export type TestimonioEmpresaItem = {
+  quote: string
+  author: string
+  role: string
+  company: string
+  image?: string
+}
+
+export const TESTIMONIOS_EMPRESAS: TestimonioEmpresaItem[] = []

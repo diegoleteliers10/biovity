@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
+import type { ServerSession } from "@/lib/auth"
 
 const menuItems = [
   { name: "Trabajos", href: "/trabajos" },
@@ -20,9 +21,14 @@ const menuItems = [
 const isActivePath = (pathname: string, href: string) =>
   pathname === href || (href !== "/" && pathname.startsWith(href))
 
-export const Header = () => {
+interface HeaderProps {
+  session?: ServerSession | null
+}
+
+export const Header = ({ session }: HeaderProps) => {
   const pathname = usePathname()
   const [menuState, setMenuState] = useState(false)
+  const isLoggedIn = Boolean(session?.user)
 
   return (
     <header className="contents">
@@ -129,16 +135,26 @@ export const Header = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col gap-3 sm:flex-row sm:gap-3 md:w-fit">
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/login">
-                    <span>Login</span>
-                  </Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link href="/register">
-                    <span>Sign Up</span>
-                  </Link>
-                </Button>
+                {isLoggedIn ? (
+                  <Button asChild size="sm">
+                    <Link href="/dashboard">
+                      <span>Dashboard</span>
+                    </Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button asChild variant="outline" size="sm">
+                      <Link href="/login">
+                        <span>Login</span>
+                      </Link>
+                    </Button>
+                    <Button asChild size="sm">
+                      <Link href="/register">
+                        <span>Sign Up</span>
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

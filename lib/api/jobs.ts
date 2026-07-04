@@ -52,6 +52,7 @@ export type Job = {
   location?: JobLocation
   benefits?: JobBenefit[]
   status: string
+  category?: string
   applicationsCount?: number
   views?: number
   expiresAt?: string
@@ -78,6 +79,15 @@ export type GetJobsParams = {
   page?: number
   limit?: number
   search?: string
+  category?: string
+}
+
+export type JobsResponse = {
+  data: Job[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
 export type GetJobsByOrganizationParams = {
@@ -145,6 +155,7 @@ function normalizeJobResponse(raw: unknown): Job | null {
   return {
     ...(level2 as Job),
     applicationsCount: normalizedApplicationsCount ?? (level2 as Job).applicationsCount,
+    benefits: (level2Obj.benefits as Job["benefits"]) ?? (level2 as Job).benefits,
   }
 }
 
@@ -166,13 +177,14 @@ export async function getJobsByOrganization(
 
 export async function getJobs(
   params?: GetJobsParams
-): Promise<Result<Job[], ApiError | NetworkError>> {
+): Promise<Result<JobsResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.organizationId) searchParams.set("organizationId", params.organizationId)
   if (params?.status) searchParams.set("status", params.status)
   if (params?.page != null) searchParams.set("page", String(params.page))
   if (params?.limit != null) searchParams.set("limit", String(params.limit))
   if (params?.search?.trim()) searchParams.set("search", params.search.trim())
+  if (params?.category) searchParams.set("category", params.category)
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/jobs${query ? `?${query}` : ""}`
 
@@ -180,20 +192,39 @@ export async function getJobs(
 
   if (result.isErr()) return R.err(result.error)
 
-  const data = result.value
-  const jobs = Array.isArray(data) ? (data as Job[]) : ((data as { data?: Job[] })?.data ?? [])
-  return R.ok(jobs)
+  const data = result.value as Record<string, unknown>
+  const rawJobs = Array.isArray(data.data) ? (data.data as Job[]) : []
+  return R.ok({
+    data: rawJobs,
+    total: typeof data.total === "number" ? data.total : rawJobs.length,
+    page: typeof data.page === "number" ? data.page : 1,
+    limit: typeof data.limit === "number" ? data.limit : (params?.limit ?? 10),
+    totalPages: typeof data.totalPages === "number" ? data.totalPages : 1,
+  })
 }
 
 export async function getJob(id: string): Promise<Result<Job, ApiError | NetworkError>> {
-  const withApplicationsUrl = `${API_BASE}/api/v1/jobs/${id}/with-applications`
+  const primaryUrl = `${API_BASE}/api/v1/jobs/${id}/with-applications`
   const fallbackUrl = `${API_BASE}/api/v1/jobs/${id}`
 
-  const result = await fetchWithFallback<unknown>(withApplicationsUrl, fallbackUrl)
+  const primaryResult = await fetchJson<unknown>(primaryUrl)
 
-  if (result.isErr()) return R.err(result.error)
+  if (primaryResult.isOk()) {
+    const job = normalizeJobResponse(primaryResult.value)
+    if (job && job.benefits && job.benefits.length > 0) {
+      return R.ok(job)
+    }
+  }
 
-  const job = normalizeJobResponse(result.value)
+  if (primaryResult.isErr()) {
+    const fallbackResult = await fetchJson<unknown>(fallbackUrl)
+    if (fallbackResult.isErr()) return R.err(fallbackResult.error)
+    const job = normalizeJobResponse(fallbackResult.value)
+    if (!job) return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
+    return R.ok(job)
+  }
+
+  const job = normalizeJobResponse(primaryResult.value)
   if (!job) return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
   return R.ok(job)
 }

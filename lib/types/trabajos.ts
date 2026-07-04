@@ -1,5 +1,5 @@
 export type ModalidadTrabajo = "remoto" | "hibrido" | "presencial"
-export type FormatoTrabajo = "full-time" | "part-time" | "contrato"
+export type FormatoTrabajo = "full-time" | "part-time" | "contrato" | "practica"
 export type NivelExperiencia = "junior" | "mid" | "senior"
 export type TipoBeneficio = "salud" | "vacaciones" | "formacion" | "equipo" | "otro"
 
@@ -11,7 +11,7 @@ export type Beneficio = {
 export type RangoSalarial = {
   min: number
   max: number
-  moneda: "CLP"
+  moneda: "CLP" | "USD"
 }
 
 export type Trabajo = {
@@ -32,6 +32,8 @@ export type Trabajo = {
   slug: string
 }
 
+export type MonedaSalario = "CLP" | "USD"
+
 export type FiltrosTrabajos = {
   query: string
   ubicacion: string
@@ -39,6 +41,7 @@ export type FiltrosTrabajos = {
   formato: "Formato" | FormatoTrabajo
   salarioMin: number | null
   salarioMax: number | null
+  moneda: MonedaSalario
   experiencia: "Experiencia" | NivelExperiencia
   categoria: string | null
 }

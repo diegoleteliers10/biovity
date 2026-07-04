@@ -113,7 +113,11 @@ export function HtmlContent({ html, className }: HtmlContentProps) {
     )
   }
 
-  const sanitizedHtml = DOMPurify.sanitize(html, { USE_PROFILES: { html: true } })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dompurify = DOMPurify as any
+  const sanitizeFn = dompurify.default?.sanitize ?? dompurify.sanitize
+  const sanitizedHtml =
+    typeof sanitizeFn === "function" ? sanitizeFn(html, { USE_PROFILES: { html: true } }) : html
   const parsedContent = parse(sanitizedHtml)
 
   return (
