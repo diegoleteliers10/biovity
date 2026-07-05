@@ -67,10 +67,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  const jobsResult = await getJobs({ status: "published", limit: 1000 })
+  const jobsResult = await getJobs({ status: "active", limit: 1000 })
   const jobUrls: MetadataRoute.Sitemap = Result.isOk(jobsResult)
-    ? jobsResult.value
-        .filter((job) => job.status === "published")
+    ? jobsResult.value.data
+        .filter((job) => job.status === "active")
         .map((job) => ({
           url: `${siteUrl}/trabajos/${job.id}`,
           lastModified: new Date(job.updatedAt),

@@ -59,7 +59,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
   const count = trabajos.length
 
   return (
-    <section className="py-16 bg-white">
+    <section className="bg-white pb-16 pt-6">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-end mb-4">
           <p className="text-sm text-muted-foreground">
@@ -138,7 +138,9 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                           className="shrink-0 text-secondary"
                         />
                         <span className="break-words min-w-0">
-                          {formatSalarioRango(trabajo.rangoSalarial.min, trabajo.rangoSalarial.max)}
+                          {trabajo.rangoSalarial.moneda === "USD"
+                            ? `US$${new Intl.NumberFormat("en-US").format(trabajo.rangoSalarial.min)} - US$${new Intl.NumberFormat("en-US").format(trabajo.rangoSalarial.max)}`
+                            : `$${new Intl.NumberFormat("es-CL").format(trabajo.rangoSalarial.min)} - $${new Intl.NumberFormat("es-CL").format(trabajo.rangoSalarial.max)}`}
                         </span>
                       </div>
                     </div>
@@ -154,7 +156,9 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                         ? "Full Time"
                         : trabajo.formato === "part-time"
                           ? "Part Time"
-                          : trabajo.formato}
+                          : trabajo.formato === "practica"
+                            ? "Práctica"
+                            : trabajo.formato}
                     </Badge>
                   </div>
                 </div>
