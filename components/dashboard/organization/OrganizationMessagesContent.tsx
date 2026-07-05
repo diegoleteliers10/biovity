@@ -189,7 +189,9 @@ export function OrganizationMessagesContent() {
         professional={professional}
         recruiterProfile={recruiterProfile}
         recruiterId={recruiterId}
-        organizationId={session?.user?.organizationId ?? recruiterProfile?.organizationId ?? undefined}
+        organizationId={
+          session?.user?.organizationId ?? recruiterProfile?.organizationId ?? undefined
+        }
         messages={messages}
         messagesLoading={messagesLoading}
         messagesError={messagesError}

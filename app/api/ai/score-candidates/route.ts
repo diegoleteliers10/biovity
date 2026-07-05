@@ -1,8 +1,10 @@
+import { headers } from "next/headers"
 import type { NextRequest } from "next/server"
 import { z } from "zod"
-import { generateText, model } from "@/lib/ai/provider"
+import { generateText, resolveModel } from "@/lib/ai/provider"
 import { sanitizeInput } from "@/lib/ai/sanitize"
 import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
+import { auth } from "@/lib/auth"
 
 const CandidateScoreSchema = z.object({
   candidateId: z.string(),
@@ -42,6 +44,12 @@ function safeParseBatchScore(raw: string): BatchScoreResult | null {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user?.id) {
+    return Response.json({ error: "No autenticado" }, { status: 401 })
+  }
+  const organizationId = (session.user as { organizationId?: string }).organizationId
+
   const {
     candidates,
     jobOffer,
@@ -53,6 +61,8 @@ export async function POST(req: NextRequest) {
   }
 
   sanitizeInput(JSON.stringify({ candidates, jobOffer }), "batch-scorer")
+
+  const resolved = await resolveModel(organizationId)
 
   const candidatesInput = candidates
     .map(
@@ -82,7 +92,7 @@ export async function POST(req: NextRequest) {
   ].join(" ")
 
   const { text } = await generateText({
-    model,
+    model: resolved.model,
     system: systemPrompt,
     prompt: `
 JOB OFFER:

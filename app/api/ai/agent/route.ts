@@ -2,10 +2,11 @@ import { convertToModelMessages, stepCountIs, type UIMessage } from "ai"
 import { headers } from "next/headers"
 import type { NextRequest } from "next/server"
 import { AIAuditService, aiAuditService } from "@/lib/ai/audit"
+import { findProviderModel } from "@/lib/ai/byok/registry"
 import { AI_LIMITS } from "@/lib/ai/env"
 import { PromptInjectionError } from "@/lib/ai/errors"
 import { buildSystemPrompt } from "@/lib/ai/prompts"
-import { model, streamText } from "@/lib/ai/provider"
+import { resolveModel, streamText } from "@/lib/ai/provider"
 import { sanitizeInput } from "@/lib/ai/sanitize"
 import { externalTools } from "@/lib/ai/tools/external"
 import { organizationTools } from "@/lib/ai/tools/organization"
@@ -87,8 +88,20 @@ export async function POST(req: NextRequest) {
     jobOfferId,
   })
 
+  const resolved = await resolveModel(resolvedOrganizationId)
+  const capability = findProviderModel(resolved.provider, resolved.modelId)
+  if (resolved.source === "byok" && capability && !capability.supportsTools) {
+    return Response.json(
+      {
+        error: "El modelo seleccionado no soporta herramientas",
+        code: "ERR_MODEL_NO_TOOLS",
+      },
+      { status: 400 }
+    )
+  }
+
   const result = streamText({
-    model,
+    model: resolved.model,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(AI_LIMITS.DEFAULT_MAX_STEPS),
     tools: allTools,
@@ -106,7 +119,13 @@ export async function POST(req: NextRequest) {
       toolsCalled: Object.keys(allTools),
       flagged,
       durationMs: Date.now() - startTime,
-      metadata: { jobOfferId, organizationId: resolvedOrganizationId },
+      metadata: {
+        jobOfferId,
+        organizationId: resolvedOrganizationId,
+        provider: resolved.provider,
+        modelId: resolved.modelId,
+        source: resolved.source,
+      },
     })
     .catch(() => {})
 

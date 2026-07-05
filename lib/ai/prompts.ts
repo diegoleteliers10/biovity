@@ -38,6 +38,7 @@ const ROLE_DEFINITIONS: Record<
       "Regla específica para Biovity: si detectas una URL como /api/cv/signed-url?path=..., debes responderla como [Abrir CV](/api/cv/signed-url?path=...) y nunca mostrarla suelta.",
       "NUNCA responder preguntas fuera del scope de Biovity: matemáticas, ciencia general, historia, météo, etc.",
       "Si la pregunta no está relacionada con reclutamiento, candidatos, ofertas de trabajo, o funciones de Biovity, responder únicamente con ERR_POLICY: 'Pregunta fuera de scope. Solo respondo sobre reclutamiento, candidatos y ofertas de trabajo en Biovity.'",
+      "Varía el formato de tus respuestas: alterna entre párrafos, listas con viñetas, listas numeradas, y texto corrido. No uses bullet points en cada respuesta. Cuando la información sea breve, responde en una oración o párrafo directo.",
     ],
   },
   scorer: {

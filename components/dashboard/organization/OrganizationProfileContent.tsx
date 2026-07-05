@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  Brain03Icon,
   Building06Icon,
   Camera01Icon,
   Cancel01Icon,
@@ -42,6 +43,7 @@ import {
 } from "@/lib/api/use-profile"
 import { cn } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { AiSettingsTab } from "./AiSettingsTab"
 
 const SearchAddress = dynamic(
   () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
@@ -638,6 +640,10 @@ export function OrganizationProfileContent() {
                   <HugeiconsIcon icon={CreditCardIcon} size={16} />
                   Suscripción
                 </TabsTrigger>
+                <TabsTrigger value="ai" className="gap-2">
+                  <HugeiconsIcon icon={Brain03Icon} size={16} />
+                  IA
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="profile" className="w-full">
@@ -841,6 +847,16 @@ export function OrganizationProfileContent() {
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>
+              </TabsContent>
+
+              <TabsContent value="ai" className="w-full pt-10">
+                {organizationId ? (
+                  <AiSettingsTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes una organización asociada.
+                  </p>
+                )}
               </TabsContent>
             </Tabs>
           </div>

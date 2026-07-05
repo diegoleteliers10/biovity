@@ -134,8 +134,6 @@ export function MessageThread({
 
   const updateParticipantStatus = useUpdateParticipantStatus()
 
-
-
   const handleEventAction = useCallback(
     (eventId: string, action: "accept" | "decline") => {
       if (!professionalId) return

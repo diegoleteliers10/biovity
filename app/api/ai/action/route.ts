@@ -1,9 +1,17 @@
+import { headers } from "next/headers"
 import type { NextRequest } from "next/server"
 import { buildPrompt, getSystemPrompt } from "@/lib/ai/prompts"
-import { model, streamText } from "@/lib/ai/provider"
+import { resolveModel, streamText } from "@/lib/ai/provider"
 import type { AIActionPayload } from "@/lib/ai/types"
+import { auth } from "@/lib/auth"
 
 export async function POST(req: NextRequest) {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user?.id) {
+    return Response.json({ error: "No autenticado" }, { status: 401 })
+  }
+  const organizationId = (session.user as { organizationId?: string }).organizationId
+
   const body: AIActionPayload = await req.json()
 
   if (!body.action || !body.context) {
@@ -13,8 +21,9 @@ export async function POST(req: NextRequest) {
   const systemPrompt = getSystemPrompt(body.action)
   const userPrompt = buildPrompt(body)
 
+  const resolved = await resolveModel(organizationId)
   const result = streamText({
-    model,
+    model: resolved.model,
     system: systemPrompt,
     prompt: userPrompt,
   })

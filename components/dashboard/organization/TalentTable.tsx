@@ -106,7 +106,7 @@ export function TalentTable({
                       </span>
                     </HoverCardTrigger>
                     <HoverCardContent
-                      side="bottom"
+                      side="right"
                       align="start"
                       sideOffset={10}
                       className="w-80 overflow-hidden rounded-xl border-0 bg-background p-0 shadow-xl ring-1 ring-border/50"

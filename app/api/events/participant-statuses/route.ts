@@ -76,4 +76,3 @@ export async function POST(request: Request) {
   console.log("[API/participant-statuses] Returning statuses:", statuses)
   return NextResponse.json({ statuses })
 }
-

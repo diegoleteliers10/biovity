@@ -87,9 +87,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   })
 
   const participantEventIds = useMemo(() => {
-    return events
-      .filter((e) => organizerId && e.candidateId === organizerId)
-      .map((e) => e.id)
+    return events.filter((e) => organizerId && e.candidateId === organizerId).map((e) => e.id)
   }, [events, organizerId])
   const { statuses: serverStatuses } = useParticipantStatuses(participantEventIds)
   const mergedStatuses: Record<string, ParticipantStatus> = { ...serverStatuses, ...rsvpStatuses }
