@@ -17,6 +17,8 @@ export async function getOrganizationMetrics(
 ): Promise<Result<OrganizationMetrics, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (filters?.period) searchParams.set("period", filters.period)
+  if (filters?.startDate) searchParams.set("startDate", filters.startDate)
+  if (filters?.endDate) searchParams.set("endDate", filters.endDate)
 
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/organizations/${organizationId}/metrics${query ? `?${query}` : ""}`
@@ -53,11 +55,14 @@ export async function getOrganizationMetrics(
 export async function incrementJobViews(
   jobId: string
 ): Promise<Result<{ views: number }, ApiError | NetworkError>> {
-  const result = await fetchJson<{ views: number }>(`${API_BASE}/api/v1/jobs/${jobId}/views`, {
-    method: "PUT",
-  })
+  const result = await fetchJson<{ data: { views: number } }>(
+    `${API_BASE}/api/v1/jobs/${jobId}/views`,
+    {
+      method: "PUT",
+    }
+  )
 
   if (result.isErr()) return R.err(result.error)
 
-  return R.ok({ views: result.value.views })
+  return R.ok({ views: result.value.data.views })
 }

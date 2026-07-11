@@ -4,6 +4,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Toaster } from "sonner"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
 
@@ -171,7 +172,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" data-scroll-behavior="smooth">
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563EB" />
@@ -197,6 +198,7 @@ export default function RootLayout({
             <MotionProvider>{children}</MotionProvider>
           </QueryProvider>
         </NuqsAdapter>
+        <Toaster position="bottom-right" richColors />
       </body>
       <Analytics />
       <SpeedInsights />

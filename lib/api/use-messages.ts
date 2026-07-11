@@ -4,7 +4,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useEffect } from "react"
 import { createClientBrowser } from "@/lib/supabase-browser"
-import { getMessagesByChatId, type Message, type MessageType, sendMessage } from "./messages"
+import {
+  getMessagesByChatId,
+  type Message,
+  type MessageType,
+  markChatAsRead,
+  sendMessage,
+} from "./messages"
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
@@ -169,6 +175,32 @@ export function useSendMessageMutation() {
             : chat
         )
       })
+    },
+  })
+}
+
+export function useMarkChatAsReadMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ chatId, userId }: { chatId: string; userId: string }) => {
+      const result = await markChatAsRead(chatId, userId)
+      if (!Result.isOk(result)) throw new Error(result.error.message)
+    },
+    onSuccess: (_, variables) => {
+      // Reset unreadCount locally in cache
+      queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {
+        if (!prev) return prev
+        return prev.map((chat) =>
+          (chat as { id?: string }).id === variables.chatId
+            ? {
+                ...chat,
+                unreadCountRecruiter: 0,
+                unreadCountProfessional: 0,
+              }
+            : chat
+        )
+      })
+      queryClient.invalidateQueries({ queryKey: ["chats"] })
     },
   })
 }

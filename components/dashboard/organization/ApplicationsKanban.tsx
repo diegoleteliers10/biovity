@@ -4,6 +4,7 @@ import {
   DndContext,
   type DragEndEvent,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
   useDraggable,
   useDroppable,
@@ -15,14 +16,19 @@ import {
   Calendar04Icon,
   Cancel01Icon,
   CheckmarkCircle02Icon,
+  CheckmarkCircleIcon,
+  CircleIcon,
   File02Icon,
   Message01Icon,
   MoreHorizontalIcon,
+  StarIcon,
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useMemo, useState } from "react"
+import { toast } from "sonner"
 import { AIScoreBadge, AIScoreBadgeSkeleton } from "@/components/ai/AIScoreBadge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -49,6 +55,12 @@ type ApplicantCardProps = {
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
   onScoreClick?: (candidateId: string) => void
+  onViewProfile?: (candidateId: string) => void
+  onViewDetail?: (applicationId: string) => void
+  onMessage?: (candidateId: string) => void
+  isSelected?: boolean
+  selectionMode?: boolean
+  onToggleSelection?: (id: string) => void
 }
 
 function ApplicantCard({
@@ -57,10 +69,17 @@ function ApplicantCard({
   isAnalyzing: analyzing,
   jobOffer: _jobOffer,
   onScoreClick,
+  onViewProfile,
+  onViewDetail,
+  onMessage,
+  isSelected,
+  selectionMode,
+  onToggleSelection,
 }: ApplicantCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: applicant.id,
     data: { applicant, stage: applicant.stage },
+    disabled: selectionMode,
   })
 
   const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined
@@ -83,32 +102,99 @@ function ApplicantCard({
       {...attributes}
     >
       <CardContent className="relative px-4 py-0">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-start justify-between gap-2 pr-6">
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold text-sm leading-tight truncate">
-                {applicant.candidateName}
-              </p>
-              <p className="text-xs text-muted-foreground truncate">{applicant.position}</p>
+        {selectionMode && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleSelection?.(applicant.id)
+            }}
+            className="absolute top-0 right-4 z-10"
+            aria-label={isSelected ? "Deseleccionar" : "Seleccionar"}
+          >
+            <HugeiconsIcon
+              icon={isSelected ? CheckmarkCircleIcon : CircleIcon}
+              size={20}
+              className={cn(
+                "transition-colors",
+                isSelected
+                  ? "text-primary fill-primary/20"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            />
+          </button>
+        )}
+        <div className="flex items-start gap-3">
+          <Avatar className="size-9 shrink-0">
+            {applicant.avatar && <AvatarImage src={applicant.avatar} alt="" />}
+            <AvatarFallback className="text-xs">
+              {applicant.candidateName
+                .split(" ")
+                .map((p) => p[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-1 flex-col gap-2">
+            <div className="flex items-start justify-between gap-2 pr-6">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <p className="font-semibold text-sm leading-tight truncate">
+                    {applicant.candidateName}
+                  </p>
+                  {applicant.isSaved && (
+                    <HugeiconsIcon
+                      icon={StarIcon}
+                      size={12}
+                      className="shrink-0 text-amber-500 fill-amber-500"
+                    />
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{applicant.position}</p>
+              </div>
+              <div>
+                {scoreEntry ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onScoreClick?.(applicant.candidateId)
+                    }}
+                    className="animate-in fade-in duration-300"
+                  >
+                    <AIScoreBadge score={scoreEntry.score} />
+                  </button>
+                ) : analyzing ? (
+                  <AIScoreBadgeSkeleton />
+                ) : null}
+              </div>
             </div>
-            <div>
-              {scoreEntry ? (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onScoreClick?.(applicant.candidateId)
-                  }}
-                  className="animate-in fade-in duration-300"
-                >
-                  <AIScoreBadge score={scoreEntry.score} />
-                </button>
-              ) : analyzing ? (
-                <AIScoreBadgeSkeleton />
-              ) : null}
+            {applicant.tags && applicant.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {applicant.tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className="inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium"
+                    style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
+              <span>Aplico: {applicant.dateApplied}</span>
+              {applicant.salaryMin != null && (
+                <span className="truncate">
+                  ${applicant.salaryMin.toLocaleString("es-CL")}
+                  {applicant.salaryMax != null
+                    ? ` - $${applicant.salaryMax.toLocaleString("es-CL")}`
+                    : ""}
+                </span>
+              )}
             </div>
           </div>
-          <p className="text-xs text-muted-foreground/70">Aplicó: {applicant.dateApplied}</p>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -125,11 +211,24 @@ function ApplicantCard({
             className="min-w-40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuItem onSelect={() => {}}>
+            <DropdownMenuItem
+              onSelect={() => onViewProfile?.(applicant.candidateId)}
+              className="cursor-pointer"
+            >
               <HugeiconsIcon icon={UserIcon} size={16} />
-              Ver información del postulante
+              Ver informacion del postulante
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => {}}>
+            <DropdownMenuItem
+              onSelect={() => onViewDetail?.(applicant.id)}
+              className="cursor-pointer"
+            >
+              <HugeiconsIcon icon={File02Icon} size={16} />
+              Ver detalle de aplicacion
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => onMessage?.(applicant.candidateId)}
+              className="cursor-pointer"
+            >
               <HugeiconsIcon icon={Message01Icon} size={16} />
               Enviar mensaje
             </DropdownMenuItem>
@@ -146,6 +245,12 @@ function KanbanColumn({
   getScore,
   isAnalyzing,
   onScoreClick,
+  onViewProfile,
+  onViewDetail,
+  onMessage,
+  selectedIds,
+  selectionMode,
+  onToggleSelection,
 }: {
   stage: (typeof STAGES)[number]
   applicants: Applicant[]
@@ -153,6 +258,12 @@ function KanbanColumn({
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
   onScoreClick?: (candidateId: string) => void
+  onViewProfile?: (candidateId: string) => void
+  onViewDetail?: (applicationId: string) => void
+  onMessage?: (candidateId: string) => void
+  selectedIds?: Set<string>
+  selectionMode?: boolean
+  onToggleSelection?: (id: string) => void
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id })
 
@@ -182,6 +293,12 @@ function KanbanColumn({
             getScore={getScore}
             isAnalyzing={isAnalyzing}
             onScoreClick={onScoreClick}
+            onViewProfile={onViewProfile}
+            onViewDetail={onViewDetail}
+            onMessage={onMessage}
+            isSelected={selectedIds?.has(a.id) ?? false}
+            selectionMode={selectionMode}
+            onToggleSelection={onToggleSelection}
           />
         ))}
       </div>
@@ -199,6 +316,13 @@ export function ApplicationsKanban({
   isAnalyzing,
   jobOffer,
   onScoreClick,
+  onViewProfile,
+  onViewDetail,
+  onMessage,
+  selectionMode,
+  selectedIds,
+  onToggleSelection,
+  onClearSelection: _onClearSelection,
 }: {
   applicants: Applicant[]
   onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
@@ -209,6 +333,13 @@ export function ApplicationsKanban({
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
   onScoreClick?: (candidateId: string) => void
+  onViewProfile?: (candidateId: string) => void
+  onViewDetail?: (applicationId: string) => void
+  onMessage?: (candidateId: string) => void
+  selectionMode?: boolean
+  selectedIds?: Set<string>
+  onToggleSelection?: (id: string) => void
+  onClearSelection?: () => void
 }) {
   const [activeApplicant, setActiveApplicant] = useState<Applicant | null>(null)
 
@@ -251,6 +382,17 @@ export function ApplicationsKanban({
 
       if (data.applicant.stage === targetStage) return
 
+      const previousStage = data.applicant.stage
+
+      const stageLabel = STAGES.find((s) => s.id === targetStage)?.label ?? targetStage
+      toast.success(`Movido a ${stageLabel}`, {
+        description: `${data.applicant.candidateName} -> ${stageLabel}`,
+        action: {
+          label: "Deshacer",
+          onClick: () => onStatusChange?.(data.applicant.id, previousStage),
+        },
+      })
+
       if (targetStage === "entrevista" || targetStage === "contratado") {
         const eventType = targetStage === "entrevista" ? "interview" : "onboarding"
         onStatusChange?.(data.applicant.id, targetStage)
@@ -266,7 +408,8 @@ export function ApplicationsKanban({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
-    })
+    }),
+    useSensor(KeyboardSensor)
   )
 
   return (
@@ -285,6 +428,12 @@ export function ApplicationsKanban({
             isAnalyzing={isAnalyzing}
             jobOffer={jobOffer}
             onScoreClick={onScoreClick}
+            onViewProfile={onViewProfile}
+            onViewDetail={onViewDetail}
+            onMessage={onMessage}
+            selectedIds={selectedIds}
+            selectionMode={selectionMode}
+            onToggleSelection={onToggleSelection}
           />
         ))}
       </div>

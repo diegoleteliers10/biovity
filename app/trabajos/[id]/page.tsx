@@ -16,9 +16,9 @@ import { headers } from "next/headers"
 import { notFound } from "next/navigation"
 import { Fragment } from "react"
 import { JobViewsTracker } from "@/components/common/job-views-tracker"
+import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
-import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
@@ -29,7 +29,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Card, CardContent } from "@/components/ui/card"
-import { formatJobLocation, getJob, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
+import {
+  formatJobLocation,
+  getJob,
+  type Job,
+  type JobBenefit,
+  type JobLocation,
+} from "@/lib/api/jobs"
 import { getOrganization } from "@/lib/api/organizations"
 import {
   formatFechaLarga,
@@ -61,8 +67,7 @@ function getBenefitIcon(benefit: JobBenefit) {
   const t = benefit.title.toLowerCase()
   if (/salud|médico|medico|dental|seguro/.test(t)) return HeartAddIcon
   if (/vacacion|vacation/.test(t)) return AirplaneLanding01Icon
-  if (/formación|formacion|capacitación|aprendizaje|learning/.test(t))
-    return GraduationScrollIcon
+  if (/formación|formacion|capacitación|aprendizaje|learning/.test(t)) return GraduationScrollIcon
   if (/equipo|laptop|remoto|equipment|teletrabajo|computador/.test(t)) return LaptopIcon
   return LaptopIcon
 }
@@ -263,7 +268,10 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Descripción</h2>
                 <div className="text-zinc-700 leading-relaxed prose prose-gray max-w-none">
                   {job.description ? (
-                    <HtmlContent html={job.description} className="text-base leading-7 md:text-[15px]" />
+                    <HtmlContent
+                      html={job.description}
+                      className="text-base leading-7 md:text-[15px]"
+                    />
                   ) : (
                     <p className="text-muted-foreground">Sin descripción.</p>
                   )}
@@ -290,11 +298,13 @@ export default async function TrabajoDetailPage({ params }: Props) {
                             aria-hidden
                           />
                           <span className="line-clamp-1">
-                          <span className="font-medium text-foreground/95">{beneficio.title}</span>
-                          {beneficio.description ? (
-                            <span className="text-muted-foreground/90">{` — ${beneficio.description}`}</span>
-                          ) : null}
-                        </span>
+                            <span className="font-medium text-foreground/95">
+                              {beneficio.title}
+                            </span>
+                            {beneficio.description ? (
+                              <span className="text-muted-foreground/90">{` — ${beneficio.description}`}</span>
+                            ) : null}
+                          </span>
                         </div>
                       )
                     })}

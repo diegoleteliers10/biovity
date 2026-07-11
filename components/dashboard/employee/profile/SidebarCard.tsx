@@ -82,6 +82,22 @@ export function SidebarCard() {
   const uploadAvatarMutation = useUploadAvatarMutation(userId ?? "")
   const uploadCvMutation = useUploadResumeCvMutation(resume?.id ?? "", userId ?? "")
 
+  const handleLocalUpload = useCallback(
+    (file: File) => {
+      if (file && userId) {
+        uploadAvatarMutation.mutate(file, {
+          onSuccess: () => setAvatarModalOpen(false),
+        })
+      }
+    },
+    [userId, uploadAvatarMutation]
+  )
+
+  const handleLocalDelete = useCallback(() => {
+    handleAvatarDelete()
+    setAvatarModalOpen(false)
+  }, [handleAvatarDelete])
+
   const isEditingSidebar = editingSection === "sidebar"
   const data = profileData
 
@@ -137,8 +153,8 @@ export function SidebarCard() {
           avatar={data.avatar}
           open={avatarModalOpen}
           onOpenChange={setAvatarModalOpen}
-          onUpload={handleAvatarUpload}
-          onDelete={handleAvatarDelete}
+          onUpload={handleLocalUpload}
+          onDelete={handleLocalDelete}
           isUploading={uploadAvatarMutation.isPending}
         />
         <div className="mt-4 text-center px-6">

@@ -2,23 +2,29 @@
 
 import {
   Briefcase01Icon,
+  Calendar01Icon,
   GraduationScrollIcon,
   Link01Icon,
   Location01Icon,
   Mail01Icon,
+  Sent02Icon,
   SmartPhone01Icon,
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
 import { Avatar } from "@/components/base/avatar/avatar"
+import { Button } from "@/components/ui/button"
 import type { ResumeEducation, ResumeExperience } from "@/lib/api/resumes"
+import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { formatUserLocation } from "@/lib/api/users"
 
@@ -44,11 +50,19 @@ interface TalentDetailSheetProps {
   userId: string | null
   open: boolean
   onOpenChange: (open: boolean) => void
+  recruiterId?: string | null
 }
 
-export function TalentDetailSheet({ userId, open, onOpenChange }: TalentDetailSheetProps) {
+export function TalentDetailSheet({
+  userId,
+  open,
+  onOpenChange,
+  recruiterId,
+}: TalentDetailSheetProps) {
+  const { push } = useRouter()
   const { data: user, isLoading: userLoading } = useUser(userId ?? undefined)
   const { data: resume, isLoading: resumeLoading } = useResumeByUser(userId ?? undefined)
+  const createChatMutation = useCreateOrFindChatMutation(recruiterId ?? undefined)
 
   const initials = useMemo(() => {
     if (!user?.name) return undefined
@@ -256,6 +270,49 @@ export function TalentDetailSheet({ userId, open, onOpenChange }: TalentDetailSh
           </div>
         ) : (
           <p className="py-8 text-muted-foreground text-sm">No se pudo cargar el perfil.</p>
+        )}
+
+        {/* F8.5 — Action footer */}
+        {user && (
+          <div className="sticky bottom-0 border-t border-border/50 bg-background/95 backdrop-blur-sm px-0 pt-3 pb-1 mt-4">
+            <div className="flex gap-2">
+              <Button
+                className="flex-1 gap-2 text-sm"
+                onClick={() => {
+                  if (!recruiterId || !userId) return
+                  createChatMutation.mutate(userId, {
+                    onSuccess: (chat) => {
+                      if (chat?.id) {
+                        onOpenChange(false)
+                        push(`/dashboard/messages?chat=${chat.id}`)
+                      }
+                    },
+                  })
+                }}
+                disabled={!recruiterId || createChatMutation.isPending}
+                id={`sheet-message-${userId}`}
+              >
+                {createChatMutation.isPending ? (
+                  <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                ) : (
+                  <HugeiconsIcon icon={Sent02Icon} size={16} />
+                )}
+                Enviar mensaje
+              </Button>
+              <Button
+                variant="outline"
+                className="gap-2 text-sm"
+                onClick={() => {
+                  // Navigate to calendar pre-filling candidate
+                  push(`/dashboard/calendar?candidateId=${userId}`)
+                }}
+                id={`sheet-schedule-${userId}`}
+              >
+                <HugeiconsIcon icon={Calendar01Icon} size={16} />
+                Agendar
+              </Button>
+            </div>
+          </div>
         )}
       </SheetContent>
     </Sheet>

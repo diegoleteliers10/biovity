@@ -7,9 +7,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
+import type { ServerSession } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
-import type { ServerSession } from "@/lib/auth"
 
 const menuItems = [
   { name: "Trabajos", href: "/trabajos" },

@@ -1,7 +1,6 @@
 import { z } from "zod"
 
 const EnvSchema = z.object({
-  OPENROUTER_API_KEY: z.string().min(1, "OPENROUTER_API_KEY is required"),
   AI_RATE_LIMIT_RPM: z.coerce.number().default(10),
   AI_RATE_LIMIT_UNAUTHENTICATED_RPM: z.coerce.number().default(3),
   AI_MAX_INPUT_LENGTH: z.coerce.number().default(2000),

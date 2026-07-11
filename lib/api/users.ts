@@ -17,6 +17,13 @@ export type UserOrganization = {
   name: string
 }
 
+export type UserNotificationPreferences = {
+  digest?: "immediate" | "daily" | "never"
+  newApplications?: boolean
+  interviews?: boolean
+  messages?: boolean
+}
+
 export type User = {
   id: string
   email: string
@@ -31,6 +38,7 @@ export type User = {
   birthday: string | null
   phone: string | null
   location: UserLocation | null
+  notificationPreferences: UserNotificationPreferences | null
   createdAt: string
   updatedAt: string
 }
@@ -43,6 +51,7 @@ export type UpdateUserInput = {
   phone?: string
   birthday?: string
   location?: UserLocation
+  notificationPreferences?: UserNotificationPreferences
 }
 
 export function formatUserLocation(loc: UserLocation | null): string {
@@ -84,6 +93,24 @@ function normalizeUser(raw: unknown): User | null {
     location = { city: city || undefined, country: country || undefined }
   }
 
+  const prefs = u.notificationPreferences ?? u.notification_preferences
+  let notificationPreferences: UserNotificationPreferences | null = null
+  if (prefs && typeof prefs === "object") {
+    const p = prefs as Record<string, unknown>
+    notificationPreferences = {
+      digest:
+        typeof p.digest === "string" ? (p.digest as "immediate" | "daily" | "never") : undefined,
+      newApplications:
+        p.newApplications !== undefined
+          ? Boolean(p.newApplications)
+          : p.new_applications !== undefined
+            ? Boolean(p.new_applications)
+            : undefined,
+      interviews: p.interviews !== undefined ? Boolean(p.interviews) : undefined,
+      messages: p.messages !== undefined ? Boolean(p.messages) : undefined,
+    }
+  }
+
   return {
     id,
     email: String(u.email ?? ""),
@@ -108,6 +135,7 @@ function normalizeUser(raw: unknown): User | null {
       (u.birthday ?? u.date_of_birth) != null ? String(u.birthday ?? u.date_of_birth) : null,
     phone: (u.phone ?? u.phone_number) != null ? String(u.phone ?? u.phone_number) : null,
     location,
+    notificationPreferences,
     createdAt: String(u.createdAt ?? u.created_at ?? ""),
     updatedAt: String(u.updatedAt ?? u.updated_at ?? ""),
   }
@@ -119,6 +147,15 @@ export type GetUsersParams = {
   type?: "professional" | "organization"
   isActive?: boolean
   search?: string
+  // F8.1 — Filtros faceted
+  profession?: string
+  experienceLevel?: string
+  city?: string
+  country?: string
+  availability?: string
+  skills?: string
+  minExperience?: number
+  maxExperience?: number
 }
 
 export type UsersPaginatedResponse = {
@@ -138,6 +175,18 @@ export async function getUsers(
   if (params?.type) searchParams.set("type", params.type)
   if (params?.isActive != null) searchParams.set("isActive", String(params.isActive))
   if (params?.search?.trim()) searchParams.set("search", params.search.trim())
+  // F8.1 — Filtros faceted
+  if (params?.profession?.trim()) searchParams.set("profession", params.profession.trim())
+  if (params?.experienceLevel?.trim())
+    searchParams.set("experienceLevel", params.experienceLevel.trim())
+  if (params?.city?.trim()) searchParams.set("city", params.city.trim())
+  if (params?.country?.trim()) searchParams.set("country", params.country.trim())
+  if (params?.availability?.trim()) searchParams.set("availability", params.availability.trim())
+  if (params?.skills?.trim()) searchParams.set("skills", params.skills.trim())
+  if (params?.minExperience != null && params.minExperience > 0)
+    searchParams.set("minExperience", String(params.minExperience))
+  if (params?.maxExperience != null && params.maxExperience > 0)
+    searchParams.set("maxExperience", String(params.maxExperience))
 
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/users${query ? `?${query}` : ""}`

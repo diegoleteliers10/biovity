@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  Brain03Icon,
   Building06Icon,
   Camera01Icon,
   Cancel01Icon,
@@ -11,18 +12,23 @@ import {
   Location01Icon,
   Mail01Icon,
   MapPinIcon,
+  Notification01Icon,
   SmartPhone01Icon,
+  Task01Icon,
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 /* eslint-disable react-doctor/no-giant-component -- large component, intentional */
 import dynamic from "next/dynamic"
 import Image from "next/image"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
+import { BrandingTab } from "@/components/dashboard/organization/BrandingTab"
+import { DangerZoneTab } from "@/components/dashboard/organization/DangerZoneTab"
+import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
+import { TeamManagementTab } from "@/components/dashboard/organization/TeamManagementTab"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
-// import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,6 +36,7 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/
 import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useMountEffect } from "@/hooks/use-mount-effect"
 import type { OrganizationAddress } from "@/lib/api/organizations"
 import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
 import {
@@ -42,6 +49,10 @@ import {
 } from "@/lib/api/use-profile"
 import { cn } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { AiSettingsTab } from "./AiSettingsTab"
+import { NotificationPreferencesTab } from "./NotificationPreferencesTab"
+import { OrganizationActivityTab } from "./OrganizationActivityTab"
+import { OrganizationNotificationsTab } from "./OrganizationNotificationsTab"
 
 const SearchAddress = dynamic(
   () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
@@ -182,7 +193,6 @@ function addressToFormData(addr: OrganizationAddress | null | undefined): OrgFor
 
 export function OrganizationProfileContent() {
   const session = useDashboardSession()
-  const isPending = false
   const userId = session?.user?.id ?? undefined
   const organizationId = session?.user?.organizationId ?? undefined
 
@@ -199,10 +209,10 @@ export function OrganizationProfileContent() {
   const deleteAvatarMutation = useDeleteAvatarMutation(userId ?? "")
 
   // Hydration guard: skip SSR render of auth-dependent UI to prevent flash
-  const mounted = useRef(false)
-  useEffect(() => {
-    mounted.current = true
-  }, [])
+  const [mounted, setMounted] = useState(false)
+  useMountEffect(() => {
+    setMounted(true)
+  })
 
   const [editingSection, setEditingSection] = useState<SectionId | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -232,30 +242,6 @@ export function OrganizationProfileContent() {
     profession: user?.profession ?? "",
     avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
   }
-
-  useEffect(() => {
-    if (!editingSection && (user ?? session)) {
-      setUserForm({
-        name: user?.name ?? (session?.user?.name as string) ?? "",
-        email: user?.email ?? (session?.user?.email as string) ?? "",
-        phone: user?.phone ?? "",
-        location: user ? locationToFormData(user.location) : "",
-        profession: user?.profession ?? "",
-        avatar: user?.avatar ?? (session?.user as { image?: string })?.image ?? "",
-      })
-    }
-  }, [user, session, editingSection])
-
-  useEffect(() => {
-    if (!editingSection && organization) {
-      setOrgForm({
-        name: organization.name ?? "",
-        website: organization.website ?? "",
-        phone: organization.phone ?? "",
-        address: addressToFormData(organization.address),
-      })
-    }
-  }, [organization, editingSection])
 
   const syncFormForSection = useCallback(
     (_section: SectionId) => {
@@ -332,6 +318,11 @@ export function OrganizationProfileContent() {
                 }
               : undefined,
           })
+          const location = parseLocationString(userForm.location)
+          const hasLocation = location.city || location.country
+          if (hasLocation) {
+            await updateUserMutation.mutateAsync({ location })
+          }
         }
         setEditingSection(null)
         setErrors({})
@@ -391,22 +382,7 @@ export function OrganizationProfileContent() {
   // Skip all auth-dependent rendering until client-side hydration is complete.
   // This prevents the flash of "Inicia sesión" on page reload when the session
   // cookie is present but the client hasn't rehydrated yet.
-  if (!mounted.current) {
-    return (
-      <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
-        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
-          <div className="h-96 animate-pulse rounded-xl bg-muted" />
-          <div className="space-y-6">
-            <div className="h-48 animate-pulse rounded-xl bg-muted" />
-            <div className="h-64 animate-pulse rounded-xl bg-muted" />
-          </div>
-        </div>
-      </main>
-    )
-  }
-
-  if (isPending) {
+  if (!mounted) {
     return (
       <main className="flex flex-1 flex-col gap-6 p-6 md:p-8">
         <div className="h-8 w-48 animate-pulse rounded bg-muted" />
@@ -638,6 +614,34 @@ export function OrganizationProfileContent() {
                   <HugeiconsIcon icon={CreditCardIcon} size={16} />
                   Suscripción
                 </TabsTrigger>
+                <TabsTrigger value="ai" className="gap-2">
+                  <HugeiconsIcon icon={Brain03Icon} size={16} />
+                  IA
+                </TabsTrigger>
+                <TabsTrigger value="notifications" className="gap-2" id="org-notifications-tab">
+                  <HugeiconsIcon icon={Notification01Icon} size={16} />
+                  Notificaciones
+                </TabsTrigger>
+                <TabsTrigger value="preferences" className="gap-2" id="org-preferences-tab">
+                  <HugeiconsIcon icon={Notification01Icon} size={16} />
+                  Preferencias
+                </TabsTrigger>
+                <TabsTrigger value="activity" className="gap-2" id="org-activity-tab">
+                  <HugeiconsIcon icon={Task01Icon} size={16} />
+                  Actividad
+                </TabsTrigger>
+                <TabsTrigger value="branding" className="gap-2">
+                  <HugeiconsIcon icon={Building06Icon} size={16} />
+                  Branding
+                </TabsTrigger>
+                <TabsTrigger value="team" className="gap-2">
+                  <HugeiconsIcon icon={Task01Icon} size={16} />
+                  Equipo
+                </TabsTrigger>
+                <TabsTrigger value="danger" className="gap-2">
+                  <HugeiconsIcon icon={Cancel01Icon} size={16} />
+                  Danger Zone
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="profile" className="w-full">
@@ -829,18 +833,83 @@ export function OrganizationProfileContent() {
               </TabsContent>
 
               <TabsContent value="subscription" className="w-full pt-10">
-                <Empty>
-                  <EmptyHeader>
-                    <EmptyMedia variant="icon">
-                      <HugeiconsIcon icon={CreditCardIcon} size={24} />
-                    </EmptyMedia>
-                    <EmptyTitle>Suscripción no disponible</EmptyTitle>
-                    <EmptyDescription>
-                      Aún no tienes una suscripción activa. Contáctanos para obtener más información
-                      sobre nuestros planes.
-                    </EmptyDescription>
-                  </EmptyHeader>
-                </Empty>
+                {organizationId ? (
+                  <SubscriptionTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes una organizaci&oacute;n asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="branding" className="w-full pt-10">
+                {organizationId ? (
+                  <BrandingTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes una organizaci&oacute;n asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="team" className="w-full pt-10">
+                {organizationId ? (
+                  <TeamManagementTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes una organizaci&oacute;n asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="danger" className="w-full pt-10">
+                {organizationId ? (
+                  <DangerZoneTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes una organizaci&oacute;n asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="ai" className="w-full pt-10">
+                {organizationId ? (
+                  <AiSettingsTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes una organización asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="notifications" className="w-full">
+                {userId ? (
+                  <OrganizationNotificationsTab userId={userId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes un usuario asociado.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="preferences" className="w-full">
+                {userId ? (
+                  <NotificationPreferencesTab userId={userId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes un usuario asociado.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="activity" className="w-full">
+                {organizationId ? (
+                  <OrganizationActivityTab organizationId={organizationId} />
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                    No tienes una organización asociada.
+                  </p>
+                )}
               </TabsContent>
             </Tabs>
           </div>

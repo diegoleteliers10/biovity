@@ -1,7 +1,8 @@
 "use client"
 
 /* eslint-disable react-doctor/no-giant-component -- large component, intentional */
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { toast } from "sonner"
 import type {
   ResumeCertification,
   ResumeEducation,
@@ -224,54 +225,6 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
     }
   }, [user, session, resume])
 
-  const resumeFormDataFromProfile = useMemo<ResumeFormData>(() => {
-    if (!resume) return emptyResumeFormData()
-    return {
-      experiences: (resume.experiences ?? []).map((e, idx) => ({
-        id: e.id ?? `exp-${idx}`,
-        title: e.title ?? e.position,
-        company: e.company,
-        startYear: e.startYear ?? e.startDate?.slice(0, 4),
-        endYear: e.endYear ?? e.endDate?.slice(0, 4),
-        stillWorking: e.stillWorking ?? e.current,
-        description: e.description,
-      })),
-      education: (resume.education ?? []).map((e, idx) => ({
-        id: e.id ?? `edu-${idx}`,
-        title: e.title ?? e.degree,
-        institute: e.institute ?? e.institution,
-        startYear: e.startYear ?? e.startDate?.slice(0, 4),
-        endYear: e.endYear ?? e.endDate?.slice(0, 4),
-        stillStudying: e.stillStudying,
-      })),
-      skills: (resume.skills ?? []).map((s, idx) =>
-        typeof s === "string"
-          ? { id: `skill-${idx}`, name: s }
-          : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
-      ),
-      certifications: (resume.certifications ?? []).map((c, idx) => ({
-        id: c.id ?? `cert-${idx}`,
-        title: c.title ?? c.name,
-        company: c.company ?? c.issuer,
-        date: c.date,
-        link: c.link,
-      })),
-      languages: (resume.languages ?? []).map((l, idx) => ({
-        id: l.id ?? `lang-${idx}`,
-        name: l.name ?? l.language,
-        level: l.level,
-      })),
-      links: (resume.links ?? []).map((l) => ({ url: l.url })),
-    }
-  }, [resume])
-
-  useEffect(() => {
-    if (!editingSection && (user ?? session)) {
-      setFormData(profileData)
-      setResumeFormData(resumeFormDataFromProfile)
-    }
-  }, [user, session, editingSection, profileData, resumeFormDataFromProfile])
-
   const syncFormForSection = useCallback(
     (section: SectionId) => {
       setFormData(profileData)
@@ -443,36 +396,40 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
     async (section: SectionId) => {
       if (!userId) return
 
-      if (section === "sidebar") {
-        const result = validateFormZod(profileSaveSchema, {
-          name: formData.name,
-          email: formData.email,
-          profession: formData.profession,
-        })
-        if (!result.success) {
-          setErrors(result.errors)
-          return
-        }
-        const location = parseLocationString(formData.location)
-        const hasLocation = location.city || location.country
-        await updateUserMutation.mutateAsync({
-          name: formData.name,
-          profession: formData.profession || undefined,
-          phone: formData.phone || undefined,
-          avatar: formData.avatar || undefined,
-          birthday: formData.dateOfBirth || undefined,
-          location: hasLocation ? location : undefined,
-        })
-      } else {
-        const payload = resumePayload()
-        if (resume) {
-          await updateResumeMutation.mutateAsync(payload)
+      try {
+        if (section === "sidebar") {
+          const result = validateFormZod(profileSaveSchema, {
+            name: formData.name,
+            email: formData.email,
+            profession: formData.profession,
+          })
+          if (!result.success) {
+            setErrors(result.errors)
+            return
+          }
+          const location = parseLocationString(formData.location)
+          const hasLocation = location.city || location.country
+          await updateUserMutation.mutateAsync({
+            name: formData.name,
+            profession: formData.profession || undefined,
+            phone: formData.phone || undefined,
+            avatar: formData.avatar || undefined,
+            birthday: formData.dateOfBirth || undefined,
+            location: hasLocation ? location : undefined,
+          })
         } else {
-          await createResumeMutation.mutateAsync(payload)
+          const payload = resumePayload()
+          if (resume) {
+            await updateResumeMutation.mutateAsync(payload)
+          } else {
+            await createResumeMutation.mutateAsync(payload)
+          }
         }
+        setEditingSection(null)
+        setErrors({})
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Error al guardar los datos")
       }
-      setEditingSection(null)
-      setErrors({})
     },
     [
       userId,

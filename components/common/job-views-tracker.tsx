@@ -1,51 +1,50 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useMountEffect } from "@/hooks/use-mount-effect"
 import { useIncrementJobViews } from "@/lib/api/use-jobs-views"
-import { authClient } from "@/lib/auth-client"
+import { type AuthUser, authClient } from "@/lib/auth-client"
 
 type JobViewsTrackerProps = {
   jobId: string
   jobOrganizationId: string
 }
 
-export function JobViewsTracker({ jobId, jobOrganizationId }: JobViewsTrackerProps) {
-  const { data: session, isPending } = authClient.useSession()
+function shouldTrackView(user: AuthUser | undefined, jobOrganizationId: string): boolean {
+  if (!user) return true
+  if (user.type === "organization" && user.organizationId === jobOrganizationId) return false
+  return true
+}
+
+function JobViewsTrackerInner({
+  jobId,
+  jobOrganizationId,
+  user,
+}: {
+  jobId: string
+  jobOrganizationId: string
+  user: AuthUser | undefined
+}) {
   const incrementViews = useIncrementJobViews()
-  const incrementRef = useRef(incrementViews)
-  incrementRef.current = incrementViews
 
-  useEffect(() => {
-    if (isPending) return
-
-    let cancelled = false
-
-    const track = () => {
-      if (cancelled) return
-
-      const user = session?.user
-      if (!user) {
-        incrementRef.current.mutate(jobId)
-        return
-      }
-
-      const userOrgId = (user as { organizationId?: string }).organizationId
-      const _userId = (user as { id?: string }).id
-      const userType = (user as { type?: string }).type
-
-      if (userType === "organization") {
-        if (userOrgId === jobOrganizationId) return
-      }
-
-      incrementRef.current.mutate(jobId)
+  useMountEffect(() => {
+    if (shouldTrackView(user, jobOrganizationId)) {
+      incrementViews.mutate(jobId)
     }
-
-    track()
-
-    return () => {
-      cancelled = true
-    }
-  }, [isPending, session, jobId, jobOrganizationId])
+  })
 
   return null
+}
+
+export function JobViewsTracker({ jobId, jobOrganizationId }: JobViewsTrackerProps) {
+  const { data: session, isPending } = authClient.useSession()
+
+  if (isPending) return null
+
+  return (
+    <JobViewsTrackerInner
+      jobId={jobId}
+      jobOrganizationId={jobOrganizationId}
+      user={session?.user as AuthUser | undefined}
+    />
+  )
 }

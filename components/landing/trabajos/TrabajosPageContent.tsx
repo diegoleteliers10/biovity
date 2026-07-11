@@ -149,7 +149,12 @@ export function TrabajosPageContent() {
 
   const filtros = useMemo(() => urlStateToFiltros(urlState), [urlState])
 
-  const { data: jobsResult, isLoading, isError, error } = useJobsSearch({ search: urlState.q || undefined, category: filtros.categoria ?? undefined })
+  const {
+    data: jobsResult,
+    isLoading,
+    isError,
+    error,
+  } = useJobsSearch({ search: urlState.q || undefined, category: filtros.categoria ?? undefined })
 
   const jobs = jobsResult?.data
 
@@ -225,7 +230,11 @@ export function TrabajosPageContent() {
 
   return (
     <>
-      <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
+      <TrabajosSearchFilters
+        key={JSON.stringify(filtros)}
+        filtros={filtros}
+        onFiltrosChange={handleFiltrosChange}
+      />
       {isLoading && (
         <section className="bg-white pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

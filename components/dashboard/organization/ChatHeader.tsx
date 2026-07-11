@@ -1,9 +1,21 @@
 "use client"
 
-import { ArrowLeft01Icon, Briefcase01Icon, MoreHorizontalIcon } from "@hugeicons/core-free-icons"
+import {
+  ArrowLeft01Icon,
+  Briefcase01Icon,
+  Calendar03Icon,
+  MoreHorizontalIcon,
+  UserIcon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface ChatHeaderProps {
   professionalName: string
@@ -12,6 +24,9 @@ interface ChatHeaderProps {
   professionalProfession?: string | null
   onBack?: () => void
   showBackButton?: boolean
+  onViewProfile?: () => void
+  onSchedule?: () => void
+  isTyping?: boolean
 }
 
 export function ChatHeader({
@@ -21,6 +36,9 @@ export function ChatHeader({
   professionalProfession,
   onBack,
   showBackButton = false,
+  onViewProfile,
+  onSchedule,
+  isTyping,
 }: ChatHeaderProps) {
   return (
     <div className="shrink-0 border-b border-border bg-background p-3 lg:p-4">
@@ -51,11 +69,35 @@ export function ChatHeader({
               <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-4" />
               <span className="truncate">{professionalProfession ?? "—"}</span>
             </div>
+            {isTyping && (
+              <p className="text-xs text-primary animate-pulse mt-0.5">escribiendo...</p>
+            )}
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="size-8" aria-label="Más opciones">
-          <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <HugeiconsIcon
+              icon={MoreHorizontalIcon}
+              size={22}
+              aria-label="Mas opciones"
+              className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            {onViewProfile && (
+              <DropdownMenuItem onClick={onViewProfile} className="cursor-pointer">
+                <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={1.5} className="mr-2" />
+                Ver perfil
+              </DropdownMenuItem>
+            )}
+            {onSchedule && (
+              <DropdownMenuItem onClick={onSchedule} className="cursor-pointer">
+                <HugeiconsIcon icon={Calendar03Icon} size={16} strokeWidth={1.5} className="mr-2" />
+                Agendar entrevista
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

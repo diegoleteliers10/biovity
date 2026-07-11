@@ -23,13 +23,6 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
     router.push("/dashboard/applications")
   }
 
-  const _handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault()
-      handleApplicationClick()
-    }
-  }
-
   return (
     <Card className="md:col-span-2 border border-border/80 bg-white">
       <CardHeader>

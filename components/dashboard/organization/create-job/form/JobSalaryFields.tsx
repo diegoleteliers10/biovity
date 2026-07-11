@@ -1,4 +1,4 @@
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
 interface JobSalaryFieldsProps {
@@ -6,6 +6,7 @@ interface JobSalaryFieldsProps {
   salaryMax: string
   onSalaryMinChange: (value: string) => void
   onSalaryMaxChange: (value: string) => void
+  error?: string
 }
 
 export function JobSalaryFields({
@@ -13,6 +14,7 @@ export function JobSalaryFields({
   salaryMax,
   onSalaryMinChange,
   onSalaryMaxChange,
+  error,
 }: JobSalaryFieldsProps) {
   return (
     <Field>
@@ -35,6 +37,7 @@ export function JobSalaryFields({
         />
         <span className="text-muted-foreground text-xs shrink-0">CLP/mes</span>
       </div>
+      {error && <FieldError>{error}</FieldError>}
     </Field>
   )
 }

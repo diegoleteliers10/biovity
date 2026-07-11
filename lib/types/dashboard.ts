@@ -53,10 +53,16 @@ export type Applicant = {
   position: string
   dateApplied: string
   stage: ApplicationStage
+  avatar?: string | null
   candidateEducation?: string
   candidateSkills?: string[]
   candidateYearsOfExperience?: number
   candidateBio?: string
+  salaryMin?: number | null
+  salaryMax?: number | null
+  isSaved?: boolean
+  tags?: { id: string; name: string; color: string }[]
+  evaluationRating?: "positive" | "neutral" | "negative" | null
 }
 
 export type OfferWithApplicants = {

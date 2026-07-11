@@ -76,10 +76,7 @@ export function Categories() {
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
             >
-              <Link
-                href={`/trabajos?categoria=${category.id}`}
-                className="block"
-              >
+              <Link href={`/trabajos?categoria=${category.id}`} className="block">
                 <Card className="group p-6 cursor-pointer bg-white hover:bg-secondary/5 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="shrink-0 size-12 bg-secondary/10 rounded-xl flex items-center justify-center">

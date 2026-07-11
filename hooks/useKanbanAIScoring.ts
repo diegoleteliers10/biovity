@@ -36,6 +36,7 @@ export function useKanbanAIScoring() {
             ...c,
             data: {
               ...c.data,
+              skills: [...c.data.skills, ...(resume?.skills ?? [])],
               resumeUrl: resume?.cvFile?.url,
               experiences:
                 resume?.experiences

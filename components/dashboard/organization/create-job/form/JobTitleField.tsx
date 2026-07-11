@@ -1,12 +1,13 @@
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
 interface JobTitleFieldProps {
   value: string
   onChange: (value: string) => void
+  error?: string
 }
 
-export function JobTitleField({ value, onChange }: JobTitleFieldProps) {
+export function JobTitleField({ value, onChange, error }: JobTitleFieldProps) {
   return (
     <Field>
       <FieldLabel htmlFor="job-title">Título *</FieldLabel>
@@ -17,6 +18,7 @@ export function JobTitleField({ value, onChange }: JobTitleFieldProps) {
         placeholder="Ej: Desarrollador Full Stack Senior"
         required
       />
+      {error && <FieldError>{error}</FieldError>}
     </Field>
   )
 }

@@ -2,7 +2,11 @@
 
 import { useRouter } from "next/navigation"
 import { useCallback } from "react"
-import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
+import {
+  useMarkAllNotificationsRead,
+  useMarkNotificationRead,
+  useNotifications,
+} from "@/lib/api/use-notifications"
 
 import { NotificationBell } from "./NotificationBell"
 
@@ -14,6 +18,7 @@ export function ConnectedNotificationBell({
   const { data } = useNotifications()
   const { push } = useRouter()
   const markRead = useMarkNotificationRead()
+  const markAllRead = useMarkAllNotificationsRead()
 
   const notifications = data?.data ?? []
   const unreadCount = data?.unreadCount ?? 0
@@ -27,11 +32,16 @@ export function ConnectedNotificationBell({
     [markRead, notifications, push]
   )
 
+  const handleMarkAllRead = useCallback(() => {
+    markAllRead.mutate()
+  }, [markAllRead])
+
   return (
     <NotificationBell
       notifications={notifications}
       unreadCount={unreadCount}
       onNotificationClick={handleClick}
+      onMarkAllRead={handleMarkAllRead}
       showAgentTrigger={showAgentTrigger}
     />
   )

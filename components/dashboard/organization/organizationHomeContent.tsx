@@ -19,10 +19,12 @@ import {
 } from "@/lib/api/use-organization-dashboard"
 import { getUser } from "@/lib/api/users"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { AccionRequeridaWidget } from "./AccionRequeridaWidget"
 import { CreateOfferCard } from "./home/createOfferCard"
 import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
 import { OrganizationRecentApplicationsCard } from "./home/organizationRecentApplicationsCard"
 import { PlaceholderCard } from "./home/placeholderCard"
+import { OnboardingChecklist } from "./onboarding/OnboardingChecklist"
 
 export function OrganizationHomeContent() {
   const { push } = useRouter()
@@ -105,6 +107,8 @@ export function OrganizationHomeContent() {
         unreadCount={unreadCount}
         onNotificationClick={handleNotificationClick}
       />
+
+      <OnboardingChecklist />
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {metricsQuery.isPending ? (
@@ -207,9 +211,10 @@ export function OrganizationHomeContent() {
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <PlaceholderCard
-          title="Próximas entrevistas"
+          title="Proximas entrevistas"
           description="calendario de entrevistas"
           icon={Calendar03Icon}
+          onClick={() => push("/dashboard/calendar")}
         >
           {interviewsQuery.isPending ? (
             <div className="space-y-3 mt-2">
@@ -257,6 +262,7 @@ export function OrganizationHomeContent() {
           description="candidatos que coinciden con tus ofertas"
           icon={UserIcon}
           iconColor="accent"
+          onClick={() => push("/dashboard/talent")}
         >
           {candidatesQuery.isLoading ? (
             <div className="space-y-3 mt-2">
@@ -293,6 +299,10 @@ export function OrganizationHomeContent() {
             <p className="text-sm text-muted-foreground mt-2">No hay candidatos destacados.</p>
           )}
         </PlaceholderCard>
+      </div>
+
+      <div className="mt-4">
+        <AccionRequeridaWidget />
       </div>
     </div>
   )

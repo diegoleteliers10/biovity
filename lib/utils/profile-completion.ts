@@ -67,3 +67,48 @@ export function computeProfileCompletion(
   const isComplete = filled === TOTAL
   return { percentage, isComplete }
 }
+
+type OrgData =
+  | {
+      name?: string | null
+      website?: string | null
+      phone?: string | null
+      address?: { street?: string; city?: string; country?: string } | null
+    }
+  | null
+  | undefined
+
+type OrgUserData =
+  | {
+      avatar?: string | null
+      phone?: string | null
+    }
+  | null
+  | undefined
+
+const ORG_TOTAL = 5
+
+export function computeOrgProfileCompletion(
+  organization: OrgData,
+  user: OrgUserData
+): { percentage: number; isComplete: boolean } | null {
+  if (!organization) return null
+
+  const checks = [
+    Boolean(organization.name?.trim()),
+    Boolean(organization.website?.trim()),
+    Boolean(organization.phone?.trim()),
+    Boolean(
+      organization.address &&
+        (organization.address.street?.trim() ||
+          organization.address.city?.trim() ||
+          organization.address.country?.trim())
+    ),
+    Boolean(user?.avatar?.trim()),
+  ]
+
+  const filled = checks.filter(Boolean).length
+  const percentage = Math.round((filled / ORG_TOTAL) * 100)
+  const isComplete = filled === ORG_TOTAL
+  return { percentage, isComplete }
+}

@@ -2,7 +2,14 @@
 
 import { FilterEditIcon, Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useReducer, useState } from "react"
+import { useCallback, useReducer, useState } from "react"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/animate-ui/components/radix/sheet"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,13 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/animate-ui/components/radix/sheet"
 import {
   CATEGORIAS_TRABAJOS,
   EXPERIENCIAS_TRABAJOS,
@@ -73,8 +73,12 @@ const filterFormReducer = (state: FilterFormState, action: FilterFormAction): Fi
         ubicacion: action.payload.ubicacion,
         modalidad: action.payload.modalidad === "Modalidad" ? "" : action.payload.modalidad,
         formato: action.payload.formato === "Formato" ? "" : action.payload.formato,
-        salarioMin: action.payload.salarioMin ? formatSalarioInputValue(action.payload.salarioMin) : "",
-        salarioMax: action.payload.salarioMax ? formatSalarioInputValue(action.payload.salarioMax) : "",
+        salarioMin: action.payload.salarioMin
+          ? formatSalarioInputValue(action.payload.salarioMin)
+          : "",
+        salarioMax: action.payload.salarioMax
+          ? formatSalarioInputValue(action.payload.salarioMax)
+          : "",
         moneda: action.payload.moneda,
         experiencia: action.payload.experiencia === "Experiencia" ? "" : action.payload.experiencia,
         categoria: action.payload.categoria || "",
@@ -199,9 +203,7 @@ function FiltersGrid({
 
       <Select
         value={filterState.experiencia}
-        onValueChange={(value) =>
-          dispatch({ type: "SET_FIELD", field: "experiencia", value })
-        }
+        onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "experiencia", value })}
       >
         <SelectTrigger className={cn("w-full !h-9 bg-white")}>
           <SelectValue placeholder="Experiencia" />
@@ -217,9 +219,7 @@ function FiltersGrid({
 
       <Select
         value={filterState.categoria}
-        onValueChange={(value) =>
-          dispatch({ type: "SET_FIELD", field: "categoria", value })
-        }
+        onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "categoria", value })}
       >
         <SelectTrigger className={cn("w-full !h-9 bg-white")}>
           <SelectValue placeholder="Categoría" />
@@ -289,18 +289,13 @@ function MobileFiltersSheet({
       </SheetTrigger>
       <SheetContent side="right" className="w-full bg-[#f3f3f5] px-6 flex flex-col">
         <SheetHeader className="pb-6 shrink-0">
-          <SheetTitle className="text-xl font-semibold tracking-tight">
-            Filtros
-          </SheetTitle>
+          <SheetTitle className="text-xl font-semibold tracking-tight">Filtros</SheetTitle>
         </SheetHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <FiltersGrid filterState={filterState} dispatch={dispatch} />
         </div>
         <div className="pt-6 shrink-0">
-          <FiltersActions
-            handleAplicar={handleAplicar}
-            handleLimpiar={handleLimpiar}
-          />
+          <FiltersActions handleAplicar={handleAplicar} handleLimpiar={handleLimpiar} />
         </div>
       </SheetContent>
     </Sheet>
@@ -319,10 +314,6 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
     experiencia: filtros.experiencia === "Experiencia" ? "" : filtros.experiencia,
     categoria: filtros.categoria || "",
   })
-
-  useEffect(() => {
-    dispatch({ type: "SYNC_FROM_FILTROS", payload: filtros })
-  }, [filtros])
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
@@ -417,10 +408,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
               </div>
 
               <FiltersGrid filterState={filterState} dispatch={dispatch} />
-              <FiltersActions
-                handleAplicar={handleBuscar}
-                handleLimpiar={handleLimpiar}
-              />
+              <FiltersActions handleAplicar={handleBuscar} handleLimpiar={handleLimpiar} />
             </div>
           </CardContent>
         </Card>

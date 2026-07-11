@@ -10,7 +10,9 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useParams, useRouter } from "next/navigation"
-import { addTransitionType, startTransition } from "react"
+import { addTransitionType, startTransition, useCallback } from "react"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
+import { ApplicationDetailActions } from "@/components/dashboard/organization/ApplicationDetailActions"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -18,8 +20,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getApplicationDetail } from "@/lib/api/applications"
 import { getQuestionsByJob } from "@/lib/api/job-questions"
+import { useUpdateApplicationStatusMutation } from "@/lib/api/use-applications"
+import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { formatUserLocation, useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { getResultErrorMessage } from "@/lib/result"
+import type { ApplicationStage } from "@/lib/types/dashboard"
 import { formatAmountCLP, formatDateChilean } from "@/lib/utils"
 
 const API_BASE =
@@ -116,6 +121,37 @@ export default function OrganizationApplicationDetailPage() {
 
   const questionLabelById = new Map((questionsQuery.data ?? []).map((q) => [q.id, q.label]))
   const candidateName = application?.candidate?.name ?? candidateProfile?.name ?? "Candidato"
+
+  const session = useDashboardSession()
+  const recruiterId = session?.user?.id
+  const updateStatusMutation = useUpdateApplicationStatusMutation(jobId ?? "")
+  const createChatMutation = useCreateOrFindChatMutation(recruiterId)
+
+  const handleStatusChange = useCallback(
+    (applicationId: string, newStage: ApplicationStage) => {
+      updateStatusMutation.mutate({ id: applicationId, status: newStage as ApplicationStage })
+    },
+    [updateStatusMutation]
+  )
+
+  const handleScheduleInterview = useCallback(
+    (candidateId: string) => {
+      push(`/dashboard/calendar?create=interview&candidateId=${candidateId}`)
+    },
+    [push]
+  )
+
+  const handleSendMessage = useCallback(
+    (candidateId: string) => {
+      if (!recruiterId) return
+      createChatMutation.mutate(candidateId, {
+        onSuccess: (chat) => {
+          push(`/dashboard/messages?chat=${chat.id}`)
+        },
+      })
+    },
+    [recruiterId, createChatMutation, push]
+  )
   const applicationCandidate = (application?.candidate ?? {}) as {
     resumeUrl?: string | null
     cvUrl?: string | null
@@ -251,6 +287,16 @@ export default function OrganizationApplicationDetailPage() {
                 </Badge>
               </div>
             </div>
+
+            <ApplicationDetailActions
+              applicationId={applicationId}
+              applicationStatus={application.status as ApplicationStage}
+              candidateId={application.candidateId}
+              candidateName={candidateName}
+              onStatusChange={handleStatusChange}
+              onScheduleInterview={handleScheduleInterview}
+              onSendMessage={handleSendMessage}
+            />
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="rounded-lg border p-3">

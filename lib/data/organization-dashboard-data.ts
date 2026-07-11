@@ -141,36 +141,6 @@ export const ORGANIZATION_FEATURED_CANDIDATES = [
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export async function fetchOrgNotifications() {
-  await delay(800)
-  return [
-    {
-      id: 1,
-      title: "Nueva aplicación recibida",
-      message: "María González aplicó a Investigador en Biotecnología",
-      time: "Hace 2 horas",
-      isRead: false,
-      type: "application",
-    },
-    {
-      id: 2,
-      title: "Entrevista programada",
-      message: "Ana Martínez confirmó entrevista para mañana",
-      time: "Hace 4 horas",
-      isRead: false,
-      type: "interview",
-    },
-    {
-      id: 3,
-      title: "Nuevo mensaje",
-      message: "Carlos Rodríguez te envió un mensaje",
-      time: "Hace 1 día",
-      isRead: true,
-      type: "recommendation",
-    },
-  ]
-}
-
 export async function fetchOrgMetrics() {
   await delay(800)
   return ORGANIZATION_DATA.metrics

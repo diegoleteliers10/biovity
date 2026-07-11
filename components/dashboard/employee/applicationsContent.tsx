@@ -40,7 +40,7 @@ const getCurrentStageIndex = (status: string): number => {
 }
 
 export const ApplicationsContent = () => {
-  const _router = useRouter()
+  const router = useRouter()
   const { useSession } = authClient
   const { data: session } = useSession()
   const userId = (session?.user as { id?: string })?.id
@@ -110,7 +110,7 @@ export const ApplicationsContent = () => {
         </div>
       ) : applications.length === 0 ? (
         <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
-          <div className="flex flex-col items-center justify-center text-center gap-3 py-12">
+          <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
             <div className="flex size-20 items-center justify-center rounded-full bg-muted">
               <HugeiconsIcon
                 icon={File02Icon}
@@ -120,11 +120,18 @@ export const ApplicationsContent = () => {
               />
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium">Aún no tienes aplicaciones.</p>
+              <p className="text-sm font-medium">Aun no tienes aplicaciones.</p>
               <p className="text-xs text-muted-foreground">
-                Busca empleos y postula para verlos aquí.
+                Busca empleos y postula para verlos aqui.
               </p>
             </div>
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/jobs")}
+              className="mt-2 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-sm"
+            >
+              Buscar empleos
+            </button>
           </div>
         </div>
       ) : (
@@ -146,7 +153,7 @@ function ApplicationCard({ app }: { app: Application }) {
   const current = getCurrentStageIndex(app.status)
 
   return (
-    <Card className="relative overflow-hidden flex flex-col border border-border/80 bg-white active:scale-[0.99] transition-all duration-150">
+    <Card className="relative overflow-hidden flex flex-col border border-border/80 bg-white hover:shadow-sm active:scale-[0.99] transition-all duration-150">
       <CardHeader className="p-6 pb-2">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 space-y-1">

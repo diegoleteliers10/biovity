@@ -51,6 +51,8 @@ export type Job = {
   salary?: JobSalary
   location?: JobLocation
   benefits?: JobBenefit[]
+  requiredSkills?: string[]
+  minExperience?: number
   status: string
   category?: string
   applicationsCount?: number
@@ -69,6 +71,9 @@ export type CreateJobInput = {
   salary?: JobSalary
   location?: JobLocation
   benefits?: JobBenefitInput[]
+  requiredSkills?: string[]
+  minExperience?: number
+  category?: string
   status?: string
   expiresAt?: string
 }

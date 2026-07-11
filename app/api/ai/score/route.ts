@@ -1,8 +1,10 @@
+import { headers } from "next/headers"
 import type { NextRequest } from "next/server"
 import { getScoringSystemPrompt } from "@/lib/ai/prompts"
-import { generateText, model } from "@/lib/ai/provider"
+import { generateText, resolveModel } from "@/lib/ai/provider"
 import { sanitizeInput } from "@/lib/ai/sanitize"
 import type { CandidateContext, FitScoreResult, JobOfferContext } from "@/lib/ai/types"
+import { auth } from "@/lib/auth"
 
 function isValidScoreResult(value: unknown): value is FitScoreResult {
   if (!value || typeof value !== "object") return false
@@ -24,6 +26,12 @@ function parseScoreResult(raw: string): FitScoreResult | null {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user?.id) {
+    return Response.json({ error: "No autenticado" }, { status: 401 })
+  }
+  const organizationId = (session.user as { organizationId?: string }).organizationId
+
   const {
     candidate,
     jobOffer,
@@ -34,8 +42,9 @@ export async function POST(req: NextRequest) {
 
   sanitizeInput(JSON.stringify({ candidate, jobOffer }), "scorer-system")
 
+  const resolved = await resolveModel(organizationId)
   const { text } = await generateText({
-    model,
+    model: resolved.model,
     system: getScoringSystemPrompt(),
     prompt: `
       Evalúa el fit de este candidato para el job offer.

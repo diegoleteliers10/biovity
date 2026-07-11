@@ -59,7 +59,7 @@ export function MessageInput({
         </p>
       )}
       {isUploading && <p className="mb-2 text-muted-foreground text-sm">Subiendo archivo…</p>}
-      <div className="flex items-end gap-2">
+      <div className="flex items-center gap-2">
         <input
           ref={fileInputRef}
           type="file"
@@ -102,7 +102,7 @@ export function MessageInput({
           </Button>
         )}
 
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <textarea
             ref={messageInputRef}
             value={messageInput}

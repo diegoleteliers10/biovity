@@ -19,7 +19,6 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useRef } from "react"
 import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { Button } from "@/components/ui/button"
@@ -31,6 +30,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useMountEffect } from "@/hooks/use-mount-effect"
 import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useIncrementJobViews } from "@/lib/api/use-jobs-views"
@@ -110,14 +110,10 @@ export default function JobDetailPage() {
   }
 
   const incrementViews = useIncrementJobViews()
-  const hasIncrementedView = useRef(false)
 
-  useEffect(() => {
-    if (jobId && !hasIncrementedView.current) {
-      hasIncrementedView.current = true
-      incrementViews.mutate(jobId)
-    }
-  }, [jobId, incrementViews])
+  useMountEffect(() => {
+    if (jobId) incrementViews.mutate(jobId)
+  })
 
   const { data: organization } = useOrganization(
     job && !job.organization && job.organizationId ? job.organizationId : undefined

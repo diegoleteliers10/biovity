@@ -1,6 +1,11 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchNoContent } from "@/lib/result"
+
+const API_BASE =
+  typeof window !== "undefined"
+    ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
+    : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
 const getBaseUrl = () =>
   typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
@@ -157,4 +162,16 @@ export async function getLastMessageFromSender(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )
   return sorted[0] ?? null
+}
+
+export async function markChatAsRead(
+  chatId: string,
+  userId: string
+): Promise<Result<void, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/messages/chat/${chatId}/read`
+  return fetchNoContent(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId }),
+  })
 }

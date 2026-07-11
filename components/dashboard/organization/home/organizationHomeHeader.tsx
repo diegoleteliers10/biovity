@@ -2,6 +2,7 @@
 
 import { Notification01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useRouter } from "next/navigation"
 import { Suspense } from "react"
 import { AgentSheetTrigger } from "@/components/ai/AgentSheetTrigger"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
@@ -53,6 +54,7 @@ export function OrganizationHomeHeader({
   unreadCount,
   onNotificationClick,
 }: OrganizationHomeHeaderProps) {
+  const { push } = useRouter()
   return (
     <div className="flex flex-col gap-4">
       {/* Top row: menu + notification on mobile */}
@@ -102,6 +104,15 @@ export function OrganizationHomeHeader({
                     </div>
                   </button>
                 ))}
+              </div>
+              <div className="border-t border-border/50 p-2">
+                <button
+                  type="button"
+                  className="w-full text-center text-xs font-medium text-primary hover:underline py-1.5 transition-colors"
+                  onClick={() => push("/dashboard/notifications")}
+                >
+                  Ver todas
+                </button>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -154,6 +165,15 @@ export function OrganizationHomeHeader({
                     </div>
                   </button>
                 ))}
+              </div>
+              <div className="border-t border-border/50 p-2">
+                <button
+                  type="button"
+                  className="w-full text-center text-xs font-medium text-primary hover:underline py-1.5 transition-colors"
+                  onClick={() => push("/dashboard/notifications")}
+                >
+                  Ver todas
+                </button>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -22,10 +22,10 @@ function extractTotal(raw: unknown): number | null {
   const candidates: unknown[] = [
     obj.total,
     obj.count,
-    (obj.meta && typeof obj.meta === "object" ? (obj.meta as Record<string, unknown>).total : null),
-    (obj.pagination && typeof obj.pagination === "object"
+    obj.meta && typeof obj.meta === "object" ? (obj.meta as Record<string, unknown>).total : null,
+    obj.pagination && typeof obj.pagination === "object"
       ? (obj.pagination as Record<string, unknown>).total
-      : null),
+      : null,
   ]
 
   for (const c of candidates) {
@@ -36,9 +36,7 @@ function extractTotal(raw: unknown): number | null {
   return null
 }
 
-async function fetchJobsCountByCategory(
-  categoryId: string
-): Promise<number | null> {
+async function fetchJobsCountByCategory(categoryId: string): Promise<number | null> {
   const searchParams = new URLSearchParams()
   searchParams.set("status", "active")
   searchParams.set("category", categoryId)

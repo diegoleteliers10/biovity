@@ -9,7 +9,6 @@ import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getUser } from "@/lib/api/users"
 import {
   fetchOrgFeaturedCandidates,
-  fetchOrgNotifications,
   fetchOrgRecentMessages,
 } from "@/lib/data/organization-dashboard-data"
 import { getResultErrorMessage } from "@/lib/result"
@@ -17,7 +16,6 @@ import type { Metric } from "@/lib/types/dashboard"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 
 export const orgDashboardKeys = {
-  notifications: ["org", "notifications"] as const,
   metrics: ["org", "metrics"] as const,
   recentApplications: ["org", "recentApplications"] as const,
   recentMessages: ["org", "recentMessages"] as const,
@@ -36,13 +34,6 @@ export type UpcomingInterview = {
   meetingUrl?: string | null
   location?: string | null
   applicationId?: string
-}
-
-export function useOrgNotifications() {
-  return useQuery({
-    queryKey: orgDashboardKeys.notifications,
-    queryFn: fetchOrgNotifications,
-  })
 }
 
 const DEFAULT_DASHBOARD_METRICS = {
@@ -65,15 +56,18 @@ export function useOrgMetrics(organizationId: string | undefined) {
     enabled: Boolean(organizationId),
     staleTime: 60 * 1000,
     refetchOnMount: true,
+    placeholderData: (previousData) => previousData,
   })
 }
 
 export function useOrganizationMetrics(
   organizationId: string | undefined,
-  period: MetricsPeriod = "month"
+  period: MetricsPeriod = "month",
+  startDate?: string,
+  endDate?: string
 ) {
   return useQuery({
-    queryKey: ["org", "fullMetrics", organizationId, period] as const,
+    queryKey: ["org", "fullMetrics", organizationId, period, startDate, endDate] as const,
     queryFn: async () => {
       if (!organizationId) {
         return {
@@ -82,14 +76,16 @@ export function useOrganizationMetrics(
             totalApplications: 0,
             byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 },
             conversionRate: 0,
+            avgTimeInStages: { entrevista: 0, oferta: 0, contratado: 0 },
           },
           topJobs: [],
           recentTrend: [],
           geographicDistribution: [],
           avgHiringTimeDays: 0,
+          recruiterProductivity: [],
         }
       }
-      const result = await getOrganizationMetrics(organizationId, { period })
+      const result = await getOrganizationMetrics(organizationId, { period, startDate, endDate })
       if (!Result.isOk(result)) {
         return {
           dashboard: DEFAULT_DASHBOARD_METRICS,
@@ -97,16 +93,19 @@ export function useOrganizationMetrics(
             totalApplications: 0,
             byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 },
             conversionRate: 0,
+            avgTimeInStages: { entrevista: 0, oferta: 0, contratado: 0 },
           },
           topJobs: [],
           recentTrend: [],
           geographicDistribution: [],
           avgHiringTimeDays: 0,
+          recruiterProductivity: [],
         }
       }
       return result.value
     },
     enabled: Boolean(organizationId),
+    placeholderData: (previousData) => previousData,
   })
 }
 
@@ -200,6 +199,7 @@ export function useOrgRecentApplications(organizationId: string | undefined) {
       }))
     },
     enabled: Boolean(organizationId),
+    placeholderData: (previousData) => previousData,
   })
 }
 
@@ -309,6 +309,7 @@ export function useOrgUpcomingInterviews(userId: string | undefined) {
       })
     },
     enabled: Boolean(userId),
+    placeholderData: (previousData) => previousData,
   })
 }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { CertificationsForm } from "@/components/dashboard/employee/profile/CertificationsForm"
 import { EducationForm } from "@/components/dashboard/employee/profile/EducationForm"
@@ -11,6 +11,7 @@ import { PersonalForm } from "@/components/dashboard/employee/profile/PersonalFo
 import { useProfileContext } from "@/components/dashboard/employee/profile/profile-context"
 import { SidebarCard } from "@/components/dashboard/employee/profile/SidebarCard"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { useMountEffect } from "@/hooks/use-mount-effect"
 
 function ProfileLoadingSkeleton() {
   return (
@@ -31,9 +32,9 @@ function ProfileContentInner() {
   const { userId, user, isLoading, errors, userError } = useProfileContext()
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => {
+  useMountEffect(() => {
     setMounted(true)
-  }, [])
+  })
 
   if (!mounted || !userId || isLoading || !user) {
     return <ProfileLoadingSkeleton />

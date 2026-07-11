@@ -1,5 +1,5 @@
 import { Result } from "better-result"
-import { ApiError, NetworkError } from "@/lib/errors"
+import { type ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent } from "@/lib/result"
 import type {
   CreateEventInput,
@@ -60,11 +60,14 @@ export async function updateEvent(
   id: string,
   input: UpdateEventInput
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: EventWithParticipants }>(`${API_BASE}/api/v1/events/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
-  })
+  const result = await fetchJson<{ data: EventWithParticipants }>(
+    `${API_BASE}/api/v1/events/${id}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    }
+  )
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)
 }
@@ -80,11 +83,14 @@ export async function addEventParticipant(
   userId: string,
   role: "attendee" | "guest" = "attendee"
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: EventWithParticipants }>(`${API_BASE}/api/v1/events/${eventId}/participants`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, role }),
-  })
+  const result = await fetchJson<{ data: EventWithParticipants }>(
+    `${API_BASE}/api/v1/events/${eventId}/participants`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, role }),
+    }
+  )
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)
 }
@@ -118,7 +124,9 @@ export async function updateParticipantStatus(
 export async function getEventNotes(
   eventId: string
 ): Promise<Result<EventNote[], ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: EventNote[] }>(`${API_BASE}/api/v1/events/${eventId}/notes`)
+  const result = await fetchJson<{ data: EventNote[] }>(
+    `${API_BASE}/api/v1/events/${eventId}/notes`
+  )
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)
 }
@@ -128,11 +136,14 @@ export async function createEventNote(
   authorId: string,
   content: string
 ): Promise<Result<EventNote, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: EventNote }>(`${API_BASE}/api/v1/events/${eventId}/notes`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content, authorId }),
-  })
+  const result = await fetchJson<{ data: EventNote }>(
+    `${API_BASE}/api/v1/events/${eventId}/notes`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content, authorId }),
+    }
+  )
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)
 }

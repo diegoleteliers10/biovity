@@ -11,6 +11,7 @@ type ChatHeaderProps = {
   recruiterName: string
   recruiterInitials: string
   onBackToList: () => void
+  isTyping?: boolean
 }
 
 export function ChatHeader({
@@ -18,6 +19,7 @@ export function ChatHeader({
   recruiterName,
   recruiterInitials,
   onBackToList,
+  isTyping,
 }: ChatHeaderProps) {
   return (
     <div className="shrink-0 border-b border-border bg-background p-3 lg:p-4">
@@ -43,14 +45,28 @@ export function ChatHeader({
               {recruiterName}
             </h2>
             <div className="flex items-center gap-1 text-muted-foreground text-xs lg:text-sm">
-              <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-14" />
+              <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-4" />
               <span className="truncate">{recruiter?.profession ?? "—"}</span>
             </div>
+            {isTyping && (
+              <p className="text-xs text-primary animate-pulse mt-0.5">escribiendo...</p>
+            )}
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="size-8" aria-label="Más opciones">
-          <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
-        </Button>
+        <HugeiconsIcon
+          icon={MoreHorizontalIcon}
+          size={24}
+          role="button"
+          tabIndex={0}
+          aria-label="Más opciones"
+          className="cursor-pointer text-muted-foreground"
+          onKeyDown={(e: React.KeyboardEvent) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              ;(e.currentTarget as HTMLElement).click()
+            }
+          }}
+        />
       </div>
     </div>
   )
