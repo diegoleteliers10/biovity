@@ -8,6 +8,8 @@ import { ChatHeader } from "@/components/dashboard/employee/ChatHeader"
 import { MessageInput } from "@/components/dashboard/employee/MessageInput"
 import { Button } from "@/components/ui/button"
 import { MessageBubble } from "@/components/ui/message-bubble"
+import { useAutoScrollToBottom } from "@/hooks/use-auto-scroll-to-bottom"
+import { useChatPresence } from "@/hooks/use-chat-presence"
 import { type MessageType, uploadMessageAttachment } from "@/lib/api/messages"
 import { useUpdateParticipantStatus } from "@/lib/api/use-events"
 import type { useSendMessageMutation } from "@/lib/api/use-messages"
@@ -61,12 +63,22 @@ export function MessageThread({
   const imageInputRef = useRef<HTMLInputElement>(null)
   const messageInputRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const { isTyping, trackTyping } = useChatPresence(selectedChat?.id, professionalId)
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     requestAnimationFrame(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior })
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTo({
+          top: scrollContainerRef.current.scrollHeight,
+          behavior,
+        })
+      }
     })
   }, [])
+
+  useAutoScrollToBottom(selectedChat?.id, messagesLoading, messages.length, scrollToBottom)
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !professionalId) return
@@ -114,6 +126,14 @@ export function MessageThread({
   const handleSelectImage = useCallback(() => imageInputRef.current?.click(), [])
   const handleSelectFile = useCallback(() => fileInputRef.current?.click(), [])
 
+  const handleMessageInputChange = useCallback(
+    (value: string) => {
+      setMessageInput(value)
+      trackTyping()
+    },
+    [trackTyping]
+  )
+
   const handleImageChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
@@ -155,9 +175,13 @@ export function MessageThread({
         recruiterName={recruiterName}
         recruiterInitials={recruiterInitials}
         onBackToList={onBackToList}
+        isTyping={isTyping}
       />
 
-      <div className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0"
+      >
         {messagesLoading ? (
           <div className="flex justify-center py-8">
             <p className="text-muted-foreground text-sm">Cargando mensajes…</p>
@@ -207,7 +231,7 @@ export function MessageThread({
 
       <MessageInput
         messageInput={messageInput}
-        onMessageChange={setMessageInput}
+        onMessageChange={handleMessageInputChange}
         onKeyDown={handleKeyPress}
         onSendMessage={handleSendMessage}
         sendMutation={sendMutation}

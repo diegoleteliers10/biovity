@@ -27,9 +27,7 @@ function platformDefault(): ResolvedModel {
   }
 }
 
-export async function resolveModel(
-  organizationId: string | undefined,
-): Promise<ResolvedModel> {
+export async function resolveModel(organizationId: string | undefined): Promise<ResolvedModel> {
   if (!organizationId) return platformDefault()
 
   const result = await getActiveCredentialDecrypted(organizationId)

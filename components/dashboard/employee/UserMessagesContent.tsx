@@ -1,5 +1,6 @@
 "use client"
 
+import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useQueryState } from "nuqs"
 import { useEffect, useState } from "react"
@@ -9,13 +10,22 @@ import { MessageThread } from "@/components/dashboard/employee/MessageThread"
 import type { Chat } from "@/lib/api/chats"
 import { getChatById } from "@/lib/api/chats"
 import { useChatListRealtime, useChatsByProfessional } from "@/lib/api/use-chats"
-import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
+import {
+  useMarkChatAsReadMutation,
+  useMessages,
+  useSendMessageMutation,
+} from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
 import { cn, formatDateChilean } from "@/lib/utils"
 
 export function UserMessagesContent() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const [chatIdFromUrl, setChatIdFromUrl] = useQueryState("chat", {
     defaultValue: "",
   })
@@ -28,36 +38,34 @@ export function UserMessagesContent() {
 
   const { data: chats = [], isLoading: chatsLoading } = useChatsByProfessional(professionalId)
   useChatListRealtime(chats)
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
+  const markChatAsRead = useMarkChatAsReadMutation()
 
-  useEffect(() => {
-    if (!chatIdFromUrl) return
-
-    const found = chats.find((c) => c.id === chatIdFromUrl)
-    if (found) {
-      setSelectedChat(found)
-      return
-    }
-
-    const loadChat = async () => {
-      const result = await getChatById(chatIdFromUrl)
+  const { data: chatFromUrl } = useQuery({
+    queryKey: ["chat", "fromUrl", chatIdFromUrl],
+    queryFn: async () => {
+      const result = await getChatById(chatIdFromUrl!)
       if (!Result.isOk(result)) {
         console.error(getResultErrorMessage(result.error))
-        return
+        return null
       }
-      setSelectedChat(result.value)
-    }
-    void loadChat()
-  }, [chatIdFromUrl, chats])
+      return result.value
+    },
+    enabled: Boolean(chatIdFromUrl),
+  })
+
+  const selectedChat = chatIdFromUrl
+    ? (chats.find((c) => c.id === chatIdFromUrl) ?? chatFromUrl ?? null)
+    : null
 
   const handleSelectChat = (chat: Chat) => {
-    setSelectedChat(chat)
     setMobileView("chat")
     setChatIdFromUrl(chat.id)
+    if (professionalId) {
+      markChatAsRead.mutate({ chatId: chat.id, userId: professionalId })
+    }
   }
 
   const handleBackToList = () => {
-    setSelectedChat(null)
     setMobileView("list")
     setChatIdFromUrl("")
   }
@@ -94,11 +102,13 @@ export function UserMessagesContent() {
     .slice(0, 2)
     .toUpperCase()
 
+  if (!mounted) return null
+
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+    <div className="flex h-[calc(100dvh_-_1rem)] min-h-0 flex-none flex-col overflow-hidden lg:flex-row w-full">
       <div
         className={cn(
-          "flex w-full lg:h-full lg:w-80 flex-col overflow-hidden border-r border-border max-h-dvh transition-all",
+          "flex w-full h-full min-h-0 lg:w-80 flex-col overflow-hidden border-r border-border transition-all",
           mobileView === "chat" ? "hidden lg:flex" : "flex"
         )}
       >
@@ -113,7 +123,7 @@ export function UserMessagesContent() {
 
       <div
         className={cn(
-          "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
+          "flex flex-1 flex-col overflow-hidden h-full min-h-0 transition-all",
           mobileView === "list" ? "hidden lg:flex" : "flex"
         )}
       >

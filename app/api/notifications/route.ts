@@ -30,7 +30,14 @@ export async function GET(request: Request) {
   }
 
   const rows = data ?? []
-  const unreadCount = rows.filter((row) => !row.is_read).length
+
+  const { count } = await supabase
+    .from("notification")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", session.user.id)
+    .eq("is_read", false)
+
+  const unreadCount = count ?? 0
 
   return NextResponse.json({ data: rows.map(mapNotification), unreadCount })
 }

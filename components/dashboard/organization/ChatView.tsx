@@ -7,6 +7,7 @@ import { useCallback, useState } from "react"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { Button } from "@/components/ui/button"
 import { MessageBubble } from "@/components/ui/message-bubble"
+import { useChatPresence } from "@/hooks/use-chat-presence"
 import type { Message } from "@/lib/api/messages"
 import { useEvent } from "@/lib/api/use-events"
 import { cn } from "@/lib/utils"
@@ -38,6 +39,8 @@ interface ChatViewProps {
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   isUploading: boolean
   messagesEndRef: React.RefObject<HTMLDivElement | null>
+  scrollContainerRef?: React.RefObject<HTMLDivElement | null>
+  className?: string
 }
 
 export function ChatView({
@@ -63,6 +66,8 @@ export function ChatView({
   onFileChange,
   isUploading,
   messagesEndRef,
+  scrollContainerRef,
+  className,
 }: ChatViewProps) {
   const professionalName = professional?.name ?? "Profesional"
   const professionalInitials = professionalName
@@ -75,6 +80,16 @@ export function ChatView({
   const [showEventModal, setShowEventModal] = useState(false)
   const [editingEventId, setEditingEventId] = useState<string | null>(null)
   const { event: editingEventData } = useEvent(editingEventId ?? undefined)
+
+  const { isTyping, trackTyping } = useChatPresence(selectedChat?.id, recruiterId)
+
+  const handleInputChange = useCallback(
+    (value: string) => {
+      onMessageInputChange(value)
+      trackTyping()
+    },
+    [onMessageInputChange, trackTyping]
+  )
 
   const handleCreateEventFromChat = useCallback(() => {
     setEditingEventId(null)
@@ -89,8 +104,8 @@ export function ChatView({
   return (
     <div
       className={cn(
-        "flex flex-1 flex-col overflow-hidden max-h-dvh lg:h-full transition-all",
-        "max-lg:hidden"
+        "flex flex-1 flex-col overflow-hidden h-full min-h-0 transition-all",
+        className
       )}
     >
       {!selectedChat ? (
@@ -104,27 +119,63 @@ export function ChatView({
             professionalProfession={professional?.profession}
             showBackButton={true}
             onBack={onBack}
+            isTyping={isTyping}
           />
 
-          <MessageListSection
-            messages={messages}
-            messagesLoading={messagesLoading}
-            messagesError={messagesError}
-            messagesErrorDetail={messagesErrorDetail}
-            onRefetchMessages={onRefetchMessages}
-            recruiterId={recruiterId}
-            professionalName={professionalName}
-            professionalInitials={professionalInitials}
-            professionalAvatar={professional?.avatar}
-            recruiterProfile={recruiterProfile}
-            formatMessageTime={formatMessageTime}
-            messagesEndRef={messagesEndRef}
-            onEditEvent={handleEditEventFromChat}
-          />
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0"
+          >
+            {messagesLoading ? (
+              <div className="flex justify-center py-8">
+                <p className="text-muted-foreground text-sm">Cargando mensajes…</p>
+              </div>
+            ) : messagesError ? (
+              <div className="flex flex-col items-center justify-center gap-2 py-8">
+                <p className="text-destructive text-sm">
+                  {messagesErrorDetail instanceof Error
+                    ? messagesErrorDetail.message
+                    : "Error al cargar mensajes"}
+                </p>
+                <Button variant="outline" size="sm" onClick={onRefetchMessages}>
+                  Reintentar
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {messages.map((msg) => (
+                  <MessageBubble
+                    key={msg.id}
+                    message={msg}
+                    isOwn={msg.senderId === recruiterId}
+                    senderName={msg.senderId === recruiterId ? "Tú" : professionalName}
+                    senderInitials={
+                      msg.senderId === recruiterId
+                        ? (recruiterProfile?.name ?? "Tú")
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()
+                        : professionalInitials
+                    }
+                    senderAvatar={
+                      (msg.senderId === recruiterId
+                        ? recruiterProfile?.avatar
+                        : professional?.avatar) ?? undefined
+                    }
+                    formatTime={formatMessageTime}
+                    onEditEvent={handleEditEventFromChat}
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
 
           <MessageInput
             value={messageInput}
-            onChange={onMessageInputChange}
+            onChange={handleInputChange}
             onSend={onSendMessage}
             onKeyPress={onKeyPress}
             isPending={isPending}
@@ -133,6 +184,7 @@ export function ChatView({
             onFileChange={onFileChange}
             isUploading={isUploading}
             onCreateEvent={handleCreateEventFromChat}
+            organizationId={organizationId}
           />
         </>
       )}
@@ -184,87 +236,6 @@ function EmptyChatState() {
           Selecciona una conversación en la izquierda para comenzar.
         </p>
       </div>
-    </div>
-  )
-}
-
-interface MessageListSectionProps {
-  messages: Message[]
-  messagesLoading: boolean
-  messagesError: boolean
-  messagesErrorDetail: unknown
-  onRefetchMessages: () => void
-  recruiterId: string | undefined
-  professionalName: string
-  professionalInitials: string
-  professionalAvatar?: string | null
-  recruiterProfile?: { name?: string | null; avatar?: string | null } | undefined
-  formatMessageTime: (iso: string) => string
-  messagesEndRef: React.RefObject<HTMLDivElement | null>
-  onEditEvent?: (eventId: string) => void
-}
-
-export function MessageListSection({
-  messages,
-  messagesLoading,
-  messagesError,
-  messagesErrorDetail,
-  onRefetchMessages,
-  recruiterId,
-  professionalName,
-  professionalInitials,
-  professionalAvatar,
-  recruiterProfile,
-  formatMessageTime,
-  messagesEndRef,
-  onEditEvent,
-}: MessageListSectionProps) {
-  return (
-    <div className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0">
-      {messagesLoading ? (
-        <div className="flex justify-center py-8">
-          <p className="text-muted-foreground text-sm">Cargando mensajes…</p>
-        </div>
-      ) : messagesError ? (
-        <div className="flex flex-col items-center justify-center gap-2 py-8">
-          <p className="text-destructive text-sm">
-            {messagesErrorDetail instanceof Error
-              ? messagesErrorDetail.message
-              : "Error al cargar mensajes"}
-          </p>
-          <Button variant="outline" size="sm" onClick={onRefetchMessages}>
-            Reintentar
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              message={msg}
-              isOwn={msg.senderId === recruiterId}
-              senderName={msg.senderId === recruiterId ? "Tú" : professionalName}
-              senderInitials={
-                msg.senderId === recruiterId
-                  ? (recruiterProfile?.name ?? "Tú")
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase()
-                  : professionalInitials
-              }
-              senderAvatar={
-                (msg.senderId === recruiterId ? recruiterProfile?.avatar : professionalAvatar) ??
-                undefined
-              }
-              formatTime={formatMessageTime}
-              onEditEvent={onEditEvent}
-            />
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      )}
     </div>
   )
 }

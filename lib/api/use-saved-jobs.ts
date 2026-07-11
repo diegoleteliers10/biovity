@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { checkSavedJob, getSavedJobsByUserId, removeSavedJob, saveJob } from "./saved-jobs"
 
 export const savedJobsKeys = {
@@ -53,6 +53,31 @@ export function useSavedJobsByUser(
         },
       })
     },
+    enabled: Boolean(userId),
+  })
+}
+
+export function useSavedJobsByUserInfinite(userId: string | undefined, limit = 10) {
+  return useInfiniteQuery({
+    queryKey: userId
+      ? [...savedJobsKeys.byUser(userId), "infinite", limit]
+      : (["saved-jobs", "user", "disabled", "infinite", limit] as const),
+    queryFn: async ({ pageParam }) => {
+      if (!userId) throw new Error("User ID required")
+      const result = await getSavedJobsByUserId(userId, {
+        page: pageParam,
+        limit,
+      })
+      return result.match({
+        ok: (data) => data,
+        err: (e) => {
+          throw new Error(e.message)
+        },
+      })
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     enabled: Boolean(userId),
   })
 }

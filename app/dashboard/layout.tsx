@@ -10,11 +10,11 @@ export default async function DashboardLayout({
   user: ReactNode
   admin: ReactNode
   organization: ReactNode
+  children: ReactNode
 }) {
   const role = await checkUserRole()
   if (!role) redirect("/")
 
-  if (role === "admin") return admin
-  if (role === "organization") return organization
-  return user
+  const slot = role === "admin" ? admin : role === "organization" ? organization : user
+  return <>{slot}</>
 }

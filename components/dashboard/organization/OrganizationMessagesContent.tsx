@@ -5,10 +5,15 @@ import { Result } from "better-result"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useAutoScrollToBottom } from "@/hooks/use-auto-scroll-to-bottom"
 import { getChatById } from "@/lib/api/chats"
 import { uploadMessageAttachment } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
-import { useMessages, useSendMessageMutation } from "@/lib/api/use-messages"
+import {
+  useMarkChatAsReadMutation,
+  useMessages,
+  useSendMessageMutation,
+} from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
 import { getResultErrorMessage } from "@/lib/result"
 import { createClientBrowser } from "@/lib/supabase-browser"
@@ -16,8 +21,37 @@ import { formatDateChilean } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { ChatListPanel } from "./ChatListPanel"
 import { ChatView } from "./ChatView"
+import { MessagesEmptyState } from "./MessagesEmptyState"
+
+function useChatMessageRealtime(
+  chatIdFromUrl: string,
+  queryClient: ReturnType<typeof useQueryClient>
+) {
+  useEffect(() => {
+    if (!chatIdFromUrl) return
+
+    const supabase = createClientBrowser()
+    if (!supabase) return
+
+    const channel = supabase
+      .channel(`chat-messages-${chatIdFromUrl}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "message" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
+      })
+      .subscribe()
+
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [chatIdFromUrl, queryClient])
+}
 
 export function OrganizationMessagesContent() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const [chatIdFromUrl, setChatIdFromUrl] = useQueryState("chat", {
     defaultValue: "",
   })
@@ -44,29 +78,16 @@ export function OrganizationMessagesContent() {
 
   const queryClient = useQueryClient()
 
-  useEffect(() => {
-    if (!chatIdFromUrl) return
-
-    const supabase = createClientBrowser()
-    if (!supabase) return
-
-    const channel = supabase
-      .channel(`chat-messages-${chatIdFromUrl}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "message" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
-      })
-      .subscribe()
-
-    return () => {
-      channel.unsubscribe()
-    }
-  }, [chatIdFromUrl, queryClient])
+  useChatMessageRealtime(chatIdFromUrl, queryClient)
 
   const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdFromUrl)
 
   const handleSelectChat = (chatId: string) => {
     setSelectedChatId(chatId)
     setChatIdFromUrl(chatId)
+    if (recruiterId) {
+      markAsReadMutation.mutate({ chatId, userId: recruiterId })
+    }
   }
 
   const handleBackToList = () => {
@@ -80,6 +101,7 @@ export function OrganizationMessagesContent() {
 
   const [messageInput, setMessageInput] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const { data: professional } = useUser(selectedChat?.professionalId)
   const { data: recruiterProfile } = useUser(recruiterId)
@@ -91,19 +113,20 @@ export function OrganizationMessagesContent() {
     refetch: refetchMessages,
   } = useMessages(selectedChat?.id)
   const sendMutation = useSendMessageMutation()
+  const markAsReadMutation = useMarkChatAsReadMutation()
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     requestAnimationFrame(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior })
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTo({
+          top: scrollContainerRef.current.scrollHeight,
+          behavior,
+        })
+      }
     })
   }, [])
 
-  useEffect(() => {
-    if (selectedChat?.id && !messagesLoading && messages.length > 0) {
-      const timeout = setTimeout(() => scrollToBottom(), 50)
-      return () => clearTimeout(timeout)
-    }
-  }, [selectedChat?.id, messagesLoading, messages.length, scrollToBottom])
+  useAutoScrollToBottom(selectedChat?.id, messagesLoading, messages.length, scrollToBottom)
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !selectedChat || !recruiterId) return
@@ -175,16 +198,26 @@ export function OrganizationMessagesContent() {
     }
   }
 
+  if (!mounted) {
+    return null
+  }
+
+  if (chats.length === 0 && !selectedChatId) {
+    return <MessagesEmptyState />
+  }
+
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+    <div className="flex h-[calc(100dvh_-_1rem)] min-h-0 flex-none flex-col overflow-hidden lg:flex-row w-full">
       <ChatListPanel
         chats={chats}
         selectedChatId={selectedChat?.id ?? null}
         onSelectChat={handleSelectChat}
         formatTime={formatMessageTime}
+        className={selectedChat ? "max-lg:hidden" : ""}
       />
 
       <ChatView
+        scrollContainerRef={scrollContainerRef}
         selectedChat={selectedChat}
         professional={professional}
         recruiterProfile={recruiterProfile}
@@ -209,6 +242,7 @@ export function OrganizationMessagesContent() {
         onFileChange={handleFileChange}
         isUploading={isUploading}
         messagesEndRef={messagesEndRef}
+        className={!selectedChat ? "max-lg:hidden" : ""}
       />
     </div>
   )

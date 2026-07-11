@@ -10,6 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import type * as React from "react"
+import { useCallback, useMemo } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
@@ -18,7 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { useRemoveSavedJobMutation, useSavedJobsByUser } from "@/lib/api/use-saved-jobs"
+import { useRemoveSavedJobMutation, useSavedJobsByUserInfinite } from "@/lib/api/use-saved-jobs"
 import { authClient } from "@/lib/auth-client"
 import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
 
@@ -75,7 +76,7 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
           handleOpenJob()
         }
       }}
-      className="cursor-pointer relative overflow-hidden flex flex-col border border-border/80 bg-white active:scale-[0.99] transition-all duration-150 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="cursor-pointer relative overflow-hidden flex flex-col border border-border/80 bg-white hover:shadow-sm active:scale-[0.99] transition-all duration-150 group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label="Ver vacante guardada"
     >
       <CardHeader className="pb-0">
@@ -143,21 +144,33 @@ export const SavedContent = () => {
   const { data: session, isPending: sessionPending } = useSession()
   const userId = (session?.user as { id?: string })?.id
 
-  const { data: savedJobs, isLoading: savedJobsLoading } = useSavedJobsByUser(userId, {
-    page: 1,
-    limit: 50,
-  })
+  const {
+    data,
+    isLoading: savedJobsLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useSavedJobsByUserInfinite(userId, 12)
 
-  const jobIds =
-    savedJobs?.data.reduce<string[]>((acc, j) => {
-      if (j.jobId) acc.push(j.jobId)
-      return acc
-    }, []) ?? []
-  const hasJobs = jobIds.length > 0
+  const allJobIds = useMemo(
+    () =>
+      (data?.pages ?? []).flatMap((p) =>
+        p.data.map((j) => j.jobId).filter((id): id is string => Boolean(id))
+      ),
+    [data]
+  )
+  const total = data?.pages[0]?.total ?? 0
+
+  const hasJobs = allJobIds.length > 0
+  const hasMore = hasNextPage
 
   const { push } = useRouter()
 
-  const isPending = sessionPending || savedJobsLoading || savedJobs === undefined
+  const handleLoadMore = useCallback(() => {
+    void fetchNextPage()
+  }, [fetchNextPage])
+
+  const isPending = sessionPending || savedJobsLoading
 
   if (isPending) {
     return (
@@ -255,18 +268,34 @@ export const SavedContent = () => {
             <button
               type="button"
               onClick={() => push("/dashboard/jobs")}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-colors hover:bg-secondary/90"
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95"
             >
               Ver todos los empleos
             </button>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {jobIds.map((jobId) => (
-            <SavedJobCard key={jobId} userId={userId} jobId={jobId} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {allJobIds.map((jobId) => (
+              <SavedJobCard key={jobId} userId={userId} jobId={jobId} />
+            ))}
+          </div>
+          {hasMore && (
+            <div className="flex justify-center pt-4">
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                disabled={isFetchingNextPage}
+                className="inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 disabled:opacity-50 text-sm"
+              >
+                {isFetchingNextPage
+                  ? "Cargando..."
+                  : `Cargar mas (${allJobIds.length} de ${total})`}
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

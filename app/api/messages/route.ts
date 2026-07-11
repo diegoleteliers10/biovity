@@ -71,14 +71,29 @@ export async function POST(request: Request) {
           : type === "audio"
             ? "Audio"
             : "Mensaje"
-  createNotification({
-    userId: recipientId,
-    type: "message",
-    title: "Nuevo mensaje",
-    body: notifBody,
-    link: `/dashboard/messages?chat=${chatId}`,
-    data: { chatId, senderId, messageType: type },
-  }).catch(() => {})
+
+  const hashContent = (s: string) => s.slice(0, 50)
+  const dedupKey = `message:${chatId}:${hashContent(content)}`
+
+  const { data: existingNotif } = await supabase
+    .from("notification")
+    .select("id")
+    .eq("type", "message")
+    .eq("user_id", recipientId)
+    .gte("created_at", new Date(Date.now() - 60 * 60 * 1000).toISOString())
+    .filter("data->>dedupKey", "eq", dedupKey)
+    .maybeSingle()
+
+  if (!existingNotif) {
+    createNotification({
+      userId: recipientId,
+      type: "message",
+      title: "Nuevo mensaje",
+      body: notifBody,
+      link: `/dashboard/messages?chat=${chatId}`,
+      data: { chatId, senderId, messageType: type, dedupKey },
+    }).catch(() => {})
+  }
 
   return NextResponse.json(message)
 }

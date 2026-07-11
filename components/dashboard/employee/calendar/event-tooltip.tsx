@@ -19,37 +19,41 @@ type EventTooltipProps = {
   readonly position: { readonly x: number; readonly y: number }
 }
 
-export function EventTooltip({ event, position }: EventTooltipProps) {
-  const [adjustedPosition, setAdjustedPosition] = useState<{ x: number; y: number } | null>(null)
-  const tooltipPosition = adjustedPosition ?? position
+type Position = { x: number; y: number }
+
+function useAdjustedPosition(position: { x: number; y: number }): Position | null {
+  const [adjustedPosition, setAdjustedPosition] = useState<Position | null>(null)
 
   useEffect(() => {
-    const updatePosition = () => {
-      const tooltip = document.getElementById("event-tooltip")
-      if (!tooltip) return
+    const tooltip = document.getElementById("event-tooltip")
+    if (!tooltip) return
 
-      const rect = tooltip.getBoundingClientRect()
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
+    const rect = tooltip.getBoundingClientRect()
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
 
-      let x = position.x - rect.width / 2
-      let y = position.y + 20
+    let x = position.x - rect.width / 2
+    let y = position.y + 20
 
-      if (x < 10) {
-        x = 10
-      } else if (x + rect.width > viewportWidth - 10) {
-        x = viewportWidth - rect.width - 10
-      }
-
-      if (y + rect.height > viewportHeight - 10) {
-        y = position.y - rect.height - 10
-      }
-
-      setAdjustedPosition({ x, y })
+    if (x < 10) {
+      x = 10
+    } else if (x + rect.width > viewportWidth - 10) {
+      x = viewportWidth - rect.width - 10
     }
 
-    updatePosition()
+    if (y + rect.height > viewportHeight - 10) {
+      y = position.y - rect.height - 10
+    }
+
+    setAdjustedPosition({ x, y })
   }, [position])
+
+  return adjustedPosition
+}
+
+export function EventTooltip({ event, position }: EventTooltipProps) {
+  const adjustedPosition = useAdjustedPosition(position)
+  const tooltipPosition = adjustedPosition ?? position
 
   const formatEventDateTime = (iso: string) => {
     return formatDateChilean(iso, "EEE d MMM, HH:mm")

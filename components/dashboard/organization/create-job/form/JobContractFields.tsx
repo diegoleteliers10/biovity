@@ -1,4 +1,4 @@
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import {
   Select,
   SelectContent,
@@ -27,6 +27,8 @@ interface JobContractFieldsProps {
   experienceLevel: string
   onEmploymentTypeChange: (value: string) => void
   onExperienceLevelChange: (value: string) => void
+  errorEmploymentType?: string
+  errorExperienceLevel?: string
 }
 
 export function JobContractFields({
@@ -34,6 +36,8 @@ export function JobContractFields({
   experienceLevel,
   onEmploymentTypeChange,
   onExperienceLevelChange,
+  errorEmploymentType,
+  errorExperienceLevel,
 }: JobContractFieldsProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -51,6 +55,7 @@ export function JobContractFields({
             ))}
           </SelectContent>
         </Select>
+        {errorEmploymentType && <FieldError>{errorEmploymentType}</FieldError>}
       </Field>
       <Field>
         <FieldLabel>Nivel de experiencia *</FieldLabel>
@@ -66,6 +71,7 @@ export function JobContractFields({
             ))}
           </SelectContent>
         </Select>
+        {errorExperienceLevel && <FieldError>{errorExperienceLevel}</FieldError>}
       </Field>
     </div>
   )

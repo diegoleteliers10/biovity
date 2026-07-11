@@ -2,7 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { toast } from "sonner"
 import { getResultErrorMessage } from "@/lib/result"
+import { createClientBrowser } from "@/lib/supabase-browser"
 import {
   getNotifications,
   markAllNotificationsRead,
@@ -66,4 +70,52 @@ export function useMarkAllNotificationsRead() {
       })
     },
   })
+}
+
+export function useNotificationsRealtime(userId: string | undefined) {
+  const queryClient = useQueryClient()
+  const { push } = useRouter()
+
+  useEffect(() => {
+    if (!userId) return
+
+    const supabase = createClientBrowser()
+    if (!supabase) return
+
+    const channel = supabase
+      .channel(`realtime-notifications-${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notification",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const newRow = payload.new
+          queryClient.invalidateQueries({ queryKey: notificationsKeys.all })
+
+          const title = String(newRow.title ?? "Nueva notificacion")
+          const body = String(newRow.body ?? "")
+          const link = String(newRow.link ?? "")
+
+          toast.info(title, {
+            description: body,
+            duration: 8000,
+            action: link
+              ? {
+                  label: "Ver",
+                  onClick: () => push(link),
+                }
+              : undefined,
+          })
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase?.removeChannel(channel)
+    }
+  }, [userId, queryClient, push])
 }

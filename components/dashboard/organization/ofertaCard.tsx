@@ -3,6 +3,7 @@
 import {
   Cash02Icon,
   Clock01Icon,
+  Copy01Icon,
   Delete01Icon,
   Edit01Icon,
   EyeIcon,
@@ -72,9 +73,10 @@ interface OfertaCardProps {
   job: Job
   onEdit: (job: Job) => void
   onDelete: (job: Job) => void
+  onDuplicate?: (job: Job) => void
 }
 
-export function OfertaCard({ job, onEdit, onDelete }: OfertaCardProps) {
+export function OfertaCard({ job, onEdit, onDelete, onDuplicate }: OfertaCardProps) {
   const { push } = useRouter()
   const salaryStr = formatJobSalary(job)
 
@@ -182,6 +184,18 @@ export function OfertaCard({ job, onEdit, onDelete }: OfertaCardProps) {
               <HugeiconsIcon icon={Edit01Icon} size={18} strokeWidth={1.5} className="mr-2" />
               Editar
             </DropdownMenuItem>
+            {onDuplicate && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDuplicate(job)
+                }}
+              >
+                <HugeiconsIcon icon={Copy01Icon} size={18} strokeWidth={1.5} className="mr-2" />
+                Duplicar
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               variant="destructive"
               onClick={(e) => {

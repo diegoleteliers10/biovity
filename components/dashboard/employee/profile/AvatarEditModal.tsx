@@ -3,7 +3,7 @@
 import { Camera01Icon, Delete01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
@@ -14,6 +14,16 @@ interface AvatarEditModalProps {
   onUpload: (file: File) => void
   onDelete: () => void
   isUploading?: boolean
+}
+
+function useObjectUrl(objectUrl: string | null) {
+  useEffect(() => {
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl)
+      }
+    }
+  }, [objectUrl])
 }
 
 export function AvatarEditModal({
@@ -33,15 +43,13 @@ export function AvatarEditModal({
         const preview = URL.createObjectURL(file)
         setLocalPreview(preview)
         onUpload(file)
-        setTimeout(() => {
-          setLocalPreview(null)
-          onOpenChange(false)
-        }, 500)
       }
       e.target.value = ""
     },
-    [onUpload, onOpenChange]
+    [onUpload]
   )
+
+  useObjectUrl(localPreview)
 
   const handleDelete = useCallback(() => {
     onDelete()

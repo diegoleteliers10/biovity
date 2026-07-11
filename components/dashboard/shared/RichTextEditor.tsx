@@ -12,7 +12,7 @@ import {
   TextStrikethroughIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { EditorContent, useEditor } from "@tiptap/react"
+import { type Editor, EditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import { marked } from "marked"
 import { useEffect } from "react"
@@ -120,6 +120,17 @@ const EDITOR_CONTENT_CSS = `
   }
 `
 
+function useTiptapContentSync(editor: Editor | null, content: string) {
+  useEffect(() => {
+    if (!editor) return
+    const editorHTML = editor.getHTML()
+    if (content !== editorHTML) {
+      const html = (marked.parse(content) as string).trim()
+      editor.commands.setContent(html)
+    }
+  }, [editor, content])
+}
+
 export function RichTextEditor({
   content,
   onChange,
@@ -143,15 +154,7 @@ export function RichTextEditor({
     },
   })
 
-  // Sync external content changes (e.g. from AI overwrite) into TipTap
-  useEffect(() => {
-    if (!editor) return
-    const editorHTML = editor.getHTML()
-    if (content !== editorHTML) {
-      const html = (marked.parse(content) as string).trim()
-      editor.commands.setContent(html)
-    }
-  }, [editor, content])
+  useTiptapContentSync(editor, content)
 
   if (!editor) return null
 

@@ -50,7 +50,7 @@ export function JobListItem({
   return (
     <Card
       onClick={() => push(`/dashboard/job/${job.id}`)}
-      className="group relative cursor-pointer overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group relative cursor-pointer overflow-hidden flex flex-col border border-border/80 bg-white hover:border-border hover:shadow-sm active:scale-[0.99] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       role="link"
       tabIndex={0}
       onKeyDown={(e) => {

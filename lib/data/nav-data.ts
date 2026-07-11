@@ -7,8 +7,11 @@ import {
   DashboardSquare02Icon,
   File02Icon,
   FileAddIcon,
+  Mail01Icon,
+  RadarIcon,
   Search01Icon,
   User02Icon,
+  UserListIcon,
 } from "@hugeicons/core-free-icons"
 import type { NavData } from "@/lib/types/nav"
 
@@ -38,13 +41,11 @@ export const NAV_DATA: NavData = {
       title: "Mis Aplicaciones",
       url: "/dashboard/applications",
       icon: File02Icon,
-      badge: 1,
     },
     {
       title: "Empleos Guardados",
       url: "/dashboard/saved",
       icon: Bookmark02Icon,
-      badge: 4,
     },
     {
       title: "Calendario",
@@ -96,6 +97,9 @@ export const NAV_DATA_ADMIN: NavData = {
     { title: "Dashboard", url: "/dashboard", icon: DashboardSquare02Icon },
     { title: "Usuarios", url: "/dashboard/users", icon: User02Icon },
     { title: "Organizaciones", url: "/dashboard/organizations", icon: Building02Icon },
+    { title: "Contacto", url: "/dashboard/contact", icon: Mail01Icon },
+    { title: "Lista de Espera", url: "/dashboard/waitlist", icon: UserListIcon },
+    { title: "Logs de AI", url: "/dashboard/ai-logs", icon: RadarIcon },
   ],
   explore: [],
   profileProgress: null,

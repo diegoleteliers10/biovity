@@ -381,7 +381,10 @@ export function ChatListItem({
     if (!matchesName && !matchesLastMessage) return null
   }
 
-  const unreadCount = chat.unreadCountProfessional ?? chat.unreadCountRecruiter ?? 0
+  const unreadCount =
+    contactType === "professional"
+      ? (chat.unreadCountRecruiter ?? 0)
+      : (chat.unreadCountProfessional ?? 0)
 
   return (
     <button
@@ -394,8 +397,8 @@ export function ChatListItem({
         }
       }}
       className={cn(
-        "cursor-pointer border-b border-border p-4 transition-colors text-left w-full",
-        "hover:bg-muted/30 focus-visible:bg-muted/50",
+        "cursor-pointer border-b border-border p-4 transition-all text-left w-full",
+        "hover:bg-muted/30 focus-visible:bg-muted/50 active:scale-[0.98]",
         isSelected && "bg-muted/50"
       )}
     >

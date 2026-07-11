@@ -1,4 +1,4 @@
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
 export type WorkMode = "onsite" | "remote" | "hybrid"
@@ -16,6 +16,7 @@ interface JobLocationFieldProps {
   onWorkModeChange: (mode: WorkMode) => void
   onCityChange: (value: string) => void
   onCountryChange: (value: string) => void
+  error?: string
 }
 
 export function JobLocationField({
@@ -25,6 +26,7 @@ export function JobLocationField({
   onWorkModeChange,
   onCityChange,
   onCountryChange,
+  error,
 }: JobLocationFieldProps) {
   return (
     <Field>
@@ -60,6 +62,7 @@ export function JobLocationField({
           </div>
         )}
       </div>
+      {error && <FieldError>{error}</FieldError>}
     </Field>
   )
 }

@@ -16,6 +16,8 @@ export type Chat = {
   unreadCountProfessional: number
   createdAt: string
   updatedAt: string
+  isPinned?: boolean
+  isArchived?: boolean
 }
 
 function extractChats(payload: unknown): Chat[] {

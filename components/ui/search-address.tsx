@@ -2,7 +2,7 @@
 
 import { ChevronsUpDown, LocationIcon, MapPinIcon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -35,15 +35,12 @@ export function SearchAddress({ onSelectLocation }: SearchAddressProps) {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (open && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [open])
-
   const handleOpenChange = useCallback(
     (newOpen: boolean) => {
       setOpen(newOpen)
+      if (newOpen) {
+        inputRef.current?.focus()
+      }
       if (!newOpen && !selectedItem) {
         handleSearch("")
       }

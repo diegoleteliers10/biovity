@@ -3,8 +3,10 @@
 import {
   Calendar03Icon,
   ClockIcon,
+  Download01Icon,
   File02Icon,
   FileAddIcon,
+  UserIcon,
   ViewIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -22,7 +24,9 @@ const [LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis] = await Prom
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -33,7 +37,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useOrganizationMetrics } from "@/lib/api/use-organization-dashboard"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
+import { exportMetricsCsv } from "@/lib/utils/export-metrics-csv"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { PipelineResumenCard } from "./PipelineResumenCard"
 
 const statusLabels: Record<string, string> = {
   pendiente: "Pendiente",
@@ -88,7 +94,20 @@ export function OrganizationMetricsContent() {
   const organizationId = session?.user?.organizationId ?? undefined
 
   const [period, setPeriod] = useState<MetricsPeriod>("month")
-  const { data: metrics, isPending, isError } = useOrganizationMetrics(organizationId, period)
+  const [startDate, setStartDate] = useState<string>("")
+  const [endDate, setEndDate] = useState<string>("")
+
+  const {
+    data: metrics,
+    isPending,
+    isError,
+    refetch,
+  } = useOrganizationMetrics(
+    organizationId,
+    period,
+    period === "custom" ? startDate || undefined : undefined,
+    period === "custom" ? endDate || undefined : undefined
+  )
   const skeletonId = useId()
 
   const totalViews = metrics?.topJobs.reduce((sum, job) => sum + job.views, 0) ?? 0
@@ -99,11 +118,32 @@ export function OrganizationMetricsContent() {
     entrevistas: item.interviews,
   }))
 
+  // F11.1 Funnel conversion rates
+  const totalApps = metrics?.pipeline.totalApplications ?? 0
+  const countPendiente = metrics?.pipeline.byStatus.pendiente ?? 0
+  const countEntrevista = metrics?.pipeline.byStatus.entrevista ?? 0
+  const countOferta = metrics?.pipeline.byStatus.oferta ?? 0
+  const countContratado = metrics?.pipeline.byStatus.contratado ?? 0
+
+  // Accumulate counts for funnel stages (since to get to hired you pass offer/interview)
+  const reachedPendiente = totalApps
+  const reachedEntrevista = countEntrevista + countOferta + countContratado
+  const reachedOferta = countOferta + countContratado
+  const reachedContratado = countContratado
+
+  const ratePendiente = 100
+  const rateEntrevista = totalApps > 0 ? Math.round((reachedEntrevista / totalApps) * 100) : 0
+  const rateOferta = totalApps > 0 ? Math.round((reachedOferta / totalApps) * 100) : 0
+  const rateContratado = totalApps > 0 ? Math.round((reachedContratado / totalApps) * 100) : 0
+
   if (isError) {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-lg">
-          Error al cargar métricas. Intenta nuevamente.
+        <div className="flex items-center justify-between rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <p className="text-destructive text-sm">Error al cargar metricas. Intenta nuevamente.</p>
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
+            Reintentar
+          </Button>
         </div>
       </div>
     )
@@ -114,21 +154,28 @@ export function OrganizationMetricsContent() {
       {/* Top row: menu + notification on mobile */}
       <div className="flex items-center justify-between lg:hidden">
         <MobileMenuButton />
-        <ConnectedNotificationBell showAgentTrigger />
+        <div className="flex items-center gap-2">
+          {metrics && (
+            <Button variant="outline" size="sm" onClick={() => exportMetricsCsv(metrics, period)}>
+              <HugeiconsIcon icon={Download01Icon} size={16} />
+            </Button>
+          )}
+          <ConnectedNotificationBell showAgentTrigger />
+        </div>
       </div>
 
       <div className="space-y-1">
         <div className="hidden lg:flex justify-end">
           <ConnectedNotificationBell showAgentTrigger />
         </div>
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-1">
             <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Métricas</h1>
             <p className="text-muted-foreground text-sm">
               Analiza el rendimiento de tus ofertas y candidatos.
             </p>
           </div>
-          <div className="hidden lg:block">
+          <div className="flex flex-wrap items-center gap-2">
             <Select value={period} onValueChange={(v) => setPeriod(v as MetricsPeriod)}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue />
@@ -137,15 +184,42 @@ export function OrganizationMetricsContent() {
                 <SelectItem value="week">Esta semana</SelectItem>
                 <SelectItem value="month">Este mes</SelectItem>
                 <SelectItem value="year">Este año</SelectItem>
+                <SelectItem value="custom">Rango Personalizado</SelectItem>
               </SelectContent>
             </Select>
+
+            {period === "custom" && (
+              <div className="flex items-center gap-1.5">
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-[130px] h-9 text-xs"
+                />
+                <span className="text-muted-foreground text-xs">a</span>
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-[130px] h-9 text-xs"
+                />
+              </div>
+            )}
+
+            {metrics && (
+              <Button variant="outline" size="sm" onClick={() => exportMetricsCsv(metrics, period)}>
+                <HugeiconsIcon icon={Download01Icon} size={16} className="mr-1.5" />
+                Exportar
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* KPI Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {isPending ? (
-          Array.from({ length: 4 }).map((_, i) => (
+          Array.from({ length: 5 }).map((_, i) => (
             <Card key={`${skeletonId}-${i}`}>
               <CardHeader className="pb-2">
                 <Skeleton className="h-4 w-32" />
@@ -162,7 +236,13 @@ export function OrganizationMetricsContent() {
               title="Ofertas activas"
               value={metrics?.dashboard.activeJobs ?? 0}
               subtitle={
-                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+                period === "week"
+                  ? "esta semana"
+                  : period === "year"
+                    ? "este año"
+                    : period === "custom"
+                      ? "en rango"
+                      : "este mes"
               }
               icon={FileAddIcon}
             />
@@ -170,7 +250,13 @@ export function OrganizationMetricsContent() {
               title="Aplicaciones recibidas"
               value={metrics?.pipeline.totalApplications ?? 0}
               subtitle={
-                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+                period === "week"
+                  ? "esta semana"
+                  : period === "year"
+                    ? "este año"
+                    : period === "custom"
+                      ? "en rango"
+                      : "este mes"
               }
               icon={File02Icon}
               trend={`${(metrics?.dashboard.applicationsTrend ?? 0) > 0 ? "+" : ""}${metrics?.dashboard.applicationsTrend ?? 0}%`}
@@ -180,7 +266,13 @@ export function OrganizationMetricsContent() {
               title="Entrevistas"
               value={metrics?.dashboard.interviewsThisPeriod ?? 0}
               subtitle={
-                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+                period === "week"
+                  ? "esta semana"
+                  : period === "year"
+                    ? "este año"
+                    : period === "custom"
+                      ? "en rango"
+                      : "este mes"
               }
               icon={Calendar03Icon}
               trend={`${(metrics?.dashboard.interviewsTrend ?? 0) > 0 ? "+" : ""}${metrics?.dashboard.interviewsTrend ?? 0}%`}
@@ -190,18 +282,211 @@ export function OrganizationMetricsContent() {
               title="Vistas de ofertas"
               value={totalViews}
               subtitle={
-                period === "week" ? "esta semana" : period === "year" ? "este año" : "este mes"
+                period === "week"
+                  ? "esta semana"
+                  : period === "year"
+                    ? "este año"
+                    : period === "custom"
+                      ? "en rango"
+                      : "este mes"
               }
               icon={ViewIcon}
             />
             <KpiCard
-              title="Tiempo medio de contratación"
+              title="Promedio contratación"
               value={`${metrics?.avgHiringTimeDays ?? 0} días`}
               subtitle="desde postulación"
               icon={ClockIcon}
             />
           </>
         )}
+      </div>
+
+      {/* Middle row: conversion funnel & average stage durations */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* Funnel Conversion */}
+        <Card className="border-border/60 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold">
+              Funnel de Conversión (Drop-off)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isPending ? (
+              <div className="space-y-4 py-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            ) : (
+              <div className="space-y-5 py-2">
+                {/* Stage 1: Pendiente */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-secondary" />
+                      1. Postulados (Pendiente)
+                    </span>
+                    <span>
+                      {reachedPendiente} ({ratePendiente}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
+                    <div
+                      className="h-full bg-secondary/20 transition-all duration-500 ease-out"
+                      style={{ width: `${ratePendiente}%` }}
+                    />
+                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-secondary-foreground">
+                      Base inicial
+                    </span>
+                  </div>
+                </div>
+
+                {/* Stage 2: Entrevista */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-primary" />
+                      2. Entrevistados
+                    </span>
+                    <span>
+                      {reachedEntrevista} ({rateEntrevista}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
+                    <div
+                      className="h-full bg-primary/20 transition-all duration-500 ease-out"
+                      style={{ width: `${rateEntrevista}%` }}
+                    />
+                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-primary">
+                      {rateEntrevista > 0
+                        ? `${rateEntrevista}% pasan a entrevista`
+                        : "Sin postulantes evaluados"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Stage 3: Oferta */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-accent" />
+                      3. Ofertas Enviadas
+                    </span>
+                    <span>
+                      {reachedOferta} ({rateOferta}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
+                    <div
+                      className="h-full bg-accent/20 transition-all duration-500 ease-out"
+                      style={{ width: `${rateOferta}%` }}
+                    />
+                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-accent-foreground">
+                      {rateOferta > 0 ? `${rateOferta}% alcanzan oferta` : "Sin ofertas enviadas"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Stage 4: Contratado */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs font-medium">
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <span className="size-2 rounded-full bg-green-500" />
+                      4. Contratados
+                    </span>
+                    <span>
+                      {reachedContratado} ({rateContratado}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
+                    <div
+                      className="h-full bg-green-500/25 transition-all duration-500 ease-out"
+                      style={{ width: `${rateContratado}%` }}
+                    />
+                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-green-700">
+                      {rateContratado > 0
+                        ? `Hiring Rate: ${rateContratado}%`
+                        : "Sin contrataciones aún"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Stage duration stats */}
+        <Card className="border-border/60 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold">
+              Tiempos Promedio en Etapa (Días)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isPending ? (
+              <div className="space-y-4 py-2">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            ) : (
+              <div className="space-y-6 py-2">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                    <HugeiconsIcon icon={Calendar03Icon} size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm font-semibold">Hasta Entrevista</span>
+                      <span className="text-base font-bold text-primary">
+                        {metrics?.pipeline.avgTimeInStages?.entrevista ?? 0} días
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Días promedio transcurridos desde postulación hasta agendar entrevista.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 border-t border-border/50 pt-4">
+                  <div className="flex items-center justify-center size-10 rounded-lg bg-accent/10 text-accent border border-accent/20">
+                    <HugeiconsIcon icon={File02Icon} size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm font-semibold">Hasta Oferta</span>
+                      <span className="text-base font-bold text-accent">
+                        {metrics?.pipeline.avgTimeInStages?.oferta ?? 0} días
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Días promedio transcurridos desde postulación hasta formalizar oferta.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 border-t border-border/50 pt-4">
+                  <div className="flex items-center justify-center size-10 rounded-lg bg-green-500/10 text-green-600 border border-green-500/20">
+                    <HugeiconsIcon icon={ClockIcon} size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm font-semibold">Hasta Contratación</span>
+                      <span className="text-base font-bold text-green-600">
+                        {metrics?.pipeline.avgTimeInStages?.contratado ?? 0} días
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Días promedio desde postulación hasta marcar como contratado.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -226,7 +511,7 @@ export function OrganizationMetricsContent() {
                         <div
                           className="h-full bg-primary"
                           style={{
-                            width: `${metrics ? (count / metrics.pipeline.totalApplications) * 100 : 0}%`,
+                            width: `${metrics ? (count / Math.max(1, metrics.pipeline.totalApplications)) * 100 : 0}%`,
                           }}
                         />
                       </div>
@@ -281,6 +566,10 @@ export function OrganizationMetricsContent() {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <PipelineResumenCard />
       </div>
 
       <Card>
@@ -351,7 +640,68 @@ export function OrganizationMetricsContent() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No hay datos geográficos disponibles.</p>
+            <p className="text-sm text-muted-foreground">
+              No hay datos geogr&aacute;ficos disponibles.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Productividad del Reclutador</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isPending ? (
+            <Skeleton className="h-[150px] w-full" />
+          ) : metrics?.recruiterProductivity && metrics.recruiterProductivity.length > 0 ? (
+            <div className="space-y-4">
+              {metrics.recruiterProductivity.map((rec) => (
+                <div
+                  key={rec.userId}
+                  className="flex items-center gap-4 rounded-lg border border-border/60 p-4"
+                >
+                  <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <HugeiconsIcon icon={UserIcon} size={20} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">{rec.userName}</p>
+                    <p className="text-xs text-muted-foreground">{rec.userEmail}</p>
+                  </div>
+                  <div className="flex gap-6">
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-foreground">
+                        {rec.applicationsProcessed}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                        Procesadas
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-foreground">
+                        {rec.interviewsConducted}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                        Entrevistas
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-foreground">
+                        {rec.avgResponseTimeDays}d
+                      </p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                        Tiempo resp.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No hay datos de productividad disponibles. Agrega miembros al equipo para ver
+              m&eacute;tricas individuales.
+            </p>
           )}
         </CardContent>
       </Card>

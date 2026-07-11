@@ -1,6 +1,16 @@
+"use client"
+
+import dynamic from "next/dynamic"
 import { Suspense } from "react"
-import { UserMessagesContent } from "@/components/dashboard/employee/UserMessagesContent"
 import { Skeleton } from "@/components/ui/skeleton"
+
+const UserMessagesContent = dynamic(
+  () =>
+    import("@/components/dashboard/employee/UserMessagesContent").then(
+      (m) => m.UserMessagesContent
+    ),
+  { ssr: false }
+)
 
 function MessagesLoading() {
   return (

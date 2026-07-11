@@ -1,5 +1,5 @@
-import type { ComponentProps, ReactNode } from "react"
 import { Command as CommandPrimitive } from "cmdk"
+import type { ComponentProps, ReactNode } from "react"
 import {
   Command,
   CommandDialog,

@@ -1,5 +1,7 @@
 "use client"
 
+import { Search01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryStates } from "nuqs"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
@@ -18,6 +20,30 @@ import { SearchFilters } from "./searchFilters"
 
 const _EMPTY_PLACEHOLDER = "—"
 
+function useOptimisticSavedMap(savedJobIds: Set<string>) {
+  const [optimisticSavedMap, setOptimisticSavedMap] = useState<Record<string, boolean>>({})
+
+  const reconcileOptimistic = useCallback(() => {
+    setOptimisticSavedMap((prev) => {
+      const next: Record<string, boolean> = { ...prev }
+      let changed = false
+      for (const [jobId, optimisticValue] of Object.entries(prev)) {
+        if (savedJobIds.has(jobId) === optimisticValue) {
+          delete next[jobId]
+          changed = true
+        }
+      }
+      return changed ? next : prev
+    })
+  }, [savedJobIds])
+
+  useEffect(() => {
+    reconcileOptimistic()
+  }, [reconcileOptimistic])
+
+  return { optimisticSavedMap, setOptimisticSavedMap }
+}
+
 function _getJobModalidad(job: Job): string {
   const loc = job.location
   if (!loc) return "presencial"
@@ -34,7 +60,11 @@ export const SearchContent = () => {
   const { q: query, location, jobType, experience, remoteOnly } = urlState
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const { data: jobsResult, isLoading, error } = useJobsSearch({ search: query.trim() || undefined })
+  const {
+    data: jobsResult,
+    isLoading,
+    error,
+  } = useJobsSearch({ search: query.trim() || undefined })
 
   const filteredJobs = useMemo(() => {
     if (!jobsResult) return []
@@ -69,11 +99,13 @@ export const SearchContent = () => {
     page: 1,
     limit: 200,
   })
-  const [optimisticSavedMap, setOptimisticSavedMap] = useState<Record<string, boolean>>({})
 
-  const savedJobIds = useMemo(() => {
-    return new Set((savedJobs?.data ?? []).map((j) => j.jobId))
-  }, [savedJobs])
+  const savedJobIds = useMemo(
+    () => new Set((savedJobs?.data ?? []).map((j) => j.jobId)),
+    [savedJobs]
+  )
+
+  const { optimisticSavedMap, setOptimisticSavedMap } = useOptimisticSavedMap(savedJobIds)
 
   const isJobSaved = useCallback(
     (jobId: string) => {
@@ -86,20 +118,6 @@ export const SearchContent = () => {
 
   const saveMutation = useSaveJobMutation()
   const removeMutation = useRemoveSavedJobMutation()
-
-  useEffect(() => {
-    setOptimisticSavedMap((prev) => {
-      const next: Record<string, boolean> = { ...prev }
-      let changed = false
-      for (const [jobId, optimisticValue] of Object.entries(prev)) {
-        if (savedJobIds.has(jobId) === optimisticValue) {
-          delete next[jobId]
-          changed = true
-        }
-      }
-      return changed ? next : prev
-    })
-  }, [savedJobIds])
 
   const handleClear = useCallback(() => {
     setUrlState({
@@ -186,6 +204,40 @@ export const SearchContent = () => {
       {error ? (
         <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
           <p className="text-destructive text-sm">{error.message}</p>
+        </div>
+      ) : filteredJobs.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
+          <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
+            <div className="flex size-20 items-center justify-center rounded-full bg-muted">
+              <HugeiconsIcon
+                icon={Search01Icon}
+                size={44}
+                strokeWidth={1.5}
+                className="size-11 text-muted-foreground"
+              />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">
+                {query.trim()
+                  ? "No encontramos empleos con esos filtros."
+                  : "Busca empleos por palabra clave, ubicacion o categoria."}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {query.trim()
+                  ? "Intenta ajustando los filtros o usando terminos mas generales."
+                  : "Usa el buscador arriba para encontrar oportunidades."}
+              </p>
+            </div>
+            {query.trim() && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="mt-2 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-sm"
+              >
+                Limpiar filtros
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">

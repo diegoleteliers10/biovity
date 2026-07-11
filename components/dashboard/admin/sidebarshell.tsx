@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import { SidebarInset, SidebarProvider } from "@/components/animate-ui/components/radix/sidebar"
+import { useNotificationsRealtime } from "@/lib/api/use-notifications"
 import type { ServerSession } from "@/lib/auth"
 import { NAV_DATA_ADMIN } from "@/lib/data/nav-data"
 import { DashboardSessionContext } from "../DashboardSessionContext"
@@ -14,6 +15,8 @@ type DashboardShellAdminProps = {
 }
 
 export function DashboardShellAdmin({ children, defaultOpen, session }: DashboardShellAdminProps) {
+  const userId = session?.user?.id
+  useNotificationsRealtime(userId)
   return (
     <DashboardSessionContext.Provider value={session ?? null}>
       <SidebarProvider className="pt-2 px-2 pb-2 bg-sidebar" defaultOpen={defaultOpen}>

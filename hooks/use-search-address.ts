@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query"
 import { OpenStreetMapProvider } from "leaflet-geosearch"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import { useDebounce } from "./use-debounce"
 
@@ -36,13 +37,21 @@ export function useSearchAddress({
 }: UseSearchAddressOptions = {}): UseSearchAddressReturn {
   const [query, setQuery] = useState("")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [rawResults, setRawResults] = useState<SearchResult[]>([])
-  const [loading, setLoading] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedItem, setSelectedItem] = useState<SearchResult | null>(null)
   const [parsedAddress, setParsedAddress] = useState<ParsedAddress | null>(null)
 
   const debouncedQuery = useDebounce(query, 500)
+
+  const { data: rawResults = [], isFetching: loading } = useQuery({
+    queryKey: ["address-search", debouncedQuery],
+    queryFn: async () => {
+      const searchResults = await provider.search({ query: debouncedQuery })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return searchResults as SearchResult[]
+    },
+    enabled: Boolean(debouncedQuery.trim()),
+    staleTime: 60_000,
+  })
 
   const results = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,44 +66,12 @@ export function useSearchAddress({
     return grouped
   }, [rawResults])
 
-  const search = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setRawResults([])
-      setLoading(false)
-      return
-    }
-
-    setLoading(true)
-    try {
-      const searchResults = await provider.search({ query: searchQuery })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setRawResults(searchResults as SearchResult[])
-    } catch {
-      setRawResults([])
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (debouncedQuery) {
-      search(debouncedQuery)
-    } else {
-      setRawResults([])
-    }
-  }, [debouncedQuery, search])
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const parseAddress = useCallback((item: SearchResult | null): ParsedAddress | null => {
     if (!item) return null
 
     const label = item.label || ""
     const parts = label.split(",").map((p: string) => p.trim())
-    console.log("[parseAddress] parts:", parts)
-
-    // Simple parsing from parts array
-    // parts[0] = number, parts[1] = street, parts[2] = suburb, parts[3] = city/district
-    // parts[4] = province, parts[5] = region, parts[6] = postcode, parts[7] = country
 
     const numberPart = parts.find((p: string) => /^\d+$/.test(p)) || ""
     const streetPart =
@@ -110,10 +87,7 @@ export function useSearchAddress({
     const street =
       streetPart && numberPart ? `${streetPart} ${numberPart}` : streetPart || parts[1] || ""
 
-    // City: use parts[5] from the address parts array (positions 0-7)
     const city = parts[5] || ""
-
-    // Country is always last
     const country = parts[parts.length - 1] || ""
 
     return { street, city, country, latitude: item.y, longitude: item.x }
@@ -125,9 +99,7 @@ export function useSearchAddress({
 
   const handleSelect = useCallback(
     (item: SearchResult) => {
-      console.log("[handleSelect] item:", item)
       const parsed = parseAddress(item)
-      console.log("[handleSelect] parsed:", parsed)
       if (parsed) {
         setSelectedItem(item)
         setParsedAddress(parsed)

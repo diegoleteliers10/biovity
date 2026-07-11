@@ -12,14 +12,11 @@ import { useChatsByProfessional } from "@/lib/api/use-chats"
 import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
 import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import { getUser } from "@/lib/api/users"
-import { DATA } from "@/lib/data/data-test"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { HomeHeader } from "./home/homeHeader"
-import { JobAlertsCard } from "./home/jobAlertsCard"
 import { MetricCard } from "./home/metricCard"
 import { RecentApplicationsCard } from "./home/recentApplicationsCard"
 import { RecentMessagesCard } from "./home/recentMessagesCard"
-import { RecommendedJobCard } from "./home/recommendedJobCard"
 
 // Cached user fetcher - deduplicates within the request using React.cache
 // Per async-parallel rule: use Promise.all for independent operations
@@ -54,16 +51,6 @@ export const HomeContent = () => {
     [push]
   )
 
-  const handleApplyJob = useCallback((_jobId: number, _jobTitle: string, _company: string) => {
-    // TODO: Implement job application logic
-    console.log("Apply job")
-  }, [])
-
-  const handleSaveJob = useCallback((_jobId: number, _jobTitle: string, _company: string) => {
-    // TODO: Implement job save logic
-    console.log("Save job")
-  }, [])
-
   const handleViewAllJobs = useCallback(() => {
     push("/dashboard/jobs")
   }, [push])
@@ -75,11 +62,6 @@ export const HomeContent = () => {
   const handleViewAllApplications = useCallback(() => {
     push("/dashboard/applications")
   }, [push])
-
-  const handleCreateAlert = useCallback(() => {
-    // TODO: Implement alert creation logic
-    console.log("Create alert")
-  }, [])
 
   const handleNotificationClick = useCallback(
     (id: string) => {
@@ -230,47 +212,29 @@ export const HomeContent = () => {
       </div>
 
       {/* Recommended Jobs Section */}
-      <div className="mt-4 space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="mt-4">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl tracking-tight font-semibold text-foreground">
-            Empleos Recomendados para Ti
+            Empleos Recomendados
           </h2>
-          <button
-            type="button"
-            onClick={handleViewAllJobs}
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            Ver Todos los Empleos
-          </button>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {DATA.recommendedJobs.map((job) => (
-            <RecommendedJobCard
-              key={job.jobTitle}
-              job={job}
-              onJobClick={handleJobClick}
-              onApplyJob={handleApplyJob}
-              onSaveJob={handleSaveJob}
-            />
-          ))}
+        <div className="rounded-lg border border-dashed border-border p-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Proximamente recibiras recomendaciones personalizadas basadas en tu perfil y
+            preferencias.
+          </p>
         </div>
       </div>
 
       {/* Job Alerts Section */}
-      <div className="mt-4 space-y-2">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold tracking-tight text-foreground">
-            Alertas de Empleo
-          </h2>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Configura alertas para recibir notificaciones de nuevos empleos que coincidan con tus
-          intereses.
-        </p>
-
-        <div className="grid gap-6 lg:grid-cols-1">
-          <JobAlertsCard onCreateAlert={handleCreateAlert} />
+      <div className="mt-4">
+        <h2 className="text-xl font-semibold tracking-tight text-foreground mb-4">
+          Alertas de Empleo
+        </h2>
+        <div className="rounded-lg border border-dashed border-border p-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Proximamente podras configurar alertas para recibir notificaciones de nuevos empleos.
+          </p>
         </div>
       </div>
     </div>

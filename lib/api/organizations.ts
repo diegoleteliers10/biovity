@@ -22,11 +22,22 @@ export type CreateOrganizationInput = {
   address?: OrganizationAddress
 }
 
+export type OrganizationIntegrations = {
+  slackWebhookUrl?: string
+  discordWebhookUrl?: string
+  enabled?: boolean
+}
+
 export type UpdateOrganizationInput = {
   name?: string
   website?: string
   phone?: string
   address?: OrganizationAddress
+  integrations?: OrganizationIntegrations
+  logo?: string
+  description?: string
+  industry?: string
+  size?: string
 }
 
 export type Organization = {
@@ -35,9 +46,14 @@ export type Organization = {
   website: string | null
   phone: string | null
   address: OrganizationAddress | null
+  integrations: OrganizationIntegrations | null
+  logo: string | null
+  description: string | null
+  industry: string | null
+  size: string | null
+  subscriptionId: string | null
   createdAt: string
   updatedAt: string
-  subscriptionId: string | null
 }
 
 function normalizeOrganization(raw: unknown): Organization | null {

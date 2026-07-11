@@ -1,6 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
 import {
   ModelSelector,
   ModelSelectorContent,
@@ -269,47 +270,44 @@ function AddCredentialForm({
 }
 
 export function AiSettingsTab({ organizationId }: { organizationId: string }) {
-  const [credentials, setCredentials] = useState<AiCredentialListItem[]>([])
-  const [status, setStatus] = useState<Status>({ kind: "loading" })
+  const [status, setStatus] = useState<Status>({ kind: "idle" })
   const [showAddForm, setShowAddForm] = useState(false)
 
-  const fetchCredentials = useCallback(async () => {
-    setStatus({ kind: "loading" })
-    const result = await listCredentials(organizationId)
-    if (result.isErr()) {
-      const fallback = await getMaskedCredential(organizationId)
-      if (
-        fallback.isOk() &&
-        fallback.value.hasCredential &&
-        fallback.value.provider &&
-        fallback.value.modelId
-      ) {
-        setCredentials([
-          {
-            id: "active",
-            provider: fallback.value.provider,
-            modelId: fallback.value.modelId,
-            keyPreview: fallback.value.keyPreview ?? "****",
-            label: fallback.value.label,
-            isActive: true,
-            createdAt: new Date().toISOString(),
-          },
-        ])
+  const credentialsQuery = useQuery({
+    queryKey: ["ai-credentials", organizationId],
+    queryFn: async () => {
+      const result = await listCredentials(organizationId)
+      if (result.isErr()) {
+        const fallback = await getMaskedCredential(organizationId)
+        if (
+          fallback.isOk() &&
+          fallback.value.hasCredential &&
+          fallback.value.provider &&
+          fallback.value.modelId
+        ) {
+          return [
+            {
+              id: "active",
+              provider: fallback.value.provider,
+              modelId: fallback.value.modelId,
+              keyPreview: fallback.value.keyPreview ?? "****",
+              label: fallback.value.label,
+              isActive: true,
+              createdAt: new Date().toISOString(),
+            },
+          ]
+        }
+        return []
       }
-      setStatus({ kind: "idle" })
-      return
-    }
-    setCredentials(result.value)
-    const active = result.value.find((c) => c.isActive)
-    if (!active) {
-      setCredentials([])
-    }
-    setStatus({ kind: "idle" })
-  }, [organizationId])
+      const active = result.value.find((c) => c.isActive)
+      if (!active) {
+        return []
+      }
+      return result.value
+    },
+  })
 
-  useEffect(() => {
-    fetchCredentials()
-  }, [fetchCredentials])
+  const credentials = credentialsQuery.data ?? []
 
   async function handleAdd(input: {
     provider: ProviderId
@@ -325,7 +323,7 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
     }
     setShowAddForm(false)
     setStatus({ kind: "saved" })
-    fetchCredentials()
+    void credentialsQuery.refetch()
   }
 
   async function handleActivate(credentialId: string) {
@@ -336,7 +334,7 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
       return
     }
     setStatus({ kind: "saved" })
-    fetchCredentials()
+    void credentialsQuery.refetch()
   }
 
   async function handleDelete(credentialId: string) {
@@ -347,10 +345,10 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
       return
     }
     setStatus({ kind: "saved" })
-    fetchCredentials()
+    void credentialsQuery.refetch()
   }
 
-  const busy = status.kind === "loading" || status.kind === "adding"
+  const busy = credentialsQuery.isLoading || status.kind === "adding"
   const activeCredential = credentials.find((c) => c.isActive)
 
   return (
@@ -379,7 +377,7 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
         <p className="text-sm text-emerald-600 dark:text-emerald-400">Operacion completada.</p>
       )}
 
-      {status.kind === "loading" ? (
+      {credentialsQuery.isLoading ? (
         <div className="grid gap-3 sm:grid-cols-2">
           {[1, 2].map((i) => (
             <div key={i} className="h-32 animate-pulse rounded-lg border bg-muted/30" />

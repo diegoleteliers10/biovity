@@ -4,10 +4,13 @@ import {
   Building02Icon,
   File02Icon,
   FileAddIcon,
+  Mail01Icon,
+  RadarIcon,
   TradeDownIcon,
   TradeUpIcon,
   User02Icon,
   UserGroupIcon,
+  UserListIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
@@ -53,6 +56,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Metric } from "@/lib/types/dashboard"
+import { formatFechaRelativa } from "@/lib/utils"
 
 async function fetchStats(): Promise<AdminStats> {
   const res = await fetch("/api/admin/stats")
@@ -68,6 +72,15 @@ async function fetchRegistrationsTrend(period: 30 | 90): Promise<RegistrationsTr
   const data = await res.json().catch(() => null)
   if (!res.ok) {
     throw new Error((data as { error?: string })?.error ?? "Error al cargar trend")
+  }
+  return data
+}
+
+async function fetchRecentUsers(): Promise<RecentUsersResponse> {
+  const res = await fetch("/api/admin/users?type=professional&limit=5&page=1")
+  const data = await res.json().catch(() => null)
+  if (!res.ok) {
+    throw new Error((data as { error?: string })?.error ?? "Error al cargar usuarios recientes")
   }
   return data
 }
@@ -97,12 +110,22 @@ interface TopJobsResponse {
   }>
 }
 
-function TrendBadge({ value }: { value: number }) {
+interface RecentUsersResponse {
+  data: Array<{
+    id: string
+    email: string
+    name: string
+    createdAt: string
+  }>
+  total: number
+}
+
+export function TrendBadge({ value }: { value: number }) {
   const positive = value >= 0
   return (
     <span
       className={`inline-flex items-center gap-0.5 text-xs font-medium ${
-        positive ? "text-green-600" : "text-red-600"
+        positive ? "text-secondary" : "text-destructive"
       }`}
     >
       <HugeiconsIcon icon={positive ? TradeUpIcon : TradeDownIcon} size={12} strokeWidth={2} />
@@ -117,20 +140,43 @@ const BAR_COLORS = ["#10b981", "#3b82f6"]
 export function AdminHomeContent() {
   const [period, setPeriod] = useState<30 | 90>(30)
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    isError: statsError,
+    refetch: refetchStats,
+  } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: fetchStats,
   })
 
-  const { data: trend, isLoading: trendLoading } = useQuery({
+  const {
+    data: trend,
+    isLoading: trendLoading,
+    isError: trendError,
+    refetch: refetchTrend,
+  } = useQuery({
     queryKey: ["admin-registrations-trend", period],
     queryFn: () => fetchRegistrationsTrend(period),
   })
 
-  const { data: topJobs, isLoading: topJobsLoading } = useQuery({
+  const {
+    data: topJobs,
+    isLoading: topJobsLoading,
+    isError: topJobsError,
+    refetch: refetchTopJobs,
+  } = useQuery({
     queryKey: ["admin-top-jobs"],
     queryFn: () => fetchTopJobs(10),
   })
+
+  const { data: recentUsers, isLoading: recentUsersLoading } = useQuery({
+    queryKey: ["admin-recent-users"],
+    queryFn: fetchRecentUsers,
+    refetchInterval: 60_000,
+  })
+
+  const hasErrors = statsError || trendError || topJobsError
 
   const metrics: Metric[] = stats
     ? [
@@ -139,12 +185,14 @@ export function AdminHomeContent() {
           value: stats.users.total,
           subtitle: `${stats.users.professionals} prof. · ${stats.users.organizations} org.`,
           icon: User02Icon,
+          href: "/dashboard/users",
         },
         {
           title: "Usuarios activos",
           value: stats.users.active,
           subtitle: stats.users.inactive > 0 ? `${stats.users.inactive} inactivos` : undefined,
           icon: UserGroupIcon,
+          href: "/dashboard/users",
         },
         {
           title: "Nuevos (7d)",
@@ -153,6 +201,7 @@ export function AdminHomeContent() {
           icon: User02Icon,
           trend: `${stats.users.recentTrend >= 0 ? "+" : ""}${stats.users.recentTrend}%`,
           trendPositive: stats.users.recentTrend >= 0,
+          href: "/dashboard/users",
         },
         {
           title: "Lista de espera",
@@ -168,12 +217,14 @@ export function AdminHomeContent() {
           value: stats.platform.activeJobs,
           subtitle: undefined,
           icon: FileAddIcon,
+          href: "/dashboard",
         },
         {
           title: "Postulaciones",
           value: stats.platform.totalApplications,
           subtitle: undefined,
           icon: File02Icon,
+          href: "/dashboard",
         },
       ]
     : []
@@ -189,9 +240,32 @@ export function AdminHomeContent() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Panel de administración</h1>
         <p className="mt-1 text-muted-foreground">
-          Resumen de la plataforma Biovity: usuarios, lista de espera y métricas de la API externa.
+          Resumen de la plataforma Biovity: usuarios, lista de espera y metricas de la plataforma.
         </p>
       </div>
+
+      {hasErrors && (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <p className="text-destructive text-sm font-medium">
+            Error al cargar datos del dashboard
+          </p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            Algunas secciones pueden estar incompletas. Intenta recargar.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-2"
+            onClick={() => {
+              refetchStats()
+              refetchTrend()
+              refetchTopJobs()
+            }}
+          >
+            Reintentar
+          </Button>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {statsLoading
@@ -218,11 +292,12 @@ export function AdminHomeContent() {
                 en {period === 30 ? "30 días" : "90 días"}
               </p>
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-1" role="radiogroup" aria-label="Periodo del grafico">
               <Button
                 variant={period === 30 ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setPeriod(30)}
+                aria-pressed={period === 30}
               >
                 30d
               </Button>
@@ -230,6 +305,7 @@ export function AdminHomeContent() {
                 variant={period === 90 ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setPeriod(90)}
+                aria-pressed={period === 90}
               >
                 90d
               </Button>
@@ -370,9 +446,48 @@ export function AdminHomeContent() {
             </Button>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Total: {stats?.users.total ?? "—"} usuarios ({stats?.users.active ?? "—"} activos)
-            </p>
+            {recentUsersLoading ? (
+              <div className="space-y-3">
+                {[0, 1, 2].map((n) => (
+                  <Skeleton key={n} className="h-12 w-full" />
+                ))}
+              </div>
+            ) : (
+              (() => {
+                const userList = recentUsers?.data
+                if (userList?.length) {
+                  return (
+                    <div className="space-y-2">
+                      {userList.map((user) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center gap-3 rounded-lg border border-border/50 p-2.5 transition-colors hover:bg-muted/30"
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-full bg-secondary/10 text-xs font-semibold text-secondary">
+                            {user.name?.charAt(0)?.toUpperCase() ?? "?"}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">
+                              {user.name || "Sin nombre"}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                            {formatFechaRelativa(user.createdAt)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+                return (
+                  <p className="text-sm text-muted-foreground">
+                    Total: {stats?.users.total ?? "—"} usuarios ({stats?.users.active ?? "—"}{" "}
+                    activos)
+                  </p>
+                )
+              })()
+            )}
           </CardContent>
         </Card>
 
@@ -391,6 +506,24 @@ export function AdminHomeContent() {
               <Link href="/dashboard/organizations" className="flex items-center gap-2">
                 <HugeiconsIcon icon={Building02Icon} size={20} strokeWidth={1.5} />
                 Gestionar organizaciones
+              </Link>
+            </Button>
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link href="/dashboard/contact" className="flex items-center gap-2">
+                <HugeiconsIcon icon={Mail01Icon} size={20} strokeWidth={1.5} />
+                Ver mensajes de contacto
+              </Link>
+            </Button>
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link href="/dashboard/waitlist" className="flex items-center gap-2">
+                <HugeiconsIcon icon={UserListIcon} size={20} strokeWidth={1.5} />
+                Lista de espera
+              </Link>
+            </Button>
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link href="/dashboard/ai-logs" className="flex items-center gap-2">
+                <HugeiconsIcon icon={RadarIcon} size={20} strokeWidth={1.5} />
+                Logs de AI
               </Link>
             </Button>
           </CardContent>

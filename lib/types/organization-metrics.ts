@@ -1,4 +1,4 @@
-export type MetricsPeriod = "week" | "month" | "year"
+export type MetricsPeriod = "week" | "month" | "year" | "custom"
 
 export type DashboardMetrics = {
   activeJobs: number
@@ -18,6 +18,11 @@ export type PipelineMetrics = {
     contratado: number
   }
   conversionRate: number
+  avgTimeInStages: {
+    entrevista: number
+    oferta: number
+    contratado: number
+  }
 }
 
 export type TopJobMetrics = {
@@ -47,8 +52,20 @@ export type OrganizationMetrics = {
   recentTrend: RecentTrendMetrics[]
   geographicDistribution: GeographicDistributionEntry[]
   avgHiringTimeDays: number
+  recruiterProductivity: RecruiterProductivityEntry[]
+}
+
+export type RecruiterProductivityEntry = {
+  userId: string
+  userName: string
+  userEmail: string
+  applicationsProcessed: number
+  interviewsConducted: number
+  avgResponseTimeDays: number
 }
 
 export type OrganizationMetricsFilters = {
   period?: MetricsPeriod
+  startDate?: string
+  endDate?: string
 }

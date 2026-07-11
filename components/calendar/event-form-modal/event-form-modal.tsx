@@ -1,7 +1,7 @@
 "use client"
 
 import { Location05Icon, VideoCameraAiIcon } from "@hugeicons/core-free-icons"
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { Sheet, SheetContent } from "@/components/animate-ui/components/radix/sheet"
 import { Input } from "@/components/ui/input"
 import { useCreateEvent, useDeleteEvent, useUpdateEvent } from "@/lib/api/use-events"
@@ -80,12 +80,6 @@ export function EventFormModal({
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | undefined>(candidateId)
   const [candidateSearch, setCandidateSearch] = useState("")
   const [showCandidateDropdown, setShowCandidateDropdown] = useState(false)
-
-  useEffect(() => {
-    if (!candidateId && candidateSearch.trim()) {
-      setShowCandidateDropdown(true)
-    }
-  }, [candidateSearch, candidateId])
 
   const { data: candidateResults } = useProfessionalUsers(1, candidateSearch.trim() || undefined)
 
@@ -277,7 +271,11 @@ export function EventFormModal({
                   id="event-participant"
                   placeholder="Buscar por nombre..."
                   value={candidateSearch}
-                  onChange={(e) => setCandidateSearch(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    setCandidateSearch(v)
+                    if (!candidateId && v.trim()) setShowCandidateDropdown(true)
+                  }}
                   onFocus={() => {
                     if (candidateResults?.data && candidateResults.data.length > 0) {
                       setShowCandidateDropdown(true)

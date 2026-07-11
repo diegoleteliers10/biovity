@@ -2,6 +2,7 @@
 
 import { Notification01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useRouter } from "next/navigation"
 import { AgentSheetTrigger } from "@/components/ai/AgentSheetTrigger"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +18,7 @@ type NotificationBellProps = {
   notifications: Notification[]
   unreadCount?: number
   onNotificationClick?: (id: string) => void
+  onMarkAllRead?: () => void
   showAgentTrigger?: boolean
 }
 
@@ -26,8 +28,10 @@ export function NotificationBell({
   notifications = EMPTY_NOTIFICATIONS,
   unreadCount = 0,
   onNotificationClick,
+  onMarkAllRead,
   showAgentTrigger = false,
 }: NotificationBellProps) {
+  const { push } = useRouter()
   return (
     <div className="flex items-center gap-1">
       {showAgentTrigger ? <AgentSheetTrigger /> : null}
@@ -36,12 +40,26 @@ export function NotificationBell({
           <Button variant="ghost" size="icon" className="relative">
             <HugeiconsIcon icon={Notification01Icon} size={24} strokeWidth={1.5} />
             {unreadCount > 0 && (
-              <span className="absolute top-0 right-0 size-2 bg-destructive rounded-full" />
+              <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground animate-in zoom-in-50 duration-200">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-80" align="end">
-          <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
+        <DropdownMenuContent className="w-80 p-0" align="end">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/50 bg-muted/20">
+            <span className="font-semibold text-sm">Notificaciones</span>
+            {unreadCount > 0 && onMarkAllRead && (
+              <button
+                type="button"
+                className="text-xs text-primary hover:underline transition-colors"
+                onClick={onMarkAllRead}
+                id="mark-all-read-btn"
+              >
+                Marcar leídas
+              </button>
+            )}
+          </div>
           {notifications.length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground">
               No hay notificaciones
@@ -76,6 +94,15 @@ export function NotificationBell({
               ))}
             </div>
           )}
+          <div className="border-t border-border/50 p-2">
+            <button
+              type="button"
+              className="w-full text-center text-xs font-medium text-primary hover:underline py-1.5 transition-colors"
+              onClick={() => push("/dashboard/notifications")}
+            >
+              Ver todas
+            </button>
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
