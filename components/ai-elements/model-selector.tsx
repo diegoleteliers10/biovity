@@ -65,9 +65,7 @@ export type ModelSelectorGroupProps = ComponentProps<typeof CommandGroup>
 
 export const ModelSelectorGroup = (props: ModelSelectorGroupProps) => <CommandGroup {...props} />
 
-export type ModelSelectorItemProps = ComponentProps<typeof CommandItem>
-
-type ModelSelectorItemProps = ComponentProps<typeof CommandPrimitive.Item>
+export type ModelSelectorItemProps = ComponentProps<typeof CommandPrimitive.Item>
 
 export const ModelSelectorItem = ({ className, ...props }: ModelSelectorItemProps) => (
   <CommandPrimitive.Item
