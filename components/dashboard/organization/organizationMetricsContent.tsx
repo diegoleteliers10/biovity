@@ -21,6 +21,11 @@ const [LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis] = await Prom
   import("recharts").then((m) => m.YAxis),
 ])
 
+const [BarChart, Bar] = await Promise.all([
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.Bar),
+])
+
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Badge } from "@/components/ui/badge"
@@ -135,6 +140,18 @@ export function OrganizationMetricsContent() {
   const rateEntrevista = totalApps > 0 ? Math.round((reachedEntrevista / totalApps) * 100) : 0
   const rateOferta = totalApps > 0 ? Math.round((reachedOferta / totalApps) * 100) : 0
   const rateContratado = totalApps > 0 ? Math.round((reachedContratado / totalApps) * 100) : 0
+
+  const responseTimeData = metrics?.responseTimeDistribution
+    ? [
+        { bucket: "< 24h", count: metrics.responseTimeDistribution.lessThan24h },
+        { bucket: "1-3d", count: metrics.responseTimeDistribution.oneToThreeDays },
+        { bucket: "3-7d", count: metrics.responseTimeDistribution.threeToSevenDays },
+        { bucket: "> 7d", count: metrics.responseTimeDistribution.moreThanSevenDays },
+      ]
+    : []
+  const responseTimeTotal = responseTimeData.reduce((sum, item) => sum + item.count, 0)
+  const hasResponseTimeData = responseTimeTotal > 0
+  const unansweredCount = metrics?.unansweredCount ?? 0
 
   if (isError) {
     return (
@@ -702,6 +719,53 @@ export function OrganizationMetricsContent() {
               No hay datos de productividad disponibles. Agrega miembros al equipo para ver
               m&eacute;tricas individuales.
             </p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Tiempo de respuesta</CardTitle>
+            <div className="flex items-center gap-2">
+              {unansweredCount > 0 && (
+                <Badge variant="outline" className="bg-muted/40 text-muted-foreground border-border/60">
+                  {unansweredCount} sin responder
+                </Badge>
+              )}
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                {metrics?.avgHiringTimeDays ?? 0} d&iacute;as promedio
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isPending ? (
+            <Skeleton className="h-[180px] w-full" />
+          ) : hasResponseTimeData ? (
+            <div className="space-y-3">
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={responseTimeData} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
+                  <XAxis dataKey="bucket" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
+                  <Tooltip
+                    cursor={{ fill: "rgba(16, 185, 129, 0.08)" }}
+                    formatter={(value: number) => [value.toLocaleString("es-CL"), "Postulaciones"]}
+                  />
+                  <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+              <p className="text-xs text-muted-foreground">
+                Distribuci&oacute;n de postulaciones seg&uacute;n el tiempo que tardaste en responder.
+              </p>
+            </div>
+          ) : (
+            <div className="flex h-[180px] flex-col items-center justify-center gap-1 text-center">
+              <p className="text-sm font-medium">Sin datos de tiempo de respuesta</p>
+              <p className="text-xs text-muted-foreground">
+                Cuando respondas postulaciones, veremos aqu&iacute; la distribuci&oacute;n por rango de tiempo.
+              </p>
+            </div>
           )}
         </CardContent>
       </Card>
