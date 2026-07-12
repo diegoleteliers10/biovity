@@ -11,6 +11,7 @@ import type { UserMetrics } from "@/lib/types/user-metrics"
 export const userMetricsKeys = {
   all: ["user", "metrics"] as const,
   byPeriod: (userId: string, period: MetricsPeriod) => ["user", "metrics", userId, period] as const,
+  user: (userId: string) => ["user", "metrics", userId] as const,
   profileViews: (userId: string) => ["user", "profileViews", userId] as const,
 }
 
@@ -22,10 +23,9 @@ const DEFAULT_USER_METRICS: UserMetrics = {
   },
   kpis: {
     applicationsLast30Days: 0,
-    responseRate: 0,
     interviews: 0,
     offers: 0,
-    avgResponseTimeDays: 0,
+    avgResponseTimeDays: null,
     profileViews: 0,
   },
   applicationsTrend: [],
@@ -41,9 +41,7 @@ const DEFAULT_USER_METRICS: UserMetrics = {
     oferta: { count: 0, percentage: 0 },
     contratado: { count: 0, percentage: 0 },
   },
-  industriesApplied: [],
-  upcomingInterviews: [],
-  recentApplications: [],
+  categoriesApplied: [],
 }
 
 export function useUserMetrics(userId: string | undefined, period: MetricsPeriod = "month") {
@@ -75,20 +73,8 @@ export function useIncrementProfileViews() {
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
-    onSuccess: (data, userId) => {
-      if (!data) return
-      queryClient.setQueryData(userMetricsKeys.byPeriod(userId, "month"), (old: unknown) => {
-        if (!old || typeof old !== "object") return old
-        const o = old as Record<string, unknown>
-        if (!o.kpis || typeof o.kpis !== "object") return old
-        return {
-          ...old,
-          kpis: {
-            ...(o.kpis as Record<string, unknown>),
-            profileViews: data.views,
-          },
-        }
-      })
+    onSuccess: (_data, userId) => {
+      queryClient.invalidateQueries({ queryKey: userMetricsKeys.user(userId) })
     },
   })
 }

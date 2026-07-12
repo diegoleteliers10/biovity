@@ -1,6 +1,7 @@
 import type { OrganizationMetrics } from "@/lib/types/organization-metrics"
+import type { UserMetrics } from "@/lib/types/user-metrics"
 
-function escapeCsvField(value: string | number): string {
+export function escapeCsvField(value: string | number): string {
   const str = String(value)
   if (str.includes(",") || str.includes('"') || str.includes("\n")) {
     return `"${str.replace(/"/g, '""')}"`
@@ -8,7 +9,7 @@ function escapeCsvField(value: string | number): string {
   return str
 }
 
-function rowsToCsv(headers: string[], rows: (string | number)[][]): string {
+export function rowsToCsv(headers: string[], rows: (string | number)[][]): string {
   const lines = [headers.map(escapeCsvField).join(",")]
   for (const row of rows) {
     lines.push(row.map(escapeCsvField).join(","))
@@ -16,7 +17,7 @@ function rowsToCsv(headers: string[], rows: (string | number)[][]): string {
   return lines.join("\n")
 }
 
-function downloadCsv(filename: string, csv: string) {
+export function downloadCsv(filename: string, csv: string) {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
@@ -73,4 +74,35 @@ const statusLabels: Record<string, string> = {
   oferta: "Oferta",
   rechazado: "Rechazado",
   contratado: "Contratado",
+  desistido: "Desistido",
+}
+
+export function exportUserMetricsCsv(metrics: UserMetrics, period: string) {
+  const now = new Date().toISOString().slice(0, 10)
+  const prefix = `mis_metricas_${period}_${now}`
+
+  const kpiHeaders = ["Metrica", "Valor"]
+  const kpiRows: (string | number)[][] = [
+    ["Postulaciones totales", metrics.quickMetrics.totalApplications],
+    ["Aplicaciones activas", metrics.quickMetrics.activeApplications],
+    ["Tasa de respuesta (%)", metrics.quickMetrics.responseRate],
+    ["Postulaciones ultimos 30 dias", metrics.kpis.applicationsLast30Days],
+    ["Entrevistas (acumulado)", metrics.kpis.interviews],
+    ["Ofertas (acumulado)", metrics.kpis.offers],
+    ["Tiempo medio de respuesta (dias)", metrics.kpis.avgResponseTimeDays ?? "Sin datos"],
+    ["Vistas de perfil", metrics.kpis.profileViews],
+  ]
+  downloadCsv(`${prefix}_kpis.csv`, rowsToCsv(kpiHeaders, kpiRows))
+
+  if (metrics.applicationsTrend.length > 0) {
+    const trendHeaders = ["Periodo", "Postulaciones"]
+    const trendRows = metrics.applicationsTrend.map((p) => [p.date, p.applications])
+    downloadCsv(`${prefix}_tendencia.csv`, rowsToCsv(trendHeaders, trendRows))
+  }
+
+  if (metrics.categoriesApplied.length > 0) {
+    const catHeaders = ["Categoria", "Cantidad", "Porcentaje (%)"]
+    const catRows = metrics.categoriesApplied.map((c) => [c.category, c.count, c.percentage])
+    downloadCsv(`${prefix}_categorias.csv`, rowsToCsv(catHeaders, catRows))
+  }
 }
