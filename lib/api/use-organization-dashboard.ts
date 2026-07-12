@@ -83,6 +83,13 @@ export function useOrganizationMetrics(
           geographicDistribution: [],
           avgHiringTimeDays: 0,
           recruiterProductivity: [],
+          responseTimeDistribution: {
+            lessThan24h: 0,
+            oneToThreeDays: 0,
+            threeToSevenDays: 0,
+            moreThanSevenDays: 0,
+          },
+          unansweredCount: 0,
         }
       }
       const result = await getOrganizationMetrics(organizationId, { period, startDate, endDate })
@@ -100,6 +107,13 @@ export function useOrganizationMetrics(
           geographicDistribution: [],
           avgHiringTimeDays: 0,
           recruiterProductivity: [],
+          responseTimeDistribution: {
+            lessThan24h: 0,
+            oneToThreeDays: 0,
+            threeToSevenDays: 0,
+            moreThanSevenDays: 0,
+          },
+          unansweredCount: 0,
         }
       }
       return result.value
