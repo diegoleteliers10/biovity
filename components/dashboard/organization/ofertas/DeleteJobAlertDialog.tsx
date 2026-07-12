@@ -35,7 +35,7 @@ export function DeleteJobAlertDialog({ job, onClose, organizationId }: DeleteJob
         <AlertDialogHeader>
           <AlertDialogTitle>¿Eliminar oferta?</AlertDialogTitle>
           <AlertDialogDescription>
-            Se eliminará la oferta &quot;{job?.title}&quot;. Esta acción no se puede deshacer.
+            Se eliminará la oferta "{job?.title}". Esta acción no se puede deshacer.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

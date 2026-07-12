@@ -653,7 +653,7 @@ export function OrganizationMetricsContent() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              No hay datos geogr&aacute;ficos disponibles.
+              No hay datos geográficos disponibles.
             </p>
           )}
         </CardContent>
@@ -712,7 +712,7 @@ export function OrganizationMetricsContent() {
           ) : (
             <p className="text-sm text-muted-foreground">
               No hay datos de productividad disponibles. Agrega miembros al equipo para ver
-              m&eacute;tricas individuales.
+              métricas individuales.
             </p>
           )}
         </CardContent>
@@ -732,7 +732,7 @@ export function OrganizationMetricsContent() {
                 </Badge>
               )}
               <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                {metrics?.avgHiringTimeDays ?? 0} d&iacute;as promedio
+                {metrics?.avgHiringTimeDays ?? 0} días promedio
               </Badge>
             </div>
           </div>
@@ -754,7 +754,7 @@ export function OrganizationMetricsContent() {
                 </BarChart>
               </ResponsiveContainer>
               <p className="text-xs text-muted-foreground">
-                Distribuci&oacute;n de postulaciones seg&uacute;n el tiempo que tardaste en
+                Distribución de postulaciones según el tiempo que tardaste en
                 responder.
               </p>
             </div>
@@ -762,7 +762,7 @@ export function OrganizationMetricsContent() {
             <div className="flex h-[180px] flex-col items-center justify-center gap-1 text-center">
               <p className="text-sm font-medium">Sin datos de tiempo de respuesta</p>
               <p className="text-xs text-muted-foreground">
-                Cuando respondas postulaciones, veremos aqu&iacute; la distribuci&oacute;n por rango
+                Cuando respondas postulaciones, veremos aquí la distribución por rango
                 de tiempo.
               </p>
             </div>

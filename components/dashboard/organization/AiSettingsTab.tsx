@@ -353,14 +353,7 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold tracking-tight">Configuracion de IA</h3>
-          <p className="text-muted-foreground text-sm">
-            Administra las credenciales de proveedores de IA para esta organizacion. Solo puede
-            haber una credencial activa a la vez.
-          </p>
-        </div>
+      <div className="flex items-center justify-end">
         {!showAddForm && (
           <Button variant="outline" size="sm" onClick={() => setShowAddForm(true)} disabled={busy}>
             Agregar credencial

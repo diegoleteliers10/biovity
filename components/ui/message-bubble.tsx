@@ -415,7 +415,7 @@ export function ChatListItem({
           )}
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 pr-16">
           <div className="mb-1 flex items-center justify-between gap-2">
             <h3 className="truncate text-sm font-semibold text-foreground">{contactName}</h3>
             <span className="shrink-0 text-xs text-muted-foreground">

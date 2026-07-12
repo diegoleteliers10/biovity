@@ -133,7 +133,7 @@ export function ChatListSidebar({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-                  togglePinMutation.mutate(chat.id)
+                  togglePinMutation.mutate({ chatId: chat.id, role: "professional" })
                 }}
                 className={cn(
                   "size-7 flex items-center justify-center rounded-md transition-colors",
@@ -149,7 +149,7 @@ export function ChatListSidebar({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-                  toggleArchiveMutation.mutate(chat.id)
+                  toggleArchiveMutation.mutate({ chatId: chat.id, role: "professional" })
                 }}
                 className={cn(
                   "size-7 flex items-center justify-center rounded-md transition-colors",

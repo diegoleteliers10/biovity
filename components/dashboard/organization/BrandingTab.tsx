@@ -1,16 +1,12 @@
 "use client"
 
 import {
-  Building06Icon,
   Cancel01Icon,
   FloppyDiskIcon,
-  Globe02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -26,18 +22,18 @@ type BrandingTabProps = {
 }
 
 const INDUSTRY_OPTIONS = [
-  "Biotecnolog&iacute;a",
-  "Bioqu&iacute;mica",
-  "Qu&iacute;mica",
-  "Farmac&eacute;utica",
+  "Biotecnología",
+  "Bioquímica",
+  "Química",
+  "Farmacéutica",
   "Salud",
-  "Ingenier&iacute;a Qu&iacute;mica",
+  "Ingeniería Química",
   "Agroindustria",
   "Alimentos y Bebidas",
-  "Cosm&eacute;tica",
+  "Cosmética",
   "Medio Ambiente",
-  "Investigaci&oacute;n",
-  "Educaci&oacute;n",
+  "Investigación",
+  "Educación",
   "Otros",
 ]
 
@@ -86,48 +82,26 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Branding</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-40 animate-pulse rounded bg-muted" />
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="h-40 animate-pulse rounded bg-muted" />
+      </div>
     )
   }
 
   if (isError || !org) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Branding</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Error al cargar datos de la organizaci&oacute;n.
-          </p>
-        </CardContent>
-      </Card>
+      <p className="text-sm text-muted-foreground">
+        Error al cargar datos de la organización.
+      </p>
     )
   }
 
   return (
-    <Card className="border-border/60 shadow-sm">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <HugeiconsIcon icon={Building06Icon} size={20} className="text-primary" />
-          Branding de Empresa
-        </CardTitle>
-        <CardDescription>
-          Personaliza la informaci&oacute;n p&uacute;blica de tu empresa.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-5">
-        {isEditing ? (
+    <div className="space-y-5">
+      {isEditing ? (
           <>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Descripci&oacute;n</label>
+              <label className="text-sm font-medium text-foreground">Descripción</label>
               <Textarea
                 value={form.description}
                 onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
@@ -154,9 +128,9 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">
-                Tama&ntilde;o de la empresa
-              </label>
+                <label className="text-sm font-medium text-foreground">
+                  Tamaño de la empresa
+                </label>
               <Select value={form.size} onValueChange={(v) => setForm((p) => ({ ...p, size: v }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona rango" />
@@ -193,7 +167,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
               </div>
               <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                  Tama&ntilde;o
+                  Tamaño
                 </p>
                 <p className="mt-1 text-sm font-medium text-foreground">
                   {org.size ?? "No especificado"}
@@ -203,7 +177,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
             {org.description && (
               <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                  Descripci&oacute;n
+                  Descripción
                 </p>
                 <p className="mt-1 text-sm text-pretty text-foreground">{org.description}</p>
               </div>
@@ -213,7 +187,6 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
             </Button>
           </>
         )}
-      </CardContent>
-    </Card>
+    </div>
   )
 }
