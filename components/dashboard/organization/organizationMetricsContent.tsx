@@ -44,7 +44,6 @@ import { useOrganizationMetrics } from "@/lib/api/use-organization-dashboard"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 import { exportMetricsCsv } from "@/lib/utils/export-metrics-csv"
 import { useDashboardSession } from "../DashboardSessionContext"
-import { PipelineResumenCard } from "./PipelineResumenCard"
 
 const statusLabels: Record<string, string> = {
   pendiente: "Pendiente",
@@ -585,10 +584,6 @@ export function OrganizationMetricsContent() {
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <PipelineResumenCard />
-      </div>
-
       <Card>
         <CardHeader>
           <CardTitle>Top ofertas con más postulaciones</CardTitle>
@@ -729,7 +724,10 @@ export function OrganizationMetricsContent() {
             <CardTitle>Tiempo de respuesta</CardTitle>
             <div className="flex items-center gap-2">
               {unansweredCount > 0 && (
-                <Badge variant="outline" className="bg-muted/40 text-muted-foreground border-border/60">
+                <Badge
+                  variant="outline"
+                  className="bg-muted/40 text-muted-foreground border-border/60"
+                >
                   {unansweredCount} sin responder
                 </Badge>
               )}
@@ -756,14 +754,16 @@ export function OrganizationMetricsContent() {
                 </BarChart>
               </ResponsiveContainer>
               <p className="text-xs text-muted-foreground">
-                Distribuci&oacute;n de postulaciones seg&uacute;n el tiempo que tardaste en responder.
+                Distribuci&oacute;n de postulaciones seg&uacute;n el tiempo que tardaste en
+                responder.
               </p>
             </div>
           ) : (
             <div className="flex h-[180px] flex-col items-center justify-center gap-1 text-center">
               <p className="text-sm font-medium">Sin datos de tiempo de respuesta</p>
               <p className="text-xs text-muted-foreground">
-                Cuando respondas postulaciones, veremos aqu&iacute; la distribuci&oacute;n por rango de tiempo.
+                Cuando respondas postulaciones, veremos aqu&iacute; la distribuci&oacute;n por rango
+                de tiempo.
               </p>
             </div>
           )}
