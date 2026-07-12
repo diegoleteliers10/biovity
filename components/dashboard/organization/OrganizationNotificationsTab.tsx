@@ -5,7 +5,6 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -100,7 +99,7 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 pt-10">
+      <div className="space-y-6">
         <div className="h-40 rounded-lg border border-border/60 bg-muted animate-pulse" />
         <div className="h-60 rounded-lg border border-border/60 bg-muted animate-pulse" />
       </div>
@@ -109,27 +108,27 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
 
   if (userError || !user) {
     return (
-      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-center text-sm text-destructive pt-10">
+      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-center text-sm text-destructive">
         Error al cargar la configuración de notificaciones.
       </div>
     )
   }
 
   return (
-    <div className="pt-10 space-y-6 max-w-2xl">
-      {/* CARD 1: EMAIL NOTIFICATIONS */}
-      <Card className="border-border/60 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <HugeiconsIcon icon={Notification01Icon} size={20} className="text-primary" />
+    <div className="space-y-8 max-w-2xl">
+      {/* SECCIÓN 1: NOTIFICACIONES POR CORREO */}
+      <section className="space-y-5">
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold flex items-center gap-2">
+            <HugeiconsIcon icon={Notification01Icon} size={18} className="text-primary" />
             Notificaciones por Correo
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p className="text-sm text-muted-foreground">
             Elige qué alertas de actividad deseas recibir y con qué frecuencia en tu correo
             electrónico.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+          </p>
+        </div>
+        <div className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between py-2">
               <div className="space-y-0.5 pr-4">
@@ -226,23 +225,23 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
               {updateUserMutation.isPending ? "Guardando..." : "Guardar cambios"}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      {/* CARD 2: WEBHOOK INTEGRATIONS */}
+      {/* SECCIÓN 2: INTEGRACIONES DE WEBHOOKS */}
       {user?.organizationId && (
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+        <section className="space-y-5 border-t border-border/60 pt-8">
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold flex items-center gap-2">
               <SlackIcon className="size-5 text-[#E01E5A]" />
               Integración de Webhooks (Slack / Discord)
-            </CardTitle>
-            <CardDescription>
+            </h3>
+            <p className="text-sm text-muted-foreground">
               Configura webhooks para notificar en tiempo real en tus canales corporativos cuando
               ocurran eventos.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+            </p>
+          </div>
+          <div className="space-y-6">
             <div className="flex items-center justify-between py-2 border-b border-border/40 pb-4">
               <div className="space-y-0.5 pr-4">
                 <Label htmlFor="webhooks-enabled" className="font-semibold text-sm cursor-pointer">
@@ -305,8 +304,8 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
                 {updateOrgMutation.isPending ? "Guardando..." : "Guardar integraciones"}
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       )}
     </div>
   )

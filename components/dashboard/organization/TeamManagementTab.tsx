@@ -117,10 +117,10 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
       <CardHeader>
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <HugeiconsIcon icon={UserGroupIcon} size={20} className="text-primary" />
-          Gesti&oacute;n de Equipo
+          Gestión de Equipo
         </CardTitle>
         <CardDescription>
-          Invita y administra los miembros de tu organizaci&oacute;n.
+          Invita y administra los miembros de tu organización.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -161,7 +161,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
         <div className="divide-y divide-border/60">
           {members.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
-              No hay miembros en esta organizaci&oacute;n.
+              No hay miembros en esta organización.
             </p>
           ) : (
             members.map((member) => {
@@ -190,7 +190,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
                     <p className="text-sm font-medium text-foreground truncate">
                       {member.user?.name ?? "Usuario"}
                       {isCurrentUser && (
-                        <span className="text-xs text-muted-foreground ml-1.5">(t&uacute;)</span>
+                        <span className="text-xs text-muted-foreground ml-1.5">(tú)</span>
                       )}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">

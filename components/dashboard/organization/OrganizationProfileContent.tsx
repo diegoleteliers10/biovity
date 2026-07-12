@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  AlertDiamondIcon,
   Brain03Icon,
   Building06Icon,
   Camera01Icon,
@@ -32,7 +33,6 @@ import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -53,6 +53,7 @@ import { AiSettingsTab } from "./AiSettingsTab"
 import { NotificationPreferencesTab } from "./NotificationPreferencesTab"
 import { OrganizationActivityTab } from "./OrganizationActivityTab"
 import { OrganizationNotificationsTab } from "./OrganizationNotificationsTab"
+import { OrganizationSectionCard } from "./OrganizationSectionCard"
 
 const SearchAddress = dynamic(
   () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
@@ -140,7 +141,7 @@ const EditableCard = ({
 }) => (
   <Card
     className={cn(
-      "group relative bg-white transition-all duration-200",
+      "group relative border-border/60 shadow-sm transition-all duration-200",
       "hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)]",
       isEditing && "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)]",
       className
@@ -834,47 +835,13 @@ export function OrganizationProfileContent() {
 
               <TabsContent value="subscription" className="w-full pt-10">
                 {organizationId ? (
-                  <SubscriptionTab organizationId={organizationId} />
-                ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
-                    No tienes una organizaci&oacute;n asociada.
-                  </p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="branding" className="w-full pt-10">
-                {organizationId ? (
-                  <BrandingTab organizationId={organizationId} />
-                ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
-                    No tienes una organizaci&oacute;n asociada.
-                  </p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="team" className="w-full pt-10">
-                {organizationId ? (
-                  <TeamManagementTab organizationId={organizationId} />
-                ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
-                    No tienes una organizaci&oacute;n asociada.
-                  </p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="danger" className="w-full pt-10">
-                {organizationId ? (
-                  <DangerZoneTab organizationId={organizationId} />
-                ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
-                    No tienes una organizaci&oacute;n asociada.
-                  </p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="ai" className="w-full pt-10">
-                {organizationId ? (
-                  <AiSettingsTab organizationId={organizationId} />
+                  <OrganizationSectionCard
+                    title="Plan y Suscripción"
+                    icon={CreditCardIcon}
+                    description="Gestiona el plan de suscripción de tu organización."
+                  >
+                    <SubscriptionTab organizationId={organizationId} />
+                  </OrganizationSectionCard>
                 ) : (
                   <p className="text-sm text-muted-foreground text-pretty">
                     No tienes una organización asociada.
@@ -882,31 +849,114 @@ export function OrganizationProfileContent() {
                 )}
               </TabsContent>
 
-              <TabsContent value="notifications" className="w-full">
-                {userId ? (
-                  <OrganizationNotificationsTab userId={userId} />
-                ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
-                    No tienes un usuario asociado.
-                  </p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="preferences" className="w-full">
-                {userId ? (
-                  <NotificationPreferencesTab userId={userId} />
-                ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
-                    No tienes un usuario asociado.
-                  </p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="activity" className="w-full">
+              <TabsContent value="branding" className="w-full pt-10">
                 {organizationId ? (
-                  <OrganizationActivityTab organizationId={organizationId} />
+                  <OrganizationSectionCard
+                    title="Branding de Empresa"
+                    icon={Building06Icon}
+                    description="Personaliza la información pública de tu empresa."
+                  >
+                    <BrandingTab organizationId={organizationId} />
+                  </OrganizationSectionCard>
                 ) : (
-                  <p className="text-sm text-muted-foreground text-pretty pt-10">
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes una organización asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="team" className="w-full pt-10">
+                {organizationId ? (
+                  <OrganizationSectionCard
+                    title="Equipo"
+                    icon={Task01Icon}
+                    description="Administra los miembros y roles de tu organización."
+                  >
+                    <TeamManagementTab organizationId={organizationId} />
+                  </OrganizationSectionCard>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes una organización asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="danger" className="w-full pt-10">
+                {organizationId ? (
+                  <OrganizationSectionCard
+                    title="Zona de Peligro"
+                    icon={AlertDiamondIcon}
+                    description="Acciones irreversibles para la administración de la organización."
+                  >
+                    <DangerZoneTab organizationId={organizationId} />
+                  </OrganizationSectionCard>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes una organización asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="ai" className="w-full pt-10">
+                {organizationId ? (
+                  <OrganizationSectionCard
+                    title="Configuración de IA"
+                    icon={Brain03Icon}
+                    description="Administra las credenciales de proveedores de IA para esta organización. Solo puede haber una credencial activa a la vez."
+                  >
+                    <AiSettingsTab organizationId={organizationId} />
+                  </OrganizationSectionCard>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes una organización asociada.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="notifications" className="w-full pt-10">
+                {userId ? (
+                  <OrganizationSectionCard
+                    title="Notificaciones"
+                    icon={Notification01Icon}
+                    description="Configura cómo tu organización recibe alertas y webhooks."
+                  >
+                    <OrganizationNotificationsTab userId={userId} />
+                  </OrganizationSectionCard>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes un usuario asociado.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="preferences" className="w-full pt-10">
+                {userId ? (
+                  <OrganizationSectionCard
+                    title="Preferencias de Notificación"
+                    icon={Notification01Icon}
+                    description="Configura cuándo y cómo quieres recibir notificaciones en la plataforma."
+                  >
+                    <NotificationPreferencesTab userId={userId} />
+                  </OrganizationSectionCard>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
+                    No tienes un usuario asociado.
+                  </p>
+                )}
+              </TabsContent>
+
+              <TabsContent value="activity" className="w-full pt-10">
+                {organizationId ? (
+                  <OrganizationSectionCard
+                    title="Registro de Actividad"
+                    icon={Task01Icon}
+                    description="Historial de las acciones realizadas por los administradores y reclutadores en esta organización."
+                    contentClassName="p-0"
+                  >
+                    <OrganizationActivityTab organizationId={organizationId} />
+                  </OrganizationSectionCard>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-pretty">
                     No tienes una organización asociada.
                   </p>
                 )}
