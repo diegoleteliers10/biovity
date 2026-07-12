@@ -31,6 +31,42 @@ type ChartsGridProps = {
   period: MetricsPeriod
 }
 
+const MONTH_SHORT = [
+  "Ene",
+  "Feb",
+  "Mar",
+  "Abr",
+  "May",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dic",
+]
+
+const PERIOD_AXIS_LABEL: Record<MetricsPeriod, string> = {
+  week: "semana",
+  month: "mes",
+  year: "año",
+  custom: "período",
+}
+
+function formatTrendTick(value: string, period: MetricsPeriod): string {
+  if (!value) return ""
+  const parts = value.split("-")
+  const year = Number(parts[0])
+  const month = Number(parts[1]) - 1
+  const day = Number(parts[2])
+  if (!year || Number.isNaN(month) || Number.isNaN(day)) return value
+
+  if (period === "year") return String(year)
+  if (period === "month") return MONTH_SHORT[month] ?? value
+  const end = new Date(year, month, day + 6)
+  return `${day}-${end.getDate()} ${MONTH_SHORT[end.getMonth()] ?? ""}`
+}
+
 const DottedBackgroundPattern = ({ patternId }: { patternId: string }) => {
   return (
     <pattern id={patternId} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -70,31 +106,42 @@ const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: st
   )
 }
 
+const EmptyChartState = () => (
+  <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
+    Sin datos disponibles
+  </div>
+)
+
 type ApplicationsChartProps = {
-  data: Array<{ month: string; applications: number }>
+  data: Array<{ date: string; applications: number }>
   config: ChartConfig
+  period: MetricsPeriod
 }
 
-function ApplicationsChart({ data, config }: ApplicationsChartProps) {
+function ApplicationsChart({ data, config, period }: ApplicationsChartProps) {
   if (data.length === 0) {
-    return (
-      <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
-        Sin datos disponibles
-      </div>
-    )
+    return <EmptyChartState />
   }
   return (
     <ChartContainer config={config}>
       <AreaChart accessibilityLayer data={data}>
         <CartesianGrid vertical={false} strokeDasharray="3 3" />
         <XAxis
-          dataKey="month"
+          dataKey="date"
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          tickFormatter={(value) => value.slice(0, 3)}
+          minTickGap={16}
+          tickFormatter={(value: string) => formatTrendTick(value, period)}
         />
-        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <ChartTooltip
+          cursor={false}
+          content={
+            <ChartTooltipContent
+              labelFormatter={(label) => formatTrendTick(String(label), period)}
+            />
+          }
+        />
         <defs>
           <linearGradient id="gradient-applications" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="var(--color-applications)" stopOpacity={0.5} />
@@ -122,11 +169,7 @@ type ResponseTimeChartProps = {
 
 function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
   if (data.length === 0) {
-    return (
-      <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
-        Sin datos disponibles
-      </div>
-    )
+    return <EmptyChartState />
   }
   return (
     <ChartContainer config={config}>
@@ -162,48 +205,48 @@ function PipelineChart({ data, config, totalPipeline }: PipelineChartProps) {
         <CardDescription>Progreso por etapa del proceso</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={config}>
-          <BarChart accessibilityLayer data={data}>
-            <rect
-              x="0"
-              y="0"
-              width="100%"
-              height="85%"
-              fill="url(#default-multiple-pattern-dots)"
-            />
-            <defs>
-              <DottedBackgroundPattern patternId="default-multiple-pattern-dots" />
-            </defs>
-            <XAxis dataKey="stage" tickLine={false} tickMargin={10} axisLine={false} />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dashed" hideLabel />}
-            />
-            <Bar
-              dataKey="count"
-              fill="var(--color-count)"
-              shape={<CustomDuotoneBar />}
-              radius={4}
-            />
-          </BarChart>
-        </ChartContainer>
+        {totalPipeline === 0 ? (
+          <EmptyChartState />
+        ) : (
+          <ChartContainer config={config}>
+            <BarChart accessibilityLayer data={data}>
+              <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="85%"
+                fill="url(#default-multiple-pattern-dots)"
+              />
+              <defs>
+                <DottedBackgroundPattern patternId="default-multiple-pattern-dots" />
+              </defs>
+              <XAxis dataKey="stage" tickLine={false} tickMargin={10} axisLine={false} />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="dashed" hideLabel />}
+              />
+              <Bar
+                dataKey="count"
+                fill="var(--color-count)"
+                shape={<CustomDuotoneBar />}
+                radius={4}
+              />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </>
   )
 }
 
-type IndustriesChartProps = {
-  data: Array<{ industry: string; count: number; fill: string }>
+type CategoriesChartProps = {
+  data: Array<{ category: string; count: number; fill: string }>
   config: ChartConfig
 }
 
-function IndustriesChart({ data, config }: IndustriesChartProps) {
+function CategoriesChart({ data, config }: CategoriesChartProps) {
   if (data.length === 0) {
-    return (
-      <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
-        Sin datos disponibles
-      </div>
-    )
+    return <EmptyChartState />
   }
   return (
     <ChartContainer
@@ -211,12 +254,12 @@ function IndustriesChart({ data, config }: IndustriesChartProps) {
       className="[&_.recharts-text]:fill-background mx-auto aspect-square max-h-[250px]"
     >
       <PieChart>
-        <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
+        <ChartTooltip content={<ChartTooltipContent nameKey="category" hideLabel />} />
         <Pie
           data={data}
           innerRadius={30}
           dataKey="count"
-          nameKey="industry"
+          nameKey="category"
           radius={10}
           cornerRadius={8}
           paddingAngle={4}
@@ -242,11 +285,11 @@ const ChartsGridSkeleton = (
   </div>
 )
 
-export function ChartsGrid({ metricsData, period: _period }: ChartsGridProps) {
+export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
   const applicationsTrend = metricsData?.applicationsTrend ?? []
   const responseTimeDistribution = metricsData?.responseTimeDistribution
   const hiringFunnel = metricsData?.hiringFunnel
-  const industriesApplied = metricsData?.industriesApplied ?? []
+  const categoriesApplied = metricsData?.categoriesApplied ?? []
 
   const applicationsChartConfig = {
     applications: {
@@ -289,15 +332,18 @@ export function ChartsGrid({ metricsData, period: _period }: ChartsGridProps) {
 
   const totalPipeline = pipelineData.reduce((sum, s) => sum + s.count, 0)
 
-  const industriesDataWithColors = industriesApplied.map((entry, index) => ({
+  const categoriesDataWithColors = categoriesApplied.map((entry, index) => ({
     ...entry,
     fill: `var(--chart-${(index % 5) + 1})`,
   }))
 
-  const industriesChartConfig = (() => {
+  const categoriesChartConfig = (() => {
     const config: Record<string, { label: string; color: string }> = {}
-    industriesApplied.forEach((_, i) => {
-      config[`chart${i + 1}`] = { label: "", color: `var(--chart-${i + 1})` }
+    categoriesApplied.forEach((entry, i) => {
+      config[`chart${i + 1}`] = {
+        label: entry.category,
+        color: `var(--chart-${(i % 5) + 1})`,
+      }
     })
     return config
   })()
@@ -310,12 +356,18 @@ export function ChartsGrid({ metricsData, period: _period }: ChartsGridProps) {
         <CardHeader>
           <div className="flex items-center gap-2">
             <HugeiconsIcon icon={DashboardSquare02Icon} size={24} strokeWidth={1.5} />
-            <CardTitle className="text-foreground">Postulaciones por mes</CardTitle>
+            <CardTitle className="text-foreground">
+              Postulaciones por {PERIOD_AXIS_LABEL[period]}
+            </CardTitle>
           </div>
           <CardDescription>Evolución de postulaciones en el período seleccionado</CardDescription>
         </CardHeader>
         <CardContent>
-          <ApplicationsChart data={applicationsTrend} config={applicationsChartConfig} />
+          <ApplicationsChart
+            data={applicationsTrend}
+            config={applicationsChartConfig}
+            period={period}
+          />
         </CardContent>
       </Card>
 
@@ -339,11 +391,11 @@ export function ChartsGrid({ metricsData, period: _period }: ChartsGridProps) {
 
       <Card className="border border-border/80 bg-white flex flex-col">
         <CardHeader className="items-center pb-0">
-          <CardTitle className="text-foreground">Industrias aplicadas</CardTitle>
-          <CardDescription>Distribución por industria</CardDescription>
+          <CardTitle className="text-foreground">Categorías aplicadas</CardTitle>
+          <CardDescription>Distribución por categoría</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 pb-0">
-          <IndustriesChart data={industriesDataWithColors} config={industriesChartConfig} />
+          <CategoriesChart data={categoriesDataWithColors} config={categoriesChartConfig} />
         </CardContent>
       </Card>
     </div>

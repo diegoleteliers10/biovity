@@ -13,7 +13,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import {
   Sheet,
   SheetContent,
@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button"
 import type { ResumeEducation, ResumeExperience } from "@/lib/api/resumes"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useResumeByUser, useUser } from "@/lib/api/use-profile"
+import { useIncrementProfileViews } from "@/lib/api/use-user-metrics"
 import { formatUserLocation } from "@/lib/api/users"
 
 const EMPTY_PLACEHOLDER = "No especificado"
@@ -63,6 +64,13 @@ export function TalentDetailSheet({
   const { data: user, isLoading: userLoading } = useUser(userId ?? undefined)
   const { data: resume, isLoading: resumeLoading } = useResumeByUser(userId ?? undefined)
   const createChatMutation = useCreateOrFindChatMutation(recruiterId ?? undefined)
+  const incrementProfileViews = useIncrementProfileViews()
+
+  useEffect(() => {
+    if (open && userId) {
+      incrementProfileViews.mutate(userId)
+    }
+  }, [open, userId, incrementProfileViews])
 
   const initials = useMemo(() => {
     if (!user?.name) return undefined

@@ -8,15 +8,14 @@ export type UserQuickMetrics = {
 
 export type UserKpis = {
   applicationsLast30Days: number
-  responseRate: number
   interviews: number
   offers: number
-  avgResponseTimeDays: number
+  avgResponseTimeDays: number | null
   profileViews: number
 }
 
 export type ApplicationsTrendEntry = {
-  month: string
+  date: string
   applications: number
 }
 
@@ -39,28 +38,10 @@ export type HiringFunnel = {
   contratado: HiringFunnelStep
 }
 
-export type IndustryApplied = {
-  industry: string
+export type CategoryApplied = {
+  category: string
   count: number
   percentage: number
-}
-
-export type UpcomingInterview = {
-  eventId: string
-  title: string
-  startAt: string
-  jobId: string
-  jobTitle: string
-  organizationId: string
-  organizationName: string
-}
-
-export type RecentApplication = {
-  applicationId: string
-  jobTitle: string
-  organizationName: string
-  status: string
-  appliedAt: string
 }
 
 export type UserMetrics = {
@@ -69,9 +50,7 @@ export type UserMetrics = {
   applicationsTrend: ApplicationsTrendEntry[]
   responseTimeDistribution: ResponseTimeDistribution
   hiringFunnel: HiringFunnel
-  industriesApplied: IndustryApplied[]
-  upcomingInterviews: UpcomingInterview[]
-  recentApplications: RecentApplication[]
+  categoriesApplied: CategoryApplied[]
 }
 
 export type UserMetricsFilters = {
