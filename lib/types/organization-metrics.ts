@@ -45,6 +45,13 @@ export type GeographicDistributionEntry = {
   percentage: number
 }
 
+export type ResponseTimeDistribution = {
+  lessThan24h: number
+  oneToThreeDays: number
+  threeToSevenDays: number
+  moreThanSevenDays: number
+}
+
 export type OrganizationMetrics = {
   dashboard: DashboardMetrics
   pipeline: PipelineMetrics
@@ -53,6 +60,8 @@ export type OrganizationMetrics = {
   geographicDistribution: GeographicDistributionEntry[]
   avgHiringTimeDays: number
   recruiterProductivity: RecruiterProductivityEntry[]
+  responseTimeDistribution?: ResponseTimeDistribution
+  unansweredCount?: number
 }
 
 export type RecruiterProductivityEntry = {
