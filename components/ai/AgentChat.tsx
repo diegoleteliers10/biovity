@@ -16,6 +16,17 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { listCredentials, getMaskedCredential } from "@/lib/api/ai-credentials"
+import {
+  Context,
+  ContextTrigger,
+  ContextContent,
+  ContextContentHeader,
+  ContextContentBody,
+  ContextInputUsage,
+  ContextOutputUsage,
+  ContextReasoningUsage,
+  ContextContentFooter,
+} from "@/components/ai-elements/context"
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithApprovalResponses } from "ai"
 import { CheckIcon, ExternalLinkIcon, XIcon } from "lucide-react"
 import Image from "next/image"
@@ -352,6 +363,36 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
   const latestMessageId = useMemo(() => messages.at(-1)?.id, [messages])
   const shouldShowPendingAssistant = isLoading && messages.at(-1)?.role !== "assistant"
 
+  const usageStats = useMemo(() => {
+    let promptTokens = 0
+    let completionTokens = 0
+    let reasoningTokens = 0
+
+    for (const msg of messages) {
+      const msgAny = msg as any
+      if (msgAny.usage) {
+        promptTokens += msgAny.usage.promptTokens ?? 0
+        completionTokens += msgAny.usage.completionTokens ?? 0
+        if (msgAny.usage.reasoningTokens) {
+          reasoningTokens += msgAny.usage.reasoningTokens ?? 0
+        }
+      }
+    }
+
+    return {
+      promptTokens,
+      completionTokens,
+      totalTokens: promptTokens + completionTokens,
+      inputTokens: promptTokens,
+      outputTokens: completionTokens,
+      reasoningTokens,
+      inputTokenDetails: {},
+      outputTokenDetails: {
+        reasoning: reasoningTokens,
+      },
+    }
+  }, [messages])
+
   const handleSubmit = useCallback(
     (message: { text: string; files: unknown[] }) => {
       const trimmedInput = message.text.trim()
@@ -473,6 +514,16 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
     },
     enabled: !!resolvedOrganizationId,
   })
+
+  const activeCredential = credentials?.find((c: any) => c.isActive)
+  const resolvedModelId = activeCredential?.modelId ?? "gpt-4o-mini"
+
+  const getModelMaxTokens = (modelId: string): number => {
+    const id = modelId.toLowerCase()
+    if (id.includes("gemini")) return 1000000
+    if (id.includes("claude")) return 2000000
+    return 128000
+  }
 
   if (resolvedOrganizationId && credentialsLoading) {
     return (
@@ -625,6 +676,25 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
                   <HugeiconsIcon icon={Mic02Icon} size={16} />
                 )}
               </PromptInputButton>
+
+              {/* Usage & Cost Context */}
+              <Context
+                usedTokens={usageStats.totalTokens}
+                maxTokens={getModelMaxTokens(resolvedModelId)}
+                modelId={resolvedModelId}
+                usage={usageStats as any}
+              >
+                <ContextTrigger className="h-8 w-14 gap-1 p-0 px-1.5 focus-visible:ring-0 select-none hover:bg-muted" />
+                <ContextContent className="border border-border/80 bg-background text-foreground shadow-lg">
+                  <ContextContentHeader />
+                  <ContextContentBody className="space-y-1.5">
+                    <ContextInputUsage />
+                    <ContextOutputUsage />
+                    {usageStats.reasoningTokens > 0 && <ContextReasoningUsage />}
+                  </ContextContentBody>
+                  <ContextContentFooter className="border-t bg-muted/40" />
+                </ContextContent>
+              </Context>
             </PromptInputTools>
             <PromptInputSubmit
               status={isLoading ? "submitted" : "ready"}
