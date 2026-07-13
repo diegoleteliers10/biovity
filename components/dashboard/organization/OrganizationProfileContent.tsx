@@ -23,6 +23,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import { useCallback, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
 import { BrandingTab } from "@/components/dashboard/organization/BrandingTab"
@@ -193,6 +194,14 @@ function addressToFormData(addr: OrganizationAddress | null | undefined): OrgFor
 }
 
 export function OrganizationProfileContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const tab = searchParams.get("tab") ?? "profile"
+
+  const handleTabChange = (value: string) => {
+    router.push(`/dashboard/profile?tab=${value}`, { scroll: false })
+  }
+
   const session = useDashboardSession()
   const userId = session?.user?.id ?? undefined
   const organizationId = session?.user?.organizationId ?? undefined
@@ -605,7 +614,7 @@ export function OrganizationProfileContent() {
           )}
 
           <div className="relative min-h-[120px]">
-            <Tabs defaultValue="profile" className="w-full">
+            <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
               <TabsList variant="line" className="absolute z-20 bg-background px-1">
                 <TabsTrigger value="profile" className="gap-2">
                   <HugeiconsIcon icon={Building06Icon} size={16} />
