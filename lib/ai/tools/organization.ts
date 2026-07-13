@@ -76,10 +76,18 @@ const mapApiToKanbanStatus = (status?: string): Exclude<KanbanStatus, "all"> => 
   }
 }
 
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+}
+
 const hasSkillsMatch = (candidateSkills: string[], requestedSkills: string[]) => {
-  const normalizedCandidate = candidateSkills.map((skill) => skill.toLowerCase().trim())
+  const normalizedCandidate = candidateSkills.map((skill) => normalizeText(skill))
   return requestedSkills.every((reqSkill) => {
-    const req = reqSkill.toLowerCase().trim()
+    const req = normalizeText(reqSkill)
     return normalizedCandidate.some((cand) => cand.includes(req) || req.includes(cand))
   })
 }
@@ -367,14 +375,14 @@ export const searchProfessionalsTool = tool({
 
     // Filter by name
     if (name) {
-      const normName = name.toLowerCase().trim()
-      filtered = filtered.filter((c) => c.name.toLowerCase().includes(normName))
+      const normName = normalizeText(name)
+      filtered = filtered.filter((c) => normalizeText(c.name).includes(normName))
     }
 
     // Filter by profession
     if (profession) {
-      const normProf = profession.toLowerCase().trim()
-      filtered = filtered.filter((c) => c.profession?.toLowerCase().includes(normProf))
+      const normProf = normalizeText(profession)
+      filtered = filtered.filter((c) => c.profession && normalizeText(c.profession).includes(normProf))
     }
 
     // Filter by skills
