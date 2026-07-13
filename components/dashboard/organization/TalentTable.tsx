@@ -133,11 +133,7 @@ export function TalentTable({
           <TableBody>
             {users.map((user) => {
               const isSelected = selectedIds.has(user.id)
-              // Derive skills from resume if available or from metadata
-              const skillsRaw = (user as unknown as Record<string, unknown>).skills
-              const skills: string[] = Array.isArray(skillsRaw)
-                ? (skillsRaw as string[]).slice(0, 3)
-                : []
+              const skills = user.skills?.slice(0, 3) ?? []
 
               return (
                 <TableRow
@@ -165,6 +161,7 @@ export function TalentTable({
                     <Checkbox
                       checked={isSelected}
                       onCheckedChange={() => onSelectToggle(user.id)}
+                      onClick={(e) => e.stopPropagation()}
                       aria-label={`Seleccionar ${user.name}`}
                       id={`select-${user.id}`}
                     />
@@ -300,14 +297,14 @@ export function TalentTable({
                           <Badge
                             key={s}
                             variant="outline"
-                            className="text-[10px] px-1.5 py-0 h-5 font-normal"
+                            className="text-[10px] px-1.5 py-0 h-5 font-normal animate-fade-in"
                           >
                             {s}
                           </Badge>
                         ))}
                       </div>
                     ) : (
-                      <span className="text-muted-foreground/40 text-xs">Sin datos</span>
+                      <span className="text-muted-foreground/40 text-xs">Sin especificar</span>
                     )}
                   </TableCell>
 
@@ -337,7 +334,11 @@ export function TalentTable({
                         strokeWidth={1.5}
                         className="shrink-0"
                       />
-                      {formatRelativeDate(user.updatedAt || user.createdAt)}
+                      <span>
+                        {user.updatedAt
+                          ? `CV modificado ${formatRelativeDate(user.updatedAt).toLowerCase()}`
+                          : "CV sin actualizar"}
+                      </span>
                     </span>
                   </TableCell>
 
