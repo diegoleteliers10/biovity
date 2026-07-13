@@ -1,12 +1,17 @@
 "use client"
 
 import {
+  Atom01Icon,
   Briefcase01Icon,
   Calendar01Icon,
+  CheckmarkCircle02Icon,
+  Download04Icon,
+  File02Icon,
   GraduationScrollIcon,
   Link01Icon,
   Location01Icon,
   Mail01Icon,
+  Pdf01Icon,
   Sent02Icon,
   SmartPhone01Icon,
   UserIcon,
@@ -17,8 +22,6 @@ import { useEffect, useMemo } from "react"
 import {
   Sheet,
   SheetContent,
-  SheetFooter,
-  SheetHeader,
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet"
 import { Avatar } from "@/components/base/avatar/avatar"
@@ -85,205 +88,255 @@ export function TalentDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full overflow-y-auto px-6 py-6 sm:max-w-xl md:px-7"
+        className="flex flex-col h-full w-full p-0 sm:max-w-xl bg-background border-l border-border"
         aria-describedby={undefined}
       >
-        <SheetHeader className="px-0 pt-0">
-          <SheetTitle className="text-lg font-semibold tracking-tight text-foreground">
+        {/* Stationary Header */}
+        <div className="px-6 py-5 border-b border-border">
+          <SheetTitle className="text-base font-semibold text-foreground">
             Perfil del candidato
           </SheetTitle>
-        </SheetHeader>
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          </div>
-        ) : user ? (
-          <div className="mt-7 space-y-6">
-            <div className="rounded-2xl border border-[#1d4e63]/70 bg-[#1d4e63] p-5">
-              <div className="flex items-center gap-4">
-                <Avatar src={user.avatar} alt={user.name} initials={initials} size="xl" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/90">
-                    Candidato
-                  </p>
-                  <h2 className="font-semibold text-lg tracking-tight text-white">{user.name}</h2>
-                  {user.profession && <p className="text-white/85 text-sm">{user.profession}</p>}
-                </div>
-              </div>
-            </div>
+        </div>
 
-            <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
-              <div className="flex items-start gap-3 rounded-lg border border-border/30 bg-muted/20 px-3 py-2.5">
-                <HugeiconsIcon
-                  icon={Mail01Icon}
-                  size={18}
-                  className="mt-0.5 shrink-0 text-secondary"
+        {/* Scrollable Body */}
+        <div className="flex-1 overflow-y-auto p-6 md:p-7 space-y-6">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            </div>
+          ) : user ? (
+            <div className="space-y-6">
+              {/* Profile Header */}
+              <div className="flex flex-col items-center text-center pb-6 border-b border-slate-100">
+                <Avatar
+                  src={user.avatar}
+                  alt={user.name}
+                  initials={initials}
+                  size="xl"
+                  className="size-20 border-2 border-background shadow-md bg-gradient-to-tr from-secondary to-primary text-white font-bold"
                 />
-                <div>
-                  <p className="text-muted-foreground text-xs">Email</p>
-                  <a
-                    href={`mailto:${user.email}`}
-                    className="text-sm text-foreground hover:underline"
-                  >
-                    {user.email}
-                  </a>
+                <h2 className="mt-4 font-bold text-xl tracking-tight text-foreground flex items-center gap-1.5 justify-center">
+                  {user.name}
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} size={18} className="text-blue-500 shrink-0" />
+                </h2>
+                {user.profession && (
+                  <p className="text-secondary text-xs font-semibold mt-1.5 bg-secondary/5 px-3 py-1 rounded-full border border-secondary/10">
+                    {user.profession}
+                  </p>
+                )}
+                
+                {/* Compact Contact details */}
+                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <HugeiconsIcon icon={Mail01Icon} size={14} className="text-secondary shrink-0" />
+                    <a href={`mailto:${user.email}`} className="hover:text-foreground hover:underline transition-colors">
+                      {user.email}
+                    </a>
+                  </div>
+                  {user.phone && (
+                    <div className="flex items-center gap-1">
+                      <HugeiconsIcon icon={SmartPhone01Icon} size={14} className="text-secondary shrink-0" />
+                      <span>{user.phone}</span>
+                    </div>
+                  )}
+                  {user.location && (user.location.city || user.location.country) && (
+                    <div className="flex items-center gap-1">
+                      <HugeiconsIcon icon={Location01Icon} size={14} className="text-secondary shrink-0" />
+                      <span>{formatUserLocation(user.location)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
-              {user.phone && (
-                <div className="flex items-start gap-3 rounded-lg border border-border/30 bg-muted/20 px-3 py-2.5">
-                  <HugeiconsIcon
-                    icon={SmartPhone01Icon}
-                    size={18}
-                    className="mt-0.5 shrink-0 text-secondary"
-                  />
-                  <div>
-                    <p className="text-muted-foreground text-xs">Telefono</p>
-                    <p className="text-sm text-foreground">{user.phone}</p>
-                  </div>
+
+              {/* Summary */}
+              {resume?.summary && (
+                <div className="space-y-2.5">
+                  <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                    <HugeiconsIcon icon={UserIcon} size={14} className="text-secondary" />
+                    Resumen Profesional
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed text-pretty">
+                    {resume.summary}
+                  </p>
                 </div>
               )}
-              {user.location && (user.location.city || user.location.country) && (
-                <div className="flex items-start gap-3 rounded-lg border border-border/30 bg-muted/20 px-3 py-2.5">
-                  <HugeiconsIcon
-                    icon={Location01Icon}
-                    size={18}
-                    className="mt-0.5 shrink-0 text-secondary"
-                  />
-                  <div>
-                    <p className="text-muted-foreground text-xs">Ubicacion</p>
-                    <p className="text-sm text-foreground">{formatUserLocation(user.location)}</p>
+
+              {/* CV File Attachment */}
+              {resume?.cvFile && resume.cvFile.url && (
+                <>
+                  <div className="h-px bg-slate-100" />
+                  <div className="space-y-2.5">
+                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                      <HugeiconsIcon icon={File02Icon} size={14} className="text-secondary" />
+                      Currículum Adjunto
+                    </h3>
+                    <a
+                      href={resume.cvFile.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3.5 bg-slate-50/50 hover:bg-slate-100/50 rounded-xl border border-slate-150 transition-colors group"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="p-2 rounded-lg bg-red-50 text-red-500 shrink-0">
+                          <HugeiconsIcon icon={Pdf01Icon} size={20} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                            {resume.cvFile.originalName || "curriculum.pdf"}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                            {resume.cvFile.size
+                              ? `${(resume.cvFile.size / 1024 / 1024).toFixed(2)} MB`
+                              : "Documento PDF"}
+                          </p>
+                        </div>
+                      </div>
+                      <HugeiconsIcon icon={Download04Icon} size={16} className="text-muted-foreground shrink-0 group-hover:text-primary transition-colors" />
+                    </a>
                   </div>
-                </div>
+                </>
+              )}
+
+              {/* Experience */}
+              {resume && resume.experiences.length > 0 && (
+                <>
+                  <div className="h-px bg-slate-100" />
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                      <HugeiconsIcon icon={Briefcase01Icon} size={14} className="text-secondary" />
+                      Experiencia Laboral
+                    </h3>
+                    <ul className="relative border-l border-slate-100 pl-2.5 space-y-6">
+                      {resume.experiences.map((exp) => {
+                        const d = getExpDisplay(exp)
+                        const key = [d.title, d.company, d.start, d.current].filter(Boolean).join("||")
+                        return (
+                          <li key={`exp-${key}`} className="relative pl-6 pb-2 last:pb-0">
+                            {/* Timeline dot */}
+                            <div className="absolute left-[-5px] top-1.5 size-2.5 rounded-full border border-background bg-secondary shadow-sm" />
+                            <h4 className="font-semibold text-foreground text-sm leading-snug">
+                              {d.title || d.company || EMPTY_PLACEHOLDER}
+                            </h4>
+                            {d.company && d.title && (
+                              <p className="text-xs font-semibold text-muted-foreground mt-0.5">{d.company}</p>
+                            )}
+                            <p className="text-[10px] font-semibold text-secondary mt-1.5 tabular-nums bg-secondary/5 px-2 py-0.5 rounded w-fit border border-secondary/10">
+                              {d.start} – {d.current ? "Actualidad" : d.end || ""}
+                            </p>
+                            {exp.description && (
+                              <p className="mt-2 text-muted-foreground text-xs leading-relaxed text-pretty">
+                                {exp.description}
+                              </p>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                </>
+              )}
+
+              {/* Education */}
+              {resume && resume.education.length > 0 && (
+                <>
+                  <div className="h-px bg-slate-100" />
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                      <HugeiconsIcon icon={GraduationScrollIcon} size={14} className="text-secondary" />
+                      Educación
+                    </h3>
+                    <ul className="relative border-l border-slate-100 pl-2.5 space-y-6">
+                      {resume.education.map((edu) => {
+                        const d = getEduDisplay(edu)
+                        const key = [d.title, d.institute, d.start, d.current]
+                          .filter(Boolean)
+                          .join("||")
+                        return (
+                          <li key={`edu-${key}`} className="relative pl-6 pb-2 last:pb-0">
+                            {/* Timeline dot */}
+                            <div className="absolute left-[-5px] top-1.5 size-2.5 rounded-full border border-background bg-secondary shadow-sm" />
+                            <h4 className="font-semibold text-foreground text-sm leading-snug">
+                              {d.title || d.institute || EMPTY_PLACEHOLDER}
+                            </h4>
+                            {d.institute && d.title && (
+                              <p className="text-xs font-semibold text-muted-foreground mt-0.5">{d.institute}</p>
+                            )}
+                            <p className="text-[10px] font-semibold text-secondary mt-1.5 tabular-nums bg-secondary/5 px-2 py-0.5 rounded w-fit border border-secondary/10">
+                              {d.start} – {d.current ? "Actualidad" : d.end || ""}
+                            </p>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                </>
+              )}
+
+              {/* Skills */}
+              {resume && (resume.skills?.length ?? 0) > 0 && (
+                <>
+                  <div className="h-px bg-slate-100" />
+                  <div className="space-y-3">
+                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                      <HugeiconsIcon icon={Atom01Icon} size={14} className="text-secondary" />
+                      Habilidades
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(resume.skills ?? []).map((skill) => {
+                        const name = typeof skill === "string" ? skill : skill.name
+                        const level = typeof skill === "string" ? undefined : skill.level
+                        return (
+                          <span
+                            key={`skill-${name}`}
+                            className="rounded-lg border border-secondary/15 bg-secondary/5 px-3 py-1 text-xs font-medium text-secondary hover:bg-secondary/10 transition-colors"
+                          >
+                            {name}
+                            {level && <span className="ml-1 text-muted-foreground/80 font-normal">({level})</span>}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Links */}
+              {resume && resume.links.length > 0 && (
+                <>
+                  <div className="h-px bg-slate-100" />
+                  <div className="space-y-3">
+                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                      <HugeiconsIcon icon={Link01Icon} size={14} className="text-secondary" />
+                      Enlaces de interés
+                    </h3>
+                    <ul className="space-y-2.5">
+                      {resume.links.map((link) => (
+                        <li key={`link-${link.url}`} className="flex items-center gap-2 text-sm">
+                          <HugeiconsIcon icon={Link01Icon} size={14} className="text-muted-foreground shrink-0" />
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary truncate hover:underline"
+                          >
+                            {link.url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </>
               )}
             </div>
+          ) : (
+            <p className="py-8 text-muted-foreground text-sm text-center">No se pudo cargar el perfil.</p>
+          )}
+        </div>
 
-            {resume?.summary && (
-              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
-                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
-                  <HugeiconsIcon icon={UserIcon} size={18} className="text-secondary" />
-                  Resumen
-                </h3>
-                <p className="text-muted-foreground text-pretty text-sm leading-relaxed">
-                  {resume.summary}
-                </p>
-              </div>
-            )}
-
-            {resume && resume.experiences.length > 0 && (
-              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
-                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
-                  <HugeiconsIcon icon={Briefcase01Icon} size={18} className="text-secondary" />
-                  Experiencia
-                </h3>
-                <ul className="space-y-5">
-                  {resume.experiences.map((exp) => {
-                    const d = getExpDisplay(exp)
-                    const key = [d.title, d.company, d.start, d.current].filter(Boolean).join("||")
-                    return (
-                      <li key={`exp-${key}`} className="relative border-l-2 border-border/60 pl-4">
-                        <p className="font-medium text-foreground text-sm">
-                          {d.title || d.company || EMPTY_PLACEHOLDER}
-                        </p>
-                        {d.company && d.title && (
-                          <p className="mt-0.5 text-muted-foreground text-sm">{d.company}</p>
-                        )}
-                        <p className="mt-0.5 tabular-nums text-muted-foreground text-xs">
-                          {d.start} – {d.current ? "Actualidad" : d.end || ""}
-                        </p>
-                        {exp.description && (
-                          <p className="mt-2 text-muted-foreground text-pretty text-sm leading-relaxed">
-                            {exp.description}
-                          </p>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-
-            {resume && resume.education.length > 0 && (
-              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
-                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
-                  <HugeiconsIcon icon={GraduationScrollIcon} size={18} className="text-secondary" />
-                  Educacion
-                </h3>
-                <ul className="space-y-5">
-                  {resume.education.map((edu) => {
-                    const d = getEduDisplay(edu)
-                    const key = [d.title, d.institute, d.start, d.current]
-                      .filter(Boolean)
-                      .join("||")
-                    return (
-                      <li key={`edu-${key}`} className="relative border-l-2 border-border/60 pl-4">
-                        <p className="font-medium text-foreground text-sm">
-                          {d.title || d.institute || EMPTY_PLACEHOLDER}
-                        </p>
-                        {d.institute && d.title && (
-                          <p className="mt-0.5 text-muted-foreground text-sm">{d.institute}</p>
-                        )}
-                        <p className="mt-0.5 tabular-nums text-muted-foreground text-xs">
-                          {d.start} – {d.current ? "Actualidad" : d.end || ""}
-                        </p>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-
-            {resume && (resume.skills?.length ?? 0) > 0 && (
-              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
-                <h3 className="font-medium text-sm text-foreground">Habilidades</h3>
-                <div className="flex flex-wrap gap-2.5">
-                  {(resume.skills ?? []).map((skill) => {
-                    const name = typeof skill === "string" ? skill : skill.name
-                    const level = typeof skill === "string" ? undefined : skill.level
-                    return (
-                      <span
-                        key={`skill-${name}`}
-                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-                      >
-                        {name}
-                        {level && <span className="ml-1 text-muted-foreground">({level})</span>}
-                      </span>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {resume && resume.links.length > 0 && (
-              <div className="space-y-3 rounded-2xl border border-border/35 bg-background p-4">
-                <h3 className="flex items-center gap-2.5 font-medium text-sm text-foreground">
-                  <HugeiconsIcon icon={Link01Icon} size={18} className="text-secondary" />
-                  Enlaces
-                </h3>
-                <ul className="space-y-2">
-                  {resume.links.map((link) => (
-                    <li key={`link-${link.url}`}>
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary break-all text-sm hover:underline"
-                      >
-                        {link.url}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ) : (
-          <p className="py-8 text-muted-foreground text-sm">No se pudo cargar el perfil.</p>
-        )}
-
-        {/* F8.5 — Action footer */}
+        {/* Stationary Action Footer */}
         {user && (
-          <div className="sticky bottom-0 border-t border-border/50 bg-background/95 backdrop-blur-sm px-0 pt-3 pb-1 mt-4">
-            <div className="flex gap-2">
+          <div className="p-4 border-t border-border bg-slate-50/70">
+            <div className="flex gap-3">
               <Button
                 className="flex-1 gap-2 text-sm"
                 onClick={() => {
@@ -311,7 +364,6 @@ export function TalentDetailSheet({
                 variant="outline"
                 className="gap-2 text-sm"
                 onClick={() => {
-                  // Navigate to calendar pre-filling candidate
                   push(`/dashboard/calendar?candidateId=${userId}`)
                 }}
                 id={`sheet-schedule-${userId}`}
