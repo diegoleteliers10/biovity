@@ -57,7 +57,6 @@ export function ChatListPanel({
     <div
       className={cn(
         "flex w-full h-full min-h-0 lg:w-80 flex-col overflow-hidden border-r border-border transition-all",
-        "max-lg:hidden",
         className
       )}
     >
