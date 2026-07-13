@@ -1,6 +1,10 @@
 "use client"
 
-import { ArrowRight01Icon, GraduationScrollIcon } from "@hugeicons/core-free-icons"
+import {
+  ArrowRight01Icon,
+  CheckmarkCircle02Icon,
+  Location01Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -95,29 +99,80 @@ export function ForStudents() {
             transition={ts(LANDING_ANIMATION.stagger)}
             className="relative"
           >
-            <div className="bg-accent/5 rounded-3xl p-8">
-              <div className="bg-white rounded-2xl p-8">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="size-20 bg-secondary/10 rounded-2xl flex items-center justify-center">
-                    <HugeiconsIcon icon={GraduationScrollIcon} className="size-10 text-secondary" />
+            <div className="bg-accent/5 rounded-3xl p-6 sm:p-8">
+              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-200/80 transition-all duration-300">
+                {/* Profile Header */}
+                <div className="flex items-center gap-4">
+                  <div className="size-14 shrink-0 rounded-full bg-gradient-to-tr from-secondary to-primary/80 flex items-center justify-center text-white font-bold text-lg shadow-inner">
+                    SA
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-xl">Estudiantes</h3>
-                    <p className="text-muted-foreground text-sm">Tu futuro comienza aquí</p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-semibold text-foreground text-base truncate">Sofía Alarcón</h3>
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} className="text-blue-500 shrink-0" />
+                    </div>
+                    <p className="text-muted-foreground text-xs font-medium truncate">Ingeniería Civil en Biotecnología</p>
+                    <div className="flex items-center gap-1 text-[11px] text-muted-foreground/80 mt-0.5">
+                      <HugeiconsIcon icon={Location01Icon} size={12} className="shrink-0" />
+                      <span>Santiago, Chile</span>
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-[#f3f3f5] rounded-xl">
-                    <span className="text-foreground font-medium">Ofertas para graduados</span>
-                    <span className="text-2xl font-bold text-primary">+200</span>
+
+                {/* Status Badge */}
+                <div className="mt-4">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-700 border border-green-500/20">
+                    Disponible para Práctica / I+D
+                  </span>
+                </div>
+
+                {/* Divider */}
+                <hr className="my-5 border-slate-100" />
+
+                {/* Lab Skills */}
+                <div>
+                  <h4 className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-wider mb-2">
+                    Técnicas Experimentales
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
+                      PCR Tiempo Real
+                    </span>
+                    <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
+                      Cultivo Celular
+                    </span>
+                    <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
+                      HPLC
+                    </span>
+                    <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
+                      CRISPR-Cas9
+                    </span>
+                    <span className="px-2 py-0.5 text-xs font-medium rounded-md bg-primary/5 text-primary border border-primary/15">
+                      Inglés Técnico (C1)
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-[#f3f3f5] rounded-xl">
-                    <span className="text-foreground font-medium">Prácticas disponibles</span>
-                    <span className="text-2xl font-bold text-secondary">+85</span>
+                </div>
+
+                {/* Thesis Project */}
+                <div className="mt-5">
+                  <h4 className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-wider mb-2">
+                    Proyecto de Tesis
+                  </h4>
+                  <div className="p-3.5 bg-slate-50/70 rounded-xl border border-slate-100/80">
+                    <p className="text-xs text-foreground font-medium leading-relaxed">
+                      Optimización de vectores de expresión para la producción a escala de proteínas recombinantes en Escherichia coli.
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-[#f3f3f5] rounded-xl">
-                    <span className="text-foreground font-medium">Empresas aliadas</span>
-                    <span className="text-2xl font-bold text-accent">+50</span>
+                </div>
+
+                {/* Profile Completion */}
+                <div className="mt-6 pt-5 border-t border-slate-100">
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="text-muted-foreground font-medium">Perfil verificado Biovity</span>
+                    <span className="font-bold text-primary">95%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-secondary to-primary rounded-full w-[95%]" />
                   </div>
                 </div>
               </div>
