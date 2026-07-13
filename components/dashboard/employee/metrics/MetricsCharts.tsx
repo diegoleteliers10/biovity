@@ -172,7 +172,7 @@ function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
     return <EmptyChartState />
   }
   return (
-    <ChartContainer config={config}>
+    <ChartContainer config={config} className="aspect-auto h-full w-full flex-1">
       <BarChart accessibilityLayer data={data}>
         <rect x="0" y="0" width="100%" height="85%" fill="url(#default-pattern-dots-response)" />
         <defs>
@@ -371,12 +371,12 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
         </CardContent>
       </Card>
 
-      <Card className="border border-border/80 bg-white">
+      <Card className="border border-border/80 bg-white flex flex-col">
         <CardHeader>
           <CardTitle className="text-foreground">Tiempo de respuesta</CardTitle>
           <CardDescription>Distribución por período</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1 flex flex-col">
           <ResponseTimeChart data={responseTimeData} config={responseTimeChartConfig} />
         </CardContent>
       </Card>
