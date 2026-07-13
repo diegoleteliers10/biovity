@@ -41,6 +41,7 @@ export type User = {
   notificationPreferences: UserNotificationPreferences | null
   createdAt: string
   updatedAt: string
+  skills?: string[]
 }
 
 export type UpdateUserInput = {
@@ -138,6 +139,7 @@ function normalizeUser(raw: unknown): User | null {
     notificationPreferences,
     createdAt: String(u.createdAt ?? u.created_at ?? ""),
     updatedAt: String(u.updatedAt ?? u.updated_at ?? ""),
+    skills: Array.isArray(u.skills) ? (u.skills as string[]) : undefined,
   }
 }
 

@@ -7,12 +7,26 @@ import {
   Comment02Icon,
   Copy01Icon,
   DocumentAttachmentIcon,
-  // Globe02Icon,
   Mic02Icon,
   SentIcon,
   SquareIcon,
+  SparklesIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { listCredentials, getMaskedCredential } from "@/lib/api/ai-credentials"
+import {
+  Context,
+  ContextTrigger,
+  ContextContent,
+  ContextContentHeader,
+  ContextContentBody,
+  ContextInputUsage,
+  ContextOutputUsage,
+  ContextReasoningUsage,
+  ContextContentFooter,
+} from "@/components/ai-elements/context"
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithApprovalResponses } from "ai"
 import { CheckIcon, ExternalLinkIcon, XIcon } from "lucide-react"
 import Image from "next/image"
@@ -349,6 +363,36 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
   const latestMessageId = useMemo(() => messages.at(-1)?.id, [messages])
   const shouldShowPendingAssistant = isLoading && messages.at(-1)?.role !== "assistant"
 
+  const usageStats = useMemo(() => {
+    let promptTokens = 0
+    let completionTokens = 0
+    let reasoningTokens = 0
+
+    for (const msg of messages) {
+      const msgAny = msg as any
+      if (msgAny.usage) {
+        promptTokens += msgAny.usage.promptTokens ?? 0
+        completionTokens += msgAny.usage.completionTokens ?? 0
+        if (msgAny.usage.reasoningTokens) {
+          reasoningTokens += msgAny.usage.reasoningTokens ?? 0
+        }
+      }
+    }
+
+    return {
+      promptTokens,
+      completionTokens,
+      totalTokens: promptTokens + completionTokens,
+      inputTokens: promptTokens,
+      outputTokens: completionTokens,
+      reasoningTokens,
+      inputTokenDetails: {},
+      outputTokenDetails: {
+        reasoning: reasoningTokens,
+      },
+    }
+  }, [messages])
+
   const handleSubmit = useCallback(
     (message: { text: string; files: unknown[] }) => {
       const trimmedInput = message.text.trim()
@@ -443,6 +487,111 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
     }
   }, [isRecording, startRecording, stopRecording])
 
+  const { push } = useRouter()
+  const { data: credentials, isLoading: credentialsLoading } = useQuery({
+    queryKey: ["ai-credentials", resolvedOrganizationId],
+    queryFn: async () => {
+      if (!resolvedOrganizationId) return []
+      const result = await listCredentials(resolvedOrganizationId)
+      if (result.isErr()) {
+        const fallback = await getMaskedCredential(resolvedOrganizationId)
+        if (fallback.isOk() && fallback.value.hasCredential) {
+          return [
+            {
+              id: "active",
+              provider: fallback.value.provider!,
+              modelId: fallback.value.modelId!,
+              keyPreview: fallback.value.keyPreview ?? "****",
+              label: fallback.value.label,
+              isActive: true,
+              createdAt: new Date().toISOString(),
+            },
+          ]
+        }
+        return []
+      }
+      return result.value
+    },
+    enabled: !!resolvedOrganizationId,
+  })
+
+  const activeCredential = credentials?.find((c: any) => c.isActive)
+  const resolvedModelId = activeCredential?.modelId ?? "gpt-4o-mini"
+
+  const getModelMaxTokens = (modelId: string): number => {
+    const id = modelId.toLowerCase()
+    if (id.includes("gemini")) return 1000000
+    if (id.includes("claude")) return 2000000
+    return 128000
+  }
+
+  if (resolvedOrganizationId && credentialsLoading) {
+    return (
+      <div className="flex h-full items-center justify-center p-8 bg-background">
+        <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    )
+  }
+
+  if (resolvedOrganizationId && credentials && credentials.length === 0) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center p-6 text-center bg-slate-50/20 select-none">
+        <div className="max-w-md w-full p-8 rounded-2xl border border-dashed border-border bg-background shadow-md space-y-6 animate-fade-in">
+          <div className="mx-auto size-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent">
+            <HugeiconsIcon icon={SparklesIcon} size={28} />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-base font-bold text-foreground">Configura tu Proveedor de IA</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Biovity funciona bajo un modelo <strong>Bring Your Own Key (BYOK)</strong>. Para habilitar Helix en tu organización, debes agregar tu propia API key de IA.
+            </p>
+          </div>
+
+          <div className="h-px bg-border/60" />
+
+          {/* Pasos / Ruta de Navegación */}
+          <div className="space-y-4 text-left">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Pasos para activar Helix:</p>
+            <ol className="space-y-3.5">
+              <li className="flex gap-3 text-sm">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">1</span>
+                <div>
+                  <p className="font-semibold text-foreground text-xs leading-none">Mi Perfil</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Haz clic en tu foto/avatar en el menú lateral principal.</p>
+                </div>
+              </li>
+              <li className="flex gap-3 text-sm">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">2</span>
+                <div>
+                  <p className="font-semibold text-foreground text-xs leading-none">Pestaña IA</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Selecciona la pestaña dedicada a las credenciales de IA.</p>
+                </div>
+              </li>
+              <li className="flex gap-3 text-sm">
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">3</span>
+                <div>
+                  <p className="font-semibold text-foreground text-xs leading-none">Agregar credencial (BYOK)</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Ingresa tu API Key de OpenAI, Anthropic o Google y guarda los cambios.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <div className="h-px bg-border/60" />
+
+          <Button
+            onClick={() => {
+              push("/dashboard/profile?tab=ai")
+            }}
+            className="w-full gap-2 font-medium text-xs h-9"
+          >
+            Ir a configurar ahora
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <TooltipProvider>
       <div className="flex h-full flex-col">
@@ -527,6 +676,25 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
                   <HugeiconsIcon icon={Mic02Icon} size={16} />
                 )}
               </PromptInputButton>
+
+              {/* Usage & Cost Context */}
+              <Context
+                usedTokens={usageStats.totalTokens}
+                maxTokens={getModelMaxTokens(resolvedModelId)}
+                modelId={resolvedModelId}
+                usage={usageStats as any}
+              >
+                <ContextTrigger className="h-8 w-14 gap-1 p-0 px-1.5 focus-visible:ring-0 select-none hover:bg-muted" />
+                <ContextContent className="border border-border/80 bg-background text-foreground shadow-lg">
+                  <ContextContentHeader />
+                  <ContextContentBody className="space-y-1.5">
+                    <ContextInputUsage />
+                    <ContextOutputUsage />
+                    {usageStats.reasoningTokens > 0 && <ContextReasoningUsage />}
+                  </ContextContentBody>
+                  <ContextContentFooter className="border-t bg-muted/40" />
+                </ContextContent>
+              </Context>
             </PromptInputTools>
             <PromptInputSubmit
               status={isLoading ? "submitted" : "ready"}

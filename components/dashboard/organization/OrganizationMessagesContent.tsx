@@ -80,11 +80,24 @@ export function OrganizationMessagesContent() {
 
   useChatMessageRealtime(chatIdFromUrl, queryClient)
 
+  const [mobileView, setMobileView] = useState<"list" | "chat">(
+    chatIdFromUrl ? "chat" : "list"
+  )
+
+  useEffect(() => {
+    if (chatIdFromUrl) {
+      setMobileView("chat")
+    } else {
+      setMobileView("list")
+    }
+  }, [chatIdFromUrl])
+
   const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdFromUrl)
 
   const handleSelectChat = (chatId: string) => {
     setSelectedChatId(chatId)
     setChatIdFromUrl(chatId)
+    setMobileView("chat")
     if (recruiterId) {
       markAsReadMutation.mutate({ chatId, userId: recruiterId })
     }
@@ -93,6 +106,7 @@ export function OrganizationMessagesContent() {
   const handleBackToList = () => {
     setSelectedChatId(null)
     setChatIdFromUrl("")
+    setMobileView("list")
   }
 
   const selectedChat = selectedChatId
@@ -213,7 +227,7 @@ export function OrganizationMessagesContent() {
         selectedChatId={selectedChat?.id ?? null}
         onSelectChat={handleSelectChat}
         formatTime={formatMessageTime}
-        className={selectedChat ? "max-lg:hidden" : ""}
+        className={mobileView === "chat" ? "max-lg:hidden" : ""}
       />
 
       <ChatView
@@ -242,7 +256,7 @@ export function OrganizationMessagesContent() {
         onFileChange={handleFileChange}
         isUploading={isUploading}
         messagesEndRef={messagesEndRef}
-        className={!selectedChat ? "max-lg:hidden" : ""}
+        className={mobileView === "list" ? "max-lg:hidden" : ""}
       />
     </div>
   )

@@ -76,11 +76,20 @@ const mapApiToKanbanStatus = (status?: string): Exclude<KanbanStatus, "all"> => 
   }
 }
 
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+}
+
 const hasSkillsMatch = (candidateSkills: string[], requestedSkills: string[]) => {
-  const normalizedCandidate = candidateSkills.map((skill) => skill.toLowerCase())
-  return requestedSkills.every((skill) =>
-    normalizedCandidate.some((candidateSkill) => candidateSkill.includes(skill.toLowerCase()))
-  )
+  const normalizedCandidate = candidateSkills.map((skill) => normalizeText(skill))
+  return requestedSkills.every((reqSkill) => {
+    const req = normalizeText(reqSkill)
+    return normalizedCandidate.some((cand) => cand.includes(req) || req.includes(cand))
+  })
 }
 
 const getResultValue = <T, E>(result: ResultType<T, E>): T | null => {
@@ -319,6 +328,77 @@ export const searchCandidatesBySkillsTool = tool({
   },
 })
 
+export const searchProfessionalsTool = tool({
+  description:
+    "Busca y filtra profesionales/candidatos en la base de datos por nombre, profesión, habilidades (skills) o filtros cruzados.",
+  inputSchema: z.object({
+    name: z.string().max(100).optional(),
+    profession: z.string().max(100).optional(),
+    skills: z.array(z.string().min(1).max(100)).max(20).optional(),
+    minExperience: z.number().min(0).max(50).optional().default(0),
+    limit: z.number().min(1).max(50).optional().default(10),
+  }),
+  execute: async ({ name, profession, skills, minExperience = 0, limit = 10 }) => {
+    validateToolInput("searchProfessionals", { name, profession, skills })
+    const usersResult = await getUsers({
+      type: "professional",
+      limit: 100,
+      page: 1,
+      isActive: true,
+    })
+    if (!Result.isOk(usersResult)) {
+      return { error: "No se pudieron obtener profesionales", details: String(usersResult.error) }
+    }
+
+    const candidates = await Promise.all(
+      usersResult.value.data.map(async (user) => {
+        const resumeResult = await getResumeByUserId(user.id)
+        const resume = getResultValue(resumeResult)
+        const skillsList = Array.isArray(resume?.skills)
+          ? resume.skills.map((skill) => (typeof skill === "string" ? skill : skill.name))
+          : []
+        const experienceYears = Array.isArray(resume?.experiences) ? resume.experiences.length : 0
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          profession: user.profession,
+          skills: skillsList,
+          years_of_experience: experienceYears,
+          bio: resume?.summary ?? null,
+        }
+      })
+    )
+
+    let filtered = candidates
+
+    // Filter by name
+    if (name) {
+      const normName = normalizeText(name)
+      filtered = filtered.filter((c) => normalizeText(c.name).includes(normName))
+    }
+
+    // Filter by profession
+    if (profession) {
+      const normProf = normalizeText(profession)
+      filtered = filtered.filter((c) => c.profession && normalizeText(c.profession).includes(normProf))
+    }
+
+    // Filter by skills
+    if (skills && skills.length > 0) {
+      filtered = filtered.filter((c) => hasSkillsMatch(c.skills ?? [], skills))
+    }
+
+    // Filter by experience
+    if (minExperience > 0) {
+      filtered = filtered.filter((c) => (c.years_of_experience ?? 0) >= minExperience)
+    }
+
+    return filtered.slice(0, limit)
+  },
+})
+
 export const getOrganizationStatsTool = tool({
   description: "Obtiene estadísticas de la organización: ofertas activas, postulaciones, métricas",
   inputSchema: z.object({
@@ -487,6 +567,7 @@ export const organizationTools = {
   updateCandidateStatus: updateCandidateStatusTool,
   sendMessageToCandidate: sendMessageToCandidateTool,
   searchCandidatesBySkills: searchCandidatesBySkillsTool,
+  searchProfessionals: searchProfessionalsTool,
   getOrganizationStats: getOrganizationStatsTool,
   getCandidateDetail: getCandidateDetailTool,
   listApplications: listApplicationsTool,
