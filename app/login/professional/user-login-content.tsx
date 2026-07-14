@@ -153,7 +153,7 @@ export function UserLoginContent() {
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-xs">
+              <label htmlFor="remember" className="flex items-center gap-2 text-xs cursor-pointer">
                 <Checkbox
                   id="remember"
                   checked={rememberMe}
@@ -161,12 +161,12 @@ export function UserLoginContent() {
                 />
                 Recordarme
               </label>
-              <button
-                type="button"
+              <Link
+                href="/password/reset"
                 className="text-sm text-secondary hover:text-secondary/80 hover:underline"
               >
                 ¿Olvidaste tu contraseña?
-              </button>
+              </Link>
             </div>
             {errors.general && (
               <div className="text-center text-sm text-destructive">{errors.general}</div>

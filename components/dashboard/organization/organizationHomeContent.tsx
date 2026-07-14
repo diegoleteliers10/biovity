@@ -1,6 +1,7 @@
 "use client"
 
-import { Calendar03Icon, UserIcon } from "@hugeicons/core-free-icons"
+import { Calendar03Icon, SparklesIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useRouter } from "next/navigation"
@@ -12,7 +13,6 @@ import { useChatsByRecruiter } from "@/lib/api/use-chats"
 import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
 import { useOrganization } from "@/lib/api/use-organization"
 import {
-  useOrgFeaturedCandidates,
   useOrgMetrics,
   useOrgRecentApplications,
   useOrgUpcomingInterviews,
@@ -67,7 +67,7 @@ export function OrganizationHomeContent() {
     return map
   }, [candidateQueries, messagesQuery.data])
 
-  const candidatesQuery = useOrgFeaturedCandidates()
+  // Feature coming soon, no query needed
 
   const notifications = notificationsData?.data ?? []
   const unreadCount = notificationsData?.unreadCount ?? 0
@@ -259,45 +259,23 @@ export function OrganizationHomeContent() {
 
         <PlaceholderCard
           title="Candidatos destacados"
-          description="candidatos que coinciden con tus ofertas"
-          icon={UserIcon}
+          description="Recomendaciones inteligentes"
+          icon={SparklesIcon}
           iconColor="accent"
-          onClick={() => push("/dashboard/talent")}
         >
-          {candidatesQuery.isLoading ? (
-            <div className="space-y-3 mt-2">
-              {Array.from({ length: 2 }).map((_, i) => (
-                <div
-                  key={`${skeletonId}-candidate-${i}`}
-                  className="flex flex-col gap-2 p-3 rounded-lg border border-border/60"
-                >
-                  <div className="flex justify-between items-center">
-                    <Skeleton className="h-4 w-36" />
-                    <Skeleton className="h-4 w-14" />
-                  </div>
-                  <Skeleton className="h-3 w-40" />
-                </div>
-              ))}
+          <div className="flex flex-col items-center justify-center text-center p-5 bg-secondary/5 rounded-xl border border-dashed border-border/60 min-h-[180px] h-full">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent/10 text-accent mb-2.5 animate-pulse">
+              <HugeiconsIcon icon={SparklesIcon} size={18} strokeWidth={1.5} />
             </div>
-          ) : candidatesQuery.error ? (
-            <p className="text-sm text-destructive mt-2">Error al cargar candidatos.</p>
-          ) : candidatesQuery.data && candidatesQuery.data.length > 0 ? (
-            <div className="space-y-4 mt-2">
-              {candidatesQuery.data.map((candidate) => (
-                <div key={candidate.id} className="flex flex-col gap-1 border-b pb-3 last:border-0">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm">{candidate.name}</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent">
-                      {candidate.matchPercentage}% Match
-                    </span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">{candidate.role}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground mt-2">No hay candidatos destacados.</p>
-          )}
+            <h4 className="font-semibold text-sm text-foreground mb-1">Emparejamiento con IA</h4>
+            <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
+              Próximamente analizaremos los perfiles automáticamente para sugerirte los
+              profesionales más adecuados para tus vacantes.
+            </p>
+            <span className="mt-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-accent/10 text-accent border border-accent/20">
+              Próximamente
+            </span>
+          </div>
         </PlaceholderCard>
       </div>
 

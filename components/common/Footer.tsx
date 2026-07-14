@@ -64,11 +64,15 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-neutral-400">
                 <HugeiconsIcon icon={Mail01Icon} className="size-4" />
-                <span>contacto@biovity.com</span>
+                <a href="mailto:dleteliers@udd.cl" className="hover:text-white transition-colors">
+                  dleteliers@udd.cl
+                </a>
               </div>
               <div className="flex items-center gap-3 text-neutral-400">
                 <HugeiconsIcon icon={CallIcon} className="size-4" />
-                <span>+56 2 2345 6789</span>
+                <a href="tel:+56978181654" className="hover:text-white transition-colors">
+                  +56 9 7818 1654
+                </a>
               </div>
               <div className="flex items-center gap-3 text-neutral-400">
                 <HugeiconsIcon icon={MapPinIcon} className="size-4" />
