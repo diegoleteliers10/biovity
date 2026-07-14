@@ -1,7 +1,4 @@
 "use client"
-
-import { Briefcase01Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryStates } from "nuqs"
 import { useMemo } from "react"
 import type { Job } from "@/lib/api/jobs"
@@ -240,9 +237,7 @@ export function TrabajosPageContent() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center py-12">
               <div className="flex items-center gap-3 text-muted-foreground">
-                <div className="animate-spin">
-                  <HugeiconsIcon icon={Briefcase01Icon} size={24} />
-                </div>
+                <div className="size-6 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
                 <span>Cargando ofertas…</span>
               </div>
             </div>

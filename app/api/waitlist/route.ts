@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { insertWaitlistEntry } from "@/lib/db/waitlist"
+import { sendWaitlistEmail, subscribeToResendAudience } from "@/lib/mail"
 import { checkRateLimit } from "@/lib/rate-limit"
 import { waitlistSchema } from "@/lib/validations"
 
@@ -48,6 +49,14 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ error: "Error al guardar. Intenta de nuevo." }, { status: 500 })
   }
+
+  // Send welcome waitlist email and subscribe to Resend Audience asynchronously
+  sendWaitlistEmail(email, role).catch((err) => {
+    console.error("Failed to send waitlist email:", err)
+  })
+  subscribeToResendAudience(email).catch((err) => {
+    console.error("Failed to subscribe waitlist user to Resend Audience:", err)
+  })
 
   return NextResponse.json({ success: true })
 }

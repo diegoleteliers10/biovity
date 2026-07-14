@@ -5,6 +5,12 @@ import { nextCookies } from "better-auth/next-js"
 import { headers } from "next/headers"
 import { cache } from "react"
 import { pool } from "@/lib/db"
+import {
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
+  subscribeToResendAudience,
+} from "@/lib/mail"
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -137,8 +143,39 @@ export const auth = betterAuth({
       updatedAt: "updatedAt",
     },
   },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      const verificationUrl = new URL(url)
+      const type = (user as { type?: string }).type || "professional"
+      const callbackURL = `${verificationUrl.origin}/register/${type}?verified=true`
+      verificationUrl.searchParams.set("callbackURL", callbackURL)
+      await sendVerificationEmail(user.email, verificationUrl.toString())
+    },
+  },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail(user.email, url)
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          sendWelcomeEmail(
+            user.email,
+            user.name,
+            (user.type as "professional" | "organization") || "professional"
+          ).catch((err) => {
+            console.error("Failed to send welcome email:", err)
+          })
+          subscribeToResendAudience(user.email, user.name).catch((err) => {
+            console.error("Failed to subscribe user to Resend Audience:", err)
+          })
+        },
+      },
+    },
   },
   logger: {
     level: process.env.NODE_ENV === "production" ? "info" : "debug",

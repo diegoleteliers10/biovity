@@ -13,7 +13,8 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useReducer } from "react"
+import { useEffect, useReducer } from "react"
+import { toast } from "sonner"
 import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -116,6 +117,17 @@ export function UserRegisterContent() {
   const { replace } = useRouter()
 
   const [formState, dispatch] = useReducer(registerFormReducer, initialRegisterFormState)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get("verified") === "true") {
+        toast.success("Se ha verificado correctamente tu cuenta")
+        const newUrl = window.location.pathname
+        window.history.replaceState({}, "", newUrl)
+      }
+    }
+  }, [])
 
   const handleInputChange = (field: string, value: string) => {
     dispatch({ type: "SET_FIELD", field: field as keyof RegisterFormState, value })

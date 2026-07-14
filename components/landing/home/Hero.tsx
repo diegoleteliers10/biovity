@@ -3,12 +3,27 @@
 import { Briefcase01Icon, Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import * as m from "motion/react-m"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
 import { Input } from "../../ui/input"
 
 export function Hero() {
+  const router = useRouter()
+  const [query, setQuery] = useState("")
+  const [location, setLocation] = useState("")
   const ease = [0.23, 1, 0.32, 1] as const
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (query.trim()) params.set("q", query.trim())
+    if (location.trim()) params.set("ubicacion", location.trim())
+
+    const searchString = params.toString()
+    router.push(`/trabajos${searchString ? `?${searchString}` : ""}`)
+  }
 
   return (
     <section className="relative min-h-svh sm:h-svh flex items-center justify-center overflow-hidden lg:contain-paint">
@@ -48,36 +63,47 @@ export function Hero() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.24, ease }}
           >
-            <Card className="p-4 sm:p-6 max-w-4xl mx-auto bg-white/90 backdrop-blur-sm w-full px-4 sm:px-6 border border-border/10">
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <div className="flex-1 relative">
-                  <HugeiconsIcon
-                    icon={Briefcase01Icon}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
-                  />
-                  <Input
-                    aria-label="Buscar puesto"
-                    placeholder="¿Qué puesto buscas?"
-                    className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
-                  />
+            <form onSubmit={handleSearch}>
+              <Card className="p-4 sm:p-6 max-w-4xl mx-auto bg-white/90 backdrop-blur-sm w-full px-4 sm:px-6 border border-border/10">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <div className="flex-1 relative">
+                    <HugeiconsIcon
+                      icon={Briefcase01Icon}
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
+                    />
+                    <Input
+                      aria-label="Buscar puesto"
+                      placeholder="¿Qué puesto buscas?"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
+                    />
+                  </div>
+                  <div className="flex-1 relative">
+                    <HugeiconsIcon
+                      icon={Location05Icon}
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
+                    />
+                    <Input
+                      aria-label="Buscar ubicación"
+                      placeholder="¿Dónde?"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    size="lg"
+                    className="h-12 px-8 w-full sm:w-auto"
+                  >
+                    <HugeiconsIcon icon={Search01Icon} className="size-5" />
+                    Buscar
+                  </Button>
                 </div>
-                <div className="flex-1 relative">
-                  <HugeiconsIcon
-                    icon={Location05Icon}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
-                  />
-                  <Input
-                    aria-label="Buscar ubicación"
-                    placeholder="¿Dónde?"
-                    className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
-                  />
-                </div>
-                <Button variant="secondary" size="lg" className="h-12 px-8 w-full sm:w-auto">
-                  <HugeiconsIcon icon={Search01Icon} className="size-5" />
-                  Buscar
-                </Button>
-              </div>
-            </Card>
+              </Card>
+            </form>
 
             <div className="flex flex-wrap justify-center gap-3 mt-6 md:mt-8 px-4">
               <Button

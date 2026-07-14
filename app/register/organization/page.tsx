@@ -19,7 +19,8 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
+import { toast } from "sonner"
 import { SessionRefresher } from "@/components/auth/SessionRefresher"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -33,6 +34,17 @@ export default function OrganizationRegisterPage() {
   const _router = useRouter()
   const [isPending, startTransition] = useTransition()
   const createOrganizationMutation = useCreateOrganizationMutation()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get("verified") === "true") {
+        toast.success("Se ha verificado correctamente tu cuenta")
+        const newUrl = window.location.pathname
+        window.history.replaceState({}, "", newUrl)
+      }
+    }
+  }, [])
   const [formData, setFormData] = useState({
     contactName: "",
     contactEmail: "",
