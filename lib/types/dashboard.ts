@@ -65,15 +65,6 @@ export type Applicant = {
   evaluationRating?: "positive" | "neutral" | "negative" | null
 }
 
-export type OfferWithApplicants = {
-  id: string
-  title: string
-  location: string
-  status: "activa" | "cerrada" | "borrador"
-  publishedAt: string
-  applicants: Applicant[]
-}
-
 export type RecentMessage = {
   sender: string
   time: string
