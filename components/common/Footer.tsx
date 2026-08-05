@@ -18,7 +18,7 @@ const FOOTER_SECTIONS = [
       { label: "Buscar Empleos", href: "/trabajos" },
       { label: "Subir CV", href: "/register" },
       { label: "Alertas de Empleo", href: "/trabajos" },
-      { label: "Consejos de Carrera", href: "/blog" },
+      { label: "Consejos de Carrera", href: "/consejos-carrera" },
       { label: "Salarios", href: "/salarios" },
       { label: "Blog", href: "/blog" },
     ],
