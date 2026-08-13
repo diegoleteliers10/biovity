@@ -19,8 +19,6 @@ export * from "./application"
 export * from "./auth"
 // Contact schemas
 export * from "./contact"
-// Job schemas
-export * from "./job"
 // Primitive schemas
 export * from "./primitives"
 // Profile schemas
