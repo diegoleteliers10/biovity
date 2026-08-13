@@ -1,19 +1,14 @@
-import { Result as R } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
 import { checkRateLimit, getUserRateLimit } from "@/lib/ai/rate-limit"
-import { auth } from "@/lib/auth"
 
 const WAITLIST_PATH = "/lista-espera"
 const AI_API_PATTERN = /^\/api\/ai\//
 
-async function getSessionSafe(request: NextRequest) {
-  return R.tryPromise({
-    try: async () =>
-      auth.api.getSession({
-        headers: request.headers,
-      }),
-    catch: (e) => (e instanceof Error ? e : new Error(String(e))),
-  })
+function getSessionToken(request: NextRequest): string | undefined {
+  return (
+    request.cookies.get("better-auth.session_token")?.value ||
+    request.cookies.get("__Secure-better-auth.session_token")?.value
+  )
 }
 
 async function handleAI_RATE_LIMIT(request: NextRequest) {
@@ -27,13 +22,12 @@ async function handleAI_RATE_LIMIT(request: NextRequest) {
     return null
   }
 
-  const sessionResult = await getSessionSafe(request)
-  const session = sessionResult.isOk() ? sessionResult.value : null
-  const isAuthenticated = !!session?.user?.id
+  const sessionToken = getSessionToken(request)
+  const isAuthenticated = !!sessionToken
   const limit = getUserRateLimit(isAuthenticated)
 
   const identifier = isAuthenticated
-    ? `user:${session.user.id}`
+    ? `token:${sessionToken}`
     : `ip:${request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown"}`
 
   const result = checkRateLimit(identifier, limit)
