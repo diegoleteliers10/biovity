@@ -18,8 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import type { Application } from "@/lib/api/applications"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useOrganization } from "@/lib/api/use-organization"
-import { authClient } from "@/lib/auth-client"
-
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { formatDateChilean } from "@/lib/utils"
 
 function formatDateApplied(isoDate: string): string {
@@ -41,9 +40,8 @@ const getCurrentStageIndex = (status: string): number => {
 
 export const ApplicationsContent = () => {
   const router = useRouter()
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const userId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const userId = session?.user?.id
   const { data: applications = [], isLoading, error } = useApplicationsByCandidate(userId)
 
   const isPending = !userId || isLoading || applications === undefined

@@ -16,7 +16,7 @@ import {
   useSendMessageMutation,
 } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
-import { authClient } from "@/lib/auth-client"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { getResultErrorMessage } from "@/lib/result"
 import { cn, formatDateChilean } from "@/lib/utils"
 
@@ -30,9 +30,8 @@ export function UserMessagesContent() {
     defaultValue: "",
   })
 
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const professionalId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const professionalId = session?.user?.id
 
   const [mobileView, setMobileView] = useState<"list" | "chat">("list")
 

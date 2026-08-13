@@ -2,9 +2,9 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
+import { toast } from "sonner"
 import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson } from "@/lib/result"
-import { toast } from "sonner"
 import type { Chat } from "./chats"
 
 const API_BASE =

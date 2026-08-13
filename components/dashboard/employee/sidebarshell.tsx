@@ -65,7 +65,7 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
 
   return (
     <DashboardSessionContext.Provider value={session ?? null}>
-      <SidebarProvider className="pt-2 px-2 pb-2 bg-sidebar" defaultOpen={defaultOpen}>
+      <SidebarProvider className="h-svh max-h-svh pt-2 px-2 pb-2 bg-sidebar overflow-hidden" defaultOpen={defaultOpen}>
         <DashboardSidebar
           navData={navData}
           logoutRedirect="/login"
@@ -76,7 +76,7 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
           session={session}
         />
         <SidebarInset
-          className="min-h-0 rounded-tl-lg sm:rounded-tl-lg"
+          className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-hidden rounded-tl-lg sm:rounded-tl-lg"
           style={{ viewTransitionName: "persistent-nav" }}
         >
           {children}

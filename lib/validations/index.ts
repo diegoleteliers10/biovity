@@ -25,5 +25,7 @@ export * from "./primitives"
 export * from "./profile"
 // Question schemas
 export * from "./question"
+// Salary submission schemas (Give-to-Get, mercado chileno)
+export * from "./salary"
 // Waitlist schemas
 export * from "./waitlist"

@@ -25,9 +25,7 @@ export function OrganizationSectionCard({
 }: OrganizationSectionCardProps) {
   return (
     <Card className={cn("border-border/60 shadow-sm", className)}>
-      <CardHeader
-        className={cn(action && "flex-row items-start justify-between gap-4 space-y-0")}
-      >
+      <CardHeader className={cn(action && "flex-row items-start justify-between gap-4 space-y-0")}>
         <div className="space-y-1.5">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             {icon && <HugeiconsIcon icon={icon} size={20} className="text-primary" />}

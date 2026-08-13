@@ -37,7 +37,7 @@ export async function getOrganizationMembers(
   organizationId: string
 ): Promise<Result<OrganizationMember[], ApiError | NetworkError>> {
   const result = await fetchJson<{ data: OrganizationMember[] }>(base(organizationId))
-  if (result.isErr()) return result
+  if (result.isErr()) return R.err(result.error)
   return R.ok(result.value.data)
 }
 
@@ -50,7 +50,7 @@ export async function addOrganizationMember(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
-  if (result.isErr()) return result
+  if (result.isErr()) return R.err(result.error)
   return R.ok(result.value.data)
 }
 
@@ -67,7 +67,7 @@ export async function updateMemberRole(
       body: JSON.stringify({ role }),
     }
   )
-  if (result.isErr()) return result
+  if (result.isErr()) return R.err(result.error)
   return R.ok(result.value.data)
 }
 
@@ -92,6 +92,6 @@ export async function transferOrganizationOwnership(
       body: JSON.stringify({ newOwnerUserId }),
     }
   )
-  if (result.isErr()) return result
+  if (result.isErr()) return R.err(result.error)
   return R.ok(result.value.data)
 }

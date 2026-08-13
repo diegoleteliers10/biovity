@@ -652,9 +652,7 @@ export function OrganizationMetricsContent() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              No hay datos geográficos disponibles.
-            </p>
+            <p className="text-sm text-muted-foreground">No hay datos geográficos disponibles.</p>
           )}
         </CardContent>
       </Card>
@@ -711,8 +709,8 @@ export function OrganizationMetricsContent() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              No hay datos de productividad disponibles. Agrega miembros al equipo para ver
-              métricas individuales.
+              No hay datos de productividad disponibles. Agrega miembros al equipo para ver métricas
+              individuales.
             </p>
           )}
         </CardContent>
@@ -754,16 +752,14 @@ export function OrganizationMetricsContent() {
                 </BarChart>
               </ResponsiveContainer>
               <p className="text-xs text-muted-foreground">
-                Distribución de postulaciones según el tiempo que tardaste en
-                responder.
+                Distribución de postulaciones según el tiempo que tardaste en responder.
               </p>
             </div>
           ) : (
             <div className="flex h-[180px] flex-col items-center justify-center gap-1 text-center">
               <p className="text-sm font-medium">Sin datos de tiempo de respuesta</p>
               <p className="text-xs text-muted-foreground">
-                Cuando respondas postulaciones, veremos aquí la distribución por rango
-                de tiempo.
+                Cuando respondas postulaciones, veremos aquí la distribución por rango de tiempo.
               </p>
             </div>
           )}

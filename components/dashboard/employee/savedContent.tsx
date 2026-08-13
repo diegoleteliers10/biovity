@@ -20,7 +20,7 @@ import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { useRemoveSavedJobMutation, useSavedJobsByUserInfinite } from "@/lib/api/use-saved-jobs"
-import { authClient } from "@/lib/auth-client"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
 
 function getSalaryDisplay(job: Job): string {
@@ -140,9 +140,8 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
 }
 
 export const SavedContent = () => {
-  const { useSession } = authClient
-  const { data: session, isPending: sessionPending } = useSession()
-  const userId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const userId = session?.user?.id
 
   const {
     data,
@@ -170,7 +169,7 @@ export const SavedContent = () => {
     void fetchNextPage()
   }, [fetchNextPage])
 
-  const isPending = sessionPending || savedJobsLoading
+  const isPending = savedJobsLoading
 
   if (isPending) {
     return (

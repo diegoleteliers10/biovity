@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import {
   ArrowRight01Icon,
   CheckmarkCircle02Icon,
@@ -12,6 +11,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
+import { useState } from "react"
 import { CONSEJOS_ARTICULOS, CONSEJOS_CATEGORIAS } from "@/lib/data/consejos-carrera-data"
 
 export function ConsejosGrid() {
@@ -20,8 +20,7 @@ export function ConsejosGrid() {
   const ease = [0.23, 1, 0.32, 1] as const
 
   const filteredArticles = CONSEJOS_ARTICULOS.filter((article) => {
-    const matchesCategory =
-      selectedCategory === "todos" || article.category === selectedCategory
+    const matchesCategory = selectedCategory === "todos" || article.category === selectedCategory
 
     const matchesSearch =
       searchQuery.trim() === "" ||
@@ -90,9 +89,7 @@ export function ConsejosGrid() {
               icon={FilterEditIcon}
               className="size-12 mx-auto text-muted-foreground mb-4"
             />
-            <h3 className="text-lg font-semibold text-foreground mb-1">
-              No se encontraron guías
-            </h3>
+            <h3 className="text-lg font-semibold text-foreground mb-1">No se encontraron guías</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               Intenta cambiar la categoría o limpiar el campo de búsqueda para explorar otros temas.
             </p>
@@ -148,7 +145,10 @@ export function ConsejosGrid() {
                       Puntos Clave:
                     </p>
                     {article.takeaways.map((takeaway) => (
-                      <div key={takeaway} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <div
+                        key={takeaway}
+                        className="flex items-start gap-2 text-xs text-muted-foreground"
+                      >
                         <HugeiconsIcon
                           icon={CheckmarkCircle02Icon}
                           className="size-3.5 text-accent shrink-0 mt-0.5"

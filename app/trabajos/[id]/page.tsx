@@ -18,6 +18,7 @@ import { Fragment } from "react"
 import { JobViewsTracker } from "@/components/common/job-views-tracker"
 import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
+import { JobShareButtons } from "@/components/landing/trabajos/JobShareButtons"
 import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -108,20 +109,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const job = result.value
-  const url = `/trabajos/${job.id}`
-  const desc = job.description?.substring(0, 160) ?? ""
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://biovity.cl"
+  const url = `${siteUrl}/trabajos/${job.id}`
+  const ogImageUrl = `${siteUrl}/og/job/${job.id}`
+  const orgName = job.organization?.name ?? "Biovity"
+  const locStr = formatJobLocation(job.location) || "Chile"
+  const desc = job.description
+    ? job.description.replace(/<[^>]*>/g, "").substring(0, 160)
+    : `Postula a la vacante de ${job.title} en ${orgName} (${locStr}) a través de Biovity.`
+
   return {
-    title: `${job.title} | Biovity`,
+    title: `${job.title} - ${orgName} | Biovity`,
     description: desc,
     openGraph: {
-      title: `${job.title} | Biovity`,
+      title: `${job.title} - ${orgName}`,
       description: desc,
       url,
+      siteName: "Biovity",
+      locale: "es_CL",
+      type: "website",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${job.title} en ${orgName} | Biovity`,
+        },
+      ],
     },
     twitter: {
-      card: "summary",
-      title: job.title,
+      card: "summary_large_image",
+      title: `${job.title} - ${orgName}`,
       description: desc,
+      images: [ogImageUrl],
     },
     alternates: {
       canonical: url,
@@ -257,6 +277,16 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 </div>
               )}
             </div>
+
+            <JobShareButtons
+              jobId={job.id}
+              jobTitle={job.title}
+              organizationName={organizationName}
+              location={ubicacion}
+              salary={salaryStr}
+              variant="pills"
+              className="mt-2"
+            />
           </div>
 
           {/* Contenido principal - 2 columnas */}

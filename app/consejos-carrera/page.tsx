@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { ConsejosCTA } from "@/components/landing/consejos/ConsejosCTA"
 import { ConsejosFAQ } from "@/components/landing/consejos/ConsejosFAQ"
 import { ConsejosGrid } from "@/components/landing/consejos/ConsejosGrid"
-import { ConsejosHerramientas } from "@/components/landing/consejos/ConsejosHerramientas"
 import { ConsejosHero } from "@/components/landing/consejos/ConsejosHero"
+import { ConsejosHerramientas } from "@/components/landing/consejos/ConsejosHerramientas"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import {
   BreadcrumbJsonLd,

@@ -1,30 +1,48 @@
 "use client"
 
-import { DashboardSquare02Icon } from "@hugeicons/core-free-icons"
+import {
+  Calendar03Icon,
+  Cancel01Icon,
+  CheckmarkCircle02Icon,
+  Clock01Icon,
+  DashboardSquare02Icon,
+  File02Icon,
+  Message01Icon,
+  PieChart02Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/lazy-chart"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 import type { UserMetrics } from "@/lib/types/user-metrics"
 
-const [Area, AreaChart, Bar, BarChart, CartesianGrid, LabelList, PieChart, Pie, XAxis] =
-  await Promise.all([
-    import("recharts").then((m) => m.Area),
-    import("recharts").then((m) => m.AreaChart),
-    import("recharts").then((m) => m.Bar),
-    import("recharts").then((m) => m.BarChart),
-    import("recharts").then((m) => m.CartesianGrid),
-    import("recharts").then((m) => m.LabelList),
-    import("recharts").then((m) => m.PieChart),
-    import("recharts").then((m) => m.Pie),
-    import("recharts").then((m) => m.XAxis),
-  ])
+const [
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  PieChart,
+  Pie,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+] = await Promise.all([
+  import("recharts").then((m) => m.Area),
+  import("recharts").then((m) => m.AreaChart),
+  import("recharts").then((m) => m.Bar),
+  import("recharts").then((m) => m.BarChart),
+  import("recharts").then((m) => m.CartesianGrid),
+  import("recharts").then((m) => m.Cell),
+  import("recharts").then((m) => m.PieChart),
+  import("recharts").then((m) => m.Pie),
+  import("recharts").then((m) => m.ResponsiveContainer),
+  import("recharts").then((m) => m.Tooltip),
+  import("recharts").then((m) => m.XAxis),
+  import("recharts").then((m) => m.YAxis),
+])
 
 type ChartsGridProps = {
   metricsData: UserMetrics | undefined
@@ -53,6 +71,8 @@ const PERIOD_AXIS_LABEL: Record<MetricsPeriod, string> = {
   custom: "período",
 }
 
+const CATEGORY_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#f43f5e", "#8b5cf6", "#0ea5e9"]
+
 function formatTrendTick(value: string, period: MetricsPeriod): string {
   if (!value) return ""
   const parts = value.split("-")
@@ -67,335 +87,349 @@ function formatTrendTick(value: string, period: MetricsPeriod): string {
   return `${day}-${end.getDate()} ${MONTH_SHORT[end.getMonth()] ?? ""}`
 }
 
-const DottedBackgroundPattern = ({ patternId }: { patternId: string }) => {
-  return (
-    <pattern id={patternId} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-      <circle className="dark:text-muted/40 text-muted" cx="2" cy="2" r="1" fill="currentColor" />
-    </pattern>
-  )
-}
-
-const CustomDuotoneBar = (props: React.SVGProps<SVGRectElement> & { dataKey?: string }) => {
-  const { fill, x, y, width, height, dataKey } = props
-
-  return (
-    <>
-      <rect
-        rx={4}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        stroke="none"
-        fill={`url(#duotone-bar-pattern-${dataKey})`}
-      />
-      <defs>
-        <linearGradient
-          key={dataKey}
-          id={`duotone-bar-pattern-${dataKey}`}
-          x1="0"
-          y1="0"
-          x2="1"
-          y2="0"
-        >
-          <stop offset="50%" stopColor={fill} stopOpacity={0.5} />
-          <stop offset="50%" stopColor={fill} />
-        </linearGradient>
-      </defs>
-    </>
-  )
-}
-
-const EmptyChartState = () => (
-  <div className="flex h-[200px] items-center justify-center text-muted-foreground text-sm">
-    Sin datos disponibles
-  </div>
-)
-
-type ApplicationsChartProps = {
-  data: Array<{ date: string; applications: number }>
-  config: ChartConfig
-  period: MetricsPeriod
-}
-
-function ApplicationsChart({ data, config, period }: ApplicationsChartProps) {
-  if (data.length === 0) {
-    return <EmptyChartState />
-  }
-  return (
-    <ChartContainer config={config}>
-      <AreaChart accessibilityLayer data={data}>
-        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          minTickGap={16}
-          tickFormatter={(value: string) => formatTrendTick(value, period)}
-        />
-        <ChartTooltip
-          cursor={false}
-          content={
-            <ChartTooltipContent
-              labelFormatter={(label) => formatTrendTick(String(label), period)}
-            />
-          }
-        />
-        <defs>
-          <linearGradient id="gradient-applications" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-applications)" stopOpacity={0.5} />
-            <stop offset="95%" stopColor="var(--color-applications)" stopOpacity={0.1} />
-          </linearGradient>
-        </defs>
-        <Area
-          dataKey="applications"
-          type="natural"
-          fill="url(#gradient-applications)"
-          fillOpacity={0.4}
-          stroke="var(--color-applications)"
-          strokeWidth={0.8}
-          strokeDasharray={"3 3"}
-        />
-      </AreaChart>
-    </ChartContainer>
-  )
-}
-
-type ResponseTimeChartProps = {
-  data: Array<{ period: string; count: number }>
-  config: ChartConfig
-}
-
-function ResponseTimeChart({ data, config }: ResponseTimeChartProps) {
-  if (data.length === 0) {
-    return <EmptyChartState />
-  }
-  return (
-    <ChartContainer config={config} className="aspect-auto h-full w-full flex-1">
-      <BarChart accessibilityLayer data={data}>
-        <rect x="0" y="0" width="100%" height="85%" fill="url(#default-pattern-dots-response)" />
-        <defs>
-          <DottedBackgroundPattern patternId="default-pattern-dots-response" />
-        </defs>
-        <XAxis dataKey="period" tickLine={false} tickMargin={10} axisLine={false} />
-        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-        <Bar dataKey="count" fill="var(--color-count)" shape={<CustomDuotoneBar />} radius={4} />
-      </BarChart>
-    </ChartContainer>
-  )
-}
-
-type PipelineChartProps = {
-  data: Array<{ stage: string; count: number }>
-  config: ChartConfig
-  totalPipeline: number
-}
-
-function PipelineChart({ data, config, totalPipeline }: PipelineChartProps) {
-  return (
-    <>
-      <CardHeader>
-        <CardTitle className="text-foreground">
-          Embudo de contratación
-          <Badge variant="outline" className="text-primary bg-primary/10 border-none ml-2">
-            {totalPipeline} aplicaciones
-          </Badge>
-        </CardTitle>
-        <CardDescription>Progreso por etapa del proceso</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {totalPipeline === 0 ? (
-          <EmptyChartState />
-        ) : (
-          <ChartContainer config={config}>
-            <BarChart accessibilityLayer data={data}>
-              <rect
-                x="0"
-                y="0"
-                width="100%"
-                height="85%"
-                fill="url(#default-multiple-pattern-dots)"
-              />
-              <defs>
-                <DottedBackgroundPattern patternId="default-multiple-pattern-dots" />
-              </defs>
-              <XAxis dataKey="stage" tickLine={false} tickMargin={10} axisLine={false} />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent indicator="dashed" hideLabel />}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--color-count)"
-                shape={<CustomDuotoneBar />}
-                radius={4}
-              />
-            </BarChart>
-          </ChartContainer>
-        )}
-      </CardContent>
-    </>
-  )
-}
-
-type CategoriesChartProps = {
-  data: Array<{ category: string; count: number; fill: string }>
-  config: ChartConfig
-}
-
-function CategoriesChart({ data, config }: CategoriesChartProps) {
-  if (data.length === 0) {
-    return <EmptyChartState />
-  }
-  return (
-    <ChartContainer
-      config={config}
-      className="[&_.recharts-text]:fill-background mx-auto aspect-square max-h-[250px]"
-    >
-      <PieChart>
-        <ChartTooltip content={<ChartTooltipContent nameKey="category" hideLabel />} />
-        <Pie
-          data={data}
-          innerRadius={30}
-          dataKey="count"
-          nameKey="category"
-          radius={10}
-          cornerRadius={8}
-          paddingAngle={4}
-        >
-          <LabelList
-            dataKey="count"
-            stroke="none"
-            fontSize={12}
-            fontWeight={500}
-            fill="currentColor"
-            formatter={(value: number) => value.toString()}
-          />
-        </Pie>
-      </PieChart>
-    </ChartContainer>
-  )
-}
-
-const ChartsGridSkeleton = (
-  <div className="grid gap-4 lg:grid-cols-3">
-    <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
-    <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
+const EmptyChartState = ({ message = "Sin datos suficientes" }: { message?: string }) => (
+  <div className="flex h-[220px] flex-col items-center justify-center gap-1.5 text-center p-4">
+    <p className="text-sm font-medium text-muted-foreground">{message}</p>
+    <p className="text-xs text-muted-foreground/70">
+      Las métricas se actualizarán automáticamente a medida que interactúes.
+    </p>
   </div>
 )
 
 export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
-  const applicationsTrend = metricsData?.applicationsTrend ?? []
-  const responseTimeDistribution = metricsData?.responseTimeDistribution
-  const hiringFunnel = metricsData?.hiringFunnel
-  const categoriesApplied = metricsData?.categoriesApplied ?? []
+  if (!metricsData) {
+    return (
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="border border-border/80 bg-white rounded-xl lg:col-span-2 h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-white rounded-xl h-[300px] animate-pulse" />
+      </div>
+    )
+  }
 
-  const applicationsChartConfig = {
-    applications: {
-      label: "Postulaciones",
-      color: "var(--chart-1)",
-    },
-  } satisfies ChartConfig
+  const applicationsTrend = metricsData.applicationsTrend ?? []
+  const responseTimeDistribution = metricsData.responseTimeDistribution
+  const hiringFunnel = metricsData.hiringFunnel
+  const categoriesApplied = metricsData.categoriesApplied ?? []
 
   const responseTimeData = responseTimeDistribution
     ? [
         { period: "< 24h", count: responseTimeDistribution.lessThan24h },
-        { period: "1-3d", count: responseTimeDistribution.oneToThreeDays },
-        { period: "4-7d", count: responseTimeDistribution.threeToSevenDays },
-        { period: "> 7d", count: responseTimeDistribution.moreThanSevenDays },
+        { period: "1-3 días", count: responseTimeDistribution.oneToThreeDays },
+        { period: "4-7 días", count: responseTimeDistribution.threeToSevenDays },
+        { period: "> 7 días", count: responseTimeDistribution.moreThanSevenDays },
       ]
     : []
 
-  const responseTimeChartConfig = {
-    count: {
-      label: "Postulaciones",
-      color: "var(--chart-2)",
-    },
-  } satisfies ChartConfig
+  const totalPipeline = hiringFunnel
+    ? hiringFunnel.aplicado.count +
+      hiringFunnel.entrevista.count +
+      hiringFunnel.oferta.count +
+      hiringFunnel.contratado.count
+    : 0
 
-  const pipelineData = hiringFunnel
+  const funnelStages = hiringFunnel
     ? [
-        { stage: "Aplicado", count: hiringFunnel.aplicado.count },
-        { stage: "Entrevista", count: hiringFunnel.entrevista.count },
-        { stage: "Oferta", count: hiringFunnel.oferta.count },
-        { stage: "Contratado", count: hiringFunnel.contratado.count },
+        {
+          key: "aplicado",
+          label: "1. Postulaciones",
+          count: hiringFunnel.aplicado.count,
+          percentage: hiringFunnel.aplicado.percentage,
+          color: "bg-secondary",
+          bgColor: "bg-secondary/15",
+          textColor: "text-secondary-foreground",
+          icon: File02Icon,
+        },
+        {
+          key: "entrevista",
+          label: "2. Entrevistas",
+          count: hiringFunnel.entrevista.count,
+          percentage: hiringFunnel.entrevista.percentage,
+          color: "bg-primary",
+          bgColor: "bg-primary/15",
+          textColor: "text-primary",
+          icon: Message01Icon,
+        },
+        {
+          key: "oferta",
+          label: "3. Ofertas",
+          count: hiringFunnel.oferta.count,
+          percentage: hiringFunnel.oferta.percentage,
+          color: "bg-amber-500",
+          bgColor: "bg-amber-500/15",
+          textColor: "text-amber-700",
+          icon: Calendar03Icon,
+        },
+        {
+          key: "contratado",
+          label: "4. Contratados",
+          count: hiringFunnel.contratado.count,
+          percentage: hiringFunnel.contratado.percentage,
+          color: "bg-emerald-500",
+          bgColor: "bg-emerald-500/20",
+          textColor: "text-emerald-700",
+          icon: CheckmarkCircle02Icon,
+        },
       ]
     : []
-
-  const pipelineChartConfig = {
-    count: {
-      label: "Cantidad",
-      color: "var(--chart-1)",
-    },
-  } satisfies ChartConfig
-
-  const totalPipeline = pipelineData.reduce((sum, s) => sum + s.count, 0)
-
-  const categoriesDataWithColors = categoriesApplied.map((entry, index) => ({
-    ...entry,
-    fill: `var(--chart-${(index % 5) + 1})`,
-  }))
-
-  const categoriesChartConfig = (() => {
-    const config: Record<string, { label: string; color: string }> = {}
-    categoriesApplied.forEach((entry, i) => {
-      config[`chart${i + 1}`] = {
-        label: entry.category,
-        color: `var(--chart-${(i % 5) + 1})`,
-      }
-    })
-    return config
-  })()
-
-  if (!metricsData) return ChartsGridSkeleton
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      <Card className="border border-border/80 bg-white lg:col-span-2">
-        <CardHeader>
+      {/* Chart 1: Applications Trend */}
+      <Card className="border border-border/80 bg-white shadow-xs lg:col-span-2 flex flex-col">
+        <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={DashboardSquare02Icon} size={24} strokeWidth={1.5} />
-            <CardTitle className="text-foreground">
+            <HugeiconsIcon icon={DashboardSquare02Icon} size={20} className="text-primary" />
+            <CardTitle className="text-base font-semibold text-foreground">
               Postulaciones por {PERIOD_AXIS_LABEL[period]}
             </CardTitle>
           </div>
-          <CardDescription>Evolución de postulaciones en el período seleccionado</CardDescription>
+          <CardDescription className="text-xs text-muted-foreground">
+            Evolución temporal de tus aplicaciones enviadas
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <ApplicationsChart
-            data={applicationsTrend}
-            config={applicationsChartConfig}
-            period={period}
-          />
+        <CardContent className="flex-1 pb-4">
+          {applicationsTrend.length === 0 ? (
+            <EmptyChartState />
+          ) : (
+            <ResponsiveContainer width="100%" height={240}>
+              <AreaChart data={applicationsTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="userAppGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  tickFormatter={(val: string) => formatTrendTick(val, period)}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  allowDecimals={false}
+                />
+                <Tooltip
+                  cursor={{ stroke: "#6366f1", strokeWidth: 1, strokeDasharray: "2 2" }}
+                  formatter={(value: number) => [`${value} postulaciones`, "Postulados"]}
+                  labelFormatter={(label) => formatTrendTick(String(label), period)}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="applications"
+                  stroke="#6366f1"
+                  strokeWidth={2.5}
+                  fill="url(#userAppGradient)"
+                  dot={{ r: 3, fill: "#6366f1" }}
+                  activeDot={{ r: 5 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
 
-      <Card className="border border-border/80 bg-white flex flex-col">
-        <CardHeader>
-          <CardTitle className="text-foreground">Tiempo de respuesta</CardTitle>
-          <CardDescription>Distribución por período</CardDescription>
+      {/* Chart 2: Response Time Distribution */}
+      <Card className="border border-border/80 bg-white shadow-xs flex flex-col">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <HugeiconsIcon icon={Clock01Icon} size={20} className="text-emerald-600" />
+            <CardTitle className="text-base font-semibold text-foreground">
+              Tiempo de respuesta
+            </CardTitle>
+          </div>
+          <CardDescription className="text-xs text-muted-foreground">
+            Rango de tiempo de respuesta de empresas
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col">
-          <ResponseTimeChart data={responseTimeData} config={responseTimeChartConfig} />
+        <CardContent className="flex-1 flex flex-col justify-center pb-4">
+          {responseTimeData.every((d) => d.count === 0) ? (
+            <EmptyChartState message="Sin datos de respuesta aún" />
+          ) : (
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={responseTimeData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
+                <XAxis
+                  dataKey="period"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  allowDecimals={false}
+                />
+                <Tooltip
+                  cursor={{ fill: "rgba(16, 185, 129, 0.08)" }}
+                  formatter={(val: number) => [`${val} aplicaciones`, "Postulaciones"]}
+                />
+                <Bar dataKey="count" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={45} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
 
-      <Card className="border border-border/80 bg-white lg:col-span-2">
-        <PipelineChart
-          data={pipelineData}
-          config={pipelineChartConfig}
-          totalPipeline={totalPipeline}
-        />
+      {/* Chart 3: Embudo de Contratación (Visual Progress Steps) */}
+      <Card className="border border-border/80 bg-white shadow-xs lg:col-span-2 flex flex-col">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={File02Icon} size={20} className="text-primary" />
+              <CardTitle className="text-base font-semibold text-foreground">
+                Embudo de contratación
+              </CardTitle>
+            </div>
+            <Badge variant="secondary" className="font-semibold text-xs">
+              {totalPipeline} aplicaciones en total
+            </Badge>
+          </div>
+          <CardDescription className="text-xs text-muted-foreground">
+            Avance por etapa de selección
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-1 flex flex-col justify-center pb-5">
+          {totalPipeline === 0 ? (
+            <EmptyChartState message="Sin aplicaciones registradas" />
+          ) : (
+            <div className="space-y-4 py-1">
+              {funnelStages.map((stage) => (
+                <div key={stage.key} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs font-medium">
+                    <span className="flex items-center gap-2 text-foreground">
+                      <HugeiconsIcon icon={stage.icon} size={15} className={stage.textColor} />
+                      {stage.label}
+                    </span>
+                    <span className="tabular-nums text-muted-foreground font-semibold">
+                      {stage.count} ({stage.percentage}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-6 bg-muted/30 rounded-lg overflow-hidden relative border border-border/40">
+                    <div
+                      className={`h-full ${stage.bgColor} transition-all duration-500 ease-out`}
+                      style={{ width: `${Math.max(stage.percentage, stage.count > 0 ? 5 : 0)}%` }}
+                    />
+                    <span className={`absolute inset-0 flex items-center pl-3 text-[11px] font-semibold ${stage.textColor}`}>
+                      {stage.count > 0 ? `${stage.count} postulantes` : "0 en esta etapa"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
       </Card>
 
-      <Card className="border border-border/80 bg-white flex flex-col">
-        <CardHeader className="items-center pb-0">
-          <CardTitle className="text-foreground">Categorías aplicadas</CardTitle>
-          <CardDescription>Distribución por categoría</CardDescription>
+      {/* Chart 4: Categories Donut Chart + Detailed Legend */}
+      <Card className="border border-border/80 bg-white shadow-xs flex flex-col">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2">
+            <HugeiconsIcon icon={PieChart02Icon} size={20} className="text-indigo-600" />
+            <CardTitle className="text-base font-semibold text-foreground">
+              Categorías aplicadas
+            </CardTitle>
+          </div>
+          <CardDescription className="text-xs text-muted-foreground">
+            Distribución por área o especialidad
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 pb-0">
-          <CategoriesChart data={categoriesDataWithColors} config={categoriesChartConfig} />
+        <CardContent className="flex-1 flex flex-col justify-between pb-4">
+          {categoriesApplied.length === 0 ? (
+            <div className="flex flex-col gap-3 py-1">
+              <div className="h-[150px] w-full flex items-center justify-center relative">
+                <div className="size-28 rounded-full border-4 border-dashed border-muted flex items-center justify-center">
+                  <span className="text-[11px] font-medium text-muted-foreground text-center px-2">
+                    Sin postulaciones
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-1.5 border-t border-border/40 pt-3">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  Categorías sugeridas
+                </p>
+                {[
+                  { name: "Bioinformática", color: CATEGORY_COLORS[0] },
+                  { name: "Biotecnología", color: CATEGORY_COLORS[1] },
+                  { name: "Investigación Clínica", color: CATEGORY_COLORS[2] },
+                  { name: "Farmacéutica", color: CATEGORY_COLORS[3] },
+                ].map((item) => (
+                  <div key={item.name} className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-2 truncate text-muted-foreground">
+                      <span
+                        className="size-2.5 rounded-full shrink-0 opacity-50"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="truncate">{item.name}</span>
+                    </span>
+                    <span className="text-muted-foreground/60 tabular-nums shrink-0 ml-2">
+                      0 postulaciones
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div className="h-[160px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Tooltip
+                      formatter={(val: number, name: string) => [
+                        `${val} postulaciones (${categoriesApplied.find((c) => c.category === name)?.percentage ?? 0}%)`,
+                        name,
+                      ]}
+                    />
+                    <Pie
+                      data={categoriesApplied}
+                      dataKey="count"
+                      nameKey="category"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={42}
+                      outerRadius={68}
+                      paddingAngle={3}
+                    >
+                      {categoriesApplied.map((entry, index) => (
+                        <Cell
+                          key={entry.category}
+                          fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]}
+                          stroke="transparent"
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Clean Legend Breakdown */}
+              <div className="space-y-1.5 border-t border-border/40 pt-3">
+                {categoriesApplied.map((entry, index) => (
+                  <div key={entry.category} className="flex items-center justify-between text-xs">
+                    <span className="flex items-center gap-2 truncate text-muted-foreground">
+                      <span
+                        className="size-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: CATEGORY_COLORS[index % CATEGORY_COLORS.length] }}
+                      />
+                      <span className="truncate font-medium text-foreground">{entry.category}</span>
+                    </span>
+                    <span className="font-semibold text-foreground tabular-nums shrink-0 ml-2">
+                      {entry.count} ({entry.percentage}%)
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

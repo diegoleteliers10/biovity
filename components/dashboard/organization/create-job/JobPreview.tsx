@@ -15,21 +15,6 @@ import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { Badge } from "@/components/ui/badge"
 import { formatAmountCLP } from "@/lib/utils"
 
-type PreviewSalary = {
-  min?: number
-  max?: number
-  currency?: string
-  period?: string
-  isNegotiable?: boolean
-}
-
-type PreviewLocation = {
-  city?: string
-  country?: string
-  isRemote?: boolean
-  isHybrid?: boolean
-}
-
 type PreviewBenefit = { title: string }
 
 type JobPreviewProps = {
@@ -39,10 +24,10 @@ type JobPreviewProps = {
   experienceLevel?: string
   workMode?: string
   city?: string
+  region?: string
   country?: string
   salaryMin?: string
   salaryMax?: string
-  isNegotiable?: boolean
   benefits?: PreviewBenefit[]
   requiredSkills?: string[]
   minExperience?: number
@@ -51,12 +36,12 @@ type JobPreviewProps = {
   expiresAt?: string
 }
 
-function formatSalaryPreview(min?: string, max?: string, isNegotiable?: boolean): string {
-  if (isNegotiable || (!min && !max)) return "A convenir"
+function formatSalaryPreview(min?: string, max?: string): string {
+  if (!min && !max) return "Sin especificar"
   if (min && max) return `${formatAmountCLP(Number(min))} - ${formatAmountCLP(Number(max))} CLP/mes`
   if (min) return `Desde ${formatAmountCLP(Number(min))} CLP/mes`
   if (max) return `Hasta ${formatAmountCLP(Number(max))} CLP/mes`
-  return "A convenir"
+  return "Sin especificar"
 }
 
 const EMPLOYMENT_LABELS: Record<string, string> = {
@@ -89,10 +74,10 @@ export function JobPreview({
   experienceLevel,
   workMode,
   city,
+  region,
   country,
   salaryMin,
   salaryMax,
-  isNegotiable,
   benefits = [],
   requiredSkills = [],
   minExperience,
@@ -103,11 +88,11 @@ export function JobPreview({
   const locationStr = (() => {
     if (workMode === "remote") return "Remoto"
     if (workMode === "hybrid") return "Híbrido"
-    const parts = [city, country].filter(Boolean)
+    const parts = [city, region, country].filter(Boolean)
     return parts.length ? parts.join(", ") : "Sin especificar"
   })()
 
-  const salaryStr = formatSalaryPreview(salaryMin, salaryMax, isNegotiable)
+  const salaryStr = formatSalaryPreview(salaryMin, salaryMax)
 
   return (
     <div className="flex flex-col gap-4 text-sm">

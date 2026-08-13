@@ -9,27 +9,15 @@ import {
   DocumentAttachmentIcon,
   Mic02Icon,
   SentIcon,
-  SquareIcon,
   SparklesIcon,
+  SquareIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
-import { listCredentials, getMaskedCredential } from "@/lib/api/ai-credentials"
-import {
-  Context,
-  ContextTrigger,
-  ContextContent,
-  ContextContentHeader,
-  ContextContentBody,
-  ContextInputUsage,
-  ContextOutputUsage,
-  ContextReasoningUsage,
-  ContextContentFooter,
-} from "@/components/ai-elements/context"
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithApprovalResponses } from "ai"
 import { CheckIcon, ExternalLinkIcon, XIcon } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import type { ReactNode } from "react"
 import { useCallback, useMemo, useRef, useState } from "react"
 import {
@@ -52,6 +40,17 @@ import {
   ConfirmationRejected,
   ConfirmationRequest,
 } from "@/components/ai-elements/confirmation"
+import {
+  Context,
+  ContextContent,
+  ContextContentBody,
+  ContextContentFooter,
+  ContextContentHeader,
+  ContextInputUsage,
+  ContextOutputUsage,
+  ContextReasoningUsage,
+  ContextTrigger,
+} from "@/components/ai-elements/context"
 import {
   Conversation,
   ConversationContent,
@@ -82,6 +81,7 @@ import { Suggestion } from "@/components/ai-elements/suggestion"
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/components/ai-elements/tool"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { getMaskedCredential, listCredentials } from "@/lib/api/ai-credentials"
 import { useSession } from "@/lib/auth-client"
 
 type AgentChatProps = {
@@ -543,7 +543,8 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
           <div className="space-y-2">
             <h3 className="text-base font-bold text-foreground">Configura tu Proveedor de IA</h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Biovity funciona bajo un modelo <strong>Bring Your Own Key (BYOK)</strong>. Para habilitar Helix en tu organización, debes agregar tu propia API key de IA.
+              Biovity funciona bajo un modelo <strong>Bring Your Own Key (BYOK)</strong>. Para
+              habilitar Helix en tu organización, debes agregar tu propia API key de IA.
             </p>
           </div>
 
@@ -551,27 +552,43 @@ export function AgentChat({ jobOfferId, organizationId, recruiterUserId }: Agent
 
           {/* Pasos / Ruta de Navegación */}
           <div className="space-y-4 text-left">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Pasos para activar Helix:</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Pasos para activar Helix:
+            </p>
             <ol className="space-y-3.5">
               <li className="flex gap-3 text-sm">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">1</span>
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">
+                  1
+                </span>
                 <div>
                   <p className="font-semibold text-foreground text-xs leading-none">Mi Perfil</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">Haz clic en tu foto/avatar en el menú lateral principal.</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Haz clic en tu foto/avatar en el menú lateral principal.
+                  </p>
                 </div>
               </li>
               <li className="flex gap-3 text-sm">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">2</span>
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">
+                  2
+                </span>
                 <div>
                   <p className="font-semibold text-foreground text-xs leading-none">Pestaña IA</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">Selecciona la pestaña dedicada a las credenciales de IA.</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Selecciona la pestaña dedicada a las credenciales de IA.
+                  </p>
                 </div>
               </li>
               <li className="flex gap-3 text-sm">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">3</span>
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary/15 text-[10px] font-bold text-secondary">
+                  3
+                </span>
                 <div>
-                  <p className="font-semibold text-foreground text-xs leading-none">Agregar credencial (BYOK)</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">Ingresa tu API Key de OpenAI, Anthropic o Google y guarda los cambios.</p>
+                  <p className="font-semibold text-foreground text-xs leading-none">
+                    Agregar credencial (BYOK)
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Ingresa tu API Key de OpenAI, Anthropic o Google y guarda los cambios.
+                  </p>
                 </div>
               </li>
             </ol>

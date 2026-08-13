@@ -13,7 +13,7 @@ import {
   useSavedJobsByUser,
   useSaveJobMutation,
 } from "@/lib/api/use-saved-jobs"
-import { authClient } from "@/lib/auth-client"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { employeeSearchParsers } from "@/lib/parsers/employee-search"
 import { JobListItem } from "./jobListItem"
 import { SearchFilters } from "./searchFilters"
@@ -91,9 +91,8 @@ export const SearchContent = () => {
 
   const _handleSearch = useCallback(() => {}, [])
 
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const userId = (session?.user as { id?: string })?.id ?? ""
+  const session = useDashboardSession()
+  const userId = session?.user?.id ?? ""
 
   const { data: savedJobs } = useSavedJobsByUser(userId, {
     page: 1,

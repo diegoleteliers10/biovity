@@ -45,6 +45,8 @@ export function ApplicationDetailActions({
   applicationStatus,
   candidateId,
   candidateName,
+  candidateAvatar,
+  candidateProfession,
   onStatusChange,
   onScheduleInterview,
   onSendMessage,
@@ -53,6 +55,8 @@ export function ApplicationDetailActions({
   applicationStatus: ApplicationStage
   candidateId: string
   candidateName: string
+  candidateAvatar?: string | null
+  candidateProfession?: string | null
   onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
   onScheduleInterview?: (candidateId: string) => void
   onSendMessage?: (candidateId: string) => void
@@ -89,9 +93,14 @@ export function ApplicationDetailActions({
           Mensaje
         </Button>
 
-        <ScorecardSheet applicationId={applicationId} candidateName={candidateName}>
-          <Button variant="outline" size="sm">
-            <HugeiconsIcon icon={NoteAddIcon} size={14} className="mr-1.5" />
+        <ScorecardSheet
+          applicationId={applicationId}
+          candidateName={candidateName}
+          candidateAvatar={candidateAvatar}
+          candidateProfession={candidateProfession}
+        >
+          <Button variant="outline" size="sm" className="gap-1.5 border-secondary/30 hover:bg-secondary/10 hover:text-secondary">
+            <HugeiconsIcon icon={NoteAddIcon} size={14} />
             Evaluar
           </Button>
         </ScorecardSheet>

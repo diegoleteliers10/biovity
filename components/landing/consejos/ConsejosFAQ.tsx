@@ -26,7 +26,8 @@ export function ConsejosFAQ() {
             Preguntas Frecuentes sobre Desarrollo Profesional
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            Respuestas directas a las inquietudes más comunes al insertarse o progresar en el mercado de biociencias.
+            Respuestas directas a las inquietudes más comunes al insertarse o progresar en el
+            mercado de biociencias.
           </p>
         </div>
 

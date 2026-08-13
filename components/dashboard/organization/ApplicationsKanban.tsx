@@ -95,65 +95,122 @@ function ApplicantCard({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "cursor-grab touch-none border-border/60 py-4 active:cursor-grabbing active:scale-[0.99] transition-all duration-150",
-        isDragging && "opacity-50 shadow-lg"
+        "cursor-grab touch-none border-border/60 py-3.5 active:cursor-grabbing active:scale-[0.99] transition-all duration-150 relative",
+        isDragging && "opacity-50 shadow-lg",
+        selectionMode && isSelected && "border-primary/50 bg-primary/5"
       )}
       {...listeners}
       {...attributes}
     >
-      <CardContent className="relative px-4 py-0">
-        {selectionMode && (
-          <button
-            type="button"
+      <CardContent className="relative px-3.5 py-0">
+        {/* 3 dots menu button */}
+        <div className="absolute top-0.5 right-1 z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                onPointerDown={handleMenuPointerDown}
+                onClick={(e) => e.stopPropagation()}
+                className="p-1 rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors cursor-pointer"
+                aria-label="Más opciones"
+              >
+                <HugeiconsIcon icon={MoreHorizontalIcon} size={18} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="min-w-44"
+              onCloseAutoFocus={(e) => e.preventDefault()}
+            >
+              <DropdownMenuItem
+                onSelect={() => onViewProfile?.(applicant.candidateId)}
+                className="cursor-pointer"
+              >
+                <HugeiconsIcon icon={UserIcon} size={16} />
+                Ver información del postulante
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => onViewDetail?.(applicant.id)}
+                className="cursor-pointer"
+              >
+                <HugeiconsIcon icon={File02Icon} size={16} />
+                Ver detalle de aplicación
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => onMessage?.(applicant.candidateId)}
+                className="cursor-pointer"
+              >
+                <HugeiconsIcon icon={Message01Icon} size={16} />
+                Enviar mensaje
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <div className="flex items-start gap-3 pr-6">
+          {/* Avatar / Selection Trigger */}
+          <div
+            className="relative shrink-0 cursor-pointer group/avatar"
             onClick={(e) => {
-              e.stopPropagation()
-              onToggleSelection?.(applicant.id)
+              if (selectionMode) {
+                e.stopPropagation()
+                onToggleSelection?.(applicant.id)
+              } else {
+                onViewProfile?.(applicant.candidateId)
+              }
             }}
-            className="absolute top-0 right-4 z-10"
-            aria-label={isSelected ? "Deseleccionar" : "Seleccionar"}
           >
-            <HugeiconsIcon
-              icon={isSelected ? CheckmarkCircleIcon : CircleIcon}
-              size={20}
-              className={cn(
-                "transition-colors",
-                isSelected
-                  ? "text-primary fill-primary/20"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            />
-          </button>
-        )}
-        <div className="flex items-start gap-3">
-          <Avatar className="size-9 shrink-0">
-            {applicant.avatar && <AvatarImage src={applicant.avatar} alt="" />}
-            <AvatarFallback className="text-xs">
-              {applicant.candidateName
-                .split(" ")
-                .map((p) => p[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-1 flex-col gap-2">
-            <div className="flex items-start justify-between gap-2 pr-6">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <p className="font-semibold text-sm leading-tight truncate">
-                    {applicant.candidateName}
-                  </p>
-                  {applicant.isSaved && (
-                    <HugeiconsIcon
-                      icon={StarIcon}
-                      size={12}
-                      className="shrink-0 text-amber-500 fill-amber-500"
-                    />
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground truncate">{applicant.position}</p>
+            <Avatar className={cn(
+              "size-10 transition-all border",
+              selectionMode && isSelected ? "ring-2 ring-primary border-primary" : "border-border/30"
+            )}>
+              {applicant.avatar && <AvatarImage src={applicant.avatar} alt={applicant.candidateName} />}
+              <AvatarFallback className="bg-secondary/10 text-secondary font-semibold text-xs">
+                {applicant.candidateName
+                  .split(" ")
+                  .map((p) => p[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+
+            {/* Checkmark overlay badge on Avatar */}
+            {selectionMode && (
+              <div
+                className={cn(
+                  "absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full border-2 border-background transition-all shadow-xs",
+                  isSelected
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-primary/20"
+                )}
+              >
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={12} />
               </div>
-              <div>
+            )}
+          </div>
+
+          {/* Candidate details */}
+          <div className="flex flex-1 flex-col gap-1.5 min-w-0">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <p className="font-semibold text-sm leading-snug truncate text-foreground">
+                  {applicant.candidateName}
+                </p>
+                {applicant.isSaved && (
+                  <HugeiconsIcon
+                    icon={StarIcon}
+                    size={12}
+                    className="shrink-0 text-amber-500 fill-amber-500"
+                  />
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground truncate">{applicant.position}</p>
+            </div>
+
+            {/* AI Score Badge - Placed cleanly underneath candidate role */}
+            {(scoreEntry || analyzing) && (
+              <div className="mt-0.5">
                 {scoreEntry ? (
                   <button
                     type="button"
@@ -161,17 +218,19 @@ function ApplicantCard({
                       e.stopPropagation()
                       onScoreClick?.(applicant.candidateId)
                     }}
-                    className="animate-in fade-in duration-300"
+                    className="inline-block animate-in fade-in duration-300 hover:opacity-90 cursor-pointer"
                   >
                     <AIScoreBadge score={scoreEntry.score} />
                   </button>
-                ) : analyzing ? (
+                ) : (
                   <AIScoreBadgeSkeleton />
-                ) : null}
+                )}
               </div>
-            </div>
+            )}
+
+            {/* Tags */}
             {applicant.tags && applicant.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1 mt-0.5">
                 {applicant.tags.map((tag) => (
                   <span
                     key={tag.id}
@@ -183,10 +242,12 @@ function ApplicantCard({
                 ))}
               </div>
             )}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground/70">
-              <span>Aplico: {applicant.dateApplied}</span>
+
+            {/* Metadata Footer */}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground/75 mt-1 pt-1 border-t border-border/10">
+              <span>Aplicó: {applicant.dateApplied}</span>
               {applicant.salaryMin != null && (
-                <span className="truncate">
+                <span className="truncate font-mono">
                   ${applicant.salaryMin.toLocaleString("es-CL")}
                   {applicant.salaryMax != null
                     ? ` - $${applicant.salaryMax.toLocaleString("es-CL")}`
@@ -196,44 +257,6 @@ function ApplicantCard({
             </div>
           </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <HugeiconsIcon
-              icon={MoreHorizontalIcon}
-              className="absolute top-0 right-4 size-5 text-muted-foreground hover:text-foreground cursor-pointer"
-              onPointerDown={handleMenuPointerDown}
-              onClick={(e) => e.stopPropagation()}
-              aria-label="Más opciones"
-            />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="min-w-40"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            <DropdownMenuItem
-              onSelect={() => onViewProfile?.(applicant.candidateId)}
-              className="cursor-pointer"
-            >
-              <HugeiconsIcon icon={UserIcon} size={16} />
-              Ver informacion del postulante
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() => onViewDetail?.(applicant.id)}
-              className="cursor-pointer"
-            >
-              <HugeiconsIcon icon={File02Icon} size={16} />
-              Ver detalle de aplicacion
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() => onMessage?.(applicant.candidateId)}
-              className="cursor-pointer"
-            >
-              <HugeiconsIcon icon={Message01Icon} size={16} />
-              Enviar mensaje
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </CardContent>
     </Card>
   )
@@ -271,21 +294,25 @@ function KanbanColumn({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-w-[180px] max-w-[180px] lg:min-w-[220px] lg:max-w-[220px] flex-col rounded-lg border bg-muted/30 p-2.5 lg:p-3 transition-colors max-h-full snap-start shrink-0",
+        "flex min-w-[220px] max-w-[220px] lg:min-w-[250px] lg:max-w-[250px] flex-col rounded-xl border bg-muted/20 p-2.5 lg:p-3 transition-colors h-full max-h-full min-h-0 snap-start shrink-0 overflow-hidden",
         isOver && "border-primary/50 bg-primary/5"
       )}
     >
-      <div className="mb-2 lg:mb-3 flex items-center gap-1.5 lg:gap-2 shrink-0">
-        <HugeiconsIcon
-          icon={stage.icon}
-          size={16}
-          strokeWidth={1.5}
-          className="text-muted-foreground lg:size-5"
-        />
-        <span className="font-medium text-xs lg:text-sm">{stage.label}</span>
-        <span className="tabular-nums text-muted-foreground text-xs">({applicants.length})</span>
+      <div className="mb-2 lg:mb-3 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-1.5 lg:gap-2">
+          <HugeiconsIcon
+            icon={stage.icon}
+            size={16}
+            strokeWidth={1.5}
+            className="text-muted-foreground lg:size-5"
+          />
+          <span className="font-semibold text-xs lg:text-sm">{stage.label}</span>
+        </div>
+        <span className="tabular-nums text-muted-foreground text-xs bg-muted px-2 py-0.5 rounded-full font-medium">
+          {applicants.length}
+        </span>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto pr-1">
         {applicants.map((a) => (
           <ApplicantCard
             key={a.id}
@@ -416,8 +443,7 @@ export function ApplicationsKanban({
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       {/* Desktop: horizontal scroll, Mobile: vertical stack or smaller cards */}
       <div
-        className="flex gap-3 overflow-x-auto pb-2 lg:pb-0 lg:overflow-visible snap-x snap-mandatory lg:snap-none"
-        style={{ height: "100%" }}
+        className="flex h-full min-h-0 w-full gap-3 overflow-x-auto overflow-y-hidden pb-1 snap-x snap-mandatory lg:snap-none"
       >
         {STAGES.map((stage) => (
           <KanbanColumn

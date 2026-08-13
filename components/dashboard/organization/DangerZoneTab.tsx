@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  Building06Icon,
-  UserIcon,
-} from "@hugeicons/core-free-icons"
+import { Building06Icon, UserIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -51,8 +48,8 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
           <div className="space-y-1">
             <p className="font-medium text-sm text-foreground">Transferir ownership</p>
             <p className="text-xs text-muted-foreground text-pretty">
-              Transfiere la propiedad de la organización a otro miembro. El miembro
-              seleccionado será promovido a Admin.
+              Transfiere la propiedad de la organización a otro miembro. El miembro seleccionado
+              será promovido a Admin.
             </p>
           </div>
         </div>
@@ -92,8 +89,8 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
           <div className="space-y-1">
             <p className="font-medium text-sm text-foreground">Eliminar organización</p>
             <p className="text-xs text-muted-foreground text-pretty">
-              Elimina permanentemente la organización y todos sus datos. Esta
-              acción no se puede deshacer.
+              Elimina permanentemente la organización y todos sus datos. Esta acción no se puede
+              deshacer.
             </p>
           </div>
         </div>

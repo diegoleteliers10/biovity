@@ -4,12 +4,7 @@
  */
 
 import { z } from "zod"
-import {
-  corporateEmailSchema,
-  messageSchema,
-  nameSchema,
-  phoneSchema,
-} from "./primitives"
+import { corporateEmailSchema, messageSchema, nameSchema, phoneSchema } from "./primitives"
 
 /**
  * Organization contact form schema

@@ -25,8 +25,9 @@ export function SalariosHero() {
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed text-pretty"
           >
-            Análisis completo de remuneraciones en el sector de biociencias en Chile. Datos
-            segmentados por carrera, industria, región y nivel educativo (2024-2025).
+            Estima tu sueldo por carrera, industria y región, descubre el impacto de tus habilidades
+            y accede a bandas salariales para tu organización. Todo con datos del mercado chileno de
+            biociencias (2024-2025).
           </m.p>
 
           <m.div

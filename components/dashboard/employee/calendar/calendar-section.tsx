@@ -16,7 +16,7 @@ import {
   useUpdateEvent,
   useUpdateParticipantStatus,
 } from "@/lib/api/use-events"
-import { authClient } from "@/lib/auth-client"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import type { Event, EventStatus, EventType, ParticipantStatus } from "@/lib/types/events"
 import { getChileanDate } from "@/lib/utils"
 import { Calendar } from "./calendar"
@@ -56,9 +56,8 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   const [selectedEventDetail, setSelectedEventDetail] = useState<Event | null>(null)
   const [rsvpStatuses, setRsvpStatuses] = useState<Record<string, ParticipantStatus>>({})
 
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const organizerId = (session?.user as { id?: string })?.id
+  const session = useDashboardSession()
+  const organizerId = session?.user?.id
   const organizationId = (session?.user as { organizationId?: string })?.organizationId
 
   const year = currentDate.getFullYear()

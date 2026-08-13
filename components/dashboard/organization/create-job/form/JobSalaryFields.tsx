@@ -18,7 +18,7 @@ export function JobSalaryFields({
 }: JobSalaryFieldsProps) {
   return (
     <Field>
-      <FieldLabel>Salario (opcional)</FieldLabel>
+      <FieldLabel>Salario</FieldLabel>
       <div className="flex gap-2 items-center">
         <Input
           type="number"
@@ -26,6 +26,7 @@ export function JobSalaryFields({
           onChange={(e) => onSalaryMinChange(e.target.value)}
           placeholder="Mín"
           min={0}
+          required
         />
         <span className="text-muted-foreground">–</span>
         <Input
@@ -34,6 +35,7 @@ export function JobSalaryFields({
           onChange={(e) => onSalaryMaxChange(e.target.value)}
           placeholder="Máx"
           min={0}
+          required
         />
         <span className="text-muted-foreground text-xs shrink-0">CLP/mes</span>
       </div>

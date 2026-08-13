@@ -86,7 +86,8 @@ export const CONSEJOS_ARTICULOS: ConsejoArticulo[] = [
   {
     id: "transicion-phd-industria",
     slug: "guia-transicion-phd-postdoc-industria-biomedica",
-    title: "Guía de transición: Del laboratorio académico (PhD / Postdoc) a la industria biotecnológica",
+    title:
+      "Guía de transición: Del laboratorio académico (PhD / Postdoc) a la industria biotecnológica",
     description:
       "Supera el síndrome del impostor y traduce tu experiencia en proyectos de investigación en valor directo para empresas de I+D, farmacéuticas y bioprocesos.",
     category: "academia-industria",

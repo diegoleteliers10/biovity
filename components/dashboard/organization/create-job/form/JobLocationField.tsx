@@ -12,9 +12,11 @@ const WORK_MODES = [
 interface JobLocationFieldProps {
   workMode: WorkMode
   city: string
+  region: string
   country: string
   onWorkModeChange: (mode: WorkMode) => void
   onCityChange: (value: string) => void
+  onRegionChange: (value: string) => void
   onCountryChange: (value: string) => void
   error?: string
 }
@@ -22,9 +24,11 @@ interface JobLocationFieldProps {
 export function JobLocationField({
   workMode,
   city,
+  region,
   country,
   onWorkModeChange,
   onCityChange,
+  onRegionChange,
   onCountryChange,
   error,
 }: JobLocationFieldProps) {
@@ -48,11 +52,16 @@ export function JobLocationField({
           ))}
         </div>
         {workMode !== "remote" && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Input
               value={city}
               onChange={(e) => onCityChange(e.target.value)}
               placeholder="Ciudad"
+            />
+            <Input
+              value={region}
+              onChange={(e) => onRegionChange(e.target.value)}
+              placeholder="Región"
             />
             <Input
               value={country}

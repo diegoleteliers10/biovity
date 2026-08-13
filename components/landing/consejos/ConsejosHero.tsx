@@ -48,7 +48,8 @@ export function ConsejosHero() {
             transition={{ duration: 0.5, delay: 0.1, ease }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed text-pretty"
           >
-            Guías accionables, optimización de CV para sistemas ATS, preparación de entrevistas técnicas y estrategias para hacer la transición exitosa de la academia a la industria.
+            Guías accionables, optimización de CV para sistemas ATS, preparación de entrevistas
+            técnicas y estrategias para hacer la transición exitosa de la academia a la industria.
           </m.p>
 
           {/* Stats Grid */}
@@ -66,9 +67,7 @@ export function ConsejosHero() {
                 transition={{ duration: 0.4, delay: 0.25 + idx * 0.05, ease }}
                 className="p-4 rounded-xl bg-background/80 backdrop-blur-sm border border-border/60 shadow-xs hover:border-accent/30 transition-all text-center"
               >
-                <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
-                  {stat.value}
-                </p>
+                <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1">{stat.value}</p>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-snug">
                   {stat.label}
                 </p>

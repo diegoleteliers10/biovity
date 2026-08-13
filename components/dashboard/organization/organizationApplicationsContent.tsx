@@ -333,13 +333,13 @@ export function OrganizationApplicationsContent() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="flex items-center justify-between lg:hidden">
+    <div className="flex h-full w-full flex-1 flex-col gap-3 p-3 sm:p-4 overflow-hidden min-h-0">
+      <div className="flex items-center justify-between lg:hidden shrink-0">
         <MobileMenuButton />
         <ConnectedNotificationBell showAgentTrigger />
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1 shrink-0">
         <div className="hidden lg:flex justify-end">
           <ConnectedNotificationBell showAgentTrigger />
         </div>
@@ -351,7 +351,7 @@ export function OrganizationApplicationsContent() {
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 gap-4 flex-col lg:flex-row">
+      <div className="flex min-h-0 flex-1 gap-4 flex-col lg:flex-row overflow-hidden">
         <JobSelector
           selectedJobId={selectedJobId}
           onSelectJobId={setSelectedJobId}
@@ -360,10 +360,10 @@ export function OrganizationApplicationsContent() {
           error={jobsError}
         />
 
-        <section className="min-w-0 max-w-dvw flex-1 overflow-hidden rounded-lg border bg-card">
+        <section className="min-w-0 flex-1 h-full flex flex-col overflow-hidden rounded-lg border bg-card">
           {selectedJob ? (
             <div className="flex h-full flex-col overflow-hidden">
-              <div className="border-b px-4 py-3">
+              <div className="border-b px-4 py-3 shrink-0">
                 <div className="flex items-center justify-between mb-1">
                   <h2 className="font-semibold">{selectedJob.title}</h2>
                   <div className="flex items-center gap-2">
@@ -403,7 +403,7 @@ export function OrganizationApplicationsContent() {
                     : ""}
                 </p>
               </div>
-              <div className="flex-1 p-3 lg:p-4 overflow-y-auto lg:overflow-visible">
+              <div className="flex-1 min-h-0 p-3 lg:p-4 flex flex-col overflow-hidden">
                 {appsLoading ? (
                   <div className="flex h-full items-center justify-center py-12">
                     <div className="space-y-3 w-full p-3 lg:p-4">
@@ -424,35 +424,39 @@ export function OrganizationApplicationsContent() {
                 ) : applicants.length === 0 ? (
                   <NoApplicantsEmptyState jobTitle={selectedJob.title} />
                 ) : (
-                  <div className="flex h-full flex-col gap-3 overflow-y-auto">
-                    <PipelineToolbar
-                      searchQuery={searchQuery}
-                      onSearchChange={setSearchQuery}
-                      stageFilter={stageFilter}
-                      onStageFilterChange={setStageFilter}
-                      selectedCount={selectedIds.size}
-                      selectedApplicants={filteredApplicants.filter((a) => selectedIds.has(a.id))}
-                      onClearSelection={handleClearSelection}
-                      onBulkReject={handleBulkReject}
-                      onBulkMessage={handleBulkMessage}
-                      onBulkAdvance={handleBulkAdvance}
-                    />
-                    <ApplicationsKanban
-                      applicants={filteredApplicants}
-                      onStatusChange={handleStatusChange}
-                      onCreateEvent={handleCreateEvent}
-                      getScore={getScore}
-                      isAnalyzing={isAnalyzing}
-                      jobOffer={jobOfferContext ?? undefined}
-                      onScoreClick={handleScoreClick}
-                      onViewProfile={handleViewProfile}
-                      onViewDetail={handleViewDetail}
-                      onMessage={handleSendMessage}
-                      selectionMode={selectionMode}
-                      selectedIds={selectedIds}
-                      onToggleSelection={handleToggleSelection}
-                      onClearSelection={handleClearSelection}
-                    />
+                  <div className="flex flex-1 min-h-0 flex-col gap-3 overflow-hidden">
+                    <div className="shrink-0">
+                      <PipelineToolbar
+                        searchQuery={searchQuery}
+                        onSearchChange={setSearchQuery}
+                        stageFilter={stageFilter}
+                        onStageFilterChange={setStageFilter}
+                        selectedCount={selectedIds.size}
+                        selectedApplicants={filteredApplicants.filter((a) => selectedIds.has(a.id))}
+                        onClearSelection={handleClearSelection}
+                        onBulkReject={handleBulkReject}
+                        onBulkMessage={handleBulkMessage}
+                        onBulkAdvance={handleBulkAdvance}
+                      />
+                    </div>
+                    <div className="flex-1 min-h-0 overflow-hidden">
+                      <ApplicationsKanban
+                        applicants={filteredApplicants}
+                        onStatusChange={handleStatusChange}
+                        onCreateEvent={handleCreateEvent}
+                        getScore={getScore}
+                        isAnalyzing={isAnalyzing}
+                        jobOffer={jobOfferContext ?? undefined}
+                        onScoreClick={handleScoreClick}
+                        onViewProfile={handleViewProfile}
+                        onViewDetail={handleViewDetail}
+                        onMessage={handleSendMessage}
+                        selectionMode={selectionMode}
+                        selectedIds={selectedIds}
+                        onToggleSelection={handleToggleSelection}
+                        onClearSelection={handleClearSelection}
+                      />
+                    </div>
                   </div>
                 )}
               </div>

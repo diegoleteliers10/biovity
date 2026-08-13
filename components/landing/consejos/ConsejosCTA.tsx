@@ -31,7 +31,8 @@ export function ConsejosCTA() {
           </h2>
 
           <p className="text-base sm:text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed text-pretty">
-            Crea tu perfil profesional en Biovity, sube tu CV optimizado y accede a las mejores ofertas laborales en empresas líderes de biotecnología, química y farmacia en Chile.
+            Crea tu perfil profesional en Biovity, sube tu CV optimizado y accede a las mejores
+            ofertas laborales en empresas líderes de biotecnología, química y farmacia en Chile.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

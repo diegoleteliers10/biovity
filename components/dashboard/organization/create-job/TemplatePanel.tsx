@@ -36,11 +36,11 @@ interface SaveTemplateDialogProps {
     employmentType: string
     experienceLevel: string
     city: string
+    region: string
     country: string
     workMode: string
     salaryMin: string
     salaryMax: string
-    isNegotiable: boolean
     benefits: Array<{ tipo: string; title: string }>
     requiredSkills: string[]
     minExperience: number
@@ -68,17 +68,17 @@ export function SaveTemplateDialog({
       employmentType: formData.employmentType || undefined,
       experienceLevel: formData.experienceLevel || undefined,
       salary:
-        formData.isNegotiable || formData.salaryMin || formData.salaryMax
+        formData.salaryMin || formData.salaryMax
           ? {
               min: formData.salaryMin ? Number(formData.salaryMin) : undefined,
               max: formData.salaryMax ? Number(formData.salaryMax) : undefined,
               currency: "CLP",
               period: "monthly",
-              isNegotiable: formData.isNegotiable,
             }
           : undefined,
       location: {
         city: formData.city || undefined,
+        state: formData.region || undefined,
         country: formData.country || undefined,
         isRemote: formData.workMode === "remote",
         isHybrid: formData.workMode === "hybrid",
