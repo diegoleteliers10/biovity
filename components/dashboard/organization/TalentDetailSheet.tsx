@@ -19,11 +19,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo } from "react"
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-} from "@/components/animate-ui/components/radix/sheet"
+import { Sheet, SheetContent, SheetTitle } from "@/components/animate-ui/components/radix/sheet"
 import { Avatar } from "@/components/base/avatar/avatar"
 import { Button } from "@/components/ui/button"
 import type { ResumeEducation, ResumeExperience } from "@/lib/api/resumes"
@@ -117,31 +113,50 @@ export function TalentDetailSheet({
                 />
                 <h2 className="mt-4 font-bold text-xl tracking-tight text-foreground flex items-center gap-1.5 justify-center">
                   {user.name}
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} size={18} className="text-blue-500 shrink-0" />
+                  <HugeiconsIcon
+                    icon={CheckmarkCircle02Icon}
+                    size={18}
+                    className="text-blue-500 shrink-0"
+                  />
                 </h2>
                 {user.profession && (
                   <p className="text-secondary text-xs font-semibold mt-1.5 bg-secondary/5 px-3 py-1 rounded-full border border-secondary/10">
                     {user.profession}
                   </p>
                 )}
-                
+
                 {/* Compact Contact details */}
                 <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <HugeiconsIcon icon={Mail01Icon} size={14} className="text-secondary shrink-0" />
-                    <a href={`mailto:${user.email}`} className="hover:text-foreground hover:underline transition-colors">
+                    <HugeiconsIcon
+                      icon={Mail01Icon}
+                      size={14}
+                      className="text-secondary shrink-0"
+                    />
+                    <a
+                      href={`mailto:${user.email}`}
+                      className="hover:text-foreground hover:underline transition-colors"
+                    >
                       {user.email}
                     </a>
                   </div>
                   {user.phone && (
                     <div className="flex items-center gap-1">
-                      <HugeiconsIcon icon={SmartPhone01Icon} size={14} className="text-secondary shrink-0" />
+                      <HugeiconsIcon
+                        icon={SmartPhone01Icon}
+                        size={14}
+                        className="text-secondary shrink-0"
+                      />
                       <span>{user.phone}</span>
                     </div>
                   )}
                   {user.location && (user.location.city || user.location.country) && (
                     <div className="flex items-center gap-1">
-                      <HugeiconsIcon icon={Location01Icon} size={14} className="text-secondary shrink-0" />
+                      <HugeiconsIcon
+                        icon={Location01Icon}
+                        size={14}
+                        className="text-secondary shrink-0"
+                      />
                       <span>{formatUserLocation(user.location)}</span>
                     </div>
                   )}
@@ -191,7 +206,11 @@ export function TalentDetailSheet({
                           </p>
                         </div>
                       </div>
-                      <HugeiconsIcon icon={Download04Icon} size={16} className="text-muted-foreground shrink-0 group-hover:text-primary transition-colors" />
+                      <HugeiconsIcon
+                        icon={Download04Icon}
+                        size={16}
+                        className="text-muted-foreground shrink-0 group-hover:text-primary transition-colors"
+                      />
                     </a>
                   </div>
                 </>
@@ -209,7 +228,9 @@ export function TalentDetailSheet({
                     <ul className="relative border-l border-slate-100 pl-2.5 space-y-6">
                       {resume.experiences.map((exp) => {
                         const d = getExpDisplay(exp)
-                        const key = [d.title, d.company, d.start, d.current].filter(Boolean).join("||")
+                        const key = [d.title, d.company, d.start, d.current]
+                          .filter(Boolean)
+                          .join("||")
                         return (
                           <li key={`exp-${key}`} className="relative pl-6 pb-2 last:pb-0">
                             {/* Timeline dot */}
@@ -218,7 +239,9 @@ export function TalentDetailSheet({
                               {d.title || d.company || EMPTY_PLACEHOLDER}
                             </h4>
                             {d.company && d.title && (
-                              <p className="text-xs font-semibold text-muted-foreground mt-0.5">{d.company}</p>
+                              <p className="text-xs font-semibold text-muted-foreground mt-0.5">
+                                {d.company}
+                              </p>
                             )}
                             <p className="text-[10px] font-semibold text-secondary mt-1.5 tabular-nums bg-secondary/5 px-2 py-0.5 rounded w-fit border border-secondary/10">
                               {d.start} – {d.current ? "Actualidad" : d.end || ""}
@@ -242,7 +265,11 @@ export function TalentDetailSheet({
                   <div className="h-px bg-slate-100" />
                   <div className="space-y-4">
                     <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
-                      <HugeiconsIcon icon={GraduationScrollIcon} size={14} className="text-secondary" />
+                      <HugeiconsIcon
+                        icon={GraduationScrollIcon}
+                        size={14}
+                        className="text-secondary"
+                      />
                       Educación
                     </h3>
                     <ul className="relative border-l border-slate-100 pl-2.5 space-y-6">
@@ -259,7 +286,9 @@ export function TalentDetailSheet({
                               {d.title || d.institute || EMPTY_PLACEHOLDER}
                             </h4>
                             {d.institute && d.title && (
-                              <p className="text-xs font-semibold text-muted-foreground mt-0.5">{d.institute}</p>
+                              <p className="text-xs font-semibold text-muted-foreground mt-0.5">
+                                {d.institute}
+                              </p>
                             )}
                             <p className="text-[10px] font-semibold text-secondary mt-1.5 tabular-nums bg-secondary/5 px-2 py-0.5 rounded w-fit border border-secondary/10">
                               {d.start} – {d.current ? "Actualidad" : d.end || ""}
@@ -291,7 +320,11 @@ export function TalentDetailSheet({
                             className="rounded-lg border border-secondary/15 bg-secondary/5 px-3 py-1 text-xs font-medium text-secondary hover:bg-secondary/10 transition-colors"
                           >
                             {name}
-                            {level && <span className="ml-1 text-muted-foreground/80 font-normal">({level})</span>}
+                            {level && (
+                              <span className="ml-1 text-muted-foreground/80 font-normal">
+                                ({level})
+                              </span>
+                            )}
                           </span>
                         )
                       })}
@@ -312,7 +345,11 @@ export function TalentDetailSheet({
                     <ul className="space-y-2.5">
                       {resume.links.map((link) => (
                         <li key={`link-${link.url}`} className="flex items-center gap-2 text-sm">
-                          <HugeiconsIcon icon={Link01Icon} size={14} className="text-muted-foreground shrink-0" />
+                          <HugeiconsIcon
+                            icon={Link01Icon}
+                            size={14}
+                            className="text-muted-foreground shrink-0"
+                          />
                           <a
                             href={link.url}
                             target="_blank"
@@ -329,7 +366,9 @@ export function TalentDetailSheet({
               )}
             </div>
           ) : (
-            <p className="py-8 text-muted-foreground text-sm text-center">No se pudo cargar el perfil.</p>
+            <p className="py-8 text-muted-foreground text-sm text-center">
+              No se pudo cargar el perfil.
+            </p>
           )}
         </div>
 

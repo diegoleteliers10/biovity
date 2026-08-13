@@ -119,9 +119,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
           <HugeiconsIcon icon={UserGroupIcon} size={20} className="text-primary" />
           Gestión de Equipo
         </CardTitle>
-        <CardDescription>
-          Invita y administra los miembros de tu organización.
-        </CardDescription>
+        <CardDescription>Invita y administra los miembros de tu organización.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex gap-2 items-end">

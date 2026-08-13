@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
   },
   experimental: {
-    viewTransition: true,
     optimizePackageImports: [
       "@hugeicons/core-free-icons",
       "@hugeicons/react",

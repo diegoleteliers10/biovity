@@ -24,7 +24,6 @@ import {
   useUploadResumeCvMutation,
   useUser,
 } from "@/lib/api/use-profile"
-import { authClient } from "@/lib/auth-client"
 import { profileSaveSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 // Minimal session type for client component - mirrors ServerSession shape

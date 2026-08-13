@@ -27,7 +27,6 @@ import {
   JobFormHeader,
   JobLocationField,
   JobMinExperience,
-  JobNegotiableSalary,
   JobRequiredSkills,
   JobSalaryFields,
   JobStatusField,
@@ -44,11 +43,11 @@ type JobFormState = {
   employmentType: string
   experienceLevel: string
   city: string
+  region: string
   country: string
   workMode: WorkMode
   salaryMin: string
   salaryMax: string
-  isNegotiable: boolean
   benefits: JobBenefitInput[]
   requiredSkills: string[]
   minExperience: number
@@ -71,11 +70,11 @@ const initialFormState: JobFormState = {
   employmentType: "",
   experienceLevel: "",
   city: "",
+  region: "",
   country: "",
   workMode: "onsite",
   salaryMin: "",
   salaryMax: "",
-  isNegotiable: false,
   benefits: [],
   requiredSkills: [],
   minExperience: 0,
@@ -117,11 +116,11 @@ function buildInitialJobFormState(job: Job | null | undefined): JobFormState {
     employmentType: job?.employmentType ?? "",
     experienceLevel: job?.experienceLevel ?? "",
     city: job?.location?.city ?? "",
+    region: job?.location?.state ?? "",
     country: job?.location?.country ?? "",
     workMode: job?.location?.isRemote ? "remote" : job?.location?.isHybrid ? "hybrid" : "onsite",
     salaryMin: job?.salary?.min != null ? String(job.salary.min) : "",
     salaryMax: job?.salary?.max != null ? String(job.salary.max) : "",
-    isNegotiable: job?.salary?.isNegotiable ?? false,
     benefits,
     requiredSkills: job?.requiredSkills ?? [],
     minExperience: job?.minExperience ?? 0,
@@ -182,11 +181,11 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
         employmentType: template.employmentType ?? "",
         experienceLevel: template.experienceLevel ?? "",
         city: template.location?.city ?? "",
+        region: template.location?.state ?? "",
         country: template.location?.country ?? "",
         workMode,
         salaryMin: template.salary?.min != null ? String(template.salary.min) : "",
         salaryMax: template.salary?.max != null ? String(template.salary.max) : "",
-        isNegotiable: template.salary?.isNegotiable ?? false,
         benefits: template.benefits ?? [],
         requiredSkills: template.requiredSkills ?? [],
         minExperience: template.minExperience ?? 0,
@@ -215,20 +214,17 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     experienceLevel: form.experienceLevel,
     location: {
       city: form.city.trim() || undefined,
+      state: form.region.trim() || undefined,
       country: form.country.trim() || undefined,
       isRemote: form.workMode === "remote",
       isHybrid: form.workMode === "hybrid",
     },
-    salary:
-      form.isNegotiable || form.salaryMin || form.salaryMax
-        ? {
-            min: form.salaryMin ? Number(form.salaryMin) : undefined,
-            max: form.salaryMax ? Number(form.salaryMax) : undefined,
-            currency: "CLP",
-            period: "monthly",
-            isNegotiable: form.isNegotiable,
-          }
-        : undefined,
+    salary: {
+      min: Number(form.salaryMin),
+      max: Number(form.salaryMax),
+      currency: "CLP",
+      period: "monthly",
+    },
     benefits: form.benefits.length > 0 ? form.benefits : undefined,
     requiredSkills: form.requiredSkills.length > 0 ? form.requiredSkills : undefined,
     minExperience: form.minExperience > 0 ? form.minExperience : undefined,
@@ -243,12 +239,9 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     if (!stripHtml(form.description)) e.description = "La descripción es requerida"
     if (!form.employmentType) e.employmentType = "Selecciona un tipo de empleo"
     if (!form.experienceLevel) e.experienceLevel = "Selecciona un nivel de experiencia"
-    if (
-      !form.isNegotiable &&
-      form.salaryMin &&
-      form.salaryMax &&
-      Number(form.salaryMin) > Number(form.salaryMax)
-    )
+    if (!form.salaryMin.trim()) e.salary = "Ingresa el salario mínimo"
+    else if (!form.salaryMax.trim()) e.salary = "Ingresa el salario máximo"
+    else if (Number(form.salaryMin) > Number(form.salaryMax))
       e.salary = "El salario mínimo debe ser menor o igual al máximo"
     if (!form.workMode) e.location = "Selecciona un modo de trabajo"
     return e
@@ -411,9 +404,11 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               <JobLocationField
                 workMode={form.workMode}
                 city={form.city}
+                region={form.region}
                 country={form.country}
                 onWorkModeChange={(v) => setField("workMode", v)}
                 onCityChange={(v) => setField("city", v)}
+                onRegionChange={(v) => setField("region", v)}
                 onCountryChange={(v) => setField("country", v)}
                 error={errors.location}
               />
@@ -434,11 +429,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               <JobMinExperience
                 value={form.minExperience}
                 onChange={(v) => setField("minExperience", v)}
-              />
-
-              <JobNegotiableSalary
-                checked={form.isNegotiable}
-                onCheckedChange={(v) => setField("isNegotiable", v)}
               />
 
               <JobCategoryField value={form.category} onChange={(v) => setField("category", v)} />
@@ -485,10 +475,10 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 experienceLevel={form.experienceLevel}
                 workMode={form.workMode}
                 city={form.city}
+                region={form.region}
                 country={form.country}
                 salaryMin={form.salaryMin}
                 salaryMax={form.salaryMax}
-                isNegotiable={form.isNegotiable}
                 benefits={form.benefits}
                 requiredSkills={form.requiredSkills}
                 minExperience={form.minExperience}

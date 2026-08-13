@@ -80,9 +80,7 @@ export function OrganizationMessagesContent() {
 
   useChatMessageRealtime(chatIdFromUrl, queryClient)
 
-  const [mobileView, setMobileView] = useState<"list" | "chat">(
-    chatIdFromUrl ? "chat" : "list"
-  )
+  const [mobileView, setMobileView] = useState<"list" | "chat">(chatIdFromUrl ? "chat" : "list")
 
   useEffect(() => {
     if (chatIdFromUrl) {

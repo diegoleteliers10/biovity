@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
-import { SalariosConclusiones } from "@/components/landing/salarios/SalariosConclusiones"
+import { SalariosCrowdsourcing } from "@/components/landing/salarios/SalariosCrowdsourcing"
+import { SalariosEmpresasB2B } from "@/components/landing/salarios/SalariosEmpresasB2B"
 import { SalariosHero } from "@/components/landing/salarios/SalariosHero"
-import { SalariosPorCarrera } from "@/components/landing/salarios/SalariosPorCarrera"
-import { SalariosPorEducacion } from "@/components/landing/salarios/SalariosPorEducacion"
-import { SalariosPorIndustria } from "@/components/landing/salarios/SalariosPorIndustria"
-import { SalariosPorRegion } from "@/components/landing/salarios/SalariosPorRegion"
+import { SalariosInteractiveFilter } from "@/components/landing/salarios/SalariosInteractiveFilter"
+import { SalariosMetodologia } from "@/components/landing/salarios/SalariosMetodologia"
+import { SalariosUpskilling } from "@/components/landing/salarios/SalariosUpskilling"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import {
   BreadcrumbJsonLd,
@@ -16,9 +16,9 @@ import {
 import { FAQS_SALARIOS } from "@/lib/data/salarios-data"
 
 export const metadata: Metadata = {
-  title: "Estudio de Sueldos en Biociencias | Biovity",
+  title: "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile",
   description:
-    "Análisis exhaustivo de remuneraciones en el sector de biociencias en Chile. Datos por carrera, industria, región y nivel educativo (2024-2025).",
+    "Inteligencia salarial del mercado chileno en biociencias, química, farmacia, ingeniería y salud. Encuesta anónima Give to Get, impacto de habilidades y guías B2B en CLP.",
   keywords: [
     "sueldos biotecnología Chile",
     "salarios bioinformática",
@@ -28,24 +28,28 @@ export const metadata: Metadata = {
     "estudio salarial biociencias",
     "sueldos por región Chile",
     "salarios postgrado ciencias",
+    "bandas salariales empresas Chile",
+    "encuesta salarial anónima",
+    "percentil sueldo Chile",
   ],
   openGraph: {
-    title: "Estudio de Sueldos en Biociencias | Biovity",
+    title: "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile",
     description:
-      "Análisis exhaustivo de remuneraciones en el sector de biociencias en Chile. Datos segmentados por carrera, industria, región y nivel educativo.",
+      "Inteligencia salarial del mercado chileno en biociencias, química, farmacia, ingeniería y salud. Encuesta anónima, impacto de habilidades y guías B2B en CLP.",
     url: "/salarios",
     images: [
       {
         url: "/og/home.png",
         width: 1200,
         height: 630,
-        alt: "Estudio de Sueldos en Biociencias - Biovity",
+        alt: "Portal de Salarios en Ciencias e Ingeniería - Biovity Chile",
       },
     ],
   },
   twitter: {
-    title: "Estudio de Sueldos en Biociencias | Biovity",
-    description: "Análisis exhaustivo de remuneraciones en el sector de biociencias en Chile.",
+    title: "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile",
+    description:
+      "Inteligencia salarial del mercado chileno en biociencias, química, farmacia, ingeniería y salud.",
     images: ["/og/home.png"],
   },
   alternates: {
@@ -58,8 +62,8 @@ export default function SalariosPage() {
     <LandingLayout>
       <WebSiteJsonLd />
       <DatasetJsonLd
-        name="Estudio de Sueldos en Biociencias | Biovity"
-        description="Analisis exhaustivo de remuneraciones en el sector de biociencias en Chile. Datos por carrera, industria, region y nivel educativo."
+        name="Portal de Salarios en Ciencias e Ingeniería | Biovity Chile"
+        description="Inteligencia salarial del mercado chileno en biociencias, quimica, farmacia, ingenieria y salud. Encuesta anonima Give to Get, impacto de habilidades y guias B2B en CLP."
         url="https://biovity.cl/salarios"
         creatorName="Biovity"
         datePublished="2025-01-01"
@@ -69,6 +73,7 @@ export default function SalariosPage() {
           "remuneraciones ingenieria quimica",
           "sueldos por region Chile",
           "biociencias salarios",
+          "bandas salariales empresas Chile",
         ]}
       />
       <OrganizationJsonLd />
@@ -81,11 +86,11 @@ export default function SalariosPage() {
       />
       <main className="flex flex-col relative">
         <SalariosHero />
-        <SalariosPorCarrera />
-        <SalariosPorIndustria />
-        <SalariosPorRegion />
-        <SalariosPorEducacion />
-        <SalariosConclusiones />
+        <SalariosInteractiveFilter />
+        <SalariosCrowdsourcing />
+        <SalariosUpskilling />
+        <SalariosEmpresasB2B />
+        <SalariosMetodologia />
       </main>
     </LandingLayout>
   )

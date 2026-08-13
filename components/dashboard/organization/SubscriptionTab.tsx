@@ -19,8 +19,8 @@ export function SubscriptionTab({ organizationId: _organizationId }: Subscriptio
           </EmptyMedia>
           <EmptyTitle>Suscripción no disponible</EmptyTitle>
           <EmptyDescription>
-            Aún no tienes una suscripción activa. Contáctanos para obtener
-            más información sobre nuestros planes.
+            Aún no tienes una suscripción activa. Contáctanos para obtener más información sobre
+            nuestros planes.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

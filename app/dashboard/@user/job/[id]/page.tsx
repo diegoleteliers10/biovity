@@ -10,26 +10,16 @@ import {
   GraduationScrollIcon,
   HeartAddIcon,
   LaptopIcon,
-  Link04Icon,
   Linkedin02Icon,
   Location05Icon,
-  Mail01Icon,
-  Share05Icon,
-  WhatsappIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
 import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
+import { JobShareButtons } from "@/components/landing/trabajos/JobShareButtons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
@@ -40,7 +30,7 @@ import {
   useRemoveSavedJobMutation,
   useSaveJobMutation,
 } from "@/lib/api/use-saved-jobs"
-import { authClient } from "@/lib/auth-client"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 
 function getJobModalidad(loc: JobLocation | null | undefined): string {
   if (!loc) return "Presencial"
@@ -88,13 +78,8 @@ export default function JobDetailPage() {
   const jobId = params?.id ?? undefined
   const { data: job, isLoading, error } = useJob(jobId)
 
-  const { useSession } = authClient
-  const { data: session } = useSession()
-  const professionalId =
-    (session?.user as { id?: string; userId?: string; sub?: string } | undefined)?.id ??
-    (session?.user as { userId?: string } | undefined)?.userId ??
-    (session?.user as { sub?: string } | undefined)?.sub ??
-    ""
+  const session = useDashboardSession()
+  const professionalId = session?.user?.id ?? ""
 
   const { data: savedCheck, isLoading: savedCheckLoading } = useCheckSavedJob(professionalId, jobId)
   const isSaved = savedCheck?.isSaved ?? false
@@ -240,88 +225,15 @@ export default function JobDetailPage() {
                   className={`size-4 ${isSaved ? "fill-current text-secondary" : ""}`}
                 />
               </Button>
-              <div className="ml-auto flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Compartir</span>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" aria-label="Compartir">
-                      <HugeiconsIcon
-                        icon={Share05Icon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="size-4"
-                      />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end">
-                    <DropdownMenuLabel>Compartir</DropdownMenuLabel>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(window.location.href)
-                        } catch {}
-                      }}
-                    >
-                      <HugeiconsIcon
-                        icon={Link04Icon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="mr-2 size-4"
-                      />
-                      Copiar enlace
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => {
-                        const url = encodeURIComponent(window.location.href)
-                        window.open(
-                          `https://www.linkedin.com/shareArticle?mini=true&url=${url}`,
-                          "_blank"
-                        )
-                      }}
-                    >
-                      <HugeiconsIcon
-                        icon={Linkedin02Icon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="mr-2 size-4"
-                      />
-                      LinkedIn
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => {
-                        const url = encodeURIComponent(window.location.href)
-                        window.location.href = `mailto:?subject=${encodeURIComponent(job.title)}&body=${url}`
-                      }}
-                    >
-                      <HugeiconsIcon
-                        icon={Mail01Icon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="mr-2 size-4"
-                      />
-                      Email
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => {
-                        const url = encodeURIComponent(window.location.href)
-                        window.open(`https://wa.me/?text=${url}`, "_blank")
-                      }}
-                    >
-                      <HugeiconsIcon
-                        icon={WhatsappIcon}
-                        size={24}
-                        strokeWidth={1.5}
-                        className="mr-2 size-4"
-                      />
-                      WhatsApp
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              <JobShareButtons
+                jobId={job.id}
+                jobTitle={job.title}
+                organizationName={organizationName}
+                location={locationStr}
+                salary={salaryStr}
+                variant="dropdown"
+                className="ml-auto"
+              />
             </div>
           </div>
         </div>

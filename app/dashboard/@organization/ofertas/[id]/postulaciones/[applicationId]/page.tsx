@@ -293,6 +293,10 @@ export default function OrganizationApplicationDetailPage() {
               applicationStatus={application.status as ApplicationStage}
               candidateId={application.candidateId}
               candidateName={candidateName}
+              candidateAvatar={application.candidate?.avatar}
+              candidateProfession={
+                application.candidate?.profession ?? candidateProfile?.profession ?? "Candidato"
+              }
               onStatusChange={handleStatusChange}
               onScheduleInterview={handleScheduleInterview}
               onSendMessage={handleSendMessage}

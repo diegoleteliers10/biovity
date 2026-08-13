@@ -50,6 +50,6 @@ export async function isCandidateSaved(
   const result = await fetchJson<{ saved: boolean }>(
     `${API_BASE}/api/v1/saved-candidates/check?organizationId=${organizationId}&candidateId=${candidateId}`
   )
-  if (R.isError(result)) return result
+  if (result.isErr()) return R.err(result.error)
   return R.ok(result.value.saved)
 }

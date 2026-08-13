@@ -12,7 +12,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
 import { addTransitionType, startTransition, ViewTransition } from "react"
-import { PipelineStagesConfig } from "@/components/dashboard/organization/PipelineStagesConfig"
 import { QuestionsManager } from "@/components/dashboard/organization/QuestionsManager"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -200,10 +199,6 @@ export default function OfertaDetailPage() {
                 className="size-4 text-secondary"
               />
               <span className="text-sm font-medium text-foreground">{salaryStr}</span>
-            </div>
-
-            <div className="flex items-center gap-2 mt-1">
-              <PipelineStagesConfig jobId={job.id} />
             </div>
 
             {/* Stats */}

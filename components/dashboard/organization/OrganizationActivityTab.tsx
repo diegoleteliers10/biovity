@@ -45,64 +45,62 @@ export function OrganizationActivityTab({ organizationId }: { organizationId: st
       ) : (
         <div className="divide-y divide-border/60">
           {logs.map((log) => {
-                const userInitials = log.user?.name
-                  ? log.user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase()
-                  : "U"
+            const userInitials = log.user?.name
+              ? log.user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()
+              : "U"
 
-                const getActionColor = (action: string) => {
-                  if (action.includes("job")) return "bg-blue-500/10 text-blue-600 border-blue-200"
-                  if (action.includes("candidate") || action.includes("talent"))
-                    return "bg-green-500/10 text-green-600 border-green-200"
-                  if (action.includes("template"))
-                    return "bg-purple-500/10 text-purple-600 border-purple-200"
-                  if (action.includes("chat") || action.includes("message"))
-                    return "bg-pink-500/10 text-pink-600 border-pink-200"
-                  return "bg-slate-500/10 text-slate-600 border-slate-200"
-                }
+            const getActionColor = (action: string) => {
+              if (action.includes("job")) return "bg-blue-500/10 text-blue-600 border-blue-200"
+              if (action.includes("candidate") || action.includes("talent"))
+                return "bg-green-500/10 text-green-600 border-green-200"
+              if (action.includes("template"))
+                return "bg-purple-500/10 text-purple-600 border-purple-200"
+              if (action.includes("chat") || action.includes("message"))
+                return "bg-pink-500/10 text-pink-600 border-pink-200"
+              return "bg-slate-500/10 text-slate-600 border-slate-200"
+            }
 
-                return (
-                  <div
-                    key={log.id}
-                    className="flex items-start gap-4 p-4 hover:bg-muted/10 transition-colors"
-                  >
-                    <Avatar className="size-9 shrink-0">
-                      {log.user?.avatar && (
-                        <AvatarImage src={log.user.avatar} alt={log.user.name} />
-                      )}
-                      <AvatarFallback className="bg-secondary/10 text-secondary text-xs font-semibold">
-                        {userInitials}
-                      </AvatarFallback>
-                    </Avatar>
+            return (
+              <div
+                key={log.id}
+                className="flex items-start gap-4 p-4 hover:bg-muted/10 transition-colors"
+              >
+                <Avatar className="size-9 shrink-0">
+                  {log.user?.avatar && <AvatarImage src={log.user.avatar} alt={log.user.name} />}
+                  <AvatarFallback className="bg-secondary/10 text-secondary text-xs font-semibold">
+                    {userInitials}
+                  </AvatarFallback>
+                </Avatar>
 
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-semibold text-foreground">
-                          {log.user?.name ?? "Usuario Desconocido"}
-                        </span>
-                        <span className="text-xs text-muted-foreground">({log.user?.email})</span>
-                        <Badge
-                          variant="outline"
-                          className={`text-[10px] uppercase font-mono tracking-wider px-1.5 py-0 ${getActionColor(log.action)}`}
-                        >
-                          {log.action}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground text-pretty">{log.description}</p>
-                    </div>
-
-                    <span className="text-xs text-muted-foreground shrink-0 mt-0.5">
-                      {formatFechaRelativa(log.createdAt)}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-semibold text-foreground">
+                      {log.user?.name ?? "Usuario Desconocido"}
                     </span>
+                    <span className="text-xs text-muted-foreground">({log.user?.email})</span>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] uppercase font-mono tracking-wider px-1.5 py-0 ${getActionColor(log.action)}`}
+                    >
+                      {log.action}
+                    </Badge>
                   </div>
-                )
-              })}
-            </div>
-          )}
+                  <p className="text-sm text-muted-foreground text-pretty">{log.description}</p>
+                </div>
+
+                <span className="text-xs text-muted-foreground shrink-0 mt-0.5">
+                  {formatFechaRelativa(log.createdAt)}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

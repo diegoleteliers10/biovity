@@ -1,10 +1,6 @@
 "use client"
 
-import {
-  ArrowRight01Icon,
-  CheckmarkCircle02Icon,
-  Location01Icon,
-} from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon, CheckmarkCircle02Icon, Location01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -108,10 +104,18 @@ export function ForStudents() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <h3 className="font-semibold text-foreground text-lg truncate">Sofía Alarcón</h3>
-                      <HugeiconsIcon icon={CheckmarkCircle02Icon} size={18} className="text-blue-500 shrink-0" />
+                      <h3 className="font-semibold text-foreground text-lg truncate">
+                        Sofía Alarcón
+                      </h3>
+                      <HugeiconsIcon
+                        icon={CheckmarkCircle02Icon}
+                        size={18}
+                        className="text-blue-500 shrink-0"
+                      />
                     </div>
-                    <p className="text-muted-foreground text-xs font-semibold">Ingeniería Civil en Biotecnología</p>
+                    <p className="text-muted-foreground text-xs font-semibold">
+                      Ingeniería Civil en Biotecnología
+                    </p>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground/80 mt-1">
                       <HugeiconsIcon icon={Location01Icon} size={12} className="shrink-0" />
                       <span>Santiago, Chile</span>
@@ -160,7 +164,8 @@ export function ForStudents() {
                   </h4>
                   <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
                     <p className="text-xs text-foreground font-medium leading-relaxed">
-                      Optimización de vectores de expresión para la producción a escala de proteínas recombinantes en Escherichia coli.
+                      Optimización de vectores de expresión para la producción a escala de proteínas
+                      recombinantes en Escherichia coli.
                     </p>
                   </div>
                 </div>
@@ -168,11 +173,16 @@ export function ForStudents() {
                 {/* Profile Completion */}
                 <div className="mt-8 pt-6 border-t border-slate-100">
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-muted-foreground font-medium">Perfil verificado Biovity</span>
+                    <span className="text-muted-foreground font-medium">
+                      Perfil verificado Biovity
+                    </span>
                     <span className="font-bold text-primary">95%</span>
                   </div>
                   <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden mt-2">
-                    <div className="h-full bg-gradient-to-r from-secondary to-primary rounded-full" style={{ width: "95%" }} />
+                    <div
+                      className="h-full bg-gradient-to-r from-secondary to-primary rounded-full"
+                      style={{ width: "95%" }}
+                    />
                   </div>
                 </div>
               </div>

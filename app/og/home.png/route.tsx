@@ -1,8 +1,11 @@
+import { readFile } from "node:fs/promises"
+import { join } from "node:path"
 import { ImageResponse } from "next/og"
 
-export const runtime = "edge"
-
 export async function GET() {
+  const logoData = await readFile(join(process.cwd(), "public/logoIconBiovity.png"), "base64")
+  const logoSrc = `data:image/png;base64,${logoData}`
+
   return new ImageResponse(
     <div
       style={{
@@ -57,33 +60,28 @@ export async function GET() {
         }}
       />
 
-      {/* Logo */}
+      {/* Official Logo */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          marginBottom: "40px",
+          marginBottom: "36px",
+          gap: "18px",
         }}
       >
-        <div
-          style={{
-            width: "80px",
-            height: "80px",
-            borderRadius: "20px",
-            background: "linear-gradient(135deg, #2563EB 0%, #22C55E 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginRight: "20px",
-          }}
-        >
-          <span style={{ fontSize: "48px", color: "white", fontWeight: "bold" }}>B</span>
-        </div>
+        <img
+          src={logoSrc}
+          alt="Biovity Logo"
+          width={80}
+          height={80}
+          style={{ display: "flex", width: 80, height: 80, objectFit: "contain" }}
+        />
         <span
           style={{
             fontSize: "64px",
             fontWeight: "bold",
             color: "#111827",
+            letterSpacing: "-0.03em",
           }}
         >
           Biovity

@@ -50,9 +50,9 @@ export default async function Image() {
           <img
             src={logoSrc}
             alt="Biovity"
-            width={86}
-            height={86}
-            style={{ display: "flex", width: 64, height: 64 }}
+            width={72}
+            height={72}
+            style={{ display: "flex", width: 72, height: 72, objectFit: "contain" }}
           />
           <span
             style={{

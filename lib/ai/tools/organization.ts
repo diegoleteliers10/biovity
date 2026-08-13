@@ -382,7 +382,9 @@ export const searchProfessionalsTool = tool({
     // Filter by profession
     if (profession) {
       const normProf = normalizeText(profession)
-      filtered = filtered.filter((c) => c.profession && normalizeText(c.profession).includes(normProf))
+      filtered = filtered.filter(
+        (c) => c.profession && normalizeText(c.profession).includes(normProf)
+      )
     }
 
     // Filter by skills
