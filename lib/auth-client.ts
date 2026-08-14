@@ -14,15 +14,7 @@ export type AuthUser = {
   organizationId?: string
 }
 
-export function getDashboardPath(_userType?: string): string {
-  return "/dashboard"
-}
-
-export function createRoleBasedRedirect(_user: AuthUser | undefined): string {
-  return "/dashboard"
-}
-
-function resolveAuthBaseURL(): string {
+export function resolveAuthBaseURL(): string {
   if (process.env.NODE_ENV === "production") {
     return process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
   }

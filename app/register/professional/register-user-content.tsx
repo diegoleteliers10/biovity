@@ -12,16 +12,15 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useEffect, useReducer } from "react"
 import { toast } from "sonner"
+import { CheckYourEmail } from "@/components/auth/CheckYourEmail"
 import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
 import { createResume } from "@/lib/api/resumes"
-import { authClient } from "@/lib/auth-client"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 type RegisterFormState = {
@@ -31,6 +30,7 @@ type RegisterFormState = {
   confirmPassword: string
   profession: string
   acceptTerms: boolean
+  isRegistered: boolean
   isLoading: boolean
   isPasswordVisible: boolean
   isConfirmVisible: boolean
@@ -46,6 +46,7 @@ type RegisterFormAction =
   | { type: "CLEAR_ERROR"; field: string }
   | { type: "SET_GENERAL_ERROR"; error: string }
   | { type: "CLEAR_GENERAL_ERROR" }
+  | { type: "REGISTER_SUCCESS" }
   | { type: "RESET" }
 
 const registerFormReducer = (
@@ -61,6 +62,8 @@ const registerFormReducer = (
       return { ...state, errors: { ...state.errors, general: action.error } }
     case "CLEAR_GENERAL_ERROR":
       return { ...state, errors: { ...state.errors, general: "" } }
+    case "REGISTER_SUCCESS":
+      return { ...state, isRegistered: true, isLoading: false }
     case "RESET":
       return {
         name: "",
@@ -69,6 +72,7 @@ const registerFormReducer = (
         confirmPassword: "",
         profession: "",
         acceptTerms: false,
+        isRegistered: false,
         isLoading: false,
         isPasswordVisible: false,
         isConfirmVisible: false,
@@ -86,6 +90,7 @@ const initialRegisterFormState: RegisterFormState = {
   confirmPassword: "",
   profession: "",
   acceptTerms: false,
+  isRegistered: false,
   isLoading: false,
   isPasswordVisible: false,
   isConfirmVisible: false,
@@ -114,8 +119,6 @@ const professions = [
 ]
 
 export function UserRegisterContent() {
-  const { replace } = useRouter()
-
   const [formState, dispatch] = useReducer(registerFormReducer, initialRegisterFormState)
 
   useEffect(() => {
@@ -195,10 +198,7 @@ export function UserRegisterContent() {
         await createResume({ userId: data.user.id })
       }
 
-      // Refresh session
-      await authClient.getSession()
-      authClient.$store.notify("$sessionSignal")
-      replace("/dashboard")
+      dispatch({ type: "REGISTER_SUCCESS" })
     } catch {
       dispatch({
         type: "SET_FIELD",
@@ -226,282 +226,299 @@ export function UserRegisterContent() {
       {/* Right: Registration form */}
       <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
         <div className="mx-auto w-full max-w-lg space-y-8">
-          <div className="space-y-2 text-center">
-            <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
-              Crear cuenta de usuario
-            </h1>
-            <p className="text-center text-muted-foreground">
-              Únete a la comunidad de profesionales en biociencias
-            </p>
-          </div>
-
-          <form onSubmit={handleSignUp} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium text-foreground">
-                Nombre completo
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={UserIcon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="Tu nombre completo"
-                  value={formState.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  className={`pl-10 ${formState.errors.name ? "border-destructive" : ""}`}
-                  required
-                  autoComplete="name"
-                />
+          {formState.isRegistered ? (
+            <CheckYourEmail
+              email={formState.email}
+              loginHref="/login/professional"
+              description="Te enviamos un correo de verificación a"
+            />
+          ) : (
+            <>
+              <div className="space-y-2 text-center">
+                <Logo size="lg" className="justify-center" />
+                <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
+                  Crear cuenta de usuario
+                </h1>
+                <p className="text-center text-muted-foreground">
+                  Únete a la comunidad de profesionales en biociencias
+                </p>
               </div>
-              {formState.errors.name && (
-                <p className="text-sm text-destructive">{formState.errors.name}</p>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              <label htmlFor="profession" className="text-sm font-medium text-foreground">
-                Profesión o Cargo
-              </label>
-              <Select.ComboBox
-                isRequired
-                placeholder="Buscar tu profesión..."
-                items={professions}
-                selectedKey={formState.profession}
-                onSelectionChange={handleProfessionChange}
-                className="w-full"
-              >
-                {(item) => (
-                  <Select.Item id={item.id} supportingText={item.supportingText}>
-                    {item.label}
-                  </Select.Item>
-                )}
-              </Select.ComboBox>
-              {formState.errors.profession && (
-                <p className="text-sm text-destructive">{formState.errors.profession}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Correo electrónico
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={Mail01Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={formState.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${formState.errors.email ? "border-destructive" : ""}`}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-              {formState.errors.email && (
-                <p className="text-sm text-destructive">{formState.errors.email}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium text-foreground">
-                  Contraseña
-                </label>
-                <div className="relative">
-                  <HugeiconsIcon
-                    icon={SquareLock02Icon}
-                    size={16}
-                    strokeWidth={1.5}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
-                  <Input
-                    id="password"
-                    name="password"
-                    type={formState.isPasswordVisible ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={formState.password}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
-                    className={`pl-10 pr-10 ${formState.errors.password ? "border-destructive" : ""}`}
-                    required
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    aria-label={
-                      formState.isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"
-                    }
-                    aria-pressed={formState.isPasswordVisible}
-                    onClick={() =>
-                      dispatch({
-                        type: "SET_FIELD",
-                        field: "isPasswordVisible",
-                        value: !formState.isPasswordVisible,
-                      })
-                    }
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
-                  >
+              <form onSubmit={handleSignUp} className="space-y-6">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="text-sm font-medium text-foreground">
+                    Nombre completo
+                  </label>
+                  <div className="relative">
                     <HugeiconsIcon
-                      icon={formState.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
-                      size={18}
-                      strokeWidth={1.75}
+                      icon={UserIcon}
+                      size={16}
+                      strokeWidth={1.5}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
-                  </button>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      placeholder="Tu nombre completo"
+                      value={formState.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      className={`pl-10 ${formState.errors.name ? "border-destructive" : ""}`}
+                      required
+                      autoComplete="name"
+                    />
+                  </div>
+                  {formState.errors.name && (
+                    <p className="text-sm text-destructive">{formState.errors.name}</p>
+                  )}
                 </div>
-                {formState.errors.password && (
-                  <p className="text-sm text-destructive">{formState.errors.password}</p>
-                )}
-              </div>
 
-              <div className="space-y-2">
-                <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
-                  Confirmar contraseña
-                </label>
-                <div className="relative">
-                  <HugeiconsIcon
-                    icon={SquareLock02Icon}
-                    size={16}
-                    strokeWidth={1.5}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={formState.isConfirmVisible ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={formState.confirmPassword}
-                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                    className={`pl-10 pr-10 ${formState.errors.confirmPassword ? "border-destructive" : ""}`}
-                    required
-                    autoComplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    aria-label={
-                      formState.isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"
-                    }
-                    aria-pressed={formState.isConfirmVisible}
-                    onClick={() =>
-                      dispatch({
-                        type: "SET_FIELD",
-                        field: "isConfirmVisible",
-                        value: !formState.isConfirmVisible,
-                      })
-                    }
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                <div className="space-y-2">
+                  <label htmlFor="profession" className="text-sm font-medium text-foreground">
+                    Profesión o Cargo
+                  </label>
+                  <Select.ComboBox
+                    isRequired
+                    placeholder="Buscar tu profesión..."
+                    items={professions}
+                    selectedKey={formState.profession}
+                    onSelectionChange={handleProfessionChange}
+                    className="w-full"
                   >
+                    {(item) => (
+                      <Select.Item id={item.id} supportingText={item.supportingText}>
+                        {item.label}
+                      </Select.Item>
+                    )}
+                  </Select.ComboBox>
+                  {formState.errors.profession && (
+                    <p className="text-sm text-destructive">{formState.errors.profession}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium text-foreground">
+                    Correo electrónico
+                  </label>
+                  <div className="relative">
                     <HugeiconsIcon
-                      icon={formState.isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
-                      size={18}
-                      strokeWidth={1.75}
+                      icon={Mail01Icon}
+                      size={16}
+                      strokeWidth={1.5}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
-                  </button>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="tu@email.com"
+                      value={formState.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      className={`pl-10 ${formState.errors.email ? "border-destructive" : ""}`}
+                      required
+                      autoComplete="email"
+                    />
+                  </div>
+                  {formState.errors.email && (
+                    <p className="text-sm text-destructive">{formState.errors.email}</p>
+                  )}
                 </div>
-                {formState.errors.confirmPassword && (
-                  <p className="text-sm text-destructive">{formState.errors.confirmPassword}</p>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label htmlFor="password" className="text-sm font-medium text-foreground">
+                      Contraseña
+                    </label>
+                    <div className="relative">
+                      <HugeiconsIcon
+                        icon={SquareLock02Icon}
+                        size={16}
+                        strokeWidth={1.5}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      />
+                      <Input
+                        id="password"
+                        name="password"
+                        type={formState.isPasswordVisible ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={formState.password}
+                        onChange={(e) => handleInputChange("password", e.target.value)}
+                        className={`pl-10 pr-10 ${formState.errors.password ? "border-destructive" : ""}`}
+                        required
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        aria-label={
+                          formState.isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"
+                        }
+                        aria-pressed={formState.isPasswordVisible}
+                        onClick={() =>
+                          dispatch({
+                            type: "SET_FIELD",
+                            field: "isPasswordVisible",
+                            value: !formState.isPasswordVisible,
+                          })
+                        }
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                      >
+                        <HugeiconsIcon
+                          icon={formState.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                          size={18}
+                          strokeWidth={1.75}
+                        />
+                      </button>
+                    </div>
+                    {formState.errors.password && (
+                      <p className="text-sm text-destructive">{formState.errors.password}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="text-sm font-medium text-foreground"
+                    >
+                      Confirmar contraseña
+                    </label>
+                    <div className="relative">
+                      <HugeiconsIcon
+                        icon={SquareLock02Icon}
+                        size={16}
+                        strokeWidth={1.5}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      />
+                      <Input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={formState.isConfirmVisible ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={formState.confirmPassword}
+                        onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                        className={`pl-10 pr-10 ${formState.errors.confirmPassword ? "border-destructive" : ""}`}
+                        required
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        aria-label={
+                          formState.isConfirmVisible ? "Ocultar contraseña" : "Mostrar contraseña"
+                        }
+                        aria-pressed={formState.isConfirmVisible}
+                        onClick={() =>
+                          dispatch({
+                            type: "SET_FIELD",
+                            field: "isConfirmVisible",
+                            value: !formState.isConfirmVisible,
+                          })
+                        }
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                      >
+                        <HugeiconsIcon
+                          icon={formState.isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
+                          size={18}
+                          strokeWidth={1.75}
+                        />
+                      </button>
+                    </div>
+                    {formState.errors.confirmPassword && (
+                      <p className="text-sm text-destructive">{formState.errors.confirmPassword}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="flex items-start gap-2 text-xs">
+                    <Checkbox
+                      id="terms"
+                      checked={formState.acceptTerms}
+                      onCheckedChange={(checked) =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: "acceptTerms",
+                          value: checked === true,
+                        })
+                      }
+                      className="mt-0.5"
+                    />
+                    <span className="text-sm text-foreground">
+                      Acepto los{" "}
+                      <button
+                        type="button"
+                        className="text-secondary hover:text-secondary/80 hover:underline"
+                      >
+                        términos y condiciones
+                      </button>{" "}
+                      y la{" "}
+                      <button
+                        type="button"
+                        className="text-secondary hover:text-secondary/80 hover:underline"
+                      >
+                        política de privacidad
+                      </button>
+                    </span>
+                  </label>
+                  {formState.errors.acceptTerms && (
+                    <p className="text-sm text-destructive">{formState.errors.acceptTerms}</p>
+                  )}
+                </div>
+
+                {formState.errors.general && (
+                  <div className="rounded-md bg-destructive/10 p-3 text-center text-sm text-destructive">
+                    {formState.errors.general}
+                  </div>
                 )}
-              </div>
-            </div>
 
-            <div className="space-y-2">
-              <label className="flex items-start gap-2 text-xs">
-                <Checkbox
-                  id="terms"
-                  checked={formState.acceptTerms}
-                  onCheckedChange={(checked) =>
-                    dispatch({ type: "SET_FIELD", field: "acceptTerms", value: checked === true })
-                  }
-                  className="mt-0.5"
-                />
-                <span className="text-sm text-foreground">
-                  Acepto los{" "}
-                  <button
-                    type="button"
-                    className="text-secondary hover:text-secondary/80 hover:underline"
+                <Button type="submit" className="h-11 w-full" disabled={formState.isLoading}>
+                  {formState.isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
+                </Button>
+              </form>
+
+              <div className="space-y-4 border-t border-border/10 pt-6">
+                <div className="text-center">
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                   >
-                    términos y condiciones
-                  </button>{" "}
-                  y la{" "}
-                  <button
-                    type="button"
-                    className="text-secondary hover:text-secondary/80 hover:underline"
-                  >
-                    política de privacidad
-                  </button>
-                </span>
-              </label>
-              {formState.errors.acceptTerms && (
-                <p className="text-sm text-destructive">{formState.errors.acceptTerms}</p>
-              )}
-            </div>
-
-            {formState.errors.general && (
-              <div className="rounded-md bg-destructive/10 p-3 text-center text-sm text-destructive">
-                {formState.errors.general}
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
+                    Volver a selección de registro
+                  </Link>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    ¿Ya tienes una cuenta?{" "}
+                    <Link
+                      href="/login/professional"
+                      className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
+                    >
+                      Inicia sesión aquí
+                    </Link>
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    ¿Representas una organización?{" "}
+                    <Link
+                      href="/register/organization"
+                      className="font-medium text-accent hover:text-accent/80 hover:underline"
+                    >
+                      Registrar organización
+                    </Link>
+                  </p>
+                </div>
               </div>
-            )}
 
-            <Button type="submit" className="h-11 w-full" disabled={formState.isLoading}>
-              {formState.isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
-            </Button>
-          </form>
-
-          <div className="space-y-4 border-t border-border/10 pt-6">
-            <div className="text-center">
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-              >
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
-                Volver a selección de registro
-              </Link>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                ¿Ya tienes una cuenta?{" "}
-                <Link
-                  href="/login/professional"
-                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
+              <p className="text-center text-sm text-muted-foreground">
+                ¿Necesitas ayuda?{" "}
+                <a
+                  href="mailto:support@biovity.com"
+                  className="font-medium text-primary hover:underline"
                 >
-                  Inicia sesión aquí
-                </Link>
+                  Contactar soporte
+                </a>
               </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                ¿Representas una organización?{" "}
-                <Link
-                  href="/register/organization"
-                  className="font-medium text-accent hover:text-accent/80 hover:underline"
-                >
-                  Registrar organización
-                </Link>
-              </p>
-            </div>
-          </div>
-
-          <p className="text-center text-sm text-muted-foreground">
-            ¿Necesitas ayuda?{" "}
-            <a
-              href="mailto:support@biovity.com"
-              className="font-medium text-primary hover:underline"
-            >
-              Contactar soporte
-            </a>
-          </p>
+            </>
+          )}
         </div>
       </div>
     </div>
