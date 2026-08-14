@@ -25,7 +25,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Ya existe una cuenta con este email" }, { status: 409 })
     }
 
-    // Server-side sign up via better-auth, get raw response to forward cookies
+    // Server-side sign up via better-auth. Email verification is required,
+    // so no session is created here; the user must verify before signing in.
     const response = await auth.api.signUpEmail({
       body: {
         email: parsed.contactEmail,
@@ -38,29 +39,22 @@ export async function POST(request: NextRequest) {
       asResponse: true,
     })
 
-    if (response instanceof Response) {
-      const data = await response.json()
-      if (data.error) {
-        return NextResponse.json(data, { status: 400 })
-      }
+    if (!(response instanceof Response)) {
+      return NextResponse.json({ error: "Error al registrar la organización" }, { status: 500 })
     }
 
-    // Extract set-cookie header to forward to client
-    const setCookie = response.headers.get("set-cookie")
+    const data = await response.json()
+    if (data.error) {
+      return NextResponse.json(data, { status: 400 })
+    }
 
-    // Get session to get userId
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    })
-
-    const userId = session?.user?.id
+    const userId = (data.user as { id?: string } | undefined)?.id
     if (!userId) {
       return NextResponse.json({ error: "Error al obtener el usuario" }, { status: 500 })
     }
 
     // Create organization + link user atomically
     const client = await pool.connect()
-    let organizationId: string | undefined
     try {
       await client.query("BEGIN")
       const orgResult = await client.query<{ id: string }>(
@@ -69,7 +63,7 @@ export async function POST(request: NextRequest) {
          RETURNING id`,
         [parsed.organizationName, parsed.organizationWebsite || null]
       )
-      organizationId = orgResult.rows[0]?.id
+      const organizationId = orgResult.rows[0]?.id
       if (!organizationId) {
         await client.query("ROLLBACK")
         return NextResponse.json({ error: "Error al crear la organización" }, { status: 500 })
@@ -79,6 +73,8 @@ export async function POST(request: NextRequest) {
         userId,
       ])
       await client.query("COMMIT")
+
+      return NextResponse.json({ user: data.user, organizationId })
     } catch (err) {
       await client.query("ROLLBACK")
       console.error("[register/organization] tx", err)
@@ -86,17 +82,6 @@ export async function POST(request: NextRequest) {
     } finally {
       client.release()
     }
-
-    const responseHeaders = new Headers()
-    if (setCookie) {
-      responseHeaders.set("Set-Cookie", setCookie)
-    }
-    responseHeaders.set("Content-Type", "application/json")
-
-    return new NextResponse(JSON.stringify({ user: session?.user, organizationId }), {
-      status: 200,
-      headers: responseHeaders,
-    })
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(

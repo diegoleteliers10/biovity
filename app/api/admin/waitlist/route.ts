@@ -9,6 +9,7 @@ export type WaitlistEntry = {
   email: string
   role: string
   createdAt: string
+  invitedAt: string | null
 }
 
 export async function GET(request: NextRequest) {
@@ -65,8 +66,9 @@ export async function GET(request: NextRequest) {
         email: string
         role: string
         created_at: Date
+        invited_at: Date | null
       }>(
-        `SELECT id, email, role, created_at
+        `SELECT id, email, role, created_at, invited_at
          FROM waitlist WHERE ${whereClause}
          ORDER BY created_at DESC
          LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
@@ -85,6 +87,7 @@ export async function GET(request: NextRequest) {
     email: row.email,
     role: row.role,
     createdAt: row.created_at?.toISOString() ?? new Date().toISOString(),
+    invitedAt: row.invited_at?.toISOString() ?? null,
   }))
 
   return NextResponse.json({

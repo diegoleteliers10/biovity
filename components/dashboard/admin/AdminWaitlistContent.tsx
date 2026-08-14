@@ -25,6 +25,12 @@ type WaitlistEntry = {
   email: string
   role: string
   createdAt: string
+  invitedAt: string | null
+}
+
+type InviteResult = {
+  id: number
+  status: "sent" | "skipped" | "failed"
 }
 
 type State = {
@@ -36,6 +42,8 @@ type State = {
   roleFilter: string
   page: number
   selectedIds: Set<number>
+  sendingIds: Set<number>
+  sendingAll: boolean
   refreshNonce: number
 }
 
@@ -52,6 +60,9 @@ type Action =
   | { type: "TOGGLE_SELECT_ALL"; ids: number[] }
   | { type: "CLEAR_SELECTED" }
   | { type: "REMOVE_ITEMS"; ids: number[] }
+  | { type: "SET_SENDING"; ids: number[] }
+  | { type: "CLEAR_SENDING" }
+  | { type: "SET_SENDING_ALL"; value: boolean }
   | { type: "REFRESH" }
 
 function reducer(state: State, action: Action): State {
@@ -118,6 +129,12 @@ function reducer(state: State, action: Action): State {
         total: state.total - action.ids.length,
         selectedIds: new Set(),
       }
+    case "SET_SENDING":
+      return { ...state, sendingIds: new Set(action.ids) }
+    case "CLEAR_SENDING":
+      return { ...state, sendingIds: new Set() }
+    case "SET_SENDING_ALL":
+      return { ...state, sendingAll: action.value }
     case "REFRESH":
       return { ...state, refreshNonce: state.refreshNonce + 1 }
   }
@@ -138,6 +155,8 @@ const INITIAL: State = {
   roleFilter: "",
   page: 1,
   selectedIds: new Set(),
+  sendingIds: new Set(),
+  sendingAll: false,
   refreshNonce: 0,
 }
 
@@ -279,6 +298,54 @@ export function AdminWaitlistContent() {
     }, UNDO_TIMEOUT_MS)
   }, [state.selectedIds, state.items])
 
+  const handleSendInvites = useCallback(async (ids: number[] | "all") => {
+    const sendAll = ids === "all"
+    if (
+      (sendAll || ids.length > 1) &&
+      !window.confirm(
+        sendAll
+          ? "¿Enviar el correo de acceso a todas las personas de la lista de espera que aún no lo han recibido?"
+          : `¿Enviar el correo de acceso a los ${ids.length} seleccionados?`
+      )
+    ) {
+      return
+    }
+
+    if (sendAll) dispatch({ type: "SET_SENDING_ALL", value: true })
+    else dispatch({ type: "SET_SENDING", ids })
+
+    try {
+      const res = await fetch("/api/admin/waitlist/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sendAll ? { all: true } : { ids }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        throw new Error((data as { error?: string })?.error ?? "Error al enviar correos")
+      }
+      const results = ((data as { results?: InviteResult[] })?.results ?? []) as InviteResult[]
+      const sent = results.filter((r) => r.status === "sent").length
+      const skipped = results.filter((r) => r.status === "skipped").length
+      const failed = results.filter((r) => r.status === "failed").length
+
+      if (failed > 0) {
+        toast.error(`Enviados: ${sent}, ya invitados: ${skipped}, fallaron: ${failed}`)
+      } else if (sent > 0) {
+        toast.success(`Correo(s) de acceso enviado(s) a ${sent} usuario(s)`)
+      } else {
+        toast.info("Todos los seleccionados ya fueron invitados")
+      }
+      dispatch({ type: "REFRESH" })
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al enviar correos"
+      toast.error(msg)
+    } finally {
+      if (sendAll) dispatch({ type: "SET_SENDING_ALL", value: false })
+      else dispatch({ type: "CLEAR_SENDING" })
+    }
+  }, [])
+
   const handleExportCSV = () => {
     const headers = "Email,Rol,Fecha"
     const escapeCsv = (s: string) => `"${s.replace(/"/g, '""')}"`
@@ -300,6 +367,7 @@ export function AdminWaitlistContent() {
   const allVisibleIds = state.items.map((i) => i.id)
   const allSelected =
     allVisibleIds.length > 0 && allVisibleIds.every((id) => state.selectedIds.has(id))
+  const isSending = state.sendingAll || state.sendingIds.size > 0
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -349,11 +417,27 @@ export function AdminWaitlistContent() {
         >
           Exportar CSV
         </Button>
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => handleSendInvites("all")}
+          disabled={state.total === 0 || isSending}
+        >
+          Enviar a todos
+        </Button>
       </div>
 
       {state.selectedIds.size > 0 && (
         <div className="flex items-center gap-3 rounded-lg border border-secondary/30 bg-secondary/5 p-3">
           <span className="text-sm font-medium">{state.selectedIds.size} seleccionado(s)</span>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => handleSendInvites(Array.from(state.selectedIds))}
+            disabled={isSending}
+          >
+            Enviar acceso
+          </Button>
           <Button variant="destructive" size="sm" onClick={handleBulkDelete}>
             Eliminar seleccionados
           </Button>
@@ -400,6 +484,7 @@ export function AdminWaitlistContent() {
                 <TableHead>Email</TableHead>
                 <TableHead>Rol</TableHead>
                 <TableHead>Fecha</TableHead>
+                <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -425,15 +510,39 @@ export function AdminWaitlistContent() {
                   <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                     {formatFechaRelativa(entry.createdAt)}
                   </TableCell>
+                  <TableCell>
+                    {entry.invitedAt ? (
+                      <Badge
+                        variant="secondary"
+                        className="whitespace-nowrap"
+                        title={`Enviado el ${new Date(entry.invitedAt).toLocaleString("es-CL")}`}
+                      >
+                        Invitado
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">Pendiente</Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => scheduleDelete(entry)}
-                      aria-label={`Eliminar ${entry.email}`}
-                    >
-                      Eliminar
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSendInvites([entry.id])}
+                        disabled={entry.invitedAt !== null || isSending}
+                        aria-label={`Enviar acceso a ${entry.email}`}
+                      >
+                        {state.sendingIds.has(entry.id) ? "Enviando..." : "Enviar acceso"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => scheduleDelete(entry)}
+                        aria-label={`Eliminar ${entry.email}`}
+                      >
+                        Eliminar
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

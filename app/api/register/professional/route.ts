@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Ya existe una cuenta con este email" }, { status: 409 })
     }
 
-    // Server-side sign up via better-auth, get raw response to forward cookies
+    // Server-side sign up via better-auth. Email verification is required,
+    // so no session is created here; the user must verify before signing in.
     const response = await auth.api.signUpEmail({
       body: {
         email: parsed.email,
@@ -36,31 +37,21 @@ export async function POST(request: NextRequest) {
       asResponse: true,
     })
 
-    if (response instanceof Response) {
-      const data = await response.json()
-      if (data.error) {
-        return NextResponse.json(data, { status: 400 })
-      }
+    if (!(response instanceof Response)) {
+      return NextResponse.json({ error: "Error al crear la cuenta" }, { status: 500 })
     }
 
-    // Extract set-cookie header to forward to client
-    const setCookie = response.headers.get("set-cookie")
-
-    // Get session to return userId
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    })
-
-    const responseHeaders = new Headers()
-    if (setCookie) {
-      responseHeaders.set("Set-Cookie", setCookie)
+    const data = await response.json()
+    if (data.error) {
+      return NextResponse.json(data, { status: 400 })
     }
-    responseHeaders.set("Content-Type", "application/json")
 
-    return new NextResponse(JSON.stringify({ user: session?.user, session: session?.session }), {
-      status: 200,
-      headers: responseHeaders,
-    })
+    const userId = (data.user as { id?: string } | undefined)?.id
+    if (!userId) {
+      return NextResponse.json({ error: "Error al obtener el usuario" }, { status: 500 })
+    }
+
+    return NextResponse.json({ user: data.user })
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
