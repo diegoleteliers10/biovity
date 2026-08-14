@@ -547,4 +547,9 @@
   }
 }
 
+/* Featurebase: hide default floating launcher, opened from avatar menu instead */
+.fb-feedback-widget-feedback-button-container {
+  display: none !important;
+}
+
 

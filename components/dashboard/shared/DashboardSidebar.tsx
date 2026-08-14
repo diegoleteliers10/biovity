@@ -1,9 +1,16 @@
 "use client"
 
-import { FlipRightIcon, TransitionRightIcon, User02Icon } from "@hugeicons/core-free-icons"
+import {
+  Comment01Icon,
+  CustomerSupportIcon,
+  FlipRightIcon,
+  TransitionRightIcon,
+  User02Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useFeaturebase } from "featurebase-js/react"
 import { usePathname, useRouter } from "next/navigation"
-import type { ReactElement, ReactNode } from "react"
+import { type ReactElement, type ReactNode, useRef } from "react"
 import {
   Tooltip,
   TooltipContent,
@@ -211,6 +218,8 @@ export function DashboardSidebar({
   const { state, setOpen, open, setOpenMobile, isMobile } = useSidebar()
   const pathname = usePathname()
   const { push } = useRouter()
+  const { show: showFeaturebaseMessenger } = useFeaturebase()
+  const feedbackPortalRef = useRef<HTMLButtonElement>(null)
 
   const sessionUser = session?.user as
     | {
@@ -248,6 +257,14 @@ export function DashboardSidebar({
 
   const handleViewProfile = () => {
     handleNavigate(profileUrl)
+  }
+
+  const handleFeedback = () => {
+    feedbackPortalRef.current?.click()
+  }
+
+  const handleSupport = () => {
+    showFeaturebaseMessenger()
   }
 
   const logoutItemClassName = logoutHoverContrastOnAccent
@@ -465,6 +482,24 @@ export function DashboardSidebar({
                   <HugeiconsIcon icon={User02Icon} size={16} strokeWidth={1.5} className="mr-2" />
                   Ver Perfil
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleFeedback} className="cursor-pointer">
+                  <HugeiconsIcon
+                    icon={Comment01Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="mr-2"
+                  />
+                  Feedback
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSupport} className="cursor-pointer">
+                  <HugeiconsIcon
+                    icon={CustomerSupportIcon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="mr-2"
+                  />
+                  Soporte
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={handleLogout}
@@ -480,6 +515,14 @@ export function DashboardSidebar({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <button
+              ref={feedbackPortalRef}
+              type="button"
+              data-featurebase-feedback
+              hidden
+              aria-hidden="true"
+              tabIndex={-1}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
