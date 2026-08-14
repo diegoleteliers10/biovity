@@ -154,6 +154,44 @@ export async function sendWaitlistEmail(to: string, role: string) {
   })
 }
 
+export async function sendWaitlistInviteEmail(to: string, role: string) {
+  const isCompany = role === "organization"
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://biovity.cl"
+  const registerUrl = isCompany
+    ? `${appUrl}/register/organization`
+    : `${appUrl}/register/professional`
+  const ctaLabel = isCompany ? "Crear cuenta de organización" : "Crear mi cuenta profesional"
+
+  const html = emailLayout(
+    "¡La lista de espera de Biovity se abrió!",
+    `
+    <h2>¡Buenas noticias, fuiste seleccionado/a! 🎉</h2>
+    <p>La <strong>lista de espera de Biovity se abrió</strong> y ya puedes probar la plataforma.</p>
+    <p>${
+      isCompany
+        ? "Crea tu cuenta como organización para publicar ofertas y encontrar talento científico con nuestro buscador inteligente y automatizaciones por IA."
+        : "Crea tu cuenta profesional para buscar las mejores oportunidades en biotecnología y ciencias, con herramientas inteligentes de CV y emparejamiento con IA."
+    }</p>
+    <div class="button-container">
+      <a href="${registerUrl}" class="button">${ctaLabel}</a>
+    </div>
+    <p>Si el botón anterior no funciona, puedes copiar y pegar el siguiente enlace directamente en tu navegador:</p>
+    <p style="word-break: break-all; font-size: 13px; color: #71787d; background-color: #f3f3f5; padding: 12px; border-radius: 8px;">${registerUrl}</p>
+    <p>¡Te esperamos dentro!</p>
+    <p>Atentamente,<br/><strong>El equipo de Biovity</strong></p>
+    `
+  )
+
+  return getResend().emails.send({
+    from: EMAIL_FROM,
+    to,
+    subject: isCompany
+      ? "¡La lista de espera de Biovity se abrió! Tu organización fue seleccionada 🎉"
+      : "¡La lista de espera de Biovity se abrió! Fuiste seleccionado/a 🎉",
+    html,
+  })
+}
+
 export async function sendWelcomeEmail(
   to: string,
   name: string,
