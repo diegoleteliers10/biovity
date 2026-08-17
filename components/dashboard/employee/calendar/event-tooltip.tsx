@@ -106,7 +106,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
                 {event.title}
               </h4>
               <span
-                className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getEventTypeColor(event.type)}`}
+                className={`inline-flex items-center px-3 py-1.5 rounded-full text-[13px] leading-4 font-medium border ${getEventTypeColor(event.type)}`}
               >
                 {getEventTypeLabel(event.type)}
               </span>

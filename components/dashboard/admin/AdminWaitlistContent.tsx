@@ -400,7 +400,7 @@ export function AdminWaitlistContent() {
         <select
           value={state.roleFilter}
           onChange={(e) => handleRoleFilterChange(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-3 text-xs"
+          className="h-7 rounded-md border border-input bg-background px-3"
           aria-label="Filtrar por rol"
         >
           {ROLE_OPTIONS.map((opt) => (

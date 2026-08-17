@@ -1,47 +1,20 @@
 "use client"
 
-import { Cancel01Icon, Globe02Icon } from "@hugeicons/core-free-icons"
+import { Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
-import { CardContent, CardHeader } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
 import { emptyLanguage, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
 
-const SectionTitle = ({ icon: Icon, title }: { icon: typeof Globe02Icon; title: string }) => (
-  <div className="flex items-center gap-2">
-    <HugeiconsIcon icon={Icon} size={20} className="text-muted-foreground" />
-    <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-  </div>
-)
-
 export function LanguagesForm() {
-  const {
-    resume,
-    resumeFormData,
-    isSaving,
-    editingSection,
-    handleEditSection,
-    handleSaveSection,
-    handleCancelSection,
-    handleResumeArrayChange,
-  } = useProfileContext()
-
-  const isEditingLanguages = editingSection === "languages"
+  const { resume, resumeFormData, isEditing, handleResumeArrayChange } = useProfileContext()
 
   return (
-    <EditableCard
-      isEditing={isEditingLanguages}
-      onEdit={() => handleEditSection("languages")}
-      onSave={() => handleSaveSection("languages")}
-      onCancel={handleCancelSection}
-      isSaving={isSaving}
-    >
-      <CardHeader className="pb-4">
-        <SectionTitle icon={Globe02Icon} title="Idiomas" />
-      </CardHeader>
-      <CardContent>
-        {isEditingLanguages ? (
+    <EditableCard>
+      <CardContent className="pl-0">
+        {isEditing ? (
           <div className="space-y-4">
             {(resumeFormData.languages.length > 0
               ? resumeFormData.languages
@@ -69,7 +42,7 @@ export function LanguagesForm() {
                       return next
                     })
                   }
-                  className="h-9 rounded-md border border-input bg-background px-2 text-sm w-28"
+                  className="h-7 rounded-md border border-input bg-background px-2 w-28"
                 >
                   {LEVEL_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -106,7 +79,7 @@ export function LanguagesForm() {
             {(resume?.languages ?? []).map((lang, _i) => (
               <span
                 key={`lang-display-${lang.name ?? lang.language}`}
-                className="rounded-md border border-border bg-muted/50 px-3 py-1.5 text-sm"
+                className="h-7 rounded-md border border-border bg-muted/50 px-3"
               >
                 {lang.name ?? lang.language}
                 {lang.level && <span className="ml-1.5 text-muted-foreground">({lang.level})</span>}

@@ -48,7 +48,7 @@ export function ChatHeader({
             <Button
               variant="ghost"
               size="icon"
-              className="size-8 lg:hidden"
+              className="lg:hidden"
               onClick={onBack}
               aria-label="Volver a conversaciones"
             >
@@ -76,12 +76,14 @@ export function ChatHeader({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <HugeiconsIcon
-              icon={MoreHorizontalIcon}
-              size={22}
-              aria-label="Mas opciones"
-              className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            />
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Más opciones"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <HugeiconsIcon icon={MoreHorizontalIcon} size={20} />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             {onViewProfile && (

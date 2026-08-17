@@ -160,7 +160,7 @@ export default function OfertaDetailPage() {
                 </p>
               </div>
               <span
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wider ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] leading-4 font-medium ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
               >
                 {getStatusLabel(job.status)}
               </span>
@@ -322,7 +322,6 @@ export default function OfertaDetailPage() {
                                       ? "destructive"
                                       : "secondary"
                             }
-                            className="text-[10px] uppercase tracking-wider"
                           >
                             {app.status}
                           </Badge>

@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueryStates } from "nuqs"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
@@ -13,7 +14,6 @@ import {
   useSavedJobsByUser,
   useSaveJobMutation,
 } from "@/lib/api/use-saved-jobs"
-import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { employeeSearchParsers } from "@/lib/parsers/employee-search"
 import { JobListItem } from "./jobListItem"
 import { SearchFilters } from "./searchFilters"
@@ -231,7 +231,7 @@ export const SearchContent = () => {
               <button
                 type="button"
                 onClick={handleClear}
-                className="mt-2 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-sm"
+                className="mt-2 inline-flex h-7 items-center gap-2 px-4 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-[13px]"
               >
                 Limpiar filtros
               </button>

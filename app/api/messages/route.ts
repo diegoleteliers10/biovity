@@ -54,7 +54,10 @@ export async function POST(request: Request) {
   const apiBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
   fetch(`${apiBase}/api/v1/chats/${chatId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(process.env.INTERNAL_API_KEY && { "x-internal-key": process.env.INTERNAL_API_KEY }),
+    },
     body: JSON.stringify({ lastMessage: content }),
   }).catch(() => {})
 

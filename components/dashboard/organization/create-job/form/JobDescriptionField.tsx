@@ -1,6 +1,6 @@
 import { AIJobDescriptionWriter } from "@/components/ai/AIJobDescriptionWriter"
 import { RichTextEditor } from "@/components/dashboard/shared/lazy-rich-text-editor"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldLabel } from "@/components/ui/field"
 
 interface JobDescriptionFieldProps {
   value: string
@@ -11,7 +11,6 @@ interface JobDescriptionFieldProps {
   isRemote: boolean
   onChange: (value: string) => void
   onGeneratingChange: (value: boolean) => void
-  error?: string
 }
 
 export function JobDescriptionField({
@@ -23,11 +22,12 @@ export function JobDescriptionField({
   isRemote,
   onChange,
   onGeneratingChange,
-  error,
 }: JobDescriptionFieldProps) {
   return (
     <Field>
-      <FieldLabel>Descripción *</FieldLabel>
+      <FieldLabel>
+        Descripción <span className="text-red-600 font-bold ml-0.5">*</span>
+      </FieldLabel>
       <RichTextEditor
         content={value}
         onChange={onChange}
@@ -48,7 +48,6 @@ export function JobDescriptionField({
           />
         }
       />
-      {error && <FieldError>{error}</FieldError>}
     </Field>
   )
 }

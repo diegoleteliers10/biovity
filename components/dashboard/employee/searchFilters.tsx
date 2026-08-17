@@ -8,6 +8,7 @@ import {
   LaptopIcon,
   LibraryIcon,
   Search01Icon,
+  Tick02Icon,
 } from "@hugeicons/core-free-icons"
 import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -17,7 +18,6 @@ import { useCallback } from "react"
 import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
 const JOB_TYPES = [
@@ -84,14 +84,13 @@ export function SearchFilters({
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-base">Buscador y filtros</CardTitle>
+            <CardTitle>Buscador y filtros</CardTitle>
             <p className="mt-1 text-xs text-muted-foreground">
               Refina tu búsqueda por palabra clave, ubicación y preferencias.
             </p>
           </div>
           <Button
             variant="ghost"
-            size="sm"
             onClick={onClear}
             className="text-muted-foreground hover:text-primary-foreground"
           >
@@ -202,14 +201,30 @@ export function SearchFilters({
                   )}
                 </Select>
 
-                <div className="flex items-center justify-between rounded-md border border-border/60 bg-muted/20 px-3 py-2">
-                  <span className="text-muted-foreground text-sm">Solo remoto</span>
-                  <Checkbox
-                    aria-label="Solo remoto"
+                <label className="flex h-7 cursor-pointer select-none items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/20 px-2.5 transition-colors hover:bg-muted/40 has-[:checked]:border-primary/30">
+                  <span className="truncate text-[13px] leading-4 font-medium text-foreground">
+                    Solo remoto
+                  </span>
+                  <input
+                    type="checkbox"
                     checked={remoteOnly}
-                    onCheckedChange={(checked) => onRemoteOnlyChange(checked === true)}
+                    onChange={(e) => onRemoteOnlyChange(e.target.checked)}
+                    aria-label="Solo remoto"
+                    className="peer sr-only"
                   />
-                </div>
+                  <span
+                    aria-hidden
+                    className="flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input bg-background transition-colors peer-checked:border-primary peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-ring/30"
+                  >
+                    {remoteOnly && (
+                      <HugeiconsIcon
+                        icon={Tick02Icon}
+                        strokeWidth={2}
+                        className="size-3 text-primary-foreground"
+                      />
+                    )}
+                  </span>
+                </label>
               </div>
             </m.div>
           )}

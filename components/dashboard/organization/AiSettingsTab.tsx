@@ -1,5 +1,7 @@
 "use client"
 
+import { Add01Icon, AiMagicIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import {
@@ -26,6 +28,7 @@ import {
   listCredentials,
   saveCredential,
 } from "@/lib/api/ai-credentials"
+import { btnAccentClass, StateCard } from "./SettingsUi"
 
 const PROVIDER_IDS = Object.keys(PROVIDERS) as ProviderId[]
 
@@ -353,13 +356,13 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
-        {!showAddForm && (
+      {credentials.length > 0 && !showAddForm && (
+        <div className="flex items-center justify-end">
           <Button variant="outline" size="sm" onClick={() => setShowAddForm(true)} disabled={busy}>
             Agregar credencial
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       {showAddForm && (
         <AddCredentialForm onAdd={handleAdd} onCancel={() => setShowAddForm(false)} busy={busy} />
@@ -373,15 +376,37 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
       {credentialsQuery.isLoading ? (
         <div className="grid gap-3 sm:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="h-32 animate-pulse rounded-lg border bg-muted/30" />
+            <div key={i} className="h-32 animate-pulse rounded-xl bg-muted/50" />
           ))}
         </div>
       ) : credentials.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            No hay credenciales configuradas. Se usa el modelo por defecto de la plataforma.
+        <StateCard
+          icon={AiMagicIcon}
+          violet
+          title="No hay credenciales configuradas"
+          chip={
+            <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] leading-4 font-semibold text-accent">
+              Modelo por defecto
+            </span>
+          }
+        >
+          <p className="mt-1 max-w-[52ch] text-sm leading-6 text-muted-foreground text-pretty">
+            Se usa el modelo por defecto de la plataforma para calcular la compatibilidad entre
+            candidatos y ofertas.
           </p>
-        </div>
+          {!showAddForm && (
+            <div className="mt-4">
+              <Button
+                className={btnAccentClass}
+                onClick={() => setShowAddForm(true)}
+                disabled={busy}
+              >
+                <HugeiconsIcon icon={Add01Icon} size={15} strokeWidth={1.8} />
+                Agregar credencial
+              </Button>
+            </div>
+          )}
+        </StateCard>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {credentials.map((cred) => (

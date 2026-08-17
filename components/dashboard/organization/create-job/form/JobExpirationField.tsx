@@ -18,7 +18,7 @@ export function JobExpirationField({ value, onChange }: Props) {
       </label>
       <Input
         type="date"
-        className="h-9 text-sm"
+        className="h-7"
         min={new Date().toISOString().slice(0, 10)}
         value={value}
         onChange={(e) => onChange(e.target.value)}

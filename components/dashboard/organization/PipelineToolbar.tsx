@@ -112,14 +112,14 @@ export function PipelineToolbar({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar por nombre..."
-            className="h-9 pl-9 text-sm"
+            className="h-7 pl-9"
           />
         </div>
         <Select
           value={stageFilter}
           onValueChange={(v) => onStageFilterChange(v as ApplicationStage | "all")}
         >
-          <SelectTrigger className="h-9 w-[140px] text-sm">
+          <SelectTrigger className="h-7 w-[140px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -147,7 +147,7 @@ export function PipelineToolbar({
               Avanzar a {advanceStage}
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={onBulkMessage} className="h-8 gap-1.5">
+          <Button variant="outline" size="sm" onClick={onBulkMessage} className="h-7 gap-1.5">
             <HugeiconsIcon icon={Message01Icon} size={14} />
             Mensaje
           </Button>
@@ -178,7 +178,7 @@ export function PipelineToolbar({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Button variant="ghost" size="sm" onClick={onClearSelection} className="h-8">
+          <Button variant="ghost" size="sm" onClick={onClearSelection} className="h-7">
             <HugeiconsIcon icon={Cancel01Icon} size={14} />
           </Button>
         </div>

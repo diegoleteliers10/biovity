@@ -37,7 +37,7 @@ export function JobCategoryField({ value, onChange }: Props) {
         Categoria
       </label>
       <Select onValueChange={onChange} value={value}>
-        <SelectTrigger className="h-9 text-sm">
+        <SelectTrigger className="h-7">
           <SelectValue placeholder="Seleccionar categoria" />
         </SelectTrigger>
         <SelectContent>

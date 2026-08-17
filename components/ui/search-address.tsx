@@ -15,16 +15,17 @@ interface SearchAddressProps {
 }
 
 const typeLabels: Record<string, string> = {
-  boundary: "Frontera",
+  highway: "Calle",
   building: "Edificio",
-  landuse: "Uso de suelo",
-  natural: "Natural",
   place: "Lugar",
-  poi: "Punto de interes",
-  railway: "Ferrocarril",
-  road: "Carretera",
-  transit: "Transporte",
+  landuse: "Uso de suelo",
   waterway: "Curso de agua",
+  railway: "Ferrocarril",
+  boundary: "Frontera",
+  natural: "Natural",
+  amenity: "Servicio",
+  shop: "Comercio",
+  tourism: "Turismo",
   other: "Otro",
 }
 
@@ -48,9 +49,7 @@ export function SearchAddress({ onSelectLocation }: SearchAddressProps) {
     [handleSearch, selectedItem]
   )
 
-  const displayValue = selectedItem
-    ? `${parsedAddress?.street || ""}${parsedAddress?.city ? `, ${parsedAddress.city}` : ""}${parsedAddress?.country ? `, ${parsedAddress.country}` : ""}`.trim()
-    : query
+  const displayValue = selectedItem ? parsedAddress?.label || query : query
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -79,7 +78,7 @@ export function SearchAddress({ onSelectLocation }: SearchAddressProps) {
           <HugeiconsIcon icon={Search01Icon} className="size-4 shrink-0 text-muted-foreground" />
           <input
             ref={inputRef}
-            value={selectedItem ? parsedAddress?.street || selectedItem.label || query : query}
+            value={selectedItem ? parsedAddress?.label || selectedItem.label || query : query}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Buscar direccion..."
             className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
@@ -101,13 +100,12 @@ export function SearchAddress({ onSelectLocation }: SearchAddressProps) {
               </div>
               {items.map((item, index) => {
                 const itemLabel = item.label || ""
-                console.log("[SearchAddress] item.label:", itemLabel)
+                const key = itemLabel ? `${type}-${itemLabel}` : `${type}-${index}`
                 return (
                   <button
-                    key={`${type}-${index}`}
+                    key={key}
                     type="button"
                     onClick={() => {
-                      console.log("[SearchAddress] clicking item:", itemLabel)
                       handleSelect(item)
                       setOpen(false)
                     }}

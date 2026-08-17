@@ -44,6 +44,8 @@ import { useOrganizationMetrics } from "@/lib/api/use-organization-dashboard"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 import { exportMetricsCsv } from "@/lib/utils/export-metrics-csv"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { ConversionFunnelCard } from "./ConversionFunnelCard"
+import { GeographicDistributionCard } from "./GeographicDistributionCard"
 
 const statusLabels: Record<string, string> = {
   pendiente: "Pendiente",
@@ -74,7 +76,7 @@ function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: K
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <CardTitle>{title}</CardTitle>
         <HugeiconsIcon
           icon={Icon}
           size={24}
@@ -83,11 +85,13 @@ function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: K
         />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="text-lg leading-6 font-semibold tracking-[-0.1px]">{value}</div>
         {trend && (
-          <p className={`text-xs ${trendPositive ? "text-green-600" : "text-red-600"}`}>{trend}</p>
+          <p className={`text-xs leading-4 ${trendPositive ? "text-green-600" : "text-red-600"}`}>
+            {trend}
+          </p>
         )}
-        {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+        {subtitle && <p className="text-xs leading-4 text-muted-foreground">{subtitle}</p>}
       </CardContent>
     </Card>
   )
@@ -210,14 +214,14 @@ export function OrganizationMetricsContent() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-[130px] h-9 text-xs"
+                  className="w-[130px] h-7"
                 />
                 <span className="text-muted-foreground text-xs">a</span>
                 <Input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-[130px] h-9 text-xs"
+                  className="w-[130px] h-7"
                 />
               </div>
             )}
@@ -321,124 +325,23 @@ export function OrganizationMetricsContent() {
       {/* Middle row: conversion funnel & average stage durations */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Funnel Conversion */}
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-base font-semibold">
-              Funnel de Conversión (Drop-off)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isPending ? (
-              <div className="space-y-4 py-2">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-              </div>
-            ) : (
-              <div className="space-y-5 py-2">
-                {/* Stage 1: Pendiente */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-muted-foreground flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-secondary" />
-                      1. Postulados (Pendiente)
-                    </span>
-                    <span>
-                      {reachedPendiente} ({ratePendiente}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
-                    <div
-                      className="h-full bg-secondary/20 transition-all duration-500 ease-out"
-                      style={{ width: `${ratePendiente}%` }}
-                    />
-                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-secondary-foreground">
-                      Base inicial
-                    </span>
-                  </div>
-                </div>
-
-                {/* Stage 2: Entrevista */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-muted-foreground flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-primary" />
-                      2. Entrevistados
-                    </span>
-                    <span>
-                      {reachedEntrevista} ({rateEntrevista}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
-                    <div
-                      className="h-full bg-primary/20 transition-all duration-500 ease-out"
-                      style={{ width: `${rateEntrevista}%` }}
-                    />
-                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-primary">
-                      {rateEntrevista > 0
-                        ? `${rateEntrevista}% pasan a entrevista`
-                        : "Sin postulantes evaluados"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Stage 3: Oferta */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-muted-foreground flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-accent" />
-                      3. Ofertas Enviadas
-                    </span>
-                    <span>
-                      {reachedOferta} ({rateOferta}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
-                    <div
-                      className="h-full bg-accent/20 transition-all duration-500 ease-out"
-                      style={{ width: `${rateOferta}%` }}
-                    />
-                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-accent-foreground">
-                      {rateOferta > 0 ? `${rateOferta}% alcanzan oferta` : "Sin ofertas enviadas"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Stage 4: Contratado */}
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span className="text-muted-foreground flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-green-500" />
-                      4. Contratados
-                    </span>
-                    <span>
-                      {reachedContratado} ({rateContratado}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-7 bg-muted/40 rounded-md overflow-hidden relative border border-border/40">
-                    <div
-                      className="h-full bg-green-500/25 transition-all duration-500 ease-out"
-                      style={{ width: `${rateContratado}%` }}
-                    />
-                    <span className="absolute inset-0 flex items-center pl-3 text-[11px] font-semibold text-green-700">
-                      {rateContratado > 0
-                        ? `Hiring Rate: ${rateContratado}%`
-                        : "Sin contrataciones aún"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <ConversionFunnelCard
+          isPending={isPending}
+          totalApps={totalApps}
+          reachedPendiente={reachedPendiente}
+          reachedEntrevista={reachedEntrevista}
+          reachedOferta={reachedOferta}
+          reachedContratado={reachedContratado}
+          ratePendiente={ratePendiente}
+          rateEntrevista={rateEntrevista}
+          rateOferta={rateOferta}
+          rateContratado={rateContratado}
+        />
 
         {/* Stage duration stats */}
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border border-border/80 bg-white dark:bg-card">
           <CardHeader>
-            <CardTitle className="text-base font-semibold">
-              Tiempos Promedio en Etapa (Días)
-            </CardTitle>
+            <CardTitle>Tiempos Promedio en Etapa (Días)</CardTitle>
           </CardHeader>
           <CardContent>
             {isPending ? (
@@ -506,7 +409,7 @@ export function OrganizationMetricsContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
+        <Card className="border border-border/80 bg-white dark:bg-card">
           <CardHeader>
             <CardTitle>Distribución de candidatos</CardTitle>
           </CardHeader>
@@ -535,18 +438,12 @@ export function OrganizationMetricsContent() {
                     </div>
                   </div>
                 ))}
-                <div className="pt-2 border-t">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tasa de conversión</span>
-                    <span className="font-medium">{metrics?.pipeline.conversionRate ?? 0}%</span>
-                  </div>
-                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-border/80 bg-white dark:bg-card">
           <CardHeader>
             <CardTitle>Tendencia de postulaciones</CardTitle>
           </CardHeader>
@@ -584,80 +481,59 @@ export function OrganizationMetricsContent() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Top ofertas con más postulaciones</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isPending ? (
-            <div className="space-y-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div
-                  key={`${skeletonId}-topjob-${i}`}
-                  className="flex items-center justify-between"
-                >
-                  <Skeleton className="size-48" />
-                  <Skeleton className="h-4 w-20" />
-                </div>
-              ))}
-            </div>
-          ) : metrics?.topJobs && metrics.topJobs.length > 0 ? (
-            <div className="space-y-3">
-              {metrics.topJobs.map((job) => (
-                <div
-                  key={job.jobId}
-                  className="flex items-center justify-between border-b pb-3 last:border-0"
-                >
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{job.jobTitle}</p>
-                    <div className="flex gap-3 text-xs text-muted-foreground mt-1">
-                      <span className="flex items-center gap-1">
-                        <HugeiconsIcon icon={ViewIcon} size={12} /> {job.views} vistas
-                      </span>
-                      <span>{job.applications} postulaciones</span>
-                    </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="border border-border/80 bg-white dark:bg-card">
+          <CardHeader>
+            <CardTitle>Top ofertas con más postulaciones</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isPending ? (
+              <div className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={`${skeletonId}-topjob-${i}`}
+                    className="flex items-center justify-between"
+                  >
+                    <Skeleton className="size-48" />
+                    <Skeleton className="h-4 w-20" />
                   </div>
-                  <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">
-                    {job.applicationRate}% conversión
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">No hay ofertas con postulaciones.</p>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Distribución geográfica</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isPending ? (
-            <Skeleton className="h-[200px] w-full" />
-          ) : metrics?.geographicDistribution && metrics.geographicDistribution.length > 0 ? (
-            <div className="space-y-3">
-              {metrics.geographicDistribution.map((geo) => (
-                <div key={geo.city} className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{geo.city}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full bg-primary" style={{ width: `${geo.percentage}%` }} />
+                ))}
+              </div>
+            ) : metrics?.topJobs && metrics.topJobs.length > 0 ? (
+              <div className="space-y-3">
+                {metrics.topJobs.map((job) => (
+                  <div
+                    key={job.jobId}
+                    className="flex items-center justify-between border-b pb-3 last:border-0"
+                  >
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{job.jobTitle}</p>
+                      <div className="flex gap-3 text-xs text-muted-foreground mt-1">
+                        <span className="flex items-center gap-1">
+                          <HugeiconsIcon icon={ViewIcon} size={12} /> {job.views} vistas
+                        </span>
+                        <span>{job.applications} postulaciones</span>
+                      </div>
                     </div>
-                    <span className="text-sm font-medium w-8">{geo.count}</span>
-                    <span className="text-xs text-muted-foreground w-10">{geo.percentage}%</span>
+                    <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">
+                      {job.applicationRate}% conversión
+                    </Badge>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">No hay datos geográficos disponibles.</p>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No hay ofertas con postulaciones.</p>
+            )}
+          </CardContent>
+        </Card>
 
-      <Card>
+        <GeographicDistributionCard
+          isPending={isPending}
+          geographicDistribution={metrics?.geographicDistribution}
+        />
+      </div>
+
+      <Card className="border border-border/80 bg-white dark:bg-card">
         <CardHeader>
           <CardTitle>Productividad del Reclutador</CardTitle>
         </CardHeader>
@@ -680,7 +556,7 @@ export function OrganizationMetricsContent() {
                   </div>
                   <div className="flex gap-6">
                     <div className="text-center">
-                      <p className="text-lg font-semibold text-foreground">
+                      <p className="text-lg leading-6 font-semibold tracking-[-0.1px] text-foreground">
                         {rec.applicationsProcessed}
                       </p>
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -688,7 +564,7 @@ export function OrganizationMetricsContent() {
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-lg font-semibold text-foreground">
+                      <p className="text-lg leading-6 font-semibold tracking-[-0.1px] text-foreground">
                         {rec.interviewsConducted}
                       </p>
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -696,7 +572,7 @@ export function OrganizationMetricsContent() {
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-lg font-semibold text-foreground">
+                      <p className="text-lg leading-6 font-semibold tracking-[-0.1px] text-foreground">
                         {rec.avgResponseTimeDays}d
                       </p>
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider">

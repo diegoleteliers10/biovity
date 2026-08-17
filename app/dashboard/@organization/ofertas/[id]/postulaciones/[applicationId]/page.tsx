@@ -279,9 +279,7 @@ export default function OrganizationApplicationDetailPage() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="uppercase">
-                  {application.status}
-                </Badge>
+                <Badge variant="outline">{application.status}</Badge>
                 <Badge variant="secondary">
                   Postuló el {formatDateChilean(application.createdAt, "d MMM yyyy")}
                 </Badge>
@@ -346,7 +344,7 @@ export default function OrganizationApplicationDetailPage() {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-foreground">CV del candidato</p>
                 {cvUrl ? (
-                  <Button asChild size="sm">
+                  <Button asChild>
                     <a href={cvUrl} target="_blank" rel="noreferrer">
                       <HugeiconsIcon icon={FileAttachmentIcon} size={14} className="mr-2" />
                       Ver CV

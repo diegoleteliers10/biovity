@@ -23,7 +23,7 @@ export function JobStatusField({ value, onChange }: Props) {
         Estado
       </label>
       <Select onValueChange={onChange} value={value}>
-        <SelectTrigger className="h-9 text-sm">
+        <SelectTrigger className="h-7">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

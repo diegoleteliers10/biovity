@@ -6,6 +6,7 @@ import { addWeeks, endOfWeek, startOfWeek } from "date-fns"
 import { useMemo, useRef, useState } from "react"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +17,6 @@ import {
   useUpdateEvent,
   useUpdateParticipantStatus,
 } from "@/lib/api/use-events"
-import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import type { Event, EventStatus, EventType, ParticipantStatus } from "@/lib/types/events"
 import { getChileanDate } from "@/lib/utils"
 import { Calendar } from "./calendar"
@@ -148,7 +148,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-xl border border-border/10">
+          <div className="bg-white rounded-[14px] border border-border/10">
             <div className="flex flex-col gap-3 border-b border-border/10 px-0 py-4 lg:py-6 lg:pr-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h2 className="text-lg sm:text-2xl font-semibold text-card-foreground tracking-tight">
@@ -160,7 +160,6 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                   {userRole === "organization" && (
                     <Button
                       variant="default"
-                      size="sm"
                       onClick={() => handleCreateEvent()}
                       className="gap-1.5"
                     >
@@ -171,46 +170,43 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                   <div className="flex rounded-md border border-border/30">
                     <Button
                       variant={view === "month" ? "default" : "ghost"}
-                      size="sm"
                       onClick={() => setView("month")}
-                      className="rounded-r-none text-xs"
+                      className="rounded-r-none"
                     >
                       Mes
                     </Button>
                     <Button
                       variant={view === "week" ? "default" : "ghost"}
-                      size="sm"
                       onClick={() => setView("week")}
-                      className="rounded-l-none text-xs"
+                      className="rounded-l-none"
                     >
                       Semana
                     </Button>
                   </div>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={() =>
                       view === "month" ? navigateMonth("prev") : navigateWeek("prev")
                     }
-                    className="size-8 p-0"
+                    aria-label="Mes anterior"
                   >
                     <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => setCurrentDate(getChileanDate())}
-                    className="text-sm px-2 sm:px-3"
+                    className="px-2 sm:px-3"
                   >
                     Hoy
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={() =>
                       view === "month" ? navigateMonth("next") : navigateWeek("next")
                     }
-                    className="size-8 p-0"
+                    aria-label="Siguiente mes"
                   >
                     <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                   </Button>

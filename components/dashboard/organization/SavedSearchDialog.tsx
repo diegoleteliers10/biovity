@@ -93,7 +93,7 @@ export function SavedSearchDialog({
       {savedSearches.length > 0 && (
         <div className="flex items-center gap-1">
           <Select value={loadValue} onValueChange={handleLoad}>
-            <SelectTrigger className="h-9 w-40 text-xs">
+            <SelectTrigger className="h-7 w-40">
               <SelectValue placeholder="Cargar búsqueda" />
             </SelectTrigger>
             <SelectContent>
