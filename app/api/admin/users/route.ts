@@ -1,8 +1,10 @@
 import { Result as R } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
-import { pool } from "@/lib/db"
-import { DbError } from "@/lib/errors"
+import { NetworkError } from "@/lib/errors"
+import { getErrorMessage } from "@/lib/result"
+
+const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export type AdminUser = {
   id: string
@@ -11,6 +13,15 @@ export type AdminUser = {
   type: string
   isActive: boolean
   createdAt: string
+}
+
+type BackendUser = {
+  id: string
+  email: string
+  name?: string | null
+  type?: string
+  isActive?: boolean
+  createdAt?: string
 }
 
 export async function GET(request: NextRequest) {
@@ -27,82 +38,75 @@ export async function GET(request: NextRequest) {
   const typeFilter = searchParams.get("type")
   const isActiveFilter = searchParams.get("isActive")
   const search = searchParams.get("search")?.trim()
-  const offset = (page - 1) * limit
 
-  let whereClause = `type != $1`
-  const params: unknown[] = ["admin"]
-  let paramIndex = 2
-
+  const query = new URLSearchParams()
+  query.set("page", String(page))
+  query.set("limit", String(limit))
   if (typeFilter === "professional" || typeFilter === "organization") {
-    whereClause += ` AND type = $${paramIndex}`
-    params.push(typeFilter)
-    paramIndex++
+    query.set("type", typeFilter)
   }
   if (isActiveFilter === "true" || isActiveFilter === "false") {
-    whereClause += ` AND "isActive" = $${paramIndex}`
-    params.push(isActiveFilter === "true")
-    paramIndex++
+    query.set("isActive", isActiveFilter)
   }
-  if (search) {
-    whereClause += ` AND (email ILIKE $${paramIndex} OR name ILIKE $${paramIndex})`
-    params.push(`%${search}%`)
-    paramIndex++
-  }
+  if (search) query.set("search", search)
 
-  const countResult = await R.tryPromise({
+  const resResult = await R.tryPromise({
     try: () =>
-      pool.query<{ count: string }>(
-        `SELECT COUNT(*)::text AS count FROM "user" WHERE ${whereClause}`,
-        params
-      ),
-    catch: (cause) => new DbError({ operation: "count_users", cause }),
+      fetch(`${API_BASE}/api/v1/users?${query.toString()}`, {
+        headers: { cookie: request.headers.get("cookie") ?? "" },
+      }),
+    catch: (cause) =>
+      new NetworkError({
+        message: cause instanceof Error ? cause.message : "Network error",
+        cause,
+      }),
   })
 
-  if (countResult.isErr()) {
-    console.error("[admin/users] Error:", countResult.error)
+  if (resResult.isErr()) {
+    console.error("[admin/users] Error:", resResult.error)
     return NextResponse.json({ error: "Error al obtener los usuarios" }, { status: 500 })
   }
 
-  const total = Number.parseInt(countResult.value.rows[0]?.count ?? "0", 10)
-
-  const result = await R.tryPromise({
-    try: () =>
-      pool.query<{
-        id: string
-        email: string
-        name: string
-        type: string
-        isActive: boolean
-        createdAt: Date
-      }>(
-        `SELECT id, email, name, type, "isActive", "createdAt"
-         FROM "user" WHERE ${whereClause}
-         ORDER BY "createdAt" DESC
-         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-        [...params, limit, offset]
-      ),
-    catch: (cause) => new DbError({ operation: "list_users", cause }),
-  })
-
-  if (result.isErr()) {
-    console.error("[admin/users] Error:", result.error)
-    return NextResponse.json({ error: "Error al obtener los usuarios" }, { status: 500 })
+  const res = resResult.value
+  let data: unknown = null
+  try {
+    data = await res.json()
+  } catch {
+    data = null
   }
 
-  const users: AdminUser[] = result.value.rows.map((row) => ({
-    id: row.id,
-    email: row.email,
-    name: row.name ?? "",
-    type: row.type ?? "professional",
-    isActive: row.isActive ?? true,
-    createdAt: row.createdAt?.toISOString() ?? new Date().toISOString(),
-  }))
+  if (!res.ok) {
+    const status = res.status === 401 ? 403 : res.status
+    return NextResponse.json(
+      { error: getErrorMessage(data, "Error al obtener los usuarios") },
+      { status }
+    )
+  }
+
+  const body = data as {
+    data?: BackendUser[]
+    total?: number
+    page?: number
+    limit?: number
+    totalPages?: number
+  }
+
+  const users: AdminUser[] = (body.data ?? [])
+    .filter((u) => u.type !== "admin")
+    .map((u) => ({
+      id: u.id,
+      email: u.email ?? "",
+      name: u.name ?? "",
+      type: u.type ?? "professional",
+      isActive: u.isActive ?? true,
+      createdAt: u.createdAt ?? new Date().toISOString(),
+    }))
 
   return NextResponse.json({
     data: users,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
+    total: body.total ?? 0,
+    page: body.page ?? page,
+    limit: body.limit ?? limit,
+    totalPages: body.totalPages ?? Math.ceil((body.total ?? 0) / limit),
   })
 }

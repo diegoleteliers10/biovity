@@ -18,7 +18,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { Sheet, SheetContent, SheetTitle } from "@/components/animate-ui/components/radix/sheet"
 import { Avatar } from "@/components/base/avatar/avatar"
 import { Button } from "@/components/ui/button"
@@ -64,12 +64,20 @@ export function TalentDetailSheet({
   const { data: resume, isLoading: resumeLoading } = useResumeByUser(userId ?? undefined)
   const createChatMutation = useCreateOrFindChatMutation(recruiterId ?? undefined)
   const incrementProfileViews = useIncrementProfileViews()
+  const incrementViewsRef = useRef(incrementProfileViews)
+  incrementViewsRef.current = incrementProfileViews
+  const trackedViewRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (open && userId) {
-      incrementProfileViews.mutate(userId)
+      if (trackedViewRef.current !== userId) {
+        trackedViewRef.current = userId
+        incrementViewsRef.current.mutate(userId)
+      }
+    } else {
+      trackedViewRef.current = null
     }
-  }, [open, userId, incrementProfileViews])
+  }, [open, userId])
 
   const initials = useMemo(() => {
     if (!user?.name) return undefined
@@ -177,7 +185,7 @@ export function TalentDetailSheet({
               )}
 
               {/* CV File Attachment */}
-              {resume?.cvFile && resume.cvFile.url && (
+              {resume?.cvFile?.url && (
                 <>
                   <div className="h-px bg-slate-100" />
                   <div className="space-y-2.5">
