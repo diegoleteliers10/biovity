@@ -36,7 +36,7 @@ export function ApplicationNotes({ applicationId }: { applicationId: string }) {
           variant="ghost"
           size="sm"
           onClick={() => setIsAdding(!isAdding)}
-          className="h-8 gap-1.5"
+          className="h-7 gap-1.5"
         >
           <HugeiconsIcon icon={isAdding ? Cancel01Icon : PlusSignIcon} size={14} />
           {isAdding ? "Cancelar" : "Agregar nota"}

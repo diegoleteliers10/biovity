@@ -15,6 +15,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useParams, useRouter } from "next/navigation"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { JobShareButtons } from "@/components/landing/trabajos/JobShareButtons"
@@ -30,7 +31,6 @@ import {
   useRemoveSavedJobMutation,
   useSaveJobMutation,
 } from "@/lib/api/use-saved-jobs"
-import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 
 function getJobModalidad(loc: JobLocation | null | undefined): string {
   if (!loc) return "Presencial"
@@ -184,7 +184,7 @@ export default function JobDetailPage() {
             </h1>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 text-muted-foreground">
                 <HugeiconsIcon
                   icon={Location05Icon}
                   size={16}
@@ -193,10 +193,10 @@ export default function JobDetailPage() {
                 />
                 {locationStr} · {modalidad}
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 text-muted-foreground">
                 {job.experienceLevel} · {job.employmentType}
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1 text-xs font-semibold text-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-semibold text-foreground">
                 <HugeiconsIcon
                   icon={Cash02Icon}
                   size={16}
@@ -257,13 +257,13 @@ export default function JobDetailPage() {
             <section className="space-y-3">
               <h3 className="text-sm font-semibold tracking-tight text-foreground">Detalles</h3>
               <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-xs font-medium text-foreground">
+                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
                   Modalidad: <span className="text-secondary">{modalidad}</span>
                 </span>
-                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-xs font-medium text-foreground">
+                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
                   Horario: <span className="text-secondary">{job.employmentType}</span>
                 </span>
-                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-xs font-medium text-foreground">
+                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
                   Nivel: <span className="text-secondary">{job.experienceLevel}</span>
                 </span>
               </div>

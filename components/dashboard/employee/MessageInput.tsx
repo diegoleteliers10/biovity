@@ -116,7 +116,7 @@ export function MessageInput({
             }}
             onKeyDown={onKeyDown}
             placeholder="Escribe un mensaje..."
-            className="w-full min-h-[40px] max-h-[220px] resize-none overflow-y-hidden rounded-md border border-input bg-transparent px-3 py-2.5 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full min-h-7 max-h-[220px] resize-none overflow-y-hidden rounded-md border border-input bg-transparent px-2.5 py-1 text-[13px] leading-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
             rows={1}
           />
         </div>

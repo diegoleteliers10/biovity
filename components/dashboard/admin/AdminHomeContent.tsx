@@ -286,7 +286,7 @@ export function AdminHomeContent() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-base">Registros</CardTitle>
+              <CardTitle>Registros</CardTitle>
               <p className="text-xs text-muted-foreground">
                 {trend?.totals.professionals ?? 0} prof. · {trend?.totals.organizations ?? 0} org.
                 en {period === 30 ? "30 días" : "90 días"}
@@ -361,7 +361,7 @@ export function AdminHomeContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Top Jobs</CardTitle>
+            <CardTitle>Top Jobs</CardTitle>
             <p className="text-xs text-muted-foreground">Jobs más aplicados en la plataforma</p>
           </CardHeader>
           <CardContent>
@@ -420,7 +420,7 @@ export function AdminHomeContent() {
       {stats && stats.users.recentCount > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Nuevos registros (últimos 7 días)</CardTitle>
+            <CardTitle>Nuevos registros (últimos 7 días)</CardTitle>
             <p className="text-xs text-muted-foreground">
               {stats.users.recentCount} usuario
               {stats.users.recentCount !== 1 ? "s" : ""} registrado
@@ -440,7 +440,7 @@ export function AdminHomeContent() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Usuarios recientes</CardTitle>
+            <CardTitle>Usuarios recientes</CardTitle>
             <Button asChild variant="outline" size="sm">
               <Link href="/dashboard/users">Ver todos</Link>
             </Button>
@@ -493,7 +493,7 @@ export function AdminHomeContent() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Acciones rápidas</CardTitle>
+            <CardTitle>Acciones rápidas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <Button asChild className="w-full justify-start" variant="outline">

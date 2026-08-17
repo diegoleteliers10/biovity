@@ -51,8 +51,8 @@ const EVENT_TYPE_LABELS: Record<Event["type"], string> = {
 
 const EVENT_TYPE_COLORS: Record<Event["type"], string> = {
   interview: "bg-primary/10 text-primary border-primary/20",
-  onboarding: "bg-secondary/10 text-secondary-foreground border-secondary/20",
-  task_deadline: "bg-accent/10 text-accent-foreground border-accent/20",
+  onboarding: "bg-secondary/10 text-secondary border-secondary/20",
+  task_deadline: "bg-accent/10 text-accent border-accent/20",
   announcement: "bg-muted/40 text-muted-foreground border-border/30",
 }
 
@@ -180,7 +180,7 @@ export function EventDetailModal({
                     type="button"
                     disabled={isUpdating}
                     onClick={() => onRSVP?.(event.id, "accepted")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors disabled:opacity-50"
+                    className="flex h-7 items-center gap-1.5 px-3 text-[13px] font-medium rounded-md bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition-colors disabled:opacity-50"
                   >
                     <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-3.5" />
                     Aceptar
@@ -189,7 +189,7 @@ export function EventDetailModal({
                     type="button"
                     disabled={isUpdating}
                     onClick={() => onRSVP?.(event.id, "declined")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50"
+                    className="flex h-7 items-center gap-1.5 px-3 text-[13px] font-medium rounded-md bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50"
                   >
                     <HugeiconsIcon icon={Cancel01Icon} className="size-3.5" />
                     Rechazar

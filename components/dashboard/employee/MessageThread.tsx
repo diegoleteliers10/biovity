@@ -86,7 +86,7 @@ export function MessageThread({
     setMessageInput("")
     if (messageInputRef.current) {
       const current = messageInputRef.current.style.cssText
-      messageInputRef.current.style.cssText = `${current} height: 40px; overflow-y: hidden;`
+      messageInputRef.current.style.cssText = `${current} height: 28px; overflow-y: hidden;`
     }
     scrollToBottom()
     sendMutation.mutate({ chatId: selectedChat.id, senderId: professionalId, content })
@@ -193,7 +193,7 @@ export function MessageThread({
                 ? messagesErrorDetail.message
                 : "Error al cargar mensajes"}
             </p>
-            <Button variant="outline" size="sm" onClick={() => refetchMessages()}>
+            <Button variant="outline" onClick={() => refetchMessages()}>
               Reintentar
             </Button>
           </div>

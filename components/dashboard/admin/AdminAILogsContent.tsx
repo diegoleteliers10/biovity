@@ -198,7 +198,7 @@ export function AdminAILogsContent() {
         <select
           value={state.flaggedFilter}
           onChange={(e) => handleFlaggedFilterChange(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-3 text-xs"
+          className="h-7 rounded-md border border-input bg-background px-3"
           aria-label="Filtrar por flagged"
         >
           {FLAGGED_OPTIONS.map((opt) => (

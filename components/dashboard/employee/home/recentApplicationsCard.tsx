@@ -80,16 +80,22 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
   }
 
   return (
-    <Card className="md:col-span-2 border border-border/80 bg-white">
-      <CardHeader>
+    <Card className="md:col-span-2 border border-border/80 bg-white rounded-[14px]">
+      <CardHeader className="px-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-foreground">Aplicaciones Recientes</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onViewAll}>
+          <CardTitle className="text-xs leading-4 font-medium text-foreground">
+            Aplicaciones Recientes
+          </CardTitle>
+          <Button
+            variant="ghost"
+            className="h-7 rounded-md text-xs leading-4 font-medium"
+            onClick={onViewAll}
+          >
             Ver Todo
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((n) => (
@@ -131,11 +137,11 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
                     </p>
                   </div>
                   <div className="text-right space-y-1 shrink-0 ml-4">
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs leading-4 text-muted-foreground">
                       {formatApplicationDate(app.createdAt)}
                     </p>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${status.bg} ${status.text} ${status.border}`}
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs leading-4 font-medium border ${status.bg} ${status.text} ${status.border}`}
                     >
                       {status.label}
                     </span>

@@ -39,12 +39,14 @@ export function PlaceholderCard({
             strokeWidth={1.5}
             className={iconColor === "accent" ? "text-accent" : "text-secondary"}
           />
-          <CardTitle className="text-base text-foreground">{title}</CardTitle>
+          <CardTitle className="text-foreground">{title}</CardTitle>
         </div>
-        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+        {description && <p className="text-xs leading-4 text-muted-foreground">{description}</p>}
       </CardHeader>
       <CardContent className="flex-1">
-        {children || <p className="text-sm text-muted-foreground">Proximamente: {description}</p>}
+        {children || (
+          <p className="text-xs leading-4 text-muted-foreground">Proximamente: {description}</p>
+        )}
       </CardContent>
     </Card>
   )

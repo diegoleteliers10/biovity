@@ -144,7 +144,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
                   id="edit-type"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm"
+                  className="flex h-7 w-full rounded-md border border-input bg-background px-3 py-1 shadow-sm"
                 >
                   {TYPE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>

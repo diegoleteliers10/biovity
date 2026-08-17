@@ -137,7 +137,7 @@ export function ChatView({
                     ? messagesErrorDetail.message
                     : "Error al cargar mensajes"}
                 </p>
-                <Button variant="outline" size="sm" onClick={onRefetchMessages}>
+                <Button variant="outline" onClick={onRefetchMessages}>
                   Reintentar
                 </Button>
               </div>

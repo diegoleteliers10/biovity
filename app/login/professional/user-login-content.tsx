@@ -12,11 +12,21 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
+import {
+  authButtonClass,
+  authInputClass,
+  authLabelClass,
+  authLinkClass,
+  authOrgLinkClass,
+  authSubtitleClass,
+  authTitleClass,
+} from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 
 const { signIn } = authClient
 
@@ -78,21 +88,19 @@ export function UserLoginContent() {
       </div>
 
       {/* Right: Login form */}
-      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
-        <div className="mx-auto w-full max-w-sm space-y-8">
+      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-background lg:w-1/2">
+        <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
           <div className="space-y-2 text-center">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
-              Iniciar sesión
-            </h1>
-            <p className="text-center text-muted-foreground">
+            <h1 className={`text-center ${authTitleClass}`}>Iniciar sesión</h1>
+            <p className={`text-center ${authSubtitleClass}`}>
               Acceso para profesionales, investigadores y estudiantes
             </p>
           </div>
 
-          <form onSubmit={handleSignIn} className="space-y-6">
+          <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
+              <label htmlFor="email" className={authLabelClass}>
                 Correo electrónico
               </label>
               <div className="relative">
@@ -108,7 +116,7 @@ export function UserLoginContent() {
                   placeholder="tu@email.com"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                  className={cn(authInputClass, "pl-10", errors.email && "border-destructive")}
                   required
                   autoComplete="email"
                 />
@@ -116,7 +124,7 @@ export function UserLoginContent() {
               {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             </div>
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">
+              <label htmlFor="password" className={authLabelClass}>
                 Contraseña
               </label>
               <div className="relative">
@@ -132,7 +140,11 @@ export function UserLoginContent() {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
+                  className={cn(
+                    authInputClass,
+                    "pl-10 pr-10",
+                    errors.password && "border-destructive"
+                  )}
                   required
                   autoComplete="current-password"
                 />
@@ -153,7 +165,7 @@ export function UserLoginContent() {
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
             <div className="flex items-center justify-between">
-              <label htmlFor="remember" className="flex items-center gap-2 text-xs cursor-pointer">
+              <label htmlFor="remember" className="flex items-center gap-2 text-sm cursor-pointer">
                 <Checkbox
                   id="remember"
                   checked={rememberMe}
@@ -161,22 +173,19 @@ export function UserLoginContent() {
                 />
                 Recordarme
               </label>
-              <Link
-                href="/password/reset"
-                className="text-sm text-secondary hover:text-secondary/80 hover:underline"
-              >
+              <Link href="/password/reset" className={authLinkClass}>
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
             {errors.general && (
               <div className="text-center text-sm text-destructive">{errors.general}</div>
             )}
-            <Button type="submit" className="h-11 w-full" disabled={isPending}>
+            <Button type="submit" className={cn(authButtonClass, "w-full")} disabled={isPending}>
               {isPending ? "Cargando..." : "Iniciar sesión"}
             </Button>
           </form>
 
-          <div className="space-y-4 border-t border-border/15 pt-6">
+          <div className="space-y-4 border-t border-border/15 pt-8">
             <div className="text-center">
               <Link
                 href="/login"
@@ -189,10 +198,7 @@ export function UserLoginContent() {
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 ¿No tienes una cuenta?{" "}
-                <Link
-                  href="/register/professional"
-                  className="font-medium text-secondary hover:text-secondary/80 hover:underline"
-                >
+                <Link href="/register/professional" className={authLinkClass}>
                   Regístrate como usuario
                 </Link>
               </p>
@@ -200,10 +206,7 @@ export function UserLoginContent() {
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 ¿Eres una organización?{" "}
-                <Link
-                  href="/login/organization"
-                  className="font-medium text-accent hover:text-accent/80 hover:underline"
-                >
+                <Link href="/login/organization" className={authOrgLinkClass}>
                   Acceso organizacional
                 </Link>
               </p>
@@ -212,10 +215,7 @@ export function UserLoginContent() {
 
           <p className="text-center text-sm text-muted-foreground">
             ¿Necesitas ayuda?{" "}
-            <a
-              href="mailto:support@biovity.com"
-              className="font-medium text-primary hover:underline"
-            >
+            <a href="mailto:support@biovity.com" className={authLinkClass}>
               Contactar soporte
             </a>
           </p>

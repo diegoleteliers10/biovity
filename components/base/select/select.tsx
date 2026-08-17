@@ -58,7 +58,7 @@ type SelectValueProps = {
 
 export const sizes = {
   sm: { root: "py-2 px-3", shortcut: "pr-2.5" },
-  md: { root: "py-2.5 px-3.5", shortcut: "pr-3" },
+  md: { root: "h-7 px-2.5", shortcut: "pr-2" },
 }
 
 const SelectValue = ({
@@ -74,7 +74,7 @@ const SelectValue = ({
     <AriaButton
       ref={ref}
       className={cx(
-        "relative flex w-full cursor-pointer items-center rounded-lg bg-transparent shadow-xs ring-1 ring-primary outline-hidden transition duration-100 ease-linear ring-inset",
+        "relative flex w-full cursor-pointer items-center rounded-md bg-transparent shadow-xs ring-1 ring-primary outline-hidden transition duration-100 ease-linear ring-inset",
         (isFocused || isOpen) && "ring-2 ring-brand",
         isDisabled && "cursor-not-allowed bg-disabled_subtle text-disabled"
       )}
@@ -105,15 +105,22 @@ const SelectValue = ({
 
               {state.selectedItem ? (
                 <section className="flex w-full gap-2 truncate">
-                  <p className="truncate text-md font-medium text-primary">
+                  <p className="truncate text-[13px] leading-4 font-medium text-primary">
                     {state.selectedItem?.label}
                   </p>
                   {state.selectedItem?.supportingText && (
-                    <p className="text-md text-tertiary">{state.selectedItem?.supportingText}</p>
+                    <p className="text-[13px] leading-4 text-tertiary">
+                      {state.selectedItem?.supportingText}
+                    </p>
                   )}
                 </section>
               ) : (
-                <p className={cx("text-md text-placeholder", isDisabled && "text-disabled")}>
+                <p
+                  className={cx(
+                    "text-[13px] leading-4 text-placeholder",
+                    isDisabled && "text-disabled"
+                  )}
+                >
                   {placeholder}
                 </p>
               )}
@@ -123,7 +130,7 @@ const SelectValue = ({
                 aria-hidden="true"
                 className={cx(
                   "ml-auto shrink-0 text-fg-quaternary",
-                  size === "sm" ? "size-4 stroke-[2.5px]" : "size-5"
+                  size === "sm" ? "size-4 stroke-[2.5px]" : "size-3.5"
                 )}
               />
             </>

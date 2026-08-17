@@ -11,11 +11,19 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 import { useReducer } from "react"
+import {
+  authButtonClass,
+  authInputClass,
+  authLabelClass,
+  authSubtitleClass,
+  authTitleClass,
+} from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 
 type LoginState = {
   formData: { email: string; password: string }
@@ -118,21 +126,19 @@ export function AdminLoginContent() {
         />
       </div>
 
-      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
-        <div className="mx-auto w-full max-w-sm space-y-8">
+      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-background lg:w-1/2">
+        <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
           <div className="space-y-2 text-center">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
-              Panel de Administracion
-            </h1>
-            <p className="text-center text-muted-foreground">
+            <h1 className={`text-center ${authTitleClass}`}>Panel de Administracion</h1>
+            <p className={`text-center ${authSubtitleClass}`}>
               Acceso exclusivo para administradores del sistema
             </p>
           </div>
 
-          <form onSubmit={handleSignIn} className="space-y-6">
+          <form onSubmit={handleSignIn} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
+              <label htmlFor="email" className={authLabelClass}>
                 Correo electronico
               </label>
               <div className="relative">
@@ -148,7 +154,11 @@ export function AdminLoginContent() {
                   placeholder="admin@biovity.cl"
                   value={state.formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={`pl-10 ${state.errors.email ? "border-destructive" : ""}`}
+                  className={cn(
+                    authInputClass,
+                    "pl-10",
+                    state.errors.email && "border-destructive"
+                  )}
                   required
                   autoComplete="email"
                 />
@@ -158,7 +168,7 @@ export function AdminLoginContent() {
               )}
             </div>
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">
+              <label htmlFor="password" className={authLabelClass}>
                 Contrasena
               </label>
               <div className="relative">
@@ -174,7 +184,11 @@ export function AdminLoginContent() {
                   placeholder="••••••••"
                   value={state.formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={`pl-10 pr-10 ${state.errors.password ? "border-destructive" : ""}`}
+                  className={cn(
+                    authInputClass,
+                    "pl-10 pr-10",
+                    state.errors.password && "border-destructive"
+                  )}
                   required
                   autoComplete="current-password"
                 />
@@ -197,7 +211,7 @@ export function AdminLoginContent() {
               )}
             </div>
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-xs">
+              <label htmlFor="remember" className="flex items-center gap-2 text-sm">
                 <Checkbox
                   id="remember"
                   checked={state.rememberMe}
@@ -211,7 +225,11 @@ export function AdminLoginContent() {
             {state.errors.general && (
               <div className="text-center text-sm text-destructive">{state.errors.general}</div>
             )}
-            <Button type="submit" className="h-11 w-full" disabled={state.isLoading}>
+            <Button
+              type="submit"
+              className={cn(authButtonClass, "w-full")}
+              disabled={state.isLoading}
+            >
               {state.isLoading ? "Cargando..." : "Acceder al panel"}
             </Button>
           </form>

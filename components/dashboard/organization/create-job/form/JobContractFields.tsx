@@ -1,4 +1,4 @@
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldLabel } from "@/components/ui/field"
 import {
   Select,
   SelectContent,
@@ -27,8 +27,6 @@ interface JobContractFieldsProps {
   experienceLevel: string
   onEmploymentTypeChange: (value: string) => void
   onExperienceLevelChange: (value: string) => void
-  errorEmploymentType?: string
-  errorExperienceLevel?: string
 }
 
 export function JobContractFields({
@@ -36,13 +34,13 @@ export function JobContractFields({
   experienceLevel,
   onEmploymentTypeChange,
   onExperienceLevelChange,
-  errorEmploymentType,
-  errorExperienceLevel,
 }: JobContractFieldsProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
       <Field>
-        <FieldLabel>Tipo de contrato *</FieldLabel>
+        <FieldLabel>
+          Tipo de contrato <span className="text-red-600 font-bold ml-0.5">*</span>
+        </FieldLabel>
         <Select value={employmentType} onValueChange={onEmploymentTypeChange}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Seleccionar" />
@@ -55,10 +53,11 @@ export function JobContractFields({
             ))}
           </SelectContent>
         </Select>
-        {errorEmploymentType && <FieldError>{errorEmploymentType}</FieldError>}
       </Field>
       <Field>
-        <FieldLabel>Nivel de experiencia *</FieldLabel>
+        <FieldLabel>
+          Nivel de experiencia <span className="text-red-600 font-bold ml-0.5">*</span>
+        </FieldLabel>
         <Select value={experienceLevel} onValueChange={onExperienceLevelChange}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Seleccionar" />
@@ -71,7 +70,6 @@ export function JobContractFields({
             ))}
           </SelectContent>
         </Select>
-        {errorExperienceLevel && <FieldError>{errorExperienceLevel}</FieldError>}
       </Field>
     </div>
   )

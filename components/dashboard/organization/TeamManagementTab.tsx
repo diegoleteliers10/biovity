@@ -1,12 +1,10 @@
 "use client"
 
-import { Cancel01Icon, UserGroupIcon, UserIcon } from "@hugeicons/core-free-icons"
+import { Add01Icon, Cancel01Icon, UserGroupIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -15,14 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { OrganizationMemberRole } from "@/lib/api/organization-members"
+import type { OrganizationMember, OrganizationMemberRole } from "@/lib/api/organization-members"
 import {
   useAddMemberMutation,
   useOrganizationMembers,
   useRemoveMemberMutation,
   useUpdateMemberRoleMutation,
 } from "@/lib/api/use-organization-members"
+import { cn } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { FieldLabel, SECTION_LABEL_CLASS } from "./SettingsUi"
 
 const roleLabels: Record<OrganizationMemberRole, string> = {
   admin: "Admin",
@@ -30,21 +30,34 @@ const roleLabels: Record<OrganizationMemberRole, string> = {
   viewer: "Visor",
 }
 
-const roleColors: Record<OrganizationMemberRole, string> = {
-  admin: "bg-primary/10 text-primary border-primary/20",
-  recruiter: "bg-accent/10 text-accent border-accent/20",
-  viewer: "bg-muted text-muted-foreground",
-}
-
 type TeamManagementTabProps = {
   organizationId: string
+}
+
+function MemberMonogram({ member }: { member: OrganizationMember }) {
+  const name = member.user?.name ?? "Usuario"
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase()
+
+  return (
+    <Avatar className="size-10 shrink-0 border border-border bg-[var(--surface-container-low)]">
+      {member.user?.avatar && <AvatarImage src={member.user.avatar} alt={name} />}
+      <AvatarFallback className="bg-transparent text-[13px] font-semibold tracking-[0.02em] text-foreground">
+        {initials}
+      </AvatarFallback>
+    </Avatar>
+  )
 }
 
 export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
   const session = useDashboardSession()
   const currentUserId = session?.user?.id
 
-  const { data: members = [], isLoading, isError } = useOrganizationMembers(organizationId)
+  const { data: members, isLoading, isError } = useOrganizationMembers(organizationId)
   const addMemberMutation = useAddMemberMutation(organizationId)
   const updateRoleMutation = useUpdateMemberRoleMutation(organizationId)
   const removeMemberMutation = useRemoveMemberMutation(organizationId)
@@ -54,10 +67,9 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
 
   const handleInvite = useCallback(async () => {
     if (!inviteEmail.trim()) return
-    // Look up user by email (simplified - backend handles it)
     try {
       await addMemberMutation.mutateAsync({
-        userId: inviteEmail, // In a real flow, this would be resolved from email
+        userId: inviteEmail,
         role: inviteRole,
       })
       setInviteEmail("")
@@ -82,150 +94,148 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
     [removeMemberMutation]
   )
 
+  const memberList = members ?? []
+
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Equipo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-16 animate-pulse rounded bg-muted" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-3">
+        <div className="h-12 animate-pulse rounded-lg bg-muted" />
+        <div className="h-12 animate-pulse rounded-lg bg-muted" />
+        <div className="h-12 animate-pulse rounded-lg bg-muted" />
+      </div>
     )
   }
 
   if (isError) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Equipo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Error al cargar miembros del equipo.</p>
-        </CardContent>
-      </Card>
+      <p className="text-sm text-muted-foreground text-pretty">
+        Error al cargar miembros del equipo.
+      </p>
     )
   }
 
   return (
-    <Card className="border-border/60 shadow-sm">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <HugeiconsIcon icon={UserGroupIcon} size={20} className="text-primary" />
-          Gestión de Equipo
-        </CardTitle>
-        <CardDescription>Invita y administra los miembros de tu organización.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex gap-2 items-end">
-          <div className="flex-1 space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">Email del usuario</label>
-            <Input
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-              placeholder="correo@ejemplo.com"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">Rol</label>
-            <Select
-              value={inviteRole}
-              onValueChange={(v) => setInviteRole(v as OrganizationMemberRole)}
-            >
-              <SelectTrigger className="w-[130px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="recruiter">Reclutador</SelectItem>
-                <SelectItem value="viewer">Visor</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button
-            onClick={handleInvite}
-            disabled={!inviteEmail.trim() || addMemberMutation.isPending}
-          >
-            <HugeiconsIcon icon={UserIcon} size={16} />
-            Invitar
-          </Button>
+    <div className="space-y-10">
+      <form
+        className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_190px_auto] sm:items-end"
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleInvite()
+        }}
+      >
+        <div className="min-w-0 space-y-1.5">
+          <FieldLabel htmlFor="invite-email">Email del usuario</FieldLabel>
+          <Input
+            id="invite-email"
+            type="email"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            placeholder="correo@ejemplo.com"
+            autoComplete="off"
+          />
         </div>
 
-        <div className="divide-y divide-border/60">
-          {members.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
+        <div className="w-[190px] space-y-1.5">
+          <FieldLabel htmlFor="invite-rol">Rol</FieldLabel>
+          <Select
+            value={inviteRole}
+            onValueChange={(v) => setInviteRole(v as OrganizationMemberRole)}
+          >
+            <SelectTrigger id="invite-rol" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recruiter">Reclutador</SelectItem>
+              <SelectItem value="viewer">Visor</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button
+          type="submit"
+          variant="secondary"
+          disabled={!inviteEmail.trim() || addMemberMutation.isPending}
+        >
+          <HugeiconsIcon icon={Add01Icon} size={15} strokeWidth={1.8} />
+          {addMemberMutation.isPending ? "Invitando..." : "Invitar"}
+        </Button>
+      </form>
+
+      <section className="space-y-4">
+        <h2 className={cn(SECTION_LABEL_CLASS, "flex items-center gap-2")}>
+          <HugeiconsIcon icon={UserGroupIcon} size={14} strokeWidth={1.8} aria-hidden />
+          Miembros
+        </h2>
+
+        <div className="divide-y divide-border/70">
+          {memberList.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
               No hay miembros en esta organización.
             </p>
           ) : (
-            members.map((member) => {
-              const initials = member.user?.name
-                ? member.user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()
-                : "??"
-
+            memberList.map((member) => {
               const isCurrentUser = member.userId === currentUserId
+              const role = roleLabels[member.role]
+              const email = member.user?.email ?? ""
 
               return (
-                <div key={member.id} className="flex items-center gap-4 py-3">
-                  <Avatar className="size-10">
-                    {member.user?.avatar && (
-                      <AvatarImage src={member.user.avatar} alt={member.user.name} />
-                    )}
-                    <AvatarFallback className="bg-secondary/10 text-xs font-semibold">
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
+                <div key={member.id} className="flex items-center gap-3.5 py-3">
+                  <MemberMonogram member={member} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[15px] leading-5 font-medium text-foreground">
                       {member.user?.name ?? "Usuario"}
                       {isCurrentUser && (
-                        <span className="text-xs text-muted-foreground ml-1.5">(tú)</span>
+                        <span className="ml-1.5 text-[13px] font-normal text-muted-foreground">
+                          (tú)
+                        </span>
                       )}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {member.user?.email ?? ""}
+                    <p className="mt-0.5 truncate text-[13.5px] leading-5 text-muted-foreground">
+                      {email}
+                      {email && role ? " · " : ""}
+                      {role}
                     </p>
                   </div>
-                  <Select
-                    value={member.role}
-                    onValueChange={(v) => handleRoleChange(member.id, v as OrganizationMemberRole)}
-                    disabled={isCurrentUser}
-                  >
-                    <SelectTrigger className="w-[120px] h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="recruiter">Reclutador</SelectItem>
-                      <SelectItem value="viewer">Visor</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {!isCurrentUser && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={() => handleRemove(member.id)}
-                      aria-label="Eliminar miembro"
-                    >
-                      <HugeiconsIcon icon={Cancel01Icon} size={16} />
-                    </Button>
+
+                  {isCurrentUser ? (
+                    <span className="ml-auto inline-flex items-center rounded-full bg-[var(--surface-container-low)] px-2.5 py-0.5 text-xs font-semibold tracking-[0.02em] text-foreground">
+                      Propietaria
+                    </span>
+                  ) : (
+                    <div className="ml-auto flex items-center gap-2">
+                      <Select
+                        value={member.role}
+                        onValueChange={(v) =>
+                          handleRoleChange(member.id, v as OrganizationMemberRole)
+                        }
+                      >
+                        <SelectTrigger className="h-7 w-[120px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="recruiter">Reclutador</SelectItem>
+                          <SelectItem value="viewer">Visor</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => handleRemove(member.id)}
+                        aria-label="Eliminar miembro"
+                      >
+                        <HugeiconsIcon icon={Cancel01Icon} size={16} />
+                      </Button>
+                    </div>
                   )}
                 </div>
               )
             })
           )}
         </div>
-      </CardContent>
-    </Card>
+      </section>
+    </div>
   )
 }

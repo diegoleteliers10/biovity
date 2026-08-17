@@ -33,7 +33,7 @@ export function QuestionCard({
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground truncate">{question.label}</span>
           {question.required && <span className="shrink-0 text-destructive text-xs">*</span>}
-          <Badge variant="outline" className="shrink-0 text-[10px] uppercase tracking-wider">
+          <Badge variant="outline" className="shrink-0">
             {question.type}
           </Badge>
         </div>
@@ -47,7 +47,7 @@ export function QuestionCard({
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="size-8 p-0">
+          <Button variant="ghost" size="icon">
             <HugeiconsIcon icon={MoreVerticalIcon} size={16} />
           </Button>
         </DropdownMenuTrigger>

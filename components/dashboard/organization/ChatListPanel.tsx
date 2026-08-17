@@ -112,7 +112,7 @@ export function ChatListPanel({
             placeholder="Buscar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-10 border-muted bg-muted/50 pl-10 transition-colors focus:bg-background"
+            className="h-7 border-muted bg-muted/50 pl-10 transition-colors focus:bg-background"
           />
         </div>
       </div>

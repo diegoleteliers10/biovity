@@ -13,7 +13,7 @@ export function QuestionsHeader({ onAdd }: { onAdd: () => void }) {
           Crea preguntas para que los candidatos respondan al aplicar
         </p>
       </div>
-      <Button onClick={onAdd} size="sm" className="gap-1.5">
+      <Button onClick={onAdd} className="gap-1.5">
         <HugeiconsIcon icon={Add01Icon} size={14} />
         Agregar pregunta
       </Button>

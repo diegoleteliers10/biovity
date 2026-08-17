@@ -18,7 +18,9 @@ export function JobSalaryFields({
 }: JobSalaryFieldsProps) {
   return (
     <Field>
-      <FieldLabel>Salario</FieldLabel>
+      <FieldLabel>
+        Salario <span className="text-red-600 font-bold ml-0.5">*</span>
+      </FieldLabel>
       <div className="flex gap-2 items-center">
         <Input
           type="number"

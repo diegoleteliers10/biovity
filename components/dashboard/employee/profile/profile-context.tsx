@@ -4,6 +4,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import type {
+  Resume,
   ResumeCertification,
   ResumeEducation,
   ResumeExperience,
@@ -11,7 +12,6 @@ import type {
   ResumeSkill,
 } from "@/lib/api/resumes"
 import {
-  formatUserLocation,
   locationToFormData,
   parseLocationString,
   useCreateResumeMutation,
@@ -48,15 +48,6 @@ export type ClientSession = {
   } | null
 }
 
-export type SectionId =
-  | "sidebar"
-  | "personal"
-  | "experience"
-  | "education"
-  | "certifications"
-  | "languages"
-  | "links"
-
 export type FormData = {
   name: string
   email: string
@@ -84,20 +75,20 @@ type ProfileContextValue = {
   resume: ReturnType<typeof useResumeByUser>["data"]
   isLoading: boolean
   isSaving: boolean
-  editingSection: SectionId | null
+  isEditing: boolean
   formData: FormData
   resumeFormData: ResumeFormData
   errors: Record<string, string>
   profileData: FormData
   userError: ReturnType<typeof useUser>["error"]
-  handleEditSection: (section: SectionId) => void
+  handleEditAll: () => void
   handleInputChange: (field: keyof FormData, value: string | readonly string[]) => void
   handleResumeArrayChange: <K extends keyof ResumeFormData>(
     key: K,
     updater: (arr: ResumeFormData[K]) => ResumeFormData[K]
   ) => void
-  handleSaveSection: (section: SectionId) => Promise<void>
-  handleCancelSection: () => void
+  handleSaveAll: () => Promise<void>
+  handleCancelEdit: () => void
   handleAvatarUpload: (file: File) => void
   handleCvUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleAvatarDelete: () => void
@@ -203,7 +194,7 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
   const deleteAvatarMutation = useDeleteAvatarMutation(userId ?? "")
   const deleteCvMutation = useDeleteCvMutation(resume?.id ?? "", userId ?? "")
 
-  const [editingSection, setEditingSection] = useState<SectionId | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
   const [resumeFormData, setResumeFormData] = useState<ResumeFormData>(() => emptyResumeFormData())
   const [formData, setFormData] = useState<FormData>(() => emptyFormData())
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -224,61 +215,53 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
     }
   }, [user, session, resume])
 
-  const syncFormForSection = useCallback(
-    (section: SectionId) => {
-      setFormData(profileData)
-      if (resume && section !== "sidebar") {
-        setResumeFormData({
-          experiences: (resume.experiences ?? []).map((e, idx) => ({
-            id: e.id ?? `exp-${idx}`,
-            title: e.title ?? e.position,
-            company: e.company,
-            startYear: e.startYear ?? e.startDate?.slice(0, 4),
-            endYear: e.endYear ?? e.endDate?.slice(0, 4),
-            stillWorking: e.stillWorking ?? e.current,
-            description: e.description,
-          })),
-          education: (resume.education ?? []).map((e, idx) => ({
-            id: e.id ?? `edu-${idx}`,
-            title: e.title ?? e.degree,
-            institute: e.institute ?? e.institution,
-            startYear: e.startYear ?? e.startDate?.slice(0, 4),
-            endYear: e.endYear ?? e.endDate?.slice(0, 4),
-            stillStudying: e.stillStudying,
-          })),
-          skills: (resume.skills ?? []).map((s, idx) =>
-            typeof s === "string"
-              ? { id: `skill-${idx}`, name: s }
-              : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
-          ),
-          certifications: (resume.certifications ?? []).map((c, idx) => ({
-            id: c.id ?? `cert-${idx}`,
-            title: c.title ?? c.name,
-            company: c.company ?? c.issuer,
-            date: c.date,
-            link: c.link,
-          })),
-          languages: (resume.languages ?? []).map((l, idx) => ({
-            id: l.id ?? `lang-${idx}`,
-            name: l.name ?? l.language,
-            level: l.level,
-          })),
-          links: (resume.links ?? []).map((l) => ({ url: l.url })),
-        })
-      } else if (!resume && section !== "sidebar") {
-        setResumeFormData(emptyResumeFormData())
-      }
-    },
-    [profileData, resume]
-  )
+  const toResumeFormData = useCallback((r: Resume | null | undefined): ResumeFormData => {
+    if (!r) return emptyResumeFormData()
+    return {
+      experiences: (r.experiences ?? []).map((e, idx) => ({
+        id: e.id ?? `exp-${idx}`,
+        title: e.title ?? e.position,
+        company: e.company,
+        startYear: e.startYear ?? e.startDate?.slice(0, 4),
+        endYear: e.endYear ?? e.endDate?.slice(0, 4),
+        stillWorking: e.stillWorking ?? e.current,
+        description: e.description,
+      })),
+      education: (r.education ?? []).map((e, idx) => ({
+        id: e.id ?? `edu-${idx}`,
+        title: e.title ?? e.degree,
+        institute: e.institute ?? e.institution,
+        startYear: e.startYear ?? e.startDate?.slice(0, 4),
+        endYear: e.endYear ?? e.endDate?.slice(0, 4),
+        stillStudying: e.stillStudying,
+      })),
+      skills: (r.skills ?? []).map((s, idx) =>
+        typeof s === "string"
+          ? { id: `skill-${idx}`, name: s }
+          : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
+      ),
+      certifications: (r.certifications ?? []).map((c, idx) => ({
+        id: c.id ?? `cert-${idx}`,
+        title: c.title ?? c.name,
+        company: c.company ?? c.issuer,
+        date: c.date,
+        link: c.link,
+      })),
+      languages: (r.languages ?? []).map((l, idx) => ({
+        id: l.id ?? `lang-${idx}`,
+        name: l.name ?? l.language,
+        level: l.level,
+      })),
+      links: (r.links ?? []).map((l) => ({ url: l.url })),
+    }
+  }, [])
 
-  const handleEditSection = useCallback(
-    (section: SectionId) => {
-      syncFormForSection(section)
-      setEditingSection(section)
-    },
-    [syncFormForSection]
-  )
+  const handleEditAll = useCallback(() => {
+    setFormData(profileData)
+    setResumeFormData(toResumeFormData(resume))
+    setErrors({})
+    setIsEditing(true)
+  }, [profileData, resume, toResumeFormData])
 
   const handleInputChange = useCallback(
     (field: keyof FormData, value: string | readonly string[]) => {
@@ -391,100 +374,56 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
     [formData.bio, resumeFormData]
   )
 
-  const handleSaveSection = useCallback(
-    async (section: SectionId) => {
-      if (!userId) return
+  const handleSaveAll = useCallback(async () => {
+    if (!userId) return
 
-      try {
-        if (section === "sidebar") {
-          const result = validateFormZod(profileSaveSchema, {
-            name: formData.name,
-            email: formData.email,
-            profession: formData.profession,
-          })
-          if (!result.success) {
-            setErrors(result.errors)
-            return
-          }
-          const location = parseLocationString(formData.location)
-          const hasLocation = location.city || location.country
-          await updateUserMutation.mutateAsync({
-            name: formData.name,
-            profession: formData.profession || undefined,
-            phone: formData.phone || undefined,
-            avatar: formData.avatar || undefined,
-            birthday: formData.dateOfBirth || undefined,
-            location: hasLocation ? location : undefined,
-          })
-        } else {
-          const payload = resumePayload()
-          if (resume) {
-            await updateResumeMutation.mutateAsync(payload)
-          } else {
-            await createResumeMutation.mutateAsync(payload)
-          }
-        }
-        setEditingSection(null)
-        setErrors({})
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Error al guardar los datos")
-      }
-    },
-    [
-      userId,
-      formData,
-      resumePayload,
-      resume,
-      updateUserMutation,
-      updateResumeMutation,
-      createResumeMutation,
-    ]
-  )
-
-  const handleCancelSection = useCallback(() => {
-    setFormData(profileData)
-    if (resume) {
-      setResumeFormData({
-        experiences: (resume.experiences ?? []).map((e, idx) => ({
-          id: e.id ?? `exp-${idx}`,
-          title: e.title ?? e.position,
-          company: e.company,
-          startYear: e.startYear ?? e.startDate?.slice(0, 4),
-          endYear: e.endYear ?? e.endDate?.slice(0, 4),
-          stillWorking: e.stillWorking ?? e.current,
-          description: e.description,
-        })),
-        education: (resume.education ?? []).map((e, idx) => ({
-          id: e.id ?? `edu-${idx}`,
-          title: e.title ?? e.degree,
-          institute: e.institute ?? e.institution,
-          startYear: e.startYear ?? e.startDate?.slice(0, 4),
-          endYear: e.endYear ?? e.endDate?.slice(0, 4),
-          stillStudying: e.stillStudying,
-        })),
-        skills: (resume.skills ?? []).map((s, idx) =>
-          typeof s === "string"
-            ? { id: `skill-${idx}`, name: s }
-            : { id: s.id ?? `skill-${idx}`, name: s.name, level: s.level }
-        ),
-        certifications: (resume.certifications ?? []).map((c, idx) => ({
-          id: c.id ?? `cert-${idx}`,
-          title: c.title ?? c.name,
-          company: c.company ?? c.issuer,
-          date: c.date,
-          link: c.link,
-        })),
-        languages: (resume.languages ?? []).map((l, idx) => ({
-          id: l.id ?? `lang-${idx}`,
-          name: l.name ?? l.language,
-          level: l.level,
-        })),
-        links: (resume.links ?? []).map((l) => ({ url: l.url })),
+    try {
+      const result = validateFormZod(profileSaveSchema, {
+        name: formData.name,
+        email: formData.email,
+        profession: formData.profession,
       })
+      if (!result.success) {
+        setErrors(result.errors)
+        return
+      }
+      const location = parseLocationString(formData.location)
+      const hasLocation = location.city || location.country
+      await updateUserMutation.mutateAsync({
+        name: formData.name,
+        profession: formData.profession || undefined,
+        phone: formData.phone || undefined,
+        avatar: formData.avatar || undefined,
+        birthday: formData.dateOfBirth || undefined,
+        location: hasLocation ? location : undefined,
+      })
+      const payload = resumePayload()
+      if (resume) {
+        await updateResumeMutation.mutateAsync(payload)
+      } else {
+        await createResumeMutation.mutateAsync(payload)
+      }
+      setIsEditing(false)
+      setErrors({})
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error al guardar los datos")
     }
-    setEditingSection(null)
+  }, [
+    userId,
+    formData,
+    resume,
+    resumePayload,
+    updateUserMutation,
+    updateResumeMutation,
+    createResumeMutation,
+  ])
+
+  const handleCancelEdit = useCallback(() => {
+    setFormData(profileData)
+    setResumeFormData(toResumeFormData(resume))
     setErrors({})
-  }, [profileData, resume])
+    setIsEditing(false)
+  }, [profileData, resume, toResumeFormData])
 
   const handleAvatarUpload = useCallback(
     (file: File) => {
@@ -536,17 +475,17 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
     resume,
     isLoading,
     isSaving,
-    editingSection,
+    isEditing,
     formData,
     resumeFormData,
     errors,
     profileData,
     userError,
-    handleEditSection,
+    handleEditAll,
     handleInputChange,
     handleResumeArrayChange,
-    handleSaveSection,
-    handleCancelSection,
+    handleSaveAll,
+    handleCancelEdit,
     handleAvatarUpload,
     handleCvUpload,
     handleAvatarDelete,

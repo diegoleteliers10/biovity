@@ -15,12 +15,22 @@ import Link from "next/link"
 import { useEffect, useReducer } from "react"
 import { toast } from "sonner"
 import { CheckYourEmail } from "@/components/auth/CheckYourEmail"
+import {
+  authButtonClass,
+  authInputClass,
+  authLabelClass,
+  authLinkClass,
+  authOrgLinkClass,
+  authSubtitleClass,
+  authTitleClass,
+} from "@/components/auth/form-styles"
 import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Logo } from "@/components/ui/logo"
 import { createResume } from "@/lib/api/resumes"
+import { cn } from "@/lib/utils"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
 
 type RegisterFormState = {
@@ -224,8 +234,8 @@ export function UserRegisterContent() {
       </div>
 
       {/* Right: Registration form */}
-      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
-        <div className="mx-auto w-full max-w-lg space-y-8">
+      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-background lg:w-1/2">
+        <div className="m-auto w-full max-w-lg space-y-8 p-6 lg:p-12">
           {formState.isRegistered ? (
             <CheckYourEmail
               email={formState.email}
@@ -236,17 +246,15 @@ export function UserRegisterContent() {
             <>
               <div className="space-y-2 text-center">
                 <Logo size="lg" className="justify-center" />
-                <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
-                  Crear cuenta de usuario
-                </h1>
-                <p className="text-center text-muted-foreground">
+                <h1 className={`text-center ${authTitleClass}`}>Crear cuenta de usuario</h1>
+                <p className={`text-center ${authSubtitleClass}`}>
                   Únete a la comunidad de profesionales en biociencias
                 </p>
               </div>
 
-              <form onSubmit={handleSignUp} className="space-y-6">
+              <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-foreground">
+                  <label htmlFor="name" className={authLabelClass}>
                     Nombre completo
                   </label>
                   <div className="relative">
@@ -263,7 +271,11 @@ export function UserRegisterContent() {
                       placeholder="Tu nombre completo"
                       value={formState.name}
                       onChange={(e) => handleInputChange("name", e.target.value)}
-                      className={`pl-10 ${formState.errors.name ? "border-destructive" : ""}`}
+                      className={cn(
+                        authInputClass,
+                        "pl-10",
+                        formState.errors.name && "border-destructive"
+                      )}
                       required
                       autoComplete="name"
                     />
@@ -274,7 +286,7 @@ export function UserRegisterContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="profession" className="text-sm font-medium text-foreground">
+                  <label htmlFor="profession" className={authLabelClass}>
                     Profesión o Cargo
                   </label>
                   <Select.ComboBox
@@ -297,7 +309,7 @@ export function UserRegisterContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-foreground">
+                  <label htmlFor="email" className={authLabelClass}>
                     Correo electrónico
                   </label>
                   <div className="relative">
@@ -314,7 +326,11 @@ export function UserRegisterContent() {
                       placeholder="tu@email.com"
                       value={formState.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
-                      className={`pl-10 ${formState.errors.email ? "border-destructive" : ""}`}
+                      className={cn(
+                        authInputClass,
+                        "pl-10",
+                        formState.errors.email && "border-destructive"
+                      )}
                       required
                       autoComplete="email"
                     />
@@ -326,7 +342,7 @@ export function UserRegisterContent() {
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <label htmlFor="password" className="text-sm font-medium text-foreground">
+                    <label htmlFor="password" className={authLabelClass}>
                       Contraseña
                     </label>
                     <div className="relative">
@@ -343,7 +359,11 @@ export function UserRegisterContent() {
                         placeholder="••••••••"
                         value={formState.password}
                         onChange={(e) => handleInputChange("password", e.target.value)}
-                        className={`pl-10 pr-10 ${formState.errors.password ? "border-destructive" : ""}`}
+                        className={cn(
+                          authInputClass,
+                          "pl-10 pr-10",
+                          formState.errors.password && "border-destructive"
+                        )}
                         required
                         autoComplete="new-password"
                       />
@@ -375,10 +395,7 @@ export function UserRegisterContent() {
                   </div>
 
                   <div className="space-y-2">
-                    <label
-                      htmlFor="confirmPassword"
-                      className="text-sm font-medium text-foreground"
-                    >
+                    <label htmlFor="confirmPassword" className={authLabelClass}>
                       Confirmar contraseña
                     </label>
                     <div className="relative">
@@ -395,7 +412,11 @@ export function UserRegisterContent() {
                         placeholder="••••••••"
                         value={formState.confirmPassword}
                         onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                        className={`pl-10 pr-10 ${formState.errors.confirmPassword ? "border-destructive" : ""}`}
+                        className={cn(
+                          authInputClass,
+                          "pl-10 pr-10",
+                          formState.errors.confirmPassword && "border-destructive"
+                        )}
                         required
                         autoComplete="new-password"
                       />
@@ -443,17 +464,11 @@ export function UserRegisterContent() {
                     />
                     <span className="text-sm text-foreground">
                       Acepto los{" "}
-                      <button
-                        type="button"
-                        className="text-secondary hover:text-secondary/80 hover:underline"
-                      >
+                      <button type="button" className={authLinkClass}>
                         términos y condiciones
                       </button>{" "}
                       y la{" "}
-                      <button
-                        type="button"
-                        className="text-secondary hover:text-secondary/80 hover:underline"
-                      >
+                      <button type="button" className={authLinkClass}>
                         política de privacidad
                       </button>
                     </span>
@@ -469,12 +484,16 @@ export function UserRegisterContent() {
                   </div>
                 )}
 
-                <Button type="submit" className="h-11 w-full" disabled={formState.isLoading}>
+                <Button
+                  type="submit"
+                  className={cn(authButtonClass, "w-full")}
+                  disabled={formState.isLoading}
+                >
                   {formState.isLoading ? "Creando cuenta..." : "Crear cuenta de usuario"}
                 </Button>
               </form>
 
-              <div className="space-y-4 border-t border-border/10 pt-6">
+              <div className="space-y-4 border-t border-border/10 pt-8">
                 <div className="text-center">
                   <Link
                     href="/register"
@@ -487,10 +506,7 @@ export function UserRegisterContent() {
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
                     ¿Ya tienes una cuenta?{" "}
-                    <Link
-                      href="/login/professional"
-                      className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
-                    >
+                    <Link href="/login/professional" className={authLinkClass}>
                       Inicia sesión aquí
                     </Link>
                   </p>
@@ -498,10 +514,7 @@ export function UserRegisterContent() {
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
                     ¿Representas una organización?{" "}
-                    <Link
-                      href="/register/organization"
-                      className="font-medium text-accent hover:text-accent/80 hover:underline"
-                    >
+                    <Link href="/register/organization" className={authOrgLinkClass}>
                       Registrar organización
                     </Link>
                   </p>
@@ -510,10 +523,7 @@ export function UserRegisterContent() {
 
               <p className="text-center text-sm text-muted-foreground">
                 ¿Necesitas ayuda?{" "}
-                <a
-                  href="mailto:support@biovity.com"
-                  className="font-medium text-primary hover:underline"
-                >
+                <a href="mailto:support@biovity.com" className={authLinkClass}>
                   Contactar soporte
                 </a>
               </p>

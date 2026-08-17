@@ -28,7 +28,7 @@ export function ChatHeader({
           <Button
             variant="ghost"
             size="icon"
-            className="size-8 lg:hidden"
+            className="lg:hidden"
             onClick={onBackToList}
             aria-label="Volver a conversaciones"
           >
@@ -53,20 +53,15 @@ export function ChatHeader({
             )}
           </div>
         </div>
-        <HugeiconsIcon
-          icon={MoreHorizontalIcon}
-          size={24}
-          role="button"
-          tabIndex={0}
+        <Button
+          variant="ghost"
+          size="icon"
+          type="button"
           aria-label="Más opciones"
-          className="cursor-pointer text-muted-foreground"
-          onKeyDown={(e: React.KeyboardEvent) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault()
-              ;(e.currentTarget as HTMLElement).click()
-            }
-          }}
-        />
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <HugeiconsIcon icon={MoreHorizontalIcon} size={20} />
+        </Button>
       </div>
     </div>
   )

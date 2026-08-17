@@ -61,7 +61,7 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
             <select
               value={transferTargetId}
               onChange={(e) => setTransferTargetId(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              className="flex h-7 w-full rounded-md border border-input bg-background px-3 py-1"
             >
               <option value="">Seleccionar miembro...</option>
               {otherMembers.map((m) => (

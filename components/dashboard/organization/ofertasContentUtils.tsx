@@ -15,6 +15,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { addTransitionType, startTransition, ViewTransition } from "react"
+import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -102,7 +103,7 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
             </ViewTransition>
           </h3>
           <span
-            className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
+            className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] leading-4 font-medium ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
           >
             {getStatusLabel(job.status)}
           </span>
@@ -167,13 +168,16 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
       <div className="absolute right-2 top-2 z-10">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <HugeiconsIcon
-              icon={MoreHorizontalIcon}
-              size={20}
-              strokeWidth={1.5}
+            <Button
+              variant="ghost"
+              size="icon"
+              type="button"
+              aria-label="Opciones de la oferta"
               onClick={(e) => e.stopPropagation()}
               className="relative right-2"
-            />
+            >
+              <HugeiconsIcon icon={MoreHorizontalIcon} size={20} strokeWidth={1.5} />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             {job.status === "draft" && (

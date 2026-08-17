@@ -38,11 +38,11 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
         return { color: "bg-primary/10 text-primary border-primary/20", label: "Entrevista" }
       case "onboarding":
         return {
-          color: "bg-secondary/10 text-secondary-foreground border-secondary/20",
+          color: "bg-secondary/10 text-secondary border-secondary/20",
           label: "Onboarding",
         }
       case "task_deadline":
-        return { color: "bg-accent/10 text-accent-foreground border-accent/20", label: "Tarea" }
+        return { color: "bg-accent/10 text-accent border-accent/20", label: "Tarea" }
       case "announcement":
         return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Anuncio" }
       default:
@@ -100,7 +100,7 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                           {event.title}
                         </h4>
                         <span
-                          className={`px-2 py-1 rounded-md text-xs font-medium border shrink-0 ${typeInfo.color}`}
+                          className={`px-3 py-1.5 rounded-md text-[13px] leading-4 font-medium border shrink-0 ${typeInfo.color}`}
                         >
                           {typeInfo.label}
                         </span>

@@ -11,6 +11,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,7 +19,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import type { Application } from "@/lib/api/applications"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useOrganization } from "@/lib/api/use-organization"
-import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { formatDateChilean } from "@/lib/utils"
 
 function formatDateApplied(isoDate: string): string {
@@ -76,7 +76,7 @@ export const ApplicationsContent = () => {
               key={n}
               className="relative overflow-hidden flex flex-col border border-border/80 bg-white"
             >
-              <CardHeader className="p-6 pb-2">
+              <CardHeader className="px-4 pt-6 pb-2">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 space-y-2 flex-1">
                     <Skeleton className="h-5 w-3/4" />
@@ -85,7 +85,7 @@ export const ApplicationsContent = () => {
                   <Skeleton className="size-10 rounded-full shrink-0" />
                 </div>
               </CardHeader>
-              <CardContent className="p-6 pt-2">
+              <CardContent className="px-4 pb-6 pt-2">
                 <Skeleton className="size-32 mb-5" />
                 <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-message-hide pb-2 -mx-2 px-2 mt-2">
                   {STAGES.map((stage, stageIdx) => {
@@ -126,7 +126,7 @@ export const ApplicationsContent = () => {
             <button
               type="button"
               onClick={() => router.push("/dashboard/jobs")}
-              className="mt-2 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-sm"
+              className="mt-2 inline-flex h-7 items-center gap-2 px-4 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-[13px]"
             >
               Buscar empleos
             </button>
@@ -152,7 +152,7 @@ function ApplicationCard({ app }: { app: Application }) {
 
   return (
     <Card className="relative overflow-hidden flex flex-col border border-border/80 bg-white hover:shadow-sm active:scale-[0.99] transition-all duration-150">
-      <CardHeader className="p-6 pb-2">
+      <CardHeader className="px-4 pt-6 pb-2">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 space-y-1">
             <CardTitle className="text-base font-semibold leading-tight line-clamp-2 text-foreground">
@@ -173,8 +173,8 @@ function ApplicationCard({ app }: { app: Application }) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-6 pt-2">
-        <div className="flex items-center justify-between text-[13px] font-medium text-muted-foreground mb-5">
+      <CardContent className="px-4 pb-6 pt-2">
+        <div className="flex items-center justify-between text-xs leading-4 font-medium text-muted-foreground mb-5">
           <span>Aplicado el {formatDateApplied(app.createdAt)}</span>
         </div>
 

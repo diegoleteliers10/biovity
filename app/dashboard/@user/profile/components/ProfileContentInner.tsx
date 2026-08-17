@@ -8,23 +8,44 @@ import { ExperienceForm } from "@/components/dashboard/employee/profile/Experien
 import { LanguagesForm } from "@/components/dashboard/employee/profile/LanguagesForm"
 import { LinksForm } from "@/components/dashboard/employee/profile/LinksForm"
 import { PersonalForm } from "@/components/dashboard/employee/profile/PersonalForm"
+import { ProfileAside } from "@/components/dashboard/employee/profile/ProfileAside"
+import { ProfileIdentityHeader } from "@/components/dashboard/employee/profile/ProfileIdentityHeader"
 import { useProfileContext } from "@/components/dashboard/employee/profile/profile-context"
-import { SidebarCard } from "@/components/dashboard/employee/profile/SidebarCard"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 
 function ProfileLoadingSkeleton() {
   return (
-    <main className="p-6 space-y-6">
-      <div className="h-8 w-48 bg-muted animate-pulse rounded" />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="h-80 bg-muted animate-pulse rounded-xl" />
-        <div className="lg:col-span-2 space-y-6">
-          <div className="h-48 bg-muted animate-pulse rounded-xl" />
-          <div className="h-64 bg-muted animate-pulse rounded-xl" />
+    <main className="p-6 lg:px-12 lg:py-8">
+      <div className="mx-auto w-full max-w-[1020px]">
+        <div className="flex items-center gap-7 pb-7">
+          <div className="size-[108px] shrink-0 rounded-full bg-muted animate-pulse" />
+          <div className="flex-1 space-y-3">
+            <div className="h-7 w-56 rounded bg-muted animate-pulse" />
+            <div className="h-4 w-40 rounded bg-muted animate-pulse" />
+            <div className="h-3 w-64 rounded bg-muted animate-pulse" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="space-y-10">
+            <div className="h-52 bg-muted animate-pulse rounded-2xl" />
+            <div className="h-72 bg-muted animate-pulse rounded-2xl" />
+          </div>
+          <div className="space-y-5">
+            <div className="h-40 bg-muted animate-pulse rounded-2xl" />
+            <div className="h-64 bg-muted animate-pulse rounded-2xl" />
+          </div>
         </div>
       </div>
     </main>
+  )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-xs font-semibold tracking-[0.08em] text-foreground uppercase">
+      {children}
+    </h2>
   )
 }
 
@@ -51,31 +72,49 @@ function ProfileContentInner() {
   }
 
   return (
-    <main className="p-6 space-y-8">
-      <div className="flex items-center justify-between lg:hidden">
-        <MobileMenuButton />
-      </div>
+    <main className="p-6 lg:px-12 lg:py-8">
+      <div className="mx-auto w-full max-w-[1020px]">
+        <div className="flex items-center justify-between lg:hidden">
+          <MobileMenuButton />
+        </div>
 
-      <header className="mb-8">
-        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Mi Perfil</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Gestiona tu información personal y profesional
-        </p>
-      </header>
+        <ProfileIdentityHeader />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
-        <SidebarCard />
+        {errors.general && (
+          <p className="mt-6 text-sm text-destructive text-pretty">{errors.general}</p>
+        )}
 
-        <div className="space-y-6 min-w-0">
-          {errors.general && (
-            <p className="text-sm text-destructive text-pretty">{errors.general}</p>
-          )}
-          <PersonalForm />
-          <ExperienceForm />
-          <EducationForm />
-          <CertificationsForm />
-          <LanguagesForm />
-          <LinksForm />
+        <div className="grid grid-cols-1 gap-12 pt-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 space-y-10">
+            <section className="space-y-4">
+              <SectionLabel>Sobre mí</SectionLabel>
+              <PersonalForm />
+            </section>
+            <section className="space-y-4">
+              <SectionLabel>Experiencia</SectionLabel>
+              <ExperienceForm />
+            </section>
+            <section className="space-y-4">
+              <SectionLabel>Formación</SectionLabel>
+              <EducationForm />
+            </section>
+            <section className="space-y-4">
+              <SectionLabel>Certificaciones</SectionLabel>
+              <CertificationsForm />
+            </section>
+            <section className="space-y-4">
+              <SectionLabel>Idiomas</SectionLabel>
+              <LanguagesForm />
+            </section>
+            <section className="space-y-4">
+              <SectionLabel>Enlaces</SectionLabel>
+              <LinksForm />
+            </section>
+          </div>
+
+          <aside className="space-y-5 self-start lg:sticky lg:top-8">
+            <ProfileAside />
+          </aside>
         </div>
       </div>
     </main>
