@@ -175,9 +175,7 @@ export function ScorecardSheet({
   }, [existing])
 
   const toggleTag = (tag: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    )
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
   const handleSave = () => {
@@ -271,9 +269,7 @@ export function ScorecardSheet({
                     >
                       {d.title}
                     </span>
-                    <span className="text-[10px] text-muted-foreground mt-0.5">
-                      {d.subtitle}
-                    </span>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">{d.subtitle}</span>
                   </button>
                 )
               })}
@@ -334,7 +330,10 @@ export function ScorecardSheet({
 
           {/* Notas Internas */}
           <div className="space-y-2.5">
-            <label htmlFor="evaluation-notes" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <label
+              htmlFor="evaluation-notes"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
               Notas e Impresiones Internas
             </label>
             <Textarea
@@ -349,8 +348,11 @@ export function ScorecardSheet({
           {/* Última edición */}
           {existing && (
             <p className="text-[11px] text-muted-foreground border-t border-border/10 pt-3">
-              Última evaluación registrada por <span className="font-medium text-foreground">{existing.evaluator_name || "reclutador"}</span> el{" "}
-              {formatDateChilean(existing.updated_at, "d MMM yyyy HH:mm")}
+              Última evaluación registrada por{" "}
+              <span className="font-medium text-foreground">
+                {existing.evaluator_name || "reclutador"}
+              </span>{" "}
+              el {formatDateChilean(existing.updated_at, "d MMM yyyy HH:mm")}
             </p>
           )}
         </div>
@@ -358,7 +360,7 @@ export function ScorecardSheet({
         {/* Footer */}
         <SheetFooter className="border-t border-border/10 bg-background p-4 flex items-center justify-between gap-3 shrink-0 sm:justify-between">
           <SheetClose asChild>
-            <Button variant="ghost" size="sm" type="button" className="h-9 px-3">
+            <Button variant="ghost" size="sm" type="button" className="h-7 px-3">
               Cancelar
             </Button>
           </SheetClose>
@@ -366,7 +368,7 @@ export function ScorecardSheet({
             type="button"
             onClick={handleSave}
             disabled={upsertMutation.isPending}
-            className="h-9 px-5 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium text-xs rounded-lg shadow-xs"
+            className="h-7 px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium text-[13px] rounded-md shadow-xs"
           >
             {upsertMutation.isPending ? (
               <>

@@ -1,19 +1,11 @@
 "use client"
 
-import type { Briefcase01Icon } from "@hugeicons/core-free-icons"
-import {
-  Cancel01Icon,
-  GithubIcon,
-  Globe02Icon,
-  Link01Icon,
-  LinkedinIcon,
-} from "@hugeicons/core-free-icons"
+import { Cancel01Icon, GithubIcon, Globe02Icon, LinkedinIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { CardContent, CardHeader } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
 import { EditableCard } from "./EditableCard"
 import { useProfileContext } from "./profile-context"
 
@@ -32,48 +24,13 @@ const getLinkInfo = (url: string): LinkInfo => {
   }
 }
 
-const SectionTitle = ({
-  icon: Icon,
-  title,
-  className,
-}: {
-  icon: typeof Briefcase01Icon
-  title: string
-  className?: string
-}) => (
-  <div className={cn("flex items-center gap-2", className)}>
-    <HugeiconsIcon icon={Icon} size={20} className="text-muted-foreground" />
-    <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-  </div>
-)
-
 export function LinksForm() {
-  const {
-    resume,
-    resumeFormData,
-    isSaving,
-    editingSection,
-    handleEditSection,
-    handleSaveSection,
-    handleCancelSection,
-    handleResumeArrayChange,
-  } = useProfileContext()
-
-  const isEditingLinks = editingSection === "links"
+  const { resume, resumeFormData, isEditing, handleResumeArrayChange } = useProfileContext()
 
   return (
-    <EditableCard
-      isEditing={isEditingLinks}
-      onEdit={() => handleEditSection("links")}
-      onSave={() => handleSaveSection("links")}
-      onCancel={handleCancelSection}
-      isSaving={isSaving}
-    >
-      <CardHeader className="pb-4">
-        <SectionTitle icon={Link01Icon} title="Enlaces" />
-      </CardHeader>
-      <CardContent>
-        {isEditingLinks ? (
+    <EditableCard>
+      <CardContent className="pl-0">
+        {isEditing ? (
           <div className="space-y-4">
             {(resumeFormData.links.length > 0 ? resumeFormData.links : [{ url: "" }]).map(
               (link, i) => (

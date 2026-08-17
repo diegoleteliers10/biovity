@@ -82,47 +82,68 @@ export const userRegistrationSchema = z
  * - Organization info (name, website)
  * - Terms acceptance required
  */
-export const organizationRegistrationSchema = z
-  .object({
-    // Contact information
-    contactName: nameSchema,
-    contactEmail: corporateEmailSchema,
-    contactPassword: organizationPasswordSchema,
-    confirmPassword: z.string({
-      error: () => "Debes confirmar tu contraseña",
+const organizationRegistrationBase = z.object({
+  // Contact information
+  contactName: nameSchema,
+  contactEmail: corporateEmailSchema,
+  contactPassword: organizationPasswordSchema,
+  confirmPassword: z.string({
+    error: () => "Debes confirmar tu contraseña",
+  }),
+  contactPosition: z
+    .string({
+      error: () => "El cargo debe ser un texto",
+    })
+    .min(1, "El cargo es requerido")
+    .max(100, "El cargo es demasiado largo")
+    .trim()
+    .optional(),
+
+  // Organization information
+  organizationName: z
+    .string({
+      error: () => "El nombre de la organización debe ser un texto",
+    })
+    .min(2, "El nombre de la organización debe tener al menos 2 caracteres")
+    .max(200, "El nombre de la organización es demasiado largo")
+    .trim(),
+  organizationWebsite: urlSchema,
+
+  // Terms
+  acceptTerms: z
+    .boolean({
+      error: () => ({ message: "Debes aceptar los términos y condiciones" }),
+    })
+    .refine((val) => val === true, {
+      message: "Debes aceptar los términos y condiciones",
     }),
-    contactPosition: z
-      .string({
-        error: () => "El cargo debe ser un texto",
-      })
-      .min(1, "El cargo es requerido")
-      .max(100, "El cargo es demasiado largo")
-      .trim()
-      .optional(),
+})
 
-    // Organization information
-    organizationName: z
-      .string({
-        error: () => "El nombre de la organización debe ser un texto",
-      })
-      .min(2, "El nombre de la organización debe tener al menos 2 caracteres")
-      .max(200, "El nombre de la organización es demasiado largo")
-      .trim(),
-    organizationWebsite: urlSchema,
-
-    // Terms
-    acceptTerms: z
-      .boolean({
-        error: () => ({ message: "Debes aceptar los términos y condiciones" }),
-      })
-      .refine((val) => val === true, {
-        message: "Debes aceptar los términos y condiciones",
-      }),
-  })
-  .refine((data) => data.contactPassword === data.confirmPassword, {
+export const organizationRegistrationSchema = organizationRegistrationBase.refine(
+  (data) => data.contactPassword === data.confirmPassword,
+  {
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
-  })
+  }
+)
+
+/**
+ * Wizard step schemas for organization registration
+ * - Picked from the base schema (no object-level refinements)
+ */
+export const organizationStepOneSchema = organizationRegistrationBase.pick({
+  contactName: true,
+  contactEmail: true,
+  contactPassword: true,
+  confirmPassword: true,
+  contactPosition: true,
+})
+
+export const organizationStepTwoSchema = organizationRegistrationBase.pick({
+  organizationName: true,
+  organizationWebsite: true,
+  acceptTerms: true,
+})
 
 /**
  * Password reset request schema (email only)

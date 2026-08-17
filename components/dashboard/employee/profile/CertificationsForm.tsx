@@ -1,56 +1,20 @@
 "use client"
 
-import { Award01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
+import { Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
-import { CardContent, CardHeader } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
 import { EditableCard } from "./EditableCard"
 import { emptyCertification, useProfileContext } from "./profile-context"
 
-const SectionTitle = ({
-  icon: Icon,
-  title,
-  className,
-}: {
-  icon: typeof Award01Icon
-  title: string
-  className?: string
-}) => (
-  <div className={cn("flex items-center gap-2", className)}>
-    <HugeiconsIcon icon={Icon} size={20} className="text-muted-foreground" />
-    <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-  </div>
-)
-
 export function CertificationsForm() {
-  const {
-    resume,
-    resumeFormData,
-    handleResumeArrayChange,
-    editingSection,
-    handleEditSection,
-    handleSaveSection,
-    handleCancelSection,
-    isSaving,
-  } = useProfileContext()
-
-  const isEditingCertifications = editingSection === "certifications"
+  const { resume, resumeFormData, isEditing, handleResumeArrayChange } = useProfileContext()
 
   return (
-    <EditableCard
-      isEditing={isEditingCertifications}
-      onEdit={() => handleEditSection("certifications")}
-      onSave={() => handleSaveSection("certifications")}
-      onCancel={handleCancelSection}
-      isSaving={isSaving}
-    >
-      <CardHeader className="pb-4">
-        <SectionTitle icon={Award01Icon} title="Certificaciones" />
-      </CardHeader>
-      <CardContent>
-        {isEditingCertifications ? (
+    <EditableCard>
+      <CardContent className="pl-0">
+        {isEditing ? (
           <div className="space-y-4">
             {(resumeFormData.certifications.length > 0
               ? resumeFormData.certifications

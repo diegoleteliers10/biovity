@@ -261,10 +261,16 @@ export function DashboardSidebar({
 
   const handleFeedback = () => {
     feedbackPortalRef.current?.click()
+    if (isMobile) {
+      setOpenMobile(false)
+    }
   }
 
   const handleSupport = () => {
     showFeaturebaseMessenger()
+    if (isMobile) {
+      setOpenMobile(false)
+    }
   }
 
   const logoutItemClassName = logoutHoverContrastOnAccent

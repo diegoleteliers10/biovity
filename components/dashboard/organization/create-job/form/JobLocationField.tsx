@@ -1,4 +1,4 @@
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
 export type WorkMode = "onsite" | "remote" | "hybrid"
@@ -6,7 +6,7 @@ export type WorkMode = "onsite" | "remote" | "hybrid"
 const WORK_MODES = [
   { value: "onsite" as const, label: "Presencial" },
   { value: "remote" as const, label: "Remoto" },
-  { value: "hybrid" as const, label: "Hibrido" },
+  { value: "hybrid" as const, label: "Híbrido" },
 ]
 
 interface JobLocationFieldProps {
@@ -18,7 +18,6 @@ interface JobLocationFieldProps {
   onCityChange: (value: string) => void
   onRegionChange: (value: string) => void
   onCountryChange: (value: string) => void
-  error?: string
 }
 
 export function JobLocationField({
@@ -30,15 +29,16 @@ export function JobLocationField({
   onCityChange,
   onRegionChange,
   onCountryChange,
-  error,
 }: JobLocationFieldProps) {
   return (
     <Field>
-      <FieldLabel>Ubicacion</FieldLabel>
+      <FieldLabel>
+        Ubicación <span className="text-red-600 font-bold ml-0.5">*</span>
+      </FieldLabel>
       <div className="space-y-3">
         <div className="flex gap-4">
           {WORK_MODES.map((mode) => (
-            <label key={mode.value} className="flex items-center gap-2 text-xs">
+            <label key={mode.value} className="flex items-center gap-2 text-xs cursor-pointer">
               <input
                 type="radio"
                 name="workMode"
@@ -66,12 +66,11 @@ export function JobLocationField({
             <Input
               value={country}
               onChange={(e) => onCountryChange(e.target.value)}
-              placeholder="Pais"
+              placeholder="País"
             />
           </div>
         )}
       </div>
-      {error && <FieldError>{error}</FieldError>}
     </Field>
   )
 }

@@ -71,7 +71,7 @@ export function ApplicationDetailActions({
           defaultValue={applicationStatus}
           onValueChange={(v) => onStatusChange?.(applicationId, v as ApplicationStage)}
         >
-          <SelectTrigger className="h-9 w-[160px] text-sm">
+          <SelectTrigger className="h-7 w-[160px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -99,7 +99,11 @@ export function ApplicationDetailActions({
           candidateAvatar={candidateAvatar}
           candidateProfession={candidateProfession}
         >
-          <Button variant="outline" size="sm" className="gap-1.5 border-secondary/30 hover:bg-secondary/10 hover:text-secondary">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-secondary/30 hover:bg-secondary/10 hover:text-secondary"
+          >
             <HugeiconsIcon icon={NoteAddIcon} size={14} />
             Evaluar
           </Button>

@@ -1,51 +1,33 @@
 "use client"
 
-import { Cancel01Icon, UserIcon } from "@hugeicons/core-free-icons"
+import { Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
 import { EMPTY_PLACEHOLDER, emptySkill, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
 
 export function PersonalForm() {
   const {
-    editingSection,
+    isEditing,
     formData,
     profileData,
     resumeFormData,
-    resume,
-    handleEditSection,
-    handleSaveSection,
-    handleCancelSection,
     handleResumeArrayChange,
     handleInputChange,
-    isSaving,
   } = useProfileContext()
 
-  const isEditingPersonal = editingSection === "personal"
-  const data = editingSection ? formData : profileData
+  const data = isEditing ? formData : profileData
 
   return (
-    <EditableCard
-      isEditing={isEditingPersonal}
-      onEdit={() => handleEditSection("personal")}
-      onSave={() => handleSaveSection("personal")}
-      onCancel={handleCancelSection}
-      isSaving={isSaving}
-    >
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <HugeiconsIcon icon={UserIcon} size={18} />
-          Información Personal
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <EditableCard>
+      <CardContent className="pl-0 space-y-6">
         <div className="space-y-1.5">
-          <label htmlFor="profile-bio" className="text-sm font-medium text-foreground">
+          <label htmlFor="profile-bio" className="text-xs leading-4 font-medium text-foreground">
             Biografía
           </label>
-          {isEditingPersonal ? (
+          {isEditing ? (
             <textarea
               id="profile-bio"
               value={formData.bio}
@@ -60,11 +42,14 @@ export function PersonalForm() {
           )}
         </div>
 
-        <div className="space-y-1.5">
-          <label htmlFor="profile-skills" className="text-sm font-medium text-foreground">
-            Habilidades
-          </label>
-          {isEditingPersonal ? (
+        {isEditing && (
+          <div className="space-y-1.5">
+            <label
+              htmlFor="profile-skills"
+              className="text-xs leading-4 font-medium text-foreground"
+            >
+              Habilidades
+            </label>
             <div className="space-y-3">
               {(resumeFormData.skills.length > 0 ? resumeFormData.skills : [emptySkill()]).map(
                 (skill, i) => (
@@ -90,7 +75,7 @@ export function PersonalForm() {
                           return next
                         })
                       }
-                      className="h-9 rounded-md border border-input bg-background px-2 text-sm w-28"
+                      className="h-7 rounded-md border border-input bg-background px-2 w-28"
                     >
                       {LEVEL_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>
@@ -121,26 +106,8 @@ export function PersonalForm() {
                 Agregar habilidad
               </Button>
             </div>
-          ) : (resume?.skills?.length ?? 0) > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {(resume?.skills ?? []).map((skill, _i) => {
-                const name = typeof skill === "string" ? skill : skill.name
-                const level = typeof skill === "string" ? undefined : skill.level
-                return (
-                  <span
-                    key={`skill-display-${name}`}
-                    className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
-                  >
-                    {name}
-                    {level && <span className="ml-1 text-muted-foreground">({level})</span>}
-                  </span>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="text-muted-foreground text-pretty">{EMPTY_PLACEHOLDER}</p>
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
     </EditableCard>
   )

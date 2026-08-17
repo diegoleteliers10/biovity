@@ -72,7 +72,7 @@ export function AccionRequeridaWidget() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-amber-500" />
-          <CardTitle className="text-base font-semibold">Acción Requerida</CardTitle>
+          <CardTitle>Acción Requerida</CardTitle>
         </div>
       </CardHeader>
       <CardContent>

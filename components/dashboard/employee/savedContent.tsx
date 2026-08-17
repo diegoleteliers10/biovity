@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { useCallback, useMemo } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +21,6 @@ import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { useRemoveSavedJobMutation, useSavedJobsByUserInfinite } from "@/lib/api/use-saved-jobs"
-import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
 
 function getSalaryDisplay(job: Job): string {
@@ -267,7 +267,7 @@ export const SavedContent = () => {
             <button
               type="button"
               onClick={() => push("/dashboard/jobs")}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95"
+              className="mt-4 inline-flex h-7 items-center gap-2 px-4 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-[13px]"
             >
               Ver todos los empleos
             </button>
@@ -286,7 +286,7 @@ export const SavedContent = () => {
                 type="button"
                 onClick={handleLoadMore}
                 disabled={isFetchingNextPage}
-                className="inline-flex items-center gap-2 px-6 py-2 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 disabled:opacity-50 text-sm"
+                className="inline-flex h-7 items-center gap-2 px-4 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 disabled:opacity-50 text-[13px]"
               >
                 {isFetchingNextPage
                   ? "Cargando..."

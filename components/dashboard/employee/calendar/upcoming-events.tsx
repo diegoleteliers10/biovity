@@ -179,7 +179,7 @@ export function UpcomingEvents({
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {index === 0 && (
-                              <span className="text-xs bg-accent/15 text-accent px-2 py-0.5 rounded-full font-medium">
+                              <span className="text-[13px] leading-4 bg-accent/15 text-accent px-3 py-1.5 rounded-full font-medium">
                                 Proximo
                               </span>
                             )}
@@ -235,7 +235,7 @@ export function UpcomingEvents({
 
                               <div className="flex flex-wrap gap-2">
                                 {event.endAt && (
-                                  <span className="text-xs px-2 py-1 rounded-full bg-muted/30 text-muted-foreground">
+                                  <span className="text-[13px] leading-4 px-3 py-1.5 rounded-full bg-muted/30 text-muted-foreground">
                                     {formatEventTime(event.startAt)} - {formatEndTime(event.endAt)}
                                   </span>
                                 )}
@@ -356,7 +356,7 @@ export function UpcomingEvents({
                                   event.candidateId === currentUserId &&
                                   (rsvpStatuses?.[event.id] ?? myParticipant?.status) ? (
                                   <span
-                                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-md border ${
+                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] leading-4 font-medium rounded-md border ${
                                       PARTICIPANT_STATUS_COLORS[
                                         rsvpStatuses?.[event.id] ??
                                           myParticipant?.status ??

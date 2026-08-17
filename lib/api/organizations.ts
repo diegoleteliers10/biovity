@@ -109,6 +109,28 @@ export async function updateOrganization(
   })
 }
 
+export async function uploadOrganizationLogo(
+  file: File
+): Promise<Result<string, ApiError | NetworkError>> {
+  const formData = new FormData()
+  formData.append("file", file)
+
+  const result = await fetchJson<{ url?: string; error?: string }>(
+    "/api/upload/organization-logo",
+    {
+      method: "POST",
+      body: formData,
+    }
+  )
+
+  if (result.isErr()) return R.err(result.error)
+
+  const data = result.value
+  if (data.error) return R.err(new ApiError({ status: 400, message: data.error }))
+  if (!data.url) return R.err(new ApiError({ status: 400, message: "Error al subir la imagen" }))
+  return R.ok(data.url)
+}
+
 export async function linkUserToOrganization(
   userId: string,
   organizationId: string

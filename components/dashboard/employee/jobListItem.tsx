@@ -61,7 +61,7 @@ export function JobListItem({
       }}
       aria-label={`Ver detalles de ${job.title}`}
     >
-      <CardContent className="px-6 py-3">
+      <CardContent className="px-4 py-3">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-start justify-between gap-4">
             <h2 className="text-lg sm:text-xl flex-1 font-semibold text-foreground tracking-tight">
@@ -78,7 +78,7 @@ export function JobListItem({
               </div>
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 className="rounded-md hover:bg-muted"
                 onClick={(e: React.MouseEvent) => {
                   e.preventDefault()

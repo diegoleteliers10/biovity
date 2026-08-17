@@ -24,8 +24,10 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
 
   const content = (
     <>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-foreground group">{metric.title}</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between px-4 pb-2">
+        <CardTitle className="text-xs leading-4 font-medium text-foreground group">
+          {metric.title}
+        </CardTitle>
         <HugeiconsIcon
           icon={metric.icon}
           size={24}
@@ -33,10 +35,14 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
           className={`size-4 ${iconColorClass}`}
         />
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold text-primary">{metric.value}</div>
+      <CardContent className="px-4">
+        <div className="text-lg leading-6 font-semibold tracking-[-0.1px] text-primary">
+          {metric.value}
+        </div>
         {metric.trend && (
-          <p className={`text-xs ${metric.trendPositive ? "text-secondary" : "text-destructive"}`}>
+          <p
+            className={`text-xs leading-4 ${metric.trendPositive ? "text-secondary" : "text-destructive"}`}
+          >
             <HugeiconsIcon
               icon={TrendIcon}
               size={24}
@@ -46,7 +52,9 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
             {metric.trend}
           </p>
         )}
-        {metric.subtitle && <p className="text-xs text-muted-foreground">{metric.subtitle}</p>}
+        {metric.subtitle && (
+          <p className="text-xs leading-4 text-muted-foreground">{metric.subtitle}</p>
+        )}
       </CardContent>
     </>
   )
@@ -54,7 +62,7 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
   if (metric.href) {
     return (
       <Card
-        className="border border-border/80 bg-white active:scale-[0.99] transition-all duration-150 cursor-pointer"
+        className="border border-border/80 bg-white rounded-[14px] active:scale-[0.99] transition-all duration-150 cursor-pointer"
         onClick={handleMetricClick}
       >
         {content}
@@ -62,5 +70,5 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
     )
   }
 
-  return <Card className="border border-border/80 bg-white">{content}</Card>
+  return <Card className="border border-border/80 bg-white rounded-[14px]">{content}</Card>
 })

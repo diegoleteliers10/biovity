@@ -1,29 +1,13 @@
 "use client"
 
-import { Briefcase01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
+import { Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
-import { CardContent, CardHeader } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import type { ResumeExperience } from "@/lib/api/resumes"
-import { cn } from "@/lib/utils"
 import { EditableCard } from "./EditableCard"
 import { emptyExperience, useProfileContext } from "./profile-context"
-
-const SectionTitle = ({
-  icon: Icon,
-  title,
-  className,
-}: {
-  icon: typeof Briefcase01Icon
-  title: string
-  className?: string
-}) => (
-  <div className={cn("flex items-center gap-2", className)}>
-    <HugeiconsIcon icon={Icon} size={20} className="text-muted-foreground" />
-    <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-  </div>
-)
 
 const getExpDisplay = (exp: ResumeExperience) => ({
   title: exp.title ?? exp.position ?? "",
@@ -34,32 +18,12 @@ const getExpDisplay = (exp: ResumeExperience) => ({
 })
 
 export function ExperienceForm() {
-  const {
-    resume,
-    isSaving,
-    editingSection,
-    resumeFormData,
-    handleEditSection,
-    handleSaveSection,
-    handleCancelSection,
-    handleResumeArrayChange,
-  } = useProfileContext()
-
-  const isEditingExperience = editingSection === "experience"
+  const { resume, isEditing, resumeFormData, handleResumeArrayChange } = useProfileContext()
 
   return (
-    <EditableCard
-      isEditing={isEditingExperience}
-      onEdit={() => handleEditSection("experience")}
-      onSave={() => handleSaveSection("experience")}
-      onCancel={handleCancelSection}
-      isSaving={isSaving}
-    >
-      <CardHeader className="pb-4">
-        <SectionTitle icon={Briefcase01Icon} title="Experiencia laboral" />
-      </CardHeader>
-      <CardContent>
-        {isEditingExperience ? (
+    <EditableCard>
+      <CardContent className="pl-0">
+        {isEditing ? (
           <div className="space-y-4">
             {(resumeFormData.experiences.length > 0
               ? resumeFormData.experiences
@@ -133,7 +97,7 @@ export function ExperienceForm() {
                     className="w-24"
                     disabled={exp.stillWorking ?? exp.current}
                   />
-                  <label className="flex items-center gap-2 text-sm">
+                  <label className="flex items-center gap-2 text-xs leading-4">
                     <input
                       type="checkbox"
                       checked={exp.stillWorking ?? exp.current ?? false}

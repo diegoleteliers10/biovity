@@ -1,8 +1,23 @@
 import withBundleAnalyzer from "@next/bundle-analyzer"
 import type { NextConfig } from "next"
 
+const API_PROXY_TARGET = (
+  process.env.API_PROXY_TARGET ??
+  process.env.API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:3001"
+).replace(/\/$/, "")
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${API_PROXY_TARGET}/api/v1/:path*`,
+      },
+    ]
+  },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
   },

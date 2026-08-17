@@ -62,16 +62,22 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
   }
 
   return (
-    <Card className="border border-border/80 bg-white">
-      <CardHeader>
+    <Card className="border border-border/80 bg-white rounded-[14px]">
+      <CardHeader className="px-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-foreground">Mensajes Recientes</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onViewAll}>
+          <CardTitle className="text-xs leading-4 font-medium text-foreground">
+            Mensajes Recientes
+          </CardTitle>
+          <Button
+            variant="ghost"
+            className="h-7 rounded-md text-xs leading-4 font-medium"
+            onClick={onViewAll}
+          >
             Ver Todo
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4">
         {isLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((n) => (

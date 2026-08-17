@@ -57,7 +57,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
     <div className="flex items-center gap-2">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="h-9 gap-2 relative" id="talent-filter-btn">
+          <Button variant="outline" size="sm" className="h-7 gap-2 relative" id="talent-filter-btn">
             <HugeiconsIcon icon={FilterIcon} size={14} strokeWidth={1.5} />
             Filtros
             {activeCount > 0 && (
@@ -94,7 +94,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
               <Input
                 id="filter-profession"
                 placeholder="ej: Desarrollador, Diseñador..."
-                className="h-8 text-sm"
+                className="h-7"
                 value={filters.profession ?? ""}
                 onChange={(e) => onFiltersChange({ profession: e.target.value || undefined })}
               />
@@ -106,7 +106,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
                 <Input
                   id="filter-city"
                   placeholder="Santiago..."
-                  className="h-8 text-sm"
+                  className="h-7"
                   value={filters.city ?? ""}
                   onChange={(e) => onFiltersChange({ city: e.target.value || undefined })}
                 />
@@ -116,7 +116,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
                 <Input
                   id="filter-country"
                   placeholder="Chile..."
-                  className="h-8 text-sm"
+                  className="h-7"
                   value={filters.country ?? ""}
                   onChange={(e) => onFiltersChange({ country: e.target.value || undefined })}
                 />
@@ -129,7 +129,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
                 value={filters.experienceLevel ?? ""}
                 onValueChange={(v) => onFiltersChange({ experienceLevel: v || undefined })}
               >
-                <SelectTrigger id="filter-exp-level" className="h-8 text-sm">
+                <SelectTrigger id="filter-exp-level" className="h-7">
                   <SelectValue placeholder="Cualquier nivel" />
                 </SelectTrigger>
                 <SelectContent>
@@ -149,7 +149,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
                 value={filters.availability ?? ""}
                 onValueChange={(v) => onFiltersChange({ availability: v || undefined })}
               >
-                <SelectTrigger id="filter-availability" className="h-8 text-sm">
+                <SelectTrigger id="filter-availability" className="h-7">
                   <SelectValue placeholder="Cualquier disponibilidad" />
                 </SelectTrigger>
                 <SelectContent>
@@ -168,7 +168,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
               <Input
                 id="filter-skills"
                 placeholder="React, TypeScript, Node.js..."
-                className="h-8 text-sm"
+                className="h-7"
                 value={localSkills}
                 onChange={(e) => setLocalSkills(e.target.value)}
                 onBlur={() => onFiltersChange({ skills: localSkills.trim() || undefined })}
@@ -188,7 +188,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
                   type="number"
                   min={0}
                   max={30}
-                  className="h-8 text-sm"
+                  className="h-7"
                   value={filters.minExp || ""}
                   onChange={(e) =>
                     onFiltersChange({ minExp: e.target.value ? Number(e.target.value) : undefined })
@@ -202,7 +202,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
                   type="number"
                   min={0}
                   max={30}
-                  className="h-8 text-sm"
+                  className="h-7"
                   value={filters.maxExp || ""}
                   onChange={(e) =>
                     onFiltersChange({ maxExp: e.target.value ? Number(e.target.value) : undefined })
@@ -211,7 +211,7 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
               </div>
             </div>
 
-            <Button className="w-full h-8 text-sm" onClick={() => setOpen(false)}>
+            <Button className="w-full h-7" onClick={() => setOpen(false)}>
               Aplicar filtros
             </Button>
           </div>

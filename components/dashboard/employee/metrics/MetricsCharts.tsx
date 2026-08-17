@@ -100,8 +100,8 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
   if (!metricsData) {
     return (
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="border border-border/80 bg-white rounded-xl lg:col-span-2 h-[300px] animate-pulse" />
-        <div className="border border-border/80 bg-white rounded-xl h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-white rounded-[14px] lg:col-span-2 h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-white rounded-[14px] h-[300px] animate-pulse" />
       </div>
     )
   }
@@ -179,7 +179,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <HugeiconsIcon icon={DashboardSquare02Icon} size={20} className="text-primary" />
-            <CardTitle className="text-base font-semibold text-foreground">
+            <CardTitle className="text-foreground">
               Postulaciones por {PERIOD_AXIS_LABEL[period]}
             </CardTitle>
           </div>
@@ -192,14 +192,22 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
             <EmptyChartState />
           ) : (
             <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={applicationsTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart
+                data={applicationsTrend}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="userAppGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="var(--border)"
+                  opacity={0.5}
+                />
                 <XAxis
                   dataKey="date"
                   tickLine={false}
@@ -240,9 +248,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <HugeiconsIcon icon={Clock01Icon} size={20} className="text-emerald-600" />
-            <CardTitle className="text-base font-semibold text-foreground">
-              Tiempo de respuesta
-            </CardTitle>
+            <CardTitle className="text-foreground">Tiempo de respuesta</CardTitle>
           </div>
           <CardDescription className="text-xs text-muted-foreground">
             Rango de tiempo de respuesta de empresas
@@ -253,8 +259,16 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
             <EmptyChartState message="Sin datos de respuesta aún" />
           ) : (
             <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={responseTimeData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
+              <BarChart
+                data={responseTimeData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="var(--border)"
+                  opacity={0.5}
+                />
                 <XAxis
                   dataKey="period"
                   tickLine={false}
@@ -286,9 +300,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <HugeiconsIcon icon={File02Icon} size={20} className="text-primary" />
-              <CardTitle className="text-base font-semibold text-foreground">
-                Embudo de contratación
-              </CardTitle>
+              <CardTitle className="text-foreground">Embudo de contratación</CardTitle>
             </div>
             <Badge variant="secondary" className="font-semibold text-xs">
               {totalPipeline} aplicaciones en total
@@ -319,7 +331,9 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                       className={`h-full ${stage.bgColor} transition-all duration-500 ease-out`}
                       style={{ width: `${Math.max(stage.percentage, stage.count > 0 ? 5 : 0)}%` }}
                     />
-                    <span className={`absolute inset-0 flex items-center pl-3 text-[11px] font-semibold ${stage.textColor}`}>
+                    <span
+                      className={`absolute inset-0 flex items-center pl-3 text-[11px] font-semibold ${stage.textColor}`}
+                    >
                       {stage.count > 0 ? `${stage.count} postulantes` : "0 en esta etapa"}
                     </span>
                   </div>
@@ -335,9 +349,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <HugeiconsIcon icon={PieChart02Icon} size={20} className="text-indigo-600" />
-            <CardTitle className="text-base font-semibold text-foreground">
-              Categorías aplicadas
-            </CardTitle>
+            <CardTitle className="text-foreground">Categorías aplicadas</CardTitle>
           </div>
           <CardDescription className="text-xs text-muted-foreground">
             Distribución por área o especialidad

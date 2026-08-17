@@ -42,8 +42,7 @@ export function JobShareButtons({
 }: JobShareProps) {
   const [copied, setCopied] = useState(false)
 
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://biovity.cl"
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://biovity.cl"
   const jobUrl = `${origin}/trabajos/${jobId}`
 
   const whatsappMessage = `🔬 *Oferta de empleo en Biovity*
@@ -102,7 +101,11 @@ ${jobUrl}`
           onClick={handleShareWhatsapp}
           className="gap-1.5 text-xs border-emerald-500/20 bg-emerald-500/5 text-emerald-700 hover:bg-emerald-500/10 dark:text-emerald-400 cursor-pointer"
         >
-          <HugeiconsIcon icon={WhatsappIcon} size={15} className="text-emerald-600 dark:text-emerald-400" />
+          <HugeiconsIcon
+            icon={WhatsappIcon}
+            size={15}
+            className="text-emerald-600 dark:text-emerald-400"
+          />
           WhatsApp
         </Button>
 
@@ -113,7 +116,11 @@ ${jobUrl}`
           onClick={handleShareLinkedin}
           className="gap-1.5 text-xs border-blue-500/20 bg-blue-500/5 text-blue-700 hover:bg-blue-500/10 dark:text-blue-400 cursor-pointer"
         >
-          <HugeiconsIcon icon={Linkedin02Icon} size={15} className="text-blue-600 dark:text-blue-400" />
+          <HugeiconsIcon
+            icon={Linkedin02Icon}
+            size={15}
+            className="text-blue-600 dark:text-blue-400"
+          />
           LinkedIn
         </Button>
 
@@ -124,7 +131,11 @@ ${jobUrl}`
           onClick={handleShareTwitter}
           className="gap-1.5 text-xs border-slate-500/20 bg-slate-500/5 text-slate-700 hover:bg-slate-500/10 dark:text-slate-300 cursor-pointer"
         >
-          <HugeiconsIcon icon={TwitterIcon} size={15} className="text-slate-600 dark:text-slate-300" />
+          <HugeiconsIcon
+            icon={TwitterIcon}
+            size={15}
+            className="text-slate-600 dark:text-slate-300"
+          />
           X / Twitter
         </Button>
 
@@ -197,7 +208,7 @@ ${jobUrl}`
     <div className={className}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-1.5 text-xs font-medium cursor-pointer">
+          <Button variant="outline" className="gap-1.5 cursor-pointer">
             <HugeiconsIcon icon={Share01Icon} size={15} />
             Compartir
           </Button>
@@ -214,11 +225,13 @@ ${jobUrl}`
             LinkedIn
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleShareTwitter} className="cursor-pointer gap-2 text-xs">
-            <HugeiconsIcon icon={TwitterIcon} size={16} className="text-slate-700" />
-            X (Twitter)
+            <HugeiconsIcon icon={TwitterIcon} size={16} className="text-slate-700" />X (Twitter)
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleCopyLink} className="cursor-pointer gap-2 text-xs font-medium">
+          <DropdownMenuItem
+            onClick={handleCopyLink}
+            className="cursor-pointer gap-2 text-xs font-medium"
+          >
             <HugeiconsIcon icon={Copy01Icon} size={16} />
             {copied ? "¡Enlace Copiado!" : "Copiar Enlace"}
           </DropdownMenuItem>

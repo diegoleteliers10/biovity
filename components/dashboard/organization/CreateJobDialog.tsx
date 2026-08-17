@@ -235,15 +235,14 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
 
   const errors = useMemo(() => {
     const e: Record<string, string> = {}
-    if (!form.title.trim()) e.title = "El título es requerido"
-    if (!stripHtml(form.description)) e.description = "La descripción es requerida"
-    if (!form.employmentType) e.employmentType = "Selecciona un tipo de empleo"
-    if (!form.experienceLevel) e.experienceLevel = "Selecciona un nivel de experiencia"
-    if (!form.salaryMin.trim()) e.salary = "Ingresa el salario mínimo"
-    else if (!form.salaryMax.trim()) e.salary = "Ingresa el salario máximo"
+    if (!form.title.trim()) e.title = "required"
+    if (!stripHtml(form.description)) e.description = "required"
+    if (!form.employmentType) e.employmentType = "required"
+    if (!form.experienceLevel) e.experienceLevel = "required"
+    if (!form.salaryMin.trim() || !form.salaryMax.trim()) e.salary = "required"
     else if (Number(form.salaryMin) > Number(form.salaryMax))
       e.salary = "El salario mínimo debe ser menor o igual al máximo"
-    if (!form.workMode) e.location = "Selecciona un modo de trabajo"
+    if (!form.workMode) e.location = "required"
     return e
   }, [form])
 
@@ -377,7 +376,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               <JobTitleField
                 value={form.title}
                 onChange={(v) => setField("title", v)}
-                error={errors.title}
               />
 
               <JobDescriptionField
@@ -389,7 +387,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 isRemote={form.workMode === "remote"}
                 onChange={(v) => setField("description", v)}
                 onGeneratingChange={(v) => setField("isGeneratingDescription", v)}
-                error={errors.description}
               />
 
               <JobContractFields
@@ -397,8 +394,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 experienceLevel={form.experienceLevel}
                 onEmploymentTypeChange={(v) => setField("employmentType", v)}
                 onExperienceLevelChange={(v) => setField("experienceLevel", v)}
-                errorEmploymentType={errors.employmentType}
-                errorExperienceLevel={errors.experienceLevel}
               />
 
               <JobLocationField
@@ -410,7 +405,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 onCityChange={(v) => setField("city", v)}
                 onRegionChange={(v) => setField("region", v)}
                 onCountryChange={(v) => setField("country", v)}
-                error={errors.location}
               />
 
               <JobSalaryFields
@@ -418,7 +412,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 salaryMax={form.salaryMax}
                 onSalaryMinChange={(v) => setField("salaryMin", v)}
                 onSalaryMaxChange={(v) => setField("salaryMax", v)}
-                error={errors.salary}
+                error={errors.salary !== "required" ? errors.salary : undefined}
               />
 
               <JobRequiredSkills

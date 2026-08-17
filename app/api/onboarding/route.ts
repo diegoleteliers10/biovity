@@ -33,7 +33,12 @@ export async function GET() {
       const res = await fetch(
         `${API_BASE}/api/v1/jobs/organization/${organizationId}?limit=5`,
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(process.env.INTERNAL_API_KEY && {
+              "x-internal-key": process.env.INTERNAL_API_KEY,
+            }),
+          },
           signal: AbortSignal.timeout(1500),
         }
       )

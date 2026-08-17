@@ -4,9 +4,16 @@ import { ArrowRight01Icon, Building06Icon, UserIcon } from "@hugeicons/core-free
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
+import {
+  authButtonClass,
+  authLinkClass,
+  authSubtitleClass,
+  authTitleClass,
+} from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Logo } from "@/components/ui/logo"
+import { cn } from "@/lib/utils"
 
 export function LoginContent() {
   return (
@@ -24,14 +31,12 @@ export function LoginContent() {
       </div>
 
       {/* Right: Login block */}
-      <div className="flex min-h-0 w-full flex-col justify-center overflow-y-auto bg-background p-6 lg:w-1/2 lg:p-12">
-        <div className="mx-auto w-full max-w-sm space-y-8">
+      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-background lg:w-1/2">
+        <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
           <div className="space-y-2 text-center lg:text-left">
             <Logo size="lg" className="justify-center" />
-            <h1 className="text-center text-2xl font-semibold tracking-tight text-foreground">
-              Bienvenido a Biovity
-            </h1>
-            <p className="text-center text-muted-foreground">
+            <h1 className={`text-center ${authTitleClass}`}>Bienvenido a Biovity</h1>
+            <p className={`text-center ${authSubtitleClass}`}>
               Selecciona tu tipo de acceso para continuar
             </p>
           </div>
@@ -89,13 +94,13 @@ export function LoginContent() {
               ¿Eres nuevo en Biovity?
             </p>
             <div className="space-y-2">
-              <Button asChild variant="ghost" size="lg" className="h-11 w-full">
+              <Button asChild variant="ghost" size="lg" className={cn(authButtonClass, "w-full")}>
                 <Link href="/register/professional" className="flex items-center gap-2">
                   <HugeiconsIcon icon={UserIcon} size={18} strokeWidth={1.5} />
                   Crear cuenta de usuario
                 </Link>
               </Button>
-              <Button asChild variant="ghost" size="lg" className="h-11 w-full">
+              <Button asChild variant="ghost" size="lg" className={cn(authButtonClass, "w-full")}>
                 <Link href="/register/organization" className="flex items-center gap-2">
                   <HugeiconsIcon icon={Building06Icon} size={18} strokeWidth={1.5} />
                   Registrar organización
@@ -106,10 +111,7 @@ export function LoginContent() {
 
           <p className="text-center text-sm text-muted-foreground">
             ¿Necesitas ayuda?{" "}
-            <a
-              href="mailto:support@biovity.com"
-              className="font-medium text-primary hover:underline"
-            >
+            <a href="mailto:support@biovity.com" className={authLinkClass}>
               Contactar soporte
             </a>
           </p>

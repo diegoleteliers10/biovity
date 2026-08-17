@@ -26,8 +26,8 @@ const EVENT_STATUSES: { value: EventStatus; label: string }[] = [
 
 const typeColor: Record<EventType, string> = {
   interview: "bg-primary/10 text-primary border-primary/20",
-  onboarding: "bg-secondary/10 text-secondary-foreground border-secondary/20",
-  task_deadline: "bg-accent/10 text-accent-foreground border-accent/20",
+  onboarding: "bg-secondary/10 text-secondary border-secondary/20",
+  task_deadline: "bg-accent/10 text-accent border-accent/20",
   announcement: "bg-muted/40 text-muted-foreground border-border/30",
 }
 
@@ -54,7 +54,7 @@ export function FilterBar({
           key={et.value}
           type="button"
           onClick={() => onTypeChange(activeType === et.value ? undefined : et.value)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+          className={`px-3 py-1.5 rounded-full text-[13px] leading-4 font-medium border transition-colors ${
             activeType === et.value
               ? typeColor[et.value]
               : "bg-transparent text-muted-foreground border-border/30 hover:bg-muted/30"
@@ -71,7 +71,7 @@ export function FilterBar({
           key={es.value}
           type="button"
           onClick={() => onStatusChange(activeStatus === es.value ? undefined : es.value)}
-          className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+          className={`px-3 py-1.5 rounded-full text-[13px] leading-4 font-medium border transition-colors ${
             activeStatus === es.value
               ? statusColor[es.value]
               : "bg-transparent text-muted-foreground border-border/30 hover:bg-muted/30"
@@ -88,7 +88,7 @@ export function FilterBar({
             onTypeChange(undefined)
             onStatusChange(undefined)
           }}
-          className="flex items-center gap-1 px-2 py-1 rounded-full text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] leading-4 text-muted-foreground hover:text-foreground transition-colors"
         >
           <HugeiconsIcon icon={Cancel01Icon} className="size-3" />
           Limpiar

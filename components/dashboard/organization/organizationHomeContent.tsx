@@ -115,7 +115,7 @@ export function OrganizationHomeContent() {
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={`${skeletonId}-${i}`}
-              className="border border-border/80 bg-white rounded-xl p-6"
+              className="border border-border/80 bg-white rounded-[14px] px-4 py-6"
             >
               <div className="flex items-center justify-between pb-2">
                 <Skeleton className="h-4 w-32" />
@@ -136,7 +136,7 @@ export function OrganizationHomeContent() {
 
       <div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {showSkeletons ? (
-          <div className="md:col-span-2 border border-border/80 bg-white rounded-xl p-6">
+          <div className="md:col-span-2 border border-border/80 bg-white rounded-[14px] px-4 py-6">
             <div className="flex items-center justify-between mb-6">
               <Skeleton className="h-5 w-40" />
               <Skeleton className="h-8 w-16" />
@@ -168,7 +168,7 @@ export function OrganizationHomeContent() {
         )}
 
         {showMessagesSkeletons ? (
-          <div className="border border-border/80 bg-white rounded-xl p-6">
+          <div className="border border-border/80 bg-white rounded-[14px] px-4 py-6">
             <div className="flex items-center justify-between mb-6">
               <Skeleton className="h-5 w-36" />
               <Skeleton className="h-8 w-16" />

@@ -53,7 +53,7 @@ export function AdminUsersContent() {
     <select
       value={isActiveFilter}
       onChange={(e) => setIsActiveFilter(e.target.value)}
-      className="h-9 rounded-md border border-input bg-background px-3 text-xs"
+      className="h-7 rounded-md border border-input bg-background px-3"
       aria-label="Filtrar por estado"
     >
       {IS_ACTIVE_OPTIONS.map((opt) => (

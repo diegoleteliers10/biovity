@@ -3,8 +3,10 @@
 import { MailSend01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
+import { authButtonClass, authSubtitleClass, authTitleClass } from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/ui/logo"
+import { cn } from "@/lib/utils"
 
 type CheckYourEmailProps = {
   email: string
@@ -25,14 +27,14 @@ export function CheckYourEmail({ email, loginHref, description }: CheckYourEmail
             className="text-accent"
           />
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Revisa tu correo</h1>
-        <p className="mx-auto max-w-sm text-muted-foreground">
+        <h1 className={authTitleClass}>Revisa tu correo</h1>
+        <p className={`mx-auto max-w-sm ${authSubtitleClass}`}>
           {description} <span className="font-medium text-foreground">{email}</span>. Haz clic en el
           enlace para confirmar tu cuenta y luego inicia sesión.
         </p>
       </div>
       <div className="space-y-4">
-        <Button asChild variant="default" className="h-11 w-full">
+        <Button asChild variant="default" className={cn(authButtonClass, "w-full")}>
           <Link href={loginHref}>Ir a iniciar sesión</Link>
         </Button>
         <p className="text-sm text-muted-foreground">
