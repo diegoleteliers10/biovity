@@ -77,6 +77,7 @@ export function useJobsSearch(params?: { search?: string; category?: string; pag
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
+    refetchOnMount: "always",
   })
 }
 
@@ -104,6 +105,7 @@ export function useCreateJobMutation(organizationId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
+      queryClient.invalidateQueries({ queryKey: ["jobs", "search"] })
     },
   })
 }
@@ -120,6 +122,7 @@ export function useUpdateJobMutation(organizationId: string) {
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: ["jobs", "search"] })
     },
   })
 }
@@ -135,6 +138,7 @@ export function useDeleteJobMutation(organizationId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
+      queryClient.invalidateQueries({ queryKey: ["jobs", "search"] })
     },
   })
 }

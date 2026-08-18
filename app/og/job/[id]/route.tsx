@@ -2,12 +2,10 @@ import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { ImageResponse } from "next/og"
 import { formatJobLocation, getJob } from "@/lib/api/jobs"
+import { getOrganization } from "@/lib/api/organizations"
 import { formatSalarioRango } from "@/lib/utils"
 
-export async function GET(
-  _request: Request,
-  props: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params
 
   const [logoData, jobResult] = await Promise.all([
@@ -20,7 +18,14 @@ export async function GET(
   const job = jobResult && "isOk" in jobResult && jobResult.isOk() ? jobResult.value : null
 
   const title = job?.title ?? "Oferta de Empleo en Biociencias"
-  const organizationName = job?.organization?.name ?? "Biovity"
+
+  let organizationName = job?.organization?.name
+  if (!organizationName && job?.organizationId) {
+    const orgResult = await getOrganization(job.organizationId)
+    if (orgResult.isOk()) organizationName = orgResult.value.name
+  }
+  organizationName = organizationName ?? "Biovity"
+
   const locationStr = formatJobLocation(job?.location) || "Chile"
 
   let salaryStr = "A convenir"
@@ -189,9 +194,7 @@ export async function GET(
             }}
           >
             <span style={{ fontSize: 18 }}>📍</span>
-            <span style={{ fontSize: 17, fontWeight: 600, color: "#334155" }}>
-              {locationStr}
-            </span>
+            <span style={{ fontSize: 17, fontWeight: 600, color: "#334155" }}>{locationStr}</span>
           </div>
 
           {/* Salary */}
@@ -207,9 +210,7 @@ export async function GET(
             }}
           >
             <span style={{ fontSize: 18 }}>💰</span>
-            <span style={{ fontSize: 17, fontWeight: 700, color: "#059669" }}>
-              {salaryStr}
-            </span>
+            <span style={{ fontSize: 17, fontWeight: 700, color: "#059669" }}>{salaryStr}</span>
           </div>
 
           {/* Employment Type */}
@@ -239,28 +240,13 @@ export async function GET(
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
           width: "100%",
           paddingTop: 24,
           borderTop: "1px solid #f1f5f9",
           zIndex: 10,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: "#22c55e",
-              boxShadow: "0 0 10px rgba(34,197,94,0.6)",
-            }}
-          />
-          <span style={{ fontSize: 18, fontWeight: 700, color: "#2563eb" }}>
-            biovity.cl/trabajos/{id}
-          </span>
-        </div>
-
         <span style={{ fontSize: 16, fontWeight: 500, color: "#94a3b8" }}>
           Portal de Empleo Científico #1 en Chile
         </span>

@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js"
 import { headers } from "next/headers"
 import { cache } from "react"
 import { pool } from "@/lib/db"
+import { buildShortLinkUrl, createShortLink } from "@/lib/db/short-links"
 import {
   sendResetPasswordEmail,
   sendVerificationEmail,
@@ -149,7 +150,10 @@ export const auth = betterAuth({
       const type = (user as { type?: string }).type || "professional"
       const callbackURL = `${verificationUrl.origin}/register/${type}?verified=true`
       verificationUrl.searchParams.set("callbackURL", callbackURL)
-      await sendVerificationEmail(user.email, verificationUrl.toString())
+      const fullUrl = verificationUrl.toString()
+      const shortResult = await createShortLink(fullUrl)
+      const emailUrl = shortResult.isOk() ? buildShortLinkUrl(shortResult.value) : fullUrl
+      await sendVerificationEmail(user.email, emailUrl)
     },
   },
   emailAndPassword: {

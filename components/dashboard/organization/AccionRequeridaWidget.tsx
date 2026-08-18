@@ -16,7 +16,7 @@ export function AccionRequeridaWidget() {
   const organizationId = session?.user?.organizationId ?? undefined
 
   const { data: appsResponse, isPending } = useApplicationsByOrganization(organizationId, {
-    limit: 200,
+    limit: 100,
   })
 
   const pendingApps = useMemo(() => {

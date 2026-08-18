@@ -15,6 +15,21 @@ import { cn } from "@/lib/utils"
 
 const Combobox = ComboboxPrimitive.Root
 
+const ComboboxPortalContainerContext =
+  React.createContext<React.RefObject<HTMLDivElement | null> | null>(null)
+
+function ComboboxPortalContainer({ children }: { children: React.ReactNode }) {
+  const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+  return (
+    <ComboboxPortalContainerContext.Provider value={containerRef}>
+      <div ref={containerRef} className="contents">
+        {children}
+      </div>
+    </ComboboxPortalContainerContext.Provider>
+  )
+}
+
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />
 }
@@ -90,14 +105,19 @@ function ComboboxContent({
   align = "start",
   alignOffset = 0,
   anchor,
+  container,
   ...props
 }: ComboboxPrimitive.Popup.Props &
   Pick<
     ComboboxPrimitive.Positioner.Props,
     "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
-  >) {
+  > & {
+    container?: React.RefObject<HTMLDivElement | null>
+  }) {
+  const portalContainerFromContext = React.useContext(ComboboxPortalContainerContext)
+
   return (
-    <ComboboxPrimitive.Portal>
+    <ComboboxPrimitive.Portal container={container ?? portalContainerFromContext}>
       <ComboboxPrimitive.Positioner
         side={side}
         sideOffset={sideOffset}
@@ -270,6 +290,7 @@ export {
   ComboboxItem,
   ComboboxLabel,
   ComboboxList,
+  ComboboxPortalContainer,
   ComboboxSeparator,
   ComboboxTrigger,
   ComboboxValue,
