@@ -1,15 +1,11 @@
 "use client"
 
-import {
-  CheckmarkCircle01Icon,
-  Edit01Icon,
-  EyeIcon,
-  HelpCircleIcon,
-} from "@hugeicons/core-free-icons"
+import { Edit01Icon, EyeIcon, HelpCircleIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useMemo, useReducer, useState } from "react"
 import { Sheet, SheetContent, SheetHeader } from "@/components/animate-ui/components/radix/sheet"
 import { Button } from "@/components/ui/button"
+import { ComboboxPortalContainer } from "@/components/ui/combobox"
 import { useOnboarding } from "@/hooks/use-onboarding"
 import type { JobTemplate } from "@/lib/api/job-templates"
 import type { Job, JobBenefitInput } from "@/lib/api/jobs"
@@ -142,8 +138,6 @@ type CreateJobDialogProps = {
 export function CreateJobDialog({ organizationId, open, onOpenChange, job }: CreateJobDialogProps) {
   const [form, dispatch] = useReducer(jobFormReducer, job, buildInitialJobFormState)
   const [activeTab, setActiveTab] = useState<ActiveTab>("edit")
-  // After creation, store the new job ID to show the questions step
-  const [createdJobId, setCreatedJobId] = useState<string | null>(null)
 
   const createMutation = useCreateJobMutation(organizationId)
   const updateMutation = useUpdateJobMutation(organizationId)
@@ -156,7 +150,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   const resetForm = useCallback(() => {
     dispatch({ type: "RESET" })
     setActiveTab("edit")
-    setCreatedJobId(null)
   }, [])
 
   const setField = useCallback(
@@ -279,9 +272,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               description: `Publicó la oferta de trabajo "${newJob.title}"`,
             })
           }
-          // For new offers: show the questions step instead of closing
-          setCreatedJobId(newJob.id)
-          setActiveTab("questions")
+          handleOpenChange(false)
         },
       })
     }
@@ -292,38 +283,38 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   const tabs: { id: ActiveTab; label: string; icon: typeof Edit01Icon }[] = [
     { id: "edit", label: "Editar", icon: Edit01Icon },
     { id: "preview", label: "Vista previa", icon: EyeIcon },
-    ...(createdJobId || (isEdit && job?.id)
+    ...(isEdit && job?.id
       ? [{ id: "questions" as ActiveTab, label: "Preguntas", icon: HelpCircleIcon }]
       : []),
   ]
 
-  const activeJobId = createdJobId ?? (isEdit ? job?.id : null)
+  const activeJobId = isEdit ? job?.id : null
 
   return (
-    <>
-      <Sheet open={open} onOpenChange={handleOpenChange} modal={true}>
-        <SheetContent
-          side="right"
-          className="w-full sm:max-w-lg z-[120] flex flex-col"
-          onPointerDownOutside={(e) => {
-            const target = e.target as HTMLElement
-            if (
-              target.closest("[data-slot='select-content']") ||
-              target.closest("[data-slot='combobox-content']")
-            ) {
-              e.preventDefault()
-            }
-          }}
-          onInteractOutside={(e) => {
-            const target = e.target as HTMLElement
-            if (
-              target.closest("[data-slot='select-content']") ||
-              target.closest("[data-slot='combobox-content']")
-            ) {
-              e.preventDefault()
-            }
-          }}
-        >
+    <Sheet open={open} onOpenChange={handleOpenChange} modal={true}>
+      <SheetContent
+        side="right"
+        className="w-full sm:max-w-lg z-[120] flex flex-col"
+        onPointerDownOutside={(e) => {
+          const target = e.target as HTMLElement
+          if (
+            target.closest("[data-slot='select-content']") ||
+            target.closest("[data-slot='combobox-content']")
+          ) {
+            e.preventDefault()
+          }
+        }}
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement
+          if (
+            target.closest("[data-slot='select-content']") ||
+            target.closest("[data-slot='combobox-content']")
+          ) {
+            e.preventDefault()
+          }
+        }}
+      >
+        <ComboboxPortalContainer>
           <SheetHeader>
             <JobFormHeader isEdit={isEdit} />
           </SheetHeader>
@@ -343,14 +334,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               >
                 <HugeiconsIcon icon={tab.icon} size={13} strokeWidth={1.5} />
                 {tab.label}
-                {tab.id === "questions" && createdJobId && (
-                  <HugeiconsIcon
-                    icon={CheckmarkCircle01Icon}
-                    size={12}
-                    strokeWidth={1.5}
-                    className="text-secondary"
-                  />
-                )}
               </button>
             ))}
 
@@ -373,10 +356,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               onSubmit={handleSubmit}
               className="flex-1 space-y-4 overflow-y-auto px-4 py-4"
             >
-              <JobTitleField
-                value={form.title}
-                onChange={(v) => setField("title", v)}
-              />
+              <JobTitleField value={form.title} onChange={(v) => setField("title", v)} />
 
               <JobDescriptionField
                 value={form.description}
@@ -481,7 +461,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 expiresAt={form.expiresAt}
               />
               {/* CTA to go back and submit */}
-              {!isEdit && !createdJobId && (
+              {!isEdit && (
                 <div className="mt-4 flex justify-end gap-2">
                   <Button type="button" variant="outline" onClick={() => setActiveTab("edit")}>
                     Seguir editando
@@ -502,24 +482,15 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
             <div className="flex-1 overflow-y-auto px-4 py-4">
               <div className="mb-3 rounded-lg border border-secondary/20 bg-secondary/5 px-3 py-2">
                 <p className="text-xs text-secondary font-medium">
-                  {createdJobId
-                    ? "¡Oferta creada! Ahora puedes agregar preguntas para los postulantes."
-                    : "Gestiona las preguntas para los postulantes de esta oferta."}
+                  Gestiona las preguntas para los postulantes de esta oferta.
                 </p>
               </div>
               <QuestionsManager jobId={activeJobId} organizationId={organizationId} />
-              {createdJobId && (
-                <div className="mt-4 flex justify-end">
-                  <Button type="button" onClick={() => handleOpenChange(false)}>
-                    Finalizar
-                  </Button>
-                </div>
-              )}
             </div>
           )}
-        </SheetContent>
-      </Sheet>
-    </>
+        </ComboboxPortalContainer>
+      </SheetContent>
+    </Sheet>
   )
 }
 
