@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Suspense } from "react"
 import { TrabajosPageContent } from "@/components/landing/trabajos/TrabajosPageContent"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
@@ -9,6 +10,16 @@ import {
   OrganizationJsonLd,
   WebSiteJsonLd,
 } from "@/components/seo/JsonLd"
+
+const TRABAJOS_CATEGORIAS = [
+  { href: "/trabajos?categoria=biotecnologia", label: "Biotecnología" },
+  { href: "/trabajos?categoria=bioquimica", label: "Bioquímica" },
+  { href: "/trabajos?categoria=quimica", label: "Química" },
+  { href: "/trabajos?categoria=ingenieria-quimica", label: "Ingeniería Química" },
+  { href: "/trabajos?categoria=farmacia", label: "Farmacia" },
+  { href: "/trabajos?categoria=salud", label: "Salud" },
+  { href: "/trabajos?categoria=investigacion", label: "Investigación" },
+]
 
 const FAQS_TRABAJOS = [
   {
@@ -39,7 +50,7 @@ const FAQS_TRABAJOS = [
 ]
 
 export const metadata: Metadata = {
-  title: "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity Chile",
+  title: "Empleos en Biotecnología, Bioquímica y Ciencias",
   description:
     "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
   keywords: [
@@ -106,6 +117,29 @@ export default function TrabajosPage() {
         ]}
       />
       <main className="flex flex-col relative">
+        <section className="bg-white border-b border-border/60">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+              Empleos en Biotecnología y Ciencias en Chile
+            </h1>
+            <p className="mt-3 max-w-3xl text-muted-foreground">
+              Encuentra ofertas de trabajo en biotecnología, bioquímica, química, ingeniería
+              química, farmacéutica, laboratorio e I+D en Chile. Postula gratis a las vacantes que
+              coinciden con tu perfil y recibe alertas de nuevas oportunidades en ciencias.
+            </p>
+            <nav className="mt-6 flex flex-wrap gap-2" aria-label="Categorías de empleo">
+              {TRABAJOS_CATEGORIAS.map((cat) => (
+                <Link
+                  key={cat.href}
+                  href={cat.href}
+                  className="inline-flex items-center rounded-full border border-border/60 bg-surface-container-lowest px-3.5 py-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors"
+                >
+                  {cat.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </section>
         <Suspense>
           <TrabajosPageContent />
         </Suspense>

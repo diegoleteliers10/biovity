@@ -19,7 +19,7 @@ import {
 import { FAQS_EMPRESAS } from "../../lib/data/empresas-data"
 
 export const metadata: Metadata = {
-  title: "Recluta Talento en Biotecnología y Biociencias | Biovity para Empresas",
+  title: "Recluta Talento en Biotecnología y Biociencias",
   description:
     "ATS y portal de empleo para reclutar científicos en biotecnología, bioquímica, química, ingeniería química y salud. Encuentra candidatos cualificados en Chile.",
   keywords: [

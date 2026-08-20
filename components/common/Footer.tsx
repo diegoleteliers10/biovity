@@ -21,6 +21,7 @@ const FOOTER_SECTIONS = [
       { label: "Consejos de Carrera", href: "/consejos-carrera" },
       { label: "Salarios", href: "/salarios" },
       { label: "Blog", href: "/blog" },
+      { label: "Lista de Espera", href: "/lista-espera" },
     ],
   },
   {
