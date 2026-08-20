@@ -10,7 +10,6 @@ import {
   GraduationScrollIcon,
   HeartAddIcon,
   LaptopIcon,
-  Linkedin02Icon,
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -22,7 +21,7 @@ import { JobShareButtons } from "@/components/landing/trabajos/JobShareButtons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useMountEffect } from "@/hooks/use-mount-effect"
-import { formatJobLocation, type Job, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
+import { formatJobLocation, type JobBenefit, type JobLocation } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useIncrementJobViews } from "@/lib/api/use-jobs-views"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
@@ -32,26 +31,14 @@ import {
   useSaveJobMutation,
 } from "@/lib/api/use-saved-jobs"
 
+import { formatDateChilean, formatJobSalary } from "@/lib/utils"
+
 function getJobModalidad(loc: JobLocation | null | undefined): string {
   if (!loc) return "Presencial"
   if (loc.isRemote) return "Remoto"
   if (loc.isHybrid) return "Híbrido"
   return "Presencial"
 }
-
-function formatJobSalary(job: Job): string {
-  const s = job.salary
-  if (!s) return "A convenir"
-  if (s.min != null && s.max != null) {
-    const currency = s.currency === "USD" ? "USD" : "CLP"
-    const period = s.period === "monthly" ? "mes" : (s.period ?? "")
-    return `$${s.min.toLocaleString("es-CL")} - ${s.max.toLocaleString("es-CL")} ${currency}/${period}`
-  }
-  if (s.isNegotiable) return "A convenir"
-  return "A convenir"
-}
-
-import { formatDateChilean } from "@/lib/utils"
 
 function formatDateShort(isoDate: string | undefined | null): string {
   if (!isoDate) return "—"
@@ -139,7 +126,7 @@ export default function JobDetailPage() {
   const organizationName = job.organization?.name ?? organization?.name ?? "Organización"
   const locationStr = formatJobLocation(job.location) || "Sin especificar"
   const modalidad = getJobModalidad(job.location)
-  const salaryStr = formatJobSalary(job)
+  const salaryStr = formatJobSalary(job.salary)
   const benefits = job.benefits ?? []
 
   return (
@@ -194,7 +181,8 @@ export default function JobDetailPage() {
                 {locationStr} · {modalidad}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 text-muted-foreground">
-                {job.experienceLevel} · {job.employmentType}
+                {[job.experienceLevel, job.employmentType].filter(Boolean).join(" · ") ||
+                  "Sin especificar"}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-semibold text-foreground">
                 <HugeiconsIcon
@@ -260,12 +248,16 @@ export default function JobDetailPage() {
                 <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
                   Modalidad: <span className="text-secondary">{modalidad}</span>
                 </span>
-                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
-                  Horario: <span className="text-secondary">{job.employmentType}</span>
-                </span>
-                <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
-                  Nivel: <span className="text-secondary">{job.experienceLevel}</span>
-                </span>
+                {job.employmentType && (
+                  <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
+                    Horario: <span className="text-secondary">{job.employmentType}</span>
+                  </span>
+                )}
+                {job.experienceLevel && (
+                  <span className="rounded-full bg-[#f3f3f5] px-3 py-1.5 text-[13px] leading-4 font-medium text-foreground">
+                    Nivel: <span className="text-secondary">{job.experienceLevel}</span>
+                  </span>
+                )}
               </div>
             </section>
           </CardContent>

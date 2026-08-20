@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { Job } from "@/lib/api/jobs"
-import { formatAmountCLP, formatDateChilean } from "@/lib/utils"
+import { formatDateChilean, formatJobSalary } from "@/lib/utils"
 
 const statusColors: Record<string, string> = {
   active: "bg-secondary/10 text-secondary border border-secondary/20",
@@ -43,18 +43,6 @@ function getStatusLabel(status: string): string {
     expired: "Expirada",
   }
   return labels[status] ?? status.charAt(0).toUpperCase() + status.slice(1)
-}
-
-function formatJobSalary(job: Job): string {
-  const s = job.salary
-  if (!s) return "A convenir"
-  if (s.min != null && s.max != null) {
-    const currency = s.currency === "USD" ? "USD" : "CLP"
-    const period = s.period === "monthly" ? "mes" : (s.period ?? "")
-    return `${formatAmountCLP(s.min)} - ${formatAmountCLP(s.max)} ${currency}/${period}`
-  }
-  if (s.isNegotiable) return "A convenir"
-  return "A convenir"
 }
 
 function getDaysRemaining(expiresAt?: string): string {
@@ -78,7 +66,7 @@ interface OfertaCardProps {
 
 export function OfertaCard({ job, onEdit, onDelete, onDuplicate }: OfertaCardProps) {
   const { push } = useRouter()
-  const salaryStr = formatJobSalary(job)
+  const salaryStr = formatJobSalary(job.salary)
 
   return (
     <Card className="group relative cursor-pointer border border-border bg-card">

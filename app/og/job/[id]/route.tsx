@@ -3,7 +3,7 @@ import { join } from "node:path"
 import { ImageResponse } from "next/og"
 import { formatJobLocation, getJob } from "@/lib/api/jobs"
 import { getOrganization } from "@/lib/api/organizations"
-import { formatSalarioRango } from "@/lib/utils"
+import { formatJobSalary } from "@/lib/utils"
 
 export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params
@@ -28,10 +28,7 @@ export async function GET(_request: Request, props: { params: Promise<{ id: stri
 
   const locationStr = formatJobLocation(job?.location) || "Chile"
 
-  let salaryStr = "A convenir"
-  if (job?.salary?.min != null && job?.salary?.max != null) {
-    salaryStr = formatSalarioRango(job.salary.min, job.salary.max)
-  }
+  const salaryStr = formatJobSalary(job?.salary)
 
   const categoryStr = job?.category ? job.category.toUpperCase() : "BIOTECNOLOGÍA Y CIENCIAS"
 

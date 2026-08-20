@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson, fetchNoContent, fetchWithFallback } from "@/lib/result"
+import { fetchJson, fetchNoContent } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -46,8 +46,8 @@ export type Job = {
   organization?: JobOrganization
   title: string
   description: string
-  employmentType: string
-  experienceLevel: string
+  employmentType?: string
+  experienceLevel?: string
   salary?: JobSalary
   location?: JobLocation
   benefits?: JobBenefit[]
@@ -66,8 +66,8 @@ export type CreateJobInput = {
   organizationId: string
   title: string
   description: string
-  employmentType: string
-  experienceLevel: string
+  employmentType?: string
+  experienceLevel?: string
   salary?: JobSalary
   location?: JobLocation
   benefits?: JobBenefitInput[]

@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import type { Job } from "@/lib/api/jobs"
 import { formatJobLocation } from "@/lib/api/jobs"
 import type { useRemoveSavedJobMutation, useSaveJobMutation } from "@/lib/api/use-saved-jobs"
-import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
+import { formatFechaRelativa, formatJobSalary } from "@/lib/utils"
 
 function getJobModalidad(job: Job): string {
   const loc = job.location
@@ -37,12 +37,7 @@ export function JobListItem({
   removeMutation,
 }: JobListItemProps) {
   const { push } = useRouter()
-  const salaryStr =
-    job.salary?.min != null && job.salary?.max != null
-      ? formatSalarioRango(job.salary.min, job.salary.max)
-      : job.salary?.isNegotiable
-        ? "A convenir"
-        : "—"
+  const salaryStr = formatJobSalary(job.salary)
   const locationStr = formatJobLocation(job.location) || "Sin especificar"
   const postedStr = job.createdAt ? formatFechaRelativa(new Date(job.createdAt)) : "—"
   const modalidad = getJobModalidad(job)
@@ -125,13 +120,15 @@ export function JobListItem({
             <Badge variant="secondary" className="shrink-0 capitalize">
               {modalidad === "hibrido" ? "Híbrido" : modalidad}
             </Badge>
-            <Badge variant="default" className="shrink-0 capitalize">
-              {job.employmentType === "Full-time"
-                ? "Full Time"
-                : job.employmentType === "Part-time"
-                  ? "Part Time"
-                  : job.employmentType}
-            </Badge>
+            {job.employmentType && (
+              <Badge variant="default" className="shrink-0 capitalize">
+                {job.employmentType === "Full-time"
+                  ? "Full Time"
+                  : job.employmentType === "Part-time"
+                    ? "Part Time"
+                    : job.employmentType}
+              </Badge>
+            )}
           </div>
         </div>
       </CardContent>

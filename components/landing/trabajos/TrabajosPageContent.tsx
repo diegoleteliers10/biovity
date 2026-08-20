@@ -5,7 +5,13 @@ import type { Job } from "@/lib/api/jobs"
 import { formatJobLocation } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
 import { trabajosParsers } from "@/lib/parsers/trabajos"
-import type { FiltrosTrabajos, Trabajo } from "@/lib/types/trabajos"
+import type {
+  FiltrosTrabajos,
+  FormatoTrabajo,
+  ModalidadTrabajo,
+  NivelExperiencia,
+  Trabajo,
+} from "@/lib/types/trabajos"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
 
@@ -71,25 +77,22 @@ function filtrosToUrlState(filtros: FiltrosTrabajos) {
   }
 }
 
-function normalizeEmploymentType(type: string): "remoto" | "hibrido" | "presencial" {
-  const normalized = type.toLowerCase()
-  if (normalized.includes("remote") || normalized.includes("remoto")) return "remoto"
-  if (
-    normalized.includes("hybrid") ||
-    normalized.includes("híbrido") ||
-    normalized.includes("hibrido")
-  )
-    return "hibrido"
-  if (
-    normalized.includes("presencial") ||
-    normalized.includes("onsite") ||
-    normalized.includes("on-site")
-  )
-    return "presencial"
+function getModalidadTrabajo(loc: Job["location"]): ModalidadTrabajo {
+  if (loc?.isRemote) return "remoto"
+  if (loc?.isHybrid) return "hibrido"
   return "presencial"
 }
 
-function normalizeFormato(type: string): "full-time" | "part-time" | "contrato" | "practica" {
+const EXPERIENCIA_MAP: Record<string, NivelExperiencia> = {
+  Entrante: "junior",
+  Junior: "junior",
+  "Mid-Senior": "mid",
+  Senior: "senior",
+  Ejecutivo: "senior",
+}
+
+function normalizeFormato(type: string | undefined): FormatoTrabajo {
+  if (!type) return "full-time"
   const normalized = type.toLowerCase()
   if (normalized.includes("full") || normalized.includes("tiempo completo")) return "full-time"
   if (normalized.includes("part") || normalized.includes("medio")) return "part-time"
@@ -114,7 +117,7 @@ function jobToTrabajo(job: Job): Trabajo {
     titulo: job.title,
     empresa: job.organization?.name ?? "Empresa",
     ubicacion: locationStr || job.location?.city || "Chile",
-    modalidad: normalizeEmploymentType(job.employmentType),
+    modalidad: getModalidadTrabajo(job.location),
     formato: normalizeFormato(job.employmentType),
     fechaPublicacion: new Date(job.createdAt),
     rangoSalarial: {
@@ -131,7 +134,7 @@ function jobToTrabajo(job: Job): Trabajo {
     requisitos: [],
     responsabilidades: [],
     categoria: job.category,
-    experiencia: undefined,
+    experiencia: job.experienceLevel ? EXPERIENCIA_MAP[job.experienceLevel] : undefined,
     slug: job.id,
   }
 }

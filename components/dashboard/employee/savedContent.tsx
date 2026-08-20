@@ -21,17 +21,10 @@ import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { useRemoveSavedJobMutation, useSavedJobsByUserInfinite } from "@/lib/api/use-saved-jobs"
-import { formatFechaRelativa, formatSalarioRango } from "@/lib/utils"
+import { formatFechaRelativa, formatJobSalary } from "@/lib/utils"
 
 function getSalaryDisplay(job: Job): string {
-  const s = job.salary
-  if (!s) return "A convenir"
-
-  if (s.min != null && s.max != null) {
-    return formatSalarioRango(s.min, s.max)
-  }
-
-  return s.isNegotiable ? "A convenir" : "—"
+  return formatJobSalary(job.salary)
 }
 
 function getPostedDisplay(iso: string | null | undefined): string {
