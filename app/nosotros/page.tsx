@@ -13,7 +13,7 @@ import {
 } from "../../components/seo/JsonLd"
 
 export const metadata: Metadata = {
-  title: "Nosotros | Conectando Talento Científico en Biovity",
+  title: "Nosotros | Conectando Talento Científico",
   description:
     "Conoce a Biovity y su misión de conectar talento científico con oportunidades significativas en el sector de biociencias en Chile.",
   keywords: [

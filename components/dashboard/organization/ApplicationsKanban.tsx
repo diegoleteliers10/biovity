@@ -160,11 +160,17 @@ function ApplicantCard({
               }
             }}
           >
-            <Avatar className={cn(
-              "size-10 transition-all border",
-              selectionMode && isSelected ? "ring-2 ring-primary border-primary" : "border-border/30"
-            )}>
-              {applicant.avatar && <AvatarImage src={applicant.avatar} alt={applicant.candidateName} />}
+            <Avatar
+              className={cn(
+                "size-10 transition-all border",
+                selectionMode && isSelected
+                  ? "ring-2 ring-primary border-primary"
+                  : "border-border/30"
+              )}
+            >
+              {applicant.avatar && (
+                <AvatarImage src={applicant.avatar} alt={applicant.candidateName} />
+              )}
               <AvatarFallback className="bg-secondary/10 text-secondary font-semibold text-xs">
                 {applicant.candidateName
                   .split(" ")
@@ -442,9 +448,7 @@ export function ApplicationsKanban({
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       {/* Desktop: horizontal scroll, Mobile: vertical stack or smaller cards */}
-      <div
-        className="flex h-full min-h-0 w-full gap-3 overflow-x-auto overflow-y-hidden pb-1 snap-x snap-mandatory lg:snap-none"
-      >
+      <div className="flex h-full min-h-0 w-full gap-3 overflow-x-auto overflow-y-hidden pb-1 snap-x snap-mandatory lg:snap-none">
         {STAGES.map((stage) => (
           <KanbanColumn
             key={stage.id}

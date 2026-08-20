@@ -37,8 +37,8 @@ export function ConsejosHero() {
             transition={{ duration: 0.5, ease }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
           >
-            Consejos de Carrera para{" "}
-            <span className="text-accent font-bold">Científicos e Ingenieros</span>
+            Consejos de Carrera en{" "}
+            <span className="text-accent font-bold">Biotecnología y Ciencias</span> en Chile
           </m.h1>
 
           {/* Subtitle */}

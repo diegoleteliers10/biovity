@@ -19,7 +19,10 @@ export function DashboardShellAdmin({ children, defaultOpen, session }: Dashboar
   useNotificationsRealtime(userId)
   return (
     <DashboardSessionContext.Provider value={session ?? null}>
-      <SidebarProvider className="h-svh max-h-svh pt-2 px-2 pb-2 bg-sidebar overflow-hidden" defaultOpen={defaultOpen}>
+      <SidebarProvider
+        className="h-svh max-h-svh pt-2 px-2 pb-2 bg-sidebar overflow-hidden"
+        defaultOpen={defaultOpen}
+      >
         <DashboardSidebar
           navData={NAV_DATA_ADMIN}
           logoutRedirect="/login"

@@ -14,7 +14,7 @@ import {
 import { CONSEJOS_FAQS } from "@/lib/data/consejos-carrera-data"
 
 export const metadata: Metadata = {
-  title: "Consejos de Carrera en Biociencias y Biotech | Biovity",
+  title: "Consejos de Carrera en Biociencias y Biotech",
   description:
     "Guías de carrera para científicos, ingenieros en biotecnología y farmacéuticos en Chile. Optimiza tu CV ATS, prepara entrevistas técnicas y pasa de la academia a la industria.",
   keywords: [

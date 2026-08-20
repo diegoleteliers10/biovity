@@ -105,7 +105,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const job = result.value
-  const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://biovity.cl"
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
   const url = `${siteUrl}/trabajos/${job.id}`
   const ogImageUrl = `${siteUrl}/og/job/${job.id}`
   const orgName = job.organization?.name ?? "Biovity"

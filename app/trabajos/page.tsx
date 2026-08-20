@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
+import { TrabajosCategoryBadges } from "@/components/landing/trabajos/TrabajosCategoryBadges"
 import { TrabajosPageContent } from "@/components/landing/trabajos/TrabajosPageContent"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import {
@@ -39,7 +40,7 @@ const FAQS_TRABAJOS = [
 ]
 
 export const metadata: Metadata = {
-  title: "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity Chile",
+  title: "Empleos en Biotecnología, Bioquímica y Ciencias",
   description:
     "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
   keywords: [
@@ -106,6 +107,19 @@ export default function TrabajosPage() {
         ]}
       />
       <main className="flex flex-col relative">
+        <section className="bg-white pt-32">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+              Empleos en Biotecnología y Ciencias en Chile
+            </h1>
+            <p className="mt-3 max-w-3xl text-muted-foreground">
+              Encuentra ofertas de trabajo en biotecnología, bioquímica, química, ingeniería
+              química, farmacéutica, laboratorio e I+D en Chile. Postula gratis a las vacantes que
+              coinciden con tu perfil y recibe alertas de nuevas oportunidades en ciencias.
+            </p>
+            <TrabajosCategoryBadges />
+          </div>
+        </section>
         <Suspense>
           <TrabajosPageContent />
         </Suspense>

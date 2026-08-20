@@ -79,7 +79,8 @@ export function ConversionFunnelCard({
       icon: UserMultiple02Icon,
       colorClass: "text-slate-700 dark:text-slate-300",
       barBgClass: "bg-slate-500/80 dark:bg-slate-400/80",
-      badgeClass: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+      badgeClass:
+        "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
       subtext: "Base inicial de postulaciones",
     },
     {
@@ -134,14 +135,20 @@ export function ConversionFunnelCard({
       to: "Oferta",
       passRate: reachedEntrevista > 0 ? Math.round((reachedOferta / reachedEntrevista) * 100) : 0,
       dropCount: reachedEntrevista - reachedOferta,
-      dropRate: reachedEntrevista > 0 ? Math.round(((reachedEntrevista - reachedOferta) / reachedEntrevista) * 100) : 0,
+      dropRate:
+        reachedEntrevista > 0
+          ? Math.round(((reachedEntrevista - reachedOferta) / reachedEntrevista) * 100)
+          : 0,
     },
     {
       from: "Oferta",
       to: "Contratado",
       passRate: reachedOferta > 0 ? Math.round((reachedContratado / reachedOferta) * 100) : 0,
       dropCount: reachedOferta - reachedContratado,
-      dropRate: reachedOferta > 0 ? Math.round(((reachedOferta - reachedContratado) / reachedOferta) * 100) : 0,
+      dropRate:
+        reachedOferta > 0
+          ? Math.round(((reachedOferta - reachedContratado) / reachedOferta) * 100)
+          : 0,
     },
   ]
 
@@ -159,7 +166,9 @@ export function ConversionFunnelCard({
 
       <CardContent className="space-y-3">
         {totalApps === 0 ? (
-          <p className="text-sm text-muted-foreground">No hay postulaciones registradas en este período.</p>
+          <p className="text-sm text-muted-foreground">
+            No hay postulaciones registradas en este período.
+          </p>
         ) : (
           <>
             <div className="space-y-2">
@@ -178,8 +187,14 @@ export function ConversionFunnelCard({
                             {stage.stepNumber}
                           </span>
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <HugeiconsIcon icon={stage.icon} size={15} className={`shrink-0 ${stage.colorClass}`} />
-                            <span className="text-xs font-semibold text-foreground truncate">{stage.label}</span>
+                            <HugeiconsIcon
+                              icon={stage.icon}
+                              size={15}
+                              className={`shrink-0 ${stage.colorClass}`}
+                            />
+                            <span className="text-xs font-semibold text-foreground truncate">
+                              {stage.label}
+                            </span>
                           </div>
                         </div>
 
@@ -191,7 +206,10 @@ export function ConversionFunnelCard({
                               {stage.count === 1 ? "candidato" : "candidatos"}
                             </span>
                           </span>
-                          <Badge variant="outline" className={`text-[10px] px-1.5 py-0 h-5 font-semibold ${stage.badgeClass}`}>
+                          <Badge
+                            variant="outline"
+                            className={`text-[10px] px-1.5 py-0 h-5 font-semibold ${stage.badgeClass}`}
+                          >
                             {stage.rateOfTotal}%
                           </Badge>
                         </div>
@@ -221,7 +239,8 @@ export function ConversionFunnelCard({
                             <HugeiconsIcon icon={ArrowDown01Icon} size={10} />
                           </div>
                           <span>
-                            Pasa: <strong className="text-foreground">{transition.passRate}%</strong>
+                            Pasa:{" "}
+                            <strong className="text-foreground">{transition.passRate}%</strong>
                           </span>
                         </div>
 
@@ -249,7 +268,9 @@ export function ConversionFunnelCard({
                 <span className="text-xs font-bold text-foreground tabular-nums">{totalApps}</span>
               </div>
               <div className="rounded-lg bg-muted/30 p-2 border border-border/30">
-                <span className="text-[10px] text-muted-foreground block">Tasa de Contratación</span>
+                <span className="text-[10px] text-muted-foreground block">
+                  Tasa de Contratación
+                </span>
                 <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {rateContratado}% ({reachedContratado})
                 </span>

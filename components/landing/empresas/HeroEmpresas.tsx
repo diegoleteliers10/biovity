@@ -60,7 +60,7 @@ export function HeroEmpresas() {
             transition={{ duration: 0.5, ease }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-semibold text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
           >
-            Conecta con el nuevo
+            Recluta el mejor
             <span className="text-accent font-semibold"> talento científico </span>
             de Chile
           </m.h1>

@@ -40,6 +40,7 @@ export function JobPostingJsonLd({
   title,
   description,
   organizationName,
+  organizationUrl,
   datePosted,
   validThrough,
   employmentType,
@@ -61,30 +62,32 @@ export function JobPostingJsonLd({
     description,
     datePosted,
     validThrough,
-    employmentUnit: "FULL_TIME",
+    employmentType: employmentType
+      ? employmentType.toUpperCase().replace(/\s+/g, "_")
+      : "FULL_TIME",
     hiringOrganization: {
       "@type": "Organization",
       name: organizationName,
+      ...(organizationUrl ? { sameAs: organizationUrl } : {}),
     },
-    jobLocation: isRemote
+    ...(isRemote
       ? {
-          "@type": "Place",
-          address: {
-            "@type": "PostalAddress",
-            addressCountry: "CL",
+          jobLocationType: "TELECOMMUTE",
+          applicantLocationRequirements: {
+            "@type": "Country",
+            name: "CL",
           },
         }
-      : {
-          "@type": "Place",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: locationCity,
-            addressRegion: locationRegion,
-            addressCountry: locationCountry,
-          },
-        },
-    jobLocationType: isRemote ? "REMOTE" : isHybrid ? "HYBRID" : "ONSITE",
-    ...(employmentType ? { employmentType: employmentType.toUpperCase() } : {}),
+      : {}),
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: locationCity || "Santiago",
+        addressRegion: locationRegion || "Región Metropolitana",
+        addressCountry: locationCountry || "CL",
+      },
+    },
     experienceRequirements: experienceLevel
       ? {
           "@type": "OccupationalExperienceRequirements",
@@ -337,11 +340,7 @@ export function OrganizationJsonLd() {
     logo: "https://biovity.cl/logoIconBiovity.png",
     description:
       "Portal de empleo especializado en biotecnología, bioquímica, química, ingeniería química y salud en Chile.",
-    sameAs: [
-      // Add social media URLs when available
-      // "https://www.linkedin.com/company/biovity",
-      // "https://twitter.com/biovity",
-    ],
+    sameAs: ["https://www.linkedin.com/company/biovity"],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
@@ -372,7 +371,7 @@ export function WebSiteJsonLd() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://biovity.cl/search?q={search_term_string}",
+        urlTemplate: "https://biovity.cl/trabajos?q={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
@@ -587,7 +586,7 @@ export function AboutPageJsonLd() {
         "@type": "Country",
         name: "Chile",
       },
-      sameAs: [],
+      sameAs: ["https://www.linkedin.com/company/biovity"],
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer service",

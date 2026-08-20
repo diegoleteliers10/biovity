@@ -1,9 +1,10 @@
 "use client"
 
-import { FilterEditIcon, Search01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon, FilterEditIcon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import Link from "next/link"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -189,6 +190,69 @@ export function SalariosInteractiveFilter() {
           Referencia basada en datos de {CARRERA_CHART_DATA.length} carreras,{" "}
           {INDUSTRIA_CHART_DATA.length} industrias y {REGION_CHART_DATA.length} zonas de Chile.
         </p>
+
+        {/* Tabla resumen de referencia indexable para SEO */}
+        <div className="mt-12 pt-8 border-t border-border/15">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h3 className="text-xl font-semibold text-foreground tracking-tight">
+                Rangos salariales de referencia en Chile (CLP líquido)
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Estimaciones basadas en el mercado laboral chileno para profesionales de ciencias e
+                ingeniería.
+              </p>
+            </div>
+            <Button variant="outline" size="sm" asChild className="shrink-0 bg-white">
+              <Link href="/trabajos" className="flex items-center gap-1.5">
+                <span>Ver ofertas de empleo</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
+              </Link>
+            </Button>
+          </div>
+
+          <div className="overflow-x-auto rounded-xl border border-border/10 bg-white">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-surface-container-low border-b border-border/10 text-muted-foreground text-xs uppercase">
+                <tr>
+                  <th scope="col" className="px-4 py-3 font-semibold">
+                    Carrera / Especialidad
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-semibold">
+                    Junior (0-2 años)
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-semibold">
+                    Senior (5+ años)
+                  </th>
+                  <th scope="col" className="px-4 py-3 font-semibold text-right">
+                    Vacantes
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/10">
+                {CARRERA_CHART_DATA.map((item) => (
+                  <tr key={item.carrera} className="hover:bg-zinc-50/80 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">{item.carrera}</td>
+                    <td className="px-4 py-3 text-muted-foreground font-mono">
+                      {formatCurrencyCLP(item.junior)}
+                    </td>
+                    <td className="px-4 py-3 text-foreground font-mono font-semibold">
+                      {formatCurrencyCLP(item.senior)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Link
+                        href={`/trabajos?q=${encodeURIComponent(item.carrera)}`}
+                        className="text-xs text-accent hover:underline font-medium"
+                      >
+                        Buscar vacantes &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
   )

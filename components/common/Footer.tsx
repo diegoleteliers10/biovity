@@ -21,6 +21,7 @@ const FOOTER_SECTIONS = [
       { label: "Consejos de Carrera", href: "/consejos-carrera" },
       { label: "Salarios", href: "/salarios" },
       { label: "Blog", href: "/blog" },
+      { label: "Lista de Espera", href: "/lista-espera" },
     ],
   },
   {
@@ -37,9 +38,9 @@ const FOOTER_SECTIONS = [
     title: "Soporte",
     links: [
       { label: "Centro de Ayuda", href: "/nosotros" },
-      { label: "Términos de Servicio", href: "/" },
-      { label: "Política de Privacidad", href: "/" },
-      { label: "Política de Cookies", href: "/" },
+      { label: "Términos de Servicio", href: "/terminos" },
+      { label: "Política de Privacidad", href: "/privacidad" },
+      { label: "Política de Cookies", href: "/cookies" },
     ],
   },
 ] as const
