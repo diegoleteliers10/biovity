@@ -1,8 +1,6 @@
-import { Result as R } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
-import { NetworkError } from "@/lib/errors"
-import { getErrorMessage } from "@/lib/result"
+import { fetchJson } from "@/lib/result"
 
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
@@ -50,47 +48,27 @@ export async function GET(request: NextRequest) {
   }
   if (search) query.set("search", search)
 
-  const resResult = await R.tryPromise({
-    try: () =>
-      fetch(`${API_BASE}/api/v1/users?${query.toString()}`, {
-        headers: { cookie: request.headers.get("cookie") ?? "" },
-      }),
-    catch: (cause) =>
-      new NetworkError({
-        message: cause instanceof Error ? cause.message : "Network error",
-        cause,
-      }),
-  })
-
-  if (resResult.isErr()) {
-    console.error("[admin/users] Error:", resResult.error)
-    return NextResponse.json({ error: "Error al obtener los usuarios" }, { status: 500 })
-  }
-
-  const res = resResult.value
-  let data: unknown = null
-  try {
-    data = await res.json()
-  } catch {
-    data = null
-  }
-
-  if (!res.ok) {
-    const status = res.status === 401 ? 403 : res.status
-    return NextResponse.json(
-      { error: getErrorMessage(data, "Error al obtener los usuarios") },
-      { status }
-    )
-  }
-
-  const body = data as {
+  const result = await fetchJson<{
     data?: BackendUser[]
     total?: number
     page?: number
     limit?: number
     totalPages?: number
+  }>(`${API_BASE}/api/v1/users?${query.toString()}`)
+
+  if (result.isErr()) {
+    const err = result.error
+    const status =
+      err._tag === "ApiError" && err.status === 401
+        ? 403
+        : err._tag === "ApiError"
+          ? err.status
+          : 500
+    console.error("[admin/users] Error:", err)
+    return NextResponse.json({ error: err.message }, { status })
   }
 
+  const body = result.value
   const users: AdminUser[] = (body.data ?? [])
     .filter((u) => u.type !== "admin")
     .map((u) => ({

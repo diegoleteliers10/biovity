@@ -22,7 +22,7 @@ export type JobPostingJsonLdProps = {
   organizationUrl?: string
   datePosted: string
   validThrough?: string
-  employmentType: string
+  employmentType?: string
   experienceLevel?: string
   locationCity?: string
   locationRegion?: string
@@ -84,7 +84,7 @@ export function JobPostingJsonLd({
           },
         },
     jobLocationType: isRemote ? "REMOTE" : isHybrid ? "HYBRID" : "ONSITE",
-    employmentType: employmentType.toUpperCase(),
+    ...(employmentType ? { employmentType: employmentType.toUpperCase() } : {}),
     experienceRequirements: experienceLevel
       ? {
           "@type": "OccupationalExperienceRequirements",

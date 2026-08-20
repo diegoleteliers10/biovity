@@ -12,16 +12,16 @@ export function JobFormActions({ isSubmitting, isEdit, canSubmit, onCancel }: Jo
   return (
     <DialogFooter>
       <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
-        Cancelar
+        {isEdit ? "Cancelar" : "Guardar borrador"}
       </Button>
       <Button type="submit" disabled={!canSubmit || isSubmitting}>
         {isSubmitting
           ? isEdit
             ? "Guardando..."
-            : "Creando..."
+            : "Publicando..."
           : isEdit
             ? "Guardar cambios"
-            : "Crear oferta"}
+            : "Publicar oferta"}
       </Button>
     </DialogFooter>
   )

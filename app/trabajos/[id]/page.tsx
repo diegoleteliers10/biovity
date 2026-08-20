@@ -40,7 +40,7 @@ import {
 import { getOrganization } from "@/lib/api/organizations"
 import {
   formatFechaLarga,
-  formatSalarioRango,
+  formatJobSalary,
   getFormatoBadgeColor,
   getModalidadBadgeColor,
 } from "@/lib/utils"
@@ -57,11 +57,7 @@ function getJobModalidad(loc: JobLocation | null | undefined): string {
 }
 
 function formatJobSalaryDisplay(job: Job): string {
-  const s = job.salary
-  if (!s) return "A convenir"
-  if (s.min != null && s.max != null) return formatSalarioRango(s.min, s.max)
-  if (s.isNegotiable) return "A convenir"
-  return "A convenir"
+  return formatJobSalary(job.salary)
 }
 
 function getBenefitIcon(benefit: JobBenefit) {
@@ -168,7 +164,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
   const modalidad = getJobModalidad(job.location)
   const ubicacion = formatJobLocation(job.location) || "Sin especificar"
   const salaryStr = formatJobSalaryDisplay(job)
-  const employmentTypeKey = job.employmentType.toLowerCase()
+  const employmentTypeKey = job.employmentType?.toLowerCase() ?? ""
   const breadcrumbs = getJobBreadcrumbs(referer, job.title)
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biovity.cl"
@@ -252,9 +248,11 @@ export default async function TrabajoDetailPage({ params }: Props) {
               <Badge className={`${getModalidadBadgeColor(modalidad)} capitalize`}>
                 {modalidad === "hibrido" ? "Híbrido" : modalidad}
               </Badge>
-              <Badge className={`${getFormatoBadgeColor(employmentTypeKey)} capitalize`}>
-                {job.employmentType}
-              </Badge>
+              {job.employmentType && (
+                <Badge className={`${getFormatoBadgeColor(employmentTypeKey)} capitalize`}>
+                  {job.employmentType}
+                </Badge>
+              )}
               {job.experienceLevel && (
                 <Badge className="bg-zinc-100 text-zinc-800 capitalize">
                   {job.experienceLevel === "Mid-Senior" ? "Semi Senior" : job.experienceLevel}
@@ -360,10 +358,12 @@ export default async function TrabajoDetailPage({ params }: Props) {
                           {modalidad === "hibrido" ? "Híbrido" : modalidad}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Formato:</span>
-                        <span className="font-medium text-zinc-900">{job.employmentType}</span>
-                      </div>
+                      {job.employmentType && (
+                        <div className="flex justify-between">
+                          <span>Formato:</span>
+                          <span className="font-medium text-zinc-900">{job.employmentType}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span>Salario:</span>
                         <span className="font-medium text-zinc-900">{salaryStr}</span>

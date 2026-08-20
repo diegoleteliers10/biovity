@@ -19,28 +19,32 @@ export function JobSalaryFields({
   return (
     <Field>
       <FieldLabel>
-        Salario <span className="text-red-600 font-bold ml-0.5">*</span>
+        Sueldo mensual (CLP) <span className="text-red-600 font-bold ml-0.5">*</span>
       </FieldLabel>
       <div className="flex gap-2 items-center">
         <Input
           type="number"
           value={salaryMin}
           onChange={(e) => onSalaryMinChange(e.target.value)}
-          placeholder="Mín"
+          placeholder="Ej: 1.200.000"
           min={0}
           required
         />
-        <span className="text-muted-foreground">–</span>
+        <span className="text-muted-foreground text-xs shrink-0">mínimo</span>
+      </div>
+      <div className="flex gap-2 items-center mt-2">
         <Input
           type="number"
           value={salaryMax}
           onChange={(e) => onSalaryMaxChange(e.target.value)}
-          placeholder="Máx"
+          placeholder="Opcional"
           min={0}
-          required
         />
-        <span className="text-muted-foreground text-xs shrink-0">CLP/mes</span>
+        <span className="text-muted-foreground text-xs shrink-0">máximo</span>
       </div>
+      <p className="text-muted-foreground text-xs mt-1">
+        Publicar el sueldo aumenta la cantidad de postulantes.
+      </p>
       {error && <FieldError>{error}</FieldError>}
     </Field>
   )

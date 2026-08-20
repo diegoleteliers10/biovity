@@ -3,6 +3,7 @@ import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns"
 import { es } from "date-fns/locale"
 import { toZonedTime } from "date-fns-tz"
 import { twMerge } from "tailwind-merge"
+import type { JobSalary } from "@/lib/api/jobs"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -120,6 +121,24 @@ export function formatSalarioRango(min: number, max: number): string {
       maximumFractionDigits: 0,
     }).format(num)
   return `$${formatNumber(min)} - $${formatNumber(max)}`
+}
+
+/** Formats a job salary for cards and detail pages. Handles min-only and max-only ranges. */
+export function formatJobSalary(salary: JobSalary | null | undefined): string {
+  if (!salary) return "A convenir"
+  const { min, max, currency, period, isNegotiable } = salary
+
+  const currencyLabel = currency === "USD" ? "USD" : "CLP"
+  const periodLabel = period === "monthly" ? "/mes" : ""
+  const suffix = `${currencyLabel}${periodLabel}`
+
+  if (min != null && max != null) {
+    return `${formatAmountCLP(min)} - ${formatAmountCLP(max)} ${suffix}`
+  }
+  if (min != null) return `Desde ${formatAmountCLP(min)} ${suffix}`
+  if (max != null) return `Hasta ${formatAmountCLP(max)} ${suffix}`
+  if (isNegotiable) return "A convenir"
+  return "A convenir"
 }
 
 /** Tailwind classes for modalidad badge (Trabajos). */

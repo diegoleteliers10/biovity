@@ -32,9 +32,7 @@ export function JobLocationField({
 }: JobLocationFieldProps) {
   return (
     <Field>
-      <FieldLabel>
-        Ubicación <span className="text-red-600 font-bold ml-0.5">*</span>
-      </FieldLabel>
+      <FieldLabel>Ubicación</FieldLabel>
       <div className="space-y-3">
         <div className="flex gap-4">
           {WORK_MODES.map((mode) => (

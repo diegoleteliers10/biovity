@@ -1,10 +1,11 @@
 "use client"
 
-import { Edit01Icon, EyeIcon, HelpCircleIcon } from "@hugeicons/core-free-icons"
+import { ArrowDown01Icon, Edit01Icon, EyeIcon, HelpCircleIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useMemo, useReducer, useState } from "react"
+import { useCallback, useMemo, useReducer, useRef, useState } from "react"
 import { Sheet, SheetContent, SheetHeader } from "@/components/animate-ui/components/radix/sheet"
 import { Button } from "@/components/ui/button"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ComboboxPortalContainer } from "@/components/ui/combobox"
 import { useOnboarding } from "@/hooks/use-onboarding"
 import type { JobTemplate } from "@/lib/api/job-templates"
@@ -25,7 +26,6 @@ import {
   JobMinExperience,
   JobRequiredSkills,
   JobSalaryFields,
-  JobStatusField,
   JobTitleField,
 } from "./create-job/form"
 import type { WorkMode } from "./create-job/form/JobLocationField"
@@ -48,9 +48,7 @@ type JobFormState = {
   requiredSkills: string[]
   minExperience: number
   category: string
-  status: string
   expiresAt: string
-  isGeneratingDescription: boolean
 }
 
 type JobFormAction =
@@ -75,9 +73,7 @@ const initialFormState: JobFormState = {
   requiredSkills: [],
   minExperience: 0,
   category: "",
-  status: "active",
   expiresAt: "",
-  isGeneratingDescription: false,
 }
 
 function jobFormReducer(state: JobFormState, action: JobFormAction): JobFormState {
@@ -121,7 +117,6 @@ function buildInitialJobFormState(job: Job | null | undefined): JobFormState {
     requiredSkills: job?.requiredSkills ?? [],
     minExperience: job?.minExperience ?? 0,
     category: job?.category ?? "",
-    status: job?.status ?? "active",
     expiresAt: job?.expiresAt ? job.expiresAt.slice(0, 10) : "",
   }
 }
@@ -138,6 +133,8 @@ type CreateJobDialogProps = {
 export function CreateJobDialog({ organizationId, open, onOpenChange, job }: CreateJobDialogProps) {
   const [form, dispatch] = useReducer(jobFormReducer, job, buildInitialJobFormState)
   const [activeTab, setActiveTab] = useState<ActiveTab>("edit")
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const publishSucceededRef = useRef(false)
 
   const createMutation = useCreateJobMutation(organizationId)
   const updateMutation = useUpdateJobMutation(organizationId)
@@ -188,62 +185,59 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     setActiveTab("edit")
   }, [])
 
-  const parsedBenefitsRemoved = null
-
-  const handleOpenChange = useCallback(
-    (next: boolean) => {
-      if (!next) resetForm()
-      onOpenChange(next)
-    },
-    [onOpenChange, resetForm]
-  )
-
-  const stripHtml = (html: string) => html.replace(/<[^>]*>/g, "").trim()
-
-  const payload = {
-    title: form.title.trim(),
-    description: form.description.trim(),
-    employmentType: form.employmentType,
-    experienceLevel: form.experienceLevel,
-    location: {
-      city: form.city.trim() || undefined,
-      state: form.region.trim() || undefined,
-      country: form.country.trim() || undefined,
-      isRemote: form.workMode === "remote",
-      isHybrid: form.workMode === "hybrid",
-    },
-    salary: {
-      min: Number(form.salaryMin),
-      max: Number(form.salaryMax),
-      currency: "CLP",
-      period: "monthly",
-    },
-    benefits: form.benefits.length > 0 ? form.benefits : undefined,
-    requiredSkills: form.requiredSkills.length > 0 ? form.requiredSkills : undefined,
-    minExperience: form.minExperience > 0 ? form.minExperience : undefined,
-    category: form.category || undefined,
-    status: form.status,
-    expiresAt: form.expiresAt || undefined,
-  }
+  const stripHtml = useCallback((html: string) => html.replace(/<[^>]*>/g, "").trim(), [])
 
   const errors = useMemo(() => {
     const e: Record<string, string> = {}
     if (!form.title.trim()) e.title = "required"
     if (!stripHtml(form.description)) e.description = "required"
-    if (!form.employmentType) e.employmentType = "required"
-    if (!form.experienceLevel) e.experienceLevel = "required"
-    if (!form.salaryMin.trim() || !form.salaryMax.trim()) e.salary = "required"
-    else if (Number(form.salaryMin) > Number(form.salaryMax))
-      e.salary = "El salario mínimo debe ser menor o igual al máximo"
-    if (!form.workMode) e.location = "required"
+    if (!form.salaryMin.trim()) e.salary = "required"
+    else if (form.salaryMax.trim() && Number(form.salaryMin) > Number(form.salaryMax))
+      e.salary = "El sueldo mínimo debe ser menor o igual al máximo"
+    if (!form.category) e.category = "required"
     return e
-  }, [form])
+  }, [form, stripHtml])
 
   const canSubmit = Object.keys(errors).length === 0
+
+  const buildPayload = useCallback(
+    (status: string) => ({
+      title: form.title.trim(),
+      description: form.description.trim(),
+      employmentType: form.employmentType || undefined,
+      experienceLevel: form.experienceLevel || undefined,
+      location: {
+        city: form.city.trim() || undefined,
+        state: form.region.trim() || undefined,
+        country: form.country.trim() || undefined,
+        isRemote: form.workMode === "remote",
+        isHybrid: form.workMode === "hybrid",
+      },
+      salary: form.salaryMin.trim()
+        ? {
+            min: Number(form.salaryMin),
+            ...(form.salaryMax.trim() ? { max: Number(form.salaryMax) } : {}),
+            currency: "CLP",
+            period: "monthly",
+          }
+        : {},
+      benefits: form.benefits.length > 0 ? form.benefits : undefined,
+      requiredSkills: form.requiredSkills.length > 0 ? form.requiredSkills : undefined,
+      minExperience: form.minExperience > 0 ? form.minExperience : undefined,
+      category: form.category || undefined,
+      status,
+      expiresAt: form.expiresAt || undefined,
+    }),
+    [form]
+  )
+
+  const isSubmitting = createMutation.isPending || updateMutation.isPending
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!canSubmit) return
+
+    const payload = buildPayload("active")
 
     if (isEdit && job) {
       updateMutation.mutate(
@@ -254,7 +248,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               logActivityMutation.mutate({
                 userId: recruiterId,
                 action: "job.updated",
-                description: `Actualizó la oferta de trabajo "${payload.title}"`,
+                description: `Publicó la oferta de trabajo "${payload.title}"`,
               })
             }
             handleOpenChange(false)
@@ -264,6 +258,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     } else {
       createMutation.mutate(payload, {
         onSuccess: (newJob) => {
+          publishSucceededRef.current = true
           completeStep.mutate("create_offer")
           if (recruiterId) {
             logActivityMutation.mutate({
@@ -278,7 +273,21 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     }
   }
 
-  const isSubmitting = createMutation.isPending || updateMutation.isPending
+  const handleOpenChange = useCallback(
+    (next: boolean) => {
+      if (next) {
+        publishSucceededRef.current = false
+        onOpenChange(true)
+        return
+      }
+      if (!isEdit && !publishSucceededRef.current && !isSubmitting && form.title.trim()) {
+        createMutation.mutate(buildPayload("draft"))
+      }
+      resetForm()
+      onOpenChange(false)
+    },
+    [isEdit, isSubmitting, form.title, createMutation, buildPayload, onOpenChange, resetForm]
+  )
 
   const tabs: { id: ActiveTab; label: string; icon: typeof Edit01Icon }[] = [
     { id: "edit", label: "Editar", icon: Edit01Icon },
@@ -360,31 +369,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
 
               <JobDescriptionField
                 value={form.description}
-                isGenerating={form.isGeneratingDescription}
-                jobTitle={form.title}
-                experienceLevel={form.experienceLevel}
-                employmentType={form.employmentType}
-                isRemote={form.workMode === "remote"}
                 onChange={(v) => setField("description", v)}
-                onGeneratingChange={(v) => setField("isGeneratingDescription", v)}
-              />
-
-              <JobContractFields
-                employmentType={form.employmentType}
-                experienceLevel={form.experienceLevel}
-                onEmploymentTypeChange={(v) => setField("employmentType", v)}
-                onExperienceLevelChange={(v) => setField("experienceLevel", v)}
-              />
-
-              <JobLocationField
-                workMode={form.workMode}
-                city={form.city}
-                region={form.region}
-                country={form.country}
-                onWorkModeChange={(v) => setField("workMode", v)}
-                onCityChange={(v) => setField("city", v)}
-                onRegionChange={(v) => setField("region", v)}
-                onCountryChange={(v) => setField("country", v)}
               />
 
               <JobSalaryFields
@@ -395,30 +380,62 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 error={errors.salary !== "required" ? errors.salary : undefined}
               />
 
-              <JobRequiredSkills
-                skills={form.requiredSkills}
-                onSkillsChange={(v) => setField("requiredSkills", v)}
-              />
-
-              <JobMinExperience
-                value={form.minExperience}
-                onChange={(v) => setField("minExperience", v)}
-              />
-
               <JobCategoryField value={form.category} onChange={(v) => setField("category", v)} />
 
-              <div className="grid grid-cols-2 gap-3">
-                <JobStatusField value={form.status} onChange={(v) => setField("status", v)} />
-                <JobExpirationField
-                  value={form.expiresAt}
-                  onChange={(v) => setField("expiresAt", v)}
-                />
-              </div>
+              <Collapsible open={detailsOpen} onOpenChange={setDetailsOpen}>
+                <CollapsibleTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/50"
+                  >
+                    <span>Más detalles (opcional)</span>
+                    <HugeiconsIcon
+                      icon={ArrowDown01Icon}
+                      size={15}
+                      className={`transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-4 pt-4">
+                  <JobContractFields
+                    employmentType={form.employmentType}
+                    experienceLevel={form.experienceLevel}
+                    onEmploymentTypeChange={(v) => setField("employmentType", v)}
+                    onExperienceLevelChange={(v) => setField("experienceLevel", v)}
+                  />
 
-              <JobBenefitsSelector
-                benefits={form.benefits}
-                onBenefitsChange={(v) => setField("benefits", v)}
-              />
+                  <JobLocationField
+                    workMode={form.workMode}
+                    city={form.city}
+                    region={form.region}
+                    country={form.country}
+                    onWorkModeChange={(v) => setField("workMode", v)}
+                    onCityChange={(v) => setField("city", v)}
+                    onRegionChange={(v) => setField("region", v)}
+                    onCountryChange={(v) => setField("country", v)}
+                  />
+
+                  <JobRequiredSkills
+                    skills={form.requiredSkills}
+                    onSkillsChange={(v) => setField("requiredSkills", v)}
+                  />
+
+                  <JobMinExperience
+                    value={form.minExperience}
+                    onChange={(v) => setField("minExperience", v)}
+                  />
+
+                  <JobExpirationField
+                    value={form.expiresAt}
+                    onChange={(v) => setField("expiresAt", v)}
+                  />
+
+                  <JobBenefitsSelector
+                    benefits={form.benefits}
+                    onBenefitsChange={(v) => setField("benefits", v)}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
 
               {(createMutation.isError || updateMutation.isError) && (
                 <p className="text-destructive text-sm">
@@ -457,7 +474,6 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 requiredSkills={form.requiredSkills}
                 minExperience={form.minExperience}
                 category={form.category}
-                status={form.status}
                 expiresAt={form.expiresAt}
               />
               {/* CTA to go back and submit */}

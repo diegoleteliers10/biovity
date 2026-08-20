@@ -30,19 +30,7 @@ import type { Job } from "@/lib/api/jobs"
 import { useApplicationsByJob } from "@/lib/api/use-applications"
 import { useJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
-import { formatAmountCLP, formatDateChilean } from "@/lib/utils"
-
-function formatJobSalary(job: Job): string {
-  const s = job.salary
-  if (!s) return "A convenir"
-  if (s.min != null && s.max != null) {
-    const currency = s.currency === "USD" ? "USD" : "CLP"
-    const period = s.period === "monthly" ? "mes" : (s.period ?? "")
-    return `${formatAmountCLP(s.min)} - ${formatAmountCLP(s.max)} ${currency}/${period}`
-  }
-  if (s.isNegotiable) return "A convenir"
-  return "A convenir"
-}
+import { formatDateChilean, formatJobSalary } from "@/lib/utils"
 
 function getJobModalidad(loc: Job["location"]): string {
   if (!loc) return "Presencial"
@@ -123,7 +111,7 @@ export default function OfertaDetailPage() {
     )
   }
 
-  const salaryStr = formatJobSalary(job)
+  const salaryStr = formatJobSalary(job.salary)
   const modalidad = getJobModalidad(job.location)
   const locationStr = formatJobLocation(job.location)
 
@@ -177,17 +165,21 @@ export default function OfertaDetailPage() {
                 {modalidad}
               </span>
               <span className="text-muted-foreground/30">·</span>
-              <span className="inline-flex items-center gap-1">
-                <HugeiconsIcon
-                  icon={Briefcase01Icon}
-                  size={13}
-                  strokeWidth={1.5}
-                  className="size-3.5"
-                />
-                {job.employmentType}
-              </span>
-              <span className="text-muted-foreground/30">·</span>
-              <span>{job.experienceLevel}</span>
+              {job.employmentType && (
+                <span className="inline-flex items-center gap-1">
+                  <HugeiconsIcon
+                    icon={Briefcase01Icon}
+                    size={13}
+                    strokeWidth={1.5}
+                    className="size-3.5"
+                  />
+                  {job.employmentType}
+                </span>
+              )}
+              {job.employmentType && job.experienceLevel && (
+                <span className="text-muted-foreground/30">·</span>
+              )}
+              {job.experienceLevel && <span>{job.experienceLevel}</span>}
             </div>
 
             {/* Salary */}
