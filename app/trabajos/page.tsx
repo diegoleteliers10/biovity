@@ -117,7 +117,9 @@ export default function TrabajosPage() {
               química, farmacéutica, laboratorio e I+D en Chile. Postula gratis a las vacantes que
               coinciden con tu perfil y recibe alertas de nuevas oportunidades en ciencias.
             </p>
-            <TrabajosCategoryBadges />
+            <Suspense>
+              <TrabajosCategoryBadges />
+            </Suspense>
           </div>
         </section>
         <Suspense>
