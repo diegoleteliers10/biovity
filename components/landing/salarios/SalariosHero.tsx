@@ -16,7 +16,8 @@ export function SalariosHero() {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4 md:mb-6 leading-tight text-balance tracking-tight"
           >
-            Estudio de <span className="text-accent font-semibold">Salarios en Biociencias</span>
+            Sueldos y Salarios en{" "}
+            <span className="text-accent font-semibold">Biotecnología y Ciencias</span> en Chile
           </m.h1>
 
           <m.p
@@ -25,9 +26,8 @@ export function SalariosHero() {
             transition={{ delay: 0.05, duration: 0.2, ease: "easeOut" }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed text-pretty"
           >
-            Estima tu sueldo por carrera, industria y región, descubre el impacto de tus habilidades
-            y accede a bandas salariales para tu organización. Todo con datos del mercado chileno de
-            biociencias (2024-2025).
+            Consulta sueldos promedio y bandas salariales por carrera, nivel de experiencia y región
+            para biotecnología, bioquímica, química, farmacia e ingeniería en Chile.
           </m.p>
 
           <m.div

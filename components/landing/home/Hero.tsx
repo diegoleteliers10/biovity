@@ -43,9 +43,8 @@ export function Hero() {
             transition={{ duration: 0.5, ease }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
           >
-            Donde el talento y la
-            <span className="text-accent font-semibold"> ciencia </span>
-            se encuentran
+            Empleos en
+            <span className="text-accent font-semibold"> biotecnología </span>y ciencias en Chile
           </m.h1>
 
           <m.p
@@ -54,8 +53,8 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.12, ease }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty"
           >
-            Ayudamos a profesionales y estudiantes a encontrar trabajo y oportunidades en
-            biotecnología, bioquímica, química, ingeniería química y salud.
+            Conectamos a profesionales y estudiantes con ofertas de trabajo en biotecnología,
+            bioquímica, química, ingeniería química y salud.
           </m.p>
 
           <m.div

@@ -3,8 +3,7 @@ import { getServerSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 import { updateOnboardingSchema } from "@/lib/validations/onboarding"
 
-const API_BASE =
-  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
+const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export async function GET() {
   const session = await getServerSession()
@@ -30,27 +29,22 @@ export async function GET() {
   // 2. Check jobs from NestJS backend if offer steps are missing
   if (!stepsSet.has("create_offer") || !stepsSet.has("publish_offer")) {
     try {
-      const res = await fetch(
-        `${API_BASE}/api/v1/jobs/organization/${organizationId}?limit=5`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            ...(process.env.INTERNAL_API_KEY && {
-              "x-internal-key": process.env.INTERNAL_API_KEY,
-            }),
-          },
-          signal: AbortSignal.timeout(1500),
-        }
-      )
+      const res = await fetch(`${API_BASE}/api/v1/jobs/organization/${organizationId}?limit=5`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(process.env.INTERNAL_API_KEY && {
+            "x-internal-key": process.env.INTERNAL_API_KEY,
+          }),
+        },
+        signal: AbortSignal.timeout(1500),
+      })
       if (res.ok) {
         const json = await res.json()
         const jobs = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : []
         if (jobs.length > 0) {
           stepsSet.add("create_offer")
           if (
-            jobs.some(
-              (j: { status?: string }) => j.status === "active" || j.status === "published"
-            )
+            jobs.some((j: { status?: string }) => j.status === "active" || j.status === "published")
           ) {
             stepsSet.add("publish_offer")
           }
@@ -64,10 +58,9 @@ export async function GET() {
   // 3. Check profile completion if not yet marked
   if (!stepsSet.has("complete_profile")) {
     try {
-      const orgRes = await pool.query(
-        `SELECT name, description FROM organization WHERE id = $1`,
-        [organizationId]
-      )
+      const orgRes = await pool.query(`SELECT name, description FROM organization WHERE id = $1`, [
+        organizationId,
+      ])
       const org = orgRes.rows[0]
       if (org?.name && org?.description) {
         stepsSet.add("complete_profile")

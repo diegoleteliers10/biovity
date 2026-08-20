@@ -1,12 +1,19 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { UserMultiple02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { useMemo, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Map,
+  MapControls,
+  MapMarker,
+  MarkerContent,
+  MarkerPopup,
+  MarkerTooltip,
+} from "@/components/ui/map"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Map, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/components/ui/map"
 import type { GeographicDistributionEntry } from "@/lib/types/organization-metrics"
 
 const CHILE_COORDINATES: Record<string, [number, number]> = {
@@ -14,11 +21,11 @@ const CHILE_COORDINATES: Record<string, [number, number]> = {
   "arica y parinacota": [-70.3126, -18.4783],
   iquique: [-70.1431, -20.2307],
   tarapaca: [-70.1431, -20.2307],
-  antofagasta: [-70.4000, -23.6500],
-  calama: [-68.9300, -22.4550],
+  antofagasta: [-70.4, -23.65],
+  calama: [-68.93, -22.455],
   copiapo: [-70.3333, -27.3667],
   atacama: [-70.3333, -27.3667],
-  "la serena": [-71.2520, -29.9027],
+  "la serena": [-71.252, -29.9027],
   coquimbo: [-71.3436, -29.9533],
   valparaiso: [-71.6127, -33.0472],
   "vina del mar": [-71.5518, -33.0245],
@@ -27,7 +34,7 @@ const CHILE_COORDINATES: Record<string, [number, number]> = {
   rancagua: [-70.7444, -34.1708],
   ohiggins: [-70.7444, -34.1708],
   talca: [-71.6667, -35.4264],
-  curico: [-71.2400, -34.9850],
+  curico: [-71.24, -34.985],
   maule: [-71.6667, -35.4264],
   chillan: [-72.1034, -36.6066],
   nuble: [-72.1034, -36.6066],
@@ -40,13 +47,13 @@ const CHILE_COORDINATES: Record<string, [number, number]> = {
   "los rios": [-73.2459, -39.8196],
   osorno: [-73.1333, -40.5667],
   "puerto montt": [-72.9369, -41.4693],
-  "puerto varas": [-72.9850, -41.3200],
+  "puerto varas": [-72.985, -41.32],
   castro: [-73.7667, -42.4833],
   "los lagos": [-72.9369, -41.4693],
   coyhaique: [-72.0662, -45.5752],
   aysen: [-72.0662, -45.5752],
   "punta arenas": [-70.9167, -53.1667],
-  "puerto natales": [-72.5000, -51.7333],
+  "puerto natales": [-72.5, -51.7333],
   magallanes: [-70.9167, -53.1667],
 }
 
@@ -117,8 +124,12 @@ export function GeographicDistributionCard({
         <div className="flex items-center justify-between">
           <CardTitle>Distribución geográfica</CardTitle>
           {hasData && (
-            <Badge variant="outline" className="text-xs font-semibold bg-primary/5 text-primary border-primary/20">
-              {items.length} {items.length === 1 ? "región" : "regiones"} · {totalGeoApplicants} postulantes
+            <Badge
+              variant="outline"
+              className="text-xs font-semibold bg-primary/5 text-primary border-primary/20"
+            >
+              {items.length} {items.length === 1 ? "región" : "regiones"} · {totalGeoApplicants}{" "}
+              postulantes
             </Badge>
           )}
         </div>
@@ -147,11 +158,7 @@ export function GeographicDistributionCard({
                   const bubbleSize = 16 * sizeMultiplier
 
                   return (
-                    <MapMarker
-                      key={item.city}
-                      longitude={lng}
-                      latitude={lat}
-                    >
+                    <MapMarker key={item.city} longitude={lng} latitude={lat}>
                       <MarkerContent>
                         <div
                           className="group relative flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-125"
@@ -173,7 +180,9 @@ export function GeographicDistributionCard({
                       <MarkerTooltip>
                         <div className="text-center font-medium">
                           <p className="font-semibold">{item.city}</p>
-                          <p className="text-[10px] opacity-90">{item.count} postulantes ({item.percentage}%)</p>
+                          <p className="text-[10px] opacity-90">
+                            {item.count} postulantes ({item.percentage}%)
+                          </p>
                         </div>
                       </MarkerTooltip>
 
@@ -201,7 +210,9 @@ export function GeographicDistributionCard({
                 <div
                   key={geo.city}
                   className={`flex items-center justify-between p-1.5 rounded-md transition-colors ${
-                    selectedCity === geo.city ? "bg-primary/10 border border-primary/30" : "hover:bg-muted/30"
+                    selectedCity === geo.city
+                      ? "bg-primary/10 border border-primary/30"
+                      : "hover:bg-muted/30"
                   }`}
                   onClick={() => setSelectedCity(selectedCity === geo.city ? null : geo.city)}
                 >
@@ -221,7 +232,10 @@ export function GeographicDistributionCard({
                     <span className="text-xs font-semibold tabular-nums text-foreground w-6 text-right">
                       {geo.count}
                     </span>
-                    <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 font-normal text-muted-foreground w-9 text-center">
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] px-1 py-0 h-4 font-normal text-muted-foreground w-9 text-center"
+                    >
                       {geo.percentage}%
                     </Badge>
                   </div>

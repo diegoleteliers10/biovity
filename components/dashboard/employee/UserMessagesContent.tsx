@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useQueryState } from "nuqs"
 import { useEffect, useState } from "react"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { ChatListSidebar } from "@/components/dashboard/employee/ChatListSidebar"
 import { EmptyStateView } from "@/components/dashboard/employee/EmptyStateView"
 import { MessageThread } from "@/components/dashboard/employee/MessageThread"
@@ -16,7 +17,6 @@ import {
   useSendMessageMutation,
 } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
-import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { getResultErrorMessage } from "@/lib/result"
 import { cn, formatDateChilean } from "@/lib/utils"
 

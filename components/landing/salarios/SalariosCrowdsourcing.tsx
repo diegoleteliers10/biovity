@@ -488,7 +488,11 @@ function UnlockedInsights({
           <Card className="rounded-2xl border-0 shadow-none bg-surface-container-low p-4 sm:p-6 md:p-8">
             <div className="rounded-xl border border-secondary/20 bg-secondary/10 p-5 md:p-6 mb-6">
               <div className="flex items-center gap-3">
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} size={24} className="text-secondary shrink-0" />
+                <HugeiconsIcon
+                  icon={CheckmarkCircle02Icon}
+                  size={24}
+                  className="text-secondary shrink-0"
+                />
                 <h3 className="text-xl font-semibold text-foreground tracking-tight">
                   Insights desbloqueados
                 </h3>

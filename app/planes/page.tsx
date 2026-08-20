@@ -3,13 +3,15 @@ import { Pricing } from "@/components/landing/empresas/Pricing"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import {
   BreadcrumbJsonLd,
+  FAQJsonLd,
   OrganizationJsonLd,
   SoftwareApplicationJsonLd,
   WebSiteJsonLd,
 } from "@/components/seo/JsonLd"
+import { FAQS_EMPRESAS } from "@/lib/data/empresas-data"
 
 export const metadata: Metadata = {
-  title: "Planes y Precios para Empresas | Biovity",
+  title: "Planes y Precios para Empresas",
   description:
     "Elige el plan perfecto para tu empresa. Acceso a talento científico especializado en biotecnología, bioquímica, química e ingeniería química. Planes desde gratis.",
   keywords: [
@@ -50,6 +52,7 @@ export default function PlanesPage() {
       <WebSiteJsonLd />
       <OrganizationJsonLd />
       <SoftwareApplicationJsonLd />
+      <FAQJsonLd faqs={FAQS_EMPRESAS} />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

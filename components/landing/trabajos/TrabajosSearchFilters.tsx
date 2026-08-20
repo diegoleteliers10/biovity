@@ -1,15 +1,15 @@
 "use client"
 
-import { FilterEditIcon, Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
+import {
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  FilterEditIcon,
+  Location05Icon,
+  Search01Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useReducer, useState } from "react"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/animate-ui/components/radix/sheet"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
-  CATEGORIAS_TRABAJOS,
   EXPERIENCIAS_TRABAJOS,
   FORMATOS_TRABAJOS,
   MODALIDADES_TRABAJOS,
@@ -51,6 +50,18 @@ type FilterFormAction =
   | { type: "RESET" }
   | { type: "SYNC_FROM_FILTROS"; payload: FiltrosTrabajos }
 
+function formatSalarioInputValue(value: number): string {
+  return new Intl.NumberFormat("es-CL", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function parseSalarioInputValue(value: string): number {
+  const cleaned = value.replace(/[$.\s]/g, "")
+  return parseInt(cleaned, 10) || 0
+}
+
 const filterFormReducer = (state: FilterFormState, action: FilterFormAction): FilterFormState => {
   switch (action.type) {
     case "SET_FIELD":
@@ -65,7 +76,7 @@ const filterFormReducer = (state: FilterFormState, action: FilterFormAction): Fi
         salarioMax: "",
         moneda: "CLP",
         experiencia: "",
-        categoria: "",
+        categoria: state.categoria,
       }
     case "SYNC_FROM_FILTROS":
       return {
@@ -88,218 +99,15 @@ const filterFormReducer = (state: FilterFormState, action: FilterFormAction): Fi
   }
 }
 
-function formatSalarioInputValue(value: number): string {
-  return new Intl.NumberFormat("es-CL", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
-
-function parseSalarioInputValue(value: string): number {
-  const cleaned = value.replace(/[$.\s]/g, "")
-  return parseInt(cleaned, 10) || 0
-}
-
-function FiltersGrid({
-  filterState,
-  dispatch,
-}: {
-  filterState: FilterFormState
-  dispatch: React.Dispatch<FilterFormAction>
-}) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-      <div className="relative flex items-center">
-        <HugeiconsIcon
-          icon={Location05Icon}
-          size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10"
-        />
-        <Input
-          type="text"
-          placeholder="Ubicación"
-          className="pl-10 bg-white"
-          value={filterState.ubicacion}
-          onChange={(e) =>
-            dispatch({ type: "SET_FIELD", field: "ubicacion", value: e.target.value })
-          }
-        />
-      </div>
-
-      <Select
-        value={filterState.modalidad}
-        onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "modalidad", value })}
-      >
-        <SelectTrigger className={cn("w-full !h-9 bg-white")}>
-          <SelectValue placeholder="Modalidad" />
-        </SelectTrigger>
-        <SelectContent>
-          {MODALIDADES_TRABAJOS.map((item) => (
-            <SelectItem key={item.id} value={item.id}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Select
-        value={filterState.formato}
-        onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "formato", value })}
-      >
-        <SelectTrigger className={cn("w-full !h-9 bg-white")}>
-          <SelectValue placeholder="Formato" />
-        </SelectTrigger>
-        <SelectContent>
-          {FORMATOS_TRABAJOS.map((item) => (
-            <SelectItem key={item.id} value={item.id}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Input
-        type="text"
-        inputMode="numeric"
-        placeholder={`Salario mínimo (${filterState.moneda})`}
-        value={filterState.salarioMin}
-        onChange={(e) => {
-          const raw = e.target.value.replace(/[^0-9]/g, "")
-          const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
-          dispatch({ type: "SET_FIELD", field: "salarioMin", value: formatted })
-        }}
-        className="placeholder:text-muted-foreground bg-white"
-        aria-label="Salario mínimo"
-      />
-
-      <Input
-        type="text"
-        inputMode="numeric"
-        placeholder={`Salario máximo (${filterState.moneda})`}
-        value={filterState.salarioMax}
-        onChange={(e) => {
-          const raw = e.target.value.replace(/[^0-9]/g, "")
-          const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
-          dispatch({ type: "SET_FIELD", field: "salarioMax", value: formatted })
-        }}
-        className="placeholder:text-muted-foreground bg-white"
-        aria-label="Salario máximo"
-      />
-
-      <Select
-        value={filterState.moneda}
-        onValueChange={(value) =>
-          dispatch({ type: "SET_FIELD", field: "moneda", value: value as "CLP" | "USD" })
-        }
-      >
-        <SelectTrigger className={cn("w-full !h-9 bg-white")}>
-          <SelectValue placeholder="Moneda" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="CLP">CLP (Peso chileno)</SelectItem>
-          <SelectItem value="USD">USD (Dólar)</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select
-        value={filterState.experiencia}
-        onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "experiencia", value })}
-      >
-        <SelectTrigger className={cn("w-full !h-9 bg-white")}>
-          <SelectValue placeholder="Experiencia" />
-        </SelectTrigger>
-        <SelectContent>
-          {EXPERIENCIAS_TRABAJOS.map((item) => (
-            <SelectItem key={item.id} value={item.id}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Select
-        value={filterState.categoria}
-        onValueChange={(value) => dispatch({ type: "SET_FIELD", field: "categoria", value })}
-      >
-        <SelectTrigger className={cn("w-full !h-9 bg-white")}>
-          <SelectValue placeholder="Categoría" />
-        </SelectTrigger>
-        <SelectContent>
-          {CATEGORIAS_TRABAJOS.map((item) => (
-            <SelectItem key={item.id} value={item.id}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  )
-}
-
-function FiltersActions({
-  handleAplicar,
-  handleLimpiar,
-  className = "",
-}: {
-  handleAplicar: () => void
-  handleLimpiar: () => void
-  className?: string
-}) {
-  return (
-    <div className={cn("flex gap-3 justify-center", className)}>
-      <Button onClick={handleAplicar} variant="secondary" size="lg" className="px-8">
-        Aplicar filtros
-      </Button>
-      <Button onClick={handleLimpiar} variant="ghost" size="lg" className="px-8">
-        Limpiar
-      </Button>
-    </div>
-  )
-}
-
-function MobileFiltersSheet({
-  filterState,
-  dispatch,
-  onAplicar,
-  onLimpiar,
-}: {
-  filterState: FilterFormState
-  dispatch: React.Dispatch<FilterFormAction>
-  onAplicar: () => void
-  onLimpiar: () => void
-}) {
-  const [open, setOpen] = useState(false)
-
-  const handleAplicar = () => {
-    onAplicar()
-    setOpen(false)
-  }
-
-  const handleLimpiar = () => {
-    onLimpiar()
-    setOpen(false)
-  }
-
-  return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="secondary" size="icon" className="h-12 w-12 shrink-0">
-          <HugeiconsIcon icon={FilterEditIcon} className="size-5" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-full bg-[#f3f3f5] px-6 flex flex-col">
-        <SheetHeader className="pb-6 shrink-0">
-          <SheetTitle className="text-xl font-semibold tracking-tight">Filtros</SheetTitle>
-        </SheetHeader>
-        <div className="overflow-y-auto flex-1 -mx-6 px-6">
-          <FiltersGrid filterState={filterState} dispatch={dispatch} />
-        </div>
-        <div className="pt-6 shrink-0">
-          <FiltersActions handleAplicar={handleAplicar} handleLimpiar={handleLimpiar} />
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
+function countActiveFilters(state: FilterFormState): number {
+  return [
+    Boolean(state.ubicacion),
+    Boolean(state.modalidad),
+    Boolean(state.formato),
+    Boolean(state.salarioMin),
+    Boolean(state.salarioMax),
+    Boolean(state.experiencia),
+  ].filter(Boolean).length
 }
 
 export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSearchFiltersProps) {
@@ -314,6 +122,9 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
     experiencia: filtros.experiencia === "Experiencia" ? "" : filtros.experiencia,
     categoria: filtros.categoria || "",
   })
+
+  const initialActiveCount = countActiveFilters(filterState)
+  const [isExpanded, setIsExpanded] = useState(initialActiveCount > 0)
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
@@ -341,27 +152,30 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
       salarioMax: null,
       moneda: "CLP",
       experiencia: "" as FiltrosTrabajos["experiencia"],
-      categoria: null,
+      categoria:
+        filterState.categoria === "todas" || !filterState.categoria ? null : filterState.categoria,
     })
-  }, [onFiltrosChange])
+  }, [filterState.categoria, onFiltrosChange])
+
+  const activeCount = countActiveFilters(filterState)
 
   return (
-    <section className="bg-white pt-32">
+    <section className="bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="bg-[#f3f3f5] border border-border/15">
-          <CardContent className="p-6">
-            {/* Mobile: Search + Filter button */}
-            <div className="flex gap-2 mb-0 md:hidden">
+          <CardContent className="p-4 sm:p-6 space-y-4">
+            {/* Primary Search Bar */}
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <HugeiconsIcon
                   icon={Search01Icon}
                   size={20}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 />
                 <Input
                   type="text"
                   placeholder="Buscar por título, empresa o palabras clave"
-                  className="pl-11 pr-4 py-2 w-full h-12 bg-white"
+                  className="pl-10 pr-4 h-11 sm:h-12 w-full bg-white text-sm sm:text-base rounded-lg border-border/40"
                   value={filterState.query}
                   onChange={(e) =>
                     dispatch({ type: "SET_FIELD", field: "query", value: e.target.value })
@@ -373,43 +187,206 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   }}
                 />
               </div>
-              <MobileFiltersSheet
-                filterState={filterState}
-                dispatch={dispatch}
-                onAplicar={handleBuscar}
-                onLimpiar={handleLimpiar}
-              />
+
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsExpanded((prev) => !prev)}
+                  className={cn(
+                    "h-11 sm:h-12 px-3 sm:px-4 bg-white rounded-lg border-border/40 font-medium text-sm flex items-center gap-2 transition-colors",
+                    isExpanded && "border-accent text-accent bg-accent/5",
+                    activeCount > 0 && !isExpanded && "border-accent/60"
+                  )}
+                  aria-expanded={isExpanded}
+                  aria-label="Abrir opciones de filtrado"
+                >
+                  <HugeiconsIcon icon={FilterEditIcon} className="size-4" />
+                  <span>Filtros</span>
+                  {activeCount > 0 && (
+                    <Badge variant="secondary" className="px-1.5 py-0 text-xs font-semibold">
+                      {activeCount}
+                    </Badge>
+                  )}
+                  <HugeiconsIcon
+                    icon={isExpanded ? ArrowUp01Icon : ArrowDown01Icon}
+                    className="size-3.5 text-muted-foreground"
+                  />
+                </Button>
+
+                <Button
+                  type="button"
+                  onClick={handleBuscar}
+                  variant="secondary"
+                  className="h-11 sm:h-12 px-5 sm:px-6 rounded-lg font-medium text-sm sm:text-base shrink-0"
+                >
+                  Buscar
+                </Button>
+              </div>
             </div>
 
-            {/* Desktop: Full layout */}
-            <div className="hidden md:block">
-              <div className="mb-6">
-                <div className="relative">
-                  <HugeiconsIcon
-                    icon={Search01Icon}
-                    size={20}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                  />
+            {/* Collapsible Advanced Filters Section */}
+            {isExpanded && (
+              <div className="pt-4 border-t border-border/20 space-y-4 animate-in fade-in-50 duration-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {/* Ubicación */}
+                  <div className="relative flex items-center">
+                    <HugeiconsIcon
+                      icon={Location05Icon}
+                      size={18}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10"
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Ubicación"
+                      className="pl-9 h-10 w-full bg-white text-sm rounded-lg border-border/40"
+                      value={filterState.ubicacion}
+                      onChange={(e) =>
+                        dispatch({ type: "SET_FIELD", field: "ubicacion", value: e.target.value })
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleBuscar()
+                      }}
+                    />
+                  </div>
+
+                  {/* Modalidad */}
+                  <Select
+                    value={filterState.modalidad}
+                    onValueChange={(value) =>
+                      dispatch({ type: "SET_FIELD", field: "modalidad", value })
+                    }
+                  >
+                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
+                      <SelectValue placeholder="Modalidad" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MODALIDADES_TRABAJOS.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Formato */}
+                  <Select
+                    value={filterState.formato}
+                    onValueChange={(value) =>
+                      dispatch({ type: "SET_FIELD", field: "formato", value })
+                    }
+                  >
+                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
+                      <SelectValue placeholder="Formato" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FORMATOS_TRABAJOS.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Salario mínimo */}
                   <Input
                     type="text"
-                    placeholder="Buscar por título, empresa o palabras clave"
-                    className="pl-11 pr-4 py-2 w-full h-12 bg-white"
-                    value={filterState.query}
-                    onChange={(e) =>
-                      dispatch({ type: "SET_FIELD", field: "query", value: e.target.value })
-                    }
+                    inputMode="numeric"
+                    placeholder={`Salario mínimo (${filterState.moneda})`}
+                    value={filterState.salarioMin}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "")
+                      const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
+                      dispatch({ type: "SET_FIELD", field: "salarioMin", value: formatted })
+                    }}
+                    className="h-10 px-3 bg-white text-sm rounded-lg border-border/40 placeholder:text-muted-foreground"
+                    aria-label="Salario mínimo"
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleBuscar()
-                      }
+                      if (e.key === "Enter") handleBuscar()
                     }}
                   />
+
+                  {/* Salario máximo */}
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder={`Salario máximo (${filterState.moneda})`}
+                    value={filterState.salarioMax}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "")
+                      const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
+                      dispatch({ type: "SET_FIELD", field: "salarioMax", value: formatted })
+                    }}
+                    className="h-10 px-3 bg-white text-sm rounded-lg border-border/40 placeholder:text-muted-foreground"
+                    aria-label="Salario máximo"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleBuscar()
+                    }}
+                  />
+
+                  {/* Moneda */}
+                  <Select
+                    value={filterState.moneda}
+                    onValueChange={(value) =>
+                      dispatch({
+                        type: "SET_FIELD",
+                        field: "moneda",
+                        value: value as "CLP" | "USD",
+                      })
+                    }
+                  >
+                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
+                      <SelectValue placeholder="Moneda" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CLP">CLP (Peso chileno)</SelectItem>
+                      <SelectItem value="USD">USD (Dólar)</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Experiencia */}
+                  <Select
+                    value={filterState.experiencia}
+                    onValueChange={(value) =>
+                      dispatch({ type: "SET_FIELD", field: "experiencia", value })
+                    }
+                  >
+                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
+                      <SelectValue placeholder="Experiencia" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {EXPERIENCIAS_TRABAJOS.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Filter Actions */}
+                <div className="flex gap-3 justify-end pt-2">
+                  <Button
+                    type="button"
+                    onClick={handleLimpiar}
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 px-4 text-sm"
+                  >
+                    Limpiar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleBuscar}
+                    variant="secondary"
+                    size="sm"
+                    className="h-9 px-5 text-sm"
+                  >
+                    Aplicar filtros
+                  </Button>
                 </div>
               </div>
-
-              <FiltersGrid filterState={filterState} dispatch={dispatch} />
-              <FiltersActions handleAplicar={handleBuscar} handleLimpiar={handleLimpiar} />
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
