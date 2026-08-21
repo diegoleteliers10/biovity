@@ -6,21 +6,28 @@ import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
 import { BENEFITS_FOR_STUDENTS } from "@/lib/data/home-data"
 
 export function ForStudents() {
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const isMobile = useMediaQuery("(max-width: 767px)")
+  const isReduced = Boolean(reducedMotion)
+
+  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const yOffset = isReduced ? 0 : isMobile ? 16 : 24
+
+  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
+  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion, isMobile })
 
   return (
     <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 32 }}
+          initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+          viewport={{ once: true, margin: viewportMargin }}
           transition={t(0)}
           className="text-center mb-16 max-w-3xl mx-auto"
         >
@@ -38,9 +45,9 @@ export function ForStudents() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto items-stretch">
           {/* Left: Benefits summary card */}
           <m.div
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+            initial={isReduced ? false : { opacity: 0, y: yOffset, x: isMobile ? 0 : -24 }}
+            whileInView={{ opacity: 1, y: 0, x: 0 }}
+            viewport={{ once: true, margin: viewportMargin }}
             transition={ts(0)}
             className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10 flex flex-col justify-between"
           >
@@ -88,10 +95,10 @@ export function ForStudents() {
 
           {/* Right: Verified Candidate Profile Card */}
           <m.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={ts(LANDING_ANIMATION.stagger)}
+            initial={isReduced ? false : { opacity: 0, y: yOffset, x: isMobile ? 0 : 24 }}
+            whileInView={{ opacity: 1, y: 0, x: 0 }}
+            viewport={{ once: true, margin: viewportMargin }}
+            transition={ts(isMobile ? LANDING_ANIMATION_MOBILE.stagger : LANDING_ANIMATION.stagger)}
             className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10 border border-secondary/40 flex flex-col justify-between relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-36 h-36 bg-secondary/5 rounded-full blur-2xl pointer-events-none" />

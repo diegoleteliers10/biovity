@@ -1,8 +1,10 @@
 "use client"
 
-import { domAnimation, LazyMotion, m } from "framer-motion"
+// THROW. EXCEPTIONAL CASE
+// REASON: DOM measurement (getBoundingClientRect, ResizeObserver) requires
+// access to the mounted DOM. No declarative React primitive covers this use case.
+import * as m from "motion/react-m"
 import { type RefObject, useEffect, useId, useState } from "react"
-
 import { cn } from "@/lib/utils"
 
 export type AnimatedBeamProps = {
@@ -132,65 +134,63 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   }, [containerRef, fromRef, toRef, curvature, startXOffset, startYOffset, endXOffset, endYOffset])
 
   return (
-    <LazyMotion features={domAnimation}>
-      <svg
-        fill="none"
-        width={svgDimensions.width}
-        height={svgDimensions.height}
-        xmlns="http://www.w3.org/2000/svg"
-        className={cn(
-          "pointer-events-none absolute top-0 left-0 w-full h-full transform-gpu stroke-2",
-          className
-        )}
-        viewBox={`0 0 ${svgDimensions.width || 1} ${svgDimensions.height || 1}`}
-      >
-        <title className="sr-only">Animated connection beam</title>
-        <path
-          d={pathD}
-          stroke={pathColor}
-          strokeWidth={pathWidth}
-          strokeOpacity={pathOpacity}
-          strokeLinecap="round"
-        />
-        <path
-          d={pathD}
-          strokeWidth={pathWidth}
-          stroke={`url(#${id})`}
-          strokeOpacity="1"
-          strokeLinecap="round"
-        />
-        <defs>
-          <m.linearGradient
-            className="transform-gpu"
-            id={id}
-            gradientUnits={"userSpaceOnUse"}
-            initial={{
-              x1: "0%",
-              x2: "0%",
-              y1: "0%",
-              y2: "0%",
-            }}
-            animate={{
-              x1: gradientCoordinates.x1,
-              x2: gradientCoordinates.x2,
-              y1: gradientCoordinates.y1,
-              y2: gradientCoordinates.y2,
-            }}
-            transition={{
-              delay,
-              duration,
-              ease: [0.16, 1, 0.3, 1],
-              repeat: Infinity,
-              repeatDelay: 0,
-            }}
-          >
-            <stop stopColor={gradientStartColor} stopOpacity="0"></stop>
-            <stop stopColor={gradientStartColor}></stop>
-            <stop offset="32.5%" stopColor={gradientStopColor}></stop>
-            <stop offset="100%" stopColor={gradientStopColor} stopOpacity="0"></stop>
-          </m.linearGradient>
-        </defs>
-      </svg>
-    </LazyMotion>
+    <svg
+      fill="none"
+      width={svgDimensions.width}
+      height={svgDimensions.height}
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn(
+        "pointer-events-none absolute top-0 left-0 w-full h-full transform-gpu stroke-2",
+        className
+      )}
+      viewBox={`0 0 ${svgDimensions.width || 1} ${svgDimensions.height || 1}`}
+    >
+      <title className="sr-only">Animated connection beam</title>
+      <path
+        d={pathD}
+        stroke={pathColor}
+        strokeWidth={pathWidth}
+        strokeOpacity={pathOpacity}
+        strokeLinecap="round"
+      />
+      <path
+        d={pathD}
+        strokeWidth={pathWidth}
+        stroke={`url(#${id})`}
+        strokeOpacity="1"
+        strokeLinecap="round"
+      />
+      <defs>
+        <m.linearGradient
+          className="transform-gpu"
+          id={id}
+          gradientUnits={"userSpaceOnUse"}
+          initial={{
+            x1: "0%",
+            x2: "0%",
+            y1: "0%",
+            y2: "0%",
+          }}
+          animate={{
+            x1: gradientCoordinates.x1,
+            x2: gradientCoordinates.x2,
+            y1: gradientCoordinates.y1,
+            y2: gradientCoordinates.y2,
+          }}
+          transition={{
+            delay,
+            duration,
+            ease: [0.16, 1, 0.3, 1],
+            repeat: Infinity,
+            repeatDelay: 0,
+          }}
+        >
+          <stop stopColor={gradientStartColor} stopOpacity="0"></stop>
+          <stop stopColor={gradientStartColor}></stop>
+          <stop offset="32.5%" stopColor={gradientStopColor}></stop>
+          <stop offset="100%" stopColor={gradientStopColor} stopOpacity="0"></stop>
+        </m.linearGradient>
+      </defs>
+    </svg>
   )
 }

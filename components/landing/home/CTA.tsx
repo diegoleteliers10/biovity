@@ -6,12 +6,20 @@ import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
 
 export function CTA() {
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const isMobile = useMediaQuery("(max-width: 767px)")
+  const isReduced = Boolean(reducedMotion)
+
+  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const yOffset = isReduced ? 0 : isMobile ? 14 : 20
+
+  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
+  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion, isMobile })
+
   const benefits = [
     "100% Gratuito para profesionales",
     "Ofertas de empleo reales y verificadas",
@@ -22,9 +30,9 @@ export function CTA() {
     <section className="py-24 bg-surface-container-lowest">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <m.div
-          initial={{ opacity: 0, y: 32 }}
+          initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+          viewport={{ once: true, margin: viewportMargin }}
           transition={t(0)}
         >
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
@@ -42,10 +50,10 @@ export function CTA() {
         </m.div>
 
         <m.div
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay)}
+          viewport={{ once: true, margin: viewportMargin }}
+          transition={ts(isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay)}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
         >
           <Button
@@ -69,10 +77,10 @@ export function CTA() {
         </m.div>
 
         <m.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={isReduced ? false : { opacity: 0, y: isMobile ? 8 : 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
+          viewport={{ once: true, margin: viewportMargin }}
+          transition={t(isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay * 2 : LANDING_ANIMATION.sequenceDelay * 2)}
           className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-muted-foreground"
         >
           {benefits.map((benefit) => (
