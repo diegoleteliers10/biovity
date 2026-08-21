@@ -20,6 +20,7 @@ const FOOTER_SECTIONS = [
       { label: "Alertas de Empleo", href: "/trabajos" },
       { label: "Consejos de Carrera", href: "/consejos-carrera" },
       { label: "Salarios", href: "/salarios" },
+      { label: "Compartir Salario", href: "/compartir-salario" },
       { label: "Blog", href: "/blog" },
       { label: "Lista de Espera", href: "/lista-espera" },
     ],

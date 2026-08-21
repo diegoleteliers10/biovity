@@ -6,13 +6,13 @@ import {
   CheckmarkCircle02Icon,
   GiftIcon,
   Loading01Icon,
-  LockKeyIcon,
+  PlusSignIcon,
   Shield02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -30,7 +30,6 @@ import {
 import type { ExperienceLevelChile } from "@/lib/types/salarios"
 import { cn, formatAmountCLP } from "@/lib/utils"
 
-const STORAGE_KEY = "biovity:salary:submitted"
 const TOTAL_STEPS = 3
 
 type FormState = {
@@ -74,14 +73,7 @@ export function SalariosCrowdsourcing() {
   const [form, setForm] = useState<FormState>(INITIAL_STATE)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [percentile, setPercentile] = useState<number | null>(null)
-  const [submitted, setSubmitted] = useState(false)
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem(STORAGE_KEY) === "1") {
-      setSubmitted(true)
-    }
-  }, [])
+  const [isCompleted, setIsCompleted] = useState(false)
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -163,15 +155,59 @@ export function SalariosCrowdsourcing() {
       return
     }
 
-    if (typeof window !== "undefined") localStorage.setItem(STORAGE_KEY, "1")
-    setPercentile(result.value.percentile)
     setIsSubmitting(false)
-    setSubmitted(true)
+    setIsCompleted(true)
   }
 
-  if (submitted) {
+  const handleReset = () => {
+    setForm(INITIAL_STATE)
+    setStep(0)
+    setError(null)
+    setIsCompleted(false)
+  }
+
+  if (isCompleted) {
     return (
-      <UnlockedInsights percentile={percentile} monthlyClp={Number(form.monthlySalaryClp) || 0} />
+      <section className="py-16 md:py-24 bg-surface-container-lowest">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <m.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
+          >
+            <Card className="rounded-2xl border-0 shadow-none bg-surface-container-low p-4 sm:p-6 md:p-8">
+              <div className="rounded-xl border border-secondary/20 bg-secondary/10 p-5 md:p-6 mb-6">
+                <div className="flex items-center gap-3">
+                  <HugeiconsIcon
+                    icon={CheckmarkCircle02Icon}
+                    size={24}
+                    className="text-secondary shrink-0"
+                  />
+                  <h3 className="text-xl font-semibold text-foreground tracking-tight">
+                    Salario registrado
+                  </h3>
+                </div>
+              </div>
+
+              <div className="space-y-6 px-1 sm:px-2">
+                <p className="text-muted-foreground">
+                  Gracias por contribuir al dataset de sueldos STEM, salud y ciencias en Chile. Tu
+                  dato es 100% anónimo y ayuda a otros profesionales a conocer el mercado.
+                </p>
+
+                <Button
+                  type="button"
+                  onClick={handleReset}
+                  className="h-10 px-5 bg-zinc-900 hover:bg-zinc-800 text-white"
+                >
+                  <HugeiconsIcon icon={PlusSignIcon} size={18} />
+                  Subir otro salario
+                </Button>
+              </div>
+            </Card>
+          </m.div>
+        </div>
+      </section>
     )
   }
 
@@ -191,17 +227,15 @@ export function SalariosCrowdsourcing() {
           </div>
           <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 tracking-tight text-balance">
             Comparte tu sueldo y{" "}
-            <span className="text-accent font-semibold">desbloquea insights</span> del mercado
-            chileno
+            <span className="text-accent font-semibold">ayuda a otros profesionales</span> en Chile
           </h2>
           <p className="text-muted-foreground leading-relaxed text-pretty">
-            100% anónimo, sin registro. Tres pasos rápidos y verás en qué percentil estás respecto a
-            tu especialidad, región y nivel.
+            100% anónimo, sin registro. Tres pasos rápidos y tu dato contribuye a construir el primer
+            dataset abierto de sueldos STEM y ciencias en Chile.
           </p>
         </m.div>
 
         <Card className="rounded-2xl border-0 shadow-none bg-surface-container-low p-4 sm:p-6 md:p-8">
-          {/* Recuadro Verde del Formulario */}
           <div className="rounded-xl border border-secondary/20 bg-secondary/10 p-5 md:p-6 mb-6 md:mb-8">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2.5">
@@ -304,7 +338,7 @@ export function SalariosCrowdsourcing() {
                   ) : (
                     <>
                       <HugeiconsIcon icon={GiftIcon} size={18} />
-                      Enviar y desbloquear
+                      Enviar
                     </>
                   )}
                 </Button>
@@ -313,8 +347,7 @@ export function SalariosCrowdsourcing() {
           </div>
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-4 flex items-center justify-center gap-1.5">
-          <HugeiconsIcon icon={LockKeyIcon} size={14} />
+        <p className="text-center text-xs text-muted-foreground mt-4">
           Nunca guardamos tu correo ni nombre. Datos usados solo para estadísticas anónimas.
         </p>
       </div>
@@ -466,83 +499,6 @@ function StepEducation({ form, set, toggleArrayItem }: StepProps) {
         </div>
       </Field>
     </div>
-  )
-}
-
-function UnlockedInsights({
-  percentile,
-  monthlyClp,
-}: {
-  percentile: number | null
-  monthlyClp: number
-}) {
-  const reducedMotion = useReducedMotion()
-  return (
-    <section className="py-16 md:py-24 bg-surface-container-lowest">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <m.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
-        >
-          <Card className="rounded-2xl border-0 shadow-none bg-surface-container-low p-4 sm:p-6 md:p-8">
-            <div className="rounded-xl border border-secondary/20 bg-secondary/10 p-5 md:p-6 mb-6">
-              <div className="flex items-center gap-3">
-                <HugeiconsIcon
-                  icon={CheckmarkCircle02Icon}
-                  size={24}
-                  className="text-secondary shrink-0"
-                />
-                <h3 className="text-xl font-semibold text-foreground tracking-tight">
-                  Insights desbloqueados
-                </h3>
-              </div>
-            </div>
-
-            <div className="space-y-6 px-1 sm:px-2">
-              <p className="text-muted-foreground">
-                Gracias por contribuir al primer dataset abierto de sueldos STEM, salud y ciencias
-                en Chile. Aquí está tu posición respecto al mercado.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="rounded-xl border border-secondary/20 bg-secondary/10 p-5">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                    Tu percentil
-                  </p>
-                  {percentile !== null ? (
-                    <>
-                      <p className="text-4xl font-bold text-secondary">P{percentile}</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Estás sobre el {percentile}% de los sueldos reportados en tu segmento.
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-lg font-semibold text-foreground">
-                      Eres el primero en tu segmento
-                    </p>
-                  )}
-                </div>
-                <div className="rounded-xl border border-border/10 bg-surface-container-lowest p-5">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                    Tu sueldo reportado
-                  </p>
-                  <p className="text-2xl font-bold text-foreground font-mono">
-                    {monthlyClp ? formatAmountCLP(monthlyClp) : "—"}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">líquido mensual en CLP</p>
-                </div>
-              </div>
-
-              <p className="text-xs text-muted-foreground">
-                A medida que más profesionales en Chile aporten su sueldo, los percentiles se
-                recalibran automáticamente con cada nuevo dato.
-              </p>
-            </div>
-          </Card>
-        </m.div>
-      </div>
-    </section>
   )
 }
 
