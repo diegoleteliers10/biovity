@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { SalariosCrowdsourcing } from "@/components/landing/salarios/SalariosCrowdsourcing"
 import { SalariosEmpresasB2B } from "@/components/landing/salarios/SalariosEmpresasB2B"
 import { SalariosHero } from "@/components/landing/salarios/SalariosHero"
 import { SalariosInteractiveFilter } from "@/components/landing/salarios/SalariosInteractiveFilter"
@@ -87,7 +86,6 @@ export default function SalariosPage() {
       <main className="flex flex-col relative">
         <SalariosHero />
         <SalariosInteractiveFilter />
-        <SalariosCrowdsourcing />
         <SalariosUpskilling />
         <SalariosEmpresasB2B />
         <SalariosMetodologia />
