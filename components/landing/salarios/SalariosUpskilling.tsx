@@ -39,32 +39,26 @@ const trajectoryData = TRAYECTORIA_CARRERA_CHILE.map((t) => ({
 export function SalariosUpskilling() {
   const reducedMotion = useReducedMotion()
   return (
-    <section className="py-16 md:py-24 bg-surface-container-low">
+    <section className="py-20 md:py-28 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 max-w-3xl">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 tracking-tight">
-            Impacto de <span className="text-accent font-semibold">habilidades</span> y trayectoria
-            en Chile
+        <div className="mb-14 max-w-3xl">
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Impacto & Proyección
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Impacto de <span className="text-accent font-semibold">habilidades clave</span> en la renta
           </h2>
-          <div className="space-y-4 text-muted-foreground leading-relaxed">
+          <div className="space-y-3 text-muted-foreground leading-relaxed text-base sm:text-lg text-pretty">
             <p>
-              No todas las competencias mueven el sueldo de la misma forma en Chile. Esta matriz
-              muestra cuánto pueden incrementar la renta líquida las habilidades más demandadas en
-              los sectores farma, minero, agro y tech del país.
-            </p>
-            <p>
-              Junto con la línea de tiempo de carrera, te ayuda a priorizar en qué capacitar y dónde
-              proyectar tu trayectoria profesional a 3, 5, 8 y 12 años.
+              Ciertas competencias técnicas, regulatorias y de postgrado generan un diferencial sustancial
+              en el salario base de biociencias en Chile.
             </p>
           </div>
         </div>
 
-        {/* Matriz de impacto de habilidades */}
-        <div className="mb-12">
-          <h3 className="text-xl font-semibold text-foreground mb-5">
-            Matriz de impacto en la renta (Chile)
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Matriz de impacto de habilidades - Clean borderless white cards on surface-container-low */}
+        <div className="mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {SKILLS_IMPACTO_CHILE.map((skill, index) => {
               const midImpact = Math.round((skill.impactMin + skill.impactMax) / 2)
               return (
@@ -79,35 +73,31 @@ export function SalariosUpskilling() {
                     ease: "easeOut",
                   }}
                 >
-                  <Card className="rounded-xl border border-border/10 bg-surface-container-lowest h-full hover:bg-secondary/5 transition-colors">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className={`p-2 rounded-lg ${skill.bgColor}`}>
-                          <HugeiconsIcon icon={skill.icon} size={22} className={skill.color} />
+                  <Card className="rounded-xl border-0 shadow-none bg-surface-container-lowest h-full p-6 sm:p-7 flex flex-col justify-between hover:bg-white/80 transition-colors">
+                    <div>
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div className={`p-2.5 rounded-lg ${skill.bgColor}`}>
+                          <HugeiconsIcon icon={skill.icon} size={20} className={skill.color} />
                         </div>
                         <div className="text-right">
-                          <p className={`text-2xl font-bold ${skill.color}`}>+{midImpact}%</p>
-                          <p className="text-[0.65rem] text-muted-foreground leading-none mt-0.5">
-                            promedio en sueldo base
+                          <p className={`text-2xl font-bold tracking-tight ${skill.color}`}>+{midImpact}%</p>
+                          <p className="text-[10px] font-mono text-muted-foreground leading-none mt-0.5">
+                            incremento medio
                           </p>
                         </div>
                       </div>
-                      <CardTitle className="text-base mt-3">{skill.skill}</CardTitle>
-                      <CardDescription className="text-xs">{skill.sector}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <h3 className="text-base font-semibold text-foreground mb-1">{skill.skill}</h3>
+                      <p className="text-xs font-mono text-secondary mb-3">{skill.sector}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
                         {skill.description}
                       </p>
-                      <div className="mt-3 pt-3 border-t border-border/10">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">Rango estimado</span>
-                          <span className={`font-mono font-semibold ${skill.color}`}>
-                            +{skill.impactMin}% a +{skill.impactMax}%
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Rango estimado</span>
+                      <span className={`font-mono font-semibold ${skill.color}`}>
+                        +{skill.impactMin}% a +{skill.impactMax}%
+                      </span>
+                    </div>
                   </Card>
                 </m.div>
               )
@@ -115,20 +105,20 @@ export function SalariosUpskilling() {
           </div>
         </div>
 
-        {/* Línea de tiempo de trayectoria */}
+        {/* Línea de tiempo de trayectoria - Structured card with subtle border */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           <div className="lg:col-span-3">
-            <Card className="rounded-xl border border-border/10 bg-surface-container-lowest">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <HugeiconsIcon icon={TrendingUp} size={20} className="text-secondary" />
+            <Card className="rounded-xl border border-border bg-surface-container-lowest shadow-none p-4 sm:p-6">
+              <CardHeader className="px-0 pt-0 pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                  <HugeiconsIcon icon={TrendingUp} size={18} className="text-secondary" />
                   Trayectoria salarial promedio (Chile)
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs text-muted-foreground">
                   Sueldo líquido mensual por tramo de experiencia (CLP)
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-0 pb-0">
                 <LazyChartContainer
                   config={chartConfig}
                   className="w-full aspect-[4/3] md:aspect-video min-h-[240px]"
@@ -159,24 +149,27 @@ export function SalariosUpskilling() {
                     <ChartTooltip
                       content={({ active, payload }) => {
                         if (!active || !payload?.length) return null
+                        const data = payload[0].payload as (typeof trajectoryData)[0]
                         return (
-                          <ChartTooltipContent
-                            active={active}
-                            payload={payload.map((item) => ({
-                              ...item,
-                              name: "Líquido mensual",
-                            }))}
-                          />
+                          <ChartTooltipContent>
+                            <div className="space-y-1">
+                              <p className="font-semibold text-foreground text-xs">{data.level}</p>
+                              <p className="text-xs text-secondary font-mono">
+                                {formatAmountCLP(data.monthlyClp)} / mes
+                              </p>
+                              <p className="text-[10px] text-muted-foreground">{data.years}</p>
+                            </div>
+                          </ChartTooltipContent>
                         )
                       }}
                     />
                     <Line
                       type="monotone"
                       dataKey="monthlyClp"
-                      stroke="var(--color-monthlyClp)"
-                      strokeWidth={3}
-                      dot={{ r: 5, fill: "var(--color-monthlyClp)" }}
-                      activeDot={{ r: 7 }}
+                      stroke="#006b5e"
+                      strokeWidth={2.5}
+                      dot={{ r: 4, fill: "#006b5e", strokeWidth: 0 }}
+                      activeDot={{ r: 6, fill: "#00374a" }}
                     />
                   </LineChart>
                 </LazyChartContainer>
@@ -185,26 +178,22 @@ export function SalariosUpskilling() {
           </div>
 
           <div className="lg:col-span-2 space-y-3">
-            {TRAYECTORIA_CARRERA_CHILE.map((item, index) => (
+            {TRAYECTORIA_CARRERA_CHILE.map((t) => (
               <div
-                key={item.level}
-                className="relative rounded-xl border border-border/10 bg-surface-container-lowest p-4 pl-6"
+                key={t.label}
+                className="bg-surface-container-lowest rounded-xl p-4 sm:p-5 border border-border transition-colors hover:border-secondary/40"
               >
-                <span
-                  className="absolute left-0 top-4 bottom-4 w-1 rounded-r-full bg-secondary"
-                  style={{ opacity: 0.35 + index * 0.2 }}
-                />
-                <div className="flex items-baseline justify-between gap-2">
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{item.label}</p>
-                    <p className="text-xs text-muted-foreground">{item.yearsRange}</p>
-                  </div>
-                  <span className="font-mono font-bold text-secondary text-sm">
-                    {formatAmountCLP(item.monthlyClp)}
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="text-sm font-semibold text-foreground">{t.label}</span>
+                  <span className="text-xs font-mono font-semibold text-secondary">
+                    {formatAmountCLP(t.monthlyClp)}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                  {item.description}
+                <span className="text-[11px] font-mono text-muted-foreground block mb-1">
+                  {t.yearsRange}
+                </span>
+                <p className="text-xs text-muted-foreground leading-relaxed text-pretty">
+                  {t.description}
                 </p>
               </div>
             ))}

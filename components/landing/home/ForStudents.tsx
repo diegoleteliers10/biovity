@@ -4,7 +4,8 @@ import { ArrowRight01Icon, CheckmarkCircle02Icon, Location01Icon } from "@hugeic
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { BENEFITS_FOR_STUDENTS } from "@/lib/data/home-data"
 
@@ -12,179 +13,169 @@ export function ForStudents() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+
   return (
-    <section className="py-24 bg-white">
+    <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <m.div
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+          transition={t(0)}
+          className="text-center mb-16 max-w-3xl mx-auto"
+        >
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Estudiantes & Nuevos Graduados
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Inicia tu carrera científica en <span className="text-accent font-semibold">las mejores manos</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            Encuentra prácticas profesionales, tesinas remuneradas y primeros empleos diseñados específicamente para graduados y estudiantes en Chile.
+          </p>
+        </m.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto items-stretch">
+          {/* Left: Benefits summary card */}
           <m.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(0)}
+            className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10 flex flex-col justify-between"
           >
-            <m.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={t(0)}
-              className="mb-6"
-            >
-              <Badge variant="secondary">Para estudiantes y graduados</Badge>
-            </m.div>
-            <m.h2
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={t(LANDING_ANIMATION.sequenceDelay)}
-              className="text-3xl md:text-5xl font-semibold text-foreground mb-6 text-balance"
-            >
-              Da tu primer paso en la ciencia
-            </m.h2>
-            <m.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
-              className="text-xl text-muted-foreground mb-8 leading-relaxed text-pretty"
-            >
-              Entendemos que dar el primer paso en el mundo laboral puede ser desafiante. Por eso
-              creamos una plataforma diseñada específicamente para ayudarte a comenzar tu carrera en
-              biotecnología, química y ciencias de la salud.
-            </m.p>
+            <div>
+              <div className="flex items-center justify-between gap-3 pb-5 mb-6 border-b border-border">
+                <h3 className="text-lg font-semibold text-foreground">Beneficios para Jóvenes Investigadores</h3>
+                <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-surface-container-highest text-muted-foreground">
+                  Acceso directo
+                </span>
+              </div>
 
-            <m.div
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
-              className="grid grid-cols-2 gap-4 mb-10"
-            >
-              {BENEFITS_FOR_STUDENTS.map((benefit, index) => (
-                <m.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-                  transition={ts(index * LANDING_ANIMATION.chainStagger)}
-                  className="flex items-start gap-3 p-4 bg-[#f3f3f5] rounded-xl hover:bg-[#e2e2e4] transition-colors"
-                >
-                  <div className="p-2 rounded-lg bg-secondary/10 flex-shrink-0">
-                    <HugeiconsIcon icon={benefit.icon} size={20} className="text-secondary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground text-sm">{benefit.title}</h4>
-                    <p className="text-muted-foreground text-xs mt-1">{benefit.description}</p>
-                  </div>
-                </m.div>
-              ))}
-            </m.div>
+              <div className="space-y-6">
+                {BENEFITS_FOR_STUDENTS.map((benefit, index) => {
+                  const isViolet = index % 2 === 1
+                  return (
+                    <div key={benefit.title} className="flex items-start gap-4">
+                      <div
+                        className={`size-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                          isViolet ? "bg-accent/15 text-accent" : "bg-secondary/15 text-secondary"
+                        }`}
+                      >
+                        <HugeiconsIcon icon={benefit.icon} size={16} />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-foreground mb-1">{benefit.title}</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                          {benefit.description}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
 
-            <button
-              type="button"
-              className="inline-flex items-center px-8 py-4 bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-full font-medium transition-all duration-200 hover:-translate-y-1"
-            >
-              Explorar oportunidades
-              <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
-            </button>
+            <div className="pt-6 mt-6 border-t border-border">
+              <Button asChild size="lg" className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium">
+                <Link href="/trabajos?experiencia=junior">
+                  Explorar vacantes junior y prácticas
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
+                </Link>
+              </Button>
+            </div>
           </m.div>
 
+          {/* Right: Verified Candidate Profile Card */}
           <m.div
-            initial={{ opacity: 0, x: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(LANDING_ANIMATION.stagger)}
-            className="relative"
+            className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10 border border-secondary/40 flex flex-col justify-between relative overflow-hidden"
           >
-            <div className="bg-accent/5 rounded-3xl p-6 sm:p-8">
-              <div className="bg-white rounded-2xl p-8 border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-300">
-                {/* Profile Header */}
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-full bg-gradient-to-tr from-secondary to-primary flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                    SA
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-semibold text-foreground text-lg truncate">
-                        Sofía Alarcón
-                      </h3>
-                      <HugeiconsIcon
-                        icon={CheckmarkCircle02Icon}
-                        size={18}
-                        className="text-blue-500 shrink-0"
-                      />
-                    </div>
-                    <p className="text-muted-foreground text-xs font-semibold">
-                      Ingeniería Civil en Biotecnología
-                    </p>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground/80 mt-1">
-                      <HugeiconsIcon icon={Location01Icon} size={12} className="shrink-0" />
-                      <span>Santiago, Chile</span>
-                    </div>
-                  </div>
+            <div className="absolute top-0 right-0 w-36 h-36 bg-secondary/5 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between gap-3 pb-5 mb-6 border-b border-border">
+                <h3 className="text-lg font-semibold text-foreground">Perfil Técnico Biovity</h3>
+                <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-secondary/15 text-secondary border border-secondary/20">
+                  Candidato verificado
+                </span>
+              </div>
+
+              {/* Profile Header */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="size-12 shrink-0 rounded-xl bg-secondary/15 border border-secondary/30 flex items-center justify-center text-secondary font-bold text-base font-mono">
+                  SA
                 </div>
-
-                {/* Status Badge */}
-                <div className="mt-4">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/50">
-                    Disponible para Práctica / I+D
-                  </span>
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-slate-100 my-6" />
-
-                {/* Lab Skills */}
-                <div>
-                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">
-                    Técnicas Experimentales
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
-                      PCR Tiempo Real
-                    </span>
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
-                      Cultivo Celular
-                    </span>
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
-                      HPLC
-                    </span>
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-secondary/5 text-secondary border border-secondary/15">
-                      CRISPR-Cas9
-                    </span>
-                    <span className="px-2.5 py-1 text-xs font-medium rounded-md bg-primary/5 text-primary border border-primary/15">
-                      Inglés Técnico (C1)
-                    </span>
-                  </div>
-                </div>
-
-                {/* Thesis Project */}
-                <div className="mt-6">
-                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">
-                    Proyecto de Tesis
-                  </h4>
-                  <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
-                    <p className="text-xs text-foreground font-medium leading-relaxed">
-                      Optimización de vectores de expresión para la producción a escala de proteínas
-                      recombinantes en Escherichia coli.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Profile Completion */}
-                <div className="mt-8 pt-6 border-t border-slate-100">
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-muted-foreground font-medium">
-                      Perfil verificado Biovity
-                    </span>
-                    <span className="font-bold text-primary">95%</span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden mt-2">
-                    <div
-                      className="h-full bg-gradient-to-r from-secondary to-primary rounded-full"
-                      style={{ width: "95%" }}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="font-semibold text-foreground text-sm sm:text-base truncate">
+                      Sofía Alarcón
+                    </h4>
+                    <HugeiconsIcon
+                      icon={CheckmarkCircle02Icon}
+                      size={16}
+                      className="text-secondary shrink-0"
                     />
                   </div>
+                  <p className="text-muted-foreground text-xs font-medium">
+                    Ingeniería Civil en Biotecnología
+                  </p>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground/80 mt-0.5">
+                    <HugeiconsIcon icon={Location01Icon} size={12} className="shrink-0" />
+                    <span>Santiago, Chile</span>
+                  </div>
                 </div>
+              </div>
+
+              {/* Status Badge */}
+              <div className="mb-4">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-secondary/10 text-secondary border border-secondary/20">
+                  ● Disponible para Práctica / I+D
+                </span>
+              </div>
+
+              {/* Skills */}
+              <div className="mb-4">
+                <h5 className="text-[11px] font-mono font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  Técnicas Experimentales
+                </h5>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="px-2.5 py-1 text-xs font-mono rounded-lg bg-surface-container-lowest border border-border text-foreground">
+                    qPCR / RT-PCR
+                  </span>
+                  <span className="px-2.5 py-1 text-xs font-mono rounded-lg bg-surface-container-lowest border border-border text-foreground">
+                    Cultivo Celular
+                  </span>
+                  <span className="px-2.5 py-1 text-xs font-mono rounded-lg bg-surface-container-lowest border border-border text-foreground">
+                    HPLC & Cromatografía
+                  </span>
+                  <span className="px-2.5 py-1 text-xs font-mono rounded-lg bg-surface-container-lowest border border-border text-foreground">
+                    CRISPR-Cas9
+                  </span>
+                </div>
+              </div>
+
+              {/* Thesis */}
+              <div className="p-3 bg-surface-container-lowest rounded-lg border border-border text-xs text-foreground leading-relaxed">
+                <strong className="font-semibold text-secondary block mb-0.5">Tesis de Grado:</strong>
+                Optimización de vectores de expresión recombinante en <em className="italic">E. coli</em>.
+              </div>
+            </div>
+
+            {/* Profile Bar */}
+            <div className="mt-6 pt-4 border-t border-border relative z-10">
+              <div className="flex items-center justify-between text-xs mb-1.5 font-mono">
+                <span className="text-muted-foreground">Completitud del perfil</span>
+                <span className="font-bold text-secondary">95%</span>
+              </div>
+              <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-secondary rounded-full"
+                  style={{ width: "95%" }}
+                />
               </div>
             </div>
           </m.div>

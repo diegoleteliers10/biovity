@@ -2,134 +2,104 @@
 
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useQuery } from "@tanstack/react-query"
+import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { HERO_STATS_EMPRESAS } from "@/lib/data/empresas-data"
 import { Button } from "../../ui/button"
 
-type EmpresasStatsResponse = {
-  organizations: number | null
-  specialties: number | null
-}
-
 export function HeroEmpresas() {
+  const reducedMotion = useReducedMotion()
   const ease = [0.23, 1, 0.32, 1] as const
 
-  const { data: stats } = useQuery({
-    queryKey: ["landing", "empresas", "stats"],
-    queryFn: async (): Promise<EmpresasStatsResponse> => {
-      const res = await fetch("/api/landing/empresas/stats")
-      if (!res.ok) throw new Error("Error al cargar estadísticas")
-      return res.json()
-    },
-    staleTime: 60 * 1000,
-  })
-
-  const formatNumber = (value: number) => new Intl.NumberFormat("es-CL").format(value)
-
-  const resolveValue = (index: number, fallback: string) => {
-    if (index === 0 && stats?.specialties != null) return `+${formatNumber(stats.specialties)}`
-    if (index === 2 && stats?.organizations != null) return `+${formatNumber(stats.organizations)}`
-    return fallback
-  }
-
-  const scrollToContacto = () => {
-    const contactSection = document.getElementById("contacto")
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
   return (
-    <section className="relative min-h-svh sm:h-svh w-full flex items-center justify-center overflow-hidden lg:contain-paint">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
-        <div className="absolute top-[20%] left-[12%] size-[16rem] rounded-full bg-[#00374a]/18 blur-2xl will-change-transform sm:top-[5%] sm:left-[10%] sm:size-[22rem] sm:bg-[#00374a]/25 sm:blur-3xl"></div>
-        <div className="absolute top-[15%] right-[15%] size-[18rem] bg-[#00374a]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[55%] left-[5%] size-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[65%] right-[10%] size-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute bottom-[15%] left-[25%] size-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[35%] right-[30%] size-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
+    <section className="relative min-h-[85vh] sm:min-h-screen w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest pt-24 pb-16 md:pt-32 md:pb-24">
+      {/* Ambient brand glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[44rem] h-[30rem] rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-70" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
-          <m.h1
-            initial={{ opacity: 0, y: 28, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, ease }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-semibold text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
+          {/* Green Plain Text Tag */}
+          <m.span
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.4, ease }}
+            className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-4 block"
           >
-            Recluta el mejor
-            <span className="text-accent font-semibold"> talento científico </span>
-            de Chile
+            Biovity para Empresas • ATS & Reclutamiento Científico
+          </m.span>
+
+          {/* Main Headline */}
+          <m.h1
+            initial={{ opacity: 0, y: 24, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, ease }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
+          >
+            Software ATS y Reclutamiento{" "}
+            <span className="text-accent font-semibold">Científico</span> en Chile
           </m.h1>
 
+          {/* Subheadline */}
           <m.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.12, ease }}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed font-sans px-4 text-pretty"
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Simplifica tu proceso de reclutamiento y accede a profesionales cualificados en
-            biotecnología, bioquímica, química e ingeniería química.
+            Centraliza candidatos, evalúa habilidades de laboratorio con scoring de IA y reduce
+            tus tiempos de contratación técnica en un 60%.
           </m.p>
 
+          {/* CTA Group */}
           <m.div
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.24, ease }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.16, ease }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <Button size="lg" className="h-14 px-8 text-lg" asChild>
+            <Button
+              size="lg"
+              className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
+              asChild
+            >
               <Link href="/register/organization">
-                Comienza gratis
-                <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
+                Publicar una oferta
+                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
               </Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-14 px-8 text-lg"
-              onClick={scrollToContacto}
+              className="w-full sm:w-auto h-11 px-6 bg-surface-container-lowest border-border/30 hover:bg-surface-container-low rounded-lg text-sm font-medium"
+              asChild
             >
-              Hablar con ventas
+              <Link href="/empresas/precios">Ver planes y precios</Link>
             </Button>
           </m.div>
 
+          {/* Metrics Grid - Centered 3 columns */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.36, ease }}
-            className="flex flex-wrap justify-center gap-8 md:gap-12"
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.24, ease }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto"
           >
-            {HERO_STATS_EMPRESAS.map((stat, index) => {
-              const iconColor =
-                index % 3 === 0
-                  ? "text-accent"
-                  : index % 3 === 1
-                    ? "text-secondary"
-                    : "text-muted-foreground"
-              return (
-                <m.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.36 + index * 0.08, ease }}
-                  className="flex items-center gap-3"
-                >
-                  <div className="size-12 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center">
-                    <HugeiconsIcon icon={stat.icon} size={28} className={iconColor} />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-2xl font-bold text-foreground">
-                      {resolveValue(index, stat.value)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  </div>
-                </m.div>
-              )
-            })}
+            {HERO_STATS_EMPRESAS.map((stat) => (
+              <div
+                key={stat.label}
+                className="bg-surface-container-low rounded-xl p-4 sm:p-5 text-center transition-colors hover:bg-surface-container-highest/60"
+              >
+                <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1 tracking-tight">
+                  {stat.value}
+                </p>
+                <p className="text-xs sm:text-sm font-medium text-foreground mb-0.5 leading-snug">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </m.div>
         </div>
       </div>

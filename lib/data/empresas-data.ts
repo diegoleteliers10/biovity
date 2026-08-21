@@ -1,5 +1,4 @@
 import {
-  BarChartIcon,
   BrainIcon,
   Building02Icon,
   Building03Icon,
@@ -14,6 +13,7 @@ import {
   SparklesIcon,
   Target01Icon,
   Tick02Icon,
+  TradeUpIcon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
 import type {
@@ -29,42 +29,32 @@ export const FAQS_EMPRESAS: FAQItem[] = [
   {
     question: "¿Puedo probar Biovity gratis?",
     answer:
-      "Sí, ofrecemos un plan gratuito que incluye 5 ofertas activas, acceso completo a perfiles y 2 ofertas destacadas al mes. Puedes comenzar sin tarjeta de crédito.",
+      "Sí, contamos con un plan Free que te permite publicar tus primeras ofertas, recibir postulaciones y explorar perfiles de profesionales de biociencias sin necesidad de ingresar tarjeta de crédito.",
+  },
+  {
+    question: "¿Qué diferencia a Biovity de un portal de empleo tradicional?",
+    answer:
+      "A diferencia de portales genéricos, Biovity está 100% especializado en biotecnología, bioquímica, química, farmacia e ingeniería en Chile. Nuestros filtros capturan técnicas de laboratorio, certificaciones (GMP, GLP, ISO), líneas de I+D y posgrados.",
   },
   {
     question: "¿Cómo funciona el ATS integrado?",
     answer:
-      "Nuestro ATS te permite gestionar todo el proceso de selección desde un solo lugar. Puedes publicar ofertas, recibir candidaturas, filtrar perfiles, programar entrevistas y comunicarte con candidatos directamente desde la plataforma.",
+      "Nuestro sistema de gestión de candidatos (ATS) te permite centralizar todo el flujo: publicación de vacantes, recepción y filtrado de CVs, evaluación en tablero Kanban, notas del equipo y comunicación directa con los postulantes.",
   },
   {
-    question: "¿Puedo cambiar de plan en cualquier momento?",
+    question: "¿Qué incluye el AI Matching para perfiles científicos?",
     answer:
-      "Sí, puedes actualizar o degradar tu plan cuando quieras. Los cambios se aplican inmediatamente y se prorratea el cobro según los días restantes de tu ciclo de facturación.",
+      "Analiza semánticamente los requerimientos técnicos de tu vacante (técnicas analíticas, equipamiento, experiencia de laboratorio) y clasifica automáticamente los candidatos con mayor afinidad.",
   },
   {
-    question: "¿Qué métodos de pago aceptan?",
+    question: "¿Puedo cambiar de plan o cancelar en cualquier momento?",
     answer:
-      "Aceptamos tarjetas de crédito y débito (Visa, Mastercard, American Express), transferencia bancaria y Webpay. Para planes Enterprise, también ofrecemos facturación mensual.",
+      "Sí, puedes actualizar, reducir o cancelar tu suscripción en cualquier momento desde tu panel de organización sin penalizaciones ni contratos de permanencia obligatoria.",
   },
   {
-    question: "¿Qué incluye el AI Matching?",
+    question: "¿Ofrecen condiciones especiales para startups bio o universidades?",
     answer:
-      "El AI Matching analiza los requisitos de tus ofertas y te sugiere candidatos que mejor se ajustan basándose en experiencia, habilidades y preferencias. Disponible en planes Pro, Business y Enterprise.",
-  },
-  {
-    question: "¿Cómo es el soporte para empresas?",
-    answer:
-      "El plan Free y Pro incluyen soporte por email. Business añade soporte telefónico. Enterprise cuenta con un account manager dedicado y soporte prioritario 24/7.",
-  },
-  {
-    question: "¿Puedo cancelar mi suscripción?",
-    answer:
-      "Sí, puedes cancelar en cualquier momento desde tu panel de control. Tu cuenta seguirá activa hasta el final del período de facturación actual.",
-  },
-  {
-    question: "¿Ofrecen descuentos para startups o instituciones académicas?",
-    answer:
-      "Sí, tenemos programas especiales para startups en etapa temprana e instituciones académicas. Contáctanos para más información sobre nuestros descuentos.",
+      "Sí, tenemos programas de apoyo y descuentos preferenciales para startups en etapa temprana, centros de investigación y laboratorios universitarios. Contáctanos para activarlo.",
   },
 ]
 
@@ -73,15 +63,14 @@ export const PLANES_EMPRESAS: PlanItem[] = [
     name: "Free",
     price: "0",
     period: "para siempre",
-    description: "Perfecto para empezar a explorar la plataforma.",
+    description: "Para explorar la plataforma y publicar vacantes puntuales.",
     features: [
-      "5 ofertas activas",
-      "Acceso completo a perfiles",
-      "Soporte por email",
-      "2 ofertas destacadas/mes",
-      "ATS completo",
+      "Hasta 2 ofertas activas simultáneas",
+      "Acceso a postulaciones y CVs completos",
+      "Panel ATS básico",
+      "Soporte estándar por email",
     ],
-    cta: "Comienza gratis",
+    cta: "Comenzar gratis",
     href: "/register/organization",
     highlighted: false,
   },
@@ -89,35 +78,33 @@ export const PLANES_EMPRESAS: PlanItem[] = [
     name: "Pro",
     price: "40.000",
     period: "/mes",
-    description: "Para empresas que buscan talento activamente.",
+    description: "Para empresas y laboratorios con procesos de contratación regulares.",
     features: [
-      "10 ofertas activas",
-      "Acceso completo a perfiles",
-      "Filtros avanzados de búsqueda",
-      "4 ofertas destacadas/mes",
-      "Soporte por email y llamada",
-      "ATS completo",
+      "Hasta 8 ofertas activas simultáneas",
+      "Búsqueda activa en la base de talentos",
+      "Filtros avanzados por técnicas y posgrados",
+      "2 ofertas destacadas al mes",
       "AI Matching de candidatos",
+      "Soporte prioritario por email y chat",
     ],
     cta: "Comenzar con Pro",
     href: "/register/organization?plan=pro",
     highlighted: true,
-    badge: "Más popular",
+    badge: "Recomendado",
   },
   {
     name: "Business",
     price: "80.000",
     period: "/mes",
-    description: "Para equipos de RRHH con alto volumen de contratación.",
+    description: "Para equipos de RRHH y empresas biotecnológicas en fase de escalamiento.",
     features: [
-      "20 ofertas activas",
-      "Acceso completo a perfiles",
-      "Filtros avanzados de búsqueda",
-      "10 ofertas destacadas/mes",
-      "Soporte prioritario 24/7",
-      "ATS completo",
-      "AI Matching de candidatos",
-      "Página de empresa personalizada",
+      "Hasta 20 ofertas activas simultáneas",
+      "Acceso ilimitado a búsqueda de talentos",
+      "5 ofertas destacadas al mes",
+      "Perfil de empresa personalizado",
+      "Evaluación colaborativa de candidatos",
+      "Reportes de rendimiento de vacantes",
+      "Soporte preferente dedicado",
     ],
     cta: "Comenzar con Business",
     href: "/register/organization?plan=business",
@@ -127,18 +114,16 @@ export const PLANES_EMPRESAS: PlanItem[] = [
     name: "Enterprise",
     price: "Personalizado",
     period: "",
-    description: "Soluciones a medida para grandes organizaciones.",
+    description: "Soluciones a medida para corporaciones, consorcios y centros de I+D.",
     features: [
-      "Ofertas ilimitadas",
-      "Acceso completo a perfiles",
-      "Todas las funcionalidades",
-      "Account manager dedicado",
-      "Soporte prioritario 24/7",
-      "Integraciones personalizadas",
-      "Onboarding personalizado",
-      "SLA garantizado",
+      "Ofertas activas ilimitadas",
+      "Pipeline y flujos de aprobación personalizados",
+      "Integraciones con ATS corporativo / HRIS",
+      "Account Manager y onboarding dedicado",
+      "SLA de servicio y soporte prioritario 24/7",
+      "Facturación corporativa personalizada",
     ],
-    cta: "Contactar ventas",
+    cta: "Contactar a ventas",
     href: "#contacto",
     highlighted: false,
     isEnterprise: true,
@@ -148,45 +133,51 @@ export const PLANES_EMPRESAS: PlanItem[] = [
 export const FEATURES_ATS: FeatureATSItem[] = [
   {
     icon: Search01Icon,
-    title: "Publicación de ofertas",
+    title: "Publicación de vacantes STEM",
     description:
-      "Publica ofertas de trabajo en minutos con plantillas optimizadas para el sector científico.",
+      "Publica en minutos con campos especializados para técnicas experimentales, equipamiento y certificaciones de laboratorio.",
   },
   {
     icon: UserMultiple02Icon,
-    title: "Base de candidatos",
-    description: "Accede a perfiles verificados de profesionales en biotecnología, química y más.",
+    title: "Base de talento verificado",
+    description:
+      "Accede a perfiles validados de bioquímicos, biotecnólogos, farmacéuticos e ingenieros en todo Chile.",
   },
   {
     icon: FilterIcon,
-    title: "Filtros avanzados",
-    description: "Encuentra candidatos por especialidad, experiencia, ubicación y disponibilidad.",
+    title: "Filtros científicos avanzados",
+    description:
+      "Segmenta por líneas de investigación, nivel educativo (licenciatura, magíster, doctorado) y normativas técnicas.",
   },
   {
-    icon: BarChartIcon,
-    title: "Pipeline visual",
+    icon: TradeUpIcon,
+    title: "Pipeline visual tipo Kanban",
     description:
-      "Gestiona candidatos con un tablero Kanban intuitivo. Arrastra y suelta entre etapas.",
+      "Gestiona a tus postulantes de manera ágil arrastrando tarjetas entre etapas de revisión, entrevista y oferta.",
   },
   {
     icon: Message01Icon,
-    title: "Comunicación integrada",
-    description: "Envía mensajes y programa entrevistas directamente desde la plataforma.",
+    title: "Comunicación directa",
+    description:
+      "Envía actualizaciones de estado y coordina entrevistas directamente desde la plataforma sin fricciones.",
   },
   {
     icon: Building02Icon,
-    title: "Página de empresa",
-    description: "Crea tu perfil de empresa para mostrar tu cultura, beneficios y ofertas activas.",
+    title: "Página corporativa",
+    description:
+      "Muestra la cultura, proyectos de I+D y beneficios de tu organización para atraer a los mejores candidatos.",
   },
   {
     icon: SparklesIcon,
     title: "Ofertas destacadas",
-    description: "Aumenta la visibilidad de tus ofertas y aparece primero en las búsquedas.",
+    description:
+      "Multiplica el alcance de tus vacantes críticas con posicionamiento prioritario y difusión en la comunidad.",
   },
   {
     icon: BrainIcon,
-    title: "AI Matching",
-    description: "Sugerencias inteligentes de candidatos basadas en los requisitos de tus ofertas.",
+    title: "AI Matching de candidatos",
+    description:
+      "Clasificación inteligente que sugiere los perfiles con mayor compatibilidad técnica para cada cargo.",
     badge: "Pro",
   },
 ]
@@ -194,30 +185,30 @@ export const FEATURES_ATS: FeatureATSItem[] = [
 export const PASOS_EMPRESAS: PasoEmpresaItem[] = [
   {
     icon: Building03Icon,
-    title: "Crea tu cuenta de empresa",
+    title: "Crea tu perfil de empresa",
     description:
-      "Regístrate gratis y configura el perfil de tu empresa para atraer al mejor talento.",
+      "Configura tu cuenta corporativa y presenta tu organización ante la mayor comunidad científica del país.",
     number: "01",
   },
   {
     icon: MailSend01Icon,
-    title: "Publica tus ofertas",
+    title: "Publica tus vacantes",
     description:
-      "Crea ofertas de trabajo detalladas y publícalas en minutos. Llega a cientos de profesionales.",
+      "Define los requisitos técnicos específicos y activa tu búsqueda en pocos minutos con alcance focalizado.",
     number: "02",
   },
   {
     icon: FileSearchIcon,
-    title: "Gestiona candidatos",
+    title: "Evalúa en el ATS integrado",
     description:
-      "Usa nuestro ATS integrado para filtrar, evaluar y hacer seguimiento de candidatos fácilmente.",
+      "Revisa postulaciones con CVs formateados, filtra por habilidades clave y coordina etapas con tu equipo.",
     number: "03",
   },
   {
     icon: Tick02Icon,
-    title: "Contrata al mejor",
+    title: "Contrata con precisión",
     description:
-      "Conecta con los candidatos ideales, agenda entrevistas y realiza la contratación perfecta.",
+      "Conecta con los profesionales idóneos, agenda entrevistas y cierra contrataciones sin intermediarios.",
     number: "04",
   },
 ]
@@ -227,34 +218,34 @@ export type BeneficioEmpresaItem = IconTitleDescription
 export const BENEFICIOS_EMPRESAS: BeneficioEmpresaItem[] = [
   {
     icon: UserMultiple02Icon,
-    title: "Talento especializado",
+    title: "Talento 100% Calificado",
     description:
-      "Accede a profesionales cualificados en biotecnología, bioquímica, química e ingeniería química.",
+      "Candidatos con formación real en biociencias, control de calidad, bioprocesos, ensayos y regulación.",
   },
   {
     icon: Clock01Icon,
-    title: "Ahorra tiempo",
+    title: "Menor Tiempo de Contratación",
     description:
-      "Nuestro ATS integrado simplifica todo el proceso de selección, desde la publicación hasta la contratación.",
+      "Reduce semanas en tus procesos eliminando filtros manuales sobre cientos de CVs no afines al rubro.",
   },
   {
     icon: Search01Icon,
-    title: "Búsqueda proactiva",
+    title: "Búsqueda Directa y Proactiva",
     description:
-      "Encuentra candidatos antes de que busquen trabajo. Accede a nuestra base de perfiles verificados.",
+      "Contacta perfiles técnicos de alto interés antes de que inicien una búsqueda activa en el mercado.",
   },
   {
     icon: Shield01Icon,
-    title: "Calidad garantizada",
+    title: "Validación y Rigor",
     description:
-      "Perfiles verificados y enfocados 100% en el sector científico. Sin ruido, solo talento relevante.",
+      "Perfiles con verificación de formación académica y experiencia técnica para contrataciones confiables.",
   },
 ]
 
 export const HERO_STATS_EMPRESAS: HeroStatEmpresaItem[] = [
-  { icon: Chemistry01Icon, value: "—", label: "especialidades" },
-  { icon: Target01Icon, value: "100%", label: "enfocado en ciencias" },
-  { icon: Building03Icon, value: "—", label: "empresas registradas" },
+  { icon: Chemistry01Icon, value: "15+", label: "Especialidades STEM" },
+  { icon: Target01Icon, value: "100%", label: "Enfoque en ciencias" },
+  { icon: Building03Icon, value: "+50", label: "Empresas e instituciones" },
 ]
 
 export type EmpresaLogoItem = {

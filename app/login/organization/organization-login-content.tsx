@@ -24,7 +24,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { Logo } from "@/components/ui/logo"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import { organizationLoginSchema, validateForm as validateFormZod } from "@/lib/validations"
@@ -74,7 +73,7 @@ export function OrganizationLoginContent() {
       if (result?.error) {
         const msg =
           (result.error as { message?: string })?.message ??
-          "Credenciales invalidas. Por favor verifica tu email y contrasena."
+          "Credenciales inválidas. Por favor verifica tu email y contraseña."
         setErrors({ general: msg })
         return
       }
@@ -85,44 +84,57 @@ export function OrganizationLoginContent() {
   }
 
   return (
-    <div className="flex h-dvh">
+    <div className="flex h-dvh bg-surface-container-lowest overflow-hidden">
       {/* Left: Illustration */}
-      <div className="relative hidden w-1/2 overflow-hidden lg:block">
-        <Image
-          src="/images/ilustrationOG.png"
-          alt="Biovity - Colaboración en ciencias y biotecnología"
-          fill
-          className="object-cover object-center p-2.5 rounded-[20px]"
-          priority
-          sizes="50vw"
-        />
+      <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
+        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
+          <Image
+            src="/images/ilustrationOG.png"
+            alt="Biovity - Colaboración en ciencias y biotecnología"
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="50vw"
+          />
+        </div>
       </div>
 
       {/* Right: Login form */}
-      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-background lg:w-1/2">
+      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
         <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
-          <div className="space-y-2 text-center">
-            <Logo size="lg" className="justify-center" />
-            <h1 className={`text-center ${authTitleClass}`}>Iniciar sesión</h1>
-            <p className={`text-center ${authSubtitleClass}`}>
+          {/* Logo & Header */}
+          <div className="flex flex-col items-center text-center space-y-3">
+            <Link
+              href="/"
+              aria-label="Ir al inicio"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
+            >
+              <Image
+                src="/logoIcon.png"
+                alt="Biovity"
+                width={50}
+                height={50}
+                className="h-12 w-auto object-contain"
+                priority
+              />
+            </Link>
+            <h1 className={authTitleClass}>Portal Organizacional</h1>
+            <p className={authSubtitleClass}>
               Acceso para empresas, instituciones y laboratorios
             </p>
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label htmlFor="email" className={authLabelClass}>
-                Correo electrónico corporativo
+                Correo corporativo
               </label>
-              <p className="text-xs text-muted-foreground">
-                Usa el correo de tu organización (no Gmail, Hotmail, Yahoo, etc.)
-              </p>
               <div className="relative">
                 <HugeiconsIcon
                   icon={Mail01Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="email"
@@ -135,9 +147,10 @@ export function OrganizationLoginContent() {
                   autoComplete="email"
                 />
               </div>
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
             </div>
-            <div className="space-y-2">
+
+            <div className="space-y-1.5">
               <label htmlFor="password" className={authLabelClass}>
                 Contraseña
               </label>
@@ -146,7 +159,7 @@ export function OrganizationLoginContent() {
                   icon={SquareLock02Icon}
                   size={16}
                   strokeWidth={1.5}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
                   id="password"
@@ -167,19 +180,20 @@ export function OrganizationLoginContent() {
                   aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
                   aria-pressed={isPasswordVisible}
                   onClick={() => setIsPasswordVisible((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none"
                 >
                   <HugeiconsIcon
                     icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
-                    size={18}
+                    size={16}
                     strokeWidth={1.75}
                   />
                 </button>
               </div>
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
             </div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="remember" className="flex items-center gap-2 text-sm cursor-pointer">
+
+            <div className="flex items-center justify-between pt-1">
+              <label htmlFor="remember" className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none">
                 <Checkbox
                   id="remember"
                   checked={rememberMe}
@@ -191,48 +205,51 @@ export function OrganizationLoginContent() {
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
+
             {errors.general && (
-              <div className="text-center text-sm text-destructive">{errors.general}</div>
+              <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
+                {errors.general}
+              </div>
             )}
+
             <Button
               type="submit"
-              variant="default"
               className={cn(authButtonClass, "w-full")}
               disabled={isPending}
             >
-              {isPending ? "Cargando..." : "Acceder al portal"}
+              {isPending ? "Accediendo..." : "Acceder al portal"}
             </Button>
           </form>
 
-          <div className="space-y-4 border-t border-border/15 pt-8">
-            <div className="text-center">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-              >
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
-                Volver a selección de acceso
-              </Link>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
+          <div className="space-y-3.5 border-t border-border pt-6 text-center text-xs sm:text-sm">
+            <div>
+              <p className="text-muted-foreground">
                 ¿Tu organización no está registrada?{" "}
                 <Link href="/register/organization" className={authOrgLinkClass}>
                   Registrar organización
                 </Link>
               </p>
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
+            <div>
+              <p className="text-muted-foreground">
                 ¿Eres usuario individual?{" "}
                 <Link href="/login/professional" className={authLinkClass}>
                   Acceso de usuario
                 </Link>
               </p>
             </div>
+            <div className="pt-2">
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.5} />
+                Volver a selección de acceso
+              </Link>
+            </div>
           </div>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-xs text-muted-foreground">
             ¿Necesitas ayuda?{" "}
             <a href="mailto:support@biovity.com" className={authLinkClass}>
               Contactar soporte

@@ -1,88 +1,160 @@
 "use client"
 
-import { Linkedin02Icon } from "@hugeicons/core-free-icons"
+import {
+  ArrowRight01Icon,
+  Linkedin02Icon,
+  Mail01Icon,
+  SparklesIcon,
+  UserMultiple02Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import Link from "next/link"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
 export function Equipo() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+
   return (
-    <section className="py-24 bg-white">
+    <section className="py-20 md:py-28 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
-          className="text-center mb-16"
+          className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance"
-          >
-            Nuestro <span className="text-accent font-semibold">Equipo</span>
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-muted-foreground text-pretty"
-          >
-            Conecta con nosotros
-          </m.p>
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Liderazgo & Ecosistema
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Quiénes construyen <span className="text-accent font-semibold">Biovity</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            Una plataforma desarrollada desde la intersección entre biociencias, ingeniería de
+            software y compromiso con la comunidad científica.
+          </p>
         </m.div>
 
-        <m.div
-          initial={{ opacity: 0, y: 32, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
-          className="flex justify-center"
-        >
-          <div className="bg-[#f3f3f5] rounded-2xl p-8 border border-border/10 max-w-md w-full text-center hover:bg-secondary/5 transition-colors">
-            {/* Photo/Avatar */}
-            <div className="mx-auto mb-6 size-28 rounded-full bg-secondary flex items-center justify-center">
-              <span className="text-4xl font-semibold text-white">DL</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto items-stretch">
+          {/* Founder Profile Card - Structured with border */}
+          <m.div
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+            transition={ts(0)}
+            className="lg:col-span-6 bg-surface-container-lowest rounded-xl p-6 sm:p-8 border border-border flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-start gap-4 mb-6">
+                <div className="size-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold tracking-tight shrink-0">
+                  DL
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-foreground">Diego Letelier</h3>
+                  <p className="text-xs font-mono font-medium text-secondary uppercase tracking-wider">
+                    Fundador & Lead Developer
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Santiago, Chile</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 text-pretty">
+                Desarrollador de software e innovador en biotecnología. Creó Biovity con el objetivo
+                de dotar a la comunidad científica chilena de herramientas de datos y empleo que
+                estén al nivel de los principales hubs de innovación global.
+              </p>
+
+              <div className="flex flex-wrap gap-1.5 mb-6">
+                {["Biotecnología", "Data Analytics", "Full-Stack", "Ecosistema STEM"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-surface-container-low text-muted-foreground border border-border"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            {/* Name and Role */}
-            <m.h3
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={t(LANDING_ANIMATION.sequenceDelay * 3)}
-              className="text-2xl font-semibold text-foreground mb-1"
-            >
-              Diego Letelier
-            </m.h3>
-            <p className="text-base text-accent mb-4 font-semibold">CEO/CTO & Fundador</p>
+            <div className="pt-4 border-t border-border flex items-center justify-between">
+              <a
+                href="https://linkedin.com/in/diegoleteliers10"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs font-medium text-primary hover:text-secondary transition-colors"
+                aria-label="Perfil de LinkedIn de Diego Letelier"
+              >
+                <HugeiconsIcon icon={Linkedin02Icon} size={16} />
+                <span>linkedin.com/in/diegoleteliers10</span>
+              </a>
 
-            {/* Brief Description */}
-            <p className="text-muted-foreground leading-relaxed mb-6 text-pretty">
-              Apasionado por conectar talento científico con oportunidades significativas en el
-              sector de biociencias en Chile.
-            </p>
+              <a
+                href="mailto:contacto@biovity.cl"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Enviar correo a Diego Letelier"
+              >
+                <HugeiconsIcon icon={Mail01Icon} size={15} />
+                <span>Contacto</span>
+              </a>
+            </div>
+          </m.div>
 
-            {/* LinkedIn Link */}
-            <a
-              href="https://linkedin.com/in/diegoleteliers10"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors font-medium align-center"
-              aria-label="Ir al perfil de LinkedIn de Diego Letelier"
-            >
-              <HugeiconsIcon icon={Linkedin02Icon} className="size-4" />
-            </a>
-          </div>
-        </m.div>
+          {/* Ecosystem / Community Card - Seamless borderless surface */}
+          <m.div
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+            transition={ts(LANDING_ANIMATION.stagger)}
+            className="lg:col-span-6 bg-surface-container-lowest rounded-xl p-6 sm:p-8 flex flex-col justify-between"
+          >
+            <div>
+              <div className="size-10 rounded-lg bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary mb-5">
+                <HugeiconsIcon icon={UserMultiple02Icon} size={20} />
+              </div>
+
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                Impulsado por la comunidad
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 text-pretty">
+                Biovity no es solo una plataforma tecnológica; es una iniciativa colaborativa donde
+                participan científicos, universidades, centros de I+D y empresas que apuestan por la
+                transparencia.
+              </p>
+
+              <div className="space-y-3.5 mb-6">
+                <div className="flex items-start gap-3">
+                  <HugeiconsIcon icon={SparklesIcon} size={16} className="text-secondary shrink-0 mt-0.5" />
+                  <p className="text-xs text-muted-foreground">
+                    <strong className="text-foreground font-medium">Dataset Colaborativo:</strong> Más de 500
+                    profesionales han compartido sus salarios de forma altruista.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <HugeiconsIcon icon={SparklesIcon} size={16} className="text-secondary shrink-0 mt-0.5" />
+                  <p className="text-xs text-muted-foreground">
+                    <strong className="text-foreground font-medium">Feedback Continuo:</strong> Consultamos
+                    regularmente a investigadores para afinar los filtros y taxonomías científicas.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-border">
+              <Link
+                href="/empresas#contacto"
+                className="inline-flex items-center gap-2 text-xs font-medium text-secondary hover:text-secondary/80 transition-colors"
+              >
+                <span>¿Representas una institución o empresa bio? Conversemos</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
+              </Link>
+            </div>
+          </m.div>
+        </div>
       </div>
     </section>
   )

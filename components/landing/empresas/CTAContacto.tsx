@@ -78,135 +78,161 @@ export function CTAContacto() {
   }
 
   return (
-    <section id="contacto" className="py-24">
+    <section id="contacto" className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left Column: Context & Direct Info */}
           <m.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(0)}
+            className="lg:col-span-5"
           >
-            <h2 className="text-4xl md:text-5xl font-semibold text-foreground mb-6 tracking-tight text-balance">
-              ¿Listo para encontrar tu próximo talento?
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+              Contacto Corporativo
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6 tracking-tight text-balance">
+              ¿Listo para encontrar tu próximo{" "}
+              <span className="text-accent font-semibold">talento científico</span>?
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed text-pretty">
-              Comienza gratis o habla con nuestro equipo para encontrar el plan perfecto para tu
-              empresa.
+            <p className="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed text-pretty">
+              Comienza gratis con tu cuenta de empresa o déjanos un mensaje para coordinar una demo
+              personalizada de nuestras herramientas ATS y búsqueda de candidatos.
             </p>
 
-            <div className="flex items-center gap-4 mb-8">
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Mail01Icon} className="size-5 text-secondary" />
-                <span className="text-foreground">empresas@biovity.cl</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mb-12">
-              <HugeiconsIcon icon={CallIcon} className="size-5 text-secondary" />
-              <span className="text-foreground">+56 9 1234 5678</span>
+            <div className="space-y-4 mb-8">
+              <a
+                href="mailto:empresas@biovity.cl"
+                className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
+              >
+                <div className="size-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shrink-0">
+                  <HugeiconsIcon icon={Mail01Icon} size={18} />
+                </div>
+                <span className="font-medium">empresas@biovity.cl</span>
+              </a>
+
+              <a
+                href="tel:+56912345678"
+                className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
+              >
+                <div className="size-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shrink-0">
+                  <HugeiconsIcon icon={CallIcon} size={18} />
+                </div>
+                <span className="font-medium">+56 9 1234 5678</span>
+              </a>
             </div>
 
-            <Button size="lg" variant="outline" asChild>
+            <Button
+              size="lg"
+              variant="outline"
+              className="h-11 px-5 bg-surface-container-lowest border border-border hover:bg-surface-container-low rounded-lg text-sm font-medium"
+              asChild
+            >
               <Link href="/register/organization">
-                Comienza gratis
-                <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
+                Crear cuenta de empresa
+                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
               </Link>
             </Button>
           </m.div>
 
+          {/* Right Column: Contact Form - Clean borderless container on surface-container-lowest */}
           <m.div
-            initial={{ opacity: 0, x: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
             transition={ts(LANDING_ANIMATION.stagger)}
-            className="space-y-4"
+            className="lg:col-span-7"
           >
-            <m.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
-            >
-              {isSubmitted ? (
-                <div className="bg-white rounded-2xl p-8 border border-border/10 text-center">
-                  <div className="size-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="size-8 text-accent" />
-                  </div>
-                  <h3 className="text-2xl font-semibold text-foreground mb-2">¡Mensaje enviado!</h3>
-                  <p className="text-muted-foreground text-pretty">
-                    Nos pondremos en contacto contigo pronto. Gracias por tu interés en Biovity.
+            {isSubmitted ? (
+              <div className="bg-surface-container-low rounded-xl p-8 sm:p-12 text-center">
+                <div className="size-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mx-auto mb-4 text-secondary">
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} size={28} />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">¡Mensaje enviado con éxito!</h3>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto text-pretty">
+                  Nos pondremos en contacto contigo dentro de las próximas 24 horas hábiles. Gracias por tu interés en Biovity.
+                </p>
+              </div>
+            ) : (
+              <form
+                ref={formRef}
+                onSubmit={handleSubmit}
+                className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10"
+              >
+                <div className="mb-6 pb-4 border-b border-border">
+                  <h3 className="text-lg font-semibold text-foreground">Contacta a nuestro equipo</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Cuéntanos sobre tus requerimientos y te responderemos a la brevedad.
                   </p>
                 </div>
-              ) : (
-                <form
-                  ref={formRef}
-                  onSubmit={handleSubmit}
-                  className="bg-white rounded-2xl p-8 border border-border/10"
-                >
-                  <h3 className="text-2xl font-semibold text-foreground mb-6">
-                    Contacta con ventas
-                  </h3>
 
-                  {Object.keys(errors).length > 0 && (
-                    <div
-                      role="alert"
-                      className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg"
-                    >
-                      <p className="text-sm text-accent">{Object.values(errors)[0]}</p>
-                    </div>
-                  )}
+                {Object.keys(errors).length > 0 && (
+                  <div
+                    role="alert"
+                    className="mb-5 p-3.5 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-xs font-medium"
+                  >
+                    {Object.values(errors)[0]}
+                  </div>
+                )}
 
-                  <div className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          htmlFor="nombre"
-                          className="block text-sm font-medium text-foreground mb-1"
-                        >
-                          Nombre
-                        </label>
-                        <div className="relative">
-                          <HugeiconsIcon
-                            icon={UserIcon}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
-                          />
-                          <Input
-                            id="nombre"
-                            name="nombre"
-                            required
-                            placeholder="Tu nombre"
-                            className={`pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary ${errors.nombre ? "border-accent" : ""}`}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="apellido"
-                          className="block text-sm font-medium text-foreground mb-1"
-                        >
-                          Apellido
-                        </label>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="nombre"
+                        className="block text-xs font-medium text-foreground mb-1.5"
+                      >
+                        Nombre <span className="text-destructive">*</span>
+                      </label>
+                      <div className="relative">
+                        <HugeiconsIcon
+                          icon={UserIcon}
+                          size={16}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                        />
                         <Input
-                          id="apellido"
-                          name="apellido"
+                          id="nombre"
+                          name="nombre"
                           required
-                          placeholder="Tu apellido"
-                          className="h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
+                          placeholder="Tu nombre"
+                          className={`pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg ${
+                            errors.nombre ? "border-destructive focus-visible:ring-destructive/30" : ""
+                          }`}
                         />
                       </div>
                     </div>
 
                     <div>
                       <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-foreground mb-1"
+                        htmlFor="apellido"
+                        className="block text-xs font-medium text-foreground mb-1.5"
                       >
-                        Email corporativo
+                        Apellido <span className="text-destructive">*</span>
+                      </label>
+                      <Input
+                        id="apellido"
+                        name="apellido"
+                        required
+                        placeholder="Tu apellido"
+                        className="h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-xs font-medium text-foreground mb-1.5"
+                      >
+                        Email corporativo <span className="text-destructive">*</span>
                       </label>
                       <div className="relative">
                         <HugeiconsIcon
                           icon={Mail01Icon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
+                          size={16}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                         />
                         <Input
                           id="email"
@@ -214,7 +240,7 @@ export function CTAContacto() {
                           type="email"
                           required
                           placeholder="tu@empresa.cl"
-                          className="pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
+                          className="pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
                         />
                       </div>
                     </div>
@@ -222,80 +248,87 @@ export function CTAContacto() {
                     <div>
                       <label
                         htmlFor="empresa"
-                        className="block text-sm font-medium text-foreground mb-1"
+                        className="block text-xs font-medium text-foreground mb-1.5"
                       >
-                        Empresa
+                        Empresa / Institución <span className="text-destructive">*</span>
                       </label>
                       <div className="relative">
                         <HugeiconsIcon
                           icon={Building02Icon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
+                          size={16}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                         />
                         <Input
                           id="empresa"
                           name="empresa"
                           required
-                          placeholder="Nombre de tu empresa"
-                          className="pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
+                          placeholder="Nombre de la entidad"
+                          className="pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
                         />
                       </div>
                     </div>
+                  </div>
 
-                    <div>
-                      <label
-                        htmlFor="telefono"
-                        className="block text-sm font-medium text-foreground mb-1"
-                      >
-                        Teléfono (opcional)
-                      </label>
-                      <div className="relative">
-                        <HugeiconsIcon
-                          icon={CallIcon}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground"
-                        />
-                        <Input
-                          id="telefono"
-                          name="telefono"
-                          type="tel"
-                          placeholder="+56 9 1234 5678"
-                          className="pl-10 h-12 bg-muted/20 border-border/30 focus:bg-white focus:border-secondary"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="mensaje"
-                        className="block text-sm font-medium text-foreground mb-1"
-                      >
-                        ¿Cómo podemos ayudarte?
-                      </label>
-                      <textarea
-                        id="mensaje"
-                        name="mensaje"
-                        rows={3}
-                        placeholder="Cuéntanos sobre tus necesidades de contratación..."
-                        className="w-full px-4 py-3 bg-muted/20 border border-border/30 rounded-lg focus:bg-white focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20 resize-none"
+                  <div>
+                    <label
+                      htmlFor="telefono"
+                      className="block text-xs font-medium text-foreground mb-1.5"
+                    >
+                      Teléfono <span className="text-muted-foreground font-normal">(opcional)</span>
+                    </label>
+                    <div className="relative">
+                      <HugeiconsIcon
+                        icon={CallIcon}
+                        size={16}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                      />
+                      <Input
+                        id="telefono"
+                        name="telefono"
+                        type="tel"
+                        placeholder="+56 9 1234 5678"
+                        className="pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
                       />
                     </div>
-
-                    <Button type="submit" disabled={isSubmitting} className="w-full h-12">
-                      {isSubmitting ? (
-                        <>
-                          <span className="size-5 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
-                          Enviando…
-                        </>
-                      ) : (
-                        <>
-                          Enviar mensaje
-                          <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 ml-2" />
-                        </>
-                      )}
-                    </Button>
                   </div>
-                </form>
-              )}
-            </m.div>
+
+                  <div>
+                    <label
+                      htmlFor="mensaje"
+                      className="block text-xs font-medium text-foreground mb-1.5"
+                    >
+                      ¿Cómo podemos ayudarte? <span className="text-destructive">*</span>
+                    </label>
+                    <textarea
+                      id="mensaje"
+                      name="mensaje"
+                      rows={3}
+                      required
+                      placeholder="Cuéntanos sobre los perfiles o vacantes que buscas cubrir..."
+                      className="w-full px-3.5 py-2.5 bg-surface-container-lowest border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/30 focus:outline-none transition-colors resize-none"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium mt-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="size-4 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
+                        Enviando solicitud…
+                      </>
+                    ) : (
+                      <>
+                        Enviar mensaje
+                        <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            )}
           </m.div>
         </div>
       </div>

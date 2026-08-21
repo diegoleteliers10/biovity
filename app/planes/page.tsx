@@ -11,9 +11,9 @@ import {
 import { FAQS_EMPRESAS } from "@/lib/data/empresas-data"
 
 export const metadata: Metadata = {
-  title: "Planes y Precios para Empresas",
+  title: "Planes y Precios para Empresas | Biovity",
   description:
-    "Elige el plan perfecto para tu empresa. Acceso a talento científico especializado en biotecnología, bioquímica, química e ingeniería química. Planes desde gratis.",
+    "Elige el plan perfecto para tu empresa. Acceso a talento científico especializado en biotecnología, bioquímica, química e ingeniería. Planes desde gratis.",
   keywords: [
     "planes empresas biotecnología",
     "precios ATS científico",
@@ -60,18 +60,7 @@ export default function PlanesPage() {
           { name: "Planes y Precios", url: "https://biovity.cl/planes" },
         ]}
       />
-      <main className="flex flex-col relative">
-        <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden bg-white pt-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-16 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4 tracking-tight">
-              Planes y Precios
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Elige el plan que mejor se adapte a las necesidades de tu empresa y comienza a
-              reclutar talento científico hoy.
-            </p>
-          </div>
-        </section>
+      <main className="flex flex-col relative pt-20 md:pt-28">
         <Pricing />
       </main>
     </LandingLayout>

@@ -3,7 +3,6 @@
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { Badge } from "@/components/ui/badge"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { TRANSPARENCY_FEATURES } from "@/lib/data/home-data"
 
@@ -11,67 +10,59 @@ export function TransparencyGuarantee() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+
   return (
-    <section className="py-24 bg-white">
+    <section className="py-20 md:py-28 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
-          className="text-center mb-16"
+          className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <m.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="mb-6"
-          >
-            <Badge variant="secondary">100% Transparente</Badge>
-          </m.div>
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-3xl md:text-5xl text-foreground mb-4 text-balance"
-          >
-            Empleos reales y verificados
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty"
-          >
-            Sabemos lo importante que es encontrar oportunidades laborales confiables
-          </m.p>
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Compromiso de Transparencia
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Empleos reales, verificados y <span className="text-accent font-semibold">100% transparentes</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            Garantizamos información clara sobre salarios, requisitos experimentales y condiciones laborales en cada oportunidad.
+          </p>
         </m.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TRANSPARENCY_FEATURES.map((feature, index) => (
-            <m.div
-              key={feature.title}
-              data-card
-              initial={{ opacity: 0, y: 36, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className="relative bg-[#f3f3f5] rounded-2xl p-8"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-6">
-                  <HugeiconsIcon icon={feature.icon} size={48} className="text-secondary" />
+        {/* 4 Clean borderless white cards on surface-container-low */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          {TRANSPARENCY_FEATURES.map((feature, index) => {
+            const isViolet = index % 2 === 1
+            return (
+              <m.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 28, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+                transition={ts(index * LANDING_ANIMATION.chainStagger)}
+                className="bg-surface-container-lowest rounded-xl p-6 sm:p-8 flex flex-col justify-between transition-colors hover:bg-white/80"
+              >
+                <div>
+                  <div
+                    className={`size-10 rounded-lg flex items-center justify-center mb-5 ${
+                      isViolet
+                        ? "bg-accent/10 text-accent"
+                        : "bg-secondary/10 text-secondary"
+                    }`}
+                  >
+                    <HugeiconsIcon icon={feature.icon} size={20} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2.5">{feature.title}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-foreground text-lg font-semibold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            </m.div>
-          ))}
+              </m.div>
+            )
+          })}
         </div>
       </div>
     </section>

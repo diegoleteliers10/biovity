@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight01Icon, Calculator01Icon, Target01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon, Calculator01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -29,31 +29,21 @@ export function SalariosEmpresasB2B() {
       : { min: selected.seniorMin, max: selected.seniorMax }
 
   return (
-    <section className="py-16 md:py-24 bg-surface-container-lowest">
+    <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium mb-4">
-            <HugeiconsIcon icon={Target01Icon} size={16} />
-            Para empresas y reclutadores en Chile
-          </div>
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 tracking-tight">
-            Guía B2B de <span className="text-accent font-semibold">bandas salariales</span> en
-            Chile
+        <div className="mb-14 max-w-3xl">
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Para Empresas & Reclutadores en Chile
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Guía B2B de <span className="text-accent font-semibold">bandas salariales</span>
           </h2>
-          <div className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>
-              Referenciales de mercado para estructurar ofertas competitivas y evitar fuga de
-              talentos clave entre regiones. Útil para RRHH, startups, laboratorios y plantas
-              industriales en Chile.
-            </p>
-            <p>
-              Las bandas consideran tramos Junior y Senior en CLP líquido mensual, con notas sobre
-              premium por norma (ISP/GMP), bonos de faena en zona norte y especialidades clínicas.
-            </p>
-          </div>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            Datos de referencia para estructurar propuestas competitivas y retener talento técnico clave en el ecosistema científico chileno.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-14 items-start">
           {/* Calculadora */}
           <m.div
             initial={{ opacity: 0, y: 16 }}
@@ -61,21 +51,21 @@ export function SalariosEmpresasB2B() {
             viewport={{ once: true, margin: "0px 0px -60px 0px" }}
             transition={{ duration: reducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
           >
-            <Card className="rounded-xl border border-accent/20 bg-surface-container-low h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <HugeiconsIcon icon={Calculator01Icon} size={20} className="text-accent" />
-                  Calculadora de presupuesto de contratación
+            <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-6 sm:p-8 h-full">
+              <CardHeader className="px-0 pt-0 pb-6">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                  <HugeiconsIcon icon={Calculator01Icon} size={20} className="text-secondary" />
+                  Calculadora de presupuesto
                 </CardTitle>
-                <CardDescription>
-                  Rango sugerido en CLP para una oferta competitiva en Chile
+                <CardDescription className="text-xs text-muted-foreground">
+                  Rango estimado para una oferta de empleo competitiva
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-5">
+              <CardContent className="px-0 pb-0 space-y-5">
                 <div>
                   <label
                     htmlFor="b2b-career"
-                    className="block text-sm font-medium text-foreground mb-1.5"
+                    className="block text-xs font-medium text-foreground mb-1.5"
                   >
                     Cargo a contratar
                   </label>
@@ -85,8 +75,8 @@ export function SalariosEmpresasB2B() {
                       value={career}
                       onChange={(e) => setCareer(e.target.value)}
                       className={cn(
-                        "h-10 w-full appearance-none rounded-md border border-input bg-input/20 px-3 pr-9 text-sm",
-                        "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 outline-none"
+                        "h-10 w-full appearance-none rounded-lg border border-border bg-surface-container-lowest px-3 pr-9 text-xs sm:text-sm text-foreground",
+                        "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 outline-none transition-colors"
                       )}
                     >
                       {BANDAS_SALARIALES_B2B.map((band) => (
@@ -97,14 +87,14 @@ export function SalariosEmpresasB2B() {
                     </select>
                     <HugeiconsIcon
                       icon={ArrowRight01Icon}
-                      size={16}
+                      size={14}
                       className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <span className="block text-sm font-medium text-foreground mb-1.5">
+                  <span className="block text-xs font-medium text-foreground mb-1.5">
                     Nivel de experiencia
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -115,10 +105,10 @@ export function SalariosEmpresasB2B() {
                         onClick={() => setLevel(lvl)}
                         aria-pressed={level === lvl}
                         className={cn(
-                          "px-3 py-2 rounded-lg border text-sm font-medium transition-all capitalize",
+                          "px-3 py-2 rounded-lg border text-xs sm:text-sm font-medium transition-all capitalize",
                           level === lvl
-                            ? "border-accent bg-accent/10 text-accent"
-                            : "border-border/20 bg-surface-container-lowest text-muted-foreground hover:border-accent/40 hover:text-foreground"
+                            ? "border-secondary bg-secondary/10 text-secondary font-semibold"
+                            : "border-border bg-surface-container-lowest text-muted-foreground hover:border-secondary/40 hover:text-foreground"
                         )}
                       >
                         {lvl === "junior" ? "Junior (0-2 años)" : "Senior (5+ años)"}
@@ -127,115 +117,68 @@ export function SalariosEmpresasB2B() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-accent/20 bg-accent/5 p-5 text-center">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                    Rango sugerido (líquido mensual)
-                  </p>
-                  <p className="text-2xl md:text-3xl font-bold text-accent font-mono break-words">
+                <div className="p-4 sm:p-5 rounded-xl bg-surface-container-lowest border border-border">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block mb-1">
+                    Banda recomendada (CLP líquido)
+                  </span>
+                  <p className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-foreground">
                     {formatSalarioRango(range.min, range.max)}
                   </p>
-                  {selected.note && (
-                    <p className="text-xs text-muted-foreground mt-2">{selected.note}</p>
-                  )}
+                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed text-pretty">
+                    {selected.note}
+                  </p>
                 </div>
-
-                <Button
-                  asChild
-                  className="w-full h-11 bg-accent text-accent-foreground hover:bg-accent/80 font-semibold"
-                >
-                  <Link href="/empresas">
-                    Publicar una vacante en Chile
-                    <HugeiconsIcon icon={ArrowRight01Icon} size={18} />
-                  </Link>
-                </Button>
               </CardContent>
             </Card>
           </m.div>
 
-          {/* Tabla de bandas */}
+          {/* Call to action card */}
           <m.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-            transition={{
-              duration: reducedMotion ? 0.01 : 0.4,
-              delay: reducedMotion ? 0 : 0.1,
-              ease: "easeOut",
-            }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.4, delay: 0.1, ease: "easeOut" }}
           >
-            <Card className="rounded-xl border border-border/10 bg-surface-container-low h-full">
-              <CardHeader>
-                <CardTitle className="text-lg">Bandas de referencia por carrera</CardTitle>
-                <CardDescription>CLP líquido mensual · Junior y Senior</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {BANDAS_SALARIALES_B2B.map((band) => (
-                  <div
-                    key={band.career}
-                    className={cn(
-                      "rounded-lg border p-3 transition-colors",
-                      band.career === selected.career
-                        ? "border-accent/40 bg-accent/5"
-                        : "border-border/10 bg-surface-container-lowest"
-                    )}
-                  >
-                    <p className="font-semibold text-sm text-foreground">{band.career}</p>
-                    <div className="mt-1.5 grid grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <span className="text-muted-foreground block">Junior</span>
-                        <span className="font-mono font-medium text-foreground">
-                          {formatSalarioRango(band.juniorMin, band.juniorMax)}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground block">Senior</span>
-                        <span className="font-mono font-medium text-accent">
-                          {formatSalarioRango(band.seniorMin, band.seniorMax)}
-                        </span>
-                      </div>
-                    </div>
+            <Card className="rounded-xl border border-secondary/30 bg-surface-container-low shadow-none p-6 sm:p-8 h-full flex flex-col justify-between">
+              <div>
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-2 block">
+                  Publicación Especializada
+                </span>
+                <h3 className="text-xl sm:text-2xl font-semibold text-foreground mb-3 tracking-tight">
+                  Publica tu oferta con banda salarial
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-6 text-pretty">
+                  Las vacantes que transparentan el rango salarial en Biovity reciben hasta un{" "}
+                  <strong className="text-foreground">3.2x más postulantes calificados</strong> de
+                  comunidades científicas y universidades chilenas.
+                </p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2.5 text-xs sm:text-sm text-muted-foreground">
+                    <div className="size-1.5 rounded-full bg-secondary" />
+                    <span>Filtros avanzados por técnicas de laboratorio y postgrados</span>
                   </div>
-                ))}
-              </CardContent>
+                  <div className="flex items-center gap-2.5 text-xs sm:text-sm text-muted-foreground">
+                    <div className="size-1.5 rounded-full bg-secondary" />
+                    <span>Sistema de seguimiento ATS integrado</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-xs sm:text-sm text-muted-foreground">
+                    <div className="size-1.5 rounded-full bg-secondary" />
+                    <span>Publicación inicial gratuita sin tarjeta de crédito</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
+                asChild
+              >
+                <Link href="/register/organization">
+                  Publicar vacante en Biovity
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
+                </Link>
+              </Button>
             </Card>
           </m.div>
-        </div>
-
-        {/* Notas estratégicas B2B */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="rounded-xl border border-border/10 bg-surface-container-low">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Retención entre regiones</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Atracción desde Santiago hacia Antofagasta (minería/procesos) o Puerto Montt
-                (acuicultura) requiere bono de traslado y faena para ser competitivo.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="rounded-xl border border-border/10 bg-surface-container-low">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Premium por norma</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Cargos que exigen ISP, GMP, GLP, HACCP o SERNAGEOMIN deben ofertarse entre +15% y
-                +25% sobre la base para atraer talento certificado.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="rounded-xl border border-border/10 bg-surface-container-low">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Especialidades clínicas</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Tecnólogos Médicos con especialidad (Imagenología, Laboratorio Clínico) y Químicos
-                Farmacéuticos alcanzan los topes de banda al primer año de especialidad.
-              </p>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </section>

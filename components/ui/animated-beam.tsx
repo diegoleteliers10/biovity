@@ -65,18 +65,22 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   useEffect(() => {
     const updatePath = () => {
       if (containerRef.current && fromRef.current && toRef.current) {
-        const containerRect = containerRef.current.getBoundingClientRect()
+        const container = containerRef.current
+        const rectContainer = container.getBoundingClientRect()
         const rectA = fromRef.current.getBoundingClientRect()
         const rectB = toRef.current.getBoundingClientRect()
 
-        const svgWidth = containerRect.width
-        const svgHeight = containerRect.height
+        const scaleX = (container.offsetWidth && rectContainer.width) ? rectContainer.width / container.offsetWidth : 1
+        const scaleY = (container.offsetHeight && rectContainer.height) ? rectContainer.height / container.offsetHeight : 1
+
+        const svgWidth = container.offsetWidth || rectContainer.width
+        const svgHeight = container.offsetHeight || rectContainer.height
         setSvgDimensions({ width: svgWidth, height: svgHeight })
 
-        const startX = rectA.left - containerRect.left + rectA.width / 2 + startXOffset
-        const startY = rectA.top - containerRect.top + rectA.height / 2 + startYOffset
-        const endX = rectB.left - containerRect.left + rectB.width / 2 + endXOffset
-        const endY = rectB.top - containerRect.top + rectB.height / 2 + endYOffset
+        const startX = (rectA.left - rectContainer.left) / scaleX + (rectA.width / scaleX) / 2 + startXOffset
+        const startY = (rectA.top - rectContainer.top) / scaleY + (rectA.height / scaleY) / 2 + startYOffset
+        const endX = (rectB.left - rectContainer.left) / scaleX + (rectB.width / scaleX) / 2 + endXOffset
+        const endY = (rectB.top - rectContainer.top) / scaleY + (rectB.height / scaleY) / 2 + endYOffset
 
         const midX = (startX + endX) / 2
         const midY = (startY + endY) / 2
@@ -102,9 +106,28 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current)
     }
+    if (fromRef.current) {
+      resizeObserver.observe(fromRef.current)
+    }
+    if (toRef.current) {
+      resizeObserver.observe(toRef.current)
+    }
+    window.addEventListener("resize", updatePath)
+
     updatePath()
+
+    const t1 = setTimeout(updatePath, 50)
+    const t2 = setTimeout(updatePath, 200)
+    const t3 = setTimeout(updatePath, 500)
+    const t4 = setTimeout(updatePath, 1000)
+
     return () => {
       resizeObserver.disconnect()
+      window.removeEventListener("resize", updatePath)
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(t3)
+      clearTimeout(t4)
     }
   }, [containerRef, fromRef, toRef, curvature, startXOffset, startYOffset, endXOffset, endYOffset])
 
@@ -116,10 +139,10 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         height={svgDimensions.height}
         xmlns="http://www.w3.org/2000/svg"
         className={cn(
-          "pointer-events-none absolute top-0 left-0 transform-gpu stroke-2",
+          "pointer-events-none absolute top-0 left-0 w-full h-full transform-gpu stroke-2",
           className
         )}
-        viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
+        viewBox={`0 0 ${svgDimensions.width || 1} ${svgDimensions.height || 1}`}
       >
         <title className="sr-only">Animated connection beam</title>
         <path

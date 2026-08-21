@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight01Icon, FilterEditIcon, Search01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -87,31 +87,29 @@ export function SalariosInteractiveFilter() {
   const handleExplore = () => setHasSearched(true)
 
   return (
-    <section className="py-16 md:py-24 bg-surface-container-lowest">
+    <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-medium mb-4">
-            <HugeiconsIcon icon={FilterEditIcon} size={16} />
-            Explorador interactivo
-          </div>
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 tracking-tight">
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Explorador Interactivo
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
             Estima tu sueldo por{" "}
             <span className="text-accent font-semibold">carrera, industria y región</span>
           </h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Combina las tres dimensiones que más mueven la renta en Chile. Los valores son una
-            estimación basada en los datos de referencia del mercado chileno.
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            Combina las tres dimensiones determinantes de la renta en Chile para obtener un rango referencial estimado.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           {/* Filtros */}
-          <Card className="rounded-xl border border-border/10 bg-surface-container-low lg:col-span-2">
+          <Card className="rounded-xl border-0 shadow-none bg-surface-container-low lg:col-span-2 p-2 sm:p-4">
             <CardHeader>
-              <CardTitle className="text-lg">Configura tu búsqueda</CardTitle>
-              <CardDescription>Selecciona las tres dimensiones clave</CardDescription>
+              <CardTitle className="text-lg font-semibold text-foreground">Configura tu búsqueda</CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">Selecciona las dimensiones del perfil</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-4">
               <FilterSelect
                 label="Carrera / Profesión"
                 value={career}
@@ -133,9 +131,9 @@ export function SalariosInteractiveFilter() {
               <Button
                 type="button"
                 onClick={handleExplore}
-                className="w-full h-10 bg-zinc-900 hover:bg-zinc-800 text-white"
+                className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium mt-2"
               >
-                <HugeiconsIcon icon={Search01Icon} size={18} />
+                <HugeiconsIcon icon={Search01Icon} size={16} className="mr-1.5" />
                 Estimar sueldo
               </Button>
             </CardContent>
@@ -149,33 +147,32 @@ export function SalariosInteractiveFilter() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: reducedMotion ? 0.01 : 0.35, ease: "easeOut" }}
             >
-              <Card className="rounded-xl border border-secondary/20 bg-surface-container-low h-full">
+              <Card className="rounded-xl border border-secondary/30 bg-surface-container-low shadow-none p-2 sm:p-4">
                 <CardHeader>
-                  <CardTitle className="text-lg">Estimación para tu perfil</CardTitle>
-                  <CardDescription className="text-xs">
-                    {careerLabel} · {industryLabel} · {regionLabel}
+                  <CardTitle className="text-lg font-semibold text-foreground">Estimación de Banda Salarial</CardTitle>
+                  <CardDescription className="text-xs font-mono text-secondary">
+                    {careerLabel} • {industryLabel} • {regionLabel}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-3 mb-6">
-                    <EstimateCell label="Junior" value={estimate.junior} />
-                    <EstimateCell label="Mid" value={estimate.mid} highlight />
-                    <EstimateCell label="Senior" value={estimate.senior} />
+                    <EstimateCell label="Junior (0-2 años)" value={estimate.junior} />
+                    <EstimateCell label="Mid (2-5 años)" value={estimate.mid} highlight />
+                    <EstimateCell label="Senior (5+ años)" value={estimate.senior} />
                   </div>
 
-                  <div className="rounded-lg border border-border/10 bg-surface-container-lowest p-4">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                  <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5 border border-border">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
                       {hasSearched ? (
                         <>
-                          Esta estimación combina los datos de referencia de carrera, industria y
-                          región del mercado chileno. Para ver tu <strong>percentil real</strong> y
-                          los datos crowdsourced, completa la encuesta anónima más abajo.
+                          Esta estimación combina los datos de referencia oficiales de carrera, industria y
+                          región del mercado chileno. Para obtener una comparativa de percentil precisa,
+                          puedes completar la encuesta anónima.
                         </>
                       ) : (
                         <>
-                          Ajusta los filtros y pulsa <strong>“Estimar sueldo”</strong> para ver el
-                          rango estimado. Para un dato personalizado, completa la encuesta anónima
-                          Give to Get.
+                          Ajusta los filtros según tu perfil y pulsa <strong>“Estimar sueldo”</strong> para
+                          actualizar las bandas salariales de referencia en CLP líquido mensual.
                         </>
                       )}
                     </p>
@@ -186,63 +183,57 @@ export function SalariosInteractiveFilter() {
           </div>
         </div>
 
-        <p className="mt-4 text-xs text-muted-foreground">
-          Referencia basada en datos de {CARRERA_CHART_DATA.length} carreras,{" "}
-          {INDUSTRIA_CHART_DATA.length} industrias y {REGION_CHART_DATA.length} zonas de Chile.
-        </p>
-
         {/* Tabla resumen de referencia indexable para SEO */}
-        <div className="mt-12 pt-8 border-t border-border/15">
+        <div className="mt-16 pt-10 border-t border-border">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <h3 className="text-xl font-semibold text-foreground tracking-tight">
                 Rangos salariales de referencia en Chile (CLP líquido)
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Estimaciones basadas en el mercado laboral chileno para profesionales de ciencias e
-                ingeniería.
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                Estimaciones basadas en el mercado laboral chileno para profesionales de ciencias e ingeniería.
               </p>
             </div>
-            <Button variant="outline" size="sm" asChild className="shrink-0 bg-white">
-              <Link href="/trabajos" className="flex items-center gap-1.5">
-                <span>Ver ofertas de empleo</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
+            <Button variant="outline" size="sm" asChild className="shrink-0 bg-surface-container-lowest border-border rounded-lg">
+              <Link href="/trabajos" className="flex items-center gap-1.5 text-xs font-medium">
+                <span>Ver ofertas activas</span>
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
               </Link>
             </Button>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-border/10 bg-white">
+          <div className="overflow-x-auto rounded-xl border border-border bg-surface-container-lowest">
             <table className="w-full text-left text-sm">
-              <thead className="bg-surface-container-low border-b border-border/10 text-muted-foreground text-xs uppercase">
+              <thead className="bg-surface-container-low border-b border-border text-muted-foreground text-xs uppercase font-mono">
                 <tr>
-                  <th scope="col" className="px-4 py-3 font-semibold">
+                  <th scope="col" className="px-5 py-3.5 font-semibold">
                     Carrera / Especialidad
                   </th>
-                  <th scope="col" className="px-4 py-3 font-semibold">
+                  <th scope="col" className="px-5 py-3.5 font-semibold">
                     Junior (0-2 años)
                   </th>
-                  <th scope="col" className="px-4 py-3 font-semibold">
+                  <th scope="col" className="px-5 py-3.5 font-semibold">
                     Senior (5+ años)
                   </th>
-                  <th scope="col" className="px-4 py-3 font-semibold text-right">
+                  <th scope="col" className="px-5 py-3.5 font-semibold text-right">
                     Vacantes
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/10">
+              <tbody className="divide-y divide-border">
                 {CARRERA_CHART_DATA.map((item) => (
-                  <tr key={item.carrera} className="hover:bg-zinc-50/80 transition-colors">
-                    <td className="px-4 py-3 font-medium text-foreground">{item.carrera}</td>
-                    <td className="px-4 py-3 text-muted-foreground font-mono">
+                  <tr key={item.carrera} className="hover:bg-surface-container-low/60 transition-colors">
+                    <td className="px-5 py-3.5 font-medium text-foreground">{item.carrera}</td>
+                    <td className="px-5 py-3.5 text-muted-foreground font-mono">
                       {formatCurrencyCLP(item.junior)}
                     </td>
-                    <td className="px-4 py-3 text-foreground font-mono font-semibold">
+                    <td className="px-5 py-3.5 text-foreground font-mono font-semibold">
                       {formatCurrencyCLP(item.senior)}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       <Link
                         href={`/trabajos?q=${encodeURIComponent(item.carrera)}`}
-                        className="text-xs text-accent hover:underline font-medium"
+                        className="text-xs text-secondary hover:underline font-medium inline-flex items-center gap-1"
                       >
                         Buscar vacantes &rarr;
                       </Link>
@@ -266,37 +257,31 @@ function FilterSelect({
 }: {
   label: string
   value: string
-  onChange: (value: string) => void
+  onChange: (v: string) => void
   options: { value: string; label: string }[]
 }) {
-  const selectId = `filter-${label.replace(/\s+/g, "-").toLowerCase()}`
   return (
     <div>
-      <label htmlFor={selectId} className="block text-sm font-medium text-foreground mb-1.5">
-        {label}
-      </label>
+      <label className="block text-xs font-medium text-foreground mb-1.5">{label}</label>
       <div className="relative">
         <select
-          id={selectId}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           aria-label={label}
           className={cn(
-            "h-10 w-full appearance-none rounded-md border border-input bg-input/20 px-3 pr-9 text-sm",
-            "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 outline-none"
+            "h-10 w-full appearance-none rounded-lg border border-border bg-surface-container-lowest px-3 pr-9 text-xs sm:text-sm text-foreground",
+            "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 outline-none transition-colors"
           )}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
+            <option key={opt.value} value={opt.value} className="text-foreground">
               {opt.label}
             </option>
           ))}
         </select>
-        <HugeiconsIcon
-          icon={Search01Icon}
-          size={16}
-          className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none"
-        />
+        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+          <HugeiconsIcon icon={ArrowRight01Icon} size={14} className="rotate-90" />
+        </div>
       </div>
     </div>
   )
@@ -314,17 +299,17 @@ function EstimateCell({
   return (
     <div
       className={cn(
-        "rounded-lg border p-3 text-center",
+        "rounded-lg p-3.5 text-center transition-colors",
         highlight
-          ? "border-secondary/40 bg-secondary/5"
-          : "border-border/10 bg-surface-container-lowest"
+          ? "border border-secondary/30 bg-secondary/10"
+          : "bg-surface-container-lowest"
       )}
     >
-      <p className="text-xs text-muted-foreground mb-1">{label}</p>
+      <p className="text-[11px] text-muted-foreground mb-1 font-mono">{label}</p>
       <p
         className={cn(
-          "font-mono font-bold",
-          highlight ? "text-secondary text-base" : "text-foreground text-sm"
+          "font-mono font-bold tracking-tight",
+          highlight ? "text-secondary text-base sm:text-lg" : "text-foreground text-sm sm:text-base"
         )}
       >
         {formatCurrencyCLP(value / 1000)}

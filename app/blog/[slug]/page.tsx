@@ -100,46 +100,48 @@ export default async function PostPage({ params }: Props) {
           { name: post.frontmatter.title, url: postUrl },
         ]}
       />
-      <article className="py-32">
-        <main className="mx-auto max-w-4xl px-8 md:px-12">
+      <main className="min-h-screen bg-surface-container-lowest pt-28 pb-20 md:pt-36 md:pb-28">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/" className="text-muted-foreground hover:text-secondary">
-                  Home
+                <BreadcrumbLink href="/" className="text-muted-foreground hover:text-secondary text-xs">
+                  Inicio
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/blog" className="text-muted-foreground hover:text-secondary">
+                <BreadcrumbLink href="/blog" className="text-muted-foreground hover:text-secondary text-xs">
                   Blog
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-foreground">
+                <BreadcrumbPage className="text-foreground text-xs font-medium truncate max-w-[200px] sm:max-w-xs">
                   {post.frontmatter.title}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold mb-4 text-left text-foreground tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 text-foreground tracking-tight text-balance leading-tight">
             {post.frontmatter.title}
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground mb-6 text-left">
+          <p className="text-base sm:text-lg text-muted-foreground mb-6 leading-relaxed text-pretty">
             {post.frontmatter.excerpt}
           </p>
 
-          <div className="flex items-center gap-4 mb-8 text-sm text-muted-foreground">
-            <span>{formatDateChilean(post.frontmatter.date, "d MMM yyyy")}</span>
-            <span>•</span>
-            <span>Por {post.frontmatter.author}</span>
-            <SocialShare className="ml-auto" />
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-border text-xs text-muted-foreground font-mono">
+            <div className="flex items-center gap-2">
+              <span>{formatDateChilean(post.frontmatter.date, "d MMM yyyy")}</span>
+              <span>•</span>
+              <span>Por {post.frontmatter.author}</span>
+            </div>
+            <SocialShare />
           </div>
 
-          <div className="relative w-full h-[400px] md:h-[500px] mb-12 rounded-xl overflow-hidden border border-border/10">
+          <div className="relative w-full aspect-video sm:h-[420px] mb-12 rounded-xl overflow-hidden border border-border bg-surface-container-low">
             <Image
               src={post.frontmatter.featuredImage}
               alt={post.frontmatter.title}
@@ -150,11 +152,11 @@ export default async function PostPage({ params }: Props) {
             />
           </div>
 
-          <div className="prose prose-lg max-w-none">
+          <div className="prose prose-zinc max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-secondary text-foreground/90 leading-relaxed text-base">
             <MDXRemote source={post.content} components={mdxComponents} />
           </div>
-        </main>
-      </article>
+        </article>
+      </main>
     </LandingLayout>
   )
 }

@@ -20,7 +20,6 @@ import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
 import { ApplyJobButton } from "@/components/landing/trabajos/ApplyJobButton"
 import { JobShareButtons } from "@/components/landing/trabajos/JobShareButtons"
 import { BreadcrumbJsonLd, JobPostingJsonLd, OrganizationJsonLd } from "@/components/seo/JsonLd"
-import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -41,8 +40,6 @@ import { getOrganization } from "@/lib/api/organizations"
 import {
   formatFechaLarga,
   formatJobSalary,
-  getFormatoBadgeColor,
-  getModalidadBadgeColor,
 } from "@/lib/utils"
 
 type Props = {
@@ -164,7 +161,6 @@ export default async function TrabajoDetailPage({ params }: Props) {
   const modalidad = getJobModalidad(job.location)
   const ubicacion = formatJobLocation(job.location) || "Sin especificar"
   const salaryStr = formatJobSalaryDisplay(job)
-  const employmentTypeKey = job.employmentType?.toLowerCase() ?? ""
   const breadcrumbs = getJobBreadcrumbs(referer, job.title)
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://biovity.cl"
@@ -197,9 +193,9 @@ export default async function TrabajoDetailPage({ params }: Props) {
         salaryCurrency={job.salary?.currency}
         url={`${siteUrl}/trabajos/${job.id}`}
       />
-      <article className="py-16">
+      <article className="py-12 md:py-20 bg-surface-container-lowest">
         <JobViewsTracker jobId={job.id} jobOrganizationId={job.organizationId} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb - reflects navigation path (referer) */}
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
@@ -219,58 +215,58 @@ export default async function TrabajoDetailPage({ params }: Props) {
           </Breadcrumb>
 
           {/* Hero del trabajo */}
-          <div className="mb-12">
+          <div className="mb-10 pb-8 border-b border-border">
             <div className="flex items-center gap-3 mb-4">
-              <div className="size-12 rounded-lg bg-primary/10 text-primary grid place-items-center">
+              <div className="size-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center border border-secondary/20">
                 <HugeiconsIcon
                   icon={Briefcase01Icon}
                   size={24}
-                  strokeWidth={1.5}
                   className="size-6"
                 />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground font-mono">{job.id}</p>
-                <p className="text-lg font-semibold text-foreground">{organizationName}</p>
+                <p className="text-xs text-muted-foreground font-mono">ID: {job.id.slice(0, 8)}</p>
+                <p className="text-lg font-semibold text-foreground tracking-tight">{organizationName}</p>
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-zinc-900 mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground tracking-tight mb-5 text-balance">
               {job.title}
             </h1>
 
             {/* Meta información */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-600 mb-6">
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Location05Icon} size={20} className="text-muted-foreground" />
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
+              <div className="flex items-center gap-1.5 font-medium text-foreground">
+                <HugeiconsIcon icon={Location05Icon} size={16} className="text-muted-foreground" />
                 <span>{ubicacion}</span>
               </div>
-              <Badge className={`${getModalidadBadgeColor(modalidad)} capitalize`}>
+              <span className="text-border">•</span>
+              <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20 capitalize">
                 {modalidad === "hibrido" ? "Híbrido" : modalidad}
-              </Badge>
+              </span>
               {job.employmentType && (
-                <Badge className={`${getFormatoBadgeColor(employmentTypeKey)} capitalize`}>
+                <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-surface-container-highest text-foreground border border-border capitalize">
                   {job.employmentType}
-                </Badge>
+                </span>
               )}
               {job.experienceLevel && (
-                <Badge className="bg-zinc-100 text-zinc-800 capitalize">
+                <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-surface-container-low text-muted-foreground border border-border capitalize">
                   {job.experienceLevel === "Mid-Senior" ? "Semi Senior" : job.experienceLevel}
-                </Badge>
+                </span>
               )}
-              <div className="flex items-center gap-2 font-semibold text-zinc-900">
-                <HugeiconsIcon icon={Cash02Icon} size={20} className="text-muted-foreground" />
+              <div className="flex items-center gap-1.5 font-mono font-semibold text-secondary">
+                <HugeiconsIcon icon={Cash02Icon} size={18} className="text-secondary" />
                 <span>{salaryStr}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Clock01Icon} size={20} className="text-muted-foreground" />
+              <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
+                <HugeiconsIcon icon={Clock01Icon} size={16} className="text-muted-foreground" />
                 <span suppressHydrationWarning>
                   Publicado {formatFechaLarga(new Date(job.createdAt))}
                 </span>
               </div>
               {"views" in job && typeof job.views === "number" && job.views > 0 && (
-                <div className="flex items-center gap-2">
-                  <HugeiconsIcon icon={ViewIcon} size={20} className="text-muted-foreground" />
+                <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
+                  <HugeiconsIcon icon={ViewIcon} size={16} className="text-muted-foreground" />
                   <span>{job.views} vistas</span>
                 </div>
               )}
@@ -288,49 +284,53 @@ export default async function TrabajoDetailPage({ params }: Props) {
           </div>
 
           {/* Contenido principal - 2 columnas */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
-            {/* Columna izquierda (70%) */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
+            {/* Columna izquierda */}
             <div className="space-y-8">
               {/* Descripción */}
               <section>
-                <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Descripción</h2>
-                <div className="text-zinc-700 leading-relaxed prose prose-gray max-w-none">
+                <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-4">
+                  Descripción del Puesto
+                </h2>
+                <div className="text-muted-foreground leading-relaxed prose max-w-none">
                   {job.description ? (
                     <HtmlContent
                       html={job.description}
-                      className="text-base leading-7 md:text-[15px]"
+                      className="text-base leading-7"
                     />
                   ) : (
-                    <p className="text-muted-foreground">Sin descripción.</p>
+                    <p className="text-muted-foreground">Sin descripción detallada.</p>
                   )}
                 </div>
               </section>
 
               {/* Beneficios */}
               {job.benefits && job.benefits.length > 0 && (
-                <section>
-                  <h2 className="text-2xl font-semibold text-zinc-900 mb-4">Beneficios</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <section className="pt-6 border-t border-border">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-4">
+                    Beneficios Ofrecidos
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {job.benefits.map((beneficio) => {
                       const Icon = getBenefitIcon(beneficio)
                       return (
                         <div
                           key={beneficio.title}
-                          className="flex items-center gap-2.5 rounded-lg bg-[#f3f3f5] px-2.5 py-2 text-sm text-foreground/95"
+                          className="flex items-center gap-3 rounded-xl bg-surface-container-low px-4 py-3 border border-border/60 text-sm text-foreground"
                         >
-                          <HugeiconsIcon
-                            icon={Icon}
-                            size={24}
-                            strokeWidth={1.5}
-                            className="size-4 shrink-0 text-accent"
-                            aria-hidden
-                          />
+                          <div className="size-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 border border-border/40">
+                            <HugeiconsIcon
+                              icon={Icon}
+                              size={16}
+                              aria-hidden
+                            />
+                          </div>
                           <span className="line-clamp-1">
-                            <span className="font-medium text-foreground/95">
+                            <span className="font-medium text-foreground">
                               {beneficio.title}
                             </span>
                             {beneficio.description ? (
-                              <span className="text-muted-foreground/90">{` — ${beneficio.description}`}</span>
+                              <span className="text-muted-foreground">{` — ${beneficio.description}`}</span>
                             ) : null}
                           </span>
                         </div>
@@ -341,37 +341,39 @@ export default async function TrabajoDetailPage({ params }: Props) {
               )}
             </div>
 
-            {/* Columna derecha (30%) - Card fija */}
+            {/* Columna derecha - Card fija */}
             <div className="lg:sticky lg:top-8 h-fit">
-              <Card className="shadow-lg border-0">
-                <CardContent className="p-6 space-y-4">
+              <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-6">
+                <CardContent className="p-0 space-y-5">
                   <div>
-                    <h3 className="font-semibold text-zinc-900 mb-2">Información del Trabajo</h3>
-                    <div className="space-y-2 text-sm text-zinc-600">
-                      <div className="flex justify-between">
-                        <span>Ubicación:</span>
-                        <span className="font-medium text-zinc-900">{ubicacion}</span>
+                    <h3 className="font-semibold text-foreground mb-3 text-base tracking-tight">
+                      Resumen de la Oferta
+                    </h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between items-center py-1 border-b border-border/40">
+                        <span className="text-muted-foreground">Ubicación:</span>
+                        <span className="font-medium text-foreground">{ubicacion}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Modalidad:</span>
-                        <span className="font-medium text-zinc-900 capitalize">
+                      <div className="flex justify-between items-center py-1 border-b border-border/40">
+                        <span className="text-muted-foreground">Modalidad:</span>
+                        <span className="font-medium text-foreground capitalize">
                           {modalidad === "hibrido" ? "Híbrido" : modalidad}
                         </span>
                       </div>
                       {job.employmentType && (
-                        <div className="flex justify-between">
-                          <span>Formato:</span>
-                          <span className="font-medium text-zinc-900">{job.employmentType}</span>
+                        <div className="flex justify-between items-center py-1 border-b border-border/40">
+                          <span className="text-muted-foreground">Jornada:</span>
+                          <span className="font-medium text-foreground">{job.employmentType}</span>
                         </div>
                       )}
-                      <div className="flex justify-between">
-                        <span>Salario:</span>
-                        <span className="font-medium text-zinc-900">{salaryStr}</span>
+                      <div className="flex justify-between items-center py-1 border-b border-border/40">
+                        <span className="text-muted-foreground">Compensación:</span>
+                        <span className="font-mono font-medium text-secondary">{salaryStr}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t">
+                  <div className="pt-2">
                     <ApplyJobButton jobId={job.id} jobTitle={job.title} />
                   </div>
                 </CardContent>

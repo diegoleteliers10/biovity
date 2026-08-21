@@ -11,29 +11,19 @@ import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Image from "next/image"
+import Link from "next/link"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { cn } from "@/lib/utils"
 
 type Role = "professional" | "organization"
 
 const ROLE_OPTIONS: { value: Role; label: string; icon: IconSvgElement }[] = [
-  { value: "professional", label: "Profesional", icon: Briefcase01Icon },
-  { value: "organization", label: "Empresa", icon: Building06Icon },
+  { value: "professional", label: "Profesional / Científico", icon: Briefcase01Icon },
+  { value: "organization", label: "Empresa / Institución", icon: Building06Icon },
 ]
-
-const BackgroundBlobs = (
-  <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
-    <div className="absolute top-[5%] left-[10%] size-[22rem] bg-[#00374a]/25 rounded-full blur-3xl"></div>
-    <div className="absolute top-[15%] right-[15%] size-[18rem] bg-[#00374a]/20 rounded-full blur-2xl"></div>
-    <div className="absolute top-[55%] left-[5%] size-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl"></div>
-    <div className="absolute top-[65%] right-[10%] size-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl"></div>
-    <div className="absolute bottom-[15%] left-[25%] size-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl"></div>
-    <div className="absolute top-[35%] right-[30%] size-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl"></div>
-  </div>
-)
 
 export function ListaEsperaContent() {
   const [role, setRole] = useState<Role>("professional")
@@ -42,10 +32,11 @@ export function ListaEsperaContent() {
   const isSubmittedRef = useRef(false)
   const [error, setError] = useState<string | null>(null)
   const reducedMotion = useReducedMotion()
+  const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
-  const emailLabel = role === "organization" ? "Correo corporativo" : "Correo personal"
-  const emailPlaceholder = role === "organization" ? "contacto@empresa.cl" : "tu@email.com"
+  const emailLabel = role === "organization" ? "Correo electrónico corporativo" : "Correo electrónico"
+  const emailPlaceholder = role === "organization" ? "contacto@empresa.cl" : "tu@correo.cl"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -69,31 +60,26 @@ export function ListaEsperaContent() {
 
   if (isSubmittedRef.current) {
     return (
-      <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-        {BackgroundBlobs}
+      <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest py-20 px-4">
+        {/* Ambient brand glow */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[44rem] h-[30rem] rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-70" />
+        </div>
+
         <m.div
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={ts(0)}
-          className="relative z-10 text-center max-w-3xl mx-auto px-4"
+          className="relative z-10 text-center max-w-md mx-auto bg-surface-container-low rounded-xl p-8 sm:p-10"
         >
-          <Image
-            src="/logoIcon.png"
-            alt="Biovity"
-            width={96}
-            height={96}
-            className="mx-auto mb-6"
-            priority
-          />
-          <div className="size-20 rounded-full bg-[#006b5e]/20 flex items-center justify-center mx-auto mb-6">
-            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={40} className="text-[#006b5e]" />
+          <div className="size-16 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mx-auto mb-6 text-secondary">
+            <HugeiconsIcon icon={CheckmarkCircle02Icon} size={32} />
           </div>
-          <h1 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance">
-            ¡Estás en la lista!
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground mb-3 tracking-tight text-balance">
+            ¡Estás en la lista de espera!
           </h1>
-          <p className="text-lg text-muted-foreground text-pretty">
-            Te avisaremos cuando Biovity esté listo. Mientras tanto, seguimos construyendo el mejor
-            portal de empleo para el sector científico en Chile.
+          <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
+            Te notificaremos por correo prioritariamente cuando abramos nuevos cupos en Biovity.
           </p>
         </m.div>
       </main>
@@ -101,63 +87,79 @@ export function ListaEsperaContent() {
   }
 
   return (
-    <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden">
-      {BackgroundBlobs}
+    <main className="relative min-h-dvh w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest py-20 md:py-28 px-4 sm:px-6">
+      {/* Ambient brand glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[44rem] h-[30rem] rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-70" />
+      </div>
 
-      <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6">
+      <div className="relative z-10 w-full max-w-2xl mx-auto">
         <m.div
-          initial={{ opacity: 0, y: 28, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={ts(0)}
-          className="text-center mb-8"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={t(0)}
+          className="flex flex-col items-center text-center mb-10"
         >
-          <Image
-            src="/logoIcon.png"
-            alt="Biovity"
-            width={120}
-            height={120}
-            className="mx-auto mb-6"
-            priority
-          />
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 leading-tight text-balance">
-            <span className="text-accent font-semibold">Biovity</span> llega pronto
+          {/* Logo centrado, sobre el badge y sin bordes */}
+          <Link
+            href="/"
+            aria-label="Ir al inicio"
+            className="mb-6 inline-flex items-center justify-center transition-opacity hover:opacity-80"
+          >
+            <Image
+              src="/logoIcon.png"
+              alt="Biovity"
+              width={54}
+              height={54}
+              className="h-12 w-auto object-contain"
+              priority
+            />
+          </Link>
+
+          {/* Green Plain Text Tag */}
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Acceso Anticipado • Ecosistema Biovity
+          </span>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            El nuevo estándar de empleo científico en Chile
           </h1>
-          <p className="text-base sm:text-lg text-muted-foreground text-pretty">
-            El portal de empleo para biotecnología, bioquímica y ciencias en Chile está en
-            construcción. Únete a la lista y sé el primero en enterarte.
+          <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed text-pretty">
+            Únete a la lista de espera para acceder antes a vacantes especializadas, herramientas de inteligencia salarial y reclutamiento técnico.
           </p>
         </m.div>
 
+        {/* Form Container - Clean tonal container */}
         <m.form
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={ts(LANDING_ANIMATION.sequenceDelay)}
           onSubmit={handleSubmit}
-          className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl border border-border/10"
+          className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10"
         >
           <div className="mb-6">
-            <span className="block text-sm font-medium text-foreground mb-3">
-              ¿Qué te describe mejor?
-            </span>
-            <div className="flex gap-3">
+            <label className="block text-xs font-medium text-foreground mb-2">
+              ¿Cuál es tu perfil?
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {ROLE_OPTIONS.map((opt) => {
                 const Icon = opt.icon
+                const isSelected = role === opt.value
                 return (
                   <button
                     key={opt.value}
                     type="button"
                     onClick={() => setRole(opt.value)}
                     className={cn(
-                      "flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 transition-all font-medium",
-                      role === opt.value
-                        ? "border-secondary bg-secondary/10 text-secondary"
-                        : "border-border/20 bg-white text-muted-foreground hover:border-secondary/40"
+                      "flex items-center justify-center gap-2 py-3 px-4 rounded-lg border text-xs sm:text-sm font-medium transition-all",
+                      isSelected
+                        ? "border-secondary bg-secondary/10 text-secondary font-semibold"
+                        : "border-border bg-surface-container-lowest text-muted-foreground hover:border-secondary/40 hover:text-foreground"
                     )}
-                    aria-pressed={role === opt.value}
-                    aria-label={`Seleccionar ${opt.label}`}
+                    aria-pressed={isSelected}
                   >
-                    <HugeiconsIcon icon={Icon} size={20} />
-                    {opt.label}
+                    <HugeiconsIcon icon={Icon} size={18} />
+                    <span>{opt.label}</span>
                   </button>
                 )
               })}
@@ -165,14 +167,14 @@ export function ListaEsperaContent() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-              {emailLabel}
+            <label htmlFor="email" className="block text-xs font-medium text-foreground mb-1.5">
+              {emailLabel} <span className="text-destructive">*</span>
             </label>
             <div className="relative">
               <HugeiconsIcon
                 icon={Mail01Icon}
-                size={20}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
               />
               <Input
                 id="email"
@@ -181,42 +183,44 @@ export function ListaEsperaContent() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={emailPlaceholder}
                 required
-                className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
+                className="pl-9 h-11 bg-surface-container-lowest border-border rounded-lg text-sm"
                 aria-invalid={!!error}
               />
             </div>
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 mb-4" role="alert">
+            <div
+              role="alert"
+              className="mb-5 p-3.5 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-xs font-medium"
+            >
               {error}
-            </p>
+            </div>
           )}
 
           <Button
             type="submit"
             disabled={isSubmitting}
-            size="lg"
-            className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold"
+            className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
           >
             {isSubmitting ? (
               <>
                 <HugeiconsIcon
                   icon={Loading01Icon}
-                  size={20}
-                  className="animate-spin"
+                  size={16}
+                  className="animate-spin mr-1.5"
                   aria-hidden
                 />
                 Registrando…
               </>
             ) : (
-              "Unirme a la lista"
+              "Solicitar acceso anticipado"
             )}
           </Button>
         </m.form>
 
-        <p className="text-center text-sm text-muted-foreground mt-6 text-pretty">
-          Sin spam. Solo te avisaremos cuando estemos listos.
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          Sin spam. Solo recibirás novedades importantes sobre el lanzamiento.
         </p>
       </div>
     </main>

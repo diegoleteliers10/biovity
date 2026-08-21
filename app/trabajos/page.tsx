@@ -15,12 +15,12 @@ const FAQS_TRABAJOS = [
   {
     question: "¿Cómo me postulo a un trabajo en Biovity?",
     answer:
-      "Para postula a un trabajo, necesitas crear una cuenta profesional. Una vez registrado, puedes buscar empleos en la sección de trabajos y hacer clic en 'Postular' en la oferta que te interese. Tu perfil y CV estarán disponibles para la empresa.",
+      "Para postular a un trabajo, necesitas crear una cuenta profesional. Una vez registrado, puedes buscar empleos en la sección de trabajos y hacer clic en 'Postular' en la oferta que te interese. Tu perfil y CV estarán disponibles para la empresa.",
   },
   {
     question: "¿Biovity es gratis para profesionales?",
     answer:
-      "Sí, Biovity es completamente gratis para profesionales y estudiantes. Puedes buscar empleos, postula a ofertas, guardar trabajos favoritos y recibir alertas de nuevas oportunidades sin ningún costo.",
+      "Sí, Biovity es completamente gratis para profesionales y estudiantes. Puedes buscar empleos, postular a ofertas, guardar trabajos favoritos y recibir alertas de nuevas oportunidades sin ningún costo.",
   },
   {
     question: "¿Qué tipos de trabajos científicos encuentro en Biovity?",
@@ -30,7 +30,7 @@ const FAQS_TRABAJOS = [
   {
     question: "¿Cómo funciona el matching por IA?",
     answer:
-      "Nuestro sistema de AI Matching analiza tu perfil profesional, experiencia y preferencias para sugerirte las ofertas más relevantes. Esto te ahorra tiempo en la búsqueda y aumenta tus posibilidades de encontrar el trabajo ideal.",
+      "Nuestro sistema de AI Match analiza tu perfil profesional, experiencia y preferencias para sugerirte las ofertas más relevantes. Esto te ahorra tiempo en la búsqueda y aumenta tus posibilidades de encontrar el trabajo ideal.",
   },
   {
     question: "¿Puedo filtrar trabajos por ubicación o modalidad?",
@@ -106,22 +106,28 @@ export default function TrabajosPage() {
           { name: "Trabajos", url: "https://biovity.cl/trabajos" },
         ]}
       />
-      <main className="flex flex-col relative">
-        <section className="bg-white pt-32">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-              Empleos en Biotecnología y Ciencias en Chile
+      <main className="flex flex-col relative bg-surface-container-lowest">
+        <section className="bg-surface-container-lowest pt-32 pb-4 md:pt-40 md:pb-6">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+              Oportunidades Laborales • Chile
+            </span>
+
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight text-balance mb-4">
+              Empleos en <span className="text-secondary">Biotecnología</span> y{" "}
+              <span className="text-accent">Ciencias</span>
             </h1>
-            <p className="mt-3 max-w-3xl text-muted-foreground">
-              Encuentra ofertas de trabajo en biotecnología, bioquímica, química, ingeniería
-              química, farmacéutica, laboratorio e I+D en Chile. Postula gratis a las vacantes que
-              coinciden con tu perfil y recibe alertas de nuevas oportunidades en ciencias.
+
+            <p className="max-w-3xl text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty mb-6">
+              Explora ofertas de trabajo verificadas en biotecnología, bioquímica, química, farmacéutica, laboratorio e I+D en Chile. Postula gratis y conecta directamente con empresas líderes del ecosistema.
             </p>
+
             <Suspense>
               <TrabajosCategoryBadges />
             </Suspense>
           </div>
         </section>
+
         <Suspense>
           <TrabajosPageContent />
         </Suspense>

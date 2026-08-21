@@ -1,13 +1,18 @@
 "use client"
 
-import { Briefcase01Icon, Location05Icon, Search01Icon } from "@hugeicons/core-free-icons"
+import {
+  Building06Icon,
+  Location05Icon,
+  Search01Icon,
+  SparklesIcon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import * as m from "motion/react-m"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Button } from "../../ui/button"
-import { Card } from "../../ui/card"
-import { Input } from "../../ui/input"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 export function Hero() {
   const router = useRouter()
@@ -26,103 +31,129 @@ export function Hero() {
   }
 
   return (
-    <section className="relative min-h-svh sm:h-svh flex items-center justify-center overflow-hidden lg:contain-paint">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
-        <div className="absolute top-[20%] left-[12%] size-[16rem] rounded-full bg-[#00374a]/18 blur-2xl will-change-transform sm:top-[5%] sm:left-[10%] sm:size-[22rem] sm:bg-[#00374a]/25 sm:blur-3xl"></div>
-        <div className="absolute top-[15%] right-[15%] size-[18rem] bg-[#00374a]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[55%] left-[5%] size-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[65%] right-[10%] size-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute bottom-[15%] left-[25%] size-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[35%] right-[30%] size-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
+    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-surface-container-lowest via-surface-container-low/40 to-surface-container-lowest py-32 sm:py-44 lg:py-56">
+      {/* Dynamic Ambient Mesh with Green & Violet Highlights */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Violet ambient glow */}
+        <div className="absolute top-[10%] left-[20%] w-[32rem] h-[32rem] rounded-full bg-[#8483d4]/15 blur-[120px] will-change-transform" />
+        {/* Emerald ambient glow */}
+        <div className="absolute top-[18%] right-[18%] w-[36rem] h-[36rem] rounded-full bg-[#006b5e]/15 blur-[130px] will-change-transform" />
+        {/* Deep navy base glow */}
+        <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[48rem] h-[22rem] rounded-full bg-[#00374a]/10 blur-[100px]" />
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #00374a 1px, transparent 0)`,
+            backgroundSize: "32px 32px",
+          }}
+        />
       </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-safe-top md:pt-24">
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
+          {/* Heading */}
           <m.h1
-            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, ease }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
+            transition={{ duration: 0.55, ease }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 sm:mb-8 tracking-tight leading-[1.12] text-balance"
           >
-            Empleos en
-            <span className="text-accent font-semibold"> biotecnología </span>y ciencias en Chile
+            Donde el talento científico conecta con{" "}
+            <span className="text-secondary underline decoration-secondary/30 decoration-wavy decoration-from-font">
+              biotecnología
+            </span>{" "}
+            e <span className="text-accent">innovación I+D</span>
           </m.h1>
 
+          {/* Subtitle */}
           <m.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.12, ease }}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty"
+            transition={{ duration: 0.55, delay: 0.1, ease }}
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 sm:mb-14 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Conectamos a profesionales y estudiantes con ofertas de trabajo en biotecnología,
-            bioquímica, química, ingeniería química y salud.
+            Encuentra ofertas laborales verificadas con salarios transparentes en biotecnología,
+            bioquímica, química, laboratorios clínicos y centros de investigación en Chile.
           </m.p>
 
+          {/* Main Interactive Search Console */}
           <m.div
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.24, ease }}
+            transition={{ duration: 0.55, delay: 0.2, ease }}
+            className="max-w-3xl mx-auto mb-8 sm:mb-12"
           >
-            <form onSubmit={handleSearch}>
-              <Card className="p-4 sm:p-6 max-w-4xl mx-auto bg-white/90 backdrop-blur-sm w-full px-4 sm:px-6 border border-border/10">
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <div className="flex-1 relative">
-                    <HugeiconsIcon
-                      icon={Briefcase01Icon}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
-                    />
-                    <Input
-                      aria-label="Buscar puesto"
-                      placeholder="¿Qué puesto buscas?"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
-                    />
-                  </div>
-                  <div className="flex-1 relative">
-                    <HugeiconsIcon
-                      icon={Location05Icon}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-5"
-                    />
-                    <Input
-                      aria-label="Buscar ubicación"
-                      placeholder="¿Dónde?"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="pl-10 h-12 bg-white border border-border/20 focus:border-secondary focus:ring-secondary/20 transition-colors"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    variant="secondary"
-                    size="lg"
-                    className="h-12 px-8 w-full sm:w-auto"
-                  >
-                    <HugeiconsIcon icon={Search01Icon} className="size-5" />
-                    Buscar
-                  </Button>
+            <form
+              onSubmit={handleSearch}
+              className="rounded-2xl border-2 border-border/80 bg-surface-container-lowest p-2.5 sm:p-3 shadow-lg shadow-black/[0.03] backdrop-blur-sm transition-all focus-within:border-secondary/50 focus-within:shadow-secondary/5"
+            >
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                {/* Field 1: Query */}
+                <div className="flex-1 relative">
+                  <HugeiconsIcon
+                    icon={Search01Icon}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-secondary size-5"
+                    strokeWidth={1.75}
+                  />
+                  <Input
+                    aria-label="Buscar cargo o habilidad"
+                    placeholder="Cargo, técnica (PCR, HPLC) o especialidad"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="pl-11 h-12 bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:bg-surface-container-low/40 rounded-xl"
+                  />
                 </div>
-              </Card>
-            </form>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-6 md:mt-8 px-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm text-muted-foreground"
-              >
-                <HugeiconsIcon icon={Briefcase01Icon} className="size-4 mr-2" />
-                Para Profesionales
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm text-muted-foreground"
-              >
-                <HugeiconsIcon icon={Search01Icon} className="size-4 mr-2" />
-                Para Empresas
-              </Button>
-            </div>
+                <div className="hidden sm:block w-px bg-border my-2" />
+
+                {/* Field 2: Location */}
+                <div className="flex-1 relative">
+                  <HugeiconsIcon
+                    icon={Location05Icon}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-accent size-5"
+                    strokeWidth={1.75}
+                  />
+                  <Input
+                    aria-label="Buscar región o modalidad"
+                    placeholder="Región (Santiago, Valparaíso, Biobío, Remoto)"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="pl-11 h-12 bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:bg-surface-container-low/40 rounded-xl"
+                  />
+                </div>
+
+                {/* Submit button */}
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-12 px-8 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm w-full sm:w-auto shrink-0 shadow-sm transition-all hover:scale-[1.02]"
+                >
+                  <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.75} className="mr-1.5" />
+                  Buscar Empleos
+                </Button>
+              </div>
+            </form>
           </m.div>
+
+          {/* Quick links to professional and company registration */}
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm">
+            <Link
+              href="/salarios"
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-secondary font-medium transition-colors"
+            >
+              <HugeiconsIcon icon={SparklesIcon} size={15} className="text-secondary" />
+              Explorar Estudio Salarial 2026
+            </Link>
+            <span className="text-border hidden sm:inline">·</span>
+            <Link
+              href="/empresas"
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-accent font-medium transition-colors"
+            >
+              <HugeiconsIcon icon={Building06Icon} size={15} className="text-accent" />
+              Publicar ofertas para empresas
+            </Link>
+          </div>
         </div>
       </div>
     </section>
