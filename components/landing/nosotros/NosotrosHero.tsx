@@ -1,67 +1,75 @@
 "use client"
 
+import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import { NOSOTROS_STATS } from "@/lib/data/nosotros-data"
 
 export function NosotrosHero() {
+  const reducedMotion = useReducedMotion()
   const ease = [0.23, 1, 0.32, 1] as const
 
   return (
-    <section className="relative min-h-svh sm:h-svh w-full flex items-center justify-center overflow-hidden lg:contain-paint">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f9f9fb] via-[#f3f3f5] to-[#f9f9fb] pointer-events-none">
-        <div className="absolute top-[20%] left-[12%] size-[16rem] rounded-full bg-[#00374a]/18 blur-2xl will-change-transform sm:top-[5%] sm:left-[10%] sm:size-[22rem] sm:bg-[#00374a]/25 sm:blur-3xl"></div>
-        <div className="absolute top-[15%] right-[15%] size-[18rem] bg-[#00374a]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[55%] left-[5%] size-[20rem] bg-[#006b5e]/30 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[65%] right-[10%] size-[24rem] bg-[#006b5e]/25 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
-        <div className="absolute bottom-[15%] left-[25%] size-[19rem] bg-[#8483d4]/25 rounded-full blur-3xl will-change-transform hidden sm:block"></div>
-        <div className="absolute top-[35%] right-[30%] size-[16rem] bg-[#8483d4]/20 rounded-full blur-2xl will-change-transform hidden sm:block"></div>
+    <section className="relative min-h-[85vh] sm:min-h-screen w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest pt-24 pb-16 md:pt-32 md:pb-24">
+      {/* Subtle brand ambient glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[42rem] h-[28rem] rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-70" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10 pt-20 md:pt-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
-          <m.h1
-            initial={{ opacity: 0, y: 28, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, ease }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-foreground mb-4 md:mb-6 leading-tight px-2 text-balance"
+          {/* Green Plain Text Tag */}
+          <m.span
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.4, ease }}
+            className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-4 block"
           >
-            Conectando el <span className="text-accent font-semibold">Talento Científico</span> de
-            Chile
+            Sobre Biovity • El hogar de las biociencias
+          </m.span>
+
+          {/* Main Headline */}
+          <m.h1
+            initial={{ opacity: 0, y: 24, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, ease }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
+          >
+            Impulsando el futuro del{" "}
+            <span className="text-accent font-semibold">talento científico</span> en Chile
           </m.h1>
 
+          {/* Subheadline */}
           <m.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.12, ease }}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 text-pretty"
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Creamos una comunidad que conecta profesionales y estudiantes en biociencias con
-            oportunidades significativas en Chile.
+            Construimos la infraestructura digital que conecta a investigadores, biotecnólogos y
+            profesionales de la ciencia con oportunidades transparentes y de alto impacto.
           </m.p>
 
+          {/* Key Metrics Grid - Clean borderless tonal cards */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.24, ease }}
-            className="flex flex-wrap justify-center gap-8 md:gap-12 max-w-4xl mx-auto"
+            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.16, ease }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto"
           >
-            <m.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.36, ease }}
-              className="text-center"
-            >
-              <p className="text-3xl font-bold text-foreground mb-1">+500</p>
-              <p className="text-sm text-muted-foreground">profesionales activos</p>
-            </m.div>
-            <m.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.44, ease }}
-              className="text-center"
-            >
-              <p className="text-3xl font-bold text-foreground mb-1">2026</p>
-              <p className="text-sm text-muted-foreground">fundada</p>
-            </m.div>
+            {NOSOTROS_STATS.map((stat) => (
+              <div
+                key={stat.label}
+                className="bg-surface-container-low rounded-xl p-4 sm:p-5 text-center transition-colors hover:bg-surface-container-highest/60"
+              >
+                <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1 tracking-tight">
+                  {stat.value}
+                </p>
+                <p className="text-xs sm:text-sm font-medium text-foreground mb-0.5">
+                  {stat.label}
+                </p>
+                <p className="text-[11px] text-muted-foreground">{stat.sublabel}</p>
+              </div>
+            ))}
           </m.div>
         </div>
       </div>

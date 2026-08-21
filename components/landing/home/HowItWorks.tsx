@@ -6,172 +6,61 @@ import * as m from "motion/react-m"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { STEPS_HOME } from "@/lib/data/home-data"
 
-const StepCard = ({
-  step,
-  index,
-  ts,
-}: {
-  step: (typeof STEPS_HOME)[0]
-  index: number
-  ts: (delay?: number) => ReturnType<typeof getSpringTransition>
-}) => {
-  const isEven = index % 2 === 0
-  const cardDelay = index * LANDING_ANIMATION.chainStagger
-  return (
-    <m.div
-      className={`flex items-center w-full group ${!isEven ? "justify-start" : "justify-end"}`}
-      initial={{ opacity: 0, x: isEven ? -40 : 40, scale: 0.96 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-      transition={ts(cardDelay)}
-    >
-      <div
-        className={`w-full md:w-1/2 p-4 ${!isEven ? "md:pr-8 lg:pr-16 md:text-right" : "md:pl-8 lg:pl-16 md:text-left"}`}
-      >
-        <div className="transform transition-transform duration-500 group-hover:scale-105 bg-[#f3f3f5] p-6 rounded-xl">
-          {/* Mobile step indicator */}
-          <div className="flex items-center mb-4 md:hidden">
-            <div className="size-10 rounded-full bg-[#f3f3f5] flex items-center justify-center ring-2 ring-white mr-3">
-              <HugeiconsIcon icon={step.icon} size={20} className="text-muted-foreground" />
-            </div>
-            <span className="text-sm font-semibold text-secondary bg-secondary/10 px-3 py-1 rounded-full">
-              Paso {step.number}
-            </span>
-          </div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">{step.title}</h3>
-          <p className="text-muted-foreground">{step.description}</p>
-        </div>
-      </div>
-    </m.div>
-  )
-}
-
-const RoadmapLine = () => (
-  <div
-    className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-1 bg-none hidden md:block"
-    aria-hidden="true"
-  >
-    <svg
-      className="w-full h-full"
-      width="2"
-      height="100%"
-      viewBox="0 0 2 1200"
-      preserveAspectRatio="none"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <title>Roadmap dashed connecting line</title>
-      {Array.from({ length: 30 }).map((_, idx) => {
-        const dashHeight = 25
-        const dashGap = 15
-        const y = idx * (dashHeight + dashGap)
-        return (
-          <rect
-            key={y}
-            x="0"
-            y={y}
-            width="2"
-            height={dashHeight}
-            rx="1"
-            fill="url(#line-gradient)"
-          />
-        )
-      })}
-      <defs>
-        <linearGradient
-          id="line-gradient"
-          x1="0"
-          y1="0"
-          x2="0"
-          y2="1200"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0%" stopColor="#006b5e" />
-          <stop offset="100%" stopColor="#006b5e" />
-        </linearGradient>
-      </defs>
-    </svg>
-  </div>
-)
-
-const StepMarker = ({
-  index,
-  ts,
-}: {
-  index: number
-  ts: (delay?: number) => ReturnType<typeof getSpringTransition>
-}) => {
-  const topPosition = `${(index / (STEPS_HOME.length - 1)) * 85 + 7.5}%`
-  const markerDelay = index * LANDING_ANIMATION.chainStagger + LANDING_ANIMATION.duration + 0.08
-  return (
-    <m.div
-      className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center justify-center"
-      style={{ top: topPosition }}
-      aria-hidden="true"
-      initial={{ opacity: 0, scale: 0.95, rotate: -120 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-      viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-      transition={ts(markerDelay)}
-    >
-      <div className="size-16 rounded-full bg-secondary flex items-center justify-center ring-4 ring-white">
-        <HugeiconsIcon
-          icon={STEPS_HOME[index].icon}
-          size={32}
-          className="text-secondary-foreground"
-        />
-      </div>
-    </m.div>
-  )
-}
-
 export function HowItWorks() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion, snappy: true })
+  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-20 md:py-28 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
-          className="text-center mb-20"
+          className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance"
-          >
-            Tu Camino hacia el Éxito Profesional
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty"
-          >
-            En solo 4 simples pasos, estarás más cerca del trabajo de tus sueños en el sector
-            biotecnológico.
-          </m.p>
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Metodología de Postulación
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Tu camino hacia el <span className="text-accent font-semibold">éxito profesional</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            En 4 sencillos pasos, acelera tu postulación y conecta con los equipos científicos más innovadores de Chile.
+          </p>
         </m.div>
 
-        <div className="relative">
-          <RoadmapLine />
-          <div className="relative z-10 flex flex-col gap-8 md:gap-0">
-            {STEPS_HOME.map((step, index) => (
-              <StepCard step={step} index={index} key={step.number} ts={ts} />
-            ))}
-          </div>
-          <div className="hidden md:block">
-            {STEPS_HOME.map((step) => (
-              <StepMarker key={step.number} index={parseInt(step.number, 10) - 1} ts={ts} />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          {STEPS_HOME.map((step, index) => (
+            <m.div
+              key={step.number}
+              initial={{ opacity: 0, y: 28, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+              transition={ts(index * LANDING_ANIMATION.chainStagger)}
+              className="bg-surface-container-lowest rounded-xl p-6 sm:p-7 flex flex-col justify-between transition-colors hover:bg-white/80"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-6">
+                  <div className="size-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+                    <HugeiconsIcon icon={step.icon} size={18} />
+                  </div>
+                  <span className="text-xs font-mono font-semibold text-secondary bg-secondary/10 border border-secondary/20 px-2.5 py-1 rounded-full">
+                    Paso {step.number}
+                  </span>
+                </div>
+
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
+                  {step.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                  {step.description}
+                </p>
+              </div>
+            </m.div>
+          ))}
         </div>
       </div>
     </section>

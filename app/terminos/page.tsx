@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/component
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
 export const metadata: Metadata = {
-  title: "Términos y Condiciones de Uso",
+  title: "Términos y Condiciones de Uso | Biovity Chile",
   description:
     "Términos y condiciones de uso de la plataforma Biovity en Chile. Conoce las normas de uso para profesionales, estudiantes y empresas reclutadoras.",
   openGraph: {
@@ -34,26 +34,25 @@ export default function TerminosPage() {
           { name: "Términos de Servicio", url: `${siteUrl}/terminos` },
         ]}
       />
-      <main className="bg-white pt-28 pb-20">
+      <main className="bg-surface-container-low min-h-screen pt-28 pb-20 md:pt-36 md:pb-28">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="border-b border-border/40 pb-8 mb-10">
-            <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-              Marco Legal y Regulatorio (Chile)
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+              Marco Regulatorio • República de Chile
             </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mt-2 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight text-balance">
               Términos y Condiciones de Servicio
             </h1>
-            <p className="text-sm text-muted-foreground mt-3">
-              Última actualización: 20 de Agosto de 2026 · Conforme a la legislación de la República
-              de Chile
+            <p className="text-xs sm:text-sm text-muted-foreground mt-3 font-mono">
+              Última actualización: 20 de Agosto de 2026
             </p>
           </div>
 
-          {/* Content */}
-          <div className="prose prose-zinc max-w-none space-y-8 text-foreground/90 leading-relaxed text-[15px]">
+          {/* Editorial Sheet */}
+          <div className="bg-surface-container-lowest rounded-xl border border-border p-6 sm:p-10 md:p-12 prose prose-zinc max-w-none space-y-8 text-foreground/90 leading-relaxed text-[15px]">
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 1. Identificación del Responsable y Aceptación
               </h2>
               <p>
@@ -66,7 +65,7 @@ export default function TerminosPage() {
                 Biovity es una plataforma tecnológica chilena orientada a la conexión laboral,
                 intermediación de talento científico y provisión de herramientas de gestión de
                 candidatos (ATS) en las áreas de biotecnología, bioquímica, química, ingeniería
-                química, farmacia y ciencias de la salud.
+                química, farmacia y ciencias afines.
               </p>
               <p>
                 El acceso, navegación y uso de la Plataforma confiere la condición de Usuario (ya
@@ -74,14 +73,14 @@ export default function TerminosPage() {
                 plena e incondicional de estos Términos, así como de nuestra{" "}
                 <Link
                   href="/privacidad"
-                  className="text-accent underline underline-offset-4 hover:text-accent/80"
+                  className="text-secondary font-medium underline underline-offset-4 hover:text-secondary/80"
                 >
                   Política de Privacidad
                 </Link>{" "}
                 y{" "}
                 <Link
                   href="/cookies"
-                  className="text-accent underline underline-offset-4 hover:text-accent/80"
+                  className="text-secondary font-medium underline underline-offset-4 hover:text-secondary/80"
                 >
                   Política de Cookies
                 </Link>
@@ -90,7 +89,7 @@ export default function TerminosPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 2. Descripción de los Servicios
               </h2>
               <p>Biovity proporciona los siguientes servicios principales:</p>
@@ -99,19 +98,19 @@ export default function TerminosPage() {
                   <strong>Para Profesionales y Candidatos:</strong> Creación de perfil profesional
                   científico, carga de currículum vitae (CV), búsqueda y postulación a ofertas de
                   empleo, visualización de rangos salariales referenciales, recepción de alertas de
-                  empleo y herramientas de IA para el emparejamiento con ofertas pertinentes.
+                  empleo y herramientas de emparejamiento con ofertas afines.
                 </li>
                 <li>
                   <strong>Para Empresas y Reclutadores:</strong> Publicación y gestión de ofertas
                   laborales, acceso a perfiles de candidatos postulantes, sistema de seguimiento de
                   postulaciones (ATS), comunicación directa con candidatos y herramientas de
-                  filtrado y analítica de selección.
+                  filtrado técnico.
                 </li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 3. Registro, Cuentas de Usuario y Seguridad
               </h2>
               <p>
@@ -121,23 +120,21 @@ export default function TerminosPage() {
               <ul className="list-disc pl-6 space-y-2 mt-2">
                 <li>
                   <strong>Custodia de Credenciales:</strong> El Usuario es responsable de mantener
-                  la confidencialidad de su contraseña y de todas las actividades realizadas bajo su
-                  cuenta.
+                  la confidencialidad de sus credenciales y de las actividades realizadas bajo su cuenta.
                 </li>
                 <li>
-                  <strong>Veracidad de la Información:</strong> Los profesionales garantizan que la
-                  información académica, técnica y laboral suministrada es verídica y comprobable.
+                  <strong>Veracidad de la Información:</strong> Los profesionales garantizan que los
+                  antecedentes académicos, técnicos y laborales suministrados son verídicos.
                 </li>
                 <li>
                   <strong>Cuentas de Organización:</strong> Las empresas declaran contar con
-                  personería y facultades suficientes para representar a la entidad legal
-                  correspondiente.
+                  facultades legales suficientes para representar a la entidad correspondiente.
                 </li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 4. Reglas de Conducta y Uso Aceptable
               </h2>
               <p>Queda estrictamente prohibido:</p>
@@ -147,110 +144,84 @@ export default function TerminosPage() {
                   consagrado en el artículo 2 del Código del Trabajo de Chile.
                 </li>
                 <li>
-                  Publicar información falsa, engañosa o que induzca a error respecto a cargos,
+                  Publicar información engañosa o que induzca a error respecto a cargos,
                   requisitos, salarios o condiciones laborales.
                 </li>
                 <li>
-                  Utilizar datos personales de candidatos obtenidos en la plataforma para fines
-                  comerciales, spam o actividades distintas al reclutamiento directo para la vacante
-                  correspondiente.
+                  Utilizar datos personales de postulantes para fines de publicidad no solicitada
+                  o ajenos al proceso de selección específico.
                 </li>
                 <li>
-                  Realizar ingeniería inversa, scraping masivo no autorizado, vulneración de medidas
-                  de seguridad o saturación intencionada de la infraestructura tecnológica.
+                  Realizar ingeniería inversa, scraping masivo no autorizado o vulneración de las
+                  medidas de seguridad del sistema.
                 </li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 5. Planes, Pagos y Facturación para Empresas
               </h2>
               <p>
-                El uso de la Plataforma es 100% gratuito para candidatos y profesionales en búsqueda
-                de empleo.
+                El uso de la Plataforma es 100% gratuito para candidatos y profesionales en búsqueda de empleo.
               </p>
               <p>
-                Las organizaciones y empresas pueden acceder a planes de suscripción pagados según
-                las tarifas vigentes en la sección{" "}
+                Las organizaciones pueden acceder a planes según las tarifas vigentes en la sección{" "}
                 <Link
                   href="/planes"
-                  className="text-accent underline underline-offset-4 hover:text-accent/80"
+                  className="text-secondary font-medium underline underline-offset-4 hover:text-secondary/80"
                 >
                   Planes y Precios
                 </Link>
-                . Los cobros se realizan en pesos chilenos (CLP) o dólares estadounidenses (USD)
-                mediante pasarelas de pago seguras y autorizadas.
+                . Los cobros se expresan en pesos chilenos (CLP) más impuestos legales correspondientes.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 6. Propiedad Intelectual
               </h2>
               <p>
-                Todos los derechos de propiedad intelectual e industrial sobre el software, diseño,
-                código fuente, marcas, logotipos, textos, algoritmos y bases de datos de Biovity
-                corresponden exclusivamente a Biovity o a sus respectivos licenciantes.
+                Todos los derechos de propiedad intelectual sobre la plataforma, marcas, interfaces,
+                código fuente y algoritmos de Biovity corresponden exclusivamente a Biovity o sus licenciantes.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
-                7. Limitación de Responsabilidad
-              </h2>
-              <p>Biovity actúa como una plataforma de intermediación tecnológica y no garantiza:</p>
-              <ul className="list-disc pl-6 space-y-2 mt-2">
-                <li>La contratación efectiva de un candidato por parte de una empresa.</li>
-                <li>La idoneidad, desempeño laboral o conducta de los candidatos postulantes.</li>
-                <li>
-                  La continuidad ininterrumpida del servicio ante fallas técnicas externas o fuerza
-                  mayor.
-                </li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
-                8. Legislación Aplicable y Jurisdicción
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
+                7. Legislación Aplicable y Jurisdicción
               </h2>
               <p>
                 Los presentes Términos se rigen e interpretan conforme a las leyes de la República
-                de Chile (incluyendo la Ley N° 19.496 sobre Protección de los Derechos de los
-                Consumidores y la Ley N° 19.628 / Ley N° 21.719 sobre Protección de Datos
-                Personales). Para todos los efectos legales, las partes se someten a la competencia
-                de los Tribunales Ordinarios de Justicia de la comuna y ciudad de Santiago de Chile.
+                de Chile. Para todos los efectos legales, las partes se someten a la competencia
+                de los Tribunales Ordinarios de Justicia de la comuna de Santiago de Chile.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
-                9. Canal de Contacto
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
+                8. Canal de Contacto Oficial
               </h2>
               <p>
-                Para consultas, solicitudes o notificaciones relacionadas con estos Términos, el
-                Usuario puede contactar a nuestro equipo en:
+                Para consultas o notificaciones sobre estos Términos:
               </p>
-              <div className="rounded-xl border border-border/40 bg-surface-container-low p-4 mt-3">
+              <div className="rounded-xl border border-border bg-surface-container-low p-4 mt-3">
                 <p className="font-semibold text-foreground">Biovity Chile</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Correo electrónico:{" "}
                   <a
                     href="mailto:contacto@biovity.cl"
-                    className="text-accent underline hover:text-accent/80"
+                    className="text-secondary font-medium underline hover:text-secondary/80"
                   >
                     contacto@biovity.cl
                   </a>
                 </p>
-                <p className="text-sm text-muted-foreground">Ubicación: Santiago, Chile</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Santiago, Chile</p>
               </div>
             </section>
 
-            {/* Disclaimer Obligatorio */}
-            <div className="border-t border-border/40 pt-6 mt-12 text-xs text-muted-foreground italic">
-              <strong>Aviso legal:</strong> El presente documento constituye un borrador normativo
-              informativo elaborado para regular las relaciones contractuales bajo el derecho
-              chileno. No sustituye la asesoría legal especializada ante controversias específicas.
+            <div className="border-t border-border pt-6 mt-10 text-xs text-muted-foreground italic">
+              <strong>Aviso legal:</strong> Documento normativo e informativo regulatorio bajo el marco del derecho chileno.
             </div>
           </div>
         </div>

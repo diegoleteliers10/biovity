@@ -28,7 +28,6 @@ import { Select } from "@/components/base/select/select"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { Logo } from "@/components/ui/logo"
 import { createResume } from "@/lib/api/resumes"
 import { cn } from "@/lib/utils"
 import { userRegistrationSchema, validateForm as validateFormZod } from "@/lib/validations"
@@ -197,7 +196,7 @@ export function UserRegisterContent() {
         dispatch({
           type: "SET_FIELD",
           field: "errors",
-          value: { general: data.error || "Error al crear la cuenta. Intentalo de nuevo." },
+          value: { general: data.error || "Error al crear la cuenta. Inténtalo de nuevo." },
         })
         dispatch({ type: "SET_FIELD", field: "isLoading", value: false })
         return
@@ -213,28 +212,30 @@ export function UserRegisterContent() {
       dispatch({
         type: "SET_FIELD",
         field: "errors",
-        value: { general: "Error al crear la cuenta. Intentalo de nuevo." },
+        value: { general: "Error al crear la cuenta. Inténtalo de nuevo." },
       })
       dispatch({ type: "SET_FIELD", field: "isLoading", value: false })
     }
   }
 
   return (
-    <div className="flex h-dvh">
+    <div className="flex h-dvh bg-surface-container-lowest overflow-hidden">
       {/* Left: Illustration */}
-      <div className="relative hidden w-1/2 overflow-hidden lg:block">
-        <Image
-          src="/ilustracionRegistroUsers.png"
-          alt="Biovity - Talento bio-digital y desarrollo profesional"
-          fill
-          className="object-cover object-center p-2.5 rounded-[20px]"
-          priority
-          sizes="50vw"
-        />
+      <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
+        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
+          <Image
+            src="/ilustracionRegistroUsers.png"
+            alt="Biovity - Talento bio-digital y desarrollo profesional"
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="50vw"
+          />
+        </div>
       </div>
 
       {/* Right: Registration form */}
-      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-background lg:w-1/2">
+      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
         <div className="m-auto w-full max-w-lg space-y-8 p-6 lg:p-12">
           {formState.isRegistered ? (
             <CheckYourEmail
@@ -244,16 +245,30 @@ export function UserRegisterContent() {
             />
           ) : (
             <>
-              <div className="space-y-2 text-center">
-                <Logo size="lg" className="justify-center" />
-                <h1 className={`text-center ${authTitleClass}`}>Crear cuenta de usuario</h1>
-                <p className={`text-center ${authSubtitleClass}`}>
+              {/* Logo & Header */}
+              <div className="flex flex-col items-center text-center space-y-3">
+                <Link
+                  href="/"
+                  aria-label="Ir al inicio"
+                  className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
+                >
+                  <Image
+                    src="/logoIcon.png"
+                    alt="Biovity"
+                    width={50}
+                    height={50}
+                    className="h-12 w-auto object-contain"
+                    priority
+                  />
+                </Link>
+                <h1 className={authTitleClass}>Crear cuenta de usuario</h1>
+                <p className={authSubtitleClass}>
                   Únete a la comunidad de profesionales en biociencias
                 </p>
               </div>
 
               <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label htmlFor="name" className={authLabelClass}>
                     Nombre completo
                   </label>
@@ -262,7 +277,7 @@ export function UserRegisterContent() {
                       icon={UserIcon}
                       size={16}
                       strokeWidth={1.5}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
                       id="name"
@@ -281,13 +296,13 @@ export function UserRegisterContent() {
                     />
                   </div>
                   {formState.errors.name && (
-                    <p className="text-sm text-destructive">{formState.errors.name}</p>
+                    <p className="text-xs text-destructive mt-1">{formState.errors.name}</p>
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label htmlFor="profession" className={authLabelClass}>
-                    Profesión o Cargo
+                    Profesión o Especialidad
                   </label>
                   <Select.ComboBox
                     isRequired
@@ -304,11 +319,11 @@ export function UserRegisterContent() {
                     )}
                   </Select.ComboBox>
                   {formState.errors.profession && (
-                    <p className="text-sm text-destructive">{formState.errors.profession}</p>
+                    <p className="text-xs text-destructive mt-1">{formState.errors.profession}</p>
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label htmlFor="email" className={authLabelClass}>
                     Correo electrónico
                   </label>
@@ -317,7 +332,7 @@ export function UserRegisterContent() {
                       icon={Mail01Icon}
                       size={16}
                       strokeWidth={1.5}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
                       id="email"
@@ -336,12 +351,12 @@ export function UserRegisterContent() {
                     />
                   </div>
                   {formState.errors.email && (
-                    <p className="text-sm text-destructive">{formState.errors.email}</p>
+                    <p className="text-xs text-destructive mt-1">{formState.errors.email}</p>
                   )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <label htmlFor="password" className={authLabelClass}>
                       Contraseña
                     </label>
@@ -350,7 +365,7 @@ export function UserRegisterContent() {
                         icon={SquareLock02Icon}
                         size={16}
                         strokeWidth={1.5}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                       />
                       <Input
                         id="password"
@@ -380,21 +395,21 @@ export function UserRegisterContent() {
                             value: !formState.isPasswordVisible,
                           })
                         }
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none"
                       >
                         <HugeiconsIcon
                           icon={formState.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
-                          size={18}
+                          size={16}
                           strokeWidth={1.75}
                         />
                       </button>
                     </div>
                     {formState.errors.password && (
-                      <p className="text-sm text-destructive">{formState.errors.password}</p>
+                      <p className="text-xs text-destructive mt-1">{formState.errors.password}</p>
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <label htmlFor="confirmPassword" className={authLabelClass}>
                       Confirmar contraseña
                     </label>
@@ -403,7 +418,7 @@ export function UserRegisterContent() {
                         icon={SquareLock02Icon}
                         size={16}
                         strokeWidth={1.5}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                       />
                       <Input
                         id="confirmPassword"
@@ -433,23 +448,25 @@ export function UserRegisterContent() {
                             value: !formState.isConfirmVisible,
                           })
                         }
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-0"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none"
                       >
                         <HugeiconsIcon
                           icon={formState.isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
-                          size={18}
+                          size={16}
                           strokeWidth={1.75}
                         />
                       </button>
                     </div>
                     {formState.errors.confirmPassword && (
-                      <p className="text-sm text-destructive">{formState.errors.confirmPassword}</p>
+                      <p className="text-xs text-destructive mt-1">
+                        {formState.errors.confirmPassword}
+                      </p>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="flex items-start gap-2 text-xs">
+                <div className="pt-2">
+                  <label className="flex items-start gap-2 text-xs cursor-pointer select-none">
                     <Checkbox
                       id="terms"
                       checked={formState.acceptTerms}
@@ -462,24 +479,24 @@ export function UserRegisterContent() {
                       }
                       className="mt-0.5"
                     />
-                    <span className="text-sm text-foreground">
+                    <span className="text-xs text-muted-foreground leading-relaxed">
                       Acepto los{" "}
-                      <button type="button" className={authLinkClass}>
+                      <Link href="/terminos" target="_blank" className={authLinkClass}>
                         términos y condiciones
-                      </button>{" "}
+                      </Link>{" "}
                       y la{" "}
-                      <button type="button" className={authLinkClass}>
+                      <Link href="/privacidad" target="_blank" className={authLinkClass}>
                         política de privacidad
-                      </button>
+                      </Link>
                     </span>
                   </label>
                   {formState.errors.acceptTerms && (
-                    <p className="text-sm text-destructive">{formState.errors.acceptTerms}</p>
+                    <p className="text-xs text-destructive mt-1">{formState.errors.acceptTerms}</p>
                   )}
                 </div>
 
                 {formState.errors.general && (
-                  <div className="rounded-md bg-destructive/10 p-3 text-center text-sm text-destructive">
+                  <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
                     {formState.errors.general}
                   </div>
                 )}
@@ -493,35 +510,35 @@ export function UserRegisterContent() {
                 </Button>
               </form>
 
-              <div className="space-y-4 border-t border-border/10 pt-8">
-                <div className="text-center">
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} />
-                    Volver a selección de registro
-                  </Link>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
+              <div className="space-y-3.5 border-t border-border pt-6 text-center text-xs sm:text-sm">
+                <div>
+                  <p className="text-muted-foreground">
                     ¿Ya tienes una cuenta?{" "}
                     <Link href="/login/professional" className={authLinkClass}>
                       Inicia sesión aquí
                     </Link>
                   </p>
                 </div>
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
+                <div>
+                  <p className="text-muted-foreground">
                     ¿Representas una organización?{" "}
                     <Link href="/register/organization" className={authOrgLinkClass}>
                       Registrar organización
                     </Link>
                   </p>
                 </div>
+                <div className="pt-2">
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.5} />
+                    Volver a selección de registro
+                  </Link>
+                </div>
               </div>
 
-              <p className="text-center text-sm text-muted-foreground">
+              <p className="text-center text-xs text-muted-foreground">
                 ¿Necesitas ayuda?{" "}
                 <a href="mailto:support@biovity.com" className={authLinkClass}>
                   Contactar soporte

@@ -10,74 +10,56 @@ export function ComoFuncionaEmpresas() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+
   return (
-    <section className="py-24 bg-white">
+    <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
-          className="text-center mb-16"
+          className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance"
-          >
-            Cómo funciona para empresas
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty"
-          >
-            En solo 4 pasos, estarás contratando al talento científico que tu empresa necesita.
-          </m.p>
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Flujo de Contratación
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Cómo funciona para <span className="text-accent font-semibold">empresas</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            En 4 pasos guiados podrás publicar tus vacantes técnicas y gestionar a los postulantes de forma centralizada.
+          </p>
         </m.div>
 
-        <m.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay)}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {PASOS_EMPRESAS.map((paso, index) => (
             <m.div
               key={paso.number}
-              initial={{ opacity: 0, y: 32, scale: 0.96 }}
+              initial={{ opacity: 0, y: 28, scale: 0.98 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className="relative group"
+              className="bg-surface-container-low rounded-xl p-6 sm:p-7 border border-border flex flex-col justify-between transition-colors hover:border-border/80"
             >
-              <div className="bg-[#f3f3f5] rounded-2xl p-6 h-full border border-border/10 hover:border-secondary/20 hover:bg-secondary/5 transition-all">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="size-14 rounded-xl bg-secondary flex items-center justify-center">
-                    <HugeiconsIcon icon={paso.icon} size={28} className="text-white" />
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-6">
+                  <div className="size-9 rounded-lg bg-surface-container-highest border border-border flex items-center justify-center text-primary">
+                    <HugeiconsIcon icon={paso.icon} size={18} />
                   </div>
-                  <span className="text-4xl font-semibold text-[#e2e2e4] group-hover:text-secondary/30 transition-colors duration-200">
-                    {paso.number}
+                  <span className="text-xs font-mono font-semibold text-secondary bg-secondary/10 border border-secondary/20 px-2.5 py-1 rounded-full">
+                    Paso {paso.number}
                   </span>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{paso.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{paso.description}</p>
+
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{paso.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                  {paso.description}
+                </p>
               </div>
-              {/* Connector line for desktop */}
-              {paso.number !== "04" && (
-                <div
-                  className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-[calc(100%+0.5rem)] w-8 h-0.5 bg-gradient-to-r from-secondary/30 to-accent/30 pointer-events-none"
-                  aria-hidden
-                />
-              )}
             </m.div>
           ))}
-        </m.div>
+        </div>
       </div>
     </section>
   )

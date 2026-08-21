@@ -12,62 +12,56 @@ export function ConexionTalento() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
-          className="text-center mb-16"
+          className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight"
-          >
-            Conectamos talento con empresas
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-muted-foreground max-w-3xl mx-auto"
-          >
-            Biovity facilita el encuentro entre profesionales del sector científico y empresas que
-            buscan talento especializado.
-          </m.p>
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Ecosistema Integrado
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Conectamos el talento con la <span className="text-accent font-semibold">industria científica</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
+            Facilitamos el encuentro entre profesionales del sector científico y organizaciones que buscan especialistas en biotecnología y ciencias aplicadas en Chile.
+          </p>
         </m.div>
 
         <m.div
-          initial={{ opacity: 0, y: 40, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={ts(LANDING_ANIMATION.sequenceDelay)}
           className="flex flex-col items-center"
         >
-          <div className="w-full max-w-3xl mb-12 mx-auto flex justify-center">
+          <div className="w-full max-w-4xl mb-14 mx-auto flex justify-center">
             <AdnBeam />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
             <m.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
-              className="text-center p-6"
+              className="bg-surface-container-low rounded-xl p-6 sm:p-8 border border-border flex flex-col justify-between"
             >
-              <div className="size-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-semibold text-secondary">1</span>
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-mono font-semibold text-secondary bg-secondary/10 border border-secondary/20 px-2.5 py-1 rounded-full">
+                    Paso 01
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">Empresas publican</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                  Publica vacantes técnicas especificando técnicas de laboratorio, proyectos y bandas salariales.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Empresas publican</h3>
-              <p className="text-muted-foreground">
-                Publica ofertas de trabajo dirigidas específicamente al sector científico.
-              </p>
             </m.div>
 
             <m.div
@@ -75,15 +69,19 @@ export function ConexionTalento() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
-              className="text-center p-6"
+              className="bg-surface-container-low rounded-xl p-6 sm:p-8 border border-border flex flex-col justify-between"
             >
-              <div className="size-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-semibold text-secondary">2</span>
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-mono font-semibold text-secondary bg-secondary/10 border border-secondary/20 px-2.5 py-1 rounded-full">
+                    Paso 02
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">Candidatos postulan</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                  Profesionales e investigadores aplican de forma directa destacando experiencia experimental y proyectos.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Candidatos postulan</h3>
-              <p className="text-muted-foreground">
-                Profesionales especializados encuentran y postulan a las mejores oportunidades.
-              </p>
             </m.div>
 
             <m.div
@@ -91,18 +89,22 @@ export function ConexionTalento() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(LANDING_ANIMATION.sequenceDelay * 4)}
-              className="text-center p-6"
+              className="bg-surface-container-low rounded-xl p-6 sm:p-8 border border-accent/30 bg-accent/5 flex flex-col justify-between"
             >
-              <div className="size-14 flex items-center justify-center mx-auto mb-4">
-                <span className="text-6xl font-semibold text-accent">3</span>
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-mono font-semibold text-accent bg-accent/10 border border-accent/25 px-2.5 py-1 rounded-full">
+                    Paso 03
+                  </span>
+                  <Badge variant="secondary" className="bg-accent/15 text-accent border-0 text-[10px] px-2 py-0.5 font-mono">
+                    AI Match
+                  </Badge>
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">Match de precisión</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
+                  Nuestros filtros científicos conectan los requerimientos del puesto con el candidato ideal.
+                </p>
               </div>
-              <Badge variant="secondary" className="mb-2">
-                AI Matching
-              </Badge>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Match perfecto</h3>
-              <p className="text-muted-foreground">
-                Nuestro AI Matching conecta a los candidatos ideales con tu empresa.
-              </p>
             </m.div>
           </div>
         </m.div>

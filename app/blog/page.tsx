@@ -7,8 +7,8 @@ import { BlogCollectionJsonLd, BreadcrumbJsonLd, WebSiteJsonLd } from "@/compone
 import { getAllPosts } from "@/lib/posts"
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
+  title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
+  description: "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
   keywords: [
     "blog biotecnología",
     "noticias ciencias Chile",
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     "biotecnología Chile",
   ],
   openGraph: {
-    title: "Blog | Biovity",
-    description: "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
+    title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
+    description: "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
     url: "/blog",
     images: [
       {
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog | Biovity",
-    description: "Artículos y noticias sobre biotecnología, ciencias y el mundo laboral en Chile.",
+    title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
+    description: "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
     images: ["/og/home.png"],
   },
   alternates: {
@@ -66,12 +66,12 @@ export default async function BlogPage() {
           { name: "Blog", url: `${siteUrl}/blog` },
         ]}
       />
-      <div className="py-32">
+      <main className="min-h-screen bg-surface-container-lowest pt-24 pb-20 md:pt-32 md:pb-28">
         <BlogHeader />
-        <main className="container mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <BlogGrid posts={posts} />
-        </main>
-      </div>
+        </div>
+      </main>
     </LandingLayout>
   )
 }

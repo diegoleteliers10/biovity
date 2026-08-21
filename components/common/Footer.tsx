@@ -36,9 +36,10 @@ const FOOTER_SECTIONS = [
     ],
   },
   {
-    title: "Soporte",
+    title: "Soporte & Recursos",
     links: [
-      { label: "Centro de Ayuda", href: "/nosotros" },
+      { label: "Sobre Nosotros", href: "/nosotros" },
+      { label: "Guía de Marca", href: "/marca" },
       { label: "Términos de Servicio", href: "/terminos" },
       { label: "Política de Privacidad", href: "/privacidad" },
       { label: "Política de Cookies", href: "/cookies" },
@@ -58,36 +59,48 @@ export function Footer() {
               <span className="text-xl font-semibold">Biovity</span>
             </div>
             <p className="text-neutral-400 mb-6 leading-relaxed text-pretty">
-              La plataforma líder que conecta talento científico con las mejores oportunidades en
-              biotecnología, química, farmacia y áreas relacionadas.
+              Conectando el talento científico más calificado con las mejores oportunidades en el
+              sector de las biociencias en Chile.
             </p>
-
-            {/* Contact info */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-neutral-400">
-                <HugeiconsIcon icon={Mail01Icon} className="size-4" />
-                <a href="mailto:dleteliers@udd.cl" className="hover:text-white transition-colors">
-                  dleteliers@udd.cl
-                </a>
-              </div>
-              <div className="flex items-center gap-3 text-neutral-400">
-                <HugeiconsIcon icon={CallIcon} className="size-4" />
-                <a href="tel:+56978181654" className="hover:text-white transition-colors">
-                  +56 9 7818 1654
-                </a>
-              </div>
-              <div className="flex items-center gap-3 text-neutral-400">
-                <HugeiconsIcon icon={MapPinIcon} className="size-4" />
-                <span>Santiago, Chile</span>
-              </div>
+            <div className="flex space-x-4">
+              <Link
+                href="https://linkedin.com/company/biovity"
+                className="text-neutral-400 hover:text-white transition-colors"
+                aria-label="LinkedIn de Biovity"
+              >
+                <HugeiconsIcon icon={Linkedin02Icon} size={20} />
+              </Link>
+              <Link
+                href="https://twitter.com/biovity"
+                className="text-neutral-400 hover:text-white transition-colors"
+                aria-label="Twitter de Biovity"
+              >
+                <HugeiconsIcon icon={TwitterIcon} size={20} />
+              </Link>
+              <Link
+                href="https://instagram.com/biovity"
+                className="text-neutral-400 hover:text-white transition-colors"
+                aria-label="Instagram de Biovity"
+              >
+                <HugeiconsIcon icon={InstagramIcon} size={20} />
+              </Link>
+              <Link
+                href="https://facebook.com/biovity"
+                className="text-neutral-400 hover:text-white transition-colors"
+                aria-label="Facebook de Biovity"
+              >
+                <HugeiconsIcon icon={Facebook01Icon} size={20} />
+              </Link>
             </div>
           </div>
 
-          {/* Footer sections */}
+          {/* Dynamic footer sections */}
           {FOOTER_SECTIONS.map((section) => (
             <div key={section.title}>
-              <h3 className="font-semibold mb-4">{section.title}</h3>
-              <ul className="space-y-3">
+              <h4 className="text-sm font-mono font-semibold uppercase tracking-wider text-neutral-300 mb-4">
+                {section.title}
+              </h4>
+              <ul className="space-y-2 text-sm">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
@@ -103,53 +116,23 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Bottom section */}
-        <div className="border-t border-neutral-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="text-neutral-400 mb-4 md:mb-0">
-              © 2024 Biovity. Todos los derechos reservados.
+        {/* Contact info & copyright */}
+        <div className="mt-12 pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center text-sm text-neutral-400">
+          <div className="flex flex-wrap gap-6 mb-4 md:mb-0">
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={Mail01Icon} size={16} />
+              <span>contacto@biovity.cl</span>
             </div>
-
-            {/* Social links - placeholder until social URLs are configured */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors"
-                aria-label="Facebook"
-              >
-                <HugeiconsIcon icon={Facebook01Icon} className="size-5" />
-              </Link>
-              <Link
-                href="https://x.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors"
-                aria-label="X (formerly Twitter)"
-              >
-                <HugeiconsIcon icon={TwitterIcon} className="size-5" />
-              </Link>
-              <Link
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors"
-                aria-label="LinkedIn"
-              >
-                <HugeiconsIcon icon={Linkedin02Icon} className="size-5" />
-              </Link>
-              <Link
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-neutral-400 hover:text-white transition-colors"
-                aria-label="Instagram"
-              >
-                <HugeiconsIcon icon={InstagramIcon} className="size-5" />
-              </Link>
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={CallIcon} size={16} />
+              <span>+56 9 8765 4321</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon icon={MapPinIcon} size={16} />
+              <span>Santiago, Chile</span>
             </div>
           </div>
+          <p>© {new Date().getFullYear()} Biovity. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

@@ -17,56 +17,48 @@ export function FAQ() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section id="faq" className="py-24 bg-white">
+    <section id="faq" className="py-20 md:py-28 bg-surface-container-low">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
           className="text-center mb-12"
         >
-          <m.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(0)}
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight text-balance"
-          >
-            Preguntas frecuentes
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={t(LANDING_ANIMATION.sequenceDelay)}
-            className="text-xl text-muted-foreground text-pretty"
-          >
-            Todo lo que necesitas saber sobre Biovity para empresas.
-          </m.p>
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+            Preguntas Frecuentes
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+            Resolvemos tus <span className="text-accent font-semibold">dudas</span>
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground text-pretty">
+            Todo lo que necesitas saber sobre Biovity para empresas y organizaciones.
+          </p>
         </m.div>
 
         <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
+          transition={ts(LANDING_ANIMATION.sequenceDelay)}
         >
-          <Accordion type="single" collapsible className="space-y-4">
+          {/* Clean borderless accordion items on surface-container-low */}
+          <Accordion type="single" collapsible className="space-y-3">
             {FAQS_EMPRESAS.map((faq) => (
               <AccordionItem
                 key={faq.question}
                 value={faq.question}
-                className="bg-[#f3f3f5] rounded-xl border border-border/10 overflow-hidden"
+                className="bg-surface-container-lowest rounded-xl overflow-hidden transition-colors hover:bg-white/80"
               >
-                <AccordionTrigger className="w-full px-6 py-5 flex items-center justify-between text-left transition-colors duration-200 hover:no-underline font-semibold text-foreground text-base gap-4 [&>svg]:text-muted-foreground">
+                <AccordionTrigger className="w-full px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left transition-colors hover:no-underline font-semibold text-foreground text-sm sm:text-base gap-4 [&>svg]:text-muted-foreground">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent
-                  className="px-6 pb-5 text-muted-foreground leading-relaxed text-pretty text-base"
+                  className="px-5 sm:px-6 pb-5 text-muted-foreground leading-relaxed text-pretty text-xs sm:text-sm"
                   keepRendered
                   transition={{
-                    duration: reducedMotion ? 0.01 : 0.7,
+                    duration: reducedMotion ? 0.01 : 0.4,
                     ease: [0.22, 0.61, 0.36, 1],
                   }}
                 >

@@ -1,28 +1,35 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function SalariosMetodologia() {
   return (
-    <section className="py-16 md:py-24 bg-surface-container-low">
+    <section className="py-20 md:py-28 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="rounded-xl border border-border/10 bg-surface-container-lowest shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl text-foreground">Metodología</CardTitle>
+        <Card className="rounded-xl border border-border bg-surface-container-lowest shadow-none p-6 sm:p-8 md:p-10">
+          <CardHeader className="px-0 pt-0 pb-4">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-2 block">
+              Rigor & Fuentes
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
+              Metodología de Análisis Salarial
+            </h2>
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              La investigación se basó en la síntesis de datos de mercado de consultoras
-              especializadas, portales de empleo y estadísticas oficiales chilenas:
+          <CardContent className="px-0 pb-0 space-y-4 text-muted-foreground text-sm sm:text-base leading-relaxed text-pretty">
+            <p>
+              Nuestros modelos estadísticos combinan datos abiertos de mercado laboral, encuestas colaborativas
+              anonimizadas e información de fuentes públicas chilenas:
             </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
-              <li>Mifuturo.cl</li>
-              <li>Indeed Chile</li>
-              <li>Glassdoor</li>
-              <li>Paylab</li>
-              <li>Robert Half</li>
-            </ul>
-            <p className="text-sm text-muted-foreground">
-              Los sueldos se expresan en valores brutos mensuales (CLP) y se segmentan por nivel de
-              experiencia (Junior: 0-2 años; Senior: 5+ años), industria, región y nivel educativo.
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 my-4">
+              {["Mifuturo.cl", "Indeed Chile", "Glassdoor", "Paylab Chile", "Robert Half"].map((source) => (
+                <div
+                  key={source}
+                  className="bg-surface-container-low rounded-lg p-3 text-center text-xs font-medium text-foreground border border-border"
+                >
+                  {source}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Los montos se normalizan en pesos chilenos líquidos mensuales (CLP) y se actualizan trimestralmente con las contribuciones verificadas de la comunidad Biovity.
             </p>
           </CardContent>
         </Card>

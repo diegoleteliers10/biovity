@@ -11,7 +11,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useReducer, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -160,10 +160,10 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
   const activeCount = countActiveFilters(filterState)
 
   return (
-    <section className="bg-white">
+    <section className="bg-surface-container-lowest py-4">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="bg-[#f3f3f5] border border-border/15">
-          <CardContent className="p-4 sm:p-6 space-y-4">
+        <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-4 sm:p-6">
+          <div className="space-y-4">
             {/* Primary Search Bar */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
@@ -174,8 +174,8 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 />
                 <Input
                   type="text"
-                  placeholder="Buscar por título, empresa o palabras clave"
-                  className="pl-10 pr-4 h-11 sm:h-12 w-full bg-white text-sm sm:text-base rounded-lg border-border/40"
+                  placeholder="Buscar por cargo, empresa, tecnología o palabras clave..."
+                  className="pl-10 pr-4 h-11 sm:h-12 w-full bg-surface-container-lowest text-sm sm:text-base rounded-lg border-border"
                   value={filterState.query}
                   onChange={(e) =>
                     dispatch({ type: "SET_FIELD", field: "query", value: e.target.value })
@@ -194,9 +194,9 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   variant="outline"
                   onClick={() => setIsExpanded((prev) => !prev)}
                   className={cn(
-                    "h-11 sm:h-12 px-3 sm:px-4 bg-white rounded-lg border-border/40 font-medium text-sm flex items-center gap-2 transition-colors",
-                    isExpanded && "border-accent text-accent bg-accent/5",
-                    activeCount > 0 && !isExpanded && "border-accent/60"
+                    "h-11 sm:h-12 px-4 bg-surface-container-lowest rounded-lg border-border font-medium text-sm flex items-center gap-2 transition-colors hover:bg-surface-container-lowest/80",
+                    isExpanded && "border-secondary text-secondary bg-secondary/10",
+                    activeCount > 0 && !isExpanded && "border-secondary/60 text-secondary"
                   )}
                   aria-expanded={isExpanded}
                   aria-label="Abrir opciones de filtrado"
@@ -204,7 +204,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   <HugeiconsIcon icon={FilterEditIcon} className="size-4" />
                   <span>Filtros</span>
                   {activeCount > 0 && (
-                    <Badge variant="secondary" className="px-1.5 py-0 text-xs font-semibold">
+                    <Badge variant="secondary" className="px-1.5 py-0 text-xs font-semibold bg-secondary text-secondary-foreground">
                       {activeCount}
                     </Badge>
                   )}
@@ -217,8 +217,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 <Button
                   type="button"
                   onClick={handleBuscar}
-                  variant="secondary"
-                  className="h-11 sm:h-12 px-5 sm:px-6 rounded-lg font-medium text-sm sm:text-base shrink-0"
+                  className="h-11 sm:h-12 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm sm:text-base shrink-0"
                 >
                   Buscar
                 </Button>
@@ -227,19 +226,19 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
 
             {/* Collapsible Advanced Filters Section */}
             {isExpanded && (
-              <div className="pt-4 border-t border-border/20 space-y-4 animate-in fade-in-50 duration-200">
+              <div className="pt-4 border-t border-border space-y-4 animate-in fade-in-50 duration-200">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {/* Ubicación */}
                   <div className="relative flex items-center">
                     <HugeiconsIcon
                       icon={Location05Icon}
                       size={18}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10"
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10"
                     />
                     <Input
                       type="text"
-                      placeholder="Ubicación"
-                      className="pl-9 h-10 w-full bg-white text-sm rounded-lg border-border/40"
+                      placeholder="Ciudad o Región"
+                      className="pl-9 h-11 w-full bg-surface-container-lowest text-sm rounded-lg border-border"
                       value={filterState.ubicacion}
                       onChange={(e) =>
                         dispatch({ type: "SET_FIELD", field: "ubicacion", value: e.target.value })
@@ -257,7 +256,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       dispatch({ type: "SET_FIELD", field: "modalidad", value })
                     }
                   >
-                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
+                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
                       <SelectValue placeholder="Modalidad" />
                     </SelectTrigger>
                     <SelectContent>
@@ -276,8 +275,8 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       dispatch({ type: "SET_FIELD", field: "formato", value })
                     }
                   >
-                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
-                      <SelectValue placeholder="Formato" />
+                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
+                      <SelectValue placeholder="Tipo de Jornada" />
                     </SelectTrigger>
                     <SelectContent>
                       {FORMATOS_TRABAJOS.map((item) => (
@@ -292,14 +291,14 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   <Input
                     type="text"
                     inputMode="numeric"
-                    placeholder={`Salario mínimo (${filterState.moneda})`}
+                    placeholder={`Sueldo mínimo (${filterState.moneda})`}
                     value={filterState.salarioMin}
                     onChange={(e) => {
                       const raw = e.target.value.replace(/[^0-9]/g, "")
                       const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
                       dispatch({ type: "SET_FIELD", field: "salarioMin", value: formatted })
                     }}
-                    className="h-10 px-3 bg-white text-sm rounded-lg border-border/40 placeholder:text-muted-foreground"
+                    className="h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border placeholder:text-muted-foreground font-mono"
                     aria-label="Salario mínimo"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleBuscar()
@@ -310,14 +309,14 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   <Input
                     type="text"
                     inputMode="numeric"
-                    placeholder={`Salario máximo (${filterState.moneda})`}
+                    placeholder={`Sueldo máximo (${filterState.moneda})`}
                     value={filterState.salarioMax}
                     onChange={(e) => {
                       const raw = e.target.value.replace(/[^0-9]/g, "")
                       const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
                       dispatch({ type: "SET_FIELD", field: "salarioMax", value: formatted })
                     }}
-                    className="h-10 px-3 bg-white text-sm rounded-lg border-border/40 placeholder:text-muted-foreground"
+                    className="h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border placeholder:text-muted-foreground font-mono"
                     aria-label="Salario máximo"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleBuscar()
@@ -335,12 +334,12 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       })
                     }
                   >
-                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
+                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
                       <SelectValue placeholder="Moneda" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="CLP">CLP (Peso chileno)</SelectItem>
-                      <SelectItem value="USD">USD (Dólar)</SelectItem>
+                      <SelectItem value="USD">USD (Dólar americano)</SelectItem>
                     </SelectContent>
                   </Select>
 
@@ -351,8 +350,8 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       dispatch({ type: "SET_FIELD", field: "experiencia", value })
                     }
                   >
-                    <SelectTrigger className="w-full !h-10 px-3 bg-white text-sm rounded-lg border-border/40">
-                      <SelectValue placeholder="Experiencia" />
+                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
+                      <SelectValue placeholder="Nivel de Experiencia" />
                     </SelectTrigger>
                     <SelectContent>
                       {EXPERIENCIAS_TRABAJOS.map((item) => (
@@ -371,23 +370,21 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                     onClick={handleLimpiar}
                     variant="ghost"
                     size="sm"
-                    className="h-9 px-4 text-sm"
+                    className="h-10 px-4 text-sm font-medium hover:bg-surface-container-lowest"
                   >
-                    Limpiar
+                    Limpiar filtros
                   </Button>
                   <Button
                     type="button"
                     onClick={handleBuscar}
-                    variant="secondary"
-                    size="sm"
-                    className="h-9 px-5 text-sm"
+                    className="h-10 px-5 text-sm rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium"
                   >
                     Aplicar filtros
                   </Button>
                 </div>
               </div>
             )}
-          </CardContent>
+          </div>
         </Card>
       </div>
     </section>
