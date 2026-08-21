@@ -4,20 +4,28 @@ import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { AdnBeam } from "@/components/landing/home/common/AdnBeam"
 import { Badge } from "@/components/ui/badge"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
 
 export function ConexionTalento() {
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const isMobile = useMediaQuery("(max-width: 767px)")
+  const isReduced = Boolean(reducedMotion)
+
+  const chainStagger = isMobile ? LANDING_ANIMATION_MOBILE.chainStagger : LANDING_ANIMATION.chainStagger
+  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const yOffset = isReduced ? 0 : isMobile ? 16 : 24
+
+  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
+  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion, isMobile })
 
   return (
     <section className="py-20 md:py-28 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 32 }}
+          initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
+          viewport={{ once: true, margin: viewportMargin }}
           transition={t(0)}
           className="text-center mb-16 max-w-3xl mx-auto"
         >
@@ -33,10 +41,10 @@ export function ConexionTalento() {
         </m.div>
 
         <m.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={isReduced ? false : { opacity: 0, y: yOffset }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay)}
+          viewport={{ once: true, margin: viewportMargin }}
+          transition={ts(isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay)}
           className="flex flex-col items-center"
         >
           <div className="w-full max-w-4xl mb-14 mx-auto flex justify-center">
@@ -45,10 +53,10 @@ export function ConexionTalento() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
             <m.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={isReduced ? false : { opacity: 0, y: yOffset }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
+              viewport={{ once: true, margin: viewportMargin }}
+              transition={ts(chainStagger)}
               className="bg-surface-container-low rounded-xl p-6 sm:p-8 border border-border flex flex-col justify-between"
             >
               <div>
@@ -65,10 +73,10 @@ export function ConexionTalento() {
             </m.div>
 
             <m.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={isReduced ? false : { opacity: 0, y: yOffset }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(LANDING_ANIMATION.sequenceDelay * 3)}
+              viewport={{ once: true, margin: viewportMargin }}
+              transition={ts(chainStagger * 2)}
               className="bg-surface-container-low rounded-xl p-6 sm:p-8 border border-border flex flex-col justify-between"
             >
               <div>
@@ -85,10 +93,10 @@ export function ConexionTalento() {
             </m.div>
 
             <m.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={isReduced ? false : { opacity: 0, y: yOffset }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(LANDING_ANIMATION.sequenceDelay * 4)}
+              viewport={{ once: true, margin: viewportMargin }}
+              transition={ts(chainStagger * 3)}
               className="bg-surface-container-low rounded-xl p-6 sm:p-8 border border-accent/30 bg-accent/5 flex flex-col justify-between"
             >
               <div>

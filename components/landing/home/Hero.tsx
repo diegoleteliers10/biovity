@@ -7,18 +7,27 @@ import {
   SparklesIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 export function Hero() {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [location, setLocation] = useState("")
+  const reducedMotion = useReducedMotion()
+  const isMobile = useMediaQuery("(max-width: 767px)")
+
   const ease = [0.23, 1, 0.32, 1] as const
+  const isReduced = Boolean(reducedMotion)
+
+  const duration = isReduced ? 0.01 : isMobile ? 0.35 : 0.55
+  const yOffset = isReduced ? 0 : isMobile ? 12 : 24
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,14 +41,16 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-surface-container-lowest via-surface-container-low/40 to-surface-container-lowest py-32 sm:py-44 lg:py-56">
-      {/* Dynamic Ambient Mesh with Green & Violet Highlights */}
+      {/* Ambient background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Violet ambient glow */}
-        <div className="absolute top-[10%] left-[20%] w-[32rem] h-[32rem] rounded-full bg-[#8483d4]/15 blur-[120px] will-change-transform" />
-        {/* Emerald ambient glow */}
-        <div className="absolute top-[18%] right-[18%] w-[36rem] h-[36rem] rounded-full bg-[#006b5e]/15 blur-[130px] will-change-transform" />
-        {/* Deep navy base glow */}
-        <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[48rem] h-[22rem] rounded-full bg-[#00374a]/10 blur-[100px]" />
+        {/* Mobile: lightweight GPU-free CSS radial gradient */}
+        <div className="md:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(132,131,212,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_70%_35%,rgba(0,107,94,0.12)_0%,transparent_60%)]" />
+
+        {/* Desktop: rich Gaussian blur glows */}
+        <div className="hidden md:block absolute top-[10%] left-[20%] w-[32rem] h-[32rem] rounded-full bg-[#8483d4]/15 blur-[120px]" />
+        <div className="hidden md:block absolute top-[18%] right-[18%] w-[36rem] h-[36rem] rounded-full bg-[#006b5e]/15 blur-[130px]" />
+        <div className="hidden md:block absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[48rem] h-[22rem] rounded-full bg-[#00374a]/10 blur-[100px]" />
+
         {/* Subtle grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.035]"
@@ -54,9 +65,9 @@ export function Hero() {
         <div className="text-center max-w-4xl mx-auto">
           {/* Heading */}
           <m.h1
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.55, ease }}
+            transition={{ duration, ease }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 sm:mb-8 tracking-tight leading-[1.12] text-balance"
           >
             Donde el talento científico conecta con{" "}
@@ -68,9 +79,9 @@ export function Hero() {
 
           {/* Subtitle */}
           <m.p
-            initial={{ opacity: 0, y: 18 }}
+            initial={isReduced ? false : { opacity: 0, y: yOffset }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.1, ease }}
+            transition={{ duration, delay: isReduced ? 0 : isMobile ? 0.05 : 0.1, ease }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 sm:mb-14 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
             Encuentra ofertas laborales verificadas con salarios transparentes en biotecnología,
@@ -79,9 +90,9 @@ export function Hero() {
 
           {/* Main Interactive Search Console */}
           <m.div
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.55, delay: 0.2, ease }}
+            transition={{ duration, delay: isReduced ? 0 : isMobile ? 0.1 : 0.2, ease }}
             className="max-w-3xl mx-auto mb-8 sm:mb-12"
           >
             <form
