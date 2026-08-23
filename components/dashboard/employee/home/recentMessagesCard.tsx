@@ -1,7 +1,10 @@
 "use client"
 
+import { Message01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { memo } from "react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Chat } from "@/lib/api/chats"
@@ -62,29 +65,30 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
   }
 
   return (
-    <Card className="border border-border/80 bg-white rounded-[14px]">
-      <CardHeader className="px-4">
+    <Card className={dashboardRaisedCardClass}>
+      <CardHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs leading-4 font-medium text-foreground">
             Mensajes Recientes
           </CardTitle>
           <Button
             variant="ghost"
-            className="h-7 rounded-md text-xs leading-4 font-medium"
+            size="sm"
+            className="h-9 px-3 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground"
             onClick={onViewAll}
           >
-            Ver Todo
+            Ver todas
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="px-4">
+      <CardContent className="px-4 sm:px-5 pb-4 sm:pb-5">
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-3">
             {[1, 2, 3].map((n) => (
-              <div key={n} className="animate-pulse space-y-2">
-                <div className="h-4 w-32 rounded bg-muted" />
-                <div className="h-3 w-48 rounded bg-muted" />
-              </div>
+              <div
+                key={n}
+                className="h-12 bg-surface-container-highest/50 animate-pulse rounded-lg"
+              />
             ))}
           </div>
         ) : hasLegacyMessages ? (
@@ -100,9 +104,15 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
             ))}
           </div>
         ) : displayChats.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No tienes mensajes recientes
-          </p>
+          <div className="flex flex-col items-center text-center gap-2 py-8">
+            <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center text-muted-foreground">
+              <HugeiconsIcon icon={Message01Icon} size={20} />
+            </div>
+            <p className="text-sm font-medium text-foreground">Sin mensajes todavía</p>
+            <p className="text-xs text-muted-foreground max-w-[240px]">
+              Cuando un candidato te escriba, la conversación aparecerá aquí.
+            </p>
+          </div>
         ) : (
           <div className="space-y-4">
             {displayChats.slice(0, 5).map((chat) => {
@@ -115,7 +125,7 @@ export const RecentMessagesCard = memo(function RecentMessagesCard({
                 <button
                   type="button"
                   key={chat.id}
-                  className="gap-1 cursor-pointer hover:bg-muted/30 rounded-lg -mx-2 p-2 transition-all duration-150 active:scale-[0.98] w-full text-left"
+                  className="gap-1 cursor-pointer hover:bg-surface-container-highest/40 rounded-lg -mx-2 p-2 transition-colors duration-150 w-full text-left"
                   onClick={() => handleChatClick(chat.id)}
                   onKeyDown={(e) =>
                     (e.key === "Enter" || e.key === " ") && handleChatClick(chat.id)

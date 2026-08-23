@@ -98,29 +98,27 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
         top: tooltipPosition.y,
       }}
     >
-      <Card className="bg-white/95 backdrop-blur-sm border border-border/10 shadow-ambient max-w-sm">
-        <div className="p-5 space-y-4">
+      <Card className="bg-surface-container-lowest border border-border/50 shadow-none max-w-sm">
+        <div className="p-3 space-y-3">
           <div className="space-y-2">
             <div className="flex items-start justify-between gap-3">
-              <h4 className="font-semibold text-base leading-tight text-foreground">
-                {event.title}
-              </h4>
+              <h4 className="text-sm font-medium leading-tight text-foreground">{event.title}</h4>
               <span
-                className={`inline-flex items-center px-3 py-1.5 rounded-full text-[13px] leading-4 font-medium border ${getEventTypeColor(event.type)}`}
+                className={`inline-flex shrink-0 items-center px-2 py-0.5 rounded-md text-xs font-medium ${getEventTypeColor(event.type)}`}
               >
                 {getEventTypeLabel(event.type)}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
               <HugeiconsIcon icon={Clock01Icon} className="size-3.5" />
-              <span className="text-sm font-medium">{formatEventDateTime(event.startAt)}</span>
+              <span className="text-xs tabular-nums">{formatEventDateTime(event.startAt)}</span>
             </div>
           </div>
 
           {event.description && (
             <div className="pt-2 border-t border-border/30">
-              <p className="text-sm text-muted-foreground leading-relaxed">{event.description}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{event.description}</p>
             </div>
           )}
         </div>

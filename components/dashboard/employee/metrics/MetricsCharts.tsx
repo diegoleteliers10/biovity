@@ -7,10 +7,13 @@ import {
   Clock01Icon,
   DashboardSquare02Icon,
   File02Icon,
+  Logout01Icon,
   Message01Icon,
   PieChart02Icon,
+  Time04Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
@@ -89,8 +92,8 @@ function formatTrendTick(value: string, period: MetricsPeriod): string {
 
 const EmptyChartState = ({ message = "Sin datos suficientes" }: { message?: string }) => (
   <div className="flex h-[220px] flex-col items-center justify-center gap-1.5 text-center p-4">
-    <p className="text-sm font-medium text-muted-foreground">{message}</p>
-    <p className="text-xs text-muted-foreground/70">
+    <p className="text-sm font-medium text-foreground">{message}</p>
+    <p className="text-xs text-muted-foreground">
       Las métricas se actualizarán automáticamente a medida que interactúes.
     </p>
   </div>
@@ -100,15 +103,15 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
   if (!metricsData) {
     return (
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="border border-border/80 bg-white rounded-[14px] lg:col-span-2 h-[300px] animate-pulse" />
-        <div className="border border-border/80 bg-white rounded-[14px] h-[300px] animate-pulse" />
+        <div className={`${dashboardRaisedCardClass} lg:col-span-2 h-[300px] animate-pulse`} />
+        <div className={`${dashboardRaisedCardClass} h-[300px] animate-pulse`} />
       </div>
     )
   }
 
   const applicationsTrend = metricsData.applicationsTrend ?? []
   const responseTimeDistribution = metricsData.responseTimeDistribution
-  const hiringFunnel = metricsData.hiringFunnel
+  const statusBreakdown = metricsData.statusBreakdown
   const categoriesApplied = metricsData.categoriesApplied ?? []
 
   const responseTimeData = responseTimeDistribution
@@ -120,54 +123,65 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
       ]
     : []
 
-  const totalPipeline = hiringFunnel
-    ? hiringFunnel.aplicado.count +
-      hiringFunnel.entrevista.count +
-      hiringFunnel.oferta.count +
-      hiringFunnel.contratado.count
+  const totalApplications = statusBreakdown
+    ? Object.values(statusBreakdown).reduce((sum, step) => sum + step.count, 0)
     : 0
 
-  const funnelStages = hiringFunnel
+  const statusRows = statusBreakdown
     ? [
         {
-          key: "aplicado",
-          label: "1. Postulaciones",
-          count: hiringFunnel.aplicado.count,
-          percentage: hiringFunnel.aplicado.percentage,
-          color: "bg-secondary",
-          bgColor: "bg-secondary/15",
-          textColor: "text-secondary-foreground",
-          icon: File02Icon,
+          key: "pendiente",
+          label: "Pendientes",
+          count: statusBreakdown.pendiente.count,
+          percentage: statusBreakdown.pendiente.percentage,
+          bgColor: "bg-surface-container-highest",
+          textColor: "text-foreground",
+          icon: Time04Icon,
         },
         {
           key: "entrevista",
-          label: "2. Entrevistas",
-          count: hiringFunnel.entrevista.count,
-          percentage: hiringFunnel.entrevista.percentage,
-          color: "bg-primary",
+          label: "En entrevista",
+          count: statusBreakdown.entrevista.count,
+          percentage: statusBreakdown.entrevista.percentage,
           bgColor: "bg-primary/15",
           textColor: "text-primary",
           icon: Message01Icon,
         },
         {
           key: "oferta",
-          label: "3. Ofertas",
-          count: hiringFunnel.oferta.count,
-          percentage: hiringFunnel.oferta.percentage,
-          color: "bg-amber-500",
+          label: "Con oferta",
+          count: statusBreakdown.oferta.count,
+          percentage: statusBreakdown.oferta.percentage,
           bgColor: "bg-amber-500/15",
           textColor: "text-amber-700",
           icon: Calendar03Icon,
         },
         {
           key: "contratado",
-          label: "4. Contratados",
-          count: hiringFunnel.contratado.count,
-          percentage: hiringFunnel.contratado.percentage,
-          color: "bg-emerald-500",
-          bgColor: "bg-emerald-500/20",
-          textColor: "text-emerald-700",
+          label: "Contratado",
+          count: statusBreakdown.contratado.count,
+          percentage: statusBreakdown.contratado.percentage,
+          bgColor: "bg-secondary/15",
+          textColor: "text-secondary",
           icon: CheckmarkCircle02Icon,
+        },
+        {
+          key: "rechazado",
+          label: "Rechazadas",
+          count: statusBreakdown.rechazado.count,
+          percentage: statusBreakdown.rechazado.percentage,
+          bgColor: "bg-destructive/10",
+          textColor: "text-destructive",
+          icon: Cancel01Icon,
+        },
+        {
+          key: "desistido",
+          label: "Desistidas",
+          count: statusBreakdown.desistido.count,
+          percentage: statusBreakdown.desistido.percentage,
+          bgColor: "bg-muted",
+          textColor: "text-muted-foreground",
+          icon: Logout01Icon,
         },
       ]
     : []
@@ -175,17 +189,17 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       {/* Chart 1: Applications Trend */}
-      <Card className="border border-border/80 bg-white shadow-xs lg:col-span-2 flex flex-col">
+      <Card className={`${dashboardRaisedCardClass} lg:col-span-2 flex flex-col`}>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={DashboardSquare02Icon} size={20} className="text-primary" />
-            <CardTitle className="text-foreground">
-              Postulaciones por {PERIOD_AXIS_LABEL[period]}
-            </CardTitle>
+            <HugeiconsIcon
+              icon={DashboardSquare02Icon}
+              size={16}
+              className="text-muted-foreground"
+            />
+            <CardTitle>Postulaciones por {PERIOD_AXIS_LABEL[period]}</CardTitle>
           </div>
-          <CardDescription className="text-xs text-muted-foreground">
-            Evolución temporal de tus aplicaciones enviadas
-          </CardDescription>
+          <CardDescription>Evolución temporal de tus aplicaciones enviadas</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 pb-4">
           {applicationsTrend.length === 0 ? (
@@ -244,15 +258,13 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
       </Card>
 
       {/* Chart 2: Response Time Distribution */}
-      <Card className="border border-border/80 bg-white shadow-xs flex flex-col">
+      <Card className={`${dashboardRaisedCardClass} flex flex-col`}>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={Clock01Icon} size={20} className="text-emerald-600" />
-            <CardTitle className="text-foreground">Tiempo de respuesta</CardTitle>
+            <HugeiconsIcon icon={Clock01Icon} size={16} className="text-muted-foreground" />
+            <CardTitle>Tiempo de respuesta</CardTitle>
           </div>
-          <CardDescription className="text-xs text-muted-foreground">
-            Rango de tiempo de respuesta de empresas
-          </CardDescription>
+          <CardDescription>Rango de tiempo de respuesta de empresas</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col justify-center pb-4">
           {responseTimeData.every((d) => d.count === 0) ? (
@@ -294,47 +306,50 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
         </CardContent>
       </Card>
 
-      {/* Chart 3: Embudo de Contratación (Visual Progress Steps) */}
-      <Card className="border border-border/80 bg-white shadow-xs lg:col-span-2 flex flex-col">
+      {/* Chart 3: Estado de mis postulaciones */}
+      <Card className={`${dashboardRaisedCardClass} lg:col-span-2 flex flex-col`}>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={File02Icon} size={20} className="text-primary" />
-              <CardTitle className="text-foreground">Embudo de contratación</CardTitle>
+              <HugeiconsIcon icon={File02Icon} size={16} className="text-muted-foreground" />
+              <CardTitle>Estado de mis postulaciones</CardTitle>
             </div>
-            <Badge variant="secondary" className="font-semibold text-xs">
-              {totalPipeline} aplicaciones en total
+            <Badge
+              variant="secondary"
+              className="bg-surface-container-highest text-muted-foreground border-0 text-xs font-medium"
+            >
+              {totalApplications} postulaciones en total
             </Badge>
           </div>
-          <CardDescription className="text-xs text-muted-foreground">
-            Avance por etapa de selección
-          </CardDescription>
+          <CardDescription>Distribución actual de tus postulaciones por estado</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col justify-center pb-5">
-          {totalPipeline === 0 ? (
-            <EmptyChartState message="Sin aplicaciones registradas" />
+          {totalApplications === 0 ? (
+            <EmptyChartState message="Sin postulaciones registradas" />
           ) : (
             <div className="space-y-4 py-1">
-              {funnelStages.map((stage) => (
-                <div key={stage.key} className="space-y-1.5">
+              {statusRows.map((row) => (
+                <div key={row.key} className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs font-medium">
                     <span className="flex items-center gap-2 text-foreground">
-                      <HugeiconsIcon icon={stage.icon} size={15} className={stage.textColor} />
-                      {stage.label}
+                      <HugeiconsIcon icon={row.icon} size={16} className={row.textColor} />
+                      {row.label}
                     </span>
                     <span className="tabular-nums text-muted-foreground font-semibold">
-                      {stage.count} ({stage.percentage}%)
+                      {row.count} ({row.percentage}%)
                     </span>
                   </div>
-                  <div className="w-full h-6 bg-muted/30 rounded-lg overflow-hidden relative border border-border/40">
+                  <div className="w-full h-6 bg-surface-container-low rounded-lg overflow-hidden relative border border-border/40">
                     <div
-                      className={`h-full ${stage.bgColor} transition-all duration-500 ease-out`}
-                      style={{ width: `${Math.max(stage.percentage, stage.count > 0 ? 5 : 0)}%` }}
+                      className={`h-full ${row.bgColor} transition-all duration-500 ease-out`}
+                      style={{ width: `${Math.max(row.percentage, row.count > 0 ? 5 : 0)}%` }}
                     />
                     <span
-                      className={`absolute inset-0 flex items-center pl-3 text-[11px] font-semibold ${stage.textColor}`}
+                      className={`absolute inset-0 flex items-center pl-3 text-xs font-semibold ${row.textColor}`}
                     >
-                      {stage.count > 0 ? `${stage.count} postulantes` : "0 en esta etapa"}
+                      {row.count > 0
+                        ? `${row.count} postulaciones`
+                        : "Sin postulaciones en este estado"}
                     </span>
                   </div>
                 </div>
@@ -345,28 +360,26 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
       </Card>
 
       {/* Chart 4: Categories Donut Chart + Detailed Legend */}
-      <Card className="border border-border/80 bg-white shadow-xs flex flex-col">
+      <Card className={`${dashboardRaisedCardClass} flex flex-col`}>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={PieChart02Icon} size={20} className="text-indigo-600" />
-            <CardTitle className="text-foreground">Categorías aplicadas</CardTitle>
+            <HugeiconsIcon icon={PieChart02Icon} size={16} className="text-muted-foreground" />
+            <CardTitle>Categorías aplicadas</CardTitle>
           </div>
-          <CardDescription className="text-xs text-muted-foreground">
-            Distribución por área o especialidad
-          </CardDescription>
+          <CardDescription>Distribución por área o especialidad</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col justify-between pb-4">
           {categoriesApplied.length === 0 ? (
             <div className="flex flex-col gap-3 py-1">
               <div className="h-[150px] w-full flex items-center justify-center relative">
                 <div className="size-28 rounded-full border-4 border-dashed border-muted flex items-center justify-center">
-                  <span className="text-[11px] font-medium text-muted-foreground text-center px-2">
+                  <span className="text-xs font-medium text-muted-foreground text-center px-2">
                     Sin postulaciones
                   </span>
                 </div>
               </div>
               <div className="space-y-1.5 border-t border-border/40 pt-3">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                <p className="text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground mb-2">
                   Categorías sugeridas
                 </p>
                 {[
@@ -383,7 +396,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                       />
                       <span className="truncate">{item.name}</span>
                     </span>
-                    <span className="text-muted-foreground/60 tabular-nums shrink-0 ml-2">
+                    <span className="text-muted-foreground tabular-nums shrink-0 ml-2">
                       0 postulaciones
                     </span>
                   </div>

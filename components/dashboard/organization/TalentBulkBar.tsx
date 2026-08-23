@@ -33,7 +33,7 @@ export function TalentBulkBar({
         <Button
           size="sm"
           variant="outline"
-          className="h-7 text-xs gap-1.5"
+          className="h-9 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground gap-1.5"
           onClick={() => onExportCSV(selectedUsers)}
           id="bulk-export-csv"
         >
@@ -44,7 +44,7 @@ export function TalentBulkBar({
           <Button
             size="sm"
             variant="outline"
-            className="h-7 text-xs gap-1.5"
+            className="h-9 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground gap-1.5"
             onClick={onInviteAll}
             id="bulk-invite"
           >

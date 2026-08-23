@@ -11,16 +11,16 @@ import {
 } from "@/components/ui/select"
 
 const CATEGORIES = [
-  { value: "biotecnologia", label: "Biotecnologia" },
-  { value: "bioquimica", label: "Bioquimica" },
-  { value: "quimica", label: "Quimica" },
-  { value: "ingenieria-quimica", label: "Ingenieria Quimica" },
+  { value: "biotecnologia", label: "Biotecnología" },
+  { value: "bioquimica", label: "Bioquímica" },
+  { value: "quimica", label: "Química" },
+  { value: "ingenieria-quimica", label: "Ingeniería Química" },
   { value: "salud", label: "Salud" },
   { value: "farmacia", label: "Farmacia" },
-  { value: "investigacion", label: "Investigacion" },
+  { value: "investigacion", label: "Investigación" },
   { value: "medio-ambiente", label: "Medio Ambiente" },
-  { value: "agronomia", label: "Agronomia" },
-  { value: "nutricion", label: "Nutricion" },
+  { value: "agronomia", label: "Agronomía" },
+  { value: "nutricion", label: "Nutrición" },
   { value: "otro", label: "Otro" },
 ]
 
@@ -32,13 +32,16 @@ type Props = {
 export function JobCategoryField({ value, onChange }: Props) {
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-1.5 text-xs font-medium">
+      <label
+        htmlFor="job-category"
+        className="flex items-center gap-1.5 text-xs leading-4 font-medium"
+      >
         <HugeiconsIcon icon={TagIcon} className="size-3.5" />
-        Categoria
+        Categoría
       </label>
       <Select onValueChange={onChange} value={value}>
-        <SelectTrigger className="h-7">
-          <SelectValue placeholder="Seleccionar categoria" />
+        <SelectTrigger id="job-category" className="h-9">
+          <SelectValue placeholder="Seleccionar categoría" />
         </SelectTrigger>
         <SelectContent>
           {CATEGORIES.map((cat) => (

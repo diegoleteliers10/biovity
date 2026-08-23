@@ -71,7 +71,7 @@ export function ApplicationDetailActions({
           defaultValue={applicationStatus}
           onValueChange={(v) => onStatusChange?.(applicationId, v as ApplicationStage)}
         >
-          <SelectTrigger className="h-7 w-[160px]">
+          <SelectTrigger className="h-9 w-[160px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -83,12 +83,20 @@ export function ApplicationDetailActions({
           </SelectContent>
         </Select>
 
-        <Button variant="outline" size="sm" onClick={() => onScheduleInterview?.(candidateId)}>
+        <Button
+          variant="outline"
+          onClick={() => onScheduleInterview?.(candidateId)}
+          className="h-9 rounded-md px-3"
+        >
           <HugeiconsIcon icon={Calendar04Icon} size={14} className="mr-1.5" />
           Agendar entrevista
         </Button>
 
-        <Button variant="outline" size="sm" onClick={() => onSendMessage?.(candidateId)}>
+        <Button
+          variant="outline"
+          onClick={() => onSendMessage?.(candidateId)}
+          className="h-9 rounded-md px-3"
+        >
           <HugeiconsIcon icon={Message01Icon} size={14} className="mr-1.5" />
           Mensaje
         </Button>
@@ -101,8 +109,7 @@ export function ApplicationDetailActions({
         >
           <Button
             variant="outline"
-            size="sm"
-            className="gap-1.5 border-secondary/30 hover:bg-secondary/10 hover:text-secondary"
+            className="h-9 gap-1.5 rounded-md px-3 border-secondary/30 hover:bg-secondary/10 hover:text-secondary"
           >
             <HugeiconsIcon icon={NoteAddIcon} size={14} />
             Evaluar
@@ -111,16 +118,19 @@ export function ApplicationDetailActions({
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" size="sm" className="text-rose-600 hover:text-rose-700">
+            <Button
+              variant="outline"
+              className="h-9 rounded-md px-3 text-destructive hover:text-destructive/80 border-destructive/30 hover:bg-destructive/10"
+            >
               <HugeiconsIcon icon={Cancel01Icon} size={14} className="mr-1.5" />
               Rechazar
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Rechazar postulacion</AlertDialogTitle>
+              <AlertDialogTitle>Rechazar postulación</AlertDialogTitle>
               <AlertDialogDescription>
-                Estas seguro de que deseas rechazar a {candidateName}? Puedes dejar un motivo
+                ¿Estás seguro de que deseas rechazar a {candidateName}? Puedes dejar un motivo
                 opcional.
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -139,7 +149,7 @@ export function ApplicationDetailActions({
                   onStatusChange?.(applicationId, "rechazado")
                   setRejectReason("")
                 }}
-                className="bg-rose-600 hover:bg-rose-700"
+                className="bg-destructive text-white hover:bg-destructive/90"
               >
                 Rechazar
               </AlertDialogAction>

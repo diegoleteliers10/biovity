@@ -18,7 +18,6 @@ import {
 } from "@/components/ai-elements/model-selector"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { PROVIDERS, type ProviderId } from "@/lib/ai/byok/registry"
 import {
   type AiCredentialListItem,
@@ -28,7 +27,7 @@ import {
   listCredentials,
   saveCredential,
 } from "@/lib/api/ai-credentials"
-import { btnAccentClass, StateCard } from "./SettingsUi"
+import { btnAccentClass, FieldLabel, StateCard } from "./SettingsUi"
 
 const PROVIDER_IDS = Object.keys(PROVIDERS) as ProviderId[]
 
@@ -69,10 +68,10 @@ function CredentialCard({
 
   return (
     <div
-      className={`relative rounded-lg border p-4 transition-colors ${
+      className={`relative rounded-xl border p-4 shadow-none transition-colors ${
         credential.isActive
-          ? "border-emerald-500/30 bg-emerald-500/5"
-          : "border-border bg-background"
+          ? "border-secondary/30 bg-secondary/5"
+          : "border-border/50 bg-surface-container-lowest"
       }`}
     >
       <div className="flex items-start gap-3">
@@ -86,11 +85,11 @@ function CredentialCard({
               {providerConfig?.label ?? credential.provider}
             </p>
             {credential.isActive ? (
-              <span className="shrink-0 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <span className="shrink-0 rounded-md bg-secondary/10 px-2 py-0.5 text-xs font-medium text-secondary">
                 Activo
               </span>
             ) : (
-              <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+              <span className="shrink-0 rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-muted-foreground">
                 Inactivo
               </span>
             )}
@@ -110,7 +109,7 @@ function CredentialCard({
             size="sm"
             onClick={() => onActivate(credential.id)}
             disabled={busy}
-            className="h-7 px-2 text-xs"
+            className="h-9 rounded-md px-3 text-xs font-medium"
           >
             Activar
           </Button>
@@ -121,7 +120,7 @@ function CredentialCard({
           size="sm"
           onClick={() => onDelete(credential.id)}
           disabled={busy}
-          className="h-7 px-2 text-xs text-destructive hover:text-destructive/80"
+          className="h-9 rounded-md px-3 text-xs font-medium text-destructive hover:text-destructive/80"
         >
           Eliminar
         </Button>
@@ -175,16 +174,19 @@ function AddCredentialForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-dashed p-4 space-y-3">
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-xl border border-dashed border-border/50 p-4 space-y-3 shadow-none"
+    >
       <p className="text-sm font-medium">Nueva credencial</p>
 
-      <div className="space-y-2">
-        <Label>Proveedor y modelo</Label>
+      <div className="space-y-1.5">
+        <FieldLabel>Proveedor y modelo</FieldLabel>
         <ModelSelector open={modelDialogOpen} onOpenChange={setModelDialogOpen}>
           <ModelSelectorTrigger asChild>
             <button
               type="button"
-              className="flex w-full items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm outline-offset-2 outline-ring transition-colors hover:bg-accent/50 focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="flex h-9 w-full items-center gap-2.5 rounded-md border border-input bg-input/20 px-2.5 text-[13px] leading-4 transition-colors outline-none hover:bg-input/30 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
             >
               <ModelSelectorLogo
                 provider={PROVIDER_LOGO_MAP[selectedModel.provider]}
@@ -224,8 +226,8 @@ function AddCredentialForm({
         </ModelSelector>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="new-apikey">API key</Label>
+      <div className="space-y-1.5">
+        <FieldLabel htmlFor="new-apikey">API key</FieldLabel>
         <Input
           id="new-apikey"
           type="password"
@@ -233,17 +235,19 @@ function AddCredentialForm({
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
           placeholder="sk-..."
+          className="h-9"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="new-label">Etiqueta (opcional)</Label>
+      <div className="space-y-1.5">
+        <FieldLabel htmlFor="new-label">Etiqueta (opcional)</FieldLabel>
         <Input
           id="new-label"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           maxLength={64}
           placeholder="Mi clave de OpenAI"
+          className="h-9"
         />
       </div>
 
@@ -260,11 +264,11 @@ function AddCredentialForm({
       </p>
 
       <div className="flex items-center gap-2">
-        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
+        <Button type="button" variant="ghost" onClick={onCancel} className="h-9 rounded-md px-3">
           Cancelar
         </Button>
         <div className="flex-1" />
-        <Button type="submit" disabled={apiKey.length < 10 || busy} size="sm">
+        <Button type="submit" disabled={apiKey.length < 10 || busy} className="h-9 rounded-md px-3">
           {busy ? "Guardando..." : "Guardar"}
         </Button>
       </div>
@@ -358,7 +362,12 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
     <div className="space-y-6">
       {credentials.length > 0 && !showAddForm && (
         <div className="flex items-center justify-end">
-          <Button variant="outline" size="sm" onClick={() => setShowAddForm(true)} disabled={busy}>
+          <Button
+            variant="outline"
+            onClick={() => setShowAddForm(true)}
+            disabled={busy}
+            className="h-9 rounded-md px-3"
+          >
             Agregar credencial
           </Button>
         </div>
@@ -369,14 +378,15 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
       )}
 
       {status.kind === "error" && <p className="text-destructive text-sm">{status.message}</p>}
-      {status.kind === "saved" && (
-        <p className="text-sm text-emerald-600 dark:text-emerald-400">Operacion completada.</p>
-      )}
+      {status.kind === "saved" && <p className="text-sm text-secondary">Operación completada.</p>}
 
       {credentialsQuery.isLoading ? (
         <div className="grid gap-3 sm:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="h-32 animate-pulse rounded-xl bg-muted/50" />
+            <div
+              key={i}
+              className="h-32 animate-pulse rounded-xl bg-surface-container-highest/60"
+            />
           ))}
         </div>
       ) : credentials.length === 0 ? (
@@ -385,7 +395,7 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
           violet
           title="No hay credenciales configuradas"
           chip={
-            <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] leading-4 font-semibold text-accent">
+            <span className="rounded-md border border-accent/20 bg-accent/15 px-2 py-0.5 text-xs leading-4 font-medium text-accent">
               Modelo por defecto
             </span>
           }
@@ -397,7 +407,7 @@ export function AiSettingsTab({ organizationId }: { organizationId: string }) {
           {!showAddForm && (
             <div className="mt-4">
               <Button
-                className={btnAccentClass}
+                className={`${btnAccentClass} h-9 rounded-md px-3`}
                 onClick={() => setShowAddForm(true)}
                 disabled={busy}
               >

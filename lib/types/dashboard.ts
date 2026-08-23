@@ -23,6 +23,7 @@ export type Metric = {
   trend?: number | string
   trendPositive?: boolean
   subtitle?: string
+  emptyHint?: string
   icon: IconSvgElement
   iconColor?: "primary" | "secondary" | "accent"
   href?: string

@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  BookmarkAdd01Icon,
-  BookmarkCheck01Icon,
-  Delete01Icon,
-  LayoutGridIcon,
-} from "@hugeicons/core-free-icons"
+import { BookmarkAdd01Icon, Delete01Icon, LayoutGridIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -164,7 +159,7 @@ export function LoadTemplateDialog({
           {templates.map((t) => (
             <div
               key={t.id}
-              className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 hover:bg-accent/5 transition-colors"
+              className="flex items-center justify-between gap-2 rounded-md border border-border/40 px-3 py-2 hover:bg-surface-container-highest/40 transition-colors"
             >
               <button
                 type="button"

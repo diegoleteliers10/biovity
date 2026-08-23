@@ -19,7 +19,7 @@ export function JobSalaryFields({
   return (
     <Field>
       <FieldLabel>
-        Sueldo mensual (CLP) <span className="text-red-600 font-bold ml-0.5">*</span>
+        Sueldo mensual (CLP) <span className="text-destructive font-medium ml-0.5">*</span>
       </FieldLabel>
       <div className="flex gap-2 items-center">
         <Input

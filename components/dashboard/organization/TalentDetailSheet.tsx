@@ -92,11 +92,10 @@ export function TalentDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="flex flex-col h-full w-full p-0 sm:max-w-xl bg-background border-l border-border"
+        className="flex flex-col h-full w-full p-0 gap-0 sm:max-w-xl bg-surface-container-lowest border-l border-border/40 shadow-none overflow-hidden"
         aria-describedby={undefined}
       >
-        {/* Stationary Header */}
-        <div className="px-6 py-5 border-b border-border">
+        <div className="px-6 py-4 border-b border-border/40 bg-surface-container-low shrink-0">
           <SheetTitle className="text-base font-semibold text-foreground">
             Perfil del candidato
           </SheetTitle>
@@ -105,26 +104,36 @@ export function TalentDetailSheet({
         {/* Scrollable Body */}
         <div className="flex-1 overflow-y-auto p-6 md:p-7 space-y-6">
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <div className="space-y-6">
+              <div className="flex flex-col items-center gap-4 pb-6 border-b border-border/40">
+                <div className="size-20 rounded-full bg-surface-container-highest/60 animate-pulse" />
+                <div className="h-5 w-44 rounded-md bg-surface-container-highest/60 animate-pulse" />
+                <div className="h-4 w-60 rounded-md bg-surface-container-highest/60 animate-pulse" />
+              </div>
+              {["h-16", "h-24", "h-20"].map((h) => (
+                <div
+                  key={h}
+                  className={`${h} rounded-md bg-surface-container-highest/60 animate-pulse`}
+                />
+              ))}
             </div>
           ) : user ? (
             <div className="space-y-6">
               {/* Profile Header */}
-              <div className="flex flex-col items-center text-center pb-6 border-b border-slate-100">
+              <div className="flex flex-col items-center text-center pb-6 border-b border-border/40">
                 <Avatar
                   src={user.avatar}
                   alt={user.name}
                   initials={initials}
                   size="xl"
-                  className="size-20 border-2 border-background shadow-md bg-gradient-to-tr from-secondary to-primary text-white font-bold"
+                  className="size-20 border border-border/40 bg-surface-container-low text-foreground font-semibold"
                 />
                 <h2 className="mt-4 font-bold text-xl tracking-tight text-foreground flex items-center gap-1.5 justify-center">
                   {user.name}
                   <HugeiconsIcon
                     icon={CheckmarkCircle02Icon}
                     size={18}
-                    className="text-blue-500 shrink-0"
+                    className="text-secondary shrink-0"
                   />
                 </h2>
                 {user.profession && (
@@ -174,7 +183,7 @@ export function TalentDetailSheet({
               {/* Summary */}
               {resume?.summary && (
                 <div className="space-y-2.5">
-                  <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                  <h3 className="flex items-center gap-2 text-xs leading-4 font-medium text-foreground">
                     <HugeiconsIcon icon={UserIcon} size={14} className="text-secondary" />
                     Resumen Profesional
                   </h3>
@@ -187,9 +196,9 @@ export function TalentDetailSheet({
               {/* CV File Attachment */}
               {resume?.cvFile?.url && (
                 <>
-                  <div className="h-px bg-slate-100" />
+                  <div className="h-px bg-border/50" />
                   <div className="space-y-2.5">
-                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                    <h3 className="flex items-center gap-2 text-xs leading-4 font-medium text-foreground">
                       <HugeiconsIcon icon={File02Icon} size={14} className="text-secondary" />
                       Currículum Adjunto
                     </h3>
@@ -197,17 +206,17 @@ export function TalentDetailSheet({
                       href={resume.cvFile.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3.5 bg-slate-50/50 hover:bg-slate-100/50 rounded-xl border border-slate-150 transition-colors group"
+                      className="flex items-center justify-between p-3.5 bg-surface-container-low hover:bg-surface-container-highest/40 rounded-xl border border-border/40 shadow-none transition-colors group"
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="p-2 rounded-lg bg-red-50 text-red-500 shrink-0">
+                        <div className="p-2 rounded-md bg-destructive/10 text-destructive shrink-0">
                           <HugeiconsIcon icon={Pdf01Icon} size={20} />
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                             {resume.cvFile.originalName || "curriculum.pdf"}
                           </p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             {resume.cvFile.size
                               ? `${(resume.cvFile.size / 1024 / 1024).toFixed(2)} MB`
                               : "Documento PDF"}
@@ -227,13 +236,13 @@ export function TalentDetailSheet({
               {/* Experience */}
               {resume && resume.experiences.length > 0 && (
                 <>
-                  <div className="h-px bg-slate-100" />
+                  <div className="h-px bg-border/50" />
                   <div className="space-y-4">
-                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                    <h3 className="flex items-center gap-2 text-xs leading-4 font-medium text-foreground">
                       <HugeiconsIcon icon={Briefcase01Icon} size={14} className="text-secondary" />
                       Experiencia Laboral
                     </h3>
-                    <ul className="relative border-l border-slate-100 pl-2.5 space-y-6">
+                    <ul className="relative border-l border-border/50 pl-2.5 space-y-6">
                       {resume.experiences.map((exp) => {
                         const d = getExpDisplay(exp)
                         const key = [d.title, d.company, d.start, d.current]
@@ -242,7 +251,7 @@ export function TalentDetailSheet({
                         return (
                           <li key={`exp-${key}`} className="relative pl-6 pb-2 last:pb-0">
                             {/* Timeline dot */}
-                            <div className="absolute left-[-5px] top-1.5 size-2.5 rounded-full border border-background bg-secondary shadow-sm" />
+                            <div className="absolute left-[-5px] top-1.5 size-2.5 rounded-full border border-background bg-secondary" />
                             <h4 className="font-semibold text-foreground text-sm leading-snug">
                               {d.title || d.company || EMPTY_PLACEHOLDER}
                             </h4>
@@ -251,7 +260,7 @@ export function TalentDetailSheet({
                                 {d.company}
                               </p>
                             )}
-                            <p className="text-[10px] font-semibold text-secondary mt-1.5 tabular-nums bg-secondary/5 px-2 py-0.5 rounded w-fit border border-secondary/10">
+                            <p className="text-xs font-medium text-secondary mt-1.5 tabular-nums bg-secondary/10 px-2 py-0.5 rounded-md w-fit">
                               {d.start} – {d.current ? "Actualidad" : d.end || ""}
                             </p>
                             {exp.description && (
@@ -270,9 +279,9 @@ export function TalentDetailSheet({
               {/* Education */}
               {resume && resume.education.length > 0 && (
                 <>
-                  <div className="h-px bg-slate-100" />
+                  <div className="h-px bg-border/50" />
                   <div className="space-y-4">
-                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                    <h3 className="flex items-center gap-2 text-xs leading-4 font-medium text-foreground">
                       <HugeiconsIcon
                         icon={GraduationScrollIcon}
                         size={14}
@@ -280,7 +289,7 @@ export function TalentDetailSheet({
                       />
                       Educación
                     </h3>
-                    <ul className="relative border-l border-slate-100 pl-2.5 space-y-6">
+                    <ul className="relative border-l border-border/50 pl-2.5 space-y-6">
                       {resume.education.map((edu) => {
                         const d = getEduDisplay(edu)
                         const key = [d.title, d.institute, d.start, d.current]
@@ -289,7 +298,7 @@ export function TalentDetailSheet({
                         return (
                           <li key={`edu-${key}`} className="relative pl-6 pb-2 last:pb-0">
                             {/* Timeline dot */}
-                            <div className="absolute left-[-5px] top-1.5 size-2.5 rounded-full border border-background bg-secondary shadow-sm" />
+                            <div className="absolute left-[-5px] top-1.5 size-2.5 rounded-full border border-background bg-secondary" />
                             <h4 className="font-semibold text-foreground text-sm leading-snug">
                               {d.title || d.institute || EMPTY_PLACEHOLDER}
                             </h4>
@@ -298,7 +307,7 @@ export function TalentDetailSheet({
                                 {d.institute}
                               </p>
                             )}
-                            <p className="text-[10px] font-semibold text-secondary mt-1.5 tabular-nums bg-secondary/5 px-2 py-0.5 rounded w-fit border border-secondary/10">
+                            <p className="text-xs font-medium text-secondary mt-1.5 tabular-nums bg-secondary/10 px-2 py-0.5 rounded-md w-fit">
                               {d.start} – {d.current ? "Actualidad" : d.end || ""}
                             </p>
                           </li>
@@ -312,9 +321,9 @@ export function TalentDetailSheet({
               {/* Skills */}
               {resume && (resume.skills?.length ?? 0) > 0 && (
                 <>
-                  <div className="h-px bg-slate-100" />
+                  <div className="h-px bg-border/50" />
                   <div className="space-y-3">
-                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                    <h3 className="flex items-center gap-2 text-xs leading-4 font-medium text-foreground">
                       <HugeiconsIcon icon={Atom01Icon} size={14} className="text-secondary" />
                       Habilidades
                     </h3>
@@ -325,11 +334,11 @@ export function TalentDetailSheet({
                         return (
                           <span
                             key={`skill-${name}`}
-                            className="rounded-lg border border-secondary/15 bg-secondary/5 px-3 py-1 text-xs font-medium text-secondary hover:bg-secondary/10 transition-colors"
+                            className="rounded-md bg-secondary/10 px-2.5 py-1 text-xs font-medium text-secondary hover:bg-secondary/20 transition-colors"
                           >
                             {name}
                             {level && (
-                              <span className="ml-1 text-muted-foreground/80 font-normal">
+                              <span className="ml-1 text-muted-foreground font-normal">
                                 ({level})
                               </span>
                             )}
@@ -344,9 +353,9 @@ export function TalentDetailSheet({
               {/* Links */}
               {resume && resume.links.length > 0 && (
                 <>
-                  <div className="h-px bg-slate-100" />
+                  <div className="h-px bg-border/50" />
                   <div className="space-y-3">
-                    <h3 className="flex items-center gap-2 font-bold text-xs text-slate-400 uppercase tracking-wider">
+                    <h3 className="flex items-center gap-2 text-xs leading-4 font-medium text-foreground">
                       <HugeiconsIcon icon={Link01Icon} size={14} className="text-secondary" />
                       Enlaces de interés
                     </h3>
@@ -382,10 +391,10 @@ export function TalentDetailSheet({
 
         {/* Stationary Action Footer */}
         {user && (
-          <div className="p-4 border-t border-border bg-slate-50/70">
+          <div className="p-4 border-t border-border/40 bg-surface-container-low shrink-0">
             <div className="flex gap-3">
               <Button
-                className="flex-1 gap-2 text-sm"
+                className="h-9 flex-1 gap-2 rounded-md px-3 text-sm"
                 onClick={() => {
                   if (!recruiterId || !userId) return
                   createChatMutation.mutate(userId, {
@@ -409,7 +418,7 @@ export function TalentDetailSheet({
               </Button>
               <Button
                 variant="outline"
-                className="gap-2 text-sm"
+                className="h-9 gap-2 rounded-md px-3 text-sm"
                 onClick={() => {
                   push(`/dashboard/calendar?candidateId=${userId}`)
                 }}

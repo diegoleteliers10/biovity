@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { Button } from "@/components/ui/button"
 import { formatJobLocation, type Job } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
 import {
@@ -19,6 +20,29 @@ import { JobListItem } from "./jobListItem"
 import { SearchFilters } from "./searchFilters"
 
 const _EMPTY_PLACEHOLDER = "—"
+
+function JobListSkeleton() {
+  return (
+    <div
+      className="rounded-xl border border-border/50 bg-surface-container-lowest px-4 py-3 shadow-none"
+      aria-hidden
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="h-5 w-2/5 rounded-md bg-surface-container-highest/60 animate-pulse" />
+        <div className="h-4 w-16 rounded-md bg-surface-container-highest/60 animate-pulse" />
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <div className="h-4 w-32 rounded-md bg-surface-container-highest/60 animate-pulse" />
+        <div className="h-4 w-24 rounded-md bg-surface-container-highest/60 animate-pulse" />
+        <div className="ml-auto h-4 w-28 rounded-md bg-surface-container-highest/60 animate-pulse" />
+      </div>
+      <div className="mt-3 flex gap-2">
+        <div className="h-5 w-20 rounded-md bg-surface-container-highest/60 animate-pulse" />
+        <div className="h-5 w-24 rounded-md bg-surface-container-highest/60 animate-pulse" />
+      </div>
+    </div>
+  )
+}
 
 function useOptimisticSavedMap(savedJobIds: Set<string>) {
   const [optimisticSavedMap, setOptimisticSavedMap] = useState<Record<string, boolean>>({})
@@ -64,6 +88,7 @@ export const SearchContent = () => {
     data: jobsResult,
     isLoading,
     error,
+    refetch,
   } = useJobsSearch({ search: query.trim() || undefined })
 
   const filteredJobs = useMemo(() => {
@@ -157,7 +182,7 @@ export const SearchContent = () => {
         )
       }
     },
-    [isJobSaved, removeMutation, saveMutation, userId]
+    [isJobSaved, removeMutation, saveMutation, userId, setOptimisticSavedMap]
   )
 
   return (
@@ -171,7 +196,9 @@ export const SearchContent = () => {
           <ConnectedNotificationBell />
         </div>
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Buscar Empleos</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Buscar Empleos
+          </h1>
           <p className="text-muted-foreground text-sm">
             Encuentra oportunidades acorde a tus preferencias.
           </p>
@@ -201,42 +228,47 @@ export const SearchContent = () => {
       </div>
 
       {error ? (
-        <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
-          <p className="text-destructive text-sm">{error.message}</p>
+        <div className="flex flex-col items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/5 p-6 max-w-md mx-auto my-6">
+          <p className="text-sm font-medium text-foreground">No se pudieron cargar las ofertas</p>
+          <p className="text-xs text-muted-foreground">{error.message}</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-9 px-4 rounded-lg border-border/40 bg-surface-container-lowest text-xs font-medium"
+            onClick={() => refetch()}
+          >
+            Reintentar
+          </Button>
+        </div>
+      ) : isLoading ? (
+        <div className="grid grid-cols-1 gap-4">
+          {[0, 1, 2].map((n) => (
+            <JobListSkeleton key={n} />
+          ))}
         </div>
       ) : filteredJobs.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed">
-          <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
-            <div className="flex size-20 items-center justify-center rounded-full bg-muted">
-              <HugeiconsIcon
-                icon={Search01Icon}
-                size={44}
-                strokeWidth={1.5}
-                className="size-11 text-muted-foreground"
-              />
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                {query.trim()
-                  ? "No encontramos empleos con esos filtros."
-                  : "Busca empleos por palabra clave, ubicacion o categoria."}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {query.trim()
-                  ? "Intenta ajustando los filtros o usando terminos mas generales."
-                  : "Usa el buscador arriba para encontrar oportunidades."}
-              </p>
-            </div>
-            {query.trim() && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="mt-2 inline-flex h-7 items-center gap-2 px-4 bg-secondary text-secondary-foreground rounded-md shadow transition-all hover:bg-secondary/90 active:scale-95 text-[13px]"
-              >
-                Limpiar filtros
-              </button>
-            )}
+        <div className="bg-surface-container-low border border-border/40 rounded-xl p-6 text-center max-w-md mx-auto my-6 shadow-none">
+          <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto mb-3 text-muted-foreground">
+            <HugeiconsIcon icon={Search01Icon} size={20} />
           </div>
+          <p className="text-sm font-medium text-foreground mb-1">
+            {query.trim() ? "Sin resultados" : "Busca tu próxima oferta"}
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            {query.trim()
+              ? "Ajusta los filtros o usa términos más generales."
+              : "Usa el buscador para encontrar oportunidades."}
+          </p>
+          {query.trim() && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 px-4 rounded-lg border-border/40 bg-surface-container-lowest text-xs font-medium"
+              onClick={handleClear}
+            >
+              Limpiar filtros
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">

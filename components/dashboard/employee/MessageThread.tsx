@@ -15,6 +15,7 @@ import { useUpdateParticipantStatus } from "@/lib/api/use-events"
 import type { useSendMessageMutation } from "@/lib/api/use-messages"
 import type { User } from "@/lib/api/users"
 import { getResultErrorMessage } from "@/lib/result"
+import { cn } from "@/lib/utils"
 
 type Message = {
   id: string
@@ -86,7 +87,7 @@ export function MessageThread({
     setMessageInput("")
     if (messageInputRef.current) {
       const current = messageInputRef.current.style.cssText
-      messageInputRef.current.style.cssText = `${current} height: 28px; overflow-y: hidden;`
+      messageInputRef.current.style.cssText = `${current} height: 36px; overflow-y: hidden;`
     }
     scrollToBottom()
     sendMutation.mutate({ chatId: selectedChat.id, senderId: professionalId, content })
@@ -183,17 +184,45 @@ export function MessageThread({
         className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0"
       >
         {messagesLoading ? (
-          <div className="flex justify-center py-8">
-            <p className="text-muted-foreground text-sm">Cargando mensajes…</p>
+          <div className="space-y-4">
+            {[0, 1, 2].map((n) => (
+              <div
+                key={n}
+                className={cn("flex gap-2", n % 2 === 0 ? "justify-start" : "justify-end")}
+              >
+                {n % 2 === 0 && (
+                  <div className="size-8 shrink-0 mt-6 rounded-full bg-surface-container-highest/60 animate-pulse" />
+                )}
+                <div className="space-y-1.5">
+                  <div
+                    className={cn(
+                      "h-3 w-24 rounded-md bg-surface-container-highest/60 animate-pulse",
+                      n % 2 !== 0 && "ml-auto"
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "h-14 w-52 rounded-2xl bg-surface-container-highest/60 animate-pulse",
+                      n % 2 === 0 ? "rounded-tl-sm" : "rounded-tr-sm"
+                    )}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         ) : messagesError ? (
           <div className="flex flex-col items-center justify-center gap-2 py-8">
-            <p className="text-destructive text-sm">
+            <p className="text-xs text-destructive">
               {messagesErrorDetail instanceof Error
                 ? messagesErrorDetail.message
                 : "Error al cargar mensajes"}
             </p>
-            <Button variant="outline" onClick={() => refetchMessages()}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 px-4 rounded-lg text-xs font-medium"
+              onClick={() => refetchMessages()}
+            >
               Reintentar
             </Button>
           </div>
@@ -204,7 +233,7 @@ export function MessageThread({
                 key={msg.id}
                 message={msg}
                 isOwn={msg.senderId === professionalId}
-                senderName={msg.senderId === professionalId ? "Tu" : recruiterName}
+                senderName={msg.senderId === professionalId ? "Tú" : recruiterName}
                 senderInitials={
                   msg.senderId === professionalId
                     ? (professionalProfile?.name ?? "Tu")

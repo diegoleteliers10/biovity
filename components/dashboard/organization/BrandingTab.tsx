@@ -52,7 +52,7 @@ const SIZE_OPTIONS = [
 function LogoTile({ logo, name }: { logo: string | null; name: string }) {
   if (logo) {
     return (
-      <div className="grid size-[72px] shrink-0 place-items-center overflow-hidden rounded-2xl bg-muted">
+      <div className="grid size-[72px] shrink-0 place-items-center overflow-hidden rounded-xl bg-surface-container-highest">
         <Image
           src={logo}
           alt={name}
@@ -65,7 +65,7 @@ function LogoTile({ logo, name }: { logo: string | null; name: string }) {
     )
   }
   return (
-    <div className="grid size-[72px] shrink-0 place-items-center rounded-2xl bg-primary text-[30px] font-semibold text-white">
+    <div className="grid size-[72px] shrink-0 place-items-center rounded-xl bg-primary text-3xl font-semibold text-primary-foreground">
       {name.charAt(0).toUpperCase()}
     </div>
   )
@@ -119,7 +119,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
   }, [form, updateMutation])
 
   if (isLoading) {
-    return <div className="h-40 animate-pulse rounded-2xl bg-muted" />
+    return <div className="h-40 animate-pulse rounded-xl bg-surface-container-highest/60" />
   }
 
   if (isError || !org) {
@@ -137,6 +137,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploadLogoMutation.isPending}
+            className="h-9 rounded-md px-3"
           >
             <HugeiconsIcon icon={Upload01Icon} size={15} strokeWidth={1.8} aria-hidden />
             {uploadLogoMutation.isPending ? "Subiendo..." : "Cambiar logo"}
@@ -177,7 +178,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
               value={form.industry}
               onValueChange={(v) => setForm((p) => ({ ...p, industry: v }))}
             >
-              <SelectTrigger id="brand-industry" className="w-full">
+              <SelectTrigger id="brand-industry" className="h-9 w-full">
                 <SelectValue placeholder="Selecciona industria" />
               </SelectTrigger>
               <SelectContent>
@@ -192,7 +193,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
           <div className="space-y-2">
             <FieldLabel htmlFor="brand-size">Tamaño de la empresa</FieldLabel>
             <Select value={form.size} onValueChange={(v) => setForm((p) => ({ ...p, size: v }))}>
-              <SelectTrigger id="brand-size" className="w-full">
+              <SelectTrigger id="brand-size" className="h-9 w-full">
                 <SelectValue placeholder="Selecciona rango" />
               </SelectTrigger>
               <SelectContent>
@@ -207,10 +208,19 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
         </div>
 
         <div className="flex justify-end gap-2.5">
-          <Button variant="outline" onClick={() => setIsEditing(false)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsEditing(false)}
+            className="h-9 rounded-md px-3"
+          >
             Cancelar
           </Button>
-          <Button variant="secondary" onClick={handleSave} disabled={updateMutation.isPending}>
+          <Button
+            variant="secondary"
+            onClick={handleSave}
+            disabled={updateMutation.isPending}
+            className="h-9 rounded-md px-3"
+          >
             {updateMutation.isPending ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>
@@ -222,7 +232,7 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-5">
         <LogoTile logo={org.logo} name={org.name} />
-        <Button variant="secondary" onClick={startEditing}>
+        <Button variant="secondary" onClick={startEditing} className="h-9 rounded-md px-3">
           Editar branding
         </Button>
       </div>

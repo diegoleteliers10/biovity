@@ -47,24 +47,24 @@ const DECISIONS: RatingOption[] = [
     value: "positive",
     title: "Avanzar",
     subtitle: "Recomendado",
-    color: "text-emerald-700 dark:text-emerald-300",
-    activeBg: "bg-emerald-500/10 border-emerald-500/50 ring-2 ring-emerald-500/20",
+    color: "text-secondary",
+    activeBg: "bg-secondary/10 border-secondary/40 ring-2 ring-secondary/20",
     icon: CheckmarkCircle02Icon,
   },
   {
     value: "neutral",
     title: "Evaluar",
     subtitle: "Con dudas",
-    color: "text-amber-700 dark:text-amber-300",
-    activeBg: "bg-amber-500/10 border-amber-500/50 ring-2 ring-amber-500/20",
+    color: "text-foreground",
+    activeBg: "bg-surface-container-highest/60 border-border/60 ring-2 ring-ring/20",
     icon: Clock01Icon,
   },
   {
     value: "negative",
     title: "Descartar",
     subtitle: "No recomendado",
-    color: "text-rose-700 dark:text-rose-300",
-    activeBg: "bg-rose-500/10 border-rose-500/50 ring-2 ring-rose-500/20",
+    color: "text-destructive",
+    activeBg: "bg-destructive/10 border-destructive/40 ring-2 ring-destructive/20",
     icon: Cancel01Icon,
   },
 ]
@@ -103,17 +103,21 @@ function DimensionalRating({
   const labels = ["Insuficiente", "Bajo", "Aceptable", "Bueno", "Excelente"]
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl border border-border/15 bg-surface-container-low hover:bg-surface-container-lowest transition-colors">
-      <span className="text-xs font-semibold text-foreground">{label}</span>
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl border border-border/40 bg-surface-container-low shadow-none hover:bg-surface-container-lowest transition-colors">
+      <span className="text-xs font-medium text-foreground">{label}</span>
       <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1" onMouseLeave={() => setHoverVal(null)}>
+        <fieldset
+          aria-label={`Calificación de ${label}`}
+          className="m-0 flex items-center gap-1 border-0 p-0"
+          onMouseLeave={() => setHoverVal(null)}
+        >
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               type="button"
               onMouseEnter={() => setHoverVal(star)}
               onClick={() => onChange(star)}
-              className="p-1 rounded-md hover:scale-110 transition-transform focus:outline-none cursor-pointer"
+              className="p-1 rounded-md hover:bg-surface-container-highest/40 transition-colors focus:outline-none cursor-pointer"
               aria-label={`Calificar ${star} estrellas para ${label}`}
             >
               <HugeiconsIcon
@@ -121,13 +125,13 @@ function DimensionalRating({
                 size={18}
                 className={cn(
                   "transition-colors",
-                  star <= current ? "text-amber-400 fill-amber-400" : "text-muted-foreground/25"
+                  star <= current ? "text-secondary fill-secondary" : "text-muted-foreground/25"
                 )}
               />
             </button>
           ))}
-        </div>
-        <span className="text-[11px] font-medium text-muted-foreground min-w-[70px] text-right">
+        </fieldset>
+        <span className="text-xs font-medium text-muted-foreground min-w-[70px] text-right">
           {current > 0 ? labels[current - 1] : "Sin evaluar"}
         </span>
       </div>
@@ -203,25 +207,25 @@ export function ScorecardSheet({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full p-0 gap-0 border-l border-border/20 bg-background shadow-2xl overflow-hidden">
+      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full p-0 gap-0 border-l border-border/40 bg-surface-container-lowest shadow-none overflow-hidden">
         {/* Header */}
-        <SheetHeader className="border-b border-border/10 bg-gradient-to-r from-secondary/5 via-muted/20 to-transparent p-6 text-left shrink-0">
+        <SheetHeader className="border-b border-border/40 bg-surface-container-low p-6 text-left shrink-0">
           <Badge
             variant="outline"
-            className="w-fit mb-2.5 gap-1.5 text-xs text-secondary border-secondary/30 bg-secondary/10 font-medium px-2.5 py-0.5"
+            className="w-fit mb-2.5 gap-1.5 border-accent/25 bg-accent/15 text-[11px] font-mono font-medium text-accent px-2.5 py-0.5"
           >
             <HugeiconsIcon icon={SparklesIcon} size={13} />
             Scorecard de Selección
           </Badge>
           <div className="flex items-center gap-3.5 mt-1">
-            <Avatar className="size-12 border border-border/20 shadow-xs shrink-0">
+            <Avatar className="size-12 border border-border/40 shadow-none shrink-0">
               {candidateAvatar && <AvatarImage src={candidateAvatar} alt={candidateName} />}
               <AvatarFallback className="bg-secondary/10 text-secondary font-semibold text-sm">
                 {getCandidateInitials(candidateName)}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-0.5 min-w-0">
-              <SheetTitle className="text-lg font-bold text-foreground truncate">
+              <SheetTitle className="text-base font-semibold text-foreground truncate">
                 {candidateName}
               </SheetTitle>
               <p className="text-xs text-muted-foreground truncate">
@@ -238,9 +242,9 @@ export function ScorecardSheet({
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Decisión General */}
           <div className="space-y-2.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="block text-xs leading-4 font-medium text-foreground">
               Dictamen de Selección
-            </label>
+            </span>
             <div className="grid grid-cols-3 gap-2.5">
               {DECISIONS.map((d) => {
                 const active = rating === d.value
@@ -253,7 +257,7 @@ export function ScorecardSheet({
                       "flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all duration-150 cursor-pointer",
                       active
                         ? d.activeBg
-                        : "border-border/20 bg-surface-container-low text-muted-foreground hover:border-border/40 hover:bg-surface-container-lowest"
+                        : "border-border/40 bg-surface-container-low text-muted-foreground hover:border-border/60 hover:bg-surface-container-lowest"
                     )}
                   >
                     <HugeiconsIcon
@@ -269,7 +273,7 @@ export function ScorecardSheet({
                     >
                       {d.title}
                     </span>
-                    <span className="text-[10px] text-muted-foreground mt-0.5">{d.subtitle}</span>
+                    <span className="text-xs text-muted-foreground mt-0.5">{d.subtitle}</span>
                   </button>
                 )
               })}
@@ -278,9 +282,9 @@ export function ScorecardSheet({
 
           {/* Calificación por Criterios */}
           <div className="space-y-2.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="block text-xs leading-4 font-medium text-foreground">
               Evaluación por Criterios
-            </label>
+            </span>
             <div className="space-y-2">
               <DimensionalRating
                 label="Fit Técnico & Experiencia"
@@ -302,7 +306,7 @@ export function ScorecardSheet({
 
           {/* Tags Rápidos */}
           <div className="space-y-2.5">
-            <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
               <HugeiconsIcon icon={Tag01Icon} size={14} />
               <span>Etiquetas de Feedback</span>
             </div>
@@ -315,10 +319,10 @@ export function ScorecardSheet({
                     type="button"
                     onClick={() => toggleTag(tag)}
                     className={cn(
-                      "px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer",
+                      "px-2.5 py-1 rounded-md text-xs font-medium border transition-all cursor-pointer",
                       selected
-                        ? "bg-secondary/15 text-secondary border-secondary/30 shadow-2xs"
-                        : "bg-surface-container-low text-muted-foreground border-border/15 hover:border-border/30 hover:text-foreground"
+                        ? "bg-secondary/10 text-secondary border-secondary/30"
+                        : "bg-surface-container-low text-muted-foreground border-border/40 hover:border-border/60 hover:text-foreground"
                     )}
                   >
                     {tag}
@@ -332,7 +336,7 @@ export function ScorecardSheet({
           <div className="space-y-2.5">
             <label
               htmlFor="evaluation-notes"
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="block text-xs leading-4 font-medium text-foreground"
             >
               Notas e Impresiones Internas
             </label>
@@ -341,13 +345,13 @@ export function ScorecardSheet({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Escribe aquí observaciones clave de la entrevista, fortalezas, debilidades o preguntas para la siguiente ronda..."
-              className="min-h-[110px] text-sm resize-y rounded-xl border border-border/20 bg-background focus-visible:ring-secondary/20"
+              className="min-h-[110px] text-sm resize-y"
             />
           </div>
 
           {/* Última edición */}
           {existing && (
-            <p className="text-[11px] text-muted-foreground border-t border-border/10 pt-3">
+            <p className="text-xs text-muted-foreground border-t border-border/40 pt-3">
               Última evaluación registrada por{" "}
               <span className="font-medium text-foreground">
                 {existing.evaluator_name || "reclutador"}
@@ -358,9 +362,9 @@ export function ScorecardSheet({
         </div>
 
         {/* Footer */}
-        <SheetFooter className="border-t border-border/10 bg-background p-4 flex items-center justify-between gap-3 shrink-0 sm:justify-between">
+        <SheetFooter className="border-t border-border/40 bg-surface-container-lowest p-4 flex items-center justify-between gap-3 shrink-0 sm:justify-between">
           <SheetClose asChild>
-            <Button variant="ghost" size="sm" type="button" className="h-7 px-3">
+            <Button variant="ghost" type="button" className="h-9 rounded-md px-3">
               Cancelar
             </Button>
           </SheetClose>
@@ -368,7 +372,7 @@ export function ScorecardSheet({
             type="button"
             onClick={handleSave}
             disabled={upsertMutation.isPending}
-            className="h-7 px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium text-[13px] rounded-md shadow-xs"
+            className="h-9 rounded-md px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium"
           >
             {upsertMutation.isPending ? (
               <>

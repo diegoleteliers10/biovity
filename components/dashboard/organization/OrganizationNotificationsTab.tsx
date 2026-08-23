@@ -100,15 +100,15 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-40 rounded-lg border border-border/60 bg-muted animate-pulse" />
-        <div className="h-60 rounded-lg border border-border/60 bg-muted animate-pulse" />
+        <div className="h-40 rounded-lg bg-surface-container-highest/60 animate-pulse" />
+        <div className="h-60 rounded-lg bg-surface-container-highest/60 animate-pulse" />
       </div>
     )
   }
 
   if (userError || !user) {
     return (
-      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-center text-sm text-destructive">
+      <div className="rounded-xl border border-destructive/50 bg-destructive/5 p-4 text-center text-sm text-destructive shadow-none">
         Error al cargar la configuración de notificaciones.
       </div>
     )
@@ -157,7 +157,7 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
               setPrefs((prev) => ({ ...prev, digest: val }))
             }
           >
-            <SelectTrigger id="notif-freq" className="w-full">
+            <SelectTrigger id="notif-freq" className="h-9 w-full">
               <SelectValue placeholder="Selecciona frecuencia" />
             </SelectTrigger>
             <SelectContent>
@@ -179,6 +179,7 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
             onClick={handleSavePrefs}
             disabled={updateUserMutation.isPending}
             id="save-notifications-btn"
+            className="h-9 rounded-lg px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 text-xs font-medium shadow-none transition-colors"
           >
             {updateUserMutation.isPending ? "Guardando..." : "Guardar cambios"}
           </Button>
@@ -226,7 +227,7 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
                   setIntegrations((prev) => ({ ...prev, slackWebhookUrl: e.target.value }))
                 }
                 disabled={!integrations.enabled}
-                className="font-mono text-xs"
+                className="h-9 rounded-lg border-border/40 bg-surface-container-lowest font-mono text-xs"
               />
             </div>
             <div className="max-w-[380px] space-y-2">
@@ -244,7 +245,7 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
                   setIntegrations((prev) => ({ ...prev, discordWebhookUrl: e.target.value }))
                 }
                 disabled={!integrations.enabled}
-                className="font-mono text-xs"
+                className="h-9 rounded-lg border-border/40 bg-surface-container-lowest font-mono text-xs"
               />
             </div>
           </div>
@@ -256,6 +257,7 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
               onClick={handleSaveIntegrations}
               disabled={updateOrgMutation.isPending}
               id="save-integrations-btn"
+              className="h-9 rounded-lg px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 text-xs font-medium shadow-none transition-colors"
             >
               {updateOrgMutation.isPending ? "Guardando..." : "Guardar integraciones"}
             </Button>

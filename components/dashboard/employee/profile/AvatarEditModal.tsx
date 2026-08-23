@@ -16,6 +16,8 @@ interface AvatarEditModalProps {
   isUploading?: boolean
 }
 
+// BANNED: useEffect - EXCEPTIONAL CASE
+// REASON: Browser object URL cleanup on revoke
 function useObjectUrl(objectUrl: string | null) {
   useEffect(() => {
     return () => {
@@ -60,44 +62,42 @@ export function AvatarEditModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden rounded-xl border border-border/50 bg-surface-container-lowest shadow-none">
         <DialogTitle className="sr-only">Editar foto de perfil</DialogTitle>
         <div className="relative">
           <div
             className={cn(
-              "relative w-full aspect-square bg-muted flex items-center justify-center overflow-hidden",
-              "max-h-[400px]"
+              "relative w-full aspect-square bg-surface-container-low flex items-center justify-center overflow-hidden",
+              "max-h-[380px]"
             )}
           >
             {displayAvatar ? (
               <Image
                 src={displayAvatar}
                 alt="Avatar preview"
-                width={400}
-                height={400}
-                className="w-full h-full object-cover"
+                width={380}
+                height={380}
+                className="size-full object-cover"
                 unoptimized
               />
             ) : (
-              <div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
-                <HugeiconsIcon icon={Camera01Icon} size={48} />
-                <p className="text-sm">No hay imagen</p>
+              <div className="flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                <HugeiconsIcon icon={Camera01Icon} size={40} />
+                <p className="text-xs">No hay imagen</p>
               </div>
             )}
           </div>
         </div>
-        <div className="flex items-center justify-center gap-4 p-6 border-t border-border">
+        <div className="flex items-center justify-center gap-3 p-4 sm:p-5 border-t border-border/40 bg-surface-container-lowest">
           <label
             className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground",
-              "hover:bg-primary/90 transition-colors cursor-pointer",
+              "flex items-center gap-2 h-10 px-5 rounded-lg bg-primary text-primary-foreground",
+              "hover:bg-primary/90 transition-colors cursor-pointer text-sm font-medium",
               isUploading && "opacity-50 cursor-wait"
             )}
           >
-            <HugeiconsIcon icon={Camera01Icon} size={18} />
-            <span className="text-sm font-medium">
-              {isUploading ? "Subiendo..." : "Nueva imagen"}
-            </span>
+            <HugeiconsIcon icon={Camera01Icon} size={16} />
+            <span>{isUploading ? "Subiendo..." : "Nueva imagen"}</span>
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif"
@@ -111,13 +111,13 @@ export function AvatarEditModal({
               type="button"
               onClick={handleDelete}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-full",
-                "text-destructive border border-destructive/30",
-                "hover:bg-destructive/10 transition-colors"
+                "flex items-center gap-2 h-10 px-5 rounded-lg",
+                "text-destructive border border-destructive/30 hover:bg-destructive/10",
+                "transition-colors text-sm font-medium cursor-pointer"
               )}
             >
-              <HugeiconsIcon icon={Delete01Icon} size={18} />
-              <span className="text-sm font-medium">Eliminar</span>
+              <HugeiconsIcon icon={Delete01Icon} size={16} />
+              <span>Eliminar</span>
             </button>
           )}
         </div>

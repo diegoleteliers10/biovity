@@ -138,7 +138,7 @@ export function TalentTable({
               return (
                 <TableRow
                   key={user.id}
-                  className={`cursor-pointer active:scale-[0.99] transition-all duration-150 ${isSelected ? "bg-secondary/5" : ""}`}
+                  className={`cursor-pointer ${isSelected ? "bg-secondary/5" : ""}`}
                   onClick={() => onRowClick(user.id)}
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -188,9 +188,9 @@ export function TalentTable({
                         side="right"
                         align="start"
                         sideOffset={10}
-                        className="w-80 overflow-hidden rounded-xl border-0 bg-background p-0 shadow-xl ring-1 ring-border/50"
+                        className="w-80 overflow-hidden rounded-xl border border-border/50 bg-surface-container-lowest p-0 shadow-none"
                       >
-                        <div className="bg-muted/30 p-4">
+                        <div className="bg-surface-container-low p-4">
                           <div className="flex items-center gap-4">
                             <Avatar
                               src={user.avatar}
@@ -212,7 +212,7 @@ export function TalentTable({
                         <div className="space-y-px px-4 py-3">
                           <a
                             href={`mailto:${user.email}`}
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface-container-highest/40 hover:text-foreground"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
@@ -285,7 +285,7 @@ export function TalentTable({
                         {user.profession}
                       </span>
                     ) : (
-                      <span className="text-muted-foreground/40">—</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
 
@@ -304,7 +304,7 @@ export function TalentTable({
                         ))}
                       </div>
                     ) : (
-                      <span className="text-muted-foreground/40 text-xs">Sin especificar</span>
+                      <span className="text-muted-foreground text-xs">Sin especificar</span>
                     )}
                   </TableCell>
 
@@ -321,7 +321,7 @@ export function TalentTable({
                         {formatUserLocation(user.location)}
                       </span>
                     ) : (
-                      <span className="text-muted-foreground/40">—</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
 

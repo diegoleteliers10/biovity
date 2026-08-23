@@ -16,10 +16,10 @@ export function SubscriptionTab({ organizationId: _organizationId }: Subscriptio
         nuestros planes.
       </p>
       <div className="mt-4 flex flex-wrap gap-2.5">
-        <Button variant="secondary" asChild>
+        <Button variant="secondary" asChild className="h-9 rounded-md px-3">
           <a href="mailto:ventas@biovity.cl">Contactar ventas</a>
         </Button>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="h-9 rounded-md px-3">
           <a href="https://mercadopago.cl" target="_blank" rel="noopener noreferrer">
             Ver planes
           </a>

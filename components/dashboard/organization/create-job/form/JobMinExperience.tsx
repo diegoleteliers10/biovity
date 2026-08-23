@@ -9,7 +9,7 @@ interface JobMinExperienceProps {
 export function JobMinExperience({ value, onChange }: JobMinExperienceProps) {
   return (
     <Field>
-      <FieldLabel>Anos de experiencia minima</FieldLabel>
+      <FieldLabel>Años de experiencia mínima</FieldLabel>
       <Input
         type="number"
         min={0}

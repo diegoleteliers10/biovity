@@ -40,7 +40,7 @@ export function JobContractFields({
       <Field>
         <FieldLabel>Tipo de contrato</FieldLabel>
         <Select value={employmentType} onValueChange={onEmploymentTypeChange}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="h-9 w-full">
             <SelectValue placeholder="Seleccionar" />
           </SelectTrigger>
           <SelectContent>
@@ -55,7 +55,7 @@ export function JobContractFields({
       <Field>
         <FieldLabel>Nivel de experiencia</FieldLabel>
         <Select value={experienceLevel} onValueChange={onExperienceLevelChange}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="h-9 w-full">
             <SelectValue placeholder="Seleccionar" />
           </SelectTrigger>
           <SelectContent>

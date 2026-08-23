@@ -42,7 +42,7 @@ export function UserMessagesContent() {
   const { data: chatFromUrl } = useQuery({
     queryKey: ["chat", "fromUrl", chatIdFromUrl],
     queryFn: async () => {
-      const result = await getChatById(chatIdFromUrl!)
+      const result = await getChatById(chatIdFromUrl)
       if (!Result.isOk(result)) {
         console.error(getResultErrorMessage(result.error))
         return null
@@ -107,7 +107,7 @@ export function UserMessagesContent() {
     <div className="flex h-[calc(100dvh_-_1rem)] min-h-0 flex-none flex-col overflow-hidden lg:flex-row w-full">
       <div
         className={cn(
-          "flex w-full h-full min-h-0 lg:w-80 flex-col overflow-hidden border-r border-border transition-all",
+          "flex w-full h-full min-h-0 lg:w-80 flex-col overflow-hidden border-r border-border/40 transition-all",
           mobileView === "chat" ? "hidden lg:flex" : "flex"
         )}
       >

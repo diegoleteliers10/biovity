@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 import { ApplyJobSheet } from "./ApplyJobSheet"
 
 type ApplyJobButtonProps = {
@@ -12,9 +13,15 @@ type ApplyJobButtonProps = {
   jobTitle?: string
   /** Compact variant for dashboard (inline, no full width) */
   compact?: boolean
+  className?: string
 }
 
-export function ApplyJobButton({ jobId, jobTitle, compact }: ApplyJobButtonProps) {
+export function ApplyJobButton({
+  jobId,
+  jobTitle,
+  compact,
+  className,
+}: ApplyJobButtonProps) {
   const { push } = useRouter()
   const [sheetOpen, setSheetOpen] = useState(false)
   const { useSession } = authClient
@@ -42,16 +49,17 @@ export function ApplyJobButton({ jobId, jobTitle, compact }: ApplyJobButtonProps
     setSheetOpen(true)
   }
 
-  const btnClass = compact
-    ? "bg-gray-900 hover:bg-gray-800 text-white px-6"
-    : "w-full bg-gray-900 hover:bg-gray-800 text-white"
-  const btnSize = compact ? "default" : "lg"
+  const btnClass = cn(
+    "h-11 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium transition-colors shadow-none cursor-pointer",
+    compact ? "px-6" : "w-full",
+    className
+  )
   const safeJobTitle = jobTitle?.trim() || "esta vacante"
 
   if (!isLoggedIn) {
     return (
       <>
-        <Button size={btnSize} className={btnClass} onClick={handleApply}>
+        <Button className={btnClass} onClick={handleApply}>
           Postular
         </Button>
         <ApplyJobSheet
@@ -66,23 +74,30 @@ export function ApplyJobButton({ jobId, jobTitle, compact }: ApplyJobButtonProps
 
   if (!isProfessional) {
     return (
-      <p className="text-muted-foreground text-sm">
-        Solo los profesionales pueden postular a trabajos.
+      <p className="text-muted-foreground text-xs leading-5">
+        Solo los profesionales pueden postular a ofertas laborales.
       </p>
     )
   }
 
   if (hasApplied) {
     return (
-      <Button size={btnSize} className={compact ? "" : "w-full"} variant="secondary" disabled>
-        Ya postulaste
+      <Button
+        className={cn(
+          "h-11 rounded-lg bg-secondary/15 text-secondary border border-secondary/25 text-sm font-semibold cursor-default",
+          compact ? "px-6" : "w-full",
+          className
+        )}
+        disabled
+      >
+        Ya postulaste a esta vacante
       </Button>
     )
   }
 
   return (
     <>
-      <Button size={btnSize} className={btnClass} onClick={handleApply}>
+      <Button className={btnClass} onClick={handleApply}>
         {compact ? "Postular" : "Postular ahora"}
       </Button>
       <ApplyJobSheet

@@ -73,8 +73,8 @@ export function MessageBubble({
               "relative rounded-2xl px-4 py-2.5",
               "text-sm leading-relaxed",
               isOwn
-                ? "bg-secondary text-secondary-foreground rounded-tr-sm"
-                : "bg-muted text-foreground rounded-tl-sm"
+                ? "bg-primary text-primary-foreground rounded-tr-sm"
+                : "bg-surface-container-low text-foreground rounded-tl-sm"
             )}
           >
             <MessageContent
@@ -251,8 +251,12 @@ function EventMessageCard({
     <div className="min-w-[260px] space-y-2">
       {/* Header */}
       <div className="flex items-center gap-2 text-xs">
-        <HugeiconsIcon icon={Calendar04Icon} size={14} className="text-secondary" />
-        <span className="font-medium text-secondary">
+        <HugeiconsIcon
+          icon={Calendar04Icon}
+          size={14}
+          className={isOwn ? "opacity-90" : "text-secondary"}
+        />
+        <span className={cn("font-medium", isOwn ? "opacity-90" : "text-secondary")}>
           {typeLabels[event.type] ?? "Evento"} programado
         </span>
       </div>
@@ -310,10 +314,14 @@ function EventMessageCard({
 
       {/* Status indicator */}
       {event.participantStatus === "accepted" && (
-        <p className="text-xs text-green-600 font-medium">✓ Asistirás</p>
+        <p className={cn("text-xs font-medium", isOwn ? "opacity-90" : "text-secondary")}>
+          ✓ Asistirás
+        </p>
       )}
       {event.participantStatus === "declined" && (
-        <p className="text-xs text-destructive font-medium">✗ No asistirás</p>
+        <p className={cn("text-xs font-medium", isOwn ? "opacity-90" : "text-destructive")}>
+          ✗ No asistirás
+        </p>
       )}
 
       {/* Edit button for creator */}
@@ -397,9 +405,9 @@ export function ChatListItem({
         }
       }}
       className={cn(
-        "cursor-pointer border-b border-border p-4 transition-all text-left w-full",
-        "hover:bg-muted/30 focus-visible:bg-muted/50 active:scale-[0.98]",
-        isSelected && "bg-muted/50"
+        "cursor-pointer border-b border-border/40 p-4 transition-colors duration-150 text-left w-full",
+        "hover:bg-surface-container-highest/40 focus-visible:bg-surface-container-highest/60",
+        isSelected && "bg-secondary/10"
       )}
     >
       <div className="flex items-start gap-3">

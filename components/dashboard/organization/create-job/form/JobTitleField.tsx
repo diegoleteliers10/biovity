@@ -10,7 +10,7 @@ export function JobTitleField({ value, onChange }: JobTitleFieldProps) {
   return (
     <Field>
       <FieldLabel htmlFor="job-title">
-        Título <span className="text-red-600 font-bold ml-0.5">*</span>
+        Título <span className="text-destructive font-medium ml-0.5">*</span>
       </FieldLabel>
       <Input
         id="job-title"

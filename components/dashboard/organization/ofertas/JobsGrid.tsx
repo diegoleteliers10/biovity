@@ -52,24 +52,22 @@ interface EmptyStateProps {
 
 export function EmptyJobsState({ onCreate }: EmptyStateProps) {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed">
-      <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-        <div className="flex size-20 items-center justify-center rounded-full bg-muted">
-          <HugeiconsIcon
-            icon={FileAddIcon}
-            size={44}
-            strokeWidth={1.5}
-            className="size-11 text-muted-foreground"
-          />
+    <div className="flex flex-1 items-center justify-center">
+      <div className="flex w-full max-w-md flex-col items-center rounded-xl border border-border/40 bg-surface-container-low p-6 text-center shadow-none">
+        <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center text-muted-foreground">
+          <HugeiconsIcon icon={FileAddIcon} size={20} strokeWidth={1.5} />
         </div>
-        <div className="space-y-1">
-          <p className="text-sm font-medium">Aún no tienes ofertas publicadas.</p>
-          <p className="text-xs text-muted-foreground">
-            Crea tu primera oferta para empezar a recibir candidatos.
-          </p>
-        </div>
-        <Button onClick={onCreate} className="mt-2">
-          <HugeiconsIcon icon={FileAddIcon} size={18} strokeWidth={1.5} className="mr-2" />
+        <p className="mt-3 mb-1 text-sm font-medium text-foreground">
+          Aún no tienes ofertas publicadas.
+        </p>
+        <p className="mb-4 text-xs text-muted-foreground">
+          Crea tu primera oferta para empezar a recibir candidatos.
+        </p>
+        <Button
+          onClick={onCreate}
+          size="sm"
+          className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-xs font-medium"
+        >
           Crear oferta
         </Button>
       </div>

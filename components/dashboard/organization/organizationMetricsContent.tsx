@@ -28,6 +28,7 @@ const [BarChart, Bar] = await Promise.all([
 
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -58,9 +59,9 @@ const statusLabels: Record<string, string> = {
 const statusColors: Record<string, string> = {
   pendiente: "bg-secondary/10 text-secondary border-secondary/20",
   entrevista: "bg-primary/10 text-primary border-primary/20",
-  oferta: "bg-accent/10 text-accent border-accent/20",
+  oferta: "bg-yellow-500/10 text-yellow-700 border-yellow-500/20",
   rechazado: "bg-destructive/10 text-destructive border-destructive/20",
-  contratado: "bg-green-500/10 text-green-600 border-green-500/20",
+  contratado: "bg-secondary/10 text-secondary border-secondary/20",
 }
 
 type KpiCardProps = {
@@ -74,7 +75,7 @@ type KpiCardProps = {
 
 function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: KpiCardProps) {
   return (
-    <Card>
+    <Card className={`${dashboardRaisedCardClass} border-border`}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle>{title}</CardTitle>
         <HugeiconsIcon
@@ -85,9 +86,13 @@ function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: K
         />
       </CardHeader>
       <CardContent>
-        <div className="text-lg leading-6 font-semibold tracking-[-0.1px]">{value}</div>
+        <div className="text-2xl font-bold text-foreground tracking-tight tabular-nums">
+          {value}
+        </div>
         {trend && (
-          <p className={`text-xs leading-4 ${trendPositive ? "text-green-600" : "text-red-600"}`}>
+          <p
+            className={`text-xs leading-4 ${trendPositive ? "text-secondary" : "text-destructive"}`}
+          >
             {trend}
           </p>
         )}
@@ -116,7 +121,7 @@ export function OrganizationMetricsContent() {
     period === "custom" ? startDate || undefined : undefined,
     period === "custom" ? endDate || undefined : undefined
   )
-  const skeletonId = useId()
+  const _skeletonId = useId()
 
   const totalViews = metrics?.topJobs.reduce((sum, job) => sum + job.views, 0) ?? 0
 
@@ -128,7 +133,6 @@ export function OrganizationMetricsContent() {
 
   // F11.1 Funnel conversion rates
   const totalApps = metrics?.pipeline.totalApplications ?? 0
-  const countPendiente = metrics?.pipeline.byStatus.pendiente ?? 0
   const countEntrevista = metrics?.pipeline.byStatus.entrevista ?? 0
   const countOferta = metrics?.pipeline.byStatus.oferta ?? 0
   const countContratado = metrics?.pipeline.byStatus.contratado ?? 0
@@ -190,14 +194,16 @@ export function OrganizationMetricsContent() {
         </div>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Métricas</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              Métricas
+            </h1>
             <p className="text-muted-foreground text-sm">
               Analiza el rendimiento de tus ofertas y candidatos.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Select value={period} onValueChange={(v) => setPeriod(v as MetricsPeriod)}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="h-9 w-[140px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -214,20 +220,25 @@ export function OrganizationMetricsContent() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-[130px] h-7"
+                  className="w-[130px] h-9"
                 />
                 <span className="text-muted-foreground text-xs">a</span>
                 <Input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-[130px] h-7"
+                  className="w-[130px] h-9"
                 />
               </div>
             )}
 
             {metrics && (
-              <Button variant="outline" size="sm" onClick={() => exportMetricsCsv(metrics, period)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportMetricsCsv(metrics, period)}
+                className="h-9 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
+              >
                 <HugeiconsIcon icon={Download01Icon} size={16} className="mr-1.5" />
                 Exportar
               </Button>
@@ -239,8 +250,8 @@ export function OrganizationMetricsContent() {
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {isPending ? (
-          Array.from({ length: 5 }).map((_, i) => (
-            <Card key={`${skeletonId}-${i}`}>
+          ["kpi-1", "kpi-2", "kpi-3", "kpi-4", "kpi-5"].map((id) => (
+            <Card key={id} className={dashboardRaisedCardClass}>
               <CardHeader className="pb-2">
                 <Skeleton className="h-4 w-32" />
               </CardHeader>
@@ -339,7 +350,7 @@ export function OrganizationMetricsContent() {
         />
 
         {/* Stage duration stats */}
-        <Card className="border border-border/80 bg-white dark:bg-card">
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader>
             <CardTitle>Tiempos Promedio en Etapa (Días)</CardTitle>
           </CardHeader>
@@ -376,7 +387,7 @@ export function OrganizationMetricsContent() {
                   <div className="flex-1">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-semibold">Hasta Oferta</span>
-                      <span className="text-base font-bold text-accent">
+                      <span className="text-base font-bold text-primary">
                         {metrics?.pipeline.avgTimeInStages?.oferta ?? 0} días
                       </span>
                     </div>
@@ -387,13 +398,13 @@ export function OrganizationMetricsContent() {
                 </div>
 
                 <div className="flex items-center gap-4 border-t border-border/50 pt-4">
-                  <div className="flex items-center justify-center size-10 rounded-lg bg-green-500/10 text-green-600 border border-green-500/20">
+                  <div className="flex items-center justify-center size-10 rounded-lg bg-secondary/10 text-secondary border border-secondary/20">
                     <HugeiconsIcon icon={ClockIcon} size={20} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-semibold">Hasta Contratación</span>
-                      <span className="text-base font-bold text-green-600">
+                      <span className="text-base font-bold text-secondary">
                         {metrics?.pipeline.avgTimeInStages?.contratado ?? 0} días
                       </span>
                     </div>
@@ -409,7 +420,7 @@ export function OrganizationMetricsContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="border border-border/80 bg-white dark:bg-card">
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader>
             <CardTitle>Distribución de candidatos</CardTitle>
           </CardHeader>
@@ -443,7 +454,7 @@ export function OrganizationMetricsContent() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 bg-white dark:bg-card">
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader>
             <CardTitle>Tendencia de postulaciones</CardTitle>
           </CardHeader>
@@ -482,18 +493,15 @@ export function OrganizationMetricsContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="border border-border/80 bg-white dark:bg-card">
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader>
             <CardTitle>Top ofertas con más postulaciones</CardTitle>
           </CardHeader>
           <CardContent>
             {isPending ? (
               <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div
-                    key={`${skeletonId}-topjob-${i}`}
-                    className="flex items-center justify-between"
-                  >
+                {["topjob-1", "topjob-2", "topjob-3"].map((id) => (
+                  <div key={id} className="flex items-center justify-between">
                     <Skeleton className="size-48" />
                     <Skeleton className="h-4 w-20" />
                   </div>
@@ -515,7 +523,10 @@ export function OrganizationMetricsContent() {
                         <span>{job.applications} postulaciones</span>
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-accent/10 text-accent border-accent/20">
+                    <Badge
+                      variant="outline"
+                      className="bg-secondary/10 text-secondary border-secondary/20"
+                    >
                       {job.applicationRate}% conversión
                     </Badge>
                   </div>
@@ -533,7 +544,7 @@ export function OrganizationMetricsContent() {
         />
       </div>
 
-      <Card className="border border-border/80 bg-white dark:bg-card">
+      <Card className={dashboardRaisedCardClass}>
         <CardHeader>
           <CardTitle>Productividad del Reclutador</CardTitle>
         </CardHeader>
@@ -559,25 +570,19 @@ export function OrganizationMetricsContent() {
                       <p className="text-lg leading-6 font-semibold tracking-[-0.1px] text-foreground">
                         {rec.applicationsProcessed}
                       </p>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                        Procesadas
-                      </p>
+                      <p className="text-xs leading-4 text-muted-foreground">Procesadas</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg leading-6 font-semibold tracking-[-0.1px] text-foreground">
                         {rec.interviewsConducted}
                       </p>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                        Entrevistas
-                      </p>
+                      <p className="text-xs leading-4 text-muted-foreground">Entrevistas</p>
                     </div>
                     <div className="text-center">
                       <p className="text-lg leading-6 font-semibold tracking-[-0.1px] text-foreground">
                         {rec.avgResponseTimeDays}d
                       </p>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                        Tiempo resp.
-                      </p>
+                      <p className="text-xs leading-4 text-muted-foreground">Tiempo resp.</p>
                     </div>
                   </div>
                 </div>
@@ -592,7 +597,7 @@ export function OrganizationMetricsContent() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className={dashboardRaisedCardClass}>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Tiempo de respuesta</CardTitle>
@@ -600,7 +605,7 @@ export function OrganizationMetricsContent() {
               {unansweredCount > 0 && (
                 <Badge
                   variant="outline"
-                  className="bg-muted/40 text-muted-foreground border-border/60"
+                  className="bg-surface-container-highest text-muted-foreground"
                 >
                   {unansweredCount} sin responder
                 </Badge>

@@ -80,26 +80,21 @@ export function SearchFilters({
   const handleSearch = useCallback(() => {}, [])
 
   return (
-    <Card className="border-border/60">
-      <CardHeader className="pb-2">
+    <Card className="rounded-xl border-border/50 bg-surface-container-lowest shadow-none">
+      <CardHeader className="pb-0">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Buscador y filtros</CardTitle>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Refina tu búsqueda por palabra clave, ubicación y preferencias.
-            </p>
-          </div>
+          <CardTitle>Buscador y filtros</CardTitle>
           <Button
             variant="ghost"
             onClick={onClear}
-            className="text-muted-foreground hover:text-primary-foreground"
+            className="h-9 rounded-md px-3 text-muted-foreground hover:text-foreground"
           >
             Limpiar
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/30 p-3 lg:flex-row">
+        <div className="flex flex-col gap-3 rounded-lg border border-border/40 bg-surface-container-low p-3 lg:flex-row">
           <div className="flex-1">
             <div className="relative">
               <Input
@@ -107,13 +102,13 @@ export function SearchFilters({
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
                 aria-label="Buscar por palabra clave"
-                className="bg-white"
+                className="pl-8"
               />
               <HugeiconsIcon
                 icon={Search01Icon}
-                size={24}
+                size={16}
                 strokeWidth={1.5}
-                className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                 aria-hidden
               />
             </div>
@@ -124,7 +119,6 @@ export function SearchFilters({
               value={location}
               onChange={(e) => onLocationChange(e.target.value)}
               aria-label="Filtrar por ubicación"
-              className="bg-white"
             />
           </div>
           <div className="flex items-stretch gap-2">
@@ -153,22 +147,14 @@ export function SearchFilters({
           {showAdvanced && (
             <m.div
               key="advanced-filters"
-              initial={{ opacity: 0, y: -10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{
-                opacity: 0,
-                y: -6,
-                scale: 0.97,
-                transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
-              }}
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
               transition={{
-                duration: 0.3,
-                ease: [0.4, 0, 0.2, 1],
-                opacity: { duration: 0.25, ease: [0.4, 0, 0.2, 1] },
-                y: { duration: 0.3, ease: [0.34, 1.56, 0.64, 1] },
-                scale: { duration: 0.3, ease: [0.34, 1.56, 0.64, 1] },
+                duration: 0.15,
+                ease: [0.23, 1, 0.32, 1],
               }}
-              className="mt-4 rounded-lg border border-border/60 bg-card p-3"
+              className="mt-3 rounded-lg border border-border/40 bg-surface-container-lowest p-3 shadow-none"
             >
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <Select
@@ -201,8 +187,8 @@ export function SearchFilters({
                   )}
                 </Select>
 
-                <label className="flex h-7 cursor-pointer select-none items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/20 px-2.5 transition-colors hover:bg-muted/40 has-[:checked]:border-primary/30">
-                  <span className="truncate text-[13px] leading-4 font-medium text-foreground">
+                <label className="flex h-7 cursor-pointer select-none items-center justify-between gap-3 rounded-md border border-border/40 bg-surface-container-lowest px-2.5 transition-colors duration-150 hover:bg-surface-container-highest/40 has-[:checked]:border-primary/30">
+                  <span className="truncate text-xs leading-4 font-medium text-foreground">
                     Solo remoto
                   </span>
                   <input

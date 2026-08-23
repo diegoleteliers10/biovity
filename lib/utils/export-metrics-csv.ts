@@ -1,5 +1,9 @@
 import type { OrganizationMetrics } from "@/lib/types/organization-metrics"
-import type { UserMetrics } from "@/lib/types/user-metrics"
+import type { StatusBreakdown, UserMetrics } from "@/lib/types/user-metrics"
+
+function totalStatusCount(breakdown: StatusBreakdown): number {
+  return Object.values(breakdown).reduce((sum, step) => sum + step.count, 0)
+}
 
 export function escapeCsvField(value: string | number): string {
   const str = String(value)
@@ -93,6 +97,20 @@ export function exportUserMetricsCsv(metrics: UserMetrics, period: string) {
     ["Vistas de perfil", metrics.kpis.profileViews],
   ]
   downloadCsv(`${prefix}_kpis.csv`, rowsToCsv(kpiHeaders, kpiRows))
+
+  const breakdown = metrics.statusBreakdown
+  if (breakdown && totalStatusCount(breakdown) > 0) {
+    const statusHeaders = ["Estado", "Cantidad", "Porcentaje (%)"]
+    const statusRows: (string | number)[][] = [
+      ["Pendientes", breakdown.pendiente.count, breakdown.pendiente.percentage],
+      ["En entrevista", breakdown.entrevista.count, breakdown.entrevista.percentage],
+      ["Con oferta", breakdown.oferta.count, breakdown.oferta.percentage],
+      ["Contratado", breakdown.contratado.count, breakdown.contratado.percentage],
+      ["Rechazadas", breakdown.rechazado.count, breakdown.rechazado.percentage],
+      ["Desistidas", breakdown.desistido.count, breakdown.desistido.percentage],
+    ]
+    downloadCsv(`${prefix}_estados.csv`, rowsToCsv(statusHeaders, statusRows))
+  }
 
   if (metrics.applicationsTrend.length > 0) {
     const trendHeaders = ["Periodo", "Postulaciones"]

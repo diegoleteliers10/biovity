@@ -46,6 +46,7 @@ const getEventTypeColor = (type: WeekViewEvent["type"]) => {
 export function WeekView({
   currentDate,
   events = EMPTY_WEEK_EVENTS,
+  isLoading,
   onCreateEvent,
 }: WeekViewProps) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
@@ -116,11 +117,11 @@ export function WeekView({
           const isToday = isSameDay(day, nowChile)
           return (
             <div key={day.toISOString()} className="p-2 text-center border-l border-border/30">
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground">
                 {format(day, "EEE", { locale: es })}
               </div>
               <div
-                className={`text-lg font-semibold ${isToday ? "text-secondary" : "text-foreground"}`}
+                className={`text-sm font-semibold tabular-nums ${isToday ? "text-secondary" : "text-foreground"}`}
               >
                 {format(day, "d")}
               </div>
@@ -139,7 +140,7 @@ export function WeekView({
               className="border-b border-border/30 flex items-start justify-end pr-2"
               style={{ height: SLOT_HEIGHT }}
             >
-              <span className="text-xs text-muted-foreground -mt-2">
+              <span className="text-xs font-mono text-muted-foreground -mt-2 tabular-nums">
                 {String(hour).padStart(2, "0")}:00
               </span>
             </div>
@@ -157,12 +158,20 @@ export function WeekView({
                 <button
                   key={hour}
                   type="button"
-                  className="border-b border-border/30 hover:bg-muted/20 transition-colors"
+                  disabled={!onCreateEvent}
+                  className="border-b border-border/30 hover:bg-surface-container-highest/40 transition-colors"
                   style={{ height: SLOT_HEIGHT }}
                   onClick={() => handleSlotClick(day, hour)}
                   aria-label={`Crear evento ${format(day, "d 'de' MMMM", { locale: es })} a las ${String(hour).padStart(2, "0")}:00`}
                 />
               ))}
+
+              {isLoading && (
+                <div className="absolute inset-x-1 top-1 space-y-1 z-10 pointer-events-none">
+                  <div className="h-10 rounded-md bg-surface-container-highest/60 animate-pulse" />
+                  <div className="h-10 rounded-md bg-surface-container-highest/60 animate-pulse" />
+                </div>
+              )}
 
               {/* Current time indicator */}
               {showCurrentTime && isSameDay(day, nowChile) && (
@@ -173,30 +182,31 @@ export function WeekView({
                   }}
                 >
                   <div className="flex items-center">
-                    <div className="w-2 h-2 rounded-full bg-red-500 -ml-1" />
-                    <div className="flex-1 h-px bg-red-500" />
+                    <div className="w-2 h-2 rounded-full bg-destructive -ml-1" />
+                    <div className="flex-1 h-px bg-destructive" />
                   </div>
                 </div>
               )}
 
               {/* Events */}
-              {dayEvents.map((event) => {
-                const { top, height } = getEventPosition(event)
-                return (
-                  <button
-                    key={event.id}
-                    type="button"
-                    className={`absolute left-1 right-1 rounded px-2 py-1 text-xs overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] z-10 ${getEventTypeColor(event.type)}`}
-                    style={{ top, height: Math.max(height - 2, 20) }}
-                    onClick={(e) => handleEventClick(event, e)}
-                  >
-                    <div className="font-medium truncate">{event.title}</div>
-                    <div className="opacity-80 text-[10px]">
-                      {format(getChileanDate(event.startAt), "HH:mm")}
-                    </div>
-                  </button>
-                )
-              })}
+              {!isLoading &&
+                dayEvents.map((event) => {
+                  const { top, height } = getEventPosition(event)
+                  return (
+                    <button
+                      key={event.id}
+                      type="button"
+                      className={`absolute left-1 right-1 rounded px-2 py-1 text-xs overflow-hidden cursor-pointer transition-opacity duration-150 hover:opacity-90 z-10 ${getEventTypeColor(event.type)}`}
+                      style={{ top, height: Math.max(height - 2, 20) }}
+                      onClick={(e) => handleEventClick(event, e)}
+                    >
+                      <div className="font-medium truncate">{event.title}</div>
+                      <div className="opacity-80 text-[10px] tabular-nums">
+                        {format(getChileanDate(event.startAt), "HH:mm")}
+                      </div>
+                    </button>
+                  )
+                })}
             </div>
           )
         })}

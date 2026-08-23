@@ -8,6 +8,7 @@ import {
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -52,7 +53,7 @@ export function ConversionFunnelCard({
 }: ConversionFunnelCardProps) {
   if (isPending) {
     return (
-      <Card className="border border-border/80 bg-white dark:bg-card">
+      <Card className={dashboardRaisedCardClass}>
         <CardHeader className="pb-3">
           <Skeleton className="h-6 w-48" />
         </CardHeader>
@@ -159,7 +160,7 @@ export function ConversionFunnelCard({
   )
 
   return (
-    <Card className="border border-border/80 bg-white dark:bg-card">
+    <Card className={dashboardRaisedCardClass}>
       <CardHeader>
         <CardTitle>Funnel de Conversión (Drop-off)</CardTitle>
       </CardHeader>

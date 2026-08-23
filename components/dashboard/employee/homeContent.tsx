@@ -1,15 +1,20 @@
 "use client"
 
-import { Calendar03Icon, File02Icon, Pulse01Icon } from "@hugeicons/core-free-icons"
+import {
+  AlarmClockIcon,
+  Calendar03Icon,
+  File02Icon,
+  Pulse01Icon,
+  SparklesIcon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
-import * as m from "motion/react-m"
 import { useRouter } from "next/navigation"
 import { cache, useCallback, useMemo } from "react"
 import { getLastMessageFromSender } from "@/lib/api/messages"
 import { useApplicationsByCandidate } from "@/lib/api/use-applications"
 import { useChatsByProfessional } from "@/lib/api/use-chats"
-import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
 import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import { getUser } from "@/lib/api/users"
 import { useDashboardSession } from "../DashboardSessionContext"
@@ -32,28 +37,12 @@ export const HomeContent = () => {
   const { push } = useRouter()
   const session = useDashboardSession()
 
-  const { data: notificationsData } = useNotifications()
-  const notifications = notificationsData?.data ?? []
-  const unreadCount = notificationsData?.unreadCount ?? 0
-  const markRead = useMarkNotificationRead()
-
-  const _toSlug = useCallback((value: string): string => {
-    return value
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}]+/gu, "-")
-      .replace(/^-+|-+$/g, "")
-  }, [])
-
   const handleJobClick = useCallback(
     (jobId: string) => {
       push(`/dashboard/job/${jobId}`)
     },
     [push]
   )
-
-  const handleViewAllJobs = useCallback(() => {
-    push("/dashboard/jobs")
-  }, [push])
 
   const handleViewAllMessages = useCallback(() => {
     push("/dashboard/messages")
@@ -62,15 +51,6 @@ export const HomeContent = () => {
   const handleViewAllApplications = useCallback(() => {
     push("/dashboard/applications")
   }, [push])
-
-  const handleNotificationClick = useCallback(
-    (id: string) => {
-      markRead.mutate(id)
-      const target = notifications.find((n) => n.id === id)
-      if (target?.link) push(target.link)
-    },
-    [markRead, notifications, push]
-  )
 
   const firstName = session?.user?.name?.split(" ")[0] || "Usuario"
 
@@ -146,12 +126,7 @@ export const HomeContent = () => {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
       {/* Header */}
-      <HomeHeader
-        firstName={firstName}
-        notifications={notifications}
-        unreadCount={unreadCount}
-        onNotificationClick={handleNotificationClick}
-      />
+      <HomeHeader firstName={firstName} />
 
       {/* Metrics Cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -175,26 +150,17 @@ export const HomeContent = () => {
                 subtitle: "respuestas recibidas",
                 icon: Pulse01Icon,
               },
-            ].map((metric, i) => (
-              <m.div
-                key={metric.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <MetricCard metric={metric} />
-              </m.div>
-            ))
+            ].map((metric) => <MetricCard key={metric.title} metric={metric} />)
           : [0, 1, 2].map((n) => (
               <div
                 key={n}
-                className="border border-border/80 bg-white rounded-lg h-24 animate-pulse"
+                className="h-24 rounded-xl border border-border/40 bg-surface-container-low animate-pulse"
               />
             ))}
       </div>
 
       {/* Recent Applications and Messages */}
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <RecentApplicationsCard
           applications={recentApplications}
           onJobClick={handleJobClick}
@@ -212,31 +178,33 @@ export const HomeContent = () => {
       </div>
 
       {/* Recommended Jobs Section */}
-      <div className="mt-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl tracking-tight font-semibold text-foreground">
-            Empleos Recomendados
-          </h2>
-        </div>
-        <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Proximamente recibiras recomendaciones personalizadas basadas en tu perfil y
+      <section className="space-y-4">
+        <h2 className="text-base font-semibold text-foreground">Empleos Recomendados</h2>
+        <div className="rounded-xl border border-border/40 bg-surface-container-low p-6 text-center shadow-none">
+          <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto mb-3 text-muted-foreground">
+            <HugeiconsIcon icon={SparklesIcon} size={20} />
+          </div>
+          <p className="text-sm font-medium text-foreground mb-1">Recomendaciones en camino</p>
+          <p className="text-xs text-muted-foreground">
+            Próximamente recibirás recomendaciones personalizadas basadas en tu perfil y
             preferencias.
           </p>
         </div>
-      </div>
+      </section>
 
       {/* Job Alerts Section */}
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold tracking-tight text-foreground mb-4">
-          Alertas de Empleo
-        </h2>
-        <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Proximamente podras configurar alertas para recibir notificaciones de nuevos empleos.
+      <section className="space-y-4">
+        <h2 className="text-base font-semibold text-foreground">Alertas de Empleo</h2>
+        <div className="rounded-xl border border-border/40 bg-surface-container-low p-6 text-center shadow-none">
+          <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto mb-3 text-muted-foreground">
+            <HugeiconsIcon icon={AlarmClockIcon} size={20} />
+          </div>
+          <p className="text-sm font-medium text-foreground mb-1">Alertas en camino</p>
+          <p className="text-xs text-muted-foreground">
+            Próximamente podrás configurar alertas para recibir notificaciones de nuevos empleos.
           </p>
         </div>
-      </div>
+      </section>
     </div>
   )
 }

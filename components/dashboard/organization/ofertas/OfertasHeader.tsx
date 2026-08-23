@@ -17,14 +17,17 @@ export function OfertasHeader({ onCreateOffer }: OfertasHeaderProps) {
       </div>
       <div className="flex items-end justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Ofertas</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Ofertas</h1>
           <p className="text-muted-foreground text-sm">
             Gestiona tus vacantes y publica nuevas ofertas de empleo.
           </p>
         </div>
         <div className="hidden lg:block">
-          <Button onClick={onCreateOffer}>
-            <HugeiconsIcon icon={FileAddIcon} size={18} strokeWidth={1.5} className="mr-2" />
+          <Button
+            onClick={onCreateOffer}
+            className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
+          >
+            <HugeiconsIcon icon={FileAddIcon} size={16} strokeWidth={1.5} className="mr-1.5" />
             Crear oferta
           </Button>
         </div>

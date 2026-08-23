@@ -22,7 +22,7 @@ export function ChatHeader({
   isTyping,
 }: ChatHeaderProps) {
   return (
-    <div className="shrink-0 border-b border-border bg-background p-3 lg:p-4">
+    <div className="shrink-0 border-b border-border/40 bg-surface-container-lowest p-3 lg:p-4">
       <div className="flex items-start justify-between">
         <div className="flex flex-1 items-center gap-2 lg:gap-3">
           <Button
@@ -36,20 +36,20 @@ export function ChatHeader({
           </Button>
           <Avatar className="size-10 lg:size-12">
             {recruiter?.avatar && <AvatarImage src={recruiter.avatar} alt="" />}
-            <AvatarFallback className="bg-muted text-sm font-semibold text-muted-foreground">
+            <AvatarFallback className="bg-secondary/10 text-sm font-semibold text-secondary">
               {recruiterInitials}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0 flex-1 space-y-0.5 lg:space-y-1">
-            <h2 className="text-base lg:text-lg font-semibold text-foreground text-balance truncate">
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <h2 className="text-sm lg:text-base font-semibold text-foreground truncate">
               {recruiterName}
             </h2>
-            <div className="flex items-center gap-1 text-muted-foreground text-xs lg:text-sm">
-              <HugeiconsIcon icon={Briefcase01Icon} size={12} className="shrink-0 lg:size-4" />
+            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+              <HugeiconsIcon icon={Briefcase01Icon} size={14} className="shrink-0" />
               <span className="truncate">{recruiter?.profession ?? "—"}</span>
             </div>
             {isTyping && (
-              <p className="text-xs text-primary animate-pulse mt-0.5">escribiendo...</p>
+              <p className="text-xs text-muted-foreground animate-pulse mt-0.5">escribiendo...</p>
             )}
           </div>
         </div>

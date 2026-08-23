@@ -192,8 +192,8 @@ export default function OrganizationRegisterPage() {
         <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
           <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
             <Image
-              src="/ilustracionRegistroOrganization.png"
-              alt="Biovity - Gestión empresarial y colaboración"
+              src="/Register.png"
+              alt="Biovity - Registro de organización"
               fill
               className="object-cover object-center"
               priority
@@ -204,7 +204,7 @@ export default function OrganizationRegisterPage() {
 
         {/* Right: Registration form */}
         <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-          <div className="m-auto w-full max-w-xl space-y-8 p-6 lg:p-12">
+          <div className="m-auto w-full max-w-2xl space-y-8 p-6 lg:p-12">
             {registeredEmail ? (
               <CheckYourEmail
                 email={registeredEmail}
@@ -469,7 +469,10 @@ export default function OrganizationRegisterPage() {
                       </div>
 
                       {errors.general && (
-                        <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
+                        <div
+                          role="alert"
+                          className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+                        >
                           {errors.general}
                         </div>
                       )}
@@ -585,7 +588,10 @@ export default function OrganizationRegisterPage() {
                       </div>
 
                       {errors.general && (
-                        <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
+                        <div
+                          role="alert"
+                          className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+                        >
                           {errors.general}
                         </div>
                       )}
@@ -594,11 +600,16 @@ export default function OrganizationRegisterPage() {
                         <Button
                           type="button"
                           variant="outline"
-                          className="h-11 px-4 rounded-xl bg-surface-container-lowest border-border text-foreground hover:bg-surface-container-low text-xs font-medium"
+                          className="h-11 px-4 rounded-lg bg-surface-container-lowest border-border/40 text-foreground hover:bg-surface-container-low text-sm font-medium"
                           onClick={handleBack}
                           disabled={isPending || createOrganizationMutation.isPending}
                         >
-                          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} strokeWidth={1.5} className="mr-1" />
+                          <HugeiconsIcon
+                            icon={ArrowLeft01Icon}
+                            size={16}
+                            strokeWidth={1.5}
+                            className="mr-1"
+                          />
                           Volver
                         </Button>
                         <Button

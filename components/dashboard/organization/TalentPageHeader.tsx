@@ -16,7 +16,9 @@ export function TalentPageHeader({ searchValue, onSearchChange }: TalentPageHead
       </div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between flex-1">
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Explorar Talento</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Explorar Talento
+          </h1>
           <p className="text-pretty text-muted-foreground text-sm">
             Busca y revisa perfiles de profesionales en la plataforma.
           </p>

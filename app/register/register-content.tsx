@@ -4,15 +4,9 @@ import { ArrowRight01Icon, Building06Icon, UserIcon } from "@hugeicons/core-free
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import {
-  authButtonClass,
-  authLinkClass,
-  authSubtitleClass,
-  authTitleClass,
-} from "@/components/auth/form-styles"
+import { authLinkClass, authSubtitleClass, authTitleClass } from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
 
 export function RegisterContent() {
   return (
@@ -21,8 +15,8 @@ export function RegisterContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/images/ilustrationOG.png"
-            alt="Biovity - Colaboración en ciencias y biotecnología"
+            src="/Login.png"
+            alt="Biovity - Acceso a la plataforma"
             fill
             className="object-cover object-center"
             priority
@@ -33,7 +27,7 @@ export function RegisterContent() {
 
       {/* Right: Register block */}
       <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
+        <div className="m-auto w-full max-w-xl space-y-8 p-6 lg:p-12">
           {/* Logo & Header */}
           <div className="flex flex-col items-center text-center space-y-3">
             <Link
@@ -51,9 +45,7 @@ export function RegisterContent() {
               />
             </Link>
             <h1 className={authTitleClass}>Únete a Biovity</h1>
-            <p className={authSubtitleClass}>
-              Selecciona el tipo de cuenta que quieres crear
-            </p>
+            <p className={authSubtitleClass}>Selecciona el tipo de cuenta que quieres crear</p>
           </div>
 
           {/* Role Cards */}
@@ -109,17 +101,25 @@ export function RegisterContent() {
 
           {/* Already have account */}
           <div className="space-y-4 border-t border-border pt-6">
-            <p className="text-center text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-center text-xs font-mono font-semibold uppercase tracking-wider text-secondary">
               ¿Ya tienes cuenta?
             </p>
             <div className="space-y-2">
-              <Button asChild variant="outline" className="w-full h-10 rounded-lg bg-surface-container-lowest border-border text-foreground hover:bg-surface-container-low text-xs font-medium">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-11 rounded-lg bg-surface-container-lowest border-border/40 text-foreground hover:bg-surface-container-low text-sm font-medium"
+              >
                 <Link href="/login/professional" className="flex items-center justify-center gap-2">
                   <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={1.5} />
                   Iniciar sesión como usuario
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="w-full h-10 rounded-lg bg-surface-container-lowest border-border text-foreground hover:bg-surface-container-low text-xs font-medium">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-11 rounded-lg bg-surface-container-lowest border-border/40 text-foreground hover:bg-surface-container-low text-sm font-medium"
+              >
                 <Link href="/login/organization" className="flex items-center justify-center gap-2">
                   <HugeiconsIcon icon={Building06Icon} size={16} strokeWidth={1.5} />
                   Acceder al portal organizacional

@@ -78,7 +78,7 @@ export function NotificationPreferencesTab({ userId: _userId }: NotificationPref
       <div className="max-w-[380px] space-y-2">
         <FieldLabel htmlFor="pref-digest">Frecuencia de resumen (digest)</FieldLabel>
         <Select value={prefs.digest} onValueChange={setDigest}>
-          <SelectTrigger id="pref-digest" className="w-full">
+          <SelectTrigger id="pref-digest" className="h-9 w-full">
             <SelectValue placeholder="Selecciona frecuencia" />
           </SelectTrigger>
           <SelectContent>
@@ -127,6 +127,7 @@ export function NotificationPreferencesTab({ userId: _userId }: NotificationPref
             variant="secondary"
             onClick={handleSave}
             disabled={updateMutation.isPending}
+            className="h-9 rounded-lg px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 text-xs font-medium shadow-none transition-colors"
           >
             {updateMutation.isPending ? "Guardando..." : "Guardar preferencias"}
           </Button>

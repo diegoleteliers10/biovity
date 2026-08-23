@@ -44,9 +44,9 @@ function MemberMonogram({ member }: { member: OrganizationMember }) {
     .toUpperCase()
 
   return (
-    <Avatar className="size-10 shrink-0 border border-border bg-[var(--surface-container-low)]">
+    <Avatar className="size-10 shrink-0 border border-border bg-surface-container-low">
       {member.user?.avatar && <AvatarImage src={member.user.avatar} alt={name} />}
-      <AvatarFallback className="bg-transparent text-[13px] font-semibold tracking-[0.02em] text-foreground">
+      <AvatarFallback className="bg-transparent text-xs font-semibold text-foreground">
         {initials}
       </AvatarFallback>
     </Avatar>
@@ -99,9 +99,9 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
   if (isLoading) {
     return (
       <div className="space-y-3">
-        <div className="h-12 animate-pulse rounded-lg bg-muted" />
-        <div className="h-12 animate-pulse rounded-lg bg-muted" />
-        <div className="h-12 animate-pulse rounded-lg bg-muted" />
+        <div className="h-12 animate-pulse rounded-lg bg-surface-container-highest/60" />
+        <div className="h-12 animate-pulse rounded-lg bg-surface-container-highest/60" />
+        <div className="h-12 animate-pulse rounded-lg bg-surface-container-highest/60" />
       </div>
     )
   }
@@ -117,7 +117,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
   return (
     <div className="space-y-10">
       <form
-        className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_190px_auto] sm:items-end"
+        className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_190px_auto]"
         onSubmit={(e) => {
           e.preventDefault()
           handleInvite()
@@ -132,6 +132,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
             onChange={(e) => setInviteEmail(e.target.value)}
             placeholder="correo@ejemplo.com"
             autoComplete="off"
+            className="h-9"
           />
         </div>
 
@@ -141,7 +142,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
             value={inviteRole}
             onValueChange={(v) => setInviteRole(v as OrganizationMemberRole)}
           >
-            <SelectTrigger id="invite-rol" className="w-full">
+            <SelectTrigger id="invite-rol" className="h-9 w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -152,14 +153,20 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
           </Select>
         </div>
 
-        <Button
-          type="submit"
-          variant="secondary"
-          disabled={!inviteEmail.trim() || addMemberMutation.isPending}
-        >
-          <HugeiconsIcon icon={Add01Icon} size={15} strokeWidth={1.8} />
-          {addMemberMutation.isPending ? "Invitando..." : "Invitar"}
-        </Button>
+        <div className="space-y-1.5">
+          <span aria-hidden className="invisible block text-xs leading-4 font-medium">
+            Invitar
+          </span>
+          <Button
+            type="submit"
+            variant="secondary"
+            disabled={!inviteEmail.trim() || addMemberMutation.isPending}
+            className="h-9 w-full gap-1.5 rounded-md px-3 font-medium sm:w-auto"
+          >
+            <HugeiconsIcon icon={Add01Icon} size={15} strokeWidth={1.8} />
+            {addMemberMutation.isPending ? "Invitando..." : "Invitar"}
+          </Button>
+        </div>
       </form>
 
       <section className="space-y-4">
@@ -168,13 +175,19 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
           Miembros
         </h2>
 
-        <div className="divide-y divide-border/70">
-          {memberList.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No hay miembros en esta organización.
+        {memberList.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-surface-container-low px-6 py-6 text-center shadow-none">
+            <span className="grid size-10 place-items-center rounded-full bg-surface-container-highest text-muted-foreground">
+              <HugeiconsIcon icon={UserGroupIcon} size={20} strokeWidth={1.8} aria-hidden />
+            </span>
+            <p className="text-sm font-medium text-foreground">Sin miembros</p>
+            <p className="text-xs text-muted-foreground">
+              Invita a tu equipo para colaborar en las ofertas.
             </p>
-          ) : (
-            memberList.map((member) => {
+          </div>
+        ) : (
+          <div className="divide-y divide-border/70">
+            {memberList.map((member) => {
               const isCurrentUser = member.userId === currentUserId
               const role = roleLabels[member.role]
               const email = member.user?.email ?? ""
@@ -183,15 +196,15 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
                 <div key={member.id} className="flex items-center gap-3.5 py-3">
                   <MemberMonogram member={member} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-[15px] leading-5 font-medium text-foreground">
+                    <p className="text-sm leading-5 font-medium text-foreground">
                       {member.user?.name ?? "Usuario"}
                       {isCurrentUser && (
-                        <span className="ml-1.5 text-[13px] font-normal text-muted-foreground">
+                        <span className="ml-1.5 text-xs font-normal text-muted-foreground">
                           (tú)
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 truncate text-[13.5px] leading-5 text-muted-foreground">
+                    <p className="mt-0.5 truncate text-xs leading-5 text-muted-foreground">
                       {email}
                       {email && role ? " · " : ""}
                       {role}
@@ -199,7 +212,7 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
                   </div>
 
                   {isCurrentUser ? (
-                    <span className="ml-auto inline-flex items-center rounded-full bg-[var(--surface-container-low)] px-2.5 py-0.5 text-xs font-semibold tracking-[0.02em] text-foreground">
+                    <span className="ml-auto inline-flex items-center rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-foreground">
                       Propietaria
                     </span>
                   ) : (
@@ -232,9 +245,9 @@ export function TeamManagementTab({ organizationId }: TeamManagementTabProps) {
                   )}
                 </div>
               )
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
       </section>
     </div>
   )

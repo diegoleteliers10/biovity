@@ -33,6 +33,7 @@ const EMPTY_CALENDAR_EVENTS: Event[] = []
 export function Calendar({
   currentDate,
   events = EMPTY_CALENDAR_EVENTS,
+  isLoading,
   onCreateEvent,
   onSelectEvent,
 }: CalendarProps) {
@@ -143,7 +144,7 @@ export function Calendar({
         {weekDays.map((day) => (
           <div
             key={day}
-            className="p-1.5 lg:p-3 text-center text-xs lg:text-sm font-medium text-muted-foreground"
+            className="p-1.5 lg:p-3 text-center text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground"
           >
             {day}
           </div>
@@ -170,8 +171,8 @@ export function Calendar({
               type="button"
               disabled={!day}
               className={`
-                min-h-[80px] sm:min-h-[100px] lg:min-h-[120px] bg-card p-1.5 lg:p-2 flex flex-col text-left
-                ${day ? "hover:bg-[#f3f3f5] transition-colors cursor-pointer" : ""}
+                min-h-[80px] sm:min-h-[100px] lg:min-h-[120px] bg-surface-container-lowest p-1.5 lg:p-2 flex flex-col text-left
+                ${day ? "hover:bg-surface-container-low transition-colors cursor-pointer" : ""}
                 ${isToday ? "ring-2 ring-secondary ring-inset" : ""}
               `}
               onClick={day ? () => handleDayClick(day) : undefined}
@@ -197,47 +198,54 @@ export function Calendar({
                   >
                     {day}
                     {dayEvents.length > 2 && (
-                      <span className="absolute -top-1 -right-1 text-accent/60 text-[10px] size-6 flex items-center justify-center font-medium">
+                      <span className="absolute -top-1 -right-6 h-4 min-w-4 px-1 rounded-full bg-surface-container-highest text-muted-foreground text-[10px] font-medium flex items-center justify-center tabular-nums">
                         +{dayEvents.length - 2}
                       </span>
                     )}
                   </div>
                   <div className="flex-1 space-y-1">
-                    {dayEvents.slice(0, 2).map((event) => (
-                      // biome-ignore lint/a11y/useSemanticElements: cannot nest <button> inside day cell <button>
-                      <div
-                        key={event.id}
-                        role="button"
-                        tabIndex={0}
-                        className={`
+                    {isLoading
+                      ? [0, 1].map((n) => (
+                          <div
+                            key={`skeleton-${n}`}
+                            className="h-9 w-full rounded-md bg-surface-container-highest/60 animate-pulse"
+                          />
+                        ))
+                      : dayEvents.slice(0, 2).map((event) => (
+                          // biome-ignore lint/a11y/useSemanticElements: cannot nest <button> inside day cell <button>
+                          <div
+                            key={event.id}
+                            role="button"
+                            tabIndex={0}
+                            className={`
                           text-xs px-2 py-1 rounded-md cursor-pointer
-                          transition-all duration-200 hover:scale-105 w-full text-left
+                          transition-colors duration-150 w-full text-left
                           ${getEventTypeColor(event.type)}
                         `}
-                        onMouseEnter={(e) => handleEventHover(event, e)}
-                        onMouseLeave={handleEventLeave}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          const fullEvent = events.find((ev) => ev.id === event.id)
-                          if (fullEvent && onSelectEvent) {
-                            onSelectEvent(fullEvent)
-                          }
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            const fullEvent = events.find((ev) => ev.id === event.id)
-                            if (fullEvent && onSelectEvent) {
-                              onSelectEvent(fullEvent)
-                            }
-                          }
-                        }}
-                      >
-                        <div className="font-medium truncate">{event.title}</div>
-                        <div className="opacity-80">{formatEventTime(event.startAt)}</div>
-                      </div>
-                    ))}
+                            onMouseEnter={(e) => handleEventHover(event, e)}
+                            onMouseLeave={handleEventLeave}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              const fullEvent = events.find((ev) => ev.id === event.id)
+                              if (fullEvent && onSelectEvent) {
+                                onSelectEvent(fullEvent)
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                const fullEvent = events.find((ev) => ev.id === event.id)
+                                if (fullEvent && onSelectEvent) {
+                                  onSelectEvent(fullEvent)
+                                }
+                              }
+                            }}
+                          >
+                            <div className="font-medium truncate">{event.title}</div>
+                            <div className="opacity-80">{formatEventTime(event.startAt)}</div>
+                          </div>
+                        ))}
                   </div>
                 </>
               )}

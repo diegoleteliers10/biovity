@@ -24,7 +24,7 @@ export function AnalyzeButton({ onAnalyze, isAnalyzing, analyzedAt, onClear, dis
         </span>
       )}
       {analyzedAt && (
-        <Button variant="ghost" size="sm" onClick={onClear} className="h-8 text-xs">
+        <Button variant="ghost" size="sm" onClick={onClear} className="h-9 px-3 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground">
           <HugeiconsIcon icon={RefreshIcon} size={11} />
           Revisar
         </Button>
@@ -34,7 +34,7 @@ export function AnalyzeButton({ onAnalyze, isAnalyzing, analyzedAt, onClear, dis
         size="sm"
         onClick={onAnalyze}
         disabled={disabled || isAnalyzing}
-        className={cn("h-8 text-xs gap-1.5", isAnalyzing && "opacity-70")}
+        className={cn("h-9 px-3 rounded-md text-xs font-medium gap-1.5", isAnalyzing && "opacity-70")}
       >
         <HugeiconsIcon icon={SparklesIcon} size={11} />
         {isAnalyzing ? "Analizando..." : "Analizar con IA"}

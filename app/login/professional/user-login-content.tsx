@@ -78,8 +78,8 @@ export function UserLoginContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/images/ilustrationOG.png"
-            alt="Biovity - Colaboración en ciencias y biotecnología"
+            src="/Login.png"
+            alt="Biovity - Acceso a la plataforma"
             fill
             className="object-cover object-center"
             priority
@@ -90,7 +90,7 @@ export function UserLoginContent() {
 
       {/* Right: Login form */}
       <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
+        <div className="m-auto w-full max-w-xl space-y-8 p-6 lg:p-12">
           {/* Logo & Header */}
           <div className="flex flex-col items-center text-center space-y-3">
             <Link
@@ -178,11 +178,16 @@ export function UserLoginContent() {
                   />
                 </button>
               </div>
-              {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-xs text-destructive mt-1">{errors.password}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <label htmlFor="remember" className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none">
+              <label
+                htmlFor="remember"
+                className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
+              >
                 <Checkbox
                   id="remember"
                   checked={rememberMe}
@@ -196,7 +201,10 @@ export function UserLoginContent() {
             </div>
 
             {errors.general && (
-              <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
+              <div
+                role="alert"
+                className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+              >
                 {errors.general}
               </div>
             )}
