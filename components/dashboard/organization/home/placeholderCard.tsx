@@ -2,6 +2,7 @@
 
 import type { IconSvgElement } from "@hugeicons/react"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -25,13 +26,14 @@ export function PlaceholderCard({
   return (
     <Card
       className={cn(
-        "flex flex-col border border-border/80 bg-white",
+        dashboardRaisedCardClass,
+        "flex flex-col",
         onClick &&
-          "cursor-pointer transition-all duration-150 hover:shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06)] hover:border-border active:scale-[0.99]"
+          "cursor-pointer transition-colors duration-150 hover:bg-surface-container-highest/40"
       )}
       onClick={onClick}
     >
-      <CardHeader>
+      <CardHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
         <div className="flex items-center gap-2">
           <HugeiconsIcon
             icon={icon}
@@ -39,11 +41,11 @@ export function PlaceholderCard({
             strokeWidth={1.5}
             className={iconColor === "accent" ? "text-accent" : "text-secondary"}
           />
-          <CardTitle className="text-foreground">{title}</CardTitle>
+          <CardTitle>{title}</CardTitle>
         </div>
-        {description && <p className="text-xs leading-4 text-muted-foreground">{description}</p>}
+        {description && <p className="text-xs text-muted-foreground text-pretty">{description}</p>}
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="flex-1 px-4 sm:px-5 pb-4 sm:pb-5">
         {children || (
           <p className="text-xs leading-4 text-muted-foreground">Proximamente: {description}</p>
         )}

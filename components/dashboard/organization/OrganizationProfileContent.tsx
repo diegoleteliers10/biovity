@@ -56,6 +56,7 @@ import { AiSettingsTab } from "./AiSettingsTab"
 import { NotificationPreferencesTab } from "./NotificationPreferencesTab"
 import { OrganizationActivityTab } from "./OrganizationActivityTab"
 import { OrganizationNotificationsTab } from "./OrganizationNotificationsTab"
+import { SECTION_LABEL_CLASS } from "./SettingsUi"
 
 const SearchAddress = dynamic(
   () => import("@/components/ui/search-address").then((m) => m.SearchAddress),
@@ -79,8 +80,6 @@ type OrgFormData = {
   phone: string
   address: { street: string; city: string; country: string; state?: string; zipCode?: string }
 }
-
-const SECTION_LABEL_CLASS = "text-xs font-semibold tracking-[0.08em] text-foreground uppercase"
 
 function PanelSection({
   label,
@@ -106,7 +105,7 @@ function PanelSection({
 
 function AsideCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl bg-[var(--surface-container-low)] p-6">
+    <section className="rounded-xl border border-border/40 bg-surface-container-low p-6 shadow-none">
       <h2 className={SECTION_LABEL_CLASS}>{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
@@ -123,7 +122,7 @@ const ContactRow = ({
   value: React.ReactNode
 }) => (
   <div className="flex items-center gap-3">
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-secondary">
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-surface-container-lowest text-secondary">
       <HugeiconsIcon icon={Icon} size={18} strokeWidth={1.5} aria-hidden />
     </span>
     <div className="min-w-0 flex-1">
@@ -158,8 +157,8 @@ function addressToFormData(addr: OrganizationAddress | null | undefined): OrgFor
 }
 
 const pillTabClass = cn(
-  "h-auto flex-none cursor-pointer gap-2 rounded-full border-transparent px-3.5 py-2 text-[13.5px] leading-4",
-  "font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
+  "h-auto flex-none cursor-pointer gap-2 rounded-full border-transparent px-3.5 py-2 text-xs leading-4",
+  "font-medium text-muted-foreground hover:bg-surface-container-highest/40 hover:text-foreground",
   "data-[state=active]:rounded-full data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground data-[state=active]:hover:bg-primary data-[state=active]:hover:text-primary-foreground"
 )
 
@@ -173,22 +172,22 @@ function ProfileSkeleton() {
   return (
     <div className="space-y-7">
       <div className="flex items-center gap-7 pb-7">
-        <div className="size-[108px] shrink-0 rounded-full bg-muted animate-pulse" />
+        <div className="size-[108px] shrink-0 rounded-full bg-surface-container-highest/60 animate-pulse" />
         <div className="flex-1 space-y-3">
-          <div className="h-7 w-56 rounded bg-muted animate-pulse" />
-          <div className="h-4 w-40 rounded bg-muted animate-pulse" />
-          <div className="h-3 w-64 rounded bg-muted animate-pulse" />
+          <div className="h-7 w-56 rounded bg-surface-container-highest/60 animate-pulse" />
+          <div className="h-4 w-40 rounded bg-surface-container-highest/60 animate-pulse" />
+          <div className="h-3 w-64 rounded bg-surface-container-highest/60 animate-pulse" />
         </div>
       </div>
-      <div className="h-8 w-full rounded-full bg-muted animate-pulse" />
+      <div className="h-8 w-full rounded-full bg-surface-container-highest/60 animate-pulse" />
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-10">
-          <div className="h-24 bg-muted animate-pulse rounded-2xl" />
-          <div className="h-48 bg-muted animate-pulse rounded-2xl" />
+          <div className="h-24 bg-surface-container-highest/60 animate-pulse rounded-2xl" />
+          <div className="h-48 bg-surface-container-highest/60 animate-pulse rounded-2xl" />
         </div>
         <div className="space-y-5">
-          <div className="h-32 bg-muted animate-pulse rounded-2xl" />
-          <div className="h-48 bg-muted animate-pulse rounded-2xl" />
+          <div className="h-32 bg-surface-container-highest/60 animate-pulse rounded-2xl" />
+          <div className="h-48 bg-surface-container-highest/60 animate-pulse rounded-2xl" />
         </div>
       </div>
     </div>
@@ -391,7 +390,7 @@ export function OrganizationProfileContent() {
 
   if (!mounted) {
     return (
-      <main className="p-6 lg:px-12 lg:py-8">
+      <main className="p-4 sm:p-6">
         <div className="mx-auto w-full max-w-[1020px]">
           <ProfileSkeleton />
         </div>
@@ -401,7 +400,7 @@ export function OrganizationProfileContent() {
 
   if (!userId && !session) {
     return (
-      <main className="p-6 lg:px-12 lg:py-8">
+      <main className="p-4 sm:p-6">
         <p className="text-muted-foreground text-pretty">Inicia sesión para ver tu perfil.</p>
       </main>
     )
@@ -409,7 +408,7 @@ export function OrganizationProfileContent() {
 
   if (isLoading && !user) {
     return (
-      <main className="p-6 lg:px-12 lg:py-8">
+      <main className="p-4 sm:p-6">
         <div className="mx-auto w-full max-w-[1020px]">
           <ProfileSkeleton />
         </div>
@@ -419,7 +418,7 @@ export function OrganizationProfileContent() {
 
   if (userError) {
     return (
-      <main className="p-6 lg:px-12 lg:py-8">
+      <main className="p-4 sm:p-6">
         <p className="text-destructive text-pretty">
           {userError instanceof Error ? userError.message : "Error al cargar el perfil"}
         </p>
@@ -428,7 +427,7 @@ export function OrganizationProfileContent() {
   }
 
   return (
-    <main className="p-6 lg:px-12 lg:py-8">
+    <main className="p-4 sm:p-6">
       <div className="mx-auto w-full max-w-[1020px]">
         <div className="flex items-center justify-between lg:hidden">
           <MobileMenuButton />
@@ -485,7 +484,7 @@ export function OrganizationProfileContent() {
                   {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                 </div>
               ) : (
-                <h1 className="text-center text-[28px] leading-tight font-semibold tracking-[-0.01em] text-foreground lg:text-left">
+                <h1 className="text-center text-xl sm:text-2xl font-bold leading-tight tracking-tight text-foreground lg:text-left">
                   {data.name || EMPTY_PLACEHOLDER}
                 </h1>
               )}
@@ -508,20 +507,20 @@ export function OrganizationProfileContent() {
                 )}
               </div>
             ) : (
-              <p className="mt-1 text-center text-[15px] text-muted-foreground lg:text-left">
+              <p className="mt-1 text-center text-sm text-muted-foreground lg:text-left">
                 {data.profession || EMPTY_PLACEHOLDER}
               </p>
             )}
 
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[13px] text-muted-foreground lg:justify-start">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground lg:justify-start">
               {organization?.name && (
                 <button
                   type="button"
                   onClick={() => handleTabChange("branding")}
                   title="Ver branding de la organización"
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-[var(--surface-container-low)] py-1 pr-3 pl-1.5 text-[13px] font-medium text-foreground transition-colors hover:border-foreground/20 hover:bg-background"
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-surface-container-low py-1 pr-3 pl-1.5 text-xs font-medium text-foreground transition-colors hover:border-foreground/20 hover:bg-surface-container-lowest"
                 >
-                  <span className="grid size-5 shrink-0 place-items-center overflow-hidden rounded-md bg-[var(--surface-container-low)] text-[11px] font-semibold text-muted-foreground">
+                  <span className="grid size-5 shrink-0 place-items-center overflow-hidden rounded-md bg-surface-container-low text-xs font-semibold text-muted-foreground">
                     {organization.logo ? (
                       <Image
                         src={organization.logo}
@@ -669,7 +668,7 @@ export function OrganizationProfileContent() {
                   ) : isEditing ? (
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div className="space-y-1.5">
-                        <label htmlFor="org-name" className="text-xs leading-4 font-medium">
+                        <label htmlFor="org-name" className="block text-xs leading-4 font-medium">
                           Nombre
                         </label>
                         <Input
@@ -680,7 +679,10 @@ export function OrganizationProfileContent() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label htmlFor="org-website" className="text-xs leading-4 font-medium">
+                        <label
+                          htmlFor="org-website"
+                          className="block text-xs leading-4 font-medium"
+                        >
                           Sitio web
                         </label>
                         <Input
@@ -691,7 +693,7 @@ export function OrganizationProfileContent() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label htmlFor="org-phone" className="text-xs leading-4 font-medium">
+                        <label htmlFor="org-phone" className="block text-xs leading-4 font-medium">
                           Teléfono
                         </label>
                         <PhoneInput
@@ -702,7 +704,10 @@ export function OrganizationProfileContent() {
                         />
                       </div>
                       <div className="space-y-1.5 sm:col-span-2">
-                        <label htmlFor="org-address" className="text-xs leading-4 font-medium">
+                        <label
+                          htmlFor="org-address"
+                          className="block text-xs leading-4 font-medium"
+                        >
                           Dirección de la organización
                         </label>
                         <SearchAddress
@@ -816,7 +821,7 @@ export function OrganizationProfileContent() {
                       href={websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2.5 flex w-full items-center gap-2.5 rounded-lg border border-border bg-white p-3 transition-colors hover:bg-[var(--surface-container-low)]"
+                      className="mt-2.5 flex w-full items-center gap-2.5 rounded-lg border border-border/40 bg-surface-container-low p-3 transition-colors hover:bg-surface-container-highest/40"
                     >
                       <HugeiconsIcon
                         icon={Globe02Icon}
@@ -825,10 +830,10 @@ export function OrganizationProfileContent() {
                         className="shrink-0 text-muted-foreground"
                       />
                       <span className="min-w-0 text-left">
-                        <span className="block truncate text-[12.5px] leading-4 text-foreground">
+                        <span className="block truncate text-sm leading-4 text-foreground">
                           {organization?.website}
                         </span>
-                        <span className="block text-[11px] leading-4 text-muted-foreground">
+                        <span className="block text-xs leading-4 text-muted-foreground">
                           Visitar sitio
                         </span>
                       </span>

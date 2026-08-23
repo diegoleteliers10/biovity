@@ -15,6 +15,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { addTransitionType, startTransition, ViewTransition } from "react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -27,13 +28,13 @@ import type { Job } from "@/lib/api/jobs"
 import { formatDateChilean, formatJobSalary } from "@/lib/utils"
 
 const statusColors: Record<string, string> = {
-  active: "bg-secondary/10 text-secondary border border-secondary/20",
-  cerrada: "bg-muted text-muted-foreground",
-  closed: "bg-muted text-muted-foreground",
-  borrador: "bg-accent/10 text-accent border border-accent/20",
-  draft: "bg-accent/10 text-accent border border-accent/20",
-  paused: "bg-yellow-100 text-yellow-800",
-  expired: "bg-destructive/10 text-destructive border border-destructive/20",
+  active: "bg-secondary/10 text-secondary",
+  cerrada: "bg-surface-container-highest text-muted-foreground",
+  closed: "bg-surface-container-highest text-muted-foreground",
+  borrador: "bg-surface-container-highest text-muted-foreground",
+  draft: "bg-surface-container-highest text-muted-foreground",
+  paused: "bg-yellow-500/10 text-yellow-700",
+  expired: "bg-destructive/10 text-destructive",
 }
 
 function getStatusLabel(status: string): string {
@@ -72,7 +73,7 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
   const salaryStr = formatJobSalary(job.salary)
 
   return (
-    <Card className="group relative cursor-pointer border border-border bg-card">
+    <Card className={`group relative cursor-pointer ${dashboardRaisedCardClass}`}>
       <button
         type="button"
         onClick={() => {
@@ -81,7 +82,7 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
             push(`/dashboard/ofertas/${job.id}`)
           })
         }}
-        className="absolute inset-0 z-[1] block rounded-xl transition-all duration-200 hover:bg-secondary/5"
+        className="absolute inset-0 z-[1] block rounded-xl transition-colors duration-150 hover:bg-surface-container-highest/40"
       />
       <div className="relative z-0 flex flex-col gap-0 p-0">
         <div className="flex items-start justify-between gap-2 px-4 pt-4">
@@ -91,7 +92,7 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
             </ViewTransition>
           </h3>
           <span
-            className={`shrink-0 rounded-full px-3 py-1.5 text-[13px] leading-4 font-medium ${statusColors[job.status] ?? "bg-muted text-muted-foreground"}`}
+            className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${statusColors[job.status] ?? "bg-surface-container-highest text-muted-foreground"}`}
           >
             {getStatusLabel(job.status)}
           </span>
@@ -147,7 +148,7 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-border/10 px-4 py-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+        <div className="flex items-center justify-between border-t border-border/10 px-4 py-2 text-xs text-muted-foreground tabular-nums">
           <span>{job.createdAt ? formatDateChilean(job.createdAt, "d MMM yyyy") : "—"}</span>
           {job.expiresAt && <span>Expira: {formatDateChilean(job.expiresAt, "d MMM yyyy")}</span>}
         </div>
@@ -228,7 +229,7 @@ export function CreateOfferCard({ onClick }: CreateOfferCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="group flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border/40 bg-transparent px-4 py-6 transition-all duration-200 hover:border-secondary/40 hover:bg-secondary/5 active:scale-[0.98]"
+      className="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border/40 bg-transparent px-4 py-6 transition-colors duration-200 hover:border-secondary/40 hover:bg-secondary/5"
     >
       <div className="flex size-10 items-center justify-center rounded-full bg-secondary/10 transition-colors duration-200 group-hover:bg-secondary/20">
         <HugeiconsIcon icon={FileAddIcon} size={22} strokeWidth={1.5} className="text-secondary" />

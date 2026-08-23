@@ -27,6 +27,7 @@ import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import type { EventType } from "@/lib/types/events"
 import { formatDateChilean } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { dashboardRaisedCardClass } from "../shared/surface-classes"
 import { ApplicationsKanban } from "./ApplicationsKanban"
 import { JobSelector, NoApplicantsEmptyState, NoJobSelectedState } from "./applicationsUtils"
 import { PipelineToolbar } from "./PipelineToolbar"
@@ -318,7 +319,9 @@ export function OrganizationApplicationsContent() {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Aplicaciones</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Aplicaciones
+          </h1>
           <p className="text-pretty text-muted-foreground text-sm">
             Revisa las postulaciones de candidatos a tus ofertas.
           </p>
@@ -344,7 +347,9 @@ export function OrganizationApplicationsContent() {
           <ConnectedNotificationBell showAgentTrigger />
         </div>
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Aplicaciones</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Aplicaciones
+          </h1>
           <p className="text-pretty text-muted-foreground text-sm">
             Revisa las postulaciones de candidatos a tus ofertas.
           </p>
@@ -360,12 +365,14 @@ export function OrganizationApplicationsContent() {
           error={jobsError}
         />
 
-        <section className="min-w-0 flex-1 h-full flex flex-col overflow-hidden rounded-lg border bg-card">
+        <section
+          className={`min-w-0 flex-1 h-full flex flex-col overflow-hidden ${dashboardRaisedCardClass}`}
+        >
           {selectedJob ? (
             <div className="flex h-full flex-col overflow-hidden">
               <div className="border-b px-4 py-3 shrink-0">
                 <div className="flex items-center justify-between mb-1">
-                  <h2 className="font-semibold">{selectedJob.title}</h2>
+                  <h2 className="text-base font-semibold text-foreground">{selectedJob.title}</h2>
                   <div className="flex items-center gap-2">
                     {jobOfferContext && (
                       <AnalyzeButton
@@ -385,10 +392,10 @@ export function OrganizationApplicationsContent() {
                           setSelectedIds(new Set())
                         }
                       }}
-                      className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      className={`h-9 rounded-md px-3 text-xs font-medium transition-colors ${
                         selectionMode
                           ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:bg-muted/80"
+                          : "bg-surface-container-highest text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       {selectionMode ? "Salir seleccion" : "Seleccionar"}
@@ -409,13 +416,13 @@ export function OrganizationApplicationsContent() {
                     <div className="space-y-3 w-full p-3 lg:p-4">
                       {Array.from({ length: 3 }).map((_, i) => (
                         <div
-                          key={i}
-                          className="flex items-center gap-3 rounded-lg border border-border/60 bg-muted/30 p-3"
+                          key={`app-skeleton-${i}`}
+                          className="flex items-center gap-3 rounded-lg bg-surface-container-low p-3"
                         >
-                          <div className="size-8 animate-pulse rounded-full bg-muted" />
+                          <div className="size-8 animate-pulse rounded-full bg-surface-container-highest/60" />
                           <div className="flex-1 space-y-2">
-                            <div className="h-3 w-32 animate-pulse rounded bg-muted" />
-                            <div className="h-2.5 w-20 animate-pulse rounded bg-muted" />
+                            <div className="h-3 w-32 animate-pulse rounded-md bg-surface-container-highest/60" />
+                            <div className="h-2.5 w-20 animate-pulse rounded-md bg-surface-container-highest/60" />
                           </div>
                         </div>
                       ))}

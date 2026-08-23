@@ -112,14 +112,14 @@ export function PipelineToolbar({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar por nombre..."
-            className="h-7 pl-9"
+            className="h-9 pl-9"
           />
         </div>
         <Select
           value={stageFilter}
           onValueChange={(v) => onStageFilterChange(v as ApplicationStage | "all")}
         >
-          <SelectTrigger className="h-7 w-[140px]">
+          <SelectTrigger className="h-9 w-[140px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -142,12 +142,17 @@ export function PipelineToolbar({
               variant="outline"
               size="sm"
               onClick={() => onBulkAdvance(advanceStage)}
-              className="h-8 gap-1.5"
+              className="h-9 gap-1.5 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
             >
               Avanzar a {advanceStage}
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={onBulkMessage} className="h-7 gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onBulkMessage}
+            className="h-9 gap-1.5 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
+          >
             <HugeiconsIcon icon={Message01Icon} size={14} />
             Mensaje
           </Button>
@@ -156,7 +161,7 @@ export function PipelineToolbar({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 gap-1.5 text-rose-600 hover:text-rose-700"
+                className="h-9 gap-1.5 rounded-md px-3 text-xs font-medium text-destructive hover:text-destructive"
               >
                 <HugeiconsIcon icon={Delete03Icon} size={14} />
                 Rechazar
@@ -178,7 +183,7 @@ export function PipelineToolbar({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Button variant="ghost" size="sm" onClick={onClearSelection} className="h-7">
+          <Button variant="ghost" size="sm" onClick={onClearSelection} className="h-9 rounded-md">
             <HugeiconsIcon icon={Cancel01Icon} size={14} />
           </Button>
         </div>

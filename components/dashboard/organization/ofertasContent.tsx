@@ -62,7 +62,7 @@ export function OfertasContent() {
     return (
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">Ofertas</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Ofertas</h1>
           <p className="text-muted-foreground text-sm">
             Gestiona tus vacantes y publica nuevas ofertas de empleo.
           </p>

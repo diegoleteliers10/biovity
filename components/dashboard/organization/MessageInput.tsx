@@ -4,13 +4,12 @@ import {
   Attachment01Icon,
   BookmarkAdd01Icon,
   Calendar01Icon,
-  Cancel01Icon,
   Image01Icon,
   NoteAddIcon,
   Sent02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -90,14 +89,20 @@ export function MessageInput({
     }
   }
 
+  useEffect(() => {
+    if (!value && messageInputRef.current) {
+      messageInputRef.current.style.cssText = ""
+    }
+  }, [value])
+
   return (
-    <div className="shrink-0 border-t border-border bg-background p-4">
+    <div className="shrink-0 border-t border-border/40 bg-surface-container-lowest p-4">
       {sendError && (
-        <p className="mb-2 text-destructive text-sm">
+        <p className="mb-2 text-xs text-destructive">
           {sendError instanceof Error ? sendError.message : "Error al enviar"}
         </p>
       )}
-      {isUploading && <p className="mb-2 text-muted-foreground text-sm">Subiendo archivo…</p>}
+      {isUploading && <p className="mb-2 text-xs text-muted-foreground">Subiendo archivo…</p>}
       <div className="flex items-center gap-2">
         <input
           ref={fileInputRef}
@@ -212,7 +217,7 @@ export function MessageInput({
             }}
             onKeyDown={onKeyPress}
             placeholder="Escribe un mensaje..."
-            className="w-full min-h-7 max-h-[220px] resize-none overflow-y-hidden rounded-md border border-input bg-transparent px-2.5 py-1 text-[13px] leading-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full min-h-9 max-h-[220px] resize-none overflow-y-hidden rounded-lg border border-border/40 bg-surface-container-low px-3 py-2 text-sm leading-5 text-foreground placeholder:text-muted-foreground focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-colors"
             rows={1}
           />
         </div>
@@ -251,7 +256,7 @@ export function MessageInput({
             </div>
             <div className="space-y-2">
               <Label>Contenido</Label>
-              <div className="rounded-md border bg-muted/20 p-3 text-sm text-foreground max-h-40 overflow-y-auto whitespace-pre-wrap">
+              <div className="rounded-lg border border-border/40 bg-surface-container-low p-3 text-sm text-foreground max-h-40 overflow-y-auto whitespace-pre-wrap">
                 {value}
               </div>
             </div>

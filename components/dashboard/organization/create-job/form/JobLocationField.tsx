@@ -55,16 +55,19 @@ export function JobLocationField({
               value={city}
               onChange={(e) => onCityChange(e.target.value)}
               placeholder="Ciudad"
+              className="h-9"
             />
             <Input
               value={region}
               onChange={(e) => onRegionChange(e.target.value)}
               placeholder="Región"
+              className="h-9"
             />
             <Input
               value={country}
               onChange={(e) => onCountryChange(e.target.value)}
               placeholder="País"
+              className="h-9"
             />
           </div>
         )}

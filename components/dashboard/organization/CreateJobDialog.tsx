@@ -303,7 +303,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     <Sheet open={open} onOpenChange={handleOpenChange} modal={true}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-lg z-[120] flex flex-col"
+        className="w-full sm:max-w-lg z-[120] flex flex-col h-full p-0 gap-0 border-l border-border/40 bg-surface-container-lowest shadow-none overflow-hidden"
         onPointerDownOutside={(e) => {
           const target = e.target as HTMLElement
           if (
@@ -324,12 +324,12 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
         }}
       >
         <ComboboxPortalContainer>
-          <SheetHeader>
+          <SheetHeader className="border-b border-border/40 bg-surface-container-low p-4 sm:p-5 text-left shrink-0">
             <JobFormHeader isEdit={isEdit} />
           </SheetHeader>
 
           {/* Tab navigation */}
-          <div className="flex items-center gap-1 border-b border-border/60 px-4 pt-1 pb-0">
+          <div className="flex items-center gap-1 border-b border-border/40 px-4 pt-1 pb-0 shrink-0">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -386,7 +386,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 <CollapsibleTrigger asChild>
                   <button
                     type="button"
-                    className="flex w-full items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/50"
+                    className="flex w-full items-center justify-between rounded-md border border-border/40 bg-surface-container-low px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-surface-container-highest/40"
                   >
                     <span>Más detalles (opcional)</span>
                     <HugeiconsIcon
@@ -454,8 +454,8 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
 
           {activeTab === "preview" && (
             <div className="flex-1 overflow-y-auto px-4 py-4">
-              <div className="mb-3 rounded-lg border border-secondary/20 bg-secondary/5 px-3 py-2">
-                <p className="text-xs text-secondary font-medium">
+              <div className="mb-3 rounded-md border border-secondary/20 bg-secondary/5 px-3 py-2">
+                <p className="text-xs text-secondary font-semibold">
                   Vista previa — así verá el candidato esta oferta
                 </p>
               </div>
@@ -496,8 +496,8 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
 
           {activeTab === "questions" && activeJobId && (
             <div className="flex-1 overflow-y-auto px-4 py-4">
-              <div className="mb-3 rounded-lg border border-secondary/20 bg-secondary/5 px-3 py-2">
-                <p className="text-xs text-secondary font-medium">
+              <div className="mb-3 rounded-md border border-secondary/20 bg-secondary/5 px-3 py-2">
+                <p className="text-xs text-secondary font-semibold">
                   Gestiona las preguntas para los postulantes de esta oferta.
                 </p>
               </div>

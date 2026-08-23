@@ -40,7 +40,7 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-5 space-y-4">
+      <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-5 space-y-4 shadow-none">
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
             <HugeiconsIcon icon={UserIcon} size={20} />
@@ -53,15 +53,19 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
             </p>
           </div>
         </div>
-        <div className="flex gap-2 items-end">
-          <div className="flex-1 space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">
+        <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <div className="min-w-0 space-y-1.5">
+            <label
+              htmlFor="transfer-owner"
+              className="block text-xs leading-4 font-medium text-muted-foreground"
+            >
               Seleccionar nuevo owner
             </label>
             <select
+              id="transfer-owner"
               value={transferTargetId}
               onChange={(e) => setTransferTargetId(e.target.value)}
-              className="flex h-7 w-full rounded-md border border-input bg-background px-3 py-1"
+              className="flex h-9 w-full rounded-md border border-input bg-input/20 px-2.5 text-[13px] leading-4 outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
             >
               <option value="">Seleccionar miembro...</option>
               {otherMembers.map((m) => (
@@ -71,17 +75,23 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
               ))}
             </select>
           </div>
-          <Button
-            variant="destructive"
-            onClick={handleTransfer}
-            disabled={!transferTargetId || transferMutation.isPending}
-          >
-            {transferMutation.isPending ? "Transfiriendo..." : "Transferir"}
-          </Button>
+          <div className="space-y-1.5">
+            <span aria-hidden className="invisible block text-xs leading-4 font-medium">
+              Transferir
+            </span>
+            <Button
+              variant="destructive"
+              onClick={handleTransfer}
+              disabled={!transferTargetId || transferMutation.isPending}
+              className="h-9 w-full rounded-md px-3 sm:w-auto"
+            >
+              {transferMutation.isPending ? "Transfiriendo..." : "Transferir"}
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-5 space-y-4">
+      <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-5 space-y-4 shadow-none">
         <div className="flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
             <HugeiconsIcon icon={Building06Icon} size={20} />
@@ -98,12 +108,12 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
           <p className="text-xs text-muted-foreground">
             Escribe <strong>ELIMINAR</strong> para confirmar.
           </p>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Input
               value={confirmDelete}
               onChange={(e) => setConfirmDelete(e.target.value)}
               placeholder="ELIMINAR"
-              className="max-w-[200px]"
+              className="h-9 max-w-[200px]"
             />
             <Button
               variant="destructive"
@@ -113,6 +123,7 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
                   window.location.href = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/v1/organizations/${organizationId}`
                 }
               }}
+              className="h-9 rounded-md px-3"
             >
               Eliminar
             </Button>

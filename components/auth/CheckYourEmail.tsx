@@ -33,16 +33,12 @@ export function CheckYourEmail({ email, loginHref, description }: CheckYourEmail
           />
         </Link>
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-secondary/10 border border-secondary/20 text-secondary">
-          <HugeiconsIcon
-            icon={MailSend01Icon}
-            size={28}
-            strokeWidth={1.5}
-          />
+          <HugeiconsIcon icon={MailSend01Icon} size={28} strokeWidth={1.5} />
         </div>
         <h1 className={authTitleClass}>Revisa tu correo</h1>
         <p className={`mx-auto max-w-sm ${authSubtitleClass}`}>
-          {description} <span className="font-semibold text-foreground font-mono">{email}</span>. Haz clic en el
-          enlace para confirmar tu cuenta y luego inicia sesión.
+          {description} <span className="font-semibold text-foreground font-mono">{email}</span>.
+          Haz clic en el enlace para confirmar tu cuenta y luego inicia sesión.
         </p>
       </div>
       <div className="space-y-4">

@@ -95,8 +95,8 @@ function ApplicantCard({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "cursor-grab touch-none border-border/60 py-3.5 active:cursor-grabbing active:scale-[0.99] transition-all duration-150 relative",
-        isDragging && "opacity-50 shadow-lg",
+        "cursor-grab touch-none border-border/50 py-3.5 active:cursor-grabbing transition-colors duration-150 relative",
+        isDragging && "opacity-50 border-primary/50",
         selectionMode && isSelected && "border-primary/50 bg-primary/5"
       )}
       {...listeners}
@@ -185,7 +185,7 @@ function ApplicantCard({
             {selectionMode && (
               <div
                 className={cn(
-                  "absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full border-2 border-background transition-all shadow-xs",
+                  "absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full border-2 border-background transition-colors",
                   isSelected
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground hover:bg-primary/20"
@@ -250,7 +250,7 @@ function ApplicantCard({
             )}
 
             {/* Metadata Footer */}
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground/75 mt-1 pt-1 border-t border-border/10">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground mt-1 pt-1 border-t border-border/10">
               <span>Aplicó: {applicant.dateApplied}</span>
               {applicant.salaryMin != null && (
                 <span className="truncate font-mono">
@@ -312,9 +312,9 @@ function KanbanColumn({
             strokeWidth={1.5}
             className="text-muted-foreground lg:size-5"
           />
-          <span className="font-semibold text-xs lg:text-sm">{stage.label}</span>
+          <span className="text-xs leading-4 font-medium text-foreground">{stage.label}</span>
         </div>
-        <span className="tabular-nums text-muted-foreground text-xs bg-muted px-2 py-0.5 rounded-full font-medium">
+        <span className="tabular-nums text-muted-foreground text-xs bg-surface-container-highest px-2 py-0.5 rounded-md font-medium">
           {applicants.length}
         </span>
       </div>
@@ -470,7 +470,7 @@ export function ApplicationsKanban({
       <DragOverlay>
         {activeApplicant ? (
           <div className="cursor-grabbing rotate-2 opacity-90">
-            <Card className="border-2 border-primary shadow-2xl">
+            <Card className="border-2 border-primary">
               <CardContent className="relative p-4">
                 <div className="min-w-0 flex-1">
                   <p className="font-medium leading-tight">{activeApplicant.candidateName}</p>

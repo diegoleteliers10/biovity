@@ -316,7 +316,7 @@ export function DashboardSidebar({
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarMenu className="font-mono">
+          <SidebarMenu>
             {navData.navMain.map((item) => (
               <div key={item.title}>
                 <NavItemWithTooltip
@@ -365,7 +365,7 @@ export function DashboardSidebar({
               </button>
             </div>
             <SidebarGroup className="hidden group-data-[collapsible=icon]:flex">
-              <SidebarMenu className="font-mono">
+              <SidebarMenu>
                 {isMobile ? (
                   <SidebarMenuItem>
                     <button
@@ -414,7 +414,7 @@ export function DashboardSidebar({
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
               Explorar
             </SidebarGroupLabel>
-            <SidebarMenu className="font-mono">
+            <SidebarMenu>
               {navData.explore.map((item) => (
                 <div key={item.title}>
                   <ExploreItemWithTooltip

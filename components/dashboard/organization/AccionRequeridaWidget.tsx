@@ -4,6 +4,7 @@ import { AlertCircleIcon, ArrowRight01Icon, File02Icon } from "@hugeicons/core-f
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
 import { useMemo } from "react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -56,33 +57,33 @@ export function AccionRequeridaWidget() {
 
   if (isPending) {
     return (
-      <Card>
-        <CardHeader>
+      <Card className={dashboardRaisedCardClass}>
+        <CardHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
           <Skeleton className="h-5 w-36" />
         </CardHeader>
-        <CardContent>
-          <Skeleton className="h-20 w-full" />
+        <CardContent className="px-4 sm:px-5 pb-4 sm:pb-5">
+          <Skeleton className="h-20 w-full rounded-lg" />
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className={dashboardRaisedCardClass}>
+      <CardHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
         <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-amber-500" />
+          <HugeiconsIcon icon={AlertCircleIcon} size={20} className="text-destructive" />
           <CardTitle>Acción Requerida</CardTitle>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 sm:px-5 pb-4 sm:pb-5">
         {pendingApps.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-4 text-center">
-            <div className="flex size-10 items-center justify-center rounded-full bg-green-500/10">
-              <HugeiconsIcon icon={File02Icon} size={20} className="text-green-600" />
+            <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center text-muted-foreground">
+              <HugeiconsIcon icon={File02Icon} size={20} />
             </div>
             <p className="text-sm font-medium text-foreground">Todo al día</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground text-pretty">
               No hay postulaciones pendientes con más de 5 días sin revisar.
             </p>
           </div>
@@ -91,7 +92,7 @@ export function AccionRequeridaWidget() {
             {pendingApps.map((item) => (
               <div
                 key={item.jobId}
-                className="flex items-center justify-between rounded-lg border border-border/60 p-3"
+                className="flex items-center justify-between rounded-lg bg-surface-container-low p-3"
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-foreground truncate">{item.title}</p>

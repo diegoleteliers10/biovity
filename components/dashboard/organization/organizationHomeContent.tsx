@@ -10,7 +10,6 @@ import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { RecentMessagesCard } from "@/components/dashboard/employee/home/recentMessagesCard"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChatsByRecruiter } from "@/lib/api/use-chats"
-import { useMarkNotificationRead, useNotifications } from "@/lib/api/use-notifications"
 import { useOrganization } from "@/lib/api/use-organization"
 import {
   useOrgMetrics,
@@ -19,6 +18,7 @@ import {
 } from "@/lib/api/use-organization-dashboard"
 import { getUser } from "@/lib/api/users"
 import { useDashboardSession } from "../DashboardSessionContext"
+import { dashboardRaisedCardClass, dashboardTonalCardClass } from "../shared/surface-classes"
 import { AccionRequeridaWidget } from "./AccionRequeridaWidget"
 import { CreateOfferCard } from "./home/createOfferCard"
 import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
@@ -34,8 +34,6 @@ export function OrganizationHomeContent() {
   const { data: organizationData } = useOrganization(organizationId)
   const organizationName = organizationData?.name
 
-  const { data: notificationsData } = useNotifications()
-  const markRead = useMarkNotificationRead()
   const metricsQuery = useOrgMetrics(organizationId)
   const applicationsQuery = useOrgRecentApplications(organizationId)
   const userId = session?.user?.id
@@ -67,11 +65,6 @@ export function OrganizationHomeContent() {
     return map
   }, [candidateQueries, messagesQuery.data])
 
-  // Feature coming soon, no query needed
-
-  const notifications = notificationsData?.data ?? []
-  const unreadCount = notificationsData?.unreadCount ?? 0
-
   const hasOrgId = Boolean(organizationId && organizationId.length > 0)
 
   // Derive skeleton visibility directly from query states instead of useEffect + setState
@@ -79,15 +72,6 @@ export function OrganizationHomeContent() {
     ? applicationsQuery.isPending || applicationsQuery.data === undefined || messagesQuery.isPending
     : true
   const showMessagesSkeletons = showSkeletons
-
-  const handleNotificationClick = useCallback(
-    (id: string) => {
-      markRead.mutate(id)
-      const target = notifications.find((n) => n.id === id)
-      if (target?.link) push(target.link)
-    },
-    [markRead, notifications, push]
-  )
 
   const handleViewAllMessages = useCallback(() => {
     push("/dashboard/messages")
@@ -99,68 +83,70 @@ export function OrganizationHomeContent() {
   const skeletonId = useId()
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <OrganizationHomeHeader
         firstName={displayName}
         isPending={organizationData === undefined}
-        notifications={notifications}
-        unreadCount={unreadCount}
-        onNotificationClick={handleNotificationClick}
       />
 
       <OnboardingChecklist />
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {metricsQuery.isPending ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={`${skeletonId}-${i}`}
-              className="border border-border/80 bg-white rounded-[14px] px-4 py-6"
-            >
-              <div className="flex items-center justify-between pb-2">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="size-4" />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {metricsQuery.isPending
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={`${skeletonId}-${i}`}
+                className={`flex flex-col gap-2 p-4 sm:p-5 ${dashboardTonalCardClass}`}
+              >
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="size-4" />
+                </div>
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-3 w-24" />
               </div>
-              <Skeleton className="h-8 w-20" />
-              <Skeleton className="h-3 w-24 mt-1" />
-            </div>
-          ))
-        ) : metricsQuery.error ? (
-          <div className="col-span-full text-sm text-destructive bg-destructive/10 p-4 rounded-lg">
-            Error al cargar métricas.
-          </div>
-        ) : (
-          metricsQuery.data?.map((metric) => <MetricCard key={metric.title} metric={metric} />)
-        )}
+            ))
+          : metricsQuery.error
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={`${skeletonId}-err-${i}`}
+                  className={`flex flex-col gap-2 p-4 sm:p-5 ${dashboardTonalCardClass}`}
+                >
+                  <span className="text-sm font-medium text-foreground">—</span>
+                  <span className="text-2xl font-bold text-muted-foreground tracking-tight">—</span>
+                  <span className="text-xs text-destructive">No se pudo cargar</span>
+                </div>
+              ))
+            : metricsQuery.data?.map((metric) => <MetricCard key={metric.title} metric={metric} />)}
       </div>
 
-      <div className="mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {showSkeletons ? (
-          <div className="md:col-span-2 border border-border/80 bg-white rounded-[14px] px-4 py-6">
-            <div className="flex items-center justify-between mb-6">
+          <div className={`md:col-span-2 p-4 sm:p-5 ${dashboardRaisedCardClass}`}>
+            <div className="mb-6 flex items-center justify-between">
               <Skeleton className="h-5 w-40" />
-              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-8 w-16 rounded-lg" />
             </div>
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={`${skeletonId}-app-${i}`}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60"
+                  className="flex items-center justify-between rounded-lg border border-border/30 bg-surface-container-low p-3"
                 >
                   <div className="space-y-2">
-                    <Skeleton className="size-48" />
-                    <Skeleton className="size-32" />
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-32" />
                   </div>
                   <div className="space-y-1 text-right">
-                    <Skeleton className="h-3 w-20 ml-auto" />
-                    <Skeleton className="h-5 w-16 rounded-full ml-auto" />
+                    <Skeleton className="ml-auto h-3 w-20" />
+                    <Skeleton className="ml-auto h-5 w-16 rounded-full" />
                   </div>
                 </div>
               ))}
             </div>
           </div>
         ) : applicationsQuery.error ? (
-          <div className="md:col-span-2 text-sm text-destructive bg-destructive/10 p-4 rounded-lg flex items-center justify-center">
+          <div className="col-span-full flex items-center justify-center rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive md:col-span-2">
             Error al cargar aplicaciones recientes.
           </div>
         ) : (
@@ -168,10 +154,10 @@ export function OrganizationHomeContent() {
         )}
 
         {showMessagesSkeletons ? (
-          <div className="border border-border/80 bg-white rounded-[14px] px-4 py-6">
-            <div className="flex items-center justify-between mb-6">
+          <div className={`p-4 sm:p-5 ${dashboardRaisedCardClass}`}>
+            <div className="mb-6 flex items-center justify-between">
               <Skeleton className="h-5 w-36" />
-              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-8 w-16 rounded-lg" />
             </div>
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -186,7 +172,7 @@ export function OrganizationHomeContent() {
             </div>
           </div>
         ) : messagesQuery.error ? (
-          <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-lg flex items-center justify-center">
+          <div className="flex items-center justify-center rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
             Error al cargar mensajes recientes.
           </div>
         ) : (
@@ -205,11 +191,9 @@ export function OrganizationHomeContent() {
         )}
       </div>
 
-      <div className="mt-4">
-        <CreateOfferCard />
-      </div>
+      <CreateOfferCard />
 
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <PlaceholderCard
           title="Proximas entrevistas"
           description="calendario de entrevistas"
@@ -236,7 +220,10 @@ export function OrganizationHomeContent() {
           ) : interviewsQuery.data && interviewsQuery.data.length > 0 ? (
             <div className="space-y-4 mt-2">
               {interviewsQuery.data.map((interview) => (
-                <div key={interview.id} className="flex flex-col gap-1 border-b pb-3 last:border-0">
+                <div
+                  key={interview.id}
+                  className="flex flex-col gap-1 border-b border-border/30 pb-3 last:border-0"
+                >
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-sm">{interview.candidateName}</span>
                     <span className="text-xs text-muted-foreground">
@@ -245,7 +232,7 @@ export function OrganizationHomeContent() {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">{interview.position}</span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent">
+                    <span className="inline-flex items-center rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-foreground">
                       {interview.type}
                     </span>
                   </div>
@@ -263,25 +250,25 @@ export function OrganizationHomeContent() {
           icon={SparklesIcon}
           iconColor="accent"
         >
-          <div className="flex flex-col items-center justify-center text-center p-5 bg-secondary/5 rounded-xl border border-dashed border-border/60 min-h-[180px] h-full">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent/10 text-accent mb-2.5 animate-pulse">
+          <div className="flex h-full flex-col items-center justify-center rounded-xl bg-surface-container-low p-4 sm:p-5 text-center">
+            <div className="mb-2.5 flex size-9 items-center justify-center rounded-lg bg-accent/10 text-accent">
               <HugeiconsIcon icon={SparklesIcon} size={18} strokeWidth={1.5} />
             </div>
-            <h4 className="font-semibold text-sm text-foreground mb-1">Emparejamiento con IA</h4>
-            <p className="text-xs text-muted-foreground max-w-[240px] leading-relaxed">
+            <h4 className="mb-1 text-xs leading-4 font-medium text-foreground">
+              Emparejamiento con IA
+            </h4>
+            <p className="max-w-[240px] text-xs leading-relaxed text-muted-foreground text-pretty">
               Próximamente analizaremos los perfiles automáticamente para sugerirte los
               profesionales más adecuados para tus vacantes.
             </p>
-            <span className="mt-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-accent/10 text-accent border border-accent/20">
+            <span className="mt-3 inline-flex items-center rounded-full border-0 bg-accent/15 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-accent">
               Próximamente
             </span>
           </div>
         </PlaceholderCard>
       </div>
 
-      <div className="mt-4">
-        <AccionRequeridaWidget />
-      </div>
+      <AccionRequeridaWidget />
     </div>
   )
 }

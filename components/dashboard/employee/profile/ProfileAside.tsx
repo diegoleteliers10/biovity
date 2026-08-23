@@ -30,15 +30,15 @@ const LEVEL_DOTS: Record<string, number> = {
   entry: 1,
 }
 
-const SECTION_LABEL_CLASS = "text-xs font-semibold tracking-[0.08em] text-foreground uppercase"
+const SECTION_LABEL_CLASS = "text-xs leading-4 font-medium text-foreground"
 
 export function ProfileAside() {
   return (
-    <>
+    <div className="space-y-4">
       <SkillsCard />
       <ContactCard />
       <CvCard />
-    </>
+    </div>
   )
 }
 
@@ -51,9 +51,14 @@ const AsideCard = ({
   children: React.ReactNode
   className?: string
 }) => (
-  <section className={cn("rounded-2xl bg-[var(--surface-container-low)] p-6", className)}>
+  <section
+    className={cn(
+      "rounded-xl border border-border/40 bg-surface-container-low p-4 sm:p-5 shadow-none",
+      className
+    )}
+  >
     <h2 className={SECTION_LABEL_CLASS}>{title}</h2>
-    <div className="mt-4">{children}</div>
+    <div className="mt-3.5">{children}</div>
   </section>
 )
 
@@ -64,7 +69,10 @@ function LevelDots({ level }: { level?: string }) {
       {[0, 1, 2].map((dot) => (
         <span
           key={`dot-${dot}`}
-          className={cn("size-1.5 rounded-full", dot < filled ? "bg-secondary" : "bg-border")}
+          className={cn(
+            "size-1.5 rounded-full",
+            dot < filled ? "bg-secondary" : "bg-neutral-300 dark:bg-neutral-600"
+          )}
         />
       ))}
     </span>
@@ -78,23 +86,23 @@ export function SkillsCard() {
   return (
     <AsideCard title="Habilidades">
       {skills.length > 0 ? (
-        <ul className="flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-1.5">
           {skills.map((skill) => {
             const name = typeof skill === "string" ? skill : skill.name
             const level = typeof skill === "string" ? undefined : skill.level
             return (
               <li
                 key={`skill-${name}`}
-                className="flex items-center gap-2 rounded-full border border-border bg-white px-3.5 py-1.5 text-[13px] font-medium text-foreground"
+                className="flex items-center gap-1.5 rounded-full bg-surface-container-highest px-3 py-1 text-xs font-medium text-foreground"
               >
-                <span className="max-w-[220px] truncate">{name}</span>
+                <span className="max-w-[200px] truncate">{name}</span>
                 {level && <LevelDots level={level} />}
               </li>
             )
           })}
         </ul>
       ) : (
-        <p className="text-sm text-muted-foreground">No has agregado habilidades.</p>
+        <p className="text-xs text-muted-foreground">No has agregado habilidades.</p>
       )}
     </AsideCard>
   )
@@ -110,8 +118,8 @@ const ContactRow = ({
   value: React.ReactNode
 }) => (
   <div className="flex items-center gap-3">
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-secondary">
-      <HugeiconsIcon icon={Icon} size={18} strokeWidth={1.5} aria-hidden />
+    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/40 bg-surface-container-lowest text-secondary">
+      <HugeiconsIcon icon={Icon} size={16} strokeWidth={1.5} aria-hidden />
     </span>
     <div className="min-w-0 flex-1">
       <p className="text-xs text-muted-foreground">{label}</p>
@@ -127,7 +135,7 @@ export function ContactCard() {
 
   return (
     <AsideCard title="Contacto">
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         <ContactRow
           icon={Mail01Icon}
           label="Correo"
@@ -142,7 +150,7 @@ export function ContactCard() {
                 value={formData.phone}
                 onChange={(value) => handleInputChange("phone", value)}
                 placeholder="+56 9 1234 5678"
-                className="h-7"
+                className="h-9 rounded-lg border-border/40 bg-surface-container-lowest text-xs sm:text-sm"
               />
             ) : (
               <span className="block truncate">{data.phone || EMPTY_PLACEHOLDER}</span>
@@ -158,7 +166,7 @@ export function ContactCard() {
                 value={formData.location}
                 onChange={(e) => handleInputChange("location", e.target.value)}
                 placeholder="Ciudad, País"
-                className="h-7"
+                className="h-9 rounded-lg border-border/40 bg-surface-container-lowest text-xs sm:text-sm"
               />
             ) : (
               <span className="block truncate">{data.location || EMPTY_PLACEHOLDER}</span>
@@ -173,7 +181,7 @@ export function ContactCard() {
               <DatePicker
                 date={formData.dateOfBirth ? parseLocalDate(formData.dateOfBirth) : undefined}
                 setDate={(d) => handleInputChange("dateOfBirth", d ? dateToDateString(d) : "")}
-                className="h-7"
+                className="h-9 rounded-lg border-border/40 bg-surface-container-lowest text-xs sm:text-sm"
               />
             ) : data.dateOfBirth ? (
               <span className="block truncate">
@@ -206,8 +214,8 @@ export function CvCard() {
   return (
     <AsideCard title="Currículum">
       <div className="flex items-center gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-secondary">
-          <HugeiconsIcon icon={FileAttachmentIcon} size={18} strokeWidth={1.5} aria-hidden />
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/40 bg-surface-container-lowest text-secondary">
+          <HugeiconsIcon icon={FileAttachmentIcon} size={16} strokeWidth={1.5} aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-xs text-muted-foreground">CV</p>
@@ -245,12 +253,12 @@ export function CvCard() {
                     />
                   </label>
                   {uploadCvMutation.isPending && (
-                    <span className="text-xs text-muted-foreground">Subiendo…</span>
+                    <span className="ml-2 text-xs text-muted-foreground">Subiendo…</span>
                   )}
                   {uploadCvMutation.isError && (
-                    <span className="text-xs text-destructive">
+                    <p className="mt-1 text-xs text-destructive">
                       {uploadCvMutation.error?.message ?? "Error al subir"}
-                    </span>
+                    </p>
                   )}
                 </>
               )

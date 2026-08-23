@@ -143,15 +143,15 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
         <div className="hidden lg:flex justify-end">
           <ConnectedNotificationBell />
         </div>
-        <h1 className="text-2xl font-semibold tracking-wide">Calendario</h1>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Calendario</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-[14px] border border-border/10">
-            <div className="flex flex-col gap-3 border-b border-border/10 px-0 py-4 lg:py-6 lg:pr-6">
+          <div className="rounded-xl bg-surface-container-lowest shadow-none">
+            <div className="flex flex-col gap-3 px-0 py-4 lg:py-6 lg:pr-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <h2 className="text-lg sm:text-2xl font-semibold text-card-foreground tracking-tight">
+                <h2 className="text-base font-semibold text-foreground tracking-tight">
                   {view === "month"
                     ? `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`
                     : "Vista semanal"}
@@ -161,7 +161,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                     <Button
                       variant="default"
                       onClick={() => handleCreateEvent()}
-                      className="gap-1.5"
+                      className="h-9 gap-1.5 rounded-lg px-3 text-xs font-medium"
                     >
                       <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
                       <span className="hidden sm:inline">Crear evento</span>
@@ -171,14 +171,14 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                     <Button
                       variant={view === "month" ? "default" : "ghost"}
                       onClick={() => setView("month")}
-                      className="rounded-r-none"
+                      className="h-9 px-3 text-xs font-medium rounded-r-none"
                     >
                       Mes
                     </Button>
                     <Button
                       variant={view === "week" ? "default" : "ghost"}
                       onClick={() => setView("week")}
-                      className="rounded-l-none"
+                      className="h-9 px-3 text-xs font-medium rounded-l-none"
                     >
                       Semana
                     </Button>
@@ -189,6 +189,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                     onClick={() =>
                       view === "month" ? navigateMonth("prev") : navigateWeek("prev")
                     }
+                    className="size-9 rounded-md"
                     aria-label="Mes anterior"
                   >
                     <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
@@ -196,7 +197,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                   <Button
                     variant="outline"
                     onClick={() => setCurrentDate(getChileanDate())}
-                    className="px-2 sm:px-3"
+                    className="h-9 rounded-md px-3 text-xs font-medium"
                   >
                     Hoy
                   </Button>
@@ -206,6 +207,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                     onClick={() =>
                       view === "month" ? navigateMonth("next") : navigateWeek("next")
                     }
+                    className="size-9 rounded-md"
                     aria-label="Siguiente mes"
                   >
                     <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />

@@ -5,10 +5,9 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
-export const SECTION_LABEL_CLASS =
-  "text-xs font-semibold tracking-[0.08em] text-foreground uppercase"
+export const SECTION_LABEL_CLASS = "text-xs leading-4 font-medium text-foreground"
 
-export const btnAccentClass = "bg-accent text-white hover:bg-accent/90"
+export const btnAccentClass = "bg-primary text-primary-foreground hover:bg-primary/90"
 
 export function OrgSwitch({
   id,
@@ -65,7 +64,7 @@ export function SettingRow({
       <span className="min-w-0">
         <span className="block text-sm leading-5 font-medium text-foreground">{title}</span>
         {desc && (
-          <span className="mt-0.5 block max-w-[56ch] text-[13px] leading-5 text-muted-foreground text-pretty">
+          <span className="mt-0.5 block max-w-[56ch] text-xs leading-5 text-muted-foreground text-pretty">
             {desc}
           </span>
         )}
@@ -89,18 +88,18 @@ export function StateCard({
   children: ReactNode
 }) {
   return (
-    <div className="flex items-start gap-5 rounded-2xl bg-[var(--surface-container-low)] p-7">
+    <div className="flex items-start gap-5 rounded-xl border border-border/40 bg-surface-container-low p-6 shadow-none">
       <span
         className={cn(
-          "grid size-11 shrink-0 place-items-center rounded-full bg-white text-muted-foreground",
-          violet && "text-accent"
+          "grid size-10 shrink-0 place-items-center rounded-full bg-surface-container-highest text-muted-foreground",
+          violet && "bg-accent/15 text-accent"
         )}
       >
         <HugeiconsIcon icon={icon} size={20} strokeWidth={1.7} aria-hidden />
       </span>
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2.5">
-          <h3 className="text-base leading-6 font-medium text-foreground">{title}</h3>
+          <h3 className="text-sm leading-5 font-medium text-foreground">{title}</h3>
           {chip}
         </div>
         {children}
@@ -111,12 +110,12 @@ export function StateCard({
 
 export function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: ReactNode }) {
   return (
-    <label htmlFor={htmlFor} className="text-[13px] leading-4 font-medium text-foreground">
+    <label htmlFor={htmlFor} className="block text-xs leading-4 font-medium text-foreground">
       {children}
     </label>
   )
 }
 
 export function FieldHelp({ children }: { children: ReactNode }) {
-  return <p className="text-[12.5px] leading-5 text-muted-foreground text-pretty">{children}</p>
+  return <p className="text-xs leading-5 text-muted-foreground text-pretty">{children}</p>
 }

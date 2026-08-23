@@ -55,21 +55,21 @@ export function ProfileIdentityHeader() {
   const memberSince = user?.createdAt ? new Date(user.createdAt).getFullYear() : null
 
   return (
-    <header className="flex flex-col items-start gap-7 border-b border-border pb-7 lg:flex-row lg:items-center lg:gap-7">
-      <div className="relative mt-2 size-[108px] shrink-0 self-center lg:mt-0 lg:self-auto">
-        <div className="relative size-full overflow-hidden rounded-full border border-border bg-muted">
+    <header className="flex flex-col items-start gap-6 border-b border-border/40 pb-6 lg:flex-row lg:items-center lg:gap-6">
+      <div className="relative mt-2 size-24 sm:size-28 shrink-0 self-center lg:mt-0 lg:self-auto">
+        <div className="relative size-full overflow-hidden rounded-full border border-border/40 bg-surface-container-low">
           {profileData.avatar ? (
             <Image
               src={profileData.avatar}
               alt="Foto de perfil"
-              width={108}
-              height={108}
+              width={112}
+              height={112}
               className="size-full object-cover"
               unoptimized
             />
           ) : (
-            <div className="flex size-full items-center justify-center bg-secondary/5 text-secondary">
-              <HugeiconsIcon icon={Camera01Icon} size={32} strokeWidth={1.5} />
+            <div className="flex size-full items-center justify-center bg-surface-container-low text-muted-foreground">
+              <HugeiconsIcon icon={Camera01Icon} size={28} strokeWidth={1.5} />
             </div>
           )}
           {isEditing && (
@@ -94,7 +94,7 @@ export function ProfileIdentityHeader() {
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Nombre completo"
                 className={cn(
-                  "h-auto py-2 text-2xl font-semibold",
+                  "h-11 rounded-lg border-border/40 bg-surface-container-lowest text-base sm:text-lg font-bold text-foreground",
                   errors.name && "ring-destructive"
                 )}
                 aria-label="Nombre"
@@ -102,7 +102,7 @@ export function ProfileIdentityHeader() {
               {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
             </div>
           ) : (
-            <h1 className="text-center text-[28px] leading-tight font-semibold tracking-[-0.01em] text-foreground lg:text-left">
+            <h1 className="text-center text-xl sm:text-2xl font-bold text-foreground tracking-tight lg:text-left">
               {profileData.name || EMPTY_PLACEHOLDER}
             </h1>
           )}
@@ -115,7 +115,7 @@ export function ProfileIdentityHeader() {
               onChange={(e) => handleInputChange("profession", e.target.value)}
               placeholder="Profesión"
               className={cn(
-                "h-auto py-1.5 text-muted-foreground",
+                "h-9 rounded-lg border-border/40 bg-surface-container-lowest text-xs sm:text-sm text-muted-foreground",
                 errors.profession && "ring-destructive"
               )}
               aria-label="Profesión"
@@ -123,12 +123,12 @@ export function ProfileIdentityHeader() {
             {errors.profession && <p className="text-xs text-destructive">{errors.profession}</p>}
           </div>
         ) : (
-          <p className="mt-1 text-center text-[15px] text-muted-foreground lg:text-left">
+          <p className="mt-1 text-center text-sm text-muted-foreground lg:text-left">
             {profileData.profession || EMPTY_PLACEHOLDER}
           </p>
         )}
 
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[13px] text-muted-foreground lg:justify-start">
+        <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground lg:justify-start">
           {profileData.location && (
             <span className="inline-flex items-center gap-1.5">
               <HugeiconsIcon icon={Location01Icon} size={14} strokeWidth={1.7} />
@@ -151,22 +151,25 @@ export function ProfileIdentityHeader() {
               variant="outline"
               onClick={handleCancelEdit}
               disabled={isSaving}
-              className="flex-1 lg:flex-none"
+              className="h-9 px-4 rounded-lg border border-border/40 bg-surface-container-lowest hover:bg-surface-container-low text-xs font-medium text-foreground flex-1 lg:flex-none"
             >
               Cancelar
             </Button>
             <Button
-              variant="secondary"
               onClick={handleSaveAll}
               disabled={isSaving}
-              className="flex-1 lg:flex-none"
+              className="h-9 px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-medium flex-1 lg:flex-none"
             >
               {isSaving ? "Guardando..." : "Guardar"}
             </Button>
           </>
         ) : (
-          <Button variant="secondary" onClick={handleEditAll} className="flex-1 lg:flex-none">
-            <HugeiconsIcon icon={Edit01Icon} size={16} strokeWidth={1.5} />
+          <Button
+            variant="outline"
+            onClick={handleEditAll}
+            className="h-9 px-4 rounded-lg border border-border/40 bg-surface-container-lowest hover:bg-surface-container-low text-xs font-medium text-foreground transition-colors flex-1 lg:flex-none"
+          >
+            <HugeiconsIcon icon={Edit01Icon} size={14} strokeWidth={1.5} />
             Editar perfil
           </Button>
         )}

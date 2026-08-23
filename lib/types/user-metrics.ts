@@ -26,16 +26,18 @@ export type ResponseTimeDistribution = {
   moreThanSevenDays: number
 }
 
-export type HiringFunnelStep = {
+export type StatusStep = {
   count: number
   percentage: number
 }
 
-export type HiringFunnel = {
-  aplicado: HiringFunnelStep
-  entrevista: HiringFunnelStep
-  oferta: HiringFunnelStep
-  contratado: HiringFunnelStep
+export type StatusBreakdown = {
+  pendiente: StatusStep
+  entrevista: StatusStep
+  oferta: StatusStep
+  contratado: StatusStep
+  rechazado: StatusStep
+  desistido: StatusStep
 }
 
 export type CategoryApplied = {
@@ -49,7 +51,7 @@ export type UserMetrics = {
   kpis: UserKpis
   applicationsTrend: ApplicationsTrendEntry[]
   responseTimeDistribution: ResponseTimeDistribution
-  hiringFunnel: HiringFunnel
+  statusBreakdown: StatusBreakdown
   categoriesApplied: CategoryApplied[]
 }
 

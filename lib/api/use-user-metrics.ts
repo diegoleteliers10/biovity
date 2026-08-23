@@ -35,11 +35,13 @@ const DEFAULT_USER_METRICS: UserMetrics = {
     threeToSevenDays: 0,
     moreThanSevenDays: 0,
   },
-  hiringFunnel: {
-    aplicado: { count: 0, percentage: 0 },
+  statusBreakdown: {
+    pendiente: { count: 0, percentage: 0 },
     entrevista: { count: 0, percentage: 0 },
     oferta: { count: 0, percentage: 0 },
     contratado: { count: 0, percentage: 0 },
+    rechazado: { count: 0, percentage: 0 },
+    desistido: { count: 0, percentage: 0 },
   },
   categoriesApplied: [],
 }

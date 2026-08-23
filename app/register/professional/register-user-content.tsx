@@ -224,8 +224,8 @@ export function UserRegisterContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/ilustracionRegistroUsers.png"
-            alt="Biovity - Talento bio-digital y desarrollo profesional"
+            src="/Register.png"
+            alt="Biovity - Creación de cuenta"
             fill
             className="object-cover object-center"
             priority
@@ -236,7 +236,7 @@ export function UserRegisterContent() {
 
       {/* Right: Registration form */}
       <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-lg space-y-8 p-6 lg:p-12">
+        <div className="m-auto w-full max-w-2xl space-y-8 p-6 lg:p-12">
           {formState.isRegistered ? (
             <CheckYourEmail
               email={formState.email}
@@ -496,7 +496,10 @@ export function UserRegisterContent() {
                 </div>
 
                 {formState.errors.general && (
-                  <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
+                  <div
+                    role="alert"
+                    className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+                  >
                     {formState.errors.general}
                   </div>
                 )}

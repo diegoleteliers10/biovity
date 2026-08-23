@@ -97,7 +97,7 @@ export function JobPreview({
   return (
     <div className="flex flex-col gap-4 text-sm">
       {/* Header */}
-      <div className="rounded-xl border border-border bg-card/80 p-4">
+      <div className="rounded-xl border border-border/40 bg-surface-container-lowest p-4 shadow-none">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <h2 className="text-lg font-semibold leading-snug text-foreground break-words">
@@ -106,7 +106,14 @@ export function JobPreview({
             {category && <p className="mt-0.5 text-xs text-muted-foreground">{category}</p>}
           </div>
           {status && (
-            <Badge variant="secondary" className="shrink-0 text-[10px] uppercase tracking-wider">
+            <Badge
+              variant="secondary"
+              className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ${
+                status === "active"
+                  ? "bg-secondary/10 text-secondary"
+                  : "bg-surface-container-highest text-muted-foreground"
+              }`}
+            >
               {status === "active" ? "Activa" : status === "draft" ? "Borrador" : status}
             </Badge>
           )}
@@ -168,7 +175,7 @@ export function JobPreview({
 
       {/* Skills */}
       {requiredSkills.length > 0 && (
-        <div className="rounded-xl border border-border bg-card/80 p-4">
+        <div className="rounded-xl border border-border/40 bg-surface-container-lowest p-4 shadow-none">
           <div className="flex items-center gap-2 mb-2">
             <HugeiconsIcon
               icon={UserGroupIcon}
@@ -176,9 +183,7 @@ export function JobPreview({
               strokeWidth={1.5}
               className="text-secondary"
             />
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Habilidades requeridas
-            </h3>
+            <h3 className="text-sm font-semibold text-foreground">Habilidades requeridas</h3>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {requiredSkills.map((skill) => (
@@ -191,10 +196,8 @@ export function JobPreview({
       )}
 
       {/* Description */}
-      <div className="rounded-xl border border-border bg-card/80 p-4">
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Descripción
-        </h3>
+      <div className="rounded-xl border border-border/40 bg-surface-container-lowest p-4 shadow-none">
+        <h3 className="mb-3 text-sm font-semibold text-foreground">Descripción</h3>
         {description ? (
           <HtmlContent html={description} />
         ) : (
@@ -204,13 +207,11 @@ export function JobPreview({
 
       {/* Benefits */}
       {benefits.length > 0 && (
-        <div className="rounded-xl border border-border bg-card/80 p-4">
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Beneficios
-          </h3>
+        <div className="rounded-xl border border-border/40 bg-surface-container-lowest p-4 shadow-none">
+          <h3 className="mb-3 text-sm font-semibold text-foreground">Beneficios</h3>
           <div className="flex flex-wrap gap-1.5">
-            {benefits.map((b, i) => (
-              <Badge key={b.title + i} variant="secondary" className="text-xs">
+            {benefits.map((b) => (
+              <Badge key={b.title} variant="secondary" className="text-xs">
                 {b.title}
               </Badge>
             ))}

@@ -9,23 +9,20 @@ export function MessagesEmptyState() {
   const { push } = useRouter()
 
   return (
-    <div className="flex flex-1 items-center justify-center p-8">
-      <div className="max-w-md rounded-2xl bg-transparent px-6 py-7 text-center">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full border border-secondary/30 bg-secondary/10">
-          <HugeiconsIcon
-            icon={InboxIcon}
-            size={24}
-            strokeWidth={1.5}
-            className="size-8 text-secondary-foreground"
-          />
+    <div className="flex flex-1 items-center justify-center p-4">
+      <div className="max-w-md rounded-xl border border-border/40 bg-surface-container-low px-6 py-6 text-center shadow-none">
+        <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-surface-container-highest text-muted-foreground">
+          <HugeiconsIcon icon={InboxIcon} size={20} strokeWidth={1.5} />
         </div>
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">
-          Aún no tienes conversaciones
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mb-1 text-sm font-medium text-foreground">Aún no tienes conversaciones</p>
+        <p className="text-xs text-muted-foreground max-w-[280px] mx-auto mb-4">
           Cuando contactes a un candidato o alguien responda a tu invitación, aparecerá aquí.
         </p>
-        <Button className="mt-4" onClick={() => push("/dashboard/talent")}>
+        <Button
+          size="sm"
+          className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-xs font-medium"
+          onClick={() => push("/dashboard/talent")}
+        >
           Buscar talento
         </Button>
       </div>

@@ -16,11 +16,11 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 const STATUS_CHIP: Record<string, string> = {
-  active: "text-secondary",
-  draft: "text-accent",
-  paused: "text-yellow-700",
-  closed: "text-foreground",
-  expired: "text-destructive",
+  active: "bg-secondary/10 text-secondary",
+  draft: "bg-surface-container-highest text-muted-foreground",
+  paused: "bg-yellow-500/10 text-yellow-700",
+  closed: "bg-surface-container-highest text-foreground",
+  expired: "bg-destructive/10 text-destructive",
 }
 
 export function OrganizationOffersTimeline({ organizationId }: { organizationId: string }) {
@@ -62,8 +62,8 @@ export function OrganizationOffersTimeline({ organizationId }: { organizationId:
               <h3 className="text-base leading-6 font-semibold text-foreground">{job.title}</h3>
               <span
                 className={cn(
-                  "rounded-full bg-muted px-2.5 py-0.5 text-[11px] leading-4 font-semibold tracking-[0.02em]",
-                  STATUS_CHIP[job.status] ?? "text-foreground"
+                  "rounded-md px-2 py-0.5 text-xs leading-4 font-medium",
+                  STATUS_CHIP[job.status] ?? "bg-surface-container-highest text-foreground"
                 )}
               >
                 {STATUS_LABELS[job.status] ?? job.status}

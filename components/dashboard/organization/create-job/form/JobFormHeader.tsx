@@ -9,11 +9,15 @@ interface JobFormHeaderProps {
 export function JobFormHeader({ isEdit }: JobFormHeaderProps) {
   return (
     <>
-      <DialogTitle className="flex items-center gap-2">
-        <HugeiconsIcon icon={isEdit ? Edit01Icon : FileAddIcon} size={20} />
+      <DialogTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
+        <HugeiconsIcon
+          icon={isEdit ? Edit01Icon : FileAddIcon}
+          size={16}
+          className="text-muted-foreground shrink-0"
+        />
         {isEdit ? "Editar oferta" : "Crear oferta"}
       </DialogTitle>
-      <DialogDescription>
+      <DialogDescription className="text-xs text-muted-foreground">
         {isEdit
           ? "Modifica los datos y guarda para actualizar la vacante."
           : "Completa los datos para publicar una nueva vacante."}

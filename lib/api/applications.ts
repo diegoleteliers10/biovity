@@ -7,7 +7,13 @@ const API_BASE =
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
-export type ApplicationStatus = "pendiente" | "oferta" | "entrevista" | "rechazado" | "contratado"
+export type ApplicationStatus =
+  | "pendiente"
+  | "oferta"
+  | "entrevista"
+  | "rechazado"
+  | "contratado"
+  | "desistido"
 
 export type ApplicationJob = {
   id: string

@@ -43,6 +43,9 @@
     --color-card: var(--card);
     --color-tertiary: var(--tertiary);
     --color-tertiary-foreground: var(--tertiary-foreground);
+    --color-surface-container-lowest: var(--surface-container-lowest);
+    --color-surface-container-low: var(--surface-container-low);
+    --color-surface-container-highest: var(--surface-container-highest);
 }
 
 :root {
@@ -179,4 +182,9 @@
             "cv02", "cv03", "cv04", "cv11";
         letter-spacing: -0.02em;
     }
+}
+
+/* Featurebase floating launcher stays hidden: feedback opens from the sidebar */
+.fb-feedback-widget-feedback-button {
+    display: none !important;
 }

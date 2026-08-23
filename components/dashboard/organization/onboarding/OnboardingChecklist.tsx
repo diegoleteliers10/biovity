@@ -10,6 +10,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useRouter } from "next/navigation"
+import { dashboardTonalCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useOnboarding } from "@/hooks/use-onboarding"
@@ -61,17 +62,17 @@ export function OnboardingChecklist() {
   const completedCount = steps.length
 
   return (
-    <Card className="border border-primary/20 bg-primary/5">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-3">
+    <Card className={dashboardTonalCardClass}>
+      <CardContent className="p-5 sm:p-6">
+        <div className="mb-4 flex items-start justify-between">
           <div>
-            <h3 className="font-semibold text-sm text-foreground">Bienvenido a Biovity</h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="text-xs leading-4 font-medium text-foreground">Bienvenido a Biovity</h3>
+            <p className="text-xs text-muted-foreground text-pretty">
               Completa estos pasos para empezar a recibir candidatos
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground tabular-nums">
+            <span className="text-xs tabular-nums text-muted-foreground">
               {completedCount}/{STEPS.length}
             </span>
             <Button
@@ -86,9 +87,9 @@ export function OnboardingChecklist() {
           </div>
         </div>
 
-        <div className="relative mb-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div className="relative mb-4 h-1.5 w-full overflow-hidden rounded-full bg-muted">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-primary transition-all duration-500"
+            className="absolute inset-y-0 left-0 rounded-full bg-secondary transition-all duration-500"
             style={{ width: `${(completedCount / STEPS.length) * 100}%` }}
           />
         </div>
@@ -102,30 +103,30 @@ export function OnboardingChecklist() {
                 type="button"
                 disabled={done}
                 onClick={() => push(step.href)}
-                className={`flex items-center gap-3 rounded-lg border p-3 text-left transition-all duration-150 ${
+                className={`flex items-center gap-3 rounded-lg border p-3 text-left transition-colors duration-150 ${
                   done
-                    ? "border-green-200 bg-green-50/50 opacity-60 cursor-default"
-                    : "border-border/60 bg-background hover:border-primary/30 hover:bg-primary/5 cursor-pointer active:scale-[0.98]"
+                    ? "cursor-default border-secondary/20 bg-secondary/5 opacity-80"
+                    : "cursor-pointer border-border/30 bg-surface-container-lowest hover:border-secondary/30 hover:bg-secondary/5"
                 }`}
               >
                 <div
                   className={`flex size-8 shrink-0 items-center justify-center rounded-full ${
-                    done ? "bg-green-100" : "bg-primary/10"
+                    done ? "bg-secondary/10" : "bg-primary/10"
                   }`}
                 >
                   {done ? (
                     <HugeiconsIcon
                       icon={CheckmarkCircle02Icon}
                       size={16}
-                      className="text-green-600"
+                      className="text-secondary"
                     />
                   ) : (
                     <HugeiconsIcon icon={step.icon} size={16} className="text-primary" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium text-foreground truncate">{step.label}</p>
-                  <p className="text-[11px] text-muted-foreground truncate">{step.description}</p>
+                  <p className="truncate text-xs font-medium text-foreground">{step.label}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">{step.description}</p>
                 </div>
               </button>
             )

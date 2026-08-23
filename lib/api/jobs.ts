@@ -295,7 +295,7 @@ export async function updateJob(
   }
 
   return fetchJson<Job>(`${API_BASE}/api/v1/jobs/${id}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   })

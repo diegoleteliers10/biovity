@@ -13,6 +13,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Result } from "better-result"
 import type { Metadata } from "next"
 import { headers } from "next/headers"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import { Fragment } from "react"
 import { JobViewsTracker } from "@/components/common/job-views-tracker"
@@ -28,7 +29,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   formatJobLocation,
   getJob,
@@ -92,6 +92,14 @@ function getJobBreadcrumbs(referer: string | null, jobTitle: string): Breadcrumb
   ]
 }
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/)
+  if (parts.length >= 2 && parts[0] && parts[1]) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const result = await getJob(id)
@@ -152,9 +160,13 @@ export default async function TrabajoDetailPage({ params }: Props) {
 
   const job = jobResult.value
   let organizationName = job.organization?.name
-  if (!organizationName && job.organizationId) {
+  let organizationLogo = ""
+  if (job.organizationId) {
     const orgResult = await getOrganization(job.organizationId)
-    if (Result.isOk(orgResult)) organizationName = orgResult.value.name
+    if (Result.isOk(orgResult)) {
+      organizationName = organizationName ?? orgResult.value.name
+      organizationLogo = orgResult.value.logo ?? ""
+    }
   }
   organizationName = organizationName ?? "Organización"
 
@@ -193,11 +205,11 @@ export default async function TrabajoDetailPage({ params }: Props) {
         salaryCurrency={job.salary?.currency}
         url={`${siteUrl}/trabajos/${job.id}`}
       />
-      <article className="py-12 md:py-20 bg-surface-container-lowest">
+      <article className="py-8 sm:py-12 md:py-16 bg-surface-container-lowest">
         <JobViewsTracker jobId={job.id} jobOrganizationId={job.organizationId} />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb - reflects navigation path (referer) */}
-          <Breadcrumb className="mb-8">
+          {/* Breadcrumb */}
+          <Breadcrumb className="mb-6 sm:mb-8">
             <BreadcrumbList>
               {breadcrumbs.map((b, i) => (
                 <Fragment key={`${b.label}-${b.href ?? "current"}`}>
@@ -215,22 +227,40 @@ export default async function TrabajoDetailPage({ params }: Props) {
           </Breadcrumb>
 
           {/* Hero del trabajo */}
-          <div className="mb-10 pb-8 border-b border-border">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="size-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center border border-secondary/20">
-                <HugeiconsIcon
-                  icon={Briefcase01Icon}
-                  size={24}
-                  className="size-6"
-                />
+          <div className="mb-10 pb-8 border-b border-border/40">
+            {/* Plain Green Monospace Eyebrow per §3.2 A */}
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
+              OFERTA LABORAL • {organizationName}
+            </span>
+
+            <div className="flex items-center gap-3.5 mb-4">
+              <div className="size-12 rounded-xl bg-surface-container-low border border-border/40 text-secondary flex items-center justify-center shrink-0 overflow-hidden font-mono font-semibold text-sm">
+                {organizationLogo ? (
+                  <Image
+                    src={organizationLogo}
+                    alt={organizationName}
+                    width={48}
+                    height={48}
+                    className="size-full object-cover"
+                    unoptimized
+                  />
+                ) : (
+                  <HugeiconsIcon
+                    icon={Briefcase01Icon}
+                    size={22}
+                    className="text-secondary"
+                  />
+                )}
               </div>
-              <div>
+              <div className="min-w-0">
+                <p className="text-lg font-semibold text-foreground tracking-tight truncate">
+                  {organizationName}
+                </p>
                 <p className="text-xs text-muted-foreground font-mono">ID: {job.id.slice(0, 8)}</p>
-                <p className="text-lg font-semibold text-foreground tracking-tight">{organizationName}</p>
               </div>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground tracking-tight mb-5 text-balance">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight mb-5 text-balance">
               {job.title}
             </h1>
 
@@ -240,32 +270,32 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 <HugeiconsIcon icon={Location05Icon} size={16} className="text-muted-foreground" />
                 <span>{ubicacion}</span>
               </div>
-              <span className="text-border">•</span>
+              <span className="text-border/60">•</span>
               <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20 capitalize">
                 {modalidad === "hibrido" ? "Híbrido" : modalidad}
               </span>
               {job.employmentType && (
-                <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-surface-container-highest text-foreground border border-border capitalize">
+                <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-surface-container-highest text-foreground border border-border/40 capitalize">
                   {job.employmentType}
                 </span>
               )}
               {job.experienceLevel && (
-                <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-surface-container-low text-muted-foreground border border-border capitalize">
+                <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-surface-container-low text-muted-foreground border border-border/40 capitalize">
                   {job.experienceLevel === "Mid-Senior" ? "Semi Senior" : job.experienceLevel}
                 </span>
               )}
-              <div className="flex items-center gap-1.5 font-mono font-semibold text-secondary">
+              <div className="flex items-center gap-1.5 font-mono font-semibold text-secondary tabular-nums">
                 <HugeiconsIcon icon={Cash02Icon} size={18} className="text-secondary" />
                 <span>{salaryStr}</span>
               </div>
-              <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground tabular-nums">
                 <HugeiconsIcon icon={Clock01Icon} size={16} className="text-muted-foreground" />
                 <span suppressHydrationWarning>
                   Publicado {formatFechaLarga(new Date(job.createdAt))}
                 </span>
               </div>
               {"views" in job && typeof job.views === "number" && job.views > 0 && (
-                <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
+                <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground tabular-nums">
                   <HugeiconsIcon icon={ViewIcon} size={16} className="text-muted-foreground" />
                   <span>{job.views} vistas</span>
                 </div>
@@ -286,7 +316,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
           {/* Contenido principal - 2 columnas */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
             {/* Columna izquierda */}
-            <div className="space-y-8">
+            <div className="space-y-8 min-w-0">
               {/* Descripción */}
               <section>
                 <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-4">
@@ -304,9 +334,28 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 </div>
               </section>
 
+              {/* Habilidades requeridas si existen */}
+              {job.requiredSkills && job.requiredSkills.length > 0 && (
+                <section className="pt-6 border-t border-border/40">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-4">
+                    Requisitos y Habilidades
+                  </h2>
+                  <div className="flex flex-wrap gap-2">
+                    {job.requiredSkills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full bg-surface-container-highest px-3 py-1 text-xs font-medium text-foreground"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               {/* Beneficios */}
               {job.benefits && job.benefits.length > 0 && (
-                <section className="pt-6 border-t border-border">
+                <section className="pt-6 border-t border-border/40">
                   <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-4">
                     Beneficios Ofrecidos
                   </h2>
@@ -316,7 +365,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
                       return (
                         <div
                           key={beneficio.title}
-                          className="flex items-center gap-3 rounded-xl bg-surface-container-low px-4 py-3 border border-border/60 text-sm text-foreground"
+                          className="flex items-center gap-3 rounded-xl bg-surface-container-low px-4 py-3.5 border border-border/40 text-sm text-foreground shadow-none"
                         >
                           <div className="size-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 border border-border/40">
                             <HugeiconsIcon
@@ -343,41 +392,39 @@ export default async function TrabajoDetailPage({ params }: Props) {
 
             {/* Columna derecha - Card fija */}
             <div className="lg:sticky lg:top-8 h-fit">
-              <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-6">
-                <CardContent className="p-0 space-y-5">
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-3 text-base tracking-tight">
-                      Resumen de la Oferta
-                    </h3>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between items-center py-1 border-b border-border/40">
-                        <span className="text-muted-foreground">Ubicación:</span>
-                        <span className="font-medium text-foreground">{ubicacion}</span>
+              <div className="rounded-2xl border border-border/40 bg-surface-container-low p-6 sm:p-7 shadow-none space-y-6">
+                <div>
+                  <h3 className="font-semibold text-foreground mb-4 text-base tracking-tight">
+                    Resumen de la Oferta
+                  </h3>
+                  <div className="space-y-2.5 text-sm">
+                    <div className="flex justify-between items-center py-2 border-b border-border/30">
+                      <span className="text-muted-foreground text-xs sm:text-sm">Ubicación:</span>
+                      <span className="font-medium text-foreground text-xs sm:text-sm">{ubicacion}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border/30">
+                      <span className="text-muted-foreground text-xs sm:text-sm">Modalidad:</span>
+                      <span className="font-medium text-foreground text-xs sm:text-sm capitalize">
+                        {modalidad === "hibrido" ? "Híbrido" : modalidad}
+                      </span>
+                    </div>
+                    {job.employmentType && (
+                      <div className="flex justify-between items-center py-2 border-b border-border/30">
+                        <span className="text-muted-foreground text-xs sm:text-sm">Jornada:</span>
+                        <span className="font-medium text-foreground text-xs sm:text-sm">{job.employmentType}</span>
                       </div>
-                      <div className="flex justify-between items-center py-1 border-b border-border/40">
-                        <span className="text-muted-foreground">Modalidad:</span>
-                        <span className="font-medium text-foreground capitalize">
-                          {modalidad === "hibrido" ? "Híbrido" : modalidad}
-                        </span>
-                      </div>
-                      {job.employmentType && (
-                        <div className="flex justify-between items-center py-1 border-b border-border/40">
-                          <span className="text-muted-foreground">Jornada:</span>
-                          <span className="font-medium text-foreground">{job.employmentType}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between items-center py-1 border-b border-border/40">
-                        <span className="text-muted-foreground">Compensación:</span>
-                        <span className="font-mono font-medium text-secondary">{salaryStr}</span>
-                      </div>
+                    )}
+                    <div className="flex justify-between items-center py-2 border-b border-border/30">
+                      <span className="text-muted-foreground text-xs sm:text-sm">Compensación:</span>
+                      <span className="font-mono font-semibold text-secondary tabular-nums text-xs sm:text-sm">{salaryStr}</span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="pt-2">
-                    <ApplyJobButton jobId={job.id} jobTitle={job.title} />
-                  </div>
-                </CardContent>
-              </Card>
+                <div>
+                  <ApplyJobButton jobId={job.id} jobTitle={job.title} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

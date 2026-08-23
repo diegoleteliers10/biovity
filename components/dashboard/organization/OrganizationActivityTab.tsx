@@ -1,9 +1,13 @@
 "use client"
 
+import { Task01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useActivityLogs } from "@/lib/api/use-activity-logs"
 import { formatFechaRelativa } from "@/lib/utils"
+
+const SKELETON_KEYS = ["a", "b", "c", "d"] as const
 
 export function OrganizationActivityTab({ organizationId }: { organizationId: string }) {
   const { data: logs = [], isLoading, error } = useActivityLogs(organizationId)
@@ -11,17 +15,17 @@ export function OrganizationActivityTab({ organizationId }: { organizationId: st
   if (isLoading) {
     return (
       <div className="space-y-4 pt-10">
-        {Array.from({ length: 4 }).map((_, i) => (
+        {SKELETON_KEYS.map((key) => (
           <div
-            key={i}
-            className="flex items-center gap-4 rounded-lg border border-border/60 p-4 animate-pulse"
+            key={key}
+            className="flex items-center gap-4 rounded-lg bg-surface-container-highest/60 p-4 animate-pulse"
           >
-            <div className="size-10 rounded-full bg-muted" />
+            <div className="size-10 rounded-full bg-surface-container-highest/60" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-40 rounded bg-muted" />
-              <div className="h-3 w-60 rounded bg-muted" />
+              <div className="h-4 w-40 rounded-md bg-surface-container-highest/60" />
+              <div className="h-3 w-60 rounded-md bg-surface-container-highest/60" />
             </div>
-            <div className="h-4 w-20 rounded bg-muted" />
+            <div className="h-4 w-20 rounded-md bg-surface-container-highest/60" />
           </div>
         ))}
       </div>
@@ -30,7 +34,7 @@ export function OrganizationActivityTab({ organizationId }: { organizationId: st
 
   if (error) {
     return (
-      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4 text-center text-sm text-destructive">
+      <div className="rounded-xl border border-destructive/50 bg-destructive/5 p-4 text-center text-sm text-destructive shadow-none">
         Error al cargar el historial de actividades.
       </div>
     )
@@ -39,8 +43,14 @@ export function OrganizationActivityTab({ organizationId }: { organizationId: st
   return (
     <div className="space-y-6">
       {logs.length === 0 ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">
-          No hay actividades registradas en esta organización.
+        <div className="flex flex-col items-center gap-2 rounded-xl border border-border/40 bg-surface-container-low px-6 py-6 text-center shadow-none">
+          <span className="grid size-10 place-items-center rounded-full bg-surface-container-highest text-muted-foreground">
+            <HugeiconsIcon icon={Task01Icon} size={20} strokeWidth={1.8} aria-hidden />
+          </span>
+          <p className="text-sm font-medium text-foreground">Sin actividad registrada</p>
+          <p className="text-xs text-muted-foreground">
+            Las acciones de tu equipo aparecerán aquí.
+          </p>
         </div>
       ) : (
         <div className="divide-y divide-border/60">
@@ -55,21 +65,18 @@ export function OrganizationActivityTab({ organizationId }: { organizationId: st
               : "U"
 
             const getActionColor = (action: string) => {
-              if (action.includes("job")) return "bg-blue-500/10 text-blue-600 border-blue-200"
+              if (action.includes("job")) return "bg-primary/10 text-primary"
               if (action.includes("candidate") || action.includes("talent"))
-                return "bg-green-500/10 text-green-600 border-green-200"
+                return "bg-secondary/10 text-secondary"
               if (action.includes("template"))
-                return "bg-purple-500/10 text-purple-600 border-purple-200"
+                return "bg-surface-container-highest text-muted-foreground"
               if (action.includes("chat") || action.includes("message"))
-                return "bg-pink-500/10 text-pink-600 border-pink-200"
-              return "bg-slate-500/10 text-slate-600 border-slate-200"
+                return "bg-surface-container-highest text-foreground"
+              return "bg-surface-container-highest text-muted-foreground"
             }
 
             return (
-              <div
-                key={log.id}
-                className="flex items-start gap-4 p-4 hover:bg-muted/10 transition-colors"
-              >
+              <div key={log.id} className="flex items-start gap-4 p-4">
                 <Avatar className="size-9 shrink-0">
                   {log.user?.avatar && <AvatarImage src={log.user.avatar} alt={log.user.name} />}
                   <AvatarFallback className="bg-secondary/10 text-secondary text-xs font-semibold">
@@ -85,7 +92,7 @@ export function OrganizationActivityTab({ organizationId }: { organizationId: st
                     <span className="text-xs text-muted-foreground">({log.user?.email})</span>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] uppercase font-mono tracking-wider px-1.5 py-0 ${getActionColor(log.action)}`}
+                      className={`rounded-md text-xs font-medium px-2 py-0.5 ${getActionColor(log.action)}`}
                     >
                       {log.action}
                     </Badge>

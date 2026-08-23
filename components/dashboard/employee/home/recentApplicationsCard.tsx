@@ -1,6 +1,9 @@
 "use client"
 
+import { File02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { memo } from "react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Application } from "@/lib/api/applications"
@@ -17,48 +20,18 @@ function formatApplicationDate(dateString: string): string {
   return date.toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" })
 }
 
-function getStatusStyles(status: string): {
-  bg: string
-  text: string
-  border: string
-  label: string
-} {
+function getStatusChipClass(status: string): { chip: string; label: string } {
   switch (status) {
     case "pendiente":
-      return {
-        bg: "bg-tertiary/10",
-        text: "text-tertiary",
-        border: "border-tertiary/20",
-        label: "Pendiente",
-      }
+      return { chip: "bg-surface-container-highest text-muted-foreground", label: "Pendiente" }
     case "entrevista":
-      return {
-        bg: "bg-primary/10",
-        text: "text-primary",
-        border: "border-primary/20",
-        label: "Entrevista",
-      }
+      return { chip: "bg-primary/10 text-primary", label: "Entrevista" }
     case "oferta":
-      return {
-        bg: "bg-accent/10",
-        text: "text-accent",
-        border: "border-accent/20",
-        label: "Oferta",
-      }
+      return { chip: "bg-accent/10 text-accent", label: "Oferta" }
     case "contratado":
-      return {
-        bg: "bg-secondary/10",
-        text: "text-secondary",
-        border: "border-secondary/20",
-        label: "Contratado",
-      }
+      return { chip: "bg-secondary/10 text-secondary", label: "Contratado" }
     default:
-      return {
-        bg: "bg-destructive/10",
-        text: "text-destructive",
-        border: "border-destructive/20",
-        label: "Rechazado",
-      }
+      return { chip: "bg-destructive/10 text-destructive", label: "Rechazado" }
   }
 }
 
@@ -80,53 +53,60 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
   }
 
   return (
-    <Card className="md:col-span-2 border border-border/80 bg-white rounded-[14px]">
-      <CardHeader className="px-4">
+    <Card className={`md:col-span-2 ${dashboardRaisedCardClass}`}>
+      <CardHeader className="px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs leading-4 font-medium text-foreground">
             Aplicaciones Recientes
           </CardTitle>
           <Button
             variant="ghost"
-            className="h-7 rounded-md text-xs leading-4 font-medium"
+            size="sm"
+            className="h-9 px-3 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground"
             onClick={onViewAll}
           >
-            Ver Todo
+            Ver todas
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="px-4">
+      <CardContent className="px-4 sm:px-5 pb-4 sm:pb-5">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((n) => (
               <div
                 key={n}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/60 animate-pulse"
+                className="flex items-center justify-between rounded-lg bg-surface-container-low p-3"
               >
                 <div className="space-y-2">
-                  <div className="size-40 rounded bg-muted" />
-                  <div className="h-3 w-24 rounded bg-muted" />
+                  <div className="h-4 w-40 rounded-md bg-surface-container-highest/60 animate-pulse" />
+                  <div className="h-3 w-24 rounded-md bg-surface-container-highest/60 animate-pulse" />
                 </div>
-                <div className="space-y-1 text-right">
-                  <div className="h-3 w-20 rounded bg-muted" />
-                  <div className="h-5 w-16 rounded-full bg-muted" />
+                <div className="space-y-1.5 text-right">
+                  <div className="h-3 w-20 rounded-md bg-surface-container-highest/60 animate-pulse" />
+                  <div className="ml-auto h-5 w-16 rounded-md bg-surface-container-highest/60 animate-pulse" />
                 </div>
               </div>
             ))}
           </div>
         ) : applications.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No tienes postulaciones recientes
-          </p>
+          <div className="flex flex-col items-center text-center gap-2 py-8">
+            <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center text-muted-foreground">
+              <HugeiconsIcon icon={File02Icon} size={20} />
+            </div>
+            <p className="text-sm font-medium text-foreground">Sin postulaciones todavía</p>
+            <p className="text-xs text-muted-foreground max-w-[240px]">
+              Cuando postules a una oferta, aparecerá aquí.
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
             {applications.slice(0, 5).map((app) => {
-              const status = getStatusStyles(app.status)
+              const status = getStatusChipClass(app.status)
               return (
                 <button
                   type="button"
                   key={app.id}
-                  className="flex items-center justify-between w-full p-3 rounded-lg bg-muted/30 hover:bg-muted/50 active:scale-[0.99] cursor-pointer transition-all duration-150 border border-border/60 hover:border-border/80"
+                  className="flex items-center justify-between w-full p-3 rounded-lg bg-surface-container-low hover:bg-surface-container-highest/40 cursor-pointer transition-colors duration-150 text-left"
                   onClick={() => handleJobClick(app.jobId)}
                   onKeyDown={(e) => handleKeyDown(e, app.jobId)}
                   aria-label={`Ver detalles del trabajo ${app.job?.title}`}
@@ -141,7 +121,7 @@ export const RecentApplicationsCard = memo(function RecentApplicationsCard({
                       {formatApplicationDate(app.createdAt)}
                     </p>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs leading-4 font-medium border ${status.bg} ${status.text} ${status.border}`}
+                      className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${status.chip}`}
                     >
                       {status.label}
                     </span>

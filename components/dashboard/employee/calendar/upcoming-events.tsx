@@ -36,9 +36,9 @@ const PARTICIPANT_STATUS_LABELS: Record<ParticipantStatus, string> = {
 }
 
 const PARTICIPANT_STATUS_COLORS: Record<ParticipantStatus, string> = {
-  pending: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  accepted: "bg-green-50 text-green-700 border-green-200",
-  declined: "bg-red-50 text-red-600 border-red-200",
+  pending: "bg-amber-500/10 text-amber-700",
+  accepted: "bg-secondary/10 text-secondary",
+  declined: "bg-destructive/10 text-destructive",
 }
 
 type UpcomingEventsProps = {
@@ -132,22 +132,31 @@ export function UpcomingEvents({
 
   return (
     <LazyMotion features={domAnimation}>
-      <Card className="bg-white border border-border/10 h-full">
-        <div className="p-4 lg:p-6 h-full flex flex-col">
-          <div className="flex items-center gap-2 mb-4 lg:mb-6">
-            <HugeiconsIcon icon={Calendar01Icon} className="size-5 text-secondary" />
-            <h3 className="text-base lg:text-lg font-semibold text-foreground">Proximos</h3>
+      <Card className="rounded-xl bg-surface-container-lowest border border-border/50 shadow-none h-full">
+        <div className="p-4 sm:p-5 h-full flex flex-col">
+          <div className="flex items-center gap-2 mb-4">
+            <HugeiconsIcon icon={Calendar01Icon} className="size-4 text-secondary" />
+            <h3 className="text-xs leading-4 font-medium text-foreground">Próximos</h3>
           </div>
 
           {isLoading ? (
             <div className="space-y-3">
               {[1, 2, 3].map((n) => (
-                <div key={n} className="h-20 rounded-lg bg-muted/20 animate-pulse" />
+                <div
+                  key={n}
+                  className="h-20 rounded-lg bg-surface-container-highest/60 animate-pulse"
+                />
               ))}
             </div>
           ) : upcoming.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-sm text-muted-foreground text-center">No hay eventos proximos</p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-8 text-center">
+              <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center text-muted-foreground">
+                <HugeiconsIcon icon={Calendar01Icon} size={20} />
+              </div>
+              <p className="text-sm font-medium text-foreground">No hay eventos próximos</p>
+              <p className="text-xs text-muted-foreground max-w-[220px]">
+                Cuando agendes entrevistas u onboarding, aparecerán aquí.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -157,7 +166,11 @@ export function UpcomingEvents({
                   <div key={event.id}>
                     <m.div
                       layout
-                      className={`relative p-4 rounded-lg bg-white cursor-pointer ${isExpanded ? "shadow-md" : "hover:shadow-sm border border-border/50"}`}
+                      className={`relative p-4 rounded-lg cursor-pointer transition-colors duration-150 border ${
+                        isExpanded
+                          ? "bg-surface-container-lowest border-border/60"
+                          : "bg-surface-container-low border-border/40 hover:bg-surface-container-highest/40"
+                      }`}
                       onClick={() => handleToggle(event.id)}
                       role="button"
                       tabIndex={0}
@@ -173,13 +186,13 @@ export function UpcomingEvents({
                             <span
                               className={`size-2 rounded-full shrink-0 ${getEventTypeDot(event.type)}`}
                             />
-                            <h4 className="font-medium text-sidebar-foreground text-sm leading-tight">
+                            <h4 className="font-medium text-foreground text-sm leading-tight">
                               {event.title}
                             </h4>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {index === 0 && (
-                              <span className="text-[13px] leading-4 bg-accent/15 text-accent px-3 py-1.5 rounded-full font-medium">
+                              <span className="text-xs font-medium bg-secondary/10 text-secondary px-2 py-0.5 rounded-md">
                                 Proximo
                               </span>
                             )}
@@ -207,7 +220,7 @@ export function UpcomingEvents({
                         </div>
 
                         {event.location && (
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground/80">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <HugeiconsIcon icon={Location05Icon} className="size-3" />
                             <span>{event.location}</span>
                           </div>
@@ -227,7 +240,7 @@ export function UpcomingEvents({
                               {event.description && (
                                 <div>
                                   <p className="text-xs font-medium text-muted-foreground mb-1">
-                                    Descripcion
+                                    Descripción
                                   </p>
                                   <p className="text-sm text-foreground">{event.description}</p>
                                 </div>
@@ -235,7 +248,7 @@ export function UpcomingEvents({
 
                               <div className="flex flex-wrap gap-2">
                                 {event.endAt && (
-                                  <span className="text-[13px] leading-4 px-3 py-1.5 rounded-full bg-muted/30 text-muted-foreground">
+                                  <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-surface-container-highest text-muted-foreground">
                                     {formatEventTime(event.startAt)} - {formatEndTime(event.endAt)}
                                   </span>
                                 )}
@@ -292,7 +305,7 @@ export function UpcomingEvents({
                                             e.stopPropagation()
                                             setCompleteEventId(event.id)
                                           }}
-                                          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-green-600 transition-colors"
+                                          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-secondary transition-colors"
                                         >
                                           <HugeiconsIcon
                                             icon={CheckmarkCircle01Icon}
@@ -329,7 +342,7 @@ export function UpcomingEvents({
                                         e.stopPropagation()
                                         onRSVP?.(event.id, "accepted")
                                       }}
-                                      className="flex items-center gap-1.5 text-xs font-medium text-green-700 hover:text-green-800 transition-colors disabled:opacity-50"
+                                      className="flex items-center gap-1.5 text-xs font-medium text-secondary hover:text-secondary/80 transition-colors disabled:opacity-50"
                                     >
                                       <HugeiconsIcon
                                         icon={CheckmarkCircle01Icon}
@@ -344,7 +357,7 @@ export function UpcomingEvents({
                                         e.stopPropagation()
                                         onRSVP?.(event.id, "declined")
                                       }}
-                                      className="flex items-center gap-1.5 text-xs font-medium text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
+                                      className="flex items-center gap-1.5 text-xs font-medium text-destructive hover:text-destructive/80 transition-colors disabled:opacity-50"
                                     >
                                       <HugeiconsIcon icon={Cancel01Icon} className="size-3.5" />
                                       Rechazar
@@ -356,7 +369,7 @@ export function UpcomingEvents({
                                   event.candidateId === currentUserId &&
                                   (rsvpStatuses?.[event.id] ?? myParticipant?.status) ? (
                                   <span
-                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] leading-4 font-medium rounded-md border ${
+                                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-md ${
                                       PARTICIPANT_STATUS_COLORS[
                                         rsvpStatuses?.[event.id] ??
                                           myParticipant?.status ??
@@ -401,9 +414,9 @@ export function UpcomingEvents({
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Eliminar evento?</AlertDialogTitle>
+              <AlertDialogTitle>¿Eliminar evento?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esta accion no se puede deshacer. El evento sera eliminado permanentemente.
+                Esta acción no se puede deshacer. El evento será eliminado permanentemente.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -429,8 +442,8 @@ export function UpcomingEvents({
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Marcar como completado?</AlertDialogTitle>
-              <AlertDialogDescription>El evento se marcara como completado.</AlertDialogDescription>
+              <AlertDialogTitle>¿Marcar como completado?</AlertDialogTitle>
+              <AlertDialogDescription>El evento se marcará como completado.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setCompleteEventId(null)}>
@@ -456,9 +469,9 @@ export function UpcomingEvents({
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Cancelar evento?</AlertDialogTitle>
+              <AlertDialogTitle>¿Cancelar evento?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esta accion no se puede deshacer. El evento sera cancelado.
+                Esta acción no se puede deshacer. El evento será cancelado.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

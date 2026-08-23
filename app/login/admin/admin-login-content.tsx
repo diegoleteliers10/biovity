@@ -117,8 +117,8 @@ export function AdminLoginContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/images/ilustrationOG.png"
-            alt="Biovity - Panel de Administración"
+            src="/Login.png"
+            alt="Biovity - Acceso administrativo"
             fill
             className="object-cover object-center"
             priority
@@ -128,7 +128,7 @@ export function AdminLoginContent() {
       </div>
 
       <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-sm space-y-8 p-6 lg:p-12">
+        <div className="m-auto w-full max-w-md space-y-8 p-6 lg:p-12">
           {/* Logo & Header */}
           <div className="flex flex-col items-center text-center space-y-3">
             <Link
@@ -146,9 +146,7 @@ export function AdminLoginContent() {
               />
             </Link>
             <h1 className={authTitleClass}>Panel de Administración</h1>
-            <p className={authSubtitleClass}>
-              Acceso exclusivo para administradores del sistema
-            </p>
+            <p className={authSubtitleClass}>Acceso exclusivo para administradores del sistema</p>
           </div>
 
           <form onSubmit={handleSignIn} className="space-y-4">
@@ -228,7 +226,10 @@ export function AdminLoginContent() {
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <label htmlFor="remember" className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none">
+              <label
+                htmlFor="remember"
+                className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
+              >
                 <Checkbox
                   id="remember"
                   checked={state.rememberMe}
@@ -241,7 +242,10 @@ export function AdminLoginContent() {
             </div>
 
             {state.errors.general && (
-              <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center">
+              <div
+                role="alert"
+                className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+              >
                 {state.errors.general}
               </div>
             )}

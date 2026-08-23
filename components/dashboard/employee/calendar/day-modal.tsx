@@ -35,54 +35,59 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
   const getEventTypeInfo = (type: CalendarEvent["type"]) => {
     switch (type) {
       case "interview":
-        return { color: "bg-primary/10 text-primary border-primary/20", label: "Entrevista" }
+        return { color: "bg-primary/10 text-primary", label: "Entrevista" }
       case "onboarding":
         return {
-          color: "bg-secondary/10 text-secondary border-secondary/20",
+          color: "bg-secondary/10 text-secondary",
           label: "Onboarding",
         }
       case "task_deadline":
-        return { color: "bg-accent/10 text-accent border-accent/20", label: "Tarea" }
+        return { color: "bg-accent/10 text-accent", label: "Tarea" }
       case "announcement":
-        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Anuncio" }
+        return { color: "bg-surface-container-highest text-muted-foreground", label: "Anuncio" }
       default:
-        return { color: "bg-muted/10 text-muted-foreground border-muted/20", label: "Evento" }
+        return { color: "bg-surface-container-highest text-muted-foreground", label: "Evento" }
     }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md p-0 gap-0 overflow-hidden">
+      <DialogContent className="max-w-md p-0 gap-0 overflow-hidden bg-surface-container-lowest ring-ring/20 shadow-none">
         <DialogTitle className="sr-only">
           Eventos del {day} {dayName}
         </DialogTitle>
         <DialogDescription className="sr-only">
           Lista de eventos programados para este día
         </DialogDescription>
-        <DialogHeader className="p-6 pb-4 border-b border-border/10">
+        <DialogHeader className="p-5 border-b border-border/40 bg-surface-container-low">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center size-12 bg-secondary/10 rounded-xl shrink-0">
-              <HugeiconsIcon icon={Calendar01Icon} className="size-6 text-secondary" />
+            <div className="flex items-center justify-center size-10 bg-surface-container-lowest border border-border/40 rounded-xl shrink-0">
+              <HugeiconsIcon icon={Calendar01Icon} className="size-5 text-secondary" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-card-foreground">{day}</h2>
-              <p className="text-sm text-muted-foreground">{dayName}</p>
+              <h2 className="text-xl font-bold tracking-tight tabular-nums text-foreground">
+                {day}
+              </h2>
+              <p className="text-xs text-muted-foreground">{dayName}</p>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="p-6 max-h-[60vh] overflow-y-auto">
+        <div className="p-5 max-h-[60vh] overflow-y-auto">
           {events.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="size-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <HugeiconsIcon icon={Calendar01Icon} className="size-8 text-muted-foreground" />
+            <div className="bg-surface-container-low border border-border/40 rounded-xl py-8 px-6 text-center">
+              <div className="size-10 bg-surface-container-highest rounded-full flex items-center justify-center mx-auto mb-3">
+                <HugeiconsIcon icon={Calendar01Icon} className="size-5 text-muted-foreground" />
               </div>
-              <p className="text-muted-foreground">No hay eventos programados para este día</p>
+              <p className="text-sm font-medium text-foreground mb-1">Sin eventos</p>
+              <p className="text-xs text-muted-foreground">
+                No hay eventos programados para este día.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-card-foreground">
+                <h3 className="text-xs leading-4 font-medium text-foreground">
                   {events.length} {events.length === 1 ? "evento" : "eventos"}
                 </h3>
               </div>
@@ -93,14 +98,14 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                   return (
                     <div
                       key={event.id}
-                      className="p-4 rounded-lg bg-[#f3f3f5] hover:bg-[#e2e2e4] transition-colors duration-150"
+                      className="p-4 rounded-xl border border-border/40 bg-surface-container-low hover:bg-surface-container-highest/40 transition-colors duration-150 shadow-none"
                     >
                       <div className="flex items-start justify-between gap-3 mb-3">
-                        <h4 className="font-medium text-card-foreground leading-tight">
+                        <h4 className="text-sm font-medium text-foreground leading-tight">
                           {event.title}
                         </h4>
                         <span
-                          className={`px-3 py-1.5 rounded-md text-[13px] leading-4 font-medium border shrink-0 ${typeInfo.color}`}
+                          className={`px-2 py-0.5 rounded-md text-xs leading-4 font-medium shrink-0 ${typeInfo.color}`}
                         >
                           {typeInfo.label}
                         </span>

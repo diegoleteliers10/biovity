@@ -221,17 +221,17 @@ function getStatusColor(status: string): string {
   switch (status) {
     case "nuevo":
     case "pendiente":
-      return "bg-secondary/10 text-secondary border border-secondary/20"
+      return "bg-secondary/10 text-secondary"
     case "entrevista":
-      return "bg-primary/10 text-primary border border-primary/20"
+      return "bg-primary/10 text-primary"
     case "oferta":
-      return "bg-accent/10 text-accent border border-accent/20"
+      return "bg-yellow-500/10 text-yellow-700"
     case "rechazado":
-      return "bg-destructive/10 text-destructive border border-destructive/20"
+      return "bg-destructive/10 text-destructive"
     case "contratado":
-      return "bg-green-500/10 text-green-600 border border-green-500/20"
+      return "bg-green-500/10 text-green-600"
     default:
-      return "bg-muted text-muted-foreground"
+      return "bg-surface-container-highest text-muted-foreground"
   }
 }
 

@@ -127,17 +127,34 @@ export function ChatView({
             className="flex-1 space-y-4 overflow-y-auto p-4 scrollbar-message-hide min-h-0"
           >
             {messagesLoading ? (
-              <div className="flex justify-center py-8">
-                <p className="text-muted-foreground text-sm">Cargando mensajes…</p>
+              <div className="space-y-4" role="status" aria-label="Cargando mensajes">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={`msg-skeleton-${i}`}
+                    className={cn("flex", i % 2 === 0 ? "justify-start" : "justify-end")}
+                  >
+                    <div
+                      className={cn(
+                        "h-10 w-48 max-w-[70%] animate-pulse rounded-xl bg-surface-container-highest/60",
+                        i % 2 === 0 ? "rounded-tl-sm" : "rounded-tr-sm"
+                      )}
+                    />
+                  </div>
+                ))}
               </div>
             ) : messagesError ? (
               <div className="flex flex-col items-center justify-center gap-2 py-8">
-                <p className="text-destructive text-sm">
+                <p className="text-xs text-destructive">
                   {messagesErrorDetail instanceof Error
                     ? messagesErrorDetail.message
                     : "Error al cargar mensajes"}
                 </p>
-                <Button variant="outline" onClick={onRefetchMessages}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-4 rounded-lg text-xs font-medium"
+                  onClick={onRefetchMessages}
+                >
                   Reintentar
                 </Button>
               </div>
@@ -219,20 +236,12 @@ export function ChatView({
 function EmptyChatState() {
   return (
     <div className="flex flex-1 items-center justify-center">
-      <div className="max-w-md rounded-2xl bg-transparent px-6 py-7 text-center">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full border border-secondary/30 bg-secondary/10">
-          <HugeiconsIcon
-            icon={BubbleChatIcon}
-            size={24}
-            strokeWidth={1.5}
-            className="size-8 text-secondary-foreground"
-          />
+      <div className="max-w-md px-6 py-7 text-center">
+        <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-surface-container-highest text-muted-foreground">
+          <HugeiconsIcon icon={BubbleChatIcon} size={20} strokeWidth={1.5} />
         </div>
-        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Mensajeria
-        </p>
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">Tus mensajes</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mb-1 text-sm font-medium text-foreground">Tus mensajes</p>
+        <p className="text-xs text-muted-foreground max-w-[240px] mx-auto">
           Selecciona una conversación en la izquierda para comenzar.
         </p>
       </div>

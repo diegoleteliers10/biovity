@@ -16,7 +16,6 @@ import { ConnectedNotificationBell } from "@/components/common/ConnectedNotifica
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
   Select,
   SelectContent,
@@ -24,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
 import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import type { Metric } from "@/lib/types/dashboard"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
@@ -35,8 +33,8 @@ const ChartsGrid = dynamic(() => import("./metrics/MetricsCharts").then((mod) =>
   ssr: false,
   loading: () => (
     <div className="grid gap-4 lg:grid-cols-3">
-      <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
-      <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
+      <div className="rounded-xl bg-surface-container-lowest border border-border/50 shadow-none lg:col-span-2 h-[300px] animate-pulse" />
+      <div className="rounded-xl bg-surface-container-lowest border border-border/50 shadow-none h-[300px] animate-pulse" />
     </div>
   ),
 })
@@ -50,16 +48,14 @@ const PERIOD_LABEL: Record<MetricsPeriod, string> = {
 
 function KpiSkeletonCard() {
   return (
-    <Card className="border border-border/80 bg-white">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="size-4" />
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-8 w-16 mb-1" />
-        <Skeleton className="h-3 w-20" />
-      </CardContent>
-    </Card>
+    <div className="rounded-xl bg-surface-container-low border border-border/40 shadow-none p-4 sm:p-5 flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <div className="h-4 w-28 rounded-md bg-surface-container-highest/60 animate-pulse" />
+        <div className="size-4 rounded-md bg-surface-container-highest/60 animate-pulse" />
+      </div>
+      <div className="h-8 w-16 rounded-md bg-surface-container-highest/60 animate-pulse" />
+      <div className="h-3 w-20 rounded-md bg-surface-container-highest/60 animate-pulse" />
+    </div>
   )
 }
 
@@ -133,10 +129,10 @@ export const MetricsContent = () => {
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-[28px] font-semibold tracking-wide">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
               Hola, {firstName}
             </h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
+            <p className="text-muted-foreground text-sm">
               Seguimiento de postulaciones, embudo de contratación y rendimiento reciente.
             </p>
           </div>

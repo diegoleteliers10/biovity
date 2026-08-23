@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 export function EditableCard({
@@ -8,5 +7,14 @@ export function EditableCard({
   children: React.ReactNode
   className?: string
 }) {
-  return <Card className={cn("bg-white", className)}>{children}</Card>
+  return (
+    <div
+      className={cn(
+        "rounded-xl border border-border/50 bg-surface-container-lowest p-4 sm:p-5 shadow-none",
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
 }

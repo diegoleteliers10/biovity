@@ -3,6 +3,7 @@
 import { UserMultiple02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useMemo, useState } from "react"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -101,7 +102,7 @@ export function GeographicDistributionCard({
 
   if (isPending) {
     return (
-      <Card className="border border-border/80 bg-white dark:bg-card">
+      <Card className={dashboardRaisedCardClass}>
         <CardHeader>
           <Skeleton className="h-4 w-44" />
         </CardHeader>
@@ -119,7 +120,7 @@ export function GeographicDistributionCard({
   const hasData = items.length > 0
 
   return (
-    <Card className="border border-border/80 bg-white dark:bg-card overflow-hidden">
+    <Card className={`${dashboardRaisedCardClass} overflow-hidden`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle>Distribución geográfica</CardTitle>
@@ -189,7 +190,7 @@ export function GeographicDistributionCard({
                       <MarkerPopup closeButton>
                         <div className="p-1 text-xs space-y-1">
                           <p className="font-semibold text-foreground">{item.city}</p>
-                          <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
+                          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
                             <HugeiconsIcon icon={UserMultiple02Icon} size={12} />
                             <span>{item.count} postulaciones registradas</span>
                           </div>

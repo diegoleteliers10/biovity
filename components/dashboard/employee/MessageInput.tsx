@@ -52,13 +52,13 @@ export function MessageInput({
   onCreateEvent,
 }: MessageInputProps) {
   return (
-    <div className="shrink-0 border-t border-border bg-background p-4">
+    <div className="shrink-0 border-t border-border/40 bg-surface-container-lowest p-4">
       {sendMutation.isError && (
-        <p className="mb-2 text-destructive text-sm">
+        <p className="mb-2 text-xs text-destructive">
           {sendMutation.error instanceof Error ? sendMutation.error.message : "Error al enviar"}
         </p>
       )}
-      {isUploading && <p className="mb-2 text-muted-foreground text-sm">Subiendo archivo…</p>}
+      {isUploading && <p className="mb-2 text-xs text-muted-foreground">Subiendo archivo…</p>}
       <div className="flex items-center gap-2">
         <input
           ref={fileInputRef}
@@ -116,7 +116,7 @@ export function MessageInput({
             }}
             onKeyDown={onKeyDown}
             placeholder="Escribe un mensaje..."
-            className="w-full min-h-7 max-h-[220px] resize-none overflow-y-hidden rounded-md border border-input bg-transparent px-2.5 py-1 text-[13px] leading-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full min-h-9 max-h-[220px] resize-none overflow-y-hidden rounded-lg border border-border/40 bg-surface-container-low px-3 py-2 text-sm leading-5 text-foreground placeholder:text-muted-foreground focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-colors"
             rows={1}
           />
         </div>
