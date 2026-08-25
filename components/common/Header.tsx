@@ -15,6 +15,7 @@ const menuItems = [
   { name: "Trabajos", href: "/trabajos" },
   { name: "Empresas", href: "/empresas" },
   { name: "Nosotros", href: "/nosotros" },
+  { name: "Aprende", href: "/aprende" },
   { name: "Blog", href: "/blog" },
 ]
 

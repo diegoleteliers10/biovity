@@ -4,7 +4,12 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import {
+  getSpringTransition,
+  getTransition,
+  LANDING_ANIMATION,
+  LANDING_ANIMATION_MOBILE,
+} from "@/lib/animations"
 import { TRANSPARENCY_FEATURES } from "@/lib/data/home-data"
 
 export function TransparencyGuarantee() {
@@ -12,8 +17,12 @@ export function TransparencyGuarantee() {
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
 
-  const chainStagger = isMobile ? LANDING_ANIMATION_MOBILE.chainStagger : LANDING_ANIMATION.chainStagger
-  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const chainStagger = isMobile
+    ? LANDING_ANIMATION_MOBILE.chainStagger
+    : LANDING_ANIMATION.chainStagger
+  const viewportMargin = isMobile
+    ? LANDING_ANIMATION_MOBILE.viewportMargin
+    : LANDING_ANIMATION.viewportMargin
   const yOffset = isReduced ? 0 : isMobile ? 16 : 28
 
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
@@ -33,10 +42,12 @@ export function TransparencyGuarantee() {
             Compromiso de Transparencia
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Empleos reales, verificados y <span className="text-accent font-semibold">100% transparentes</span>
+            Empleos reales, verificados y{" "}
+            <span className="text-accent font-semibold">100% transparentes</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Garantizamos información clara sobre salarios, requisitos experimentales y condiciones laborales en cada oportunidad.
+            Garantizamos información clara sobre salarios, requisitos experimentales y condiciones
+            laborales en cada oportunidad.
           </p>
         </m.div>
 
@@ -56,9 +67,7 @@ export function TransparencyGuarantee() {
                 <div>
                   <div
                     className={`size-10 rounded-lg flex items-center justify-center mb-5 ${
-                      isViolet
-                        ? "bg-accent/10 text-accent"
-                        : "bg-secondary/10 text-secondary"
+                      isViolet ? "bg-accent/10 text-accent" : "bg-secondary/10 text-secondary"
                     }`}
                   >
                     <HugeiconsIcon icon={feature.icon} size={20} />

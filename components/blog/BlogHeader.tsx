@@ -37,7 +37,8 @@ export function BlogHeader() {
           transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
           className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty max-w-xl mx-auto"
         >
-          Análisis sobre el mercado laboral, avances en biotecnología y guías profesionales para la comunidad científica en Chile.
+          Análisis sobre el mercado laboral, avances en biotecnología y guías profesionales para la
+          comunidad científica en Chile.
         </m.p>
       </div>
     </div>

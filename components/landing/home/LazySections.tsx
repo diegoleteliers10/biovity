@@ -37,7 +37,10 @@ const ConexionTalento = dynamic(
           <div className="h-48 bg-surface-container-low rounded-2xl mb-8" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((n) => (
-              <div key={n} className="h-32 bg-surface-container-low border border-border rounded-xl" />
+              <div
+                key={n}
+                className="h-32 bg-surface-container-low border border-border rounded-xl"
+              />
             ))}
           </div>
         </div>

@@ -204,7 +204,10 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   <HugeiconsIcon icon={FilterEditIcon} className="size-4" />
                   <span>Filtros</span>
                   {activeCount > 0 && (
-                    <Badge variant="secondary" className="px-1.5 py-0 text-xs font-semibold bg-secondary text-secondary-foreground">
+                    <Badge
+                      variant="secondary"
+                      className="px-1.5 py-0 text-xs font-semibold bg-secondary text-secondary-foreground"
+                    >
                       {activeCount}
                     </Badge>
                   )}

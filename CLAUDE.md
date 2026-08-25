@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Biovity** is a Chilean job platform connecting professionals and students with opportunities in the scientific sector (biotechnology, biochemistry, chemistry, chemical engineering, and health). The platform serves as a bridge between talent and scientific companies.
 
+> **Backend**: the companion NestJS + Supabase backend lives at `/Users/dleteliers/Dev/biovity-server`.
+
 ## Development Commands
 
 ```bash
@@ -384,4 +386,14 @@ Follow the animation tokens and patterns defined in `DESIGN.md`:
 - **Scale on hover**: 150ms scale(0.95 → 1) for interactive elements
 
 Use `lib/animations.ts` for predefined animation variants. Prefer Motion for complex sequences and Tailwind utilities for simple transitions.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in Linear's isolated agent zone: team `Agents`, project `Biovity`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout: root `CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.
 

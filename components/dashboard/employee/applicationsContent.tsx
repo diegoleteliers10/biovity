@@ -42,11 +42,7 @@ function formatDateApplied(isoDate: string): string {
   return formatDateChilean(isoDate, "d MMM yyyy")
 }
 
-function formatSalary(
-  min?: number | null,
-  max?: number | null,
-  currency?: string | null
-): string {
+function formatSalary(min?: number | null, max?: number | null, currency?: string | null): string {
   if (!min && !max) return ""
   const curr = currency ?? "CLP"
   if (min && max) {
@@ -66,10 +62,7 @@ function getInitials(name: string): string {
 }
 
 function ApplicationStatusChip({ status }: { status: ApplicationStatus }) {
-  const config: Record<
-    ApplicationStatus | "desistido",
-    { label: string; className: string }
-  > = {
+  const config: Record<ApplicationStatus | "desistido", { label: string; className: string }> = {
     pendiente: {
       label: "En revisión",
       className: "bg-surface-container-highest text-foreground",
@@ -298,8 +291,7 @@ export function ApplicationsContent() {
         (a) => a.status === "pendiente" || a.status === "entrevista" || a.status === "oferta"
       ).length,
       completed: applications.filter(
-        (a) =>
-          a.status === "contratado" || a.status === "rechazado" || a.status === "desistido"
+        (a) => a.status === "contratado" || a.status === "rechazado" || a.status === "desistido"
       ).length,
     }
   }, [applications])
@@ -310,9 +302,7 @@ export function ApplicationsContent() {
         activeTab === "all"
           ? true
           : activeTab === "in_progress"
-            ? app.status === "pendiente" ||
-              app.status === "entrevista" ||
-              app.status === "oferta"
+            ? app.status === "pendiente" || app.status === "entrevista" || app.status === "oferta"
             : app.status === "contratado" ||
               app.status === "rechazado" ||
               app.status === "desistido"

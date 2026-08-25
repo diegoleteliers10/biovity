@@ -155,7 +155,9 @@ export function NotificationsPageContent() {
           </div>
           <div>
             <p className="text-sm font-medium text-foreground mb-1">
-              {filter === "unread" ? "No tienes notificaciones no leídas" : "No tienes notificaciones"}
+              {filter === "unread"
+                ? "No tienes notificaciones no leídas"
+                : "No tienes notificaciones"}
             </p>
             <p className="text-xs text-muted-foreground">
               {filter === "unread"
@@ -220,7 +222,11 @@ export function NotificationsPageContent() {
                       {notification.title}
                     </p>
                     <span className="flex items-center gap-1 text-xs text-muted-foreground font-mono tabular-nums shrink-0">
-                      <HugeiconsIcon icon={Clock01Icon} size={13} className="text-muted-foreground" />
+                      <HugeiconsIcon
+                        icon={Clock01Icon}
+                        size={13}
+                        className="text-muted-foreground"
+                      />
                       {formatFechaRelativa(notification.createdAt)}
                     </span>
                   </div>

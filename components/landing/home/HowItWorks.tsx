@@ -4,7 +4,12 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import {
+  getSpringTransition,
+  getTransition,
+  LANDING_ANIMATION,
+  LANDING_ANIMATION_MOBILE,
+} from "@/lib/animations"
 import { STEPS_HOME } from "@/lib/data/home-data"
 
 export function HowItWorks() {
@@ -12,8 +17,12 @@ export function HowItWorks() {
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
 
-  const chainStagger = isMobile ? LANDING_ANIMATION_MOBILE.chainStagger : LANDING_ANIMATION.chainStagger
-  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const chainStagger = isMobile
+    ? LANDING_ANIMATION_MOBILE.chainStagger
+    : LANDING_ANIMATION.chainStagger
+  const viewportMargin = isMobile
+    ? LANDING_ANIMATION_MOBILE.viewportMargin
+    : LANDING_ANIMATION.viewportMargin
   const yOffset = isReduced ? 0 : isMobile ? 16 : 28
 
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
@@ -36,7 +45,8 @@ export function HowItWorks() {
             Tu camino hacia el <span className="text-accent font-semibold">éxito profesional</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            En 4 sencillos pasos, acelera tu postulación y conecta con los equipos científicos más innovadores de Chile.
+            En 4 sencillos pasos, acelera tu postulación y conecta con los equipos científicos más
+            innovadores de Chile.
           </p>
         </m.div>
 

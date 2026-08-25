@@ -1,0 +1,134 @@
+---
+title: "Análisis de secuencias ADN con Python"
+description: "Aprende a manipular, filtrar y analizar secuencias de ADN usando Biopython. Una cápsula práctica para biólogos que quieren programar."
+category: "bioinformatica"
+duration: 25
+date: "2026-08-25"
+quiz:
+  - q: "¿Qué librería de Python se usa para trabajar con secuencias biológicas?"
+    options:
+      - "NumPy"
+      - "Biopython"
+      - "Pandas"
+      - "Matplotlib"
+    correct: 1
+  - q: "¿Qué método de SeqMedia se usa para obtener la complementaria de una secuencia?"
+    options:
+      - "complement()"
+      - "reverse_complement()"
+      - "complementary()"
+      - "rc()"
+    correct: 1
+  - q: "¿Cuál es la longitud de la secuencia 'ATGCGATCGATCG'?"
+    options:
+      - "10"
+      - "12"
+      - "13"
+      - "14"
+    correct: 2
+  - q: "¿Qué archivo de formato FASTA contiene?"
+    options:
+      - "Secuencias con encabezado descripcional"
+      - "Solo secuencias sin formato"
+      - "Imágenes de microscopía"
+      - "Datos de expresión génica"
+    correct: 0
+  - q: "¿Cómo se lee un archivo FASTA con Biopython?"
+    options:
+      - "SeqIO.read('archivo.fasta', 'fasta')"
+      - "open('archivo.fasta').read()"
+      - "fasta.parse('archivo.fasta')"
+      - "Bio.read_fasta('archivo.fasta')"
+    correct: 0
+---
+
+## ¿Qué aprenderás?
+
+En esta cápsula aprenderás a usar Python con Biopython para manipular secuencias de ADN. Cubriremos desde la instalación hasta análisis básicos como conteo de bases, obtención de complementarias y lectura de archivos FASTA.
+
+## Requisitos
+
+- Python 3.8 o superior instalado
+- Conocimientos básicos de programación
+- Instalar Biopython: `pip install biopython`
+
+## Crear tu primera secuencia
+
+Con Biopython puedes crear objetos `Seq` que representan secuencias biológicas:
+
+```python
+from Bio.Seq import Seq
+
+# Crear una secuencia de ADN
+seq = Seq("ATGCGATCGATCG")
+
+print(f"Secuencia: {seq}")
+print(f"Longitud: {len(seq)}")
+```
+
+Salida esperada:
+
+```
+Secuencia: ATGCGATCGATCG
+Longitud: 13
+```
+
+## Conteo de bases
+
+Podemos contar cuántas veces aparece cada base:
+
+```python
+from collections import Counter
+
+def contar_bases(secuencia):
+    return Counter(str(secuencia))
+
+secuencia = Seq("ATGCGATCGATCGATCG")
+conteo = contar_bases(secuencia)
+
+for base, cantidad in sorted(conteo.items()):
+    print(f"{base}: {cantidad}")
+```
+
+## Complementaria y reversa
+
+Una operación fundamental en bioinformática es obtener la complementaria reversa:
+
+```python
+secuencia = Seq("ATGCGATCG")
+
+complementaria = seq.complement()
+rev_complementaria = seq.reverse_complement()
+
+print(f"Original:           {seq}")
+print(f"Complementaria:     {complementaria}")
+print(f"Reversa complementaria: {rev_complementaria}")
+```
+
+## Lectura de archivos FASTA
+
+En la práctica real, las secuencias vienen en archivos FASTA:
+
+```python
+from Bio import SeqIO
+
+# Leer un archivo FASTA
+for record in SeqIO.parse("secuencias.fasta", "fasta"):
+    print(f"ID: {record.id}")
+    print(f"Secuencia: {record.seq}")
+    print(f"Longitud: {len(record.seq)}")
+    print("---")
+```
+
+## Ejercicio práctico
+
+Crea un archivo `analisis.py` que:
+
+1. Defina 3 secuencias de ADN
+2. Calcule el conteo de bases para cada una
+3. Obtenga la complementaria reversa de cada una
+4. Imprima un resumen con las estadísticas
+
+## Siguiente paso
+
+Después de dominar lo básico, podrás usar estas herramientas para análisis más complejos como alineamiento de secuencias, búsqueda de patrones y análisis filogenético.

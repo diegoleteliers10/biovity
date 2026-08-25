@@ -140,7 +140,12 @@ export function Hero() {
                   size="lg"
                   className="h-12 px-8 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm w-full sm:w-auto shrink-0 shadow-sm transition-all hover:scale-[1.02]"
                 >
-                  <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.75} className="mr-1.5" />
+                  <HugeiconsIcon
+                    icon={Search01Icon}
+                    size={18}
+                    strokeWidth={1.75}
+                    className="mr-1.5"
+                  />
                   Buscar Empleos
                 </Button>
               </div>

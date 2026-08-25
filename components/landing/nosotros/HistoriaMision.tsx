@@ -39,18 +39,18 @@ export function HistoriaMision() {
             className="lg:col-span-7 space-y-4 text-muted-foreground leading-relaxed text-base sm:text-lg text-pretty"
           >
             <p>
-              Biovity nació en 2026 a partir de una observación crítica: mientras Chile forma científicos
-              y profesionales de altísimo nivel en biotecnología, bioquímica, farmacia e ingeniería,
-              el ecosistema laboral permanecía opaco, atomizado y desconectado.
+              Biovity nació en 2026 a partir de una observación crítica: mientras Chile forma
+              científicos y profesionales de altísimo nivel en biotecnología, bioquímica, farmacia e
+              ingeniería, el ecosistema laboral permanecía opaco, atomizado y desconectado.
             </p>
             <p>
-              Muchos graduados y doctores enfrentaban ofertas sin bandas salariales claras o vacantes
-              diluidas en portales genéricos sin rigor técnico. Al mismo tiempo, empresas y startups de
-              biociencias luchaban por reclutar talento especializado.
+              Muchos graduados y doctores enfrentaban ofertas sin bandas salariales claras o
+              vacantes diluidas en portales genéricos sin rigor técnico. Al mismo tiempo, empresas y
+              startups de biociencias luchaban por reclutar talento especializado.
             </p>
             <p className="font-medium text-foreground">
-              Nuestra misión es cerrar esa brecha: crear un estándar transparente donde el conocimiento
-              científico sea valorado en su justa medida.
+              Nuestra misión es cerrar esa brecha: crear un estándar transparente donde el
+              conocimiento científico sea valorado en su justa medida.
             </p>
           </m.div>
         </div>

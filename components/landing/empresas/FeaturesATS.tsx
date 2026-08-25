@@ -25,10 +25,12 @@ export function FeaturesATS() {
             Infraestructura ATS
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Sistema ATS diseñado para <span className="text-accent font-semibold">equipos científicos</span>
+            Sistema ATS diseñado para{" "}
+            <span className="text-accent font-semibold">equipos científicos</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Herramientas profesionales para gestionar tus procesos de reclutamiento desde la postulación hasta la contratación final.
+            Herramientas profesionales para gestionar tus procesos de reclutamiento desde la
+            postulación hasta la contratación final.
           </p>
         </m.div>
 

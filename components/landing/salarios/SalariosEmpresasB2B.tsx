@@ -39,7 +39,8 @@ export function SalariosEmpresasB2B() {
             Guía B2B de <span className="text-accent font-semibold">bandas salariales</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Datos de referencia para estructurar propuestas competitivas y retener talento técnico clave en el ecosistema científico chileno.
+            Datos de referencia para estructurar propuestas competitivas y retener talento técnico
+            clave en el ecosistema científico chileno.
           </p>
         </div>
 

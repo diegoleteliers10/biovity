@@ -4,8 +4,8 @@ import {
   Cancel01Icon,
   GithubIcon,
   Globe02Icon,
-  LinkSquare01Icon,
   LinkedinIcon,
+  LinkSquare01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"

@@ -185,7 +185,8 @@ export function SalariosCrowdsourcing() {
               </h3>
 
               <p className="text-base text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
-                Gracias por contribuir a la transparencia salarial del ecosistema científico en Chile. Tu aporte es 100% anónimo.
+                Gracias por contribuir a la transparencia salarial del ecosistema científico en
+                Chile. Tu aporte es 100% anónimo.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -233,7 +234,8 @@ export function SalariosCrowdsourcing() {
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            100% anónimo y sin registro previo. Tu contribución ayuda a crear el primer dataset abierto de compensaciones científicas en Chile.
+            100% anónimo y sin registro previo. Tu contribución ayuda a crear el primer dataset
+            abierto de compensaciones científicas en Chile.
           </p>
         </m.div>
 
@@ -245,7 +247,12 @@ export function SalariosCrowdsourcing() {
               <div className="flex items-center gap-2.5">
                 <HugeiconsIcon icon={Shield02Icon} size={20} className="text-secondary shrink-0" />
                 <h3 className="text-base sm:text-lg font-semibold text-foreground tracking-tight">
-                  Paso {step + 1} de {TOTAL_STEPS}: {step === 0 ? "Cargo y Ubicación" : step === 1 ? "Compensación" : "Formación y Habilidades"}
+                  Paso {step + 1} de {TOTAL_STEPS}:{" "}
+                  {step === 0
+                    ? "Cargo y Ubicación"
+                    : step === 1
+                      ? "Compensación"
+                      : "Formación y Habilidades"}
                 </h3>
               </div>
               <span className="text-xs font-mono font-medium text-secondary bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20 shrink-0">
@@ -270,25 +277,13 @@ export function SalariosCrowdsourcing() {
               transition={{ duration: reducedMotion ? 0.01 : 0.25, ease: "easeOut" }}
             >
               {step === 0 && (
-                <StepRole
-                  form={form}
-                  set={set}
-                  setExperienceYears={setExperienceYears}
-                />
+                <StepRole form={form} set={set} setExperienceYears={setExperienceYears} />
               )}
               {step === 1 && (
-                <StepCompensation
-                  form={form}
-                  set={set}
-                  toggleArrayItem={toggleArrayItem}
-                />
+                <StepCompensation form={form} set={set} toggleArrayItem={toggleArrayItem} />
               )}
               {step === 2 && (
-                <StepEducation
-                  form={form}
-                  set={set}
-                  toggleArrayItem={toggleArrayItem}
-                />
+                <StepEducation form={form} set={set} toggleArrayItem={toggleArrayItem} />
               )}
             </m.div>
 
@@ -333,7 +328,11 @@ export function SalariosCrowdsourcing() {
                 >
                   {isSubmitting ? (
                     <>
-                      <HugeiconsIcon icon={Loading01Icon} size={16} className="animate-spin mr-1.5" />
+                      <HugeiconsIcon
+                        icon={Loading01Icon}
+                        size={16}
+                        className="animate-spin mr-1.5"
+                      />
                       Enviando...
                     </>
                   ) : (
@@ -532,7 +531,9 @@ function Field({
       <span className="block text-sm font-medium text-foreground mb-2">
         {label}
         {required && <span className="text-secondary ml-1">*</span>}
-        {optional && <span className="text-muted-foreground ml-1.5 text-xs font-normal">(opcional)</span>}
+        {optional && (
+          <span className="text-muted-foreground ml-1.5 text-xs font-normal">(opcional)</span>
+        )}
       </span>
       {children}
       {hint && <p className="mt-1.5 text-xs font-mono text-muted-foreground">{hint}</p>}

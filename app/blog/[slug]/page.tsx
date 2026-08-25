@@ -105,13 +105,19 @@ export default async function PostPage({ params }: Props) {
           <Breadcrumb className="mb-8">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/" className="text-muted-foreground hover:text-secondary text-xs">
+                <BreadcrumbLink
+                  href="/"
+                  className="text-muted-foreground hover:text-secondary text-xs"
+                >
                   Inicio
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/blog" className="text-muted-foreground hover:text-secondary text-xs">
+                <BreadcrumbLink
+                  href="/blog"
+                  className="text-muted-foreground hover:text-secondary text-xs"
+                >
                   Blog
                 </BreadcrumbLink>
               </BreadcrumbItem>

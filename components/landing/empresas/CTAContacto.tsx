@@ -149,9 +149,12 @@ export function CTAContacto() {
                 <div className="size-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mx-auto mb-4 text-secondary">
                   <HugeiconsIcon icon={CheckmarkCircle02Icon} size={28} />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">¡Mensaje enviado con éxito!</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  ¡Mensaje enviado con éxito!
+                </h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto text-pretty">
-                  Nos pondremos en contacto contigo dentro de las próximas 24 horas hábiles. Gracias por tu interés en Biovity.
+                  Nos pondremos en contacto contigo dentro de las próximas 24 horas hábiles. Gracias
+                  por tu interés en Biovity.
                 </p>
               </div>
             ) : (
@@ -161,7 +164,9 @@ export function CTAContacto() {
                 className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10"
               >
                 <div className="mb-6 pb-4 border-b border-border">
-                  <h3 className="text-lg font-semibold text-foreground">Contacta a nuestro equipo</h3>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Contacta a nuestro equipo
+                  </h3>
                   <p className="text-xs text-muted-foreground">
                     Cuéntanos sobre tus requerimientos y te responderemos a la brevedad.
                   </p>
@@ -197,7 +202,9 @@ export function CTAContacto() {
                           required
                           placeholder="Tu nombre"
                           className={`pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg ${
-                            errors.nombre ? "border-destructive focus-visible:ring-destructive/30" : ""
+                            errors.nombre
+                              ? "border-destructive focus-visible:ring-destructive/30"
+                              : ""
                           }`}
                         />
                       </div>

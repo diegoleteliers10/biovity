@@ -30,7 +30,8 @@ export function ConsejosHerramientas() {
             Herramientas y Plantillas Descargables
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground text-pretty">
-            Acelera tu postulación con materiales creados y validados por reclutadores del sector científico.
+            Acelera tu postulación con materiales creados y validados por reclutadores del sector
+            científico.
           </p>
         </m.div>
 

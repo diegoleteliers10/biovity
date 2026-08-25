@@ -15,21 +15,24 @@ export function SalariosMetodologia() {
           </CardHeader>
           <CardContent className="px-0 pb-0 space-y-4 text-muted-foreground text-sm sm:text-base leading-relaxed text-pretty">
             <p>
-              Nuestros modelos estadísticos combinan datos abiertos de mercado laboral, encuestas colaborativas
-              anonimizadas e información de fuentes públicas chilenas:
+              Nuestros modelos estadísticos combinan datos abiertos de mercado laboral, encuestas
+              colaborativas anonimizadas e información de fuentes públicas chilenas:
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 my-4">
-              {["Mifuturo.cl", "Indeed Chile", "Glassdoor", "Paylab Chile", "Robert Half"].map((source) => (
-                <div
-                  key={source}
-                  className="bg-surface-container-low rounded-lg p-3 text-center text-xs font-medium text-foreground border border-border"
-                >
-                  {source}
-                </div>
-              ))}
+              {["Mifuturo.cl", "Indeed Chile", "Glassdoor", "Paylab Chile", "Robert Half"].map(
+                (source) => (
+                  <div
+                    key={source}
+                    className="bg-surface-container-low rounded-lg p-3 text-center text-xs font-medium text-foreground border border-border"
+                  >
+                    {source}
+                  </div>
+                )
+              )}
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Los montos se normalizan en pesos chilenos líquidos mensuales (CLP) y se actualizan trimestralmente con las contribuciones verificadas de la comunidad Biovity.
+              Los montos se normalizan en pesos chilenos líquidos mensuales (CLP) y se actualizan
+              trimestralmente con las contribuciones verificadas de la comunidad Biovity.
             </p>
           </CardContent>
         </Card>

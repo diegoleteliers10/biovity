@@ -1,10 +1,6 @@
 "use client"
 
-import {
-  ArrowRight01Icon,
-  CheckmarkCircle02Icon,
-  FileAddIcon,
-} from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon, CheckmarkCircle02Icon, FileAddIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -42,7 +38,8 @@ export function ConsejosCTA() {
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-pretty">
-            Crea tu perfil profesional en Biovity, sube tu CV optimizado y accede a las mejores ofertas laborales en empresas líderes de biotecnología, química y farmacia en Chile.
+            Crea tu perfil profesional en Biovity, sube tu CV optimizado y accede a las mejores
+            ofertas laborales en empresas líderes de biotecnología, química y farmacia en Chile.
           </p>
         </m.div>
 

@@ -43,7 +43,9 @@ export function ConsejosHero() {
             transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Guías prácticas, optimización de CV para sistemas ATS, preparación de entrevistas técnicas y estrategias comprobadas para transicionar con éxito de la academia a la industria.
+            Guías prácticas, optimización de CV para sistemas ATS, preparación de entrevistas
+            técnicas y estrategias comprobadas para transicionar con éxito de la academia a la
+            industria.
           </m.p>
 
           {/* Stats Grid - Exactly matching /nosotros styling, font, and font-size */}

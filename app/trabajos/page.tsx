@@ -119,7 +119,9 @@ export default function TrabajosPage() {
             </h1>
 
             <p className="max-w-3xl text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty mb-6">
-              Explora ofertas de trabajo verificadas en biotecnología, bioquímica, química, farmacéutica, laboratorio e I+D en Chile. Postula gratis y conecta directamente con empresas líderes del ecosistema.
+              Explora ofertas de trabajo verificadas en biotecnología, bioquímica, química,
+              farmacéutica, laboratorio e I+D en Chile. Postula gratis y conecta directamente con
+              empresas líderes del ecosistema.
             </p>
 
             <Suspense>

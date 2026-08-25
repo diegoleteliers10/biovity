@@ -8,7 +8,8 @@ import { getAllPosts } from "@/lib/posts"
 
 export const metadata: Metadata = {
   title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
-  description: "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
+  description:
+    "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
   keywords: [
     "blog biotecnología",
     "noticias ciencias Chile",
@@ -18,7 +19,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
-    description: "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
+    description:
+      "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
     url: "/blog",
     images: [
       {
@@ -32,7 +34,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
-    description: "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
+    description:
+      "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
     images: ["/og/home.png"],
   },
   alternates: {

@@ -120,7 +120,8 @@ export default function TerminosPage() {
               <ul className="list-disc pl-6 space-y-2 mt-2">
                 <li>
                   <strong>Custodia de Credenciales:</strong> El Usuario es responsable de mantener
-                  la confidencialidad de sus credenciales y de las actividades realizadas bajo su cuenta.
+                  la confidencialidad de sus credenciales y de las actividades realizadas bajo su
+                  cuenta.
                 </li>
                 <li>
                   <strong>Veracidad de la Información:</strong> Los profesionales garantizan que los
@@ -144,12 +145,12 @@ export default function TerminosPage() {
                   consagrado en el artículo 2 del Código del Trabajo de Chile.
                 </li>
                 <li>
-                  Publicar información engañosa o que induzca a error respecto a cargos,
-                  requisitos, salarios o condiciones laborales.
+                  Publicar información engañosa o que induzca a error respecto a cargos, requisitos,
+                  salarios o condiciones laborales.
                 </li>
                 <li>
-                  Utilizar datos personales de postulantes para fines de publicidad no solicitada
-                  o ajenos al proceso de selección específico.
+                  Utilizar datos personales de postulantes para fines de publicidad no solicitada o
+                  ajenos al proceso de selección específico.
                 </li>
                 <li>
                   Realizar ingeniería inversa, scraping masivo no autorizado o vulneración de las
@@ -163,7 +164,8 @@ export default function TerminosPage() {
                 5. Planes, Pagos y Facturación para Empresas
               </h2>
               <p>
-                El uso de la Plataforma es 100% gratuito para candidatos y profesionales en búsqueda de empleo.
+                El uso de la Plataforma es 100% gratuito para candidatos y profesionales en búsqueda
+                de empleo.
               </p>
               <p>
                 Las organizaciones pueden acceder a planes según las tarifas vigentes en la sección{" "}
@@ -173,7 +175,8 @@ export default function TerminosPage() {
                 >
                   Planes y Precios
                 </Link>
-                . Los cobros se expresan en pesos chilenos (CLP) más impuestos legales correspondientes.
+                . Los cobros se expresan en pesos chilenos (CLP) más impuestos legales
+                correspondientes.
               </p>
             </section>
 
@@ -183,7 +186,8 @@ export default function TerminosPage() {
               </h2>
               <p>
                 Todos los derechos de propiedad intelectual sobre la plataforma, marcas, interfaces,
-                código fuente y algoritmos de Biovity corresponden exclusivamente a Biovity o sus licenciantes.
+                código fuente y algoritmos de Biovity corresponden exclusivamente a Biovity o sus
+                licenciantes.
               </p>
             </section>
 
@@ -193,8 +197,8 @@ export default function TerminosPage() {
               </h2>
               <p>
                 Los presentes Términos se rigen e interpretan conforme a las leyes de la República
-                de Chile. Para todos los efectos legales, las partes se someten a la competencia
-                de los Tribunales Ordinarios de Justicia de la comuna de Santiago de Chile.
+                de Chile. Para todos los efectos legales, las partes se someten a la competencia de
+                los Tribunales Ordinarios de Justicia de la comuna de Santiago de Chile.
               </p>
             </section>
 
@@ -202,9 +206,7 @@ export default function TerminosPage() {
               <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 8. Canal de Contacto Oficial
               </h2>
-              <p>
-                Para consultas o notificaciones sobre estos Términos:
-              </p>
+              <p>Para consultas o notificaciones sobre estos Términos:</p>
               <div className="rounded-xl border border-border bg-surface-container-low p-4 mt-3">
                 <p className="font-semibold text-foreground">Biovity Chile</p>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -221,7 +223,8 @@ export default function TerminosPage() {
             </section>
 
             <div className="border-t border-border pt-6 mt-10 text-xs text-muted-foreground italic">
-              <strong>Aviso legal:</strong> Documento normativo e informativo regulatorio bajo el marco del derecho chileno.
+              <strong>Aviso legal:</strong> Documento normativo e informativo regulatorio bajo el
+              marco del derecho chileno.
             </div>
           </div>
         </div>
