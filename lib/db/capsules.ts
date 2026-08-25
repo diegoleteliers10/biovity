@@ -1,7 +1,7 @@
 import { Result as R, type Result } from "better-result"
 import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"
-import type { CapsuleProgress, Certificate } from "@/lib/types/capsulas"
+import type { CapsuleProgress, Certificate, ModuleProgress } from "@/lib/types/capsulas"
 
 export async function getCapsuleProgress(
   userId: string,
@@ -102,5 +102,54 @@ export async function getCertificate(
       }
     },
     catch: (cause) => new DbError({ operation: "get_certificate", cause }),
+  })
+}
+
+export async function getAllModuleProgress(
+  userId: string,
+  capsuleSlug: string
+): Promise<Result<ModuleProgress[], DbError>> {
+  return R.tryPromise({
+    try: async () => {
+      const client = await pool.connect()
+      try {
+        const { rows } = await client.query(
+          "SELECT * FROM capsule_module_progress WHERE user_id = $1 AND capsule_slug = $2 ORDER BY module_index",
+          [userId, capsuleSlug]
+        )
+        return rows as ModuleProgress[]
+      } finally {
+        client.release()
+      }
+    },
+    catch: (cause) => new DbError({ operation: "get_all_module_progress", cause }),
+  })
+}
+
+export async function upsertModuleProgress(
+  userId: string,
+  capsuleSlug: string,
+  moduleIndex: number,
+  completed: boolean
+): Promise<Result<ModuleProgress, DbError>> {
+  return R.tryPromise({
+    try: async () => {
+      const client = await pool.connect()
+      try {
+        const { rows } = await client.query(
+          `INSERT INTO capsule_module_progress (user_id, capsule_slug, module_index, completed, updated_at)
+           VALUES ($1, $2, $3, $4, now())
+           ON CONFLICT (user_id, capsule_slug, module_index) DO UPDATE SET
+             completed = $4,
+             updated_at = now()
+           RETURNING *`,
+          [userId, capsuleSlug, moduleIndex, completed]
+        )
+        return rows[0] as ModuleProgress
+      } finally {
+        client.release()
+      }
+    },
+    catch: (cause) => new DbError({ operation: "upsert_module_progress", cause }),
   })
 }

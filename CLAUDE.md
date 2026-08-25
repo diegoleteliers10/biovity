@@ -173,6 +173,7 @@ From `.cursor/rules/` - follow these patterns:
 - **Const functions**: Prefer `const toggle = () =>` over function declarations
 - **Accessibility**: Include `aria-label`, `tabindex`, keyboard handlers
 - **TypeScript strict**: Define types for all functions/components
+- **DESIGN.md is mandatory**: Every new feature, page, component, or UI change MUST follow the design system in `DESIGN.md`. Before writing any JSX, identify the register (brand vs product §0), then use the correct typography hierarchy (§3.2 or §3.3), color tokens (§2), spacing scale (§6), card patterns (§5.3), button styles (§5.1), motion rules (§7), and shadow-free cards (§1 principle 2). Never ship UI without consulting DESIGN.md first.
 
 ### Post-implementation: `/remove-ai-slop`
 

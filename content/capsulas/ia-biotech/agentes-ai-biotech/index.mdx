@@ -1,0 +1,455 @@
+---
+title: "Agentes de IA para Biotech"
+description: "Aprende a usar agentes de IA como Claude y OpenCode en proyectos de biotecnología. Desde prompting efectivo hasta pipelines de análisis automatizados."
+category: "ia-biotech"
+duration: 40
+date: "2026-08-25"
+modules:
+  - title: "Fundamentos: qué son los AI agents"
+    duration: 8
+    slug: "fundamentos-agentes-ia"
+  - title: "Prompting efectivo para biología"
+    duration: 10
+    slug: "prompting-biologia"
+  - title: "Construye tu primer proyecto con OpenCode"
+    duration: 12
+    slug: "proyecto-opencode"
+  - title: "Automatiza análisis con agentes"
+    duration: 10
+    slug: "automatizacion-agentes"
+quiz:
+  - q: "¿Cuál es la diferencia principal entre un chatbot y un AI agent?"
+    options:
+      - "El agent tiene más parámetros"
+      - "El agent usa herramientas y ejecuta acciones en bucles"
+      - "El chatbot es más rápido"
+      - "No hay diferencia"
+    correct: 1
+  - q: "¿Qué elemento NO forma parte de la anatomía de un buen prompt?"
+    options:
+      - "Rol"
+      - "Contexto"
+      - "Formato de salida"
+      - "La temperatura del modelo"
+    correct: 3
+  - q: "¿Para qué sirve el archivo AGENTS.md en un proyecto con OpenCode?"
+    options:
+      - "Para almacenar las contraseñas"
+      - "Para dar contexto del proyecto al agent"
+      - "Para compilar el código"
+      - "Para guardar los datos experimentales"
+    correct: 1
+  - q: "Un agent de código como OpenCode puede:"
+    options:
+      - "Reemplazar la validación experimental"
+      - "Leer archivos, editar código y ejecutar comandos"
+      - "Garantizar resultados sin errores"
+      - "Diseñar experimentos sin revisión"
+    correct: 1
+  - q: "¿Cuál es una buena práctica ante resultados generados por IA en biología?"
+    options:
+      - "Publicarlos directo"
+      - "Verificar cada resultado con fuentes confiables"
+      - "Confiar si suena convincente"
+      - "Ignorar las fuentes que cite"
+    correct: 1
+  - q: "¿Qué debe incluir un prompt reutilizable de análisis?"
+    options:
+      - "Instrucciones vagas para dar libertad al modelo"
+      - "Rol, entrada esperada, pasos del análisis y formato de salida"
+      - "Solo la pregunta final"
+      - "El mayor contexto posible sin estructura"
+    correct: 1
+  - q: "¿Cuál es un límite importante de los agentes de IA en biotech?"
+    options:
+      - "No pueden procesar texto"
+      - "Pueden inventar referencias o nombres de genes"
+      - "No funcionan offline"
+      - "Solo sirven para programar"
+    correct: 1
+  - q: "Al trabajar con datos sensibles de pacientes, debes:"
+    options:
+      - "Pegarlos completos en cualquier chatbot"
+      - "Anonimizar o sintetizar los datos antes de usarlos"
+      - "Subirlos a un repositorio público"
+      - "Compartir la clave de la base de datos con el agent"
+    correct: 1
+---
+
+## Módulo 1: Fundamentos: qué son los AI agents
+
+En este módulo entenderás qué hace distinto a un agent de un chatbot normal, y por qué esto cambia cómo trabajas en el laboratorio.
+
+### Chatbot vs agent
+
+Un chatbot responde mensajes. Le escribes, te contesta, y termina ahí. Un **AI agent** va más lejos: recibe un objetivo, decide qué pasos seguir, usa herramientas y repite el proceso hasta completar la tarea.
+
+La diferencia clave está en el **bucle de trabajo**:
+
+- Un chatbot genera texto y espera tu siguiente mensaje.
+- Un agent planifica, ejecuta acciones (leer archivos, correr código, buscar información), observa el resultado y corrige su curso.
+
+### Cómo "piensa" un agent
+
+Todo agent funciona con tres piezas:
+
+1. **Contexto**: lo que el modelo sabe de tu proyecto. Incluye tu prompt, los archivos que lee y las instrucciones que le diste.
+2. **Herramientas**: las acciones disponibles. Leer un FASTA, ejecutar Python, buscar en la web, editar un archivo.
+3. **Bucle**: planifica un paso, lo ejecuta, revisa el resultado y decide el siguiente paso.
+
+```text
+Objetivo: "Analiza secuencias.fasta y genera un reporte"
+   ↓
+Agent planifica: leer archivo → calcular GC → detectar outliers → escribir reporte
+   ↓
+Ejecuta paso 1, observa resultado, continúa (o corrige si falla)
+   ↓
+Entrega el reporte final
+```
+
+### Por qué importa en biotech
+
+Tu trabajo tiene muchas tareas repetitivas con estructura clara: limpiar datos, generar gráficos, buscar protocolos, redactar informes. Esas tareas son exactamente donde los agentes rinden.
+
+Casos de uso reales:
+
+- Escribir scripts de análisis sin ser experto en programación
+- Automatizar reportes de QC de secuenciación
+- Resumir literatura y extraer condiciones experimentales
+- Convertir protocolos de laboratorio en checklists ejecutables
+
+<Callout type="info">
+Un agent no reemplaza tu criterio científico. Acelera el trabajo mecánico para que tu tiempo vaya al diseño experimental y la interpretación.
+</Callout>
+
+### Los agentes que usaremos
+
+En esta cápsula trabajarás con tres herramientas concretas:
+
+- **Claude** (claude.ai): assistant conversacional de Anthropic. Ideal para diseñar proyectos, revisar código y pensar protocolos.
+- **OpenCode**: agent de código open-source que corre en tu terminal. Lee tu proyecto, edita archivos y ejecuta comandos.
+- **Cursor**: editor de código con IA integrada. Alternativa visual a OpenCode, mismo concepto de agent con acceso a tu proyecto.
+
+Los tres comparten el mismo principio: el modelo necesita **contexto de tu proyecto** para trabajar bien.
+
+## Módulo 2: Prompting efectivo para biología
+
+Un prompt mal escrito produce resultados genéricos o directamente incorrectos. Aquí aprenderás la estructura que hace la diferencia.
+
+### Anatomía de un prompt
+
+Todo prompt efectivo para ciencia tiene cuatro partes:
+
+1. **Rol**: quién debe ser el modelo.
+2. **Contexto**: los datos y restricciones de tu problema.
+3. **Tarea**: qué debe hacer, en pasos concretos.
+4. **Formato**: cómo debe entregar el resultado.
+
+### Malo vs bueno
+
+Prompt débil:
+
+```text
+Analiza esta secuencia: ATCGATCGATCG
+```
+
+Prompt efectivo:
+
+```text
+Actúa como bioinformático (rol).
+
+Tengo una secuencia de ADN de 12 pb y necesito
+caracterizarla antes de diseñar cebadores (contexto).
+
+Secuencia: ATCGATCGATCG
+
+Calcula: contenido de GC, conteo de bases,
+presencia de sitios de restricción EcoRI (GAATTC)
+y temperatura de melting con la fórmula de Wallace (tarea).
+
+Entrega los resultados en una tabla markdown con
+una fila por métrica y un párrafo final con tu
+recomendación sobre el diseño de cebadores (formato).
+```
+
+La segunda versión produce un resultado verificable y con el formato que necesitas.
+
+<Callout type="tip">
+Define el formato de salida en el prompt. Pedir "una tabla markdown con una fila por métrica" evita párrafos vagos y facilita copiar el resultado a tus reportes.
+</Callout>
+
+### Prompt para diseño experimental
+
+```text
+Actúa como investigador senior en biología molecular.
+
+Diseño un ensayo de qPCR para cuantificar expresión del
+gen BRCA1 en líneas celulares MCF-7 tratadas con un
+inhibidor de HDAC durante 24 h.
+
+Genera:
+1. Lista de reactivos con cantidades para 12 reacciones
+2. Programa térmico sugerido
+3. Controles necesarios (NTC, estándar, referencia)
+4. Dos riesgos experimentales y cómo mitigarlos
+
+Formato: secciones numeradas, cantidades en una tabla.
+Si un dato estándar varía según el fabricante, indícalo
+en lugar de asumir un valor.
+```
+
+### Prompt para revisión de literatura
+
+```text
+Actúa como asistente de investigación en genómica.
+
+Necesito un resumen del estado del arte en edición
+genómica con CRISPR-Cas9 para terapias de enfermedades
+monogénicas (contexto).
+
+Para cada artículo relevante de los últimos 3 años,
+extrae: objetivo, sistema modelo, estrategia de edición,
+eficiencia reportada y efecto fuera de objetivo.
+
+Presenta cada artículo como una tarjeta con esos cinco
+campos. Al final, lista las 3 brechas abiertas que
+identificas. Si no estás seguro de un dato, escribe
+"verificar" en lugar de inventar el valor.
+```
+
+### El problema de las alucinaciones
+
+Los modelos de lenguaje generan texto plausible, no verdadero. En biología esto es peligroso porque existen genes, proteínas y referencias que suenan reales pero no existen.
+
+Reglas prácticas:
+
+- **Nombres de genes**: verifica siempre en NCBI Gene o UniProt. Los modelos confunden nomenclatura entre especies.
+- **Referencias**: un DOI inventado es indistinguible de uno real. Verifica cada cita antes de usarla.
+- **Secuencias**: pide al modelo citar la fuente de cada secuencia. Nunca uses una secuencia de protocolo sin verificarla en una base de datos.
+- **Condiciones experimentales**: concentraciones y temperaturas deben venir de literatura verificada o de tu propio protocolo.
+
+<Callout type="warning">
+Trata cada resultado de IA como una hipótesis de trabajo, no como un dato. El paso de verificación es parte del flujo, no opcional.
+</Callout>
+
+## Módulo 3: Construye tu primer proyecto con OpenCode
+
+OpenCode es un agent de código open-source que corre en tu terminal. Lee tu proyecto, edita archivos y ejecuta comandos. En este módulo construirás un pipeline real de análisis de secuencias.
+
+### Paso 1: instalar OpenCode
+
+```bash
+# Instalar con el instalador oficial
+curl -fsSL https://opencode.ai/install | bash
+
+# Verificar la instalación
+opencode --version
+```
+
+También puedes instalarlo con npm o Homebrew:
+
+```bash
+npm install -g opencode-ai
+# o
+brew install opencode
+```
+
+### Paso 2: crear el proyecto
+
+```bash
+mkdir pipeline-secuencias && cd pipeline-secuencias
+git init
+
+# Crear un archivo de datos de prueba
+cat > datos.fasta << 'EOF'
+>seq1 descripcion de prueba
+ATCGATCGATCGATCG
+>seq2 segunda secuencia
+GCTAGCTAGCTAGCTA
+EOF
+
+opencode
+```
+
+### Paso 3: escribir el archivo AGENTS.md
+
+El archivo `AGENTS.md` es el contexto permanente del agent. OpenCode lo lee antes de cada tarea. Un buen `AGENTS.md` convierte un agent genérico en tu asistente de laboratorio.
+
+```markdown
+# Pipeline de análisis de secuencias
+
+## Propósito
+Proyecto de bioinformática para análisis de archivos
+FASTA: estadísticas de composición, contenido de GC
+y detección de outliers.
+
+## Stack
+- Python 3.11 con Biopython
+- matplotlib para gráficos
+- Sin framework, scripts directos en /src
+
+## Convenciones
+- Código en español: nombres de funciones y comentarios
+- Cada script debe poder ejecutarse standalone
+- Los resultados van a /resultados como markdown
+- Datos de entrada siempre en formato FASTA
+
+## Validación
+- Verificar que los archivos FASTA tengan formatos válidos
+  antes de procesar
+- Nunca modificar los archivos de datos de entrada
+```
+
+<Callout type="info">
+El AGENTS.md vive en la raíz del proyecto y se versiona con git. Cada vez que agregues una convención nueva, actualízalo. El agent lo seguirá en todas las tareas.
+</Callout>
+
+### Paso 4: pedir el pipeline
+
+Con el proyecto y el contexto listos, abre OpenCode y escribe tu primer prompt de proyecto:
+
+```text
+Lee el AGENTS.md y datos.fasta. Construye un script
+Python que:
+
+1. Valide el formato FASTA de entrada
+2. Calcule por secuencia: longitud, contenido de GC
+   y conteo de cada base
+3. Detecte secuencias con contenido de GC mayor a 2
+   desviaciones estándar del promedio
+4. Genere un reporte markdown en /resultados con una
+   tabla por secuencia y una lista de outliers
+
+Ejecuta el script sobre datos.fasta y muestra el
+resultado. Si falla, corrige el error y vuelve a
+ejecutar hasta que funcione.
+```
+
+OpenCode planificará los pasos, creará el script, lo ejecutará y corregirá errores sin que intervengas.
+
+### Paso 5: iterar
+
+El valor del agent está en la iteración. Prompts de seguimiento útiles:
+
+```text
+Agrega al reporte un gráfico de barras con el contenido
+de GC por secuencia, guardado en /resultados/gc.png
+```
+
+```text
+El script falla con un FASTA que tiene líneas en blanco
+entre secuencias. Corrige el parser y agrega un test
+con ese caso.
+```
+
+```text
+Explica qué hace la función de detección de outliers
+línea por línea, como si enseñaras a un biólogo que
+aprende Python.
+```
+
+<Callout type="tip">
+Pide al agent explicar su propio código. Es la forma más rápida de aprender Python mientras construyes: cada línea que el agent escribe se vuelve material de estudio.
+</Callout>
+
+## Módulo 4: Automatiza análisis con agentes
+
+Con las bases listas, ahora convertirás prompts sueltos en flujos de trabajo repetibles.
+
+### Prompts reutilizables
+
+Un prompt reutilizable es una plantilla con partes fijas (rol, pasos, formato) y partes variables (los datos). Guárdalos en un directorio `prompts/` de tu proyecto.
+
+Plantilla de análisis de composición:
+
+```markdown
+# prompts/analisis-composicion.md
+
+Actúa como bioinformático (rol).
+
+Entrada: un archivo FASTA en {RUTA_ARCHIVO} con N
+secuencias (contexto).
+
+Pasos:
+1. Validar el formato FASTA
+2. Calcular por secuencia: longitud, contenido de GC,
+   base más frecuente
+3. Comparar contra el promedio del archivo
+4. Identificar outliers a más de 2 desviaciones estándar
+
+Formato de salida: tabla markdown con una fila por
+secuencia, seguida de una sección de hallazgos con
+máximo 5 bullets.
+
+Regla: si un valor no se puede calcular, escribe
+"no calculable" y explica el motivo en una línea.
+```
+
+Para usarlo, reemplazas la variable y lo pegas en Claude o en OpenCode. El resultado tiene siempre la misma estructura, listo para tus informes.
+
+### El analista de secuencias personalizado
+
+Combina todo lo aprendido en un rol persistente para Claude. Guarda esto como tu prompt de inicio de sesión de trabajo:
+
+```text
+Actúa como mi analista de bioinformática.
+
+Mi contexto:
+- Trabajo con datos de secuenciación Sanger de amplicones
+  de 16S en muestras ambientales
+- Uso Python con Biopython, mis scripts viven en
+  /proyecto-analisis
+- Formato preferido de reportes: markdown con tablas,
+  máximo 2 páginas
+
+Tus reglas:
+1. Antes de cada análisis, pregunta por el objetivo
+   biológico si no está claro
+2. Verifica los formatos de archivo antes de procesar
+3. Nunca inventes referencias: si citas un artículo,
+   incluye DOI y admite cuando no estás seguro
+4. Cierra cada análisis con una sección "Limitaciones"
+   de máximo 3 bullets
+
+Confirma que entendiste con un resumen de 3 líneas.
+```
+
+Con este rol activo, cada conversación de trabajo arranca con el contexto completo. Tu analista recuerda el proyecto, el formato y las reglas de verificación.
+
+### Reportes automáticos
+
+En tu proyecto de OpenCode, un prompt que convierte datos crudos en informe final:
+
+```text
+Lee los archivos de /resultados generados esta semana.
+
+Genera el informe semanal:
+1. Resumen ejecutivo: 3 bullets con los hallazgos clave
+2. Tabla consolidada con todas las secuencias procesadas
+3. Gráfico de evolución del contenido de GC por día
+4. Sección "Alertas": secuencias con problemas de
+   calidad o outliers detectados
+5. Próximos pasos sugeridos basados en los datos
+
+Guarda el informe en /reportes/semana-actual.md y haz
+commit con mensaje descriptivo.
+```
+
+### Límites y buenas prácticas
+
+Lo que un agent NO debe hacer en tu laboratorio:
+
+- **Reemplazar la validación experimental**: todo resultado de análisis generado por IA se verifica con tus métodos estándar antes de reportarlo.
+- **Procesar datos sensibles sin anonimizar**: datos de pacientes o información confidencial de I+D se anonimizan o sintetizan antes de pasarlos a cualquier servicio en la nube.
+- **Citar sin verificar**: cada referencia generada se confirma en PubMed o la revista original.
+
+Buenas prácticas que sí aplican:
+
+- Versiona todo con git, incluido el AGENTS.md y los prompts
+- Pide al agent explicar el código que escribe
+- Mantén los datos de entrada como solo lectura
+- Documenta en el AGENTS.md qué análisis ya están validados
+
+<Callout type="info">
+La regla final: el agent acelera el trabajo mecánico, tu criterio científico valida el resultado. Esa división de trabajo es la que funciona.
+</Callout>

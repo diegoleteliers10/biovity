@@ -1,9 +1,9 @@
 import {
+  AiChemistry01Icon,
   Book01Icon,
   CodeIcon,
   GraduationScrollIcon,
   MicroscopeIcon,
-  RocketIcon,
   SparklesIcon,
 } from "@hugeicons/core-free-icons"
 import type { IconSvgElement } from "@hugeicons/react"
@@ -28,7 +28,7 @@ export type CategoryItem = {
 }
 
 export const APRENDE_STATS: StatItem[] = [
-  { value: "1", label: "Cápsula disponible" },
+  { value: "2", label: "Cápsulas disponibles" },
   { value: "5", label: "Preguntas por certificado" },
   { value: "70%", label: "Mínimo para aprobar" },
 ]
@@ -67,6 +67,14 @@ export const APRENDE_CATEGORIES: CategoryItem[] = [
     description:
       "Herramientas de programación para análisis de datos biológicos: secuencias, genómica y más.",
     icon: Book01Icon,
+    capsuleCount: 1,
+  },
+  {
+    slug: "ia-biotech",
+    name: "IA y Biotech",
+    description:
+      "Agentes de IA para el laboratorio: prompting, proyectos con Claude y OpenCode, análisis automatizados.",
+    icon: AiChemistry01Icon,
     capsuleCount: 1,
   },
 ]

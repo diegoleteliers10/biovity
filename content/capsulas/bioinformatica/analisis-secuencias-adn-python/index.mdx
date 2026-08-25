@@ -2,8 +2,21 @@
 title: "Análisis de secuencias ADN con Python"
 description: "Aprende a manipular, filtrar y analizar secuencias de ADN usando Biopython. Una cápsula práctica para biólogos que quieren programar."
 category: "bioinformatica"
-duration: 25
+duration: 40
 date: "2026-08-25"
+modules:
+  - title: "Configuración y fundamentos"
+    duration: 10
+    slug: "configuracion-fundamentos"
+  - title: "Operaciones con secuencias"
+    duration: 10
+    slug: "operaciones-secuencias"
+  - title: "Lectura y escritura de archivos"
+    duration: 10
+    slug: "lectura-escritura-archivos"
+  - title: "Análisis aplicado"
+    duration: 10
+    slug: "analisis-aplicado"
 quiz:
   - q: "¿Qué librería de Python se usa para trabajar con secuencias biológicas?"
     options:
@@ -12,102 +25,190 @@ quiz:
       - "Pandas"
       - "Matplotlib"
     correct: 1
-  - q: "¿Qué método de SeqMedia se usa para obtener la complementaria de una secuencia?"
+  - q: "¿Qué método de Seq se usa para obtener la complementaria reversa de una secuencia?"
     options:
       - "complement()"
+      - "reverse()"
       - "reverse_complement()"
-      - "complementary()"
-      - "rc()"
-    correct: 1
-  - q: "¿Cuál es la longitud de la secuencia 'ATGCGATCGATCG'?"
-    options:
-      - "10"
-      - "12"
-      - "13"
-      - "14"
+      - "complement_reverse()"
     correct: 2
-  - q: "¿Qué archivo de formato FASTA contiene?"
+  - q: "¿Qué función se usa para leer un archivo FASTA?"
     options:
-      - "Secuencias con encabezado descripcional"
-      - "Solo secuencias sin formato"
-      - "Imágenes de microscopía"
-      - "Datos de expresión génica"
-    correct: 0
-  - q: "¿Cómo se lee un archivo FASTA con Biopython?"
+      - "read_fasta()"
+      - "SeqIO.parse()"
+      - "open_fasta()"
+      - "parse_fasta()"
+    correct: 1
+  - q: "¿Cuál es la secuencia complementaria reversa de ATCG?"
     options:
-      - "SeqIO.read('archivo.fasta', 'fasta')"
-      - "open('archivo.fasta').read()"
-      - "fasta.parse('archivo.fasta')"
-      - "Bio.read_fasta('archivo.fasta')"
+      - "ATCG"
+      - "CGAT"
+      - "TAGC"
+      - "GCTA"
+    correct: 2
+  - q: "¿Qué formato de archivo es el más común para secuencias de ADN?"
+    options:
+      - "CSV"
+      - "JSON"
+      - "FASTA"
+      - "XML"
+    correct: 2
+  - q: "¿Qué librería de visualización se combina con Biopython para graficar frecuencias de bases?"
+    options:
+      - "Matplotlib"
+      - "Seaborn"
+      - "Plotly"
+      - "Bokeh"
     correct: 0
+  - q: "¿Qué método devuelve la longitud de una secuencia?"
+    options:
+      - "length()"
+      - "len()"
+      - "size()"
+      - "count()"
+    correct: 1
+  - q: "¿Qué archivo de configuración define las dependencias del proyecto?"
+    options:
+      - "config.json"
+      - "requirements.txt"
+      - "setup.cfg"
+      - "dependencies.yml"
+    correct: 1
 ---
 
-## ¿Qué aprenderás?
+## Módulo 1: Configuración y fundamentos
 
-En esta cápsula aprenderás a usar Python con Biopython para manipular secuencias de ADN. Cubriremos desde la instalación hasta análisis básicos como conteo de bases, obtención de complementarias y lectura de archivos FASTA.
+En este módulo aprenderás a preparar tu entorno de trabajo y a crear tu primera secuencia de ADN con Biopython.
 
-## Requisitos
+### ¿Qué es Biopython?
 
-- Python 3.8 o superior instalado
-- Conocimientos básicos de programación
-- Instalar Biopython: `pip install biopython`
+Biopython es una librería open-source diseñada para trabajar con datos biológicos en Python. Proporciona herramientas para:
 
-## Crear tu primera secuencia
+- Manipular secuencias de ADN, ARN y proteínas
+- Leer y escribir archivos en formatos estándar (FASTA, GenBank, etc.)
+- Acceder a bases de datos biológicas
+- Realizar análisis bioinformáticos básicos
 
-Con Biopython puedes crear objetos `Seq` que representan secuencias biológicas:
+### Instalación
+
+```bash
+# Crear entorno virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate   # Windows
+
+# Instalar Biopython
+pip install biopython
+```
+
+<Callout type="info">
+Usa siempre un entorno virtual para aislar las dependencias de tu proyecto. Esto evita conflictos entre versiones de librerías.
+</Callout>
+
+### Tu primera secuencia
 
 ```python
 from Bio.Seq import Seq
 
 # Crear una secuencia de ADN
-seq = Seq("ATGCGATCGATCG")
+seq = Seq("ATCGATCG")
 
-print(f"Secuencia: {seq}")
-print(f"Longitud: {len(seq)}")
+print(seq)           # ATCGATCG
+print(len(seq))      # 8
+print(seq.complement())  # TAGCTAG
 ```
 
-Salida esperada:
+<Callout type="tip">
+`Seq` es la clase fundamental de Biopython para trabajar con secuencias. Acepta strings con nucleótidos (A, T, C, G) o aminoácidos.
+</Callout>
 
-```
-Secuencia: ATGCGATCGATCG
-Longitud: 13
-```
-
-## Conteo de bases
-
-Podemos contar cuántas veces aparece cada base:
+### Tipos de secuencia
 
 ```python
+from Bio.Seq import Seq
+from Bio.Seq import RNASeq, ProteinSeq
+
+# Secuencia de ADN
+dna = Seq("ATCGATCG")
+
+# Secuencia de ARN
+rna = Seq("AUCGAUCG")
+
+# Secuencia de proteína
+protein = Seq("MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSH")
+```
+
+## Módulo 2: Operaciones con secuencias
+
+Ahora que conoces las bases, aprenderás las operaciones más importantes para trabajar con secuencias de ADN.
+
+### Complementaria y reversa
+
+```python
+from Bio.Seq import Seq
+
+seq = Seq("ATCGATCG")
+
+# Complementaria
+print(seq.complement())      # TAGCTAG
+
+# Reversa
+print(seq.reverse_complement())  # CGATCGAT
+
+# Transcripción (ADN → ARN)
+print(seq.transcribe())      # AUCGAUCG
+```
+
+<Callout type="warning">
+No confundas `complement()` con `reverse_complement()`. `complement()` solo reemplaza cada base por su complementaria. `reverse_complement()` además invierte el orden. Para análisis de genes, casi siempre necesitas `reverse_complement()`.
+</Callout>
+
+### Conteo de bases
+
+```python
+from Bio.Seq import Seq
 from collections import Counter
 
-def contar_bases(secuencia):
-    return Counter(str(secuencia))
+seq = Seq("ATCGATCGATCG")
 
-secuencia = Seq("ATGCGATCGATCGATCG")
-conteo = contar_bases(secuencia)
+# Contar cada base
+count = Counter(str(seq))
+print(count)  # Counter({'A': 3, 'T': 3, 'C': 3, 'G': 3})
 
-for base, cantidad in sorted(conteo.items()):
-    print(f"{base}: {cantidad}")
+# Porcentaje de GC
+gc_content = (seq.count("G") + seq.count("C")) / len(seq) * 100
+print(f"GC: {gc_content:.1f}%")  # GC: 46.2%
 ```
 
-## Complementaria y reversa
+<Callout type="info">
+El contenido de GC es un indicador importante en bioinformática. Organismos con alto contenido de GC suelen ser más termorresistentes.
+</Callout>
 
-Una operación fundamental en bioinformática es obtener la complementaria reversa:
+### Búsqueda de patrones
 
 ```python
-secuencia = Seq("ATGCGATCG")
+from Bio.Seq import Seq
 
-complementaria = seq.complement()
-rev_complementaria = seq.reverse_complement()
+seq = Seq("ATCGATCGATCG")
 
-print(f"Original:           {seq}")
-print(f"Complementaria:     {complementaria}")
-print(f"Reversa complementaria: {rev_complementaria}")
+# Buscar subsecuencia
+pos = seq.find("GATC")
+print(f"Encontrado en posición: {pos}")  # 2
+
+# Contar ocurrencias
+count = seq.count("AT")
+print(f"Ocurrencias de AT: {count}")  # 2
+
+# Verificar si contiene un patrón
+has_pattern = "GATC" in seq
+print(f"Contiene GATC: {has_pattern}")  # True
 ```
 
-## Lectura de archivos FASTA
+## Módulo 3: Lectura y escritura de archivos
 
-En la práctica real, las secuencias vienen en archivos FASTA:
+Los archivos FASTA y GenBank son los formatos más utilizados en bioinformática. En este módulo aprenderás a leerlos y escribirlos.
+
+### Leyendo archivos FASTA
 
 ```python
 from Bio import SeqIO
@@ -120,15 +221,152 @@ for record in SeqIO.parse("secuencias.fasta", "fasta"):
     print("---")
 ```
 
-## Ejercicio práctico
+<Callout type="tip">
+`SeqIO.read()` espera exactamente un registro. Si el archivo tiene múltiples secuencias, usa `SeqIO.parse()` que devuelve un iterador.
+</Callout>
 
-Crea un archivo `analisis.py` que:
+### Escribiendo archivos FASTA
 
-1. Defina 3 secuencias de ADN
-2. Calcule el conteo de bases para cada una
-3. Obtenga la complementaria reversa de cada una
-4. Imprima un resumen con las estadísticas
+```python
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
 
-## Siguiente paso
+# Crear registros
+records = [
+    SeqRecord(Seq("ATCGATCG"), id="seq1", description="Secuencia 1"),
+    SeqRecord(Seq("GCTAGCTA"), id="seq2", description="Secuencia 2"),
+]
 
-Después de dominar lo básico, podrás usar estas herramientas para análisis más complejos como alineamiento de secuencias, búsqueda de patrones y análisis filogenético.
+# Escribir a archivo
+with open("salida.fasta", "w") as f:
+    SeqIO.write(records, f, "fasta")
+```
+
+### Leyendo archivos GenBank
+
+```python
+from Bio import SeqIO
+
+# Leer archivo GenBank
+for record in SeqIO.parse("secuencia.gb", "genbank"):
+    print(f"ID: {record.id}")
+    print(f"Organismo: {record.annotations.get('organism', 'N/A')}")
+    print(f"Genes: {len(record.features)}")
+```
+
+<Callout type="info">
+GenBank contiene más información que FASTA: anotaciones, features (genes, CDS, etc.), y metadatos del organismo.
+</Callout>
+
+## Módulo 4: Análisis aplicado
+
+En este último módulo aplicarás todo lo aprendido para resolver problemas reales de bioinformática.
+
+### Análisis de frecuencia de bases
+
+```python
+from Bio import SeqIO
+from collections import Counter
+import matplotlib.pyplot as plt
+
+def analizar_frecuencia(archivo_fasta):
+    """Analiza la frecuencia de bases en un archivo FASTA."""
+    bases = Counter()
+
+    for record in SeqIO.parse(archivo_fasta, "fasta"):
+        for base in str(record.seq):
+            bases[base.upper()] += 1
+
+    # Calcular porcentajes
+    total = sum(bases.values())
+    porcentajes = {b: (c / total) * 100 for b, c in bases.items()}
+
+    # Graficar
+    plt.figure(figsize=(8, 5))
+    plt.bar(porcentajes.keys(), porcentajes.values(), color=["#2ecc71", "#e74c3c", "#3498db", "#f39c12"])
+    plt.title("Frecuencia de Bases")
+    plt.ylabel("Porcentaje (%)")
+    plt.savefig("frecuencia.png")
+    plt.show()
+
+    return porcentajes
+```
+
+### Comparación de secuencias
+
+```python
+from Bio.Seq import Seq
+from Bio import pairwise2
+from Bio.pairwise2 import format_alignment
+
+def comparar_secuencias(seq1, seq2):
+    """Compara dos secuencias y retorna el alineamiento."""
+    alignments = pairwise2.align.globalms(
+        str(seq1), str(seq2),
+        2,    # match
+        -1,   # mismatch
+        -0.5, # gap open
+        -0.1  # gap extend
+    )
+
+    if alignments:
+        print(format_alignment(*alignments[0]))
+    else:
+        print("No se encontraron alineamientos")
+```
+
+### Traducción de secuencias
+
+```python
+from Bio.Seq import Seq
+
+def traducir_gen(secuencia_dna):
+    """Traduce una secuencia de ADN a proteína."""
+    seq = Seq(secuencia_dna)
+
+    # Verificar longitud múltiplo de 3
+    if len(seq) % 3 != 0:
+        print("Advertencia: la secuencia no es múltiplo de 3")
+
+    # Traducir
+    proteina = seq.translate()
+
+    # Remover stop codons
+    proteina_sin_stop = proteina.rstrip("*")
+
+    return proteina_sin_stop
+```
+
+<Callout type="warning">
+Siempre verifica que la secuencia sea múltiplo de 3 antes de traducir. Si no lo es, Biopython truncará los últimos nucleótidos.
+</Callout>
+
+### Ejercicio práctico
+
+```python
+from Bio import SeqIO
+from collections import Counter
+
+def analisis_completo(archivo):
+    """Realiza un análisis completo de un archivo FASTA."""
+    resultados = []
+
+    for record in SeqIO.parse(archivo, "fasta"):
+        seq = str(record.seq).upper()
+
+        # Calcular estadísticas
+        bases = Counter(seq)
+        gc = (bases.get("G", 0) + bases.get("C", 0)) / len(seq) * 100
+
+        resultados.append({
+            "id": record.id,
+            "longitud": len(seq),
+            "gc": round(gc, 2),
+            "bases": dict(bases),
+        })
+
+    return resultados
+```
+
+Usa esta función para analizar tus propios archivos FASTA y extraer información relevante para tu investigación.

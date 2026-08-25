@@ -1,5 +1,7 @@
 "use client"
 
+import { CancelCircleIcon, CheckmarkCircle02Icon, LockIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import type { QuizQuestion } from "@/lib/types/capsulas"
 
@@ -14,9 +16,19 @@ type Props = {
   questions: QuizQuestion[]
   category: string
   slug: string
+  locked?: boolean
+  completedModules?: number
+  totalModules?: number
 }
 
-export function Quiz({ questions, category, slug }: Props) {
+export function Quiz({
+  questions,
+  category,
+  slug,
+  locked = false,
+  completedModules = 0,
+  totalModules = 4,
+}: Props) {
   const [answers, setAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null))
   const [submitted, setSubmitted] = useState(false)
   const [result, setResult] = useState<QuizResult | null>(null)
@@ -62,24 +74,66 @@ export function Quiz({ questions, category, slug }: Props) {
     }
   }
 
+  if (locked) {
+    return (
+      <div className="rounded-xl bg-surface-container-low border border-border/40 p-6 shadow-none opacity-75">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="size-10 rounded-full bg-muted flex items-center justify-center">
+            <HugeiconsIcon icon={LockIcon} size={18} className="text-muted-foreground" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-foreground">Quiz bloqueado</h3>
+            <p className="text-sm text-muted-foreground">
+              Completa todos los módulos para desbloquear el quiz.
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 h-2 rounded-full bg-border/40 overflow-hidden">
+          <div
+            className="h-full bg-secondary rounded-full transition-all"
+            style={{ width: `${(completedModules / totalModules) * 100}%` }}
+          />
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {completedModules} de {totalModules} módulos completados
+        </p>
+      </div>
+    )
+  }
+
   if (result) {
     return (
-      <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-6">
-        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
-          {result.quizPassed ? "¡Aprobaste!" : "No aprobaste"}
-        </h3>
-        <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          Obtuviste {result.correct} de {result.total} respuestas correctas ({result.score}%).
-        </p>
+      <div className="rounded-xl bg-surface-container-low border border-border/40 p-6 shadow-none">
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className={`size-10 rounded-full flex items-center justify-center ${
+              result.quizPassed ? "bg-secondary/10" : "bg-destructive/10"
+            }`}
+          >
+            <HugeiconsIcon
+              icon={result.quizPassed ? CheckmarkCircle02Icon : CancelCircleIcon}
+              size={20}
+              className={result.quizPassed ? "text-secondary" : "text-destructive"}
+            />
+          </div>
+          <div>
+            <h3 className="font-semibold text-foreground">
+              {result.quizPassed ? "¡Aprobaste!" : "No aprobaste"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {result.correct} de {result.total} correctas ({result.score}%)
+            </p>
+          </div>
+        </div>
         {result.quizPassed ? (
           <a
             href={`/certificados/${slug}`}
-            className="mt-4 inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors"
+            className="inline-flex items-center h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium transition-colors"
           >
             Ver certificado
           </a>
         ) : (
-          <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-muted-foreground">
             Necesitas al menos 70% para obtener el certificado. Intenta de nuevo.
           </p>
         )}
@@ -88,21 +142,22 @@ export function Quiz({ questions, category, slug }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-6">
-      <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
-        Evalúa tu aprendizaje
-      </h3>
-      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+    <div className="rounded-xl bg-surface-container-low border border-border/40 p-6 shadow-none">
+      <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-2 block">
+        EVALÚA TU APRENDIZAJE
+      </span>
+      <h3 className="text-lg font-semibold text-foreground">Quiz de la cápsula</h3>
+      <p className="mt-1 text-sm text-muted-foreground">
         Necesitas 70% o más para obtener el certificado.
       </p>
 
-      <div className="mt-6 space-y-6">
+      <div className="mt-8 space-y-6">
         {questions.map((q, qi) => (
-          <div key={qi}>
-            <p className="font-medium text-neutral-900 dark:text-white">
+          <div key={q.q}>
+            <p className="font-medium text-foreground">
               {qi + 1}. {q.q}
             </p>
-            <div className="mt-2 space-y-2">
+            <div className="mt-3 space-y-2">
               {q.options.map((opt, oi) => {
                 const isSelected = answers[qi] === oi
                 const isCorrect = submitted && oi === q.correct
@@ -110,18 +165,18 @@ export function Quiz({ questions, category, slug }: Props) {
 
                 return (
                   <button
-                    key={oi}
+                    key={opt}
                     type="button"
                     onClick={() => handleSelect(qi, oi)}
                     disabled={submitted}
-                    className={`w-full text-left px-4 py-2 rounded-lg border text-sm transition-colors ${
+                    className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm transition-colors ${
                       isCorrect
-                        ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300"
+                        ? "border-secondary bg-secondary/10 text-secondary font-medium"
                         : isWrong
-                          ? "border-red-500 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300"
+                          ? "border-destructive bg-destructive/10 text-destructive"
                           : isSelected
-                            ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950"
-                            : "border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600"
+                            ? "border-secondary bg-secondary/5"
+                            : "border-border/40 hover:border-secondary/40 hover:bg-surface-container-low/50"
                     }`}
                   >
                     {opt}
@@ -133,13 +188,13 @@ export function Quiz({ questions, category, slug }: Props) {
         ))}
       </div>
 
-      {error && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
 
       <button
         type="button"
         onClick={handleSubmit}
         disabled={!allAnswered || loading}
-        className="mt-6 w-full px-4 py-2.5 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="mt-8 h-11 w-full px-6 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
       >
         {loading ? "Enviando..." : "Enviar respuestas"}
       </button>
