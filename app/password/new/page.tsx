@@ -12,7 +12,13 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
-import { authButtonClass, authInputClass, authLabelClass, authSubtitleClass, authTitleClass } from "@/components/auth/form-styles"
+import {
+  authButtonClass,
+  authInputClass,
+  authLabelClass,
+  authSubtitleClass,
+  authTitleClass,
+} from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"

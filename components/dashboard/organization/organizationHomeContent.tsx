@@ -84,10 +84,7 @@ export function OrganizationHomeContent() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
-      <OrganizationHomeHeader
-        firstName={displayName}
-        isPending={organizationData === undefined}
-      />
+      <OrganizationHomeHeader firstName={displayName} isPending={organizationData === undefined} />
 
       <OnboardingChecklist />
 

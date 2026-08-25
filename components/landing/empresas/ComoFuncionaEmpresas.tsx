@@ -28,7 +28,8 @@ export function ComoFuncionaEmpresas() {
             Cómo funciona para <span className="text-accent font-semibold">empresas</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            En 4 pasos guiados podrás publicar tus vacantes técnicas y gestionar a los postulantes de forma centralizada.
+            En 4 pasos guiados podrás publicar tus vacantes técnicas y gestionar a los postulantes
+            de forma centralizada.
           </p>
         </m.div>
 
@@ -52,7 +53,9 @@ export function ComoFuncionaEmpresas() {
                   </span>
                 </div>
 
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{paso.title}</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
+                  {paso.title}
+                </h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
                   {paso.description}
                 </p>

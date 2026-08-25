@@ -14,7 +14,8 @@ export function MarcaTypography() {
             Estructura & <span className="text-accent font-semibold">Jerarquía Tipográfica</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Combinamos <strong>Satoshi</strong> para una legibilidad contemporánea en titulares e interfaces, con <strong>Geist Mono</strong> para datos técnicos, cifras y etiquetas.
+            Combinamos <strong>Satoshi</strong> para una legibilidad contemporánea en titulares e
+            interfaces, con <strong>Geist Mono</strong> para datos técnicos, cifras y etiquetas.
           </p>
         </div>
 
@@ -41,7 +42,8 @@ export function MarcaTypography() {
                 0123456789 • ¿?!¡ @#$%&/()=+
               </p>
               <div className="pt-4 border-t border-border text-xs text-muted-foreground leading-relaxed">
-                Utilizada en títulos hero, encabezados de secciones, textos de botones, nombres de puestos y contenido editorial general.
+                Utilizada en títulos hero, encabezados de secciones, textos de botones, nombres de
+                puestos y contenido editorial general.
               </div>
             </CardContent>
           </Card>
@@ -67,7 +69,8 @@ export function MarcaTypography() {
                 0123456789 • [CLP] {`{API}`} $40.000/mes
               </p>
               <div className="pt-4 border-t border-border text-xs text-muted-foreground leading-relaxed font-sans">
-                Utilizada en etiquetas de categoría (eyebrows), cifras estadísticas, monedas, fechas y metadata técnica de laboratorio.
+                Utilizada en etiquetas de categoría (eyebrows), cifras estadísticas, monedas, fechas
+                y metadata técnica de laboratorio.
               </div>
             </CardContent>
           </Card>
@@ -121,7 +124,8 @@ export function MarcaTypography() {
                 <span>text-base sm:text-lg • text-muted-foreground • leading-relaxed</span>
               </div>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl">
-                Centraliza candidatos, evalúa habilidades de laboratorio con scoring de IA y reduce tus tiempos de contratación técnica en un 60%.
+                Centraliza candidatos, evalúa habilidades de laboratorio con scoring de IA y reduce
+                tus tiempos de contratación técnica en un 60%.
               </p>
             </div>
 

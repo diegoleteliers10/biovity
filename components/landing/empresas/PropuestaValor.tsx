@@ -25,10 +25,12 @@ export function PropuestaValor() {
             Propuesta de Valor
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Por qué las empresas científicas eligen <span className="text-accent font-semibold">Biovity</span>
+            Por qué las empresas científicas eligen{" "}
+            <span className="text-accent font-semibold">Biovity</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Diseñamos herramientas para resolver los desafíos específicos de contratación en biotecnología, farmacia e industria química en Chile.
+            Diseñamos herramientas para resolver los desafíos específicos de contratación en
+            biotecnología, farmacia e industria química en Chile.
           </p>
         </m.div>
 

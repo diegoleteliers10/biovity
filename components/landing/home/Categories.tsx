@@ -8,7 +8,12 @@ import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import {
+  getSpringTransition,
+  getTransition,
+  LANDING_ANIMATION,
+  LANDING_ANIMATION_MOBILE,
+} from "@/lib/animations"
 import { CATEGORIES_HOME } from "@/lib/data/home-data"
 
 type CategoriesCountsResponse = {
@@ -20,8 +25,12 @@ export function Categories() {
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
 
-  const chainStagger = isMobile ? LANDING_ANIMATION_MOBILE.chainStagger : LANDING_ANIMATION.chainStagger
-  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const chainStagger = isMobile
+    ? LANDING_ANIMATION_MOBILE.chainStagger
+    : LANDING_ANIMATION.chainStagger
+  const viewportMargin = isMobile
+    ? LANDING_ANIMATION_MOBILE.viewportMargin
+    : LANDING_ANIMATION.viewportMargin
   const yOffset = isReduced ? 0 : isMobile ? 14 : 24
 
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
@@ -58,10 +67,12 @@ export function Categories() {
             Especialidades Científicas
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Explora oportunidades por <span className="text-accent font-semibold">área de especialización</span>
+            Explora oportunidades por{" "}
+            <span className="text-accent font-semibold">área de especialización</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Filtra y encuentra vacantes en los sectores biotecnológicos y científicos de mayor crecimiento en el país.
+            Filtra y encuentra vacantes en los sectores biotecnológicos y científicos de mayor
+            crecimiento en el país.
           </p>
         </m.div>
 
@@ -108,7 +119,11 @@ export function Categories() {
         </div>
 
         <div className="text-center">
-          <Button asChild size="lg" className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium">
+          <Button
+            asChild
+            size="lg"
+            className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
+          >
             <Link href="/trabajos">
               Ver todas las oportunidades
               <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />

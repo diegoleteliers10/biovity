@@ -25,7 +25,8 @@ const BRAND_COLORS: ColorToken[] = [
     cssVar: "--primary",
     bgClass: "bg-[#00374a]",
     textLight: true,
-    description: "Botones principales, encabezados corporativos, elementos estructurales de alto peso.",
+    description:
+      "Botones principales, encabezados corporativos, elementos estructurales de alto peso.",
   },
   {
     name: "Emerald Green",
@@ -35,7 +36,8 @@ const BRAND_COLORS: ColorToken[] = [
     cssVar: "--secondary",
     bgClass: "bg-[#006b5e]",
     textLight: true,
-    description: "Eyebrows en mayúsculas, estados activos, checks de verificación y llamados a la acción secundarios.",
+    description:
+      "Eyebrows en mayúsculas, estados activos, checks de verificación y llamados a la acción secundarios.",
   },
   {
     name: "Biovity Violet",
@@ -45,7 +47,8 @@ const BRAND_COLORS: ColorToken[] = [
     cssVar: "--accent",
     bgClass: "bg-[#8483d4]",
     textLight: true,
-    description: "Acentos en palabras clave de títulos (<span>), badges de IA, descuentos e inteligencia.",
+    description:
+      "Acentos en palabras clave de títulos (<span>), badges de IA, descuentos e inteligencia.",
   },
   {
     name: "Slate Gray",
@@ -88,7 +91,8 @@ const SURFACE_COLORS: ColorToken[] = [
     cssVar: "--surface-container-highest",
     bgClass: "bg-[#e2e2e4]",
     textLight: false,
-    description: "Hover states, chips inactivos, divisores sutiles y pastillas de fondo secundario.",
+    description:
+      "Hover states, chips inactivos, divisores sutiles y pastillas de fondo secundario.",
   },
 ]
 
@@ -109,10 +113,12 @@ export function MarcaColors() {
             Paleta Cromática
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Colores de Marca & <span className="text-accent font-semibold">Superficies Tonales</span>
+            Colores de Marca &{" "}
+            <span className="text-accent font-semibold">Superficies Tonales</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Haz clic en cualquier muestra de color para copiar su valor HEX o variable CSS al portapapeles.
+            Haz clic en cualquier muestra de color para copiar su valor HEX o variable CSS al
+            portapapeles.
           </p>
         </div>
 

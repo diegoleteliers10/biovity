@@ -72,17 +72,27 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
         const rectA = fromRef.current.getBoundingClientRect()
         const rectB = toRef.current.getBoundingClientRect()
 
-        const scaleX = (container.offsetWidth && rectContainer.width) ? rectContainer.width / container.offsetWidth : 1
-        const scaleY = (container.offsetHeight && rectContainer.height) ? rectContainer.height / container.offsetHeight : 1
+        const scaleX =
+          container.offsetWidth && rectContainer.width
+            ? rectContainer.width / container.offsetWidth
+            : 1
+        const scaleY =
+          container.offsetHeight && rectContainer.height
+            ? rectContainer.height / container.offsetHeight
+            : 1
 
         const svgWidth = container.offsetWidth || rectContainer.width
         const svgHeight = container.offsetHeight || rectContainer.height
         setSvgDimensions({ width: svgWidth, height: svgHeight })
 
-        const startX = (rectA.left - rectContainer.left) / scaleX + (rectA.width / scaleX) / 2 + startXOffset
-        const startY = (rectA.top - rectContainer.top) / scaleY + (rectA.height / scaleY) / 2 + startYOffset
-        const endX = (rectB.left - rectContainer.left) / scaleX + (rectB.width / scaleX) / 2 + endXOffset
-        const endY = (rectB.top - rectContainer.top) / scaleY + (rectB.height / scaleY) / 2 + endYOffset
+        const startX =
+          (rectA.left - rectContainer.left) / scaleX + rectA.width / scaleX / 2 + startXOffset
+        const startY =
+          (rectA.top - rectContainer.top) / scaleY + rectA.height / scaleY / 2 + startYOffset
+        const endX =
+          (rectB.left - rectContainer.left) / scaleX + rectB.width / scaleX / 2 + endXOffset
+        const endY =
+          (rectB.top - rectContainer.top) / scaleY + rectB.height / scaleY / 2 + endYOffset
 
         const midX = (startX + endX) / 2
         const midY = (startY + endY) / 2

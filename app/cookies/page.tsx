@@ -61,7 +61,12 @@ export default function CookiesPage() {
                 el correcto funcionamiento de la plataforma.
               </p>
               <p>
-                En Biovity aplicamos un principio de minimización: <strong>no usamos cookies de publicidad invasiva ni rastreadores para venta de datos personales</strong>.
+                En Biovity aplicamos un principio de minimización:{" "}
+                <strong>
+                  no usamos cookies de publicidad invasiva ni rastreadores para venta de datos
+                  personales
+                </strong>
+                .
               </p>
             </section>
 
@@ -73,33 +78,49 @@ export default function CookiesPage() {
                 <table className="w-full text-left text-xs sm:text-sm">
                   <thead className="bg-surface-container-low border-b border-border text-muted-foreground font-mono text-[11px] uppercase">
                     <tr>
-                      <th scope="col" className="px-4 py-3 font-semibold">Cookie</th>
-                      <th scope="col" className="px-4 py-3 font-semibold">Proveedor</th>
-                      <th scope="col" className="px-4 py-3 font-semibold">Finalidad</th>
-                      <th scope="col" className="px-4 py-3 font-semibold">Duración</th>
+                      <th scope="col" className="px-4 py-3 font-semibold">
+                        Cookie
+                      </th>
+                      <th scope="col" className="px-4 py-3 font-semibold">
+                        Proveedor
+                      </th>
+                      <th scope="col" className="px-4 py-3 font-semibold">
+                        Finalidad
+                      </th>
+                      <th scope="col" className="px-4 py-3 font-semibold">
+                        Duración
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border text-muted-foreground">
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">better-auth.session_token</td>
+                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                        better-auth.session_token
+                      </td>
                       <td className="px-4 py-3">Biovity (Propia)</td>
                       <td className="px-4 py-3">Sesión autenticada de usuario</td>
                       <td className="px-4 py-3 font-mono">7 días</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">better-auth.csrf_token</td>
+                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                        better-auth.csrf_token
+                      </td>
                       <td className="px-4 py-3">Biovity (Propia)</td>
                       <td className="px-4 py-3">Protección contra ataques CSRF</td>
                       <td className="px-4 py-3 font-mono">Sesión</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">sidebar_state</td>
+                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                        sidebar_state
+                      </td>
                       <td className="px-4 py-3">Biovity (Propia)</td>
                       <td className="px-4 py-3">Preferencia visual de navegación</td>
                       <td className="px-4 py-3 font-mono">30 días</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">_vercel_analytics</td>
+                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                        _vercel_analytics
+                      </td>
                       <td className="px-4 py-3">Vercel Inc.</td>
                       <td className="px-4 py-3">Telemetría anónima de rendimiento</td>
                       <td className="px-4 py-3 font-mono">Sesión</td>
@@ -114,7 +135,9 @@ export default function CookiesPage() {
                 3. Cómo Gestionar las Cookies
               </h2>
               <p>
-                Puedes permitir, bloquear o eliminar las cookies en tu dispositivo configurando las opciones de tu navegador. Si bloqueas las cookies técnicas esenciales, algunas funciones autenticadas de la plataforma podrían verse limitadas.
+                Puedes permitir, bloquear o eliminar las cookies en tu dispositivo configurando las
+                opciones de tu navegador. Si bloqueas las cookies técnicas esenciales, algunas
+                funciones autenticadas de la plataforma podrían verse limitadas.
               </p>
             </section>
 
@@ -131,7 +154,10 @@ export default function CookiesPage() {
                   contacto@biovity.cl
                 </a>{" "}
                 o revisar nuestra{" "}
-                <Link href="/privacidad" className="text-secondary font-medium underline hover:text-secondary/80">
+                <Link
+                  href="/privacidad"
+                  className="text-secondary font-medium underline hover:text-secondary/80"
+                >
                   Política de Privacidad
                 </Link>
                 .
@@ -139,7 +165,8 @@ export default function CookiesPage() {
             </section>
 
             <div className="border-t border-border pt-6 mt-10 text-xs text-muted-foreground italic">
-              <strong>Aviso legal:</strong> Documento informativo de tecnologías web conforme a la normativa chilena vigente.
+              <strong>Aviso legal:</strong> Documento informativo de tecnologías web conforme a la
+              normativa chilena vigente.
             </div>
           </div>
         </div>

@@ -45,7 +45,8 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
               No se encontraron ofertas con los filtros seleccionados
             </p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Intenta ajustar tus criterios de búsqueda o limpiar los filtros para ver todas las oportunidades disponibles.
+              Intenta ajustar tus criterios de búsqueda o limpiar los filtros para ver todas las
+              oportunidades disponibles.
             </p>
           </Card>
         </div>
@@ -115,10 +116,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
                               className="size-7 rounded-md bg-surface-container-low flex items-center justify-center text-muted-foreground border border-border/40"
                               title={beneficio.label}
                             >
-                              <HugeiconsIcon
-                                icon={icon}
-                                size={14}
-                              />
+                              <HugeiconsIcon icon={icon} size={14} />
                             </div>
                           )
                         })}

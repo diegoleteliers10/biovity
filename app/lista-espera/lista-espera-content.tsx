@@ -35,7 +35,8 @@ export function ListaEsperaContent() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
-  const emailLabel = role === "organization" ? "Correo electrónico corporativo" : "Correo electrónico"
+  const emailLabel =
+    role === "organization" ? "Correo electrónico corporativo" : "Correo electrónico"
   const emailPlaceholder = role === "organization" ? "contacto@empresa.cl" : "tu@correo.cl"
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -125,7 +126,8 @@ export function ListaEsperaContent() {
             El nuevo estándar de empleo científico en Chile
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed text-pretty">
-            Únete a la lista de espera para acceder antes a vacantes especializadas, herramientas de inteligencia salarial y reclutamiento técnico.
+            Únete a la lista de espera para acceder antes a vacantes especializadas, herramientas de
+            inteligencia salarial y reclutamiento técnico.
           </p>
         </m.div>
 

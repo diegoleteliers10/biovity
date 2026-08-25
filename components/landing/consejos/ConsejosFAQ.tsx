@@ -33,7 +33,8 @@ export function ConsejosFAQ() {
             Preguntas Frecuentes sobre Desarrollo Profesional
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto text-pretty">
-            Respuestas directas a las dudas más comunes al ingresar o avanzar en la industria biotecnológica y científica.
+            Respuestas directas a las dudas más comunes al ingresar o avanzar en la industria
+            biotecnológica y científica.
           </p>
         </m.div>
 

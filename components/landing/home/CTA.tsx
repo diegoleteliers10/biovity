@@ -7,14 +7,21 @@ import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import {
+  getSpringTransition,
+  getTransition,
+  LANDING_ANIMATION,
+  LANDING_ANIMATION_MOBILE,
+} from "@/lib/animations"
 
 export function CTA() {
   const reducedMotion = useReducedMotion()
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
 
-  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const viewportMargin = isMobile
+    ? LANDING_ANIMATION_MOBILE.viewportMargin
+    : LANDING_ANIMATION.viewportMargin
   const yOffset = isReduced ? 0 : isMobile ? 14 : 20
 
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
@@ -45,7 +52,8 @@ export function CTA() {
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-pretty">
-            Ya seas un profesional explorando nuevas oportunidades o una empresa buscando talento técnico especializado, Biovity es tu punto de encuentro.
+            Ya seas un profesional explorando nuevas oportunidades o una empresa buscando talento
+            técnico especializado, Biovity es tu punto de encuentro.
           </p>
         </m.div>
 
@@ -53,7 +61,9 @@ export function CTA() {
           initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: viewportMargin }}
-          transition={ts(isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay)}
+          transition={ts(
+            isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay
+          )}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
         >
           <Button
@@ -80,7 +90,11 @@ export function CTA() {
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 8 : 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
-          transition={t(isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay * 2 : LANDING_ANIMATION.sequenceDelay * 2)}
+          transition={t(
+            isMobile
+              ? LANDING_ANIMATION_MOBILE.sequenceDelay * 2
+              : LANDING_ANIMATION.sequenceDelay * 2
+          )}
           className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-muted-foreground"
         >
           {benefits.map((benefit) => (

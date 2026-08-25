@@ -46,12 +46,13 @@ export function SalariosUpskilling() {
             Impacto & Proyección
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Impacto de <span className="text-accent font-semibold">habilidades clave</span> en la renta
+            Impacto de <span className="text-accent font-semibold">habilidades clave</span> en la
+            renta
           </h2>
           <div className="space-y-3 text-muted-foreground leading-relaxed text-base sm:text-lg text-pretty">
             <p>
-              Ciertas competencias técnicas, regulatorias y de postgrado generan un diferencial sustancial
-              en el salario base de biociencias en Chile.
+              Ciertas competencias técnicas, regulatorias y de postgrado generan un diferencial
+              sustancial en el salario base de biociencias en Chile.
             </p>
           </div>
         </div>
@@ -80,13 +81,17 @@ export function SalariosUpskilling() {
                           <HugeiconsIcon icon={skill.icon} size={20} className={skill.color} />
                         </div>
                         <div className="text-right">
-                          <p className={`text-2xl font-bold tracking-tight ${skill.color}`}>+{midImpact}%</p>
+                          <p className={`text-2xl font-bold tracking-tight ${skill.color}`}>
+                            +{midImpact}%
+                          </p>
                           <p className="text-[10px] font-mono text-muted-foreground leading-none mt-0.5">
                             incremento medio
                           </p>
                         </div>
                       </div>
-                      <h3 className="text-base font-semibold text-foreground mb-1">{skill.skill}</h3>
+                      <h3 className="text-base font-semibold text-foreground mb-1">
+                        {skill.skill}
+                      </h3>
                       <p className="text-xs font-mono text-secondary mb-3">{skill.sector}</p>
                       <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
                         {skill.description}

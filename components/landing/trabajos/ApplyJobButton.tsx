@@ -16,12 +16,7 @@ type ApplyJobButtonProps = {
   className?: string
 }
 
-export function ApplyJobButton({
-  jobId,
-  jobTitle,
-  compact,
-  className,
-}: ApplyJobButtonProps) {
+export function ApplyJobButton({ jobId, jobTitle, compact, className }: ApplyJobButtonProps) {
   const { push } = useRouter()
   const [sheetOpen, setSheetOpen] = useState(false)
   const { useSession } = authClient

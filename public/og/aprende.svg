@@ -1,0 +1,55 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3f3f5"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#006b5e"/>
+      <stop offset="100%" stop-color="#00374a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative elements -->
+  <circle cx="1050" cy="120" r="200" fill="#006b5e" opacity="0.06"/>
+  <circle cx="1100" cy="500" r="150" fill="#8483d4" opacity="0.08"/>
+  <circle cx="80" cy="550" r="120" fill="#006b5e" opacity="0.05"/>
+
+  <!-- Content container -->
+  <g transform="translate(80, 0)">
+    <!-- Eyebrow -->
+    <text x="0" y="220" font-family="monospace" font-size="14" font-weight="600" fill="#006b5e" letter-spacing="3" text-transform="uppercase">
+      APREnde
+    </text>
+
+    <!-- Title -->
+    <text x="0" y="280" font-family="sans-serif" font-size="52" font-weight="700" fill="#0f172a">
+      Cápsulas de
+    </text>
+    <text x="0" y="340" font-family="sans-serif" font-size="52" font-weight="700" fill="#0f172a">
+      Aprendizaje
+    </text>
+
+    <!-- Accent word -->
+    <text x="0" y="400" font-family="sans-serif" font-size="52" font-weight="700" fill="#8483d4">
+      para el sector
+    </text>
+    <text x="0" y="460" font-family="sans-serif" font-size="52" font-weight="700" fill="#8483d4">
+      biocientífico
+    </text>
+
+    <!-- Description -->
+    <text x="0" y="510" font-family="sans-serif" font-size="20" fill="#71787d">
+      Aprende programación aplicada a biociencia y obtén certificados.
+    </text>
+
+    <!-- Brand -->
+    <rect x="0" y="560" width="120" height="4" rx="2" fill="url(#accent)"/>
+    <text x="0" y="590" font-family="monospace" font-size="14" font-weight="500" fill="#0f172a">
+      biovity.cl
+    </text>
+  </g>
+</svg>

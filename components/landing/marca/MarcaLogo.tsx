@@ -32,9 +32,7 @@ export function MarcaLogo() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-3xl font-bold tracking-tight text-[#00374a]">
-                Biovity
-              </span>
+              <span className="text-3xl font-bold tracking-tight text-[#00374a]">Biovity</span>
             </div>
             <div className="w-full pt-4 border-t border-border/60 flex items-center justify-between text-xs font-mono text-muted-foreground">
               <span>Versión Positiva (Fondo Claro)</span>
@@ -54,9 +52,7 @@ export function MarcaLogo() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-3xl font-bold tracking-tight text-white">
-                Biovity
-              </span>
+              <span className="text-3xl font-bold tracking-tight text-white">Biovity</span>
             </div>
             <div className="w-full pt-4 border-t border-neutral-800 flex items-center justify-between text-xs font-mono text-neutral-400">
               <span>Versión Negativa (Fondo Oscuro)</span>
@@ -74,7 +70,8 @@ export function MarcaLogo() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 text-xs text-muted-foreground leading-relaxed">
-              Mantener siempre un margen libre equivalente al 50% de la altura del isotipo alrededor del logotipo completo para garantizar legibilidad.
+              Mantener siempre un margen libre equivalente al 50% de la altura del isotipo alrededor
+              del logotipo completo para garantizar legibilidad.
             </CardContent>
           </Card>
 
@@ -85,7 +82,8 @@ export function MarcaLogo() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 text-xs text-muted-foreground leading-relaxed">
-              Utilizar sobre fondos con alto contraste (`surface-container-lowest`, `surface-container-low` o fondos oscuros sólidos `neutral-900`).
+              Utilizar sobre fondos con alto contraste (`surface-container-lowest`,
+              `surface-container-low` o fondos oscuros sólidos `neutral-900`).
             </CardContent>
           </Card>
 
@@ -96,7 +94,8 @@ export function MarcaLogo() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 text-xs text-muted-foreground leading-relaxed">
-              No alterar las proporciones, no aplicar sombras duras ni distorsionar los colores institucionales del símbolo o la tipografía.
+              No alterar las proporciones, no aplicar sombras duras ni distorsionar los colores
+              institucionales del símbolo o la tipografía.
             </CardContent>
           </Card>
         </div>

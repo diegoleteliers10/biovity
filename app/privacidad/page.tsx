@@ -61,10 +61,10 @@ export default function PrivacidadPage() {
                 usuarios es un pilar fundamental.
               </p>
               <p>
-                Tratamos los datos personales recabados a través de nuestro sitio web <code>biovity.cl</code> y sus
-                servicios en estricto cumplimiento de la legislación chilena vigente, en especial
-                la <strong>Ley N° 19.628</strong> y la <strong>Ley N° 21.719</strong> sobre Protección de Datos
-                Personales.
+                Tratamos los datos personales recabados a través de nuestro sitio web{" "}
+                <code>biovity.cl</code> y sus servicios en estricto cumplimiento de la legislación
+                chilena vigente, en especial la <strong>Ley N° 19.628</strong> y la{" "}
+                <strong>Ley N° 21.719</strong> sobre Protección de Datos Personales.
               </p>
               <div className="rounded-xl border border-border bg-surface-container-low p-4 mt-3">
                 <p className="font-semibold text-foreground">
@@ -100,16 +100,20 @@ export default function PrivacidadPage() {
                   </h3>
                   <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-muted-foreground">
                     <li>
-                      <strong>Datos de Identificación:</strong> Nombre completo, correo electrónico, número telefónico y ciudad/región.
+                      <strong>Datos de Identificación:</strong> Nombre completo, correo electrónico,
+                      número telefónico y ciudad/región.
                     </li>
                     <li>
-                      <strong>Perfil Técnico y Académico:</strong> Título profesional, área científica, años de experiencia, habilidades técnicas y postgrados.
+                      <strong>Perfil Técnico y Académico:</strong> Título profesional, área
+                      científica, años de experiencia, habilidades técnicas y postgrados.
                     </li>
                     <li>
-                      <strong>Currículum Vitae:</strong> Archivos cargados por el usuario para ser evaluados en postulaciones activas.
+                      <strong>Currículum Vitae:</strong> Archivos cargados por el usuario para ser
+                      evaluados en postulaciones activas.
                     </li>
                     <li>
-                      <strong>Datos Salariales Voluntarios:</strong> En encuestas salariales, los datos se procesan de forma estrictamente disociada y anónima.
+                      <strong>Datos Salariales Voluntarios:</strong> En encuestas salariales, los
+                      datos se procesan de forma estrictamente disociada y anónima.
                     </li>
                   </ul>
                 </div>
@@ -120,7 +124,8 @@ export default function PrivacidadPage() {
                   </h3>
                   <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-muted-foreground">
                     <li>
-                      Razón social, RUT de la empresa (cuando aplique), sitio web y datos de usuarios administradores.
+                      Razón social, RUT de la empresa (cuando aplique), sitio web y datos de
+                      usuarios administradores.
                     </li>
                     <li>
                       Ofertas de trabajo publicadas y gestión de candidatos dentro del módulo ATS.
@@ -134,21 +139,23 @@ export default function PrivacidadPage() {
               <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-3">
                 3. Finalidades del Tratamiento
               </h2>
-              <p>
-                Tratamos tus datos exclusivamente para los siguientes fines legítimos:
-              </p>
+              <p>Tratamos tus datos exclusivamente para los siguientes fines legítimos:</p>
               <ul className="list-disc pl-6 space-y-2 mt-2">
                 <li>
-                  <strong>Intermediación Laboral:</strong> Conectar postulantes con vacantes técnicas afines en laboratorios y empresas.
+                  <strong>Intermediación Laboral:</strong> Conectar postulantes con vacantes
+                  técnicas afines en laboratorios y empresas.
                 </li>
                 <li>
-                  <strong>Gestión de Cuentas:</strong> Proveer autenticación segura y acceso al panel de usuario.
+                  <strong>Gestión de Cuentas:</strong> Proveer autenticación segura y acceso al
+                  panel de usuario.
                 </li>
                 <li>
-                  <strong>Comunicaciones Relevantes:</strong> Notificar el estado de tus postulaciones y alertas de empleo configuradas.
+                  <strong>Comunicaciones Relevantes:</strong> Notificar el estado de tus
+                  postulaciones y alertas de empleo configuradas.
                 </li>
                 <li>
-                  <strong>Cumplimiento Normativo:</strong> Cumplir con la legislación chilena aplicable.
+                  <strong>Cumplimiento Normativo:</strong> Cumplir con la legislación chilena
+                  aplicable.
                 </li>
               </ul>
             </section>
@@ -158,7 +165,9 @@ export default function PrivacidadPage() {
                 4. Tus Derechos ARCO
               </h2>
               <p>
-                Conforme a la normativa chilena (Ley N° 19.628 y Ley N° 21.719), tienes derecho de <strong>Acceso, Rectificación, Cancelación, Oposición y Portabilidad</strong> de tus datos personales.
+                Conforme a la normativa chilena (Ley N° 19.628 y Ley N° 21.719), tienes derecho de{" "}
+                <strong>Acceso, Rectificación, Cancelación, Oposición y Portabilidad</strong> de tus
+                datos personales.
               </p>
               <p className="mt-3">
                 Para ejercer cualquiera de estos derechos, envía un correo a{" "}
@@ -173,7 +182,8 @@ export default function PrivacidadPage() {
             </section>
 
             <div className="border-t border-border pt-6 mt-10 text-xs text-muted-foreground italic">
-              <strong>Aviso legal:</strong> Política informativa de privacidad redactada conforme a los estándares de la legislación chilena vigente.
+              <strong>Aviso legal:</strong> Política informativa de privacidad redactada conforme a
+              los estándares de la legislación chilena vigente.
             </div>
           </div>
         </div>

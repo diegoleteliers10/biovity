@@ -28,7 +28,8 @@ export function MarcaComponents() {
             Patrones & Componentes <span className="text-accent font-semibold">Interactivos</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Muestrario funcional de los elementos UI estandarizados que componen las interfaces de Biovity.
+            Muestrario funcional de los elementos UI estandarizados que componen las interfaces de
+            Biovity.
           </p>
         </div>
 
@@ -70,7 +71,8 @@ export function MarcaComponents() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground pt-2">
-                Estandarizados con altura <code>h-11</code>, esquinas <code>rounded-lg</code> y transiciones suaves.
+                Estandarizados con altura <code>h-11</code>, esquinas <code>rounded-lg</code> y
+                transiciones suaves.
               </p>
             </CardContent>
           </Card>
@@ -91,7 +93,9 @@ export function MarcaComponents() {
                   type="button"
                   onClick={() => setIsAnualDemo(false)}
                   className={`text-sm transition-colors cursor-pointer ${
-                    !isAnualDemo ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+                    !isAnualDemo
+                      ? "text-foreground font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   Mensual
@@ -123,7 +127,9 @@ export function MarcaComponents() {
                 >
                   <span
                     className={`text-sm transition-colors ${
-                      isAnualDemo ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+                      isAnualDemo
+                        ? "text-foreground font-semibold"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     Anual
@@ -134,7 +140,8 @@ export function MarcaComponents() {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground pt-2">
-                Pista gris de alto contraste para el estado inactivo y verde esmeralda para el estado activo.
+                Pista gris de alto contraste para el estado inactivo y verde esmeralda para el
+                estado activo.
               </p>
             </CardContent>
           </Card>
@@ -152,24 +159,17 @@ export function MarcaComponents() {
             <CardContent className="p-0">
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-surface-container-low rounded-xl p-4 text-center">
-                  <p className="text-2xl font-bold text-foreground mb-0.5 tracking-tight">
-                    +150
-                  </p>
-                  <p className="text-xs font-medium text-foreground">
-                    Empresas activas
-                  </p>
+                  <p className="text-2xl font-bold text-foreground mb-0.5 tracking-tight">+150</p>
+                  <p className="text-xs font-medium text-foreground">Empresas activas</p>
                 </div>
                 <div className="bg-surface-container-low rounded-xl p-4 text-center">
-                  <p className="text-2xl font-bold text-foreground mb-0.5 tracking-tight">
-                    98.4%
-                  </p>
-                  <p className="text-xs font-medium text-foreground">
-                    Satisfacción ATS
-                  </p>
+                  <p className="text-2xl font-bold text-foreground mb-0.5 tracking-tight">98.4%</p>
+                  <p className="text-xs font-medium text-foreground">Satisfacción ATS</p>
                 </div>
               </div>
               <p className="text-xs text-muted-foreground pt-4">
-                Tipografía Satoshi bold, contenedor tonal `surface-container-low` sin bordes y texto centrado.
+                Tipografía Satoshi bold, contenedor tonal `surface-container-low` sin bordes y texto
+                centrado.
               </p>
             </CardContent>
           </Card>
@@ -192,7 +192,10 @@ export function MarcaComponents() {
                 <span className="text-xs font-mono font-semibold text-accent bg-accent/10 border border-accent/25 px-2.5 py-1 rounded-full">
                   Paso 03
                 </span>
-                <Badge variant="secondary" className="bg-accent/15 text-accent border-0 text-[11px] px-2.5 py-0.5 font-mono">
+                <Badge
+                  variant="secondary"
+                  className="bg-accent/15 text-accent border-0 text-[11px] px-2.5 py-0.5 font-mono"
+                >
                   <HugeiconsIcon icon={SparklesIcon} size={12} className="mr-1" />
                   AI Match
                 </Badge>
@@ -252,7 +255,8 @@ export function MarcaComponents() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground pt-2">
-                Todos los controles en una misma fila conservan la altura <code>h-11</code> para evitar desalineaciones en la cuadrícula visual.
+                Todos los controles en una misma fila conservan la altura <code>h-11</code> para
+                evitar desalineaciones en la cuadrícula visual.
               </p>
             </CardContent>
           </Card>

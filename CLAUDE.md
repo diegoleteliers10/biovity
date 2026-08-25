@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Biovity** is a Chilean job platform connecting professionals and students with opportunities in the scientific sector (biotechnology, biochemistry, chemistry, chemical engineering, and health). The platform serves as a bridge between talent and scientific companies.
 
+> **Backend**: the companion NestJS + Supabase backend lives at `/Users/dleteliers/Dev/biovity-server`.
+
 ## Development Commands
 
 ```bash
@@ -171,6 +173,7 @@ From `.cursor/rules/` - follow these patterns:
 - **Const functions**: Prefer `const toggle = () =>` over function declarations
 - **Accessibility**: Include `aria-label`, `tabindex`, keyboard handlers
 - **TypeScript strict**: Define types for all functions/components
+- **DESIGN.md is mandatory**: Every new feature, page, component, or UI change MUST follow the design system in `DESIGN.md`. Before writing any JSX, identify the register (brand vs product §0), then use the correct typography hierarchy (§3.2 or §3.3), color tokens (§2), spacing scale (§6), card patterns (§5.3), button styles (§5.1), motion rules (§7), and shadow-free cards (§1 principle 2). Never ship UI without consulting DESIGN.md first.
 
 ### Post-implementation: `/remove-ai-slop`
 
@@ -384,4 +387,14 @@ Follow the animation tokens and patterns defined in `DESIGN.md`:
 - **Scale on hover**: 150ms scale(0.95 → 1) for interactive elements
 
 Use `lib/animations.ts` for predefined animation variants. Prefer Motion for complex sequences and Tailwind utilities for simple transitions.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in Linear's isolated agent zone: team `Agents`, project `Biovity`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout: root `CONTEXT.md` + `docs/adr/`. See `docs/agents/domain.md`.
 

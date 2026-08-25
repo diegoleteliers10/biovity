@@ -5,15 +5,24 @@ import * as m from "motion/react-m"
 import { AdnBeam } from "@/components/landing/home/common/AdnBeam"
 import { Badge } from "@/components/ui/badge"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import {
+  getSpringTransition,
+  getTransition,
+  LANDING_ANIMATION,
+  LANDING_ANIMATION_MOBILE,
+} from "@/lib/animations"
 
 export function ConexionTalento() {
   const reducedMotion = useReducedMotion()
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
 
-  const chainStagger = isMobile ? LANDING_ANIMATION_MOBILE.chainStagger : LANDING_ANIMATION.chainStagger
-  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const chainStagger = isMobile
+    ? LANDING_ANIMATION_MOBILE.chainStagger
+    : LANDING_ANIMATION.chainStagger
+  const viewportMargin = isMobile
+    ? LANDING_ANIMATION_MOBILE.viewportMargin
+    : LANDING_ANIMATION.viewportMargin
   const yOffset = isReduced ? 0 : isMobile ? 16 : 24
 
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
@@ -33,10 +42,12 @@ export function ConexionTalento() {
             Ecosistema Integrado
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Conectamos el talento con la <span className="text-accent font-semibold">industria científica</span>
+            Conectamos el talento con la{" "}
+            <span className="text-accent font-semibold">industria científica</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Facilitamos el encuentro entre profesionales del sector científico y organizaciones que buscan especialistas en biotecnología y ciencias aplicadas en Chile.
+            Facilitamos el encuentro entre profesionales del sector científico y organizaciones que
+            buscan especialistas en biotecnología y ciencias aplicadas en Chile.
           </p>
         </m.div>
 
@@ -44,7 +55,9 @@ export function ConexionTalento() {
           initial={isReduced ? false : { opacity: 0, y: yOffset }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
-          transition={ts(isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay)}
+          transition={ts(
+            isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay
+          )}
           className="flex flex-col items-center"
         >
           <div className="w-full max-w-4xl mb-14 mx-auto flex justify-center">
@@ -67,7 +80,8 @@ export function ConexionTalento() {
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">Empresas publican</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                  Publica vacantes técnicas especificando técnicas de laboratorio, proyectos y bandas salariales.
+                  Publica vacantes técnicas especificando técnicas de laboratorio, proyectos y
+                  bandas salariales.
                 </p>
               </div>
             </m.div>
@@ -87,7 +101,8 @@ export function ConexionTalento() {
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">Candidatos postulan</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                  Profesionales e investigadores aplican de forma directa destacando experiencia experimental y proyectos.
+                  Profesionales e investigadores aplican de forma directa destacando experiencia
+                  experimental y proyectos.
                 </p>
               </div>
             </m.div>
@@ -104,13 +119,17 @@ export function ConexionTalento() {
                   <span className="text-xs font-mono font-semibold text-accent bg-accent/10 border border-accent/25 px-2.5 py-1 rounded-full">
                     Paso 03
                   </span>
-                  <Badge variant="secondary" className="bg-accent/15 text-accent border-0 text-[10px] px-2 py-0.5 font-mono">
+                  <Badge
+                    variant="secondary"
+                    className="bg-accent/15 text-accent border-0 text-[10px] px-2 py-0.5 font-mono"
+                  >
                     AI Match
                   </Badge>
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">Match de precisión</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                  Nuestros filtros científicos conectan los requerimientos del puesto con el candidato ideal.
+                  Nuestros filtros científicos conectan los requerimientos del puesto con el
+                  candidato ideal.
                 </p>
               </div>
             </m.div>

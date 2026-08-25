@@ -6,7 +6,13 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
-import { authButtonClass, authInputClass, authLabelClass, authSubtitleClass, authTitleClass } from "@/components/auth/form-styles"
+import {
+  authButtonClass,
+  authInputClass,
+  authLabelClass,
+  authSubtitleClass,
+  authTitleClass,
+} from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
@@ -66,7 +72,8 @@ export default function PasswordResetPage() {
           </Link>
           <h1 className={authTitleClass}>¿Olvidaste tu contraseña?</h1>
           <p className={authSubtitleClass}>
-            Ingresa tu correo electrónico y te enviaremos las instrucciones para restablecer tu cuenta.
+            Ingresa tu correo electrónico y te enviaremos las instrucciones para restablecer tu
+            cuenta.
           </p>
         </div>
 
@@ -78,10 +85,16 @@ export default function PasswordResetPage() {
             <div className="space-y-2">
               <p className="text-sm font-semibold text-foreground">¡Correo enviado!</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Hemos enviado un enlace de recuperación a <strong className="text-foreground font-mono">{email}</strong>. Por favor revisa tu bandeja de entrada y spam.
+                Hemos enviado un enlace de recuperación a{" "}
+                <strong className="text-foreground font-mono">{email}</strong>. Por favor revisa tu
+                bandeja de entrada y spam.
               </p>
             </div>
-            <Button variant="outline" className="w-full h-11 rounded-xl bg-surface-container-lowest border-border text-foreground hover:bg-surface-container-low text-xs font-medium" onClick={() => setIsSent(false)}>
+            <Button
+              variant="outline"
+              className="w-full h-11 rounded-xl bg-surface-container-lowest border-border text-foreground hover:bg-surface-container-low text-xs font-medium"
+              onClick={() => setIsSent(false)}
+            >
               Intentar con otro correo
             </Button>
           </div>

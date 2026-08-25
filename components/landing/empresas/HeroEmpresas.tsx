@@ -49,8 +49,8 @@ export function HeroEmpresas() {
             transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Centraliza candidatos, evalúa habilidades de laboratorio con scoring de IA y reduce
-            tus tiempos de contratación técnica en un 60%.
+            Centraliza candidatos, evalúa habilidades de laboratorio con scoring de IA y reduce tus
+            tiempos de contratación técnica en un 60%.
           </m.p>
 
           {/* CTA Group */}

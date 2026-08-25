@@ -1,11 +1,6 @@
 "use client"
 
-import {
-  ColorsIcon,
-  HierarchyIcon,
-  Layers01Icon,
-  SparklesIcon,
-} from "@hugeicons/core-free-icons"
+import { ColorsIcon, HierarchyIcon, Layers01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -56,7 +51,8 @@ export function MarcaPrinciples() {
             La esencia de <span className="text-accent font-semibold">Biovity</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Cuatro pilares innegociables que guían cada decisión de producto, interfaz y comunicación.
+            Cuatro pilares innegociables que guían cada decisión de producto, interfaz y
+            comunicación.
           </p>
         </div>
 
@@ -81,9 +77,7 @@ export function MarcaPrinciples() {
                   <CardTitle className="text-xl font-semibold text-foreground tracking-tight">
                     {p.title}
                   </CardTitle>
-                  <p className="text-xs font-mono text-secondary font-medium mt-1">
-                    {p.subtitle}
-                  </p>
+                  <p className="text-xs font-mono text-secondary font-medium mt-1">{p.subtitle}</p>
                 </CardHeader>
                 <CardContent className="p-0">
                   <p className="text-sm text-muted-foreground leading-relaxed text-pretty">

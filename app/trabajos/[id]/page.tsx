@@ -37,10 +37,7 @@ import {
   type JobLocation,
 } from "@/lib/api/jobs"
 import { getOrganization } from "@/lib/api/organizations"
-import {
-  formatFechaLarga,
-  formatJobSalary,
-} from "@/lib/utils"
+import { formatFechaLarga, formatJobSalary } from "@/lib/utils"
 
 type Props = {
   params: Promise<{ id: string }>
@@ -245,11 +242,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
                     unoptimized
                   />
                 ) : (
-                  <HugeiconsIcon
-                    icon={Briefcase01Icon}
-                    size={22}
-                    className="text-secondary"
-                  />
+                  <HugeiconsIcon icon={Briefcase01Icon} size={22} className="text-secondary" />
                 )}
               </div>
               <div className="min-w-0">
@@ -324,10 +317,7 @@ export default async function TrabajoDetailPage({ params }: Props) {
                 </h2>
                 <div className="text-muted-foreground leading-relaxed prose max-w-none">
                   {job.description ? (
-                    <HtmlContent
-                      html={job.description}
-                      className="text-base leading-7"
-                    />
+                    <HtmlContent html={job.description} className="text-base leading-7" />
                   ) : (
                     <p className="text-muted-foreground">Sin descripción detallada.</p>
                   )}
@@ -368,16 +358,10 @@ export default async function TrabajoDetailPage({ params }: Props) {
                           className="flex items-center gap-3 rounded-xl bg-surface-container-low px-4 py-3.5 border border-border/40 text-sm text-foreground shadow-none"
                         >
                           <div className="size-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 border border-border/40">
-                            <HugeiconsIcon
-                              icon={Icon}
-                              size={16}
-                              aria-hidden
-                            />
+                            <HugeiconsIcon icon={Icon} size={16} aria-hidden />
                           </div>
                           <span className="line-clamp-1">
-                            <span className="font-medium text-foreground">
-                              {beneficio.title}
-                            </span>
+                            <span className="font-medium text-foreground">{beneficio.title}</span>
                             {beneficio.description ? (
                               <span className="text-muted-foreground">{` — ${beneficio.description}`}</span>
                             ) : null}
@@ -400,7 +384,9 @@ export default async function TrabajoDetailPage({ params }: Props) {
                   <div className="space-y-2.5 text-sm">
                     <div className="flex justify-between items-center py-2 border-b border-border/30">
                       <span className="text-muted-foreground text-xs sm:text-sm">Ubicación:</span>
-                      <span className="font-medium text-foreground text-xs sm:text-sm">{ubicacion}</span>
+                      <span className="font-medium text-foreground text-xs sm:text-sm">
+                        {ubicacion}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-border/30">
                       <span className="text-muted-foreground text-xs sm:text-sm">Modalidad:</span>
@@ -411,12 +397,18 @@ export default async function TrabajoDetailPage({ params }: Props) {
                     {job.employmentType && (
                       <div className="flex justify-between items-center py-2 border-b border-border/30">
                         <span className="text-muted-foreground text-xs sm:text-sm">Jornada:</span>
-                        <span className="font-medium text-foreground text-xs sm:text-sm">{job.employmentType}</span>
+                        <span className="font-medium text-foreground text-xs sm:text-sm">
+                          {job.employmentType}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between items-center py-2 border-b border-border/30">
-                      <span className="text-muted-foreground text-xs sm:text-sm">Compensación:</span>
-                      <span className="font-mono font-semibold text-secondary tabular-nums text-xs sm:text-sm">{salaryStr}</span>
+                      <span className="text-muted-foreground text-xs sm:text-sm">
+                        Compensación:
+                      </span>
+                      <span className="font-mono font-semibold text-secondary tabular-nums text-xs sm:text-sm">
+                        {salaryStr}
+                      </span>
                     </div>
                   </div>
                 </div>

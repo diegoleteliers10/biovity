@@ -98,7 +98,8 @@ export function SalariosInteractiveFilter() {
             <span className="text-accent font-semibold">carrera, industria y región</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Combina las tres dimensiones determinantes de la renta en Chile para obtener un rango referencial estimado.
+            Combina las tres dimensiones determinantes de la renta en Chile para obtener un rango
+            referencial estimado.
           </p>
         </div>
 
@@ -106,8 +107,12 @@ export function SalariosInteractiveFilter() {
           {/* Filtros */}
           <Card className="rounded-xl border-0 shadow-none bg-surface-container-low lg:col-span-2 p-2 sm:p-4">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-foreground">Configura tu búsqueda</CardTitle>
-              <CardDescription className="text-xs text-muted-foreground">Selecciona las dimensiones del perfil</CardDescription>
+              <CardTitle className="text-lg font-semibold text-foreground">
+                Configura tu búsqueda
+              </CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">
+                Selecciona las dimensiones del perfil
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FilterSelect
@@ -149,7 +154,9 @@ export function SalariosInteractiveFilter() {
             >
               <Card className="rounded-xl border border-secondary/30 bg-surface-container-low shadow-none p-2 sm:p-4">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-foreground">Estimación de Banda Salarial</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-foreground">
+                    Estimación de Banda Salarial
+                  </CardTitle>
                   <CardDescription className="text-xs font-mono text-secondary">
                     {careerLabel} • {industryLabel} • {regionLabel}
                   </CardDescription>
@@ -165,14 +172,15 @@ export function SalariosInteractiveFilter() {
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
                       {hasSearched ? (
                         <>
-                          Esta estimación combina los datos de referencia oficiales de carrera, industria y
-                          región del mercado chileno. Para obtener una comparativa de percentil precisa,
-                          puedes completar la encuesta anónima.
+                          Esta estimación combina los datos de referencia oficiales de carrera,
+                          industria y región del mercado chileno. Para obtener una comparativa de
+                          percentil precisa, puedes completar la encuesta anónima.
                         </>
                       ) : (
                         <>
-                          Ajusta los filtros según tu perfil y pulsa <strong>“Estimar sueldo”</strong> para
-                          actualizar las bandas salariales de referencia en CLP líquido mensual.
+                          Ajusta los filtros según tu perfil y pulsa{" "}
+                          <strong>“Estimar sueldo”</strong> para actualizar las bandas salariales de
+                          referencia en CLP líquido mensual.
                         </>
                       )}
                     </p>
@@ -191,10 +199,16 @@ export function SalariosInteractiveFilter() {
                 Rangos salariales de referencia en Chile (CLP líquido)
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Estimaciones basadas en el mercado laboral chileno para profesionales de ciencias e ingeniería.
+                Estimaciones basadas en el mercado laboral chileno para profesionales de ciencias e
+                ingeniería.
               </p>
             </div>
-            <Button variant="outline" size="sm" asChild className="shrink-0 bg-surface-container-lowest border-border rounded-lg">
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              className="shrink-0 bg-surface-container-lowest border-border rounded-lg"
+            >
               <Link href="/trabajos" className="flex items-center gap-1.5 text-xs font-medium">
                 <span>Ver ofertas activas</span>
                 <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
@@ -222,7 +236,10 @@ export function SalariosInteractiveFilter() {
               </thead>
               <tbody className="divide-y divide-border">
                 {CARRERA_CHART_DATA.map((item) => (
-                  <tr key={item.carrera} className="hover:bg-surface-container-low/60 transition-colors">
+                  <tr
+                    key={item.carrera}
+                    className="hover:bg-surface-container-low/60 transition-colors"
+                  >
                     <td className="px-5 py-3.5 font-medium text-foreground">{item.carrera}</td>
                     <td className="px-5 py-3.5 text-muted-foreground font-mono">
                       {formatCurrencyCLP(item.junior)}
@@ -300,9 +317,7 @@ function EstimateCell({
     <div
       className={cn(
         "rounded-lg p-3.5 text-center transition-colors",
-        highlight
-          ? "border border-secondary/30 bg-secondary/10"
-          : "bg-surface-container-lowest"
+        highlight ? "border border-secondary/30 bg-secondary/10" : "bg-surface-container-lowest"
       )}
     >
       <p className="text-[11px] text-muted-foreground mb-1 font-mono">{label}</p>

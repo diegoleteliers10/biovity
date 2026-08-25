@@ -147,10 +147,7 @@ export function EducationForm() {
           })}
         </ul>
       ) : (
-        <EmptyListState
-          icon={Mortarboard01Icon}
-          message="Agrega tu formación académica"
-        />
+        <EmptyListState icon={Mortarboard01Icon} message="Agrega tu formación académica" />
       )}
     </EditableCard>
   )

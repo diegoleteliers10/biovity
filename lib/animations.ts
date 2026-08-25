@@ -46,12 +46,7 @@ export const getTransition = (options: {
   reducedMotion?: boolean | null
   isMobile?: boolean
 }) => {
-  const {
-    delay = 0,
-    duration = LANDING_ANIMATION.duration,
-    reducedMotion,
-    isMobile,
-  } = options
+  const { delay = 0, duration = LANDING_ANIMATION.duration, reducedMotion, isMobile } = options
   const prefersReduced = Boolean(reducedMotion)
   if (prefersReduced) {
     return { delay, duration: LANDING_ANIMATION.durationReduced, ease: LANDING_ANIMATION.easeOut }

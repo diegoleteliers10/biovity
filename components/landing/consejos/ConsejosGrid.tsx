@@ -103,9 +103,12 @@ export function ConsejosGrid() {
               size={36}
               className="mx-auto text-muted-foreground mb-3"
             />
-            <h3 className="text-base font-semibold text-foreground mb-1">No se encontraron guías</h3>
+            <h3 className="text-base font-semibold text-foreground mb-1">
+              No se encontraron guías
+            </h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
-              Intenta cambiar la categoría o ajustar los términos de búsqueda para encontrar otros artículos.
+              Intenta cambiar la categoría o ajustar los términos de búsqueda para encontrar otros
+              artículos.
             </p>
             <button
               type="button"

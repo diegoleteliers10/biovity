@@ -25,8 +25,18 @@ export function AdnBeam() {
             ref={div1Ref}
             className="size-16 sm:size-20 border-2 border-secondary/30 bg-surface-container-lowest text-secondary shadow-sm hover:scale-105 transition-transform"
           >
-            <HugeiconsIcon icon={UserIcon} size={30} className="sm:hidden text-secondary" strokeWidth={1.5} />
-            <HugeiconsIcon icon={UserIcon} size={38} className="hidden sm:block text-secondary" strokeWidth={1.5} />
+            <HugeiconsIcon
+              icon={UserIcon}
+              size={30}
+              className="sm:hidden text-secondary"
+              strokeWidth={1.5}
+            />
+            <HugeiconsIcon
+              icon={UserIcon}
+              size={38}
+              className="hidden sm:block text-secondary"
+              strokeWidth={1.5}
+            />
           </Circle>
           <span className="text-[11px] sm:text-xs font-mono font-semibold text-secondary uppercase tracking-wider text-center">
             Talento Científico
@@ -39,8 +49,18 @@ export function AdnBeam() {
             ref={div2Ref}
             className="size-16 sm:size-20 border-2 border-accent/30 bg-surface-container-lowest text-accent shadow-sm hover:scale-105 transition-transform"
           >
-            <HugeiconsIcon icon={Building05Icon} size={30} className="sm:hidden text-accent" strokeWidth={1.5} />
-            <HugeiconsIcon icon={Building05Icon} size={38} className="hidden sm:block text-accent" strokeWidth={1.5} />
+            <HugeiconsIcon
+              icon={Building05Icon}
+              size={30}
+              className="sm:hidden text-accent"
+              strokeWidth={1.5}
+            />
+            <HugeiconsIcon
+              icon={Building05Icon}
+              size={38}
+              className="hidden sm:block text-accent"
+              strokeWidth={1.5}
+            />
           </Circle>
           <span className="text-[11px] sm:text-xs font-mono font-semibold text-accent uppercase tracking-wider text-center">
             Empresa / Centro I+D

@@ -42,7 +42,8 @@ export function Pricing() {
             Planes transparentes para cada <span className="text-accent font-semibold">etapa</span>
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Desde vacantes puntuales hasta soluciones integrales para equipos de reclutamiento activo.
+            Desde vacantes puntuales hasta soluciones integrales para equipos de reclutamiento
+            activo.
           </p>
         </m.div>
 
@@ -58,7 +59,9 @@ export function Pricing() {
             type="button"
             onClick={() => setIsAnual(false)}
             className={`text-sm transition-colors cursor-pointer ${
-              !isAnual ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+              !isAnual
+                ? "text-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Mensual
@@ -90,7 +93,9 @@ export function Pricing() {
           >
             <span
               className={`text-sm transition-colors ${
-                isAnual ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+                isAnual
+                  ? "text-foreground font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Anual
@@ -141,7 +146,9 @@ export function Pricing() {
                       {getPrice(plan.price)}
                     </span>
                     {plan.period && (
-                      <span className="text-xs text-muted-foreground font-medium">{plan.period}</span>
+                      <span className="text-xs text-muted-foreground font-medium">
+                        {plan.period}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -182,7 +189,8 @@ export function Pricing() {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          Precios expresados en CLP. No incluyen IVA. Puedes cancelar o modificar tu plan en cualquier momento.
+          Precios expresados en CLP. No incluyen IVA. Puedes cancelar o modificar tu plan en
+          cualquier momento.
         </p>
       </div>
     </section>

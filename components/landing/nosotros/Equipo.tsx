@@ -128,17 +128,26 @@ export function Equipo() {
 
               <div className="space-y-3.5 mb-6">
                 <div className="flex items-start gap-3">
-                  <HugeiconsIcon icon={SparklesIcon} size={16} className="text-secondary shrink-0 mt-0.5" />
+                  <HugeiconsIcon
+                    icon={SparklesIcon}
+                    size={16}
+                    className="text-secondary shrink-0 mt-0.5"
+                  />
                   <p className="text-xs text-muted-foreground">
-                    <strong className="text-foreground font-medium">Dataset Colaborativo:</strong> Más de 500
-                    profesionales han compartido sus salarios de forma altruista.
+                    <strong className="text-foreground font-medium">Dataset Colaborativo:</strong>{" "}
+                    Más de 500 profesionales han compartido sus salarios de forma altruista.
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <HugeiconsIcon icon={SparklesIcon} size={16} className="text-secondary shrink-0 mt-0.5" />
+                  <HugeiconsIcon
+                    icon={SparklesIcon}
+                    size={16}
+                    className="text-secondary shrink-0 mt-0.5"
+                  />
                   <p className="text-xs text-muted-foreground">
-                    <strong className="text-foreground font-medium">Feedback Continuo:</strong> Consultamos
-                    regularmente a investigadores para afinar los filtros y taxonomías científicas.
+                    <strong className="text-foreground font-medium">Feedback Continuo:</strong>{" "}
+                    Consultamos regularmente a investigadores para afinar los filtros y taxonomías
+                    científicas.
                   </p>
                 </div>
               </div>

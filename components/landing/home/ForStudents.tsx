@@ -7,7 +7,12 @@ import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { getSpringTransition, getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import {
+  getSpringTransition,
+  getTransition,
+  LANDING_ANIMATION,
+  LANDING_ANIMATION_MOBILE,
+} from "@/lib/animations"
 import { BENEFITS_FOR_STUDENTS } from "@/lib/data/home-data"
 
 export function ForStudents() {
@@ -15,7 +20,9 @@ export function ForStudents() {
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
 
-  const viewportMargin = isMobile ? LANDING_ANIMATION_MOBILE.viewportMargin : LANDING_ANIMATION.viewportMargin
+  const viewportMargin = isMobile
+    ? LANDING_ANIMATION_MOBILE.viewportMargin
+    : LANDING_ANIMATION.viewportMargin
   const yOffset = isReduced ? 0 : isMobile ? 16 : 24
 
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
@@ -35,10 +42,12 @@ export function ForStudents() {
             Estudiantes & Nuevos Graduados
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Inicia tu carrera científica en <span className="text-accent font-semibold">las mejores manos</span>
+            Inicia tu carrera científica en{" "}
+            <span className="text-accent font-semibold">las mejores manos</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Encuentra prácticas profesionales, tesinas remuneradas y primeros empleos diseñados específicamente para graduados y estudiantes en Chile.
+            Encuentra prácticas profesionales, tesinas remuneradas y primeros empleos diseñados
+            específicamente para graduados y estudiantes en Chile.
           </p>
         </m.div>
 
@@ -53,7 +62,9 @@ export function ForStudents() {
           >
             <div>
               <div className="flex items-center justify-between gap-3 pb-5 mb-6 border-b border-border">
-                <h3 className="text-lg font-semibold text-foreground">Beneficios para Jóvenes Investigadores</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Beneficios para Jóvenes Investigadores
+                </h3>
                 <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-surface-container-highest text-muted-foreground">
                   Acceso directo
                 </span>
@@ -72,7 +83,9 @@ export function ForStudents() {
                         <HugeiconsIcon icon={benefit.icon} size={16} />
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-foreground mb-1">{benefit.title}</h4>
+                        <h4 className="text-sm font-semibold text-foreground mb-1">
+                          {benefit.title}
+                        </h4>
                         <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
                           {benefit.description}
                         </p>
@@ -84,7 +97,11 @@ export function ForStudents() {
             </div>
 
             <div className="pt-6 mt-6 border-t border-border">
-              <Button asChild size="lg" className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium">
+              <Button
+                asChild
+                size="lg"
+                className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
+              >
                 <Link href="/trabajos?experiencia=junior">
                   Explorar vacantes junior y prácticas
                   <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
@@ -167,8 +184,11 @@ export function ForStudents() {
 
               {/* Thesis */}
               <div className="p-3 bg-surface-container-lowest rounded-lg border border-border text-xs text-foreground leading-relaxed">
-                <strong className="font-semibold text-secondary block mb-0.5">Tesis de Grado:</strong>
-                Optimización de vectores de expresión recombinante en <em className="italic">E. coli</em>.
+                <strong className="font-semibold text-secondary block mb-0.5">
+                  Tesis de Grado:
+                </strong>
+                Optimización de vectores de expresión recombinante en{" "}
+                <em className="italic">E. coli</em>.
               </div>
             </div>
 
@@ -179,10 +199,7 @@ export function ForStudents() {
                 <span className="font-bold text-secondary">95%</span>
               </div>
               <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-secondary rounded-full"
-                  style={{ width: "95%" }}
-                />
+                <div className="h-full bg-secondary rounded-full" style={{ width: "95%" }} />
               </div>
             </div>
           </m.div>

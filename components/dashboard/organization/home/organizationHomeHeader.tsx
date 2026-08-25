@@ -32,10 +32,7 @@ function HeaderContent({ isPending, firstName }: { isPending?: boolean; firstNam
   )
 }
 
-export function OrganizationHomeHeader({
-  firstName,
-  isPending,
-}: OrganizationHomeHeaderProps) {
+export function OrganizationHomeHeader({ firstName, isPending }: OrganizationHomeHeaderProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Top row: menu + notification on mobile */}
@@ -63,4 +60,3 @@ export function OrganizationHomeHeader({
     </div>
   )
 }
-
