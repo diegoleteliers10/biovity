@@ -3,13 +3,9 @@
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { APRENDE_BENEFITS } from "@/lib/data/aprende-data"
-import {
-  getTransition,
-  LANDING_ANIMATION,
-  LANDING_ANIMATION_MOBILE,
-} from "@/lib/animations"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import { APRENDE_BENEFITS } from "@/lib/data/aprende-data"
 
 export function SectionBenefits() {
   const reducedMotion = useReducedMotion()
@@ -34,8 +30,7 @@ export function SectionBenefits() {
             BENEFICIOS
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            ¿Por qué aprender con{" "}
-            <span className="text-accent font-semibold">Biovity</span>?
+            ¿Por qué aprender con <span className="text-accent font-semibold">Biovity</span>?
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed text-pretty">
             Contenido diseñado para profesionales y estudiantes del sector biocientífico.

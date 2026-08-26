@@ -2,13 +2,9 @@
 
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { APRENDE_STATS } from "@/lib/data/aprende-data"
-import {
-  getTransition,
-  LANDING_ANIMATION,
-  LANDING_ANIMATION_MOBILE,
-} from "@/lib/animations"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import { APRENDE_STATS } from "@/lib/data/aprende-data"
 
 export function SectionHero() {
   const reducedMotion = useReducedMotion()
