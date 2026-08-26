@@ -6,14 +6,14 @@ import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { APRENDE_CTA } from "@/lib/data/aprende-data"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import {
   getSpringTransition,
   getTransition,
   LANDING_ANIMATION,
   LANDING_ANIMATION_MOBILE,
 } from "@/lib/animations"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { APRENDE_CTA } from "@/lib/data/aprende-data"
 
 export function SectionCTA() {
   const reducedMotion = useReducedMotion()

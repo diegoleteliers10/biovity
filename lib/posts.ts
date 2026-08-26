@@ -72,7 +72,7 @@ export async function getCapsulesByCategory(
 ): Promise<Result<CapsuleMeta[], NotFoundError | ParseError>> {
   const pattern = category
     ? path.join(CAPSULES_PATH, category, "*/index.mdx")
-    : path.join(CAPSULES_PATH, "*/index.mdx")
+    : path.join(CAPSULES_PATH, "*", "*", "index.mdx")
 
   const files = await glob(pattern)
 

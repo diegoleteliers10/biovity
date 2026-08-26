@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation"
+import { Result } from "better-result"
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Result } from "better-result"
+import { notFound } from "next/navigation"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,8 +10,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { getCapsulesByCategory } from "@/lib/posts"
 import { APRENDE_CATEGORIES } from "@/lib/data/aprende-data"
+import { getCapsulesByCategory } from "@/lib/posts"
 
 type Props = {
   params: Promise<{ category: string }>
@@ -59,8 +59,7 @@ export default async function CategoryPage({ params }: Props) {
           {cat!.name.toUpperCase()}
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance">
-          Cápsulas de{" "}
-          <span className="text-accent font-semibold">{cat!.name}</span>
+          Cápsulas de <span className="text-accent font-semibold">{cat!.name}</span>
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed text-pretty">
           {cat!.description}
