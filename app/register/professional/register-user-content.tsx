@@ -224,8 +224,8 @@ export function UserRegisterContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/Register.png"
-            alt="Biovity - Creación de cuenta"
+            src="/RegisterProfessional.png"
+            alt="Biovity - Registro de profesional"
             fill
             className="object-cover object-center"
             priority

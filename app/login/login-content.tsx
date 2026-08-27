@@ -16,7 +16,7 @@ export function LoginContent() {
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
             src="/Login.png"
-            alt="Biovity - Acceso a la plataforma"
+            alt="Persona frente a una puerta abierta"
             fill
             className="object-cover object-center"
             priority

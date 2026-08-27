@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist_Mono, Instrument_Serif, Rubik } from "next/font/google"
+import { Geist, Geist_Mono, Instrument_Serif, Rubik } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
@@ -7,6 +7,11 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+})
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -172,7 +177,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" data-scroll-behavior="smooth">
+    <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`} data-scroll-behavior="smooth">
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563EB" />
@@ -181,18 +186,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Biovity" />
         <link rel="apple-touch-icon" href="/images/ios/180.webp" sizes="180x180" />
-        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
-        {/* Satoshi font from Fontshare - not available via next/font, loaded via CSS import */}
-        {/* eslint-disable-next-line react-doctor/nextjs-no-css-link */}
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
-          rel="stylesheet"
-        />
+
       </head>
-      <body
-        className={`${geistMono.variable} ${rubik.variable} ${instrumentSerif.variable} antialiased`}
-      >
+      <body className={`${rubik.variable} ${instrumentSerif.variable} antialiased`}>
         <NuqsAdapter>
           <QueryProvider>
             <MotionProvider>{children}</MotionProvider>

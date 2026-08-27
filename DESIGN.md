@@ -85,16 +85,16 @@ Not all tokens can be used for text on all surfaces. These pairings are verified
 
 ## 3. Typography & Hierarchy
 
-The typography pairs **Satoshi Variable** (clean sans-serif clarity) with **Geist Mono** (technical precision, metadata, and metric labels).
+The typography pairs **Geist Sans** (clean sans-serif clarity) with **Geist Mono** (technical precision, metadata, and metric labels).
 
 ```
 Font Stack:
-- Sans (Primary): "Satoshi", "Inter", -apple-system, sans-serif
-- Mono (Technical & Eyebrows): "Geist Mono", "Courier New", monospace
+- Sans (Primary): var(--font-geist-sans)
+- Mono (Technical & Eyebrows): var(--font-geist-mono)
 ```
 
 ### 3.1 Font Weights
-- **Satoshi Variable (Sans):** Regular (`400`), Medium (`500`), SemiBold (`600`), Bold (`700`).
+- **Geist Sans:** Regular (`400`), Medium (`500`), SemiBold (`600`), Bold (`700`).
 - **Geist Mono (Mono):** Medium (`500`), SemiBold (`600`), Bold (`700`).
 
 ---

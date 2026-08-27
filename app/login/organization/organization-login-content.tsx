@@ -89,8 +89,8 @@ export function OrganizationLoginContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/Login.png"
-            alt="Biovity - Acceso a la plataforma"
+            src="/LoginOrganization.png"
+            alt="Edificio moderno de organización científica"
             fill
             className="object-cover object-center"
             priority
