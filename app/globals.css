@@ -6,10 +6,8 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans:
-        "Satoshi", "Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto",
-        "Helvetica Neue", "Arial", "sans-serif";
-    --font-mono: "var(--font-geist-mono)", "Courier New", "monospace";
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
     --font-serif: "var(--font-instrument-serif)", "Georgia", "Times New Roman", "serif";
     --font-rubik: "Rubik", var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);
@@ -171,7 +169,7 @@
     body {
         @apply bg-background text-foreground;
     }
-    /* Typography defaults - Satoshi via font-sans */
+    /* Typography defaults - Geist Sans via font-sans */
     h1,
     h2,
     h3,

@@ -14,21 +14,21 @@ export function MarcaTypography() {
             Estructura & <span className="text-accent font-semibold">Jerarquía Tipográfica</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Combinamos <strong>Satoshi</strong> para una legibilidad contemporánea en titulares e
+            Combinamos <strong>Geist Sans</strong> para una legibilidad contemporánea en titulares e
             interfaces, con <strong>Geist Mono</strong> para datos técnicos, cifras y etiquetas.
           </p>
         </div>
 
         {/* Font Families Comparison */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">
-          {/* Satoshi */}
+          {/* Geist Sans */}
           <Card className="rounded-xl border-0 shadow-none bg-surface-container-lowest p-6 sm:p-8">
             <CardHeader className="p-0 mb-6">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-1 block">
                 Fuente Primaria • Sans
               </span>
               <CardTitle className="text-3xl font-bold text-foreground tracking-tight">
-                Satoshi Variable
+                Geist Sans
               </CardTitle>
               <p className="text-xs text-muted-foreground font-mono mt-1">
                 Weights: 400 (Regular), 500 (Medium), 600 (SemiBold), 700 (Bold)

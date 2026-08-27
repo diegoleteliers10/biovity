@@ -7,27 +7,16 @@ import {
   SparklesIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useMediaQuery } from "@/hooks/use-media-query"
 
 export function Hero() {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [location, setLocation] = useState("")
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-
-  const ease = [0.23, 1, 0.32, 1] as const
-  const isReduced = Boolean(reducedMotion)
-
-  const duration = isReduced ? 0.01 : isMobile ? 0.35 : 0.55
-  const yOffset = isReduced ? 0 : isMobile ? 12 : 24
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,37 +53,22 @@ export function Hero() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Heading */}
-          <m.h1
-            initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration, ease }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 sm:mb-8 tracking-tight leading-[1.12] text-balance"
-          >
+          <h1 className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:fill-mode-both text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 sm:mb-8 tracking-tight leading-[1.12] text-balance">
             Donde el talento científico conecta con{" "}
             <span className="text-secondary underline decoration-secondary/30 decoration-wavy decoration-from-font">
               biotecnología
             </span>{" "}
             e <span className="text-accent">innovación I+D</span>
-          </m.h1>
+          </h1>
 
           {/* Subtitle */}
-          <m.p
-            initial={isReduced ? false : { opacity: 0, y: yOffset }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration, delay: isReduced ? 0 : isMobile ? 0.05 : 0.1, ease }}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 sm:mb-14 max-w-2xl mx-auto leading-relaxed text-pretty"
-          >
+          <p className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-100 motion-safe:fill-mode-both text-base sm:text-lg md:text-xl text-muted-foreground mb-10 sm:mb-14 max-w-2xl mx-auto leading-relaxed text-pretty">
             Encuentra ofertas laborales verificadas con salarios transparentes en biotecnología,
             bioquímica, química, laboratorios clínicos y centros de investigación en Chile.
-          </m.p>
+          </p>
 
           {/* Main Interactive Search Console */}
-          <m.div
-            initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration, delay: isReduced ? 0 : isMobile ? 0.1 : 0.2, ease }}
-            className="max-w-3xl mx-auto mb-8 sm:mb-12"
-          >
+          <div className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:delay-200 motion-safe:fill-mode-both max-w-3xl mx-auto mb-8 sm:mb-12">
             <form
               onSubmit={handleSearch}
               className="rounded-2xl border-2 border-border/80 bg-surface-container-lowest p-2.5 sm:p-3 shadow-lg shadow-black/[0.03] backdrop-blur-sm transition-all focus-within:border-secondary/50 focus-within:shadow-secondary/5"
@@ -150,7 +124,7 @@ export function Hero() {
                 </Button>
               </div>
             </form>
-          </m.div>
+          </div>
 
           {/* Quick links to professional and company registration */}
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm">

@@ -133,6 +133,10 @@ export const auth = betterAuth({
     expiresIn: 604800,
     updateAge: 86400,
     storeSessionInDatabase: true,
+    cookieCache: {
+      enabled: true,
+      maxAge: 300,
+    },
   },
   verification: {
     modelName: "verification",

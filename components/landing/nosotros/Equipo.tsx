@@ -10,6 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
+import Image from "next/image"
 import Link from "next/link"
 import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 
@@ -51,8 +52,14 @@ export function Equipo() {
           >
             <div>
               <div className="flex items-start gap-4 mb-6">
-                <div className="size-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold tracking-tight shrink-0">
-                  DL
+                <div className="size-24 rounded-2xl overflow-hidden border border-border">
+                  <Image
+                    src="/avatarMe.jpeg"
+                    alt="Diego Letelier, Fundador de Biovity"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-foreground">Diego Letelier</h3>
