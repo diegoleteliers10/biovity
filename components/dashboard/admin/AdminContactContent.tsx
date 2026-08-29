@@ -320,14 +320,16 @@ export function AdminContactContent() {
   const unreadCount = state.items.filter((i) => !i.isRead).length
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Mensajes de contacto</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Mensajes de contacto
+          </h1>
+          <p className="mt-1 text-pretty text-sm text-muted-foreground">
             Solicitudes de contacto recibidas desde el formulario de ventas.
             {unreadCount > 0 && (
-              <span className="ml-1 font-medium text-secondary">{unreadCount} sin leer</span>
+              <span className="ml-1 font-semibold text-secondary">{unreadCount} sin leer</span>
             )}
           </p>
         </div>
@@ -347,12 +349,12 @@ export function AdminContactContent() {
           placeholder="Buscar por email, nombre o empresa..."
           value={state.inputSearch}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm h-11"
           aria-label="Buscar mensajes"
         />
         <Button
           variant="outline"
-          size="sm"
+          className="h-11"
           onClick={handleExportCSV}
           disabled={state.items.length === 0}
         >
@@ -457,7 +459,7 @@ export function AdminContactContent() {
                       onClick={() => handleToggleRead(msg.id, !msg.isRead)}
                       disabled={state.togglingReadId === msg.id}
                       className={cn(
-                        "rounded-full px-2 py-0.5 text-[10px] font-medium transition-colors",
+                        "rounded-full px-2 py-0.5 text-xs font-medium transition-colors",
                         msg.isRead
                           ? "bg-muted text-muted-foreground"
                           : "bg-secondary/10 text-secondary hover:bg-secondary/20"

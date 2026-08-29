@@ -370,11 +370,13 @@ export function AdminWaitlistContent() {
   const isSending = state.sendingAll || state.sendingIds.size > 0
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Lista de espera</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Lista de espera
+          </h1>
+          <p className="mt-1 text-pretty text-sm text-muted-foreground">
             Personas y organizaciones registradas en la lista de espera.
           </p>
         </div>
@@ -394,13 +396,13 @@ export function AdminWaitlistContent() {
           placeholder="Buscar por email..."
           value={state.inputSearch}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm h-11"
           aria-label="Buscar en lista de espera"
         />
         <select
           value={state.roleFilter}
           onChange={(e) => handleRoleFilterChange(e.target.value)}
-          className="h-7 rounded-md border border-input bg-background px-3"
+          className="h-11 rounded-lg border border-border/40 bg-surface-container-low px-3 text-sm"
           aria-label="Filtrar por rol"
         >
           {ROLE_OPTIONS.map((opt) => (
@@ -411,7 +413,7 @@ export function AdminWaitlistContent() {
         </select>
         <Button
           variant="outline"
-          size="sm"
+          className="h-11"
           onClick={handleExportCSV}
           disabled={state.items.length === 0}
         >
@@ -419,7 +421,7 @@ export function AdminWaitlistContent() {
         </Button>
         <Button
           variant="default"
-          size="sm"
+          className="h-11"
           onClick={() => handleSendInvites("all")}
           disabled={state.total === 0 || isSending}
         >

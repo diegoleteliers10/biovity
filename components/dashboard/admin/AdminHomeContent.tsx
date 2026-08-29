@@ -52,6 +52,7 @@ type AdminStats = {
 }
 
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
+import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -236,10 +237,12 @@ export function AdminHomeContent() {
   }))
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Panel de administración</h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          Panel de administración
+        </h1>
+        <p className="mt-1 text-pretty text-sm text-muted-foreground">
           Resumen de la plataforma Biovity: usuarios, lista de espera y metricas de la plataforma.
         </p>
       </div>
@@ -270,7 +273,7 @@ export function AdminHomeContent() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {statsLoading
           ? [0, 1, 2, 3, 4, 5].map((n) => (
-              <Card key={n}>
+              <Card key={n} className={dashboardRaisedCardClass}>
                 <CardHeader className="pb-2">
                   <Skeleton className="h-4 w-24" />
                 </CardHeader>
@@ -283,7 +286,7 @@ export function AdminHomeContent() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
               <CardTitle>Registros</CardTitle>
@@ -359,7 +362,7 @@ export function AdminHomeContent() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader className="pb-2">
             <CardTitle>Top Jobs</CardTitle>
             <p className="text-xs text-muted-foreground">Jobs más aplicados en la plataforma</p>
@@ -418,7 +421,7 @@ export function AdminHomeContent() {
       </div>
 
       {stats && stats.users.recentCount > 0 && (
-        <Card>
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader className="pb-2">
             <CardTitle>Nuevos registros (últimos 7 días)</CardTitle>
             <p className="text-xs text-muted-foreground">
@@ -438,7 +441,7 @@ export function AdminHomeContent() {
       )}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card>
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Usuarios recientes</CardTitle>
             <Button asChild variant="outline" size="sm">
@@ -461,7 +464,7 @@ export function AdminHomeContent() {
                       {userList.map((user) => (
                         <div
                           key={user.id}
-                          className="flex items-center gap-3 rounded-lg border border-border/50 p-2.5 transition-colors hover:bg-muted/30"
+                          className="flex items-center gap-3 rounded-lg border border-border/50 p-2.5 transition-colors hover:bg-surface-container-highest/40"
                         >
                           <div className="flex size-8 items-center justify-center rounded-full bg-secondary/10 text-xs font-semibold text-secondary">
                             {user.name?.charAt(0)?.toUpperCase() ?? "?"}
@@ -472,7 +475,7 @@ export function AdminHomeContent() {
                             </p>
                             <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                           </div>
-                          <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
                             {formatFechaRelativa(user.createdAt)}
                           </span>
                         </div>
@@ -491,7 +494,7 @@ export function AdminHomeContent() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={dashboardRaisedCardClass}>
           <CardHeader>
             <CardTitle>Acciones rápidas</CardTitle>
           </CardHeader>
