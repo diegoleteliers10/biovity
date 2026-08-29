@@ -316,11 +316,11 @@ export function AdminEntityTable({
   const totalPages = Math.max(1, Math.ceil(state.total / PAGE_SIZE))
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">{title}</h1>
-          <p className="mt-1 text-muted-foreground">{description}</p>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+          <p className="mt-1 text-pretty text-sm text-muted-foreground">{description}</p>
         </div>
         <Button
           variant="ghost"
@@ -333,12 +333,12 @@ export function AdminEntityTable({
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap items-center gap-3">
         <Input
           placeholder={searchPlaceholder}
           value={state.inputSearch}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm h-11"
           aria-label={searchLabel}
         />
         {filters}
@@ -378,8 +378,13 @@ export function AdminEntityTable({
             </Button>
           </div>
         ) : state.items.length === 0 ? (
-          <div className="flex items-center justify-center p-12 text-muted-foreground">
-            No hay {entityNamePlural}
+          <div className="flex flex-col items-center justify-center gap-1 py-12 text-center">
+            <p className="text-sm font-medium text-foreground">No hay {entityNamePlural}</p>
+            {safeSearch && (
+              <p className="text-xs text-muted-foreground">
+                No se encontraron {entityNamePlural} para &quot;{safeSearch}&quot;
+              </p>
+            )}
           </div>
         ) : (
           <Table>
@@ -414,7 +419,7 @@ export function AdminEntityTable({
                   key={item.id}
                   className={
                     onRowClick
-                      ? `cursor-pointer hover:bg-muted/30 ${state.selectedIds.has(item.id) ? "bg-secondary/5" : ""}`
+                      ? `cursor-pointer hover:bg-surface-container-highest/40 ${state.selectedIds.has(item.id) ? "bg-secondary/5" : ""}`
                       : state.selectedIds.has(item.id)
                         ? "bg-secondary/5"
                         : undefined

@@ -167,11 +167,13 @@ export function AdminAILogsContent() {
   const totalPages = Math.max(1, Math.ceil(state.total / PAGE_SIZE))
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Logs de AI</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Logs de AI
+          </h1>
+          <p className="mt-1 text-pretty text-sm text-muted-foreground">
             Registro de interacciones con inteligencia artificial para auditoria y deteccion de
             abuso.
           </p>
@@ -192,13 +194,13 @@ export function AdminAILogsContent() {
           placeholder="Buscar por usuario o endpoint..."
           value={state.inputSearch}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm h-11"
           aria-label="Buscar logs de AI"
         />
         <select
           value={state.flaggedFilter}
           onChange={(e) => handleFlaggedFilterChange(e.target.value)}
-          className="h-7 rounded-md border border-input bg-background px-3"
+          className="h-11 rounded-lg border border-border/40 bg-surface-container-low px-3 text-sm"
           aria-label="Filtrar por flagged"
         >
           {FLAGGED_OPTIONS.map((opt) => (
@@ -262,8 +264,8 @@ export function AdminAILogsContent() {
                   <TableCell className="text-xs">{formatDuration(log.durationMs)}</TableCell>
                   <TableCell>
                     {log.flagged ? (
-                      <Badge variant="destructive" className="gap-1 text-[10px]">
-                        <HugeiconsIcon icon={AlertCircleIcon} size={10} />
+                      <Badge variant="destructive" className="gap-1 text-xs">
+                        <HugeiconsIcon icon={AlertCircleIcon} size={12} />
                         Flagged
                       </Badge>
                     ) : (

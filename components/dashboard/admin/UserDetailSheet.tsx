@@ -4,7 +4,6 @@ import { useCallback, useState } from "react"
 import { toast } from "sonner"
 import { Sheet, SheetContent, SheetHeader } from "@/components/animate-ui/components/radix/sheet"
 import { ConfirmDialog } from "@/components/dashboard/admin/ConfirmDialog"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { AdminUser } from "@/lib/types/admin"
@@ -96,7 +95,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
 
           <div className="flex-1 space-y-5 overflow-y-auto px-4 py-4">
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <h3 className="text-xs leading-4 font-medium text-foreground">
                 Informacion
               </h3>
 
@@ -105,14 +104,20 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
                 <p className="text-sm">{user.email}</p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="space-y-1">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
                   <label className="text-xs text-muted-foreground">Estado</label>
-                  <Badge variant={user.isActive ? "default" : "secondary"}>
+                  <span
+                    className={
+                      user.isActive
+                        ? "block w-fit rounded-md bg-secondary/10 px-2 py-0.5 text-xs font-medium text-secondary"
+                        : "block w-fit rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                    }
+                  >
                     {user.isActive ? "Activo" : "Inactivo"}
-                  </Badge>
+                  </span>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <label className="text-xs text-muted-foreground">Registrado</label>
                   <p className="text-sm">{formatFechaRelativa(user.createdAt)}</p>
                 </div>
@@ -120,7 +125,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <h3 className="text-xs leading-4 font-medium text-foreground">
                 Editar
               </h3>
 
@@ -144,7 +149,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
                   id="edit-type"
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="flex h-7 w-full rounded-md border border-input bg-background px-3 py-1 shadow-sm"
+                  className="flex h-7 w-full rounded-md border border-input bg-input/20 px-2"
                 >
                   {TYPE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -157,10 +162,10 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
           </div>
 
           <div className="flex items-center justify-end gap-2 border-t border-border/60 px-4 py-3">
-            <Button variant="outline" onClick={() => handleOpenChange(false)}>
+            <Button variant="outline" className="h-9 px-4 text-sm" onClick={() => handleOpenChange(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleSave} disabled={!hasChanges || saving}>
+            <Button className="h-9 px-4 text-sm" onClick={handleSave} disabled={!hasChanges || saving}>
               {saving ? "Guardando..." : "Guardar cambios"}
             </Button>
           </div>
