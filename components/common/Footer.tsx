@@ -31,7 +31,7 @@ const FOOTER_SECTIONS = [
       { label: "Publicar Empleo", href: "/dashboard/ofertas" },
       { label: "Buscar Candidatos", href: "/dashboard/talent" },
       { label: "Planes y Precios", href: "/planes" },
-      { label: "Herramientas de Reclutamiento", href: "/empresas" },
+      { label: "Herramientas de Reclutamiento", href: "/reclutamiento" },
       { label: "Contactar Ventas", href: "/empresas#contacto" },
     ],
   },
