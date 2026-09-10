@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { checkRateLimit, getUserRateLimit } from "@/lib/ai/rate-limit"
 
-const WAITLIST_PATH = "/lista-espera"
+const WAITLIST_PATH = "/waitlist"
 const AI_API_PATTERN = /^\/api\/ai\//
 
 function getSessionToken(request: NextRequest): string | undefined {

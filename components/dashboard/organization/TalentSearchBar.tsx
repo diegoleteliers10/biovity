@@ -15,14 +15,14 @@ export function TalentSearchBar({ value, onChange }: TalentSearchBarProps) {
       <HugeiconsIcon
         icon={Search01Icon}
         size={18}
-        className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+        className="absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none"
       />
       <Input
         type="search"
         placeholder="Buscar por nombre o email..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-9"
+        className="h-9 bg-surface-container-low border-border/40 pl-10 pr-4 text-sm rounded-lg w-full"
         aria-label="Buscar profesionales"
       />
     </div>

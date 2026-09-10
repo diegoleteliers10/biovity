@@ -195,7 +195,6 @@ export function OrganizationHomeContent() {
           title="Proximas entrevistas"
           description="calendario de entrevistas"
           icon={Calendar03Icon}
-          onClick={() => push("/dashboard/calendar")}
         >
           {interviewsQuery.isPending ? (
             <div className="space-y-3 mt-2">

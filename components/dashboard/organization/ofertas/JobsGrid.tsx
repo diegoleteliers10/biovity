@@ -53,7 +53,7 @@ interface EmptyStateProps {
 export function EmptyJobsState({ onCreate }: EmptyStateProps) {
   return (
     <div className="flex flex-1 items-center justify-center">
-      <div className="flex w-full max-w-md flex-col items-center rounded-xl border border-border/40 bg-surface-container-low p-6 text-center shadow-none">
+      <div className="flex w-full max-w-md flex-col items-center bg-transparent p-6 text-center shadow-none">
         <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center text-muted-foreground">
           <HugeiconsIcon icon={FileAddIcon} size={20} strokeWidth={1.5} />
         </div>

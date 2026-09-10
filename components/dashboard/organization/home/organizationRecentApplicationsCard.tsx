@@ -57,7 +57,7 @@ export const OrganizationRecentApplicationsCard = memo(function OrganizationRece
               <Button
                 size="sm"
                 className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-xs font-medium"
-                onClick={() => push("/dashboard/ofertas")}
+                onClick={() => push("/dashboard/offers")}
               >
                 Publicar una oferta
               </Button>

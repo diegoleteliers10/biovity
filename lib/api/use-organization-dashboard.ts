@@ -140,7 +140,7 @@ export function getMetricsCards(
         value: "-",
         icon: FileAddIcon,
         subtitle: "cargando...",
-        href: "/dashboard/ofertas",
+        href: "/dashboard/offers",
       },
       {
         title: "Postulaciones Nuevas",
@@ -165,7 +165,7 @@ export function getMetricsCards(
       value: dashboard.activeJobs,
       icon: FileAddIcon,
       subtitle: "publicadas",
-      href: "/dashboard/ofertas",
+      href: "/dashboard/offers",
     },
     {
       title: "Postulaciones Nuevas",

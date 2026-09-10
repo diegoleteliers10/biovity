@@ -209,7 +209,7 @@ export function SalariosInteractiveFilter() {
               asChild
               className="shrink-0 bg-surface-container-lowest border-border rounded-lg"
             >
-              <Link href="/trabajos" className="flex items-center gap-1.5 text-xs font-medium">
+              <Link href="/jobs" className="flex items-center gap-1.5 text-xs font-medium">
                 <span>Ver ofertas activas</span>
                 <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
               </Link>
@@ -249,7 +249,7 @@ export function SalariosInteractiveFilter() {
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <Link
-                        href={`/trabajos?q=${encodeURIComponent(item.carrera)}`}
+                        href={`/jobs?q=${encodeURIComponent(item.carrera)}`}
                         className="text-xs text-secondary hover:underline font-medium inline-flex items-center gap-1"
                       >
                         Buscar vacantes &rarr;

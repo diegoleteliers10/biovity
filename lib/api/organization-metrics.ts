@@ -58,7 +58,7 @@ export async function incrementJobViews(
   const result = await fetchJson<{ data: { views: number } }>(
     `${API_BASE}/api/v1/jobs/${jobId}/views`,
     {
-      method: "PUT",
+      method: "POST",
     }
   )
 

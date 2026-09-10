@@ -102,7 +102,7 @@ export function ForStudents() {
                 size="lg"
                 className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
               >
-                <Link href="/trabajos?experiencia=junior">
+                <Link href="/jobs?experiencia=junior">
                   Explorar vacantes junior y prácticas
                   <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
                 </Link>

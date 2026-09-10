@@ -18,7 +18,11 @@ export type SavedCandidate = {
 export async function getSavedCandidates(
   organizationId: string
 ): Promise<Result<SavedCandidate[], ApiError | NetworkError>> {
-  return fetchJson(`${API_BASE}/api/v1/saved-candidates?organizationId=${organizationId}`)
+  const result = await fetchJson<{ data: SavedCandidate[] }>(
+    `${API_BASE}/api/v1/saved-candidates?organizationId=${organizationId}`
+  )
+  if (result.isErr()) return R.err(result.error)
+  return R.ok(result.value.data)
 }
 
 export async function saveCandidate(

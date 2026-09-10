@@ -25,7 +25,7 @@ export function Hero() {
     if (location.trim()) params.set("ubicacion", location.trim())
 
     const searchString = params.toString()
-    router.push(`/trabajos${searchString ? `?${searchString}` : ""}`)
+    router.push(`/jobs${searchString ? `?${searchString}` : ""}`)
   }
 
   return (
@@ -129,7 +129,7 @@ export function Hero() {
           {/* Quick links to professional and company registration */}
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm">
             <Link
-              href="/salarios"
+              href="/salaries"
               className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-secondary font-medium transition-colors"
             >
               <HugeiconsIcon icon={SparklesIcon} size={15} className="text-secondary" />
@@ -137,7 +137,7 @@ export function Hero() {
             </Link>
             <span className="text-border hidden sm:inline">·</span>
             <Link
-              href="/empresas"
+              href="/companies"
               className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-accent font-medium transition-colors"
             >
               <HugeiconsIcon icon={Building06Icon} size={15} className="text-accent" />

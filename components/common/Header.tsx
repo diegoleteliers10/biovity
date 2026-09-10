@@ -12,10 +12,10 @@ import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 
 const menuItems = [
-  { name: "Trabajos", href: "/trabajos" },
-  { name: "Empresas", href: "/empresas" },
-  { name: "Nosotros", href: "/nosotros" },
-  { name: "Aprende", href: "/aprende" },
+  { name: "Trabajos", href: "/jobs" },
+  { name: "Empresas", href: "/companies" },
+  { name: "Nosotros", href: "/about" },
+  { name: "Aprende", href: "/learn" },
   { name: "Blog", href: "/blog" },
 ]
 

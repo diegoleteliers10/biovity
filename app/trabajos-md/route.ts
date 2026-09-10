@@ -114,7 +114,7 @@ empleo biotecnología Chile, trabajo bioquímica, ofertas empleo química, traba
 
 ## Contacto
 
-- Sitio web: https://biovity.cl/trabajos
+- Sitio web: https://biovity.cl/jobs
 - Región: Chile
 - Sector: Empleo científico`
 

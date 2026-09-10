@@ -576,7 +576,7 @@ export function OrganizationProfileContent() {
               <>
                 <Button
                   variant="secondary"
-                  onClick={() => router.push("/dashboard/ofertas")}
+                  onClick={() => router.push("/dashboard/offers")}
                   className="flex-1 lg:flex-none"
                 >
                   <HugeiconsIcon icon={Add01Icon} size={16} strokeWidth={1.8} />

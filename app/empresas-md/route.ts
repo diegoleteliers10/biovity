@@ -102,7 +102,7 @@ El matching por IA nos ayuda a filtrar candidatos cualificados sin perder tiempo
 
 ## Contacto
 
-- Sitio web: https://biovity.cl/empresas
+- Sitio web: https://biovity.cl/companies
 - Región: Chile
 - Sector: Reclutamiento científico / Biotech
 

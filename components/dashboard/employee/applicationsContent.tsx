@@ -359,21 +359,23 @@ export function ApplicationsContent() {
           ))}
         </div>
       ) : applications.length === 0 ? (
-        <div className="bg-surface-container-low border border-border/40 rounded-xl p-6 text-center max-w-md mx-auto my-6 shadow-none">
-          <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto mb-3 text-muted-foreground">
-            <HugeiconsIcon icon={File02Icon} size={20} />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex w-full max-w-md flex-col items-center bg-transparent p-6 text-center shadow-none">
+            <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center mb-3 text-muted-foreground">
+              <HugeiconsIcon icon={File02Icon} size={20} />
+            </div>
+            <p className="text-sm font-medium text-foreground mb-1">Aún no tienes postulaciones</p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Busca empleos científicos y postula para ver el seguimiento aquí.
+            </p>
+            <Button
+              size="sm"
+              onClick={() => router.push("/dashboard/jobs")}
+              className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-xs font-medium transition-colors shadow-none"
+            >
+              Buscar empleos
+            </Button>
           </div>
-          <p className="text-sm font-medium text-foreground mb-1">Aún no tienes postulaciones</p>
-          <p className="text-xs text-muted-foreground mb-4">
-            Busca empleos científicos y postula para ver el seguimiento aquí.
-          </p>
-          <Button
-            size="sm"
-            onClick={() => router.push("/dashboard/jobs")}
-            className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-xs font-medium transition-colors shadow-none"
-          >
-            Buscar empleos
-          </Button>
         </div>
       ) : (
         <div className="space-y-4">

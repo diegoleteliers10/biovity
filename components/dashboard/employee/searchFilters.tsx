@@ -102,13 +102,13 @@ export function SearchFilters({
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
                 aria-label="Buscar por palabra clave"
-                className="pl-8"
+                className="h-9 bg-surface-container-low border-border/40 pl-10 pr-4 text-sm rounded-lg w-full"
               />
               <HugeiconsIcon
                 icon={Search01Icon}
-                size={16}
+                size={18}
                 strokeWidth={1.5}
-                className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
                 aria-hidden
               />
             </div>
@@ -119,26 +119,22 @@ export function SearchFilters({
               value={location}
               onChange={(e) => onLocationChange(e.target.value)}
               aria-label="Filtrar por ubicación"
+              className="h-9 bg-surface-container-low border-border/40 px-4 text-sm rounded-lg w-full"
             />
           </div>
-          <div className="flex items-stretch gap-2">
-            <Button onClick={handleSearch} aria-label="Buscar" className="px-5">
-              <HugeiconsIcon icon={Search01Icon} size={24} strokeWidth={1.5} className="size-4" />
+          <div className="flex items-center gap-2">
+            <Button onClick={handleSearch} aria-label="Buscar" className="h-9 px-5">
+              <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.5} />
               Buscar
             </Button>
             <Button
               variant="outline"
-              className="px-4"
+              className="h-9 px-4"
               aria-label="Mostrar filtros avanzados"
               aria-expanded={showAdvanced}
               onClick={() => onShowAdvancedChange(!showAdvanced)}
             >
-              <HugeiconsIcon
-                icon={FilterHorizontalIcon}
-                size={24}
-                strokeWidth={1.5}
-                className="size-4"
-              />
+              <HugeiconsIcon icon={FilterHorizontalIcon} size={16} strokeWidth={1.5} />
             </Button>
           </div>
         </div>
@@ -164,6 +160,7 @@ export function SearchFilters({
                   placeholder="Tipo de empleo"
                   aria-label="Tipo de empleo"
                   size="md"
+                  className="[&_button]:h-9"
                 >
                   {(item) => (
                     <Select.Item id={item.id} textValue={item.label}>
@@ -179,6 +176,7 @@ export function SearchFilters({
                   placeholder="Experiencia"
                   aria-label="Experiencia"
                   size="md"
+                  className="[&_button]:h-9"
                 >
                   {(item) => (
                     <Select.Item id={item.id} textValue={item.label}>
@@ -187,7 +185,7 @@ export function SearchFilters({
                   )}
                 </Select>
 
-                <label className="flex h-7 cursor-pointer select-none items-center justify-between gap-3 rounded-md border border-border/40 bg-surface-container-lowest px-2.5 transition-colors duration-150 hover:bg-surface-container-highest/40 has-[:checked]:border-primary/30">
+                <label className="flex h-9 cursor-pointer select-none items-center justify-between gap-3 rounded-md border border-border/40 bg-surface-container-lowest px-2.5 transition-colors duration-150 hover:bg-surface-container-highest/40 has-[:checked]:border-primary/30">
                   <span className="truncate text-xs leading-4 font-medium text-foreground">
                     Solo remoto
                   </span>

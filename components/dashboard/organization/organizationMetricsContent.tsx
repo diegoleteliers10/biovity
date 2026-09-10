@@ -75,14 +75,14 @@ type KpiCardProps = {
 
 function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: KpiCardProps) {
   return (
-    <Card className={`${dashboardRaisedCardClass} border-border`}>
+    <Card className={`${dashboardRaisedCardClass} gap-0`}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle>{title}</CardTitle>
         <HugeiconsIcon
           icon={Icon}
-          size={24}
+          size={16}
           strokeWidth={1.5}
-          className="size-4 text-muted-foreground"
+          className="text-muted-foreground"
         />
       </CardHeader>
       <CardContent>
@@ -165,7 +165,7 @@ export function OrganizationMetricsContent() {
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="flex items-center justify-between rounded-lg border border-destructive/50 bg-destructive/5 p-4">
           <p className="text-destructive text-sm">Error al cargar metricas. Intenta nuevamente.</p>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <Button variant="outline" size="sm" onClick={() => refetch()} className="h-9 px-4">
             Reintentar
           </Button>
         </div>
@@ -180,7 +180,13 @@ export function OrganizationMetricsContent() {
         <MobileMenuButton />
         <div className="flex items-center gap-2">
           {metrics && (
-            <Button variant="outline" size="sm" onClick={() => exportMetricsCsv(metrics, period)}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 w-9"
+              onClick={() => exportMetricsCsv(metrics, period)}
+              aria-label="Exportar métricas"
+            >
               <HugeiconsIcon icon={Download01Icon} size={16} />
             </Button>
           )}
@@ -203,7 +209,7 @@ export function OrganizationMetricsContent() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Select value={period} onValueChange={(v) => setPeriod(v as MetricsPeriod)}>
-              <SelectTrigger className="h-9 w-[140px]">
+              <SelectTrigger className="h-9 w-[140px] bg-surface-container-low border-border/40 text-sm rounded-lg">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -220,14 +226,14 @@ export function OrganizationMetricsContent() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-[130px] h-9"
+                  className="w-[130px] h-9 bg-surface-container-low border-border/40 text-sm rounded-lg"
                 />
                 <span className="text-muted-foreground text-xs">a</span>
                 <Input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-[130px] h-9"
+                  className="w-[130px] h-9 bg-surface-container-low border-border/40 text-sm rounded-lg"
                 />
               </div>
             )}
@@ -237,9 +243,9 @@ export function OrganizationMetricsContent() {
                 variant="outline"
                 size="sm"
                 onClick={() => exportMetricsCsv(metrics, period)}
-                className="h-9 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
+                className="h-9 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground gap-2"
               >
-                <HugeiconsIcon icon={Download01Icon} size={16} className="mr-1.5" />
+                <HugeiconsIcon icon={Download01Icon} size={16} />
                 Exportar
               </Button>
             )}
@@ -370,7 +376,7 @@ export function OrganizationMetricsContent() {
                   <div className="flex-1">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-semibold">Hasta Entrevista</span>
-                      <span className="text-base font-bold text-primary">
+                      <span className="text-base font-bold text-foreground">
                         {metrics?.pipeline.avgTimeInStages?.entrevista ?? 0} días
                       </span>
                     </div>
@@ -387,7 +393,7 @@ export function OrganizationMetricsContent() {
                   <div className="flex-1">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-semibold">Hasta Oferta</span>
-                      <span className="text-base font-bold text-primary">
+                      <span className="text-base font-bold text-foreground">
                         {metrics?.pipeline.avgTimeInStages?.oferta ?? 0} días
                       </span>
                     </div>
@@ -404,7 +410,7 @@ export function OrganizationMetricsContent() {
                   <div className="flex-1">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-semibold">Hasta Contratación</span>
-                      <span className="text-base font-bold text-secondary">
+                      <span className="text-base font-bold text-foreground">
                         {metrics?.pipeline.avgTimeInStages?.contratado ?? 0} días
                       </span>
                     </div>
@@ -470,14 +476,14 @@ export function OrganizationMetricsContent() {
                   <Line
                     type="monotone"
                     dataKey="aplicaciones"
-                    stroke="#6366f1"
+                    stroke="var(--accent)"
                     strokeWidth={2}
                     dot={{ r: 4 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="entrevistas"
-                    stroke="#10b981"
+                    stroke="var(--secondary)"
                     strokeWidth={2}
                     dot={{ r: 4 }}
                   />
@@ -512,7 +518,7 @@ export function OrganizationMetricsContent() {
                 {metrics.topJobs.map((job) => (
                   <div
                     key={job.jobId}
-                    className="flex items-center justify-between border-b pb-3 last:border-0"
+                    className="flex items-center justify-between border-b border-border/30 pb-3 last:border-0"
                   >
                     <div className="flex-1">
                       <p className="font-medium text-sm">{job.jobTitle}</p>
@@ -556,7 +562,7 @@ export function OrganizationMetricsContent() {
               {metrics.recruiterProductivity.map((rec) => (
                 <div
                   key={rec.userId}
-                  className="flex items-center gap-4 rounded-lg border border-border/60 p-4"
+                  className="flex items-center gap-4 rounded-lg border border-border/40 p-4"
                 >
                   <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <HugeiconsIcon icon={UserIcon} size={20} />
@@ -626,10 +632,10 @@ export function OrganizationMetricsContent() {
                   <XAxis dataKey="bucket" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
                   <Tooltip
-                    cursor={{ fill: "rgba(16, 185, 129, 0.08)" }}
+                    cursor={{ fill: "rgba(0, 107, 94, 0.08)" }}
                     formatter={(value: number) => [value.toLocaleString("es-CL"), "Postulaciones"]}
                   />
-                  <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" fill="var(--secondary)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
               <p className="text-xs text-muted-foreground">

@@ -162,7 +162,7 @@ export function Equipo() {
 
             <div className="pt-4 border-t border-border">
               <Link
-                href="/empresas#contacto"
+                href="/companies#contacto"
                 className="inline-flex items-center gap-2 text-xs font-medium text-secondary hover:text-secondary/80 transition-colors"
               >
                 <span>¿Representas una institución o empresa bio? Conversemos</span>

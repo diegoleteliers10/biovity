@@ -10,6 +10,42 @@ const API_PROXY_TARGET = (
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  async redirects() {
+    return [
+      // ES → EN route renames (301 to preserve SEO and shared links)
+      { source: "/empresas/precios", destination: "/plans", permanent: true },
+      { source: "/empresas/:path*", destination: "/companies/:path*", permanent: true },
+      { source: "/trabajos/:path*", destination: "/jobs/:path*", permanent: true },
+      { source: "/salarios/:path*", destination: "/salaries/:path*", permanent: true },
+      { source: "/nosotros/:path*", destination: "/about/:path*", permanent: true },
+      { source: "/aprende/:path*", destination: "/learn/:path*", permanent: true },
+      { source: "/certificados/:path*", destination: "/certificates/:path*", permanent: true },
+      { source: "/consejos-carrera", destination: "/career-tips", permanent: true },
+      {
+        source: "/compartir-salario",
+        destination: "/share-salary",
+        permanent: true,
+      },
+      { source: "/reclutamiento", destination: "/recruiting", permanent: true },
+      { source: "/planes", destination: "/plans", permanent: true },
+      { source: "/privacidad", destination: "/privacy", permanent: true },
+      { source: "/terminos", destination: "/terms", permanent: true },
+      { source: "/marca", destination: "/brand", permanent: true },
+      { source: "/lista-espera", destination: "/waitlist", permanent: true },
+      {
+        source: "/dashboard/ofertas/:path*",
+        destination: "/dashboard/offers/:path*",
+        permanent: true,
+      },
+      {
+        source: "/dashboard/my-applications",
+        destination: "/dashboard/applications",
+        permanent: true,
+      },
+      { source: "/og/empresas.png", destination: "/og/companies.png", permanent: true },
+      { source: "/og/nosotros.png", destination: "/og/about.png", permanent: true },
+    ]
+  },
   async rewrites() {
     return [
       {

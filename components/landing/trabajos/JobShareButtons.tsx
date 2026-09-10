@@ -43,7 +43,7 @@ export function JobShareButtons({
   const [copied, setCopied] = useState(false)
 
   const origin = typeof window !== "undefined" ? window.location.origin : "https://biovity.cl"
-  const jobUrl = `${origin}/trabajos/${jobId}`
+  const jobUrl = `${origin}/jobs/${jobId}`
 
   const whatsappMessage = `🔬 *Oferta de empleo en Biovity*
 📌 *${jobTitle}* ${organizationName ? `en ${organizationName}` : ""}

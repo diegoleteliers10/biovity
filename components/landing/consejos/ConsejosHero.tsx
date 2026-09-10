@@ -48,7 +48,7 @@ export function ConsejosHero() {
             industria.
           </m.p>
 
-          {/* Stats Grid - Exactly matching /nosotros styling, font, and font-size */}
+          {/* Stats Grid - Exactly matching /about styling, font, and font-size */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

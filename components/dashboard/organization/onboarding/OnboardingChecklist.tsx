@@ -35,14 +35,14 @@ const STEPS: {
     label: "Crear tu primera oferta",
     description: "Publica una vacante",
     icon: FileAddIcon,
-    href: "/dashboard/ofertas",
+    href: "/dashboard/offers",
   },
   {
     id: "publish_offer",
     label: "Publicar una oferta",
     description: "Activa una oferta para recibir postulaciones",
     icon: Globe02Icon,
-    href: "/dashboard/ofertas",
+    href: "/dashboard/offers",
   },
   {
     id: "view_talent",

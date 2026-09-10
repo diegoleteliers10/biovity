@@ -87,7 +87,7 @@ export function Categories() {
                 viewport={{ once: true, margin: viewportMargin }}
                 transition={ts(index * chainStagger)}
               >
-                <Link href={`/trabajos?categoria=${category.id}`} className="block group">
+                <Link href={`/jobs?categoria=${category.id}`} className="block group">
                   <div className="bg-surface-container-lowest rounded-xl p-6 flex items-center gap-4 transition-colors hover:bg-white/80">
                     <div
                       className={`shrink-0 size-11 rounded-lg flex items-center justify-center transition-colors ${
@@ -124,7 +124,7 @@ export function Categories() {
             size="lg"
             className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
           >
-            <Link href="/trabajos">
+            <Link href="/jobs">
               Ver todas las oportunidades
               <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
             </Link>

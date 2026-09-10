@@ -11,7 +11,7 @@ export function CreateOfferCard() {
   const { push } = useRouter()
 
   const handleCreateOffer = () => {
-    push("/dashboard/ofertas")
+    push("/dashboard/offers")
   }
 
   return (

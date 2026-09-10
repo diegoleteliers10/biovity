@@ -35,7 +35,7 @@ export function ApplyJobButton({ jobId, jobTitle, compact, className }: ApplyJob
 
   const handleApply = () => {
     if (!isLoggedIn) {
-      push(`/login/professional?redirect=/trabajos/${jobId}`)
+      push(`/login/professional?redirect=/jobs/${jobId}`)
       return
     }
     if (!isProfessional) return

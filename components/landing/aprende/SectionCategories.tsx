@@ -50,7 +50,7 @@ export function SectionCategories() {
               )}
             >
               <Link
-                href={`/aprende/${category.slug}`}
+                href={`/learn/${category.slug}`}
                 className="block group p-6 rounded-xl bg-surface-container-low border border-border/40 hover:border-secondary/40 transition-colors shadow-none"
               >
                 <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">

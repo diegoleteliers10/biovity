@@ -168,7 +168,7 @@ export function OrganizationApplicationsContent() {
   const handleViewDetail = useCallback(
     (applicationId: string) => {
       if (!selectedJobId) return
-      router.push(`/dashboard/ofertas/${selectedJobId}/postulaciones/${applicationId}`)
+      router.push(`/dashboard/offers/${selectedJobId}/applications/${applicationId}`)
     },
     [router, selectedJobId]
   )

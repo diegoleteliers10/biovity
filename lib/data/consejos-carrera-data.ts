@@ -246,7 +246,7 @@ export const CONSEJOS_FAQS: ConsejoFAQItem[] = [
   {
     question: "¿Cómo puedo preparar pretensiones de sueldo si no conozco el mercado privado?",
     answer:
-      "Puedes utilizar nuestro Estudio de Salarios en Biovity (/salarios), donde desglosamos las remuneraciones promedio en Chile segmentadas por carrera, años de experiencia, nivel de postgrado y ubicación geográfica.",
+      "Puedes utilizar nuestro Estudio de Salarios en Biovity (/salaries), donde desglosamos las remuneraciones promedio en Chile segmentadas por carrera, años de experiencia, nivel de postgrado y ubicación geográfica.",
   },
   {
     question: "¿Qué diferencia existe entre un CV académico y un CV enfocado a empresas?",

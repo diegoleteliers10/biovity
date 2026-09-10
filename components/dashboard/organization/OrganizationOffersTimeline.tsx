@@ -80,7 +80,7 @@ export function OrganizationOffersTimeline({ organizationId }: { organizationId:
           )}
           <button
             type="button"
-            onClick={() => router.push(`/dashboard/ofertas/${job.id}`)}
+            onClick={() => router.push(`/dashboard/offers/${job.id}`)}
             className="mt-2.5 inline-flex cursor-pointer items-center gap-1.5 text-[13px] leading-4 font-medium text-primary hover:underline"
           >
             Ver postulaciones

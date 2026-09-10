@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  AlarmClockIcon,
-  Calendar03Icon,
-  File02Icon,
-  Pulse01Icon,
-  SparklesIcon,
-} from "@hugeicons/core-free-icons"
+import { Calendar03Icon, File02Icon, Pulse01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQueries } from "@tanstack/react-query"
 import { Result } from "better-result"
@@ -19,6 +13,7 @@ import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import { getUser } from "@/lib/api/users"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { HomeHeader } from "./home/homeHeader"
+import { JobAlertsCard } from "./home/jobAlertsCard"
 import { MetricCard } from "./home/metricCard"
 import { RecentApplicationsCard } from "./home/recentApplicationsCard"
 import { RecentMessagesCard } from "./home/recentMessagesCard"
@@ -195,15 +190,7 @@ export const HomeContent = () => {
       {/* Job Alerts Section */}
       <section className="space-y-4">
         <h2 className="text-base font-semibold text-foreground">Alertas de Empleo</h2>
-        <div className="rounded-xl border border-border/40 bg-surface-container-low p-6 text-center shadow-none">
-          <div className="size-10 rounded-full bg-surface-container-highest flex items-center justify-center mx-auto mb-3 text-muted-foreground">
-            <HugeiconsIcon icon={AlarmClockIcon} size={20} />
-          </div>
-          <p className="text-sm font-medium text-foreground mb-1">Alertas en camino</p>
-          <p className="text-xs text-muted-foreground">
-            Próximamente podrás configurar alertas para recibir notificaciones de nuevos empleos.
-          </p>
-        </div>
+        <JobAlertsCard userId={professionalId} />
       </section>
     </div>
   )
