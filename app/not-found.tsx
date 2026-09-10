@@ -406,7 +406,7 @@ export default function NotFound() {
                   variant="ghost"
                   className="h-12 rounded-full px-8 text-base font-medium text-[#00374A] transition-all duration-300 hover:bg-[#006b5e]/8 hover:text-[#006b5e]"
                 >
-                  <Link href="/trabajos" aria-label="Explorar trabajos">
+                  <Link href="/jobs" aria-label="Explorar trabajos">
                     <Search size={18} aria-hidden />
                     Explorar trabajos
                   </Link>

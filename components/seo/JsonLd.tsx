@@ -371,7 +371,7 @@ export function WebSiteJsonLd() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://biovity.cl/trabajos?q={search_term_string}",
+        urlTemplate: "https://biovity.cl/jobs?q={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
@@ -426,7 +426,7 @@ export function SoftwareApplicationJsonLd() {
     name: "Biovity ATS",
     description:
       "Sistema de seguimiento de candidatos (ATS) especializado para empresas en biotecnología, bioquímica y química.",
-    url: "https://biovity.cl/empresas",
+    url: "https://biovity.cl/companies",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web Browser",
     offers: {
@@ -573,7 +573,7 @@ export function AboutPageJsonLd() {
     name: "Nosotros | Biovity",
     description:
       "Conoce a Biovity y su misión de conectar talento científico con oportunidades significativas en el sector de biociencias en Chile.",
-    url: "https://biovity.cl/nosotros",
+    url: "https://biovity.cl/about",
     mainEntity: {
       "@type": "Organization",
       name: "Biovity",

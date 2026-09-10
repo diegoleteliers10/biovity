@@ -66,7 +66,7 @@ export function ReclutamientoCTA() {
             className="w-full sm:w-auto h-11 px-6 bg-surface-container-lowest border-border/40 hover:bg-surface-container-low rounded-lg text-sm font-medium"
             asChild
           >
-            <Link href="/planes">Ver planes y precios</Link>
+            <Link href="/plans">Ver planes y precios</Link>
           </Button>
         </m.div>
 

@@ -85,6 +85,6 @@ export const APRENDE_CTA = {
     "Empieza con nuestra primera cápsula y obtén tu primer certificado en bioinformática.",
   button: {
     text: "Ver cápsulas",
-    href: "/aprende/bioinformatica",
+    href: "/learn/bioinformatica",
   },
 }

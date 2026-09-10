@@ -105,7 +105,7 @@ export function TalentTable({
       <div className="rounded-lg border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="hover:bg-transparent">
               {/* F8.8 — Select all */}
               <TableHead className="w-10">
                 <Checkbox

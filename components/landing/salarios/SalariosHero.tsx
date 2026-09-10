@@ -63,7 +63,7 @@ export function SalariosHero() {
             <span>Datos analizados y normalizados en CLP</span>
           </m.div>
 
-          {/* Stats Grid - Matching /nosotros styling, font size, and text-center structure */}
+          {/* Stats Grid - Matching /about styling, font size, and text-center structure */}
           <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

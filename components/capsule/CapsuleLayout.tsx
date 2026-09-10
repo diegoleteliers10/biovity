@@ -26,11 +26,11 @@ export function CapsuleLayout({ category, categoryLabel, capsuleTitle, children 
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/aprende">Aprende</BreadcrumbLink>
+              <BreadcrumbLink href="/learn">Aprende</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/aprende/${category}`}>{categoryLabel}</BreadcrumbLink>
+              <BreadcrumbLink href={`/learn/${category}`}>{categoryLabel}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

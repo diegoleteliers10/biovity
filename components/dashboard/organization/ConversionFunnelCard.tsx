@@ -78,10 +78,9 @@ export function ConversionFunnelCard({
       count: reachedPendiente,
       rateOfTotal: ratePendiente,
       icon: UserMultiple02Icon,
-      colorClass: "text-slate-700 dark:text-slate-300",
-      barBgClass: "bg-slate-500/80 dark:bg-slate-400/80",
-      badgeClass:
-        "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+      colorClass: "text-muted-foreground",
+      barBgClass: "bg-surface-container-highest",
+      badgeClass: "bg-surface-container-highest text-muted-foreground border-border/40",
       subtext: "Base inicial de postulaciones",
     },
     {
@@ -103,9 +102,9 @@ export function ConversionFunnelCard({
       count: reachedOferta,
       rateOfTotal: rateOferta,
       icon: Mail01Icon,
-      colorClass: "text-amber-600 dark:text-amber-400",
-      barBgClass: "bg-amber-500",
-      badgeClass: "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400",
+      colorClass: "text-foreground",
+      barBgClass: "bg-accent",
+      badgeClass: "bg-accent/15 text-foreground border-accent/25",
       subtext: "Recibieron propuesta formal",
     },
     {
@@ -115,9 +114,9 @@ export function ConversionFunnelCard({
       count: reachedContratado,
       rateOfTotal: rateContratado,
       icon: CheckmarkCircle02Icon,
-      colorClass: "text-emerald-600 dark:text-emerald-400",
-      barBgClass: "bg-emerald-500",
-      badgeClass: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400",
+      colorClass: "text-secondary",
+      barBgClass: "bg-secondary",
+      badgeClass: "bg-secondary/10 text-secondary border-secondary/20",
       subtext: "Contratación finalizada",
     },
   ]
@@ -180,7 +179,7 @@ export function ConversionFunnelCard({
                 return (
                   <div key={stage.id} className="space-y-2">
                     {/* Stage Card */}
-                    <div className="group relative rounded-xl border border-border/60 bg-card/60 p-3 hover:border-border hover:bg-muted/20 transition-colors">
+                    <div className="rounded-xl border border-border/40 bg-surface-container-low p-3">
                       <div className="flex items-center justify-between gap-2 mb-2">
                         {/* Stage Info */}
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -251,7 +250,7 @@ export function ConversionFunnelCard({
                             <span className="opacity-75">(-{transition.dropCount})</span>
                           </div>
                         ) : (
-                          <div className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-medium">
+                          <div className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-secondary/10 text-secondary border border-secondary/20 font-medium">
                             <span>100% avance</span>
                           </div>
                         )}
@@ -272,7 +271,7 @@ export function ConversionFunnelCard({
                 <span className="text-[10px] text-muted-foreground block">
                   Tasa de Contratación
                 </span>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                <span className="text-xs font-bold text-secondary tabular-nums">
                   {rateContratado}% ({reachedContratado})
                 </span>
               </div>

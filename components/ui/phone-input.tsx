@@ -57,6 +57,7 @@ type CountrySelectProps = {
   value: RPNInput.Country
   options: CountryEntry[]
   onChange: (country: RPNInput.Country) => void
+  className?: string
 }
 
 const CountrySelect = ({
@@ -64,6 +65,7 @@ const CountrySelect = ({
   value: selectedCountry,
   options: countryList,
   onChange,
+  className,
 }: CountrySelectProps) => {
   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
   const [searchValue, setSearchValue] = React.useState("")
@@ -82,7 +84,10 @@ const CountrySelect = ({
         <Button
           type="button"
           variant="outline"
-          className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
+          className={cn(
+            "flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10",
+            className
+          )}
           disabled={disabled}
         >
           <FlagComponent country={selectedCountry} countryName={selectedCountry} />

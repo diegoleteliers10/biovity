@@ -12,7 +12,7 @@ function getClientIdentifier(request: NextRequest): string {
 /**
  * POST /api/contact
  *
- * Persists "Contacta con ventas" submissions from the /empresas landing page
+ * Persists "Contacta con ventas" submissions from the /companies landing page
  * (components/landing/empresas/CTAContacto.tsx) into the contact_messages table.
  *
  * - Rate limited per IP (5 req/min via @/lib/rate-limit)

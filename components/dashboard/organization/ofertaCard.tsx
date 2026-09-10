@@ -75,7 +75,7 @@ export function OfertaCard({ job, onEdit, onDelete, onDuplicate }: OfertaCardPro
         onClick={() => {
           startTransition(() => {
             addTransitionType("nav-forward")
-            push(`/dashboard/ofertas/${job.id}`)
+            push(`/dashboard/offers/${job.id}`)
           })
         }}
         className="absolute inset-0 z-[1] block rounded-xl transition-all duration-200 hover:bg-secondary/5"

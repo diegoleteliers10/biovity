@@ -188,7 +188,7 @@ export function JobAlertsCard({ userId }: JobAlertsCardProps) {
           </Button>
         </div>
 
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <span className="block text-xs leading-4 font-medium text-foreground">Mis alertas</span>
 
           {alertsQuery.isPending ? (
@@ -213,7 +213,7 @@ export function JobAlertsCard({ userId }: JobAlertsCardProps) {
               </Button>
             </div>
           ) : alerts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg bg-surface-container-low p-4 text-center">
+            <div className="flex flex-1 flex-col items-center justify-center bg-transparent p-4 text-center">
               <div className="mb-2 flex size-9 items-center justify-center rounded-full bg-surface-container-highest text-muted-foreground">
                 <HugeiconsIcon icon={AlarmClockIcon} size={18} strokeWidth={1.5} />
               </div>

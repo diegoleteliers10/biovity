@@ -79,7 +79,7 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
         onClick={() => {
           startTransition(() => {
             addTransitionType("nav-forward")
-            push(`/dashboard/ofertas/${job.id}`)
+            push(`/dashboard/offers/${job.id}`)
           })
         }}
         className="absolute inset-0 z-[1] block rounded-xl transition-colors duration-150 hover:bg-surface-container-highest/40"

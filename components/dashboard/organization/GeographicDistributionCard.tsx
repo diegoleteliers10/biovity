@@ -142,7 +142,7 @@ export function GeographicDistributionCard({
         ) : (
           <>
             {/* Interactive Map */}
-            <div className="relative h-[230px] w-full overflow-hidden rounded-lg border border-border/60 bg-muted/20">
+            <div className="relative h-[230px] w-full overflow-hidden rounded-lg border border-border/40 bg-muted/20">
               <Map
                 center={[-70.9, -35.6]}
                 zoom={4.1}

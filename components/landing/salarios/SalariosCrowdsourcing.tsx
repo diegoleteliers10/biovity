@@ -203,7 +203,7 @@ export function SalariosCrowdsourcing() {
                   className="h-11 px-6 bg-surface-container-lowest border-border hover:bg-surface-container-high rounded-lg text-sm font-medium"
                   asChild
                 >
-                  <a href="/trabajos">Explorar ofertas de empleo</a>
+                  <a href="/jobs">Explorar ofertas de empleo</a>
                 </Button>
               </div>
             </Card>

@@ -150,7 +150,13 @@ export function ContactCard() {
                 value={formData.phone}
                 onChange={(value) => handleInputChange("phone", value)}
                 placeholder="+56 9 1234 5678"
-                className="h-9 rounded-lg border-border/40 bg-surface-container-lowest text-xs sm:text-sm"
+                className="w-full"
+                numberInputProps={{
+                  className: "h-9 border-border/40 bg-surface-container-lowest text-xs sm:text-sm",
+                }}
+                countrySelectProps={{
+                  className: "h-9 border-border/40 bg-surface-container-lowest",
+                }}
               />
             ) : (
               <span className="block truncate">{data.phone || EMPTY_PLACEHOLDER}</span>

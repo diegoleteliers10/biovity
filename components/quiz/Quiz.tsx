@@ -127,7 +127,7 @@ export function Quiz({
         </div>
         {result.quizPassed ? (
           <a
-            href={`/certificados/${slug}`}
+            href={`/certificates/${slug}`}
             className="inline-flex items-center h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium transition-colors"
           >
             Ver certificado

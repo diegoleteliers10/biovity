@@ -573,11 +573,11 @@ export default function OrganizationRegisterPage() {
                           />
                           <span className="text-xs text-muted-foreground leading-relaxed">
                             En nombre de la organización, acepto los{" "}
-                            <Link href="/terminos" target="_blank" className={authLinkClass}>
+                            <Link href="/terms" target="_blank" className={authLinkClass}>
                               términos y condiciones
                             </Link>{" "}
                             y la{" "}
-                            <Link href="/privacidad" target="_blank" className={authLinkClass}>
+                            <Link href="/privacy" target="_blank" className={authLinkClass}>
                               política de privacidad
                             </Link>
                           </span>

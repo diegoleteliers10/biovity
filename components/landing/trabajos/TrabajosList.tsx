@@ -69,7 +69,7 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
           {trabajos.map((trabajo) => (
             <Link
               key={trabajo.id}
-              href={`/trabajos/${trabajo.slug}`}
+              href={`/jobs/${trabajo.slug}`}
               className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-container-lowest hover:border-secondary/40 hover:bg-surface-container-low/40 transition-all p-5 sm:p-6 block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
               aria-label={`Ver detalles de ${trabajo.titulo}`}
             >

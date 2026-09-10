@@ -72,7 +72,7 @@ export const NAV_DATA_ORGANIZATION: NavData = {
   },
   navMain: [
     { title: "Dashboard", url: "/dashboard", icon: DashboardSquare02Icon },
-    { title: "Ofertas", url: "/dashboard/ofertas", icon: FileAddIcon },
+    { title: "Ofertas", url: "/dashboard/offers", icon: FileAddIcon },
     { title: "Aplicaciones", url: "/dashboard/applications", icon: File02Icon },
     { title: "Calendario", url: "/dashboard/calendar", icon: Calendar03Icon },
     { title: "Mensajes", url: "/dashboard/messages", icon: BubbleChatIcon },

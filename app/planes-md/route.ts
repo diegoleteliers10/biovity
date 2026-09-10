@@ -148,7 +148,7 @@ Empresas que usan Biovity reportan:
 
 ## Contacto
 
-- Sitio web: https://biovity.cl/planes
+- Sitio web: https://biovity.cl/plans
 - Región: Chile
 - Sector: Software de reclutamiento científico
 

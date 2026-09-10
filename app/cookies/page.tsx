@@ -155,7 +155,7 @@ export default function CookiesPage() {
                 </a>{" "}
                 o revisar nuestra{" "}
                 <Link
-                  href="/privacidad"
+                  href="/privacy"
                   className="text-secondary font-medium underline hover:text-secondary/80"
                 >
                   Política de Privacidad

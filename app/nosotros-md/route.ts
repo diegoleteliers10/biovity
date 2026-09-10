@@ -115,7 +115,7 @@ Convertirnos en el referente nacional para el empleo científico chileno, facili
 
 ## Contacto
 
-- Sitio web: https://biovity.cl/nosotros
+- Sitio web: https://biovity.cl/about
 - Email: contacto@biovity.cl
 - Región: Chile
 - Sector: Empleo científico / Biotech

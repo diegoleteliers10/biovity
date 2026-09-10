@@ -14,37 +14,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${siteUrl}/empresas`,
+      url: `${siteUrl}/companies`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/reclutamiento`,
+      url: `${siteUrl}/recruiting`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.85,
     },
     {
-      url: `${siteUrl}/trabajos`,
+      url: `${siteUrl}/jobs`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/salarios`,
+      url: `${siteUrl}/salaries`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${siteUrl}/nosotros`,
+      url: `${siteUrl}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: `${siteUrl}/planes`,
+      url: `${siteUrl}/plans`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
@@ -56,25 +56,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${siteUrl}/consejos-carrera`,
+      url: `${siteUrl}/career-tips`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
-      url: `${siteUrl}/lista-espera`,
+      url: `${siteUrl}/waitlist`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
-      url: `${siteUrl}/terminos`,
+      url: `${siteUrl}/terms`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.4,
     },
     {
-      url: `${siteUrl}/privacidad`,
+      url: `${siteUrl}/privacy`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.4,
@@ -111,7 +111,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const jobUrls: MetadataRoute.Sitemap = activeJobs
     .filter((job) => job.status === "active")
     .map((job) => ({
-      url: `${siteUrl}/trabajos/${job.id}`,
+      url: `${siteUrl}/jobs/${job.id}`,
       lastModified: new Date(job.updatedAt),
       changeFrequency: "daily" as const,
       priority: 0.8,

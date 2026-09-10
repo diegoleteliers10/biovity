@@ -93,7 +93,7 @@ export function SavedSearchDialog({
       {savedSearches.length > 0 && (
         <div className="flex items-center gap-1">
           <Select value={loadValue} onValueChange={handleLoad}>
-            <SelectTrigger className="h-7 w-40">
+            <SelectTrigger className="h-9 w-40">
               <SelectValue placeholder="Cargar búsqueda" />
             </SelectTrigger>
             <SelectContent>
@@ -126,8 +126,8 @@ export function SavedSearchDialog({
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            <HugeiconsIcon icon={BookmarkAdd01Icon} size={14} className="mr-1" />
+          <Button variant="outline" size="sm" className="h-9 gap-2">
+            <HugeiconsIcon icon={BookmarkAdd01Icon} size={14} strokeWidth={1.5} />
             Guardar búsqueda
           </Button>
         </DialogTrigger>
@@ -156,10 +156,20 @@ export function SavedSearchDialog({
               </Label>
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setOpen(false)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 px-4"
+                onClick={() => setOpen(false)}
+              >
                 Cancelar
               </Button>
-              <Button onClick={handleSave} disabled={!name.trim() || createMutation.isPending}>
+              <Button
+                size="sm"
+                className="h-9 px-4"
+                onClick={handleSave}
+                disabled={!name.trim() || createMutation.isPending}
+              >
                 {createMutation.isPending ? "Guardando..." : "Guardar"}
               </Button>
             </div>

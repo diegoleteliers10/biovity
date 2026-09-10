@@ -67,7 +67,7 @@ export function ConsejosCTA() {
             className="w-full sm:w-auto h-11 px-6 bg-surface-container-lowest border-border/30 hover:bg-surface-container-low rounded-lg text-sm font-medium"
             asChild
           >
-            <Link href="/trabajos">Buscar empleos en ciencias</Link>
+            <Link href="/jobs">Buscar empleos en ciencias</Link>
           </Button>
         </m.div>
 
