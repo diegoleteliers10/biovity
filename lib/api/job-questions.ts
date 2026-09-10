@@ -56,7 +56,7 @@ export async function getQuestionsByJob(
   jobId: string
 ): Promise<Result<JobQuestion[], ApiError | NetworkError>> {
   const result = await fetchJson<{ data?: JobQuestion[] } | JobQuestion[]>(
-    `${API_BASE}/api/v1/jobs/${jobId}/questions`
+    `${API_BASE}/api/v1/job-questions/job/${jobId}/published`
   )
   if (result.isErr()) return R.err(result.error)
   const parsed = result.value as Record<string, unknown>
@@ -74,7 +74,7 @@ export async function getOrgQuestionsByJob(
   jobId: string
 ): Promise<Result<JobQuestion[], ApiError | NetworkError>> {
   const result = await fetchJson<{ data?: JobQuestion[] } | JobQuestion[]>(
-    `${API_BASE}/api/v1/organizations/${orgId}/jobs/${jobId}/questions?status=all`
+    `${API_BASE}/api/v1/job-questions/job/${jobId}`
   )
   if (result.isErr()) return R.err(result.error)
   const parsed = result.value as Record<string, unknown>
@@ -93,11 +93,11 @@ export async function createQuestion(
   input: CreateQuestionInput
 ): Promise<Result<JobQuestion, ApiError | NetworkError>> {
   const result = await fetchJson<{ data?: JobQuestion } | JobQuestion>(
-    `${API_BASE}/api/v1/organizations/${orgId}/jobs/${jobId}/questions`,
+    `${API_BASE}/api/v1/job-questions/job/${jobId}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ ...input, organizationId: orgId }),
     }
   )
   if (result.isErr()) return R.err(result.error)
@@ -113,7 +113,7 @@ export async function updateQuestion(
   input: UpdateQuestionInput
 ): Promise<Result<JobQuestion, ApiError | NetworkError>> {
   const result = await fetchJson<{ data?: JobQuestion } | JobQuestion>(
-    `${API_BASE}/api/v1/jobs/questions/${questionId}`,
+    `${API_BASE}/api/v1/job-questions/${questionId}`,
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -133,7 +133,7 @@ export async function deleteQuestion(
   questionId: string
 ): Promise<Result<void, ApiError | NetworkError>> {
   const result = await fetchJson<{ success?: boolean }>(
-    `${API_BASE}/api/v1/jobs/questions/${questionId}`,
+    `${API_BASE}/api/v1/job-questions/${questionId}`,
     {
       method: "DELETE",
     }
@@ -146,7 +146,7 @@ export async function publishQuestion(
   questionId: string
 ): Promise<Result<{ id: string; status: string }, ApiError | NetworkError>> {
   return fetchJson<{ data?: { id: string; status: string } } | { id: string; status: string }>(
-    `${API_BASE}/api/v1/jobs/questions/${questionId}/publish`,
+    `${API_BASE}/api/v1/job-questions/${questionId}/publish`,
     {
       method: "PATCH",
     }
@@ -166,7 +166,7 @@ export async function unpublishQuestion(
   questionId: string
 ): Promise<Result<{ id: string; status: string }, ApiError | NetworkError>> {
   return fetchJson<{ data?: { id: string; status: string } } | { id: string; status: string }>(
-    `${API_BASE}/api/v1/jobs/questions/${questionId}/unpublish`,
+    `${API_BASE}/api/v1/job-questions/${questionId}/unpublish`,
     {
       method: "PATCH",
     }
@@ -188,7 +188,7 @@ export async function reorderQuestions(
   items: ReorderQuestionItem[]
 ): Promise<Result<void, ApiError | NetworkError>> {
   const result = await fetchJson<{ success?: boolean }>(
-    `${API_BASE}/api/v1/organizations/${orgId}/jobs/${jobId}/questions/reorder`,
+    `${API_BASE}/api/v1/job-questions/job/${jobId}/reorder`,
     {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

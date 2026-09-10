@@ -10,4 +10,7 @@ export const trabajosParsers = {
   moneda: parseAsStringLiteral(["CLP", "USD"] as const).withDefault("CLP"),
   experiencia: parseAsString.withDefault(""),
   categoria: parseAsString,
+  orden: parseAsStringLiteral(["recientes", "antiguos", "titulo-az", "titulo-za"] as const).withDefault(
+    "recientes"
+  ),
 }

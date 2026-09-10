@@ -14,6 +14,7 @@ import type {
 } from "@/lib/types/trabajos"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
+import { SortSelect, type OrdenTrabajos } from "./SortSelect"
 
 function urlStateToFiltros(state: {
   q: string
@@ -25,6 +26,7 @@ function urlStateToFiltros(state: {
   moneda: "CLP" | "USD"
   experiencia: string
   categoria: string | null
+  orden: OrdenTrabajos
 }): FiltrosTrabajos {
   const toModalidad = (v: string): FiltrosTrabajos["modalidad"] => {
     if (!v || v === "todas") return "Modalidad"
@@ -154,7 +156,11 @@ export function TrabajosPageContent() {
     isLoading,
     isError,
     error,
-  } = useJobsSearch({ search: urlState.q || undefined, category: filtros.categoria ?? undefined })
+  } = useJobsSearch({
+    search: urlState.q || undefined,
+    category: filtros.categoria ?? undefined,
+    sort: urlState.orden,
+  })
 
   const jobs = jobsResult?.data
 
@@ -164,7 +170,7 @@ export function TrabajosPageContent() {
   }, [jobs])
 
   const handleFiltrosChange = (newFiltros: FiltrosTrabajos) => {
-    setUrlState(filtrosToUrlState(newFiltros))
+    setUrlState({ ...filtrosToUrlState(newFiltros), orden: urlState.orden })
   }
 
   const trabajosFiltrados = useMemo(() => {
@@ -276,7 +282,17 @@ export function TrabajosPageContent() {
         </section>
       )}
       {!isLoading && !isError && apiTrabajos.length > 0 && (
-        <TrabajosList trabajos={trabajosFiltrados} />
+        <>
+          <section className="bg-white">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end pb-4">
+              <SortSelect
+                value={urlState.orden}
+                onChange={(orden) => setUrlState({ orden })}
+              />
+            </div>
+          </section>
+          <TrabajosList trabajos={trabajosFiltrados} />
+        </>
       )}
     </>
   )

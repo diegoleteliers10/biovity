@@ -85,6 +85,7 @@ export type GetJobsParams = {
   limit?: number
   search?: string
   category?: string
+  sort?: "recientes" | "antiguos" | "titulo-az" | "titulo-za"
 }
 
 export type JobsResponse = {
@@ -93,6 +94,17 @@ export type JobsResponse = {
   page: number
   limit: number
   totalPages: number
+}
+
+const JOB_SORT_TO_API: Record<NonNullable<GetJobsParams["sort"]>, string> = {
+  recientes: "createdAt:desc",
+  antiguos: "createdAt:asc",
+  "titulo-az": "title:asc",
+  "titulo-za": "title:desc",
+}
+
+export function toApiSortParam(sort: GetJobsParams["sort"]): string | undefined {
+  return sort ? JOB_SORT_TO_API[sort] : undefined
 }
 
 export type GetJobsByOrganizationParams = {
@@ -190,6 +202,8 @@ export async function getJobs(
   if (params?.limit != null) searchParams.set("limit", String(params.limit))
   if (params?.search?.trim()) searchParams.set("search", params.search.trim())
   if (params?.category) searchParams.set("category", params.category)
+  const apiSort = toApiSortParam(params?.sort)
+  if (apiSort) searchParams.set("sort", apiSort)
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/jobs${query ? `?${query}` : ""}`
 

@@ -158,6 +158,14 @@ export type GetUsersParams = {
   skills?: string
   minExperience?: number
   maxExperience?: number
+  sort?: "recientes" | "antiguos" | "nombre-az" | "nombre-za"
+}
+
+const USER_SORT_TO_API: Record<NonNullable<GetUsersParams["sort"]>, string> = {
+  recientes: "createdAt:desc",
+  antiguos: "createdAt:asc",
+  "nombre-az": "name:asc",
+  "nombre-za": "name:desc",
 }
 
 export type UsersPaginatedResponse = {
@@ -189,6 +197,7 @@ export async function getUsers(
     searchParams.set("minExperience", String(params.minExperience))
   if (params?.maxExperience != null && params.maxExperience > 0)
     searchParams.set("maxExperience", String(params.maxExperience))
+  if (params?.sort) searchParams.set("sort", USER_SORT_TO_API[params.sort])
 
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/users${query ? `?${query}` : ""}`

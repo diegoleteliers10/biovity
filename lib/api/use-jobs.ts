@@ -17,8 +17,8 @@ import {
 export const jobsKeys = {
   list: (organizationId?: string) => ["jobs", organizationId ?? ""] as const,
   byOrganization: (organizationId: string) => ["jobs", "organization", organizationId] as const,
-  search: (params?: { search?: string; page?: number; category?: string }) =>
-    ["jobs", "search", params?.search ?? "", params?.page ?? 1, params?.category ?? ""] as const,
+  search: (params?: { search?: string; page?: number; category?: string; sort?: string }) =>
+    ["jobs", "search", params?.search ?? "", params?.page ?? 1, params?.category ?? "", params?.sort ?? ""] as const,
   detail: (id: string) => ["jobs", "detail", id] as const,
 }
 
@@ -63,7 +63,12 @@ export function useJobsByOrganization(
   })
 }
 
-export function useJobsSearch(params?: { search?: string; category?: string; page?: number }) {
+export function useJobsSearch(params?: {
+  search?: string
+  category?: string
+  page?: number
+  sort?: "recientes" | "antiguos" | "titulo-az" | "titulo-za"
+}) {
   return useQuery({
     queryKey: jobsKeys.search(params),
     queryFn: async () => {
@@ -72,6 +77,7 @@ export function useJobsSearch(params?: { search?: string; category?: string; pag
         limit: 100,
         ...(params?.search?.trim() && { search: params.search.trim() }),
         ...(params?.category && { category: params.category }),
+        ...(params?.sort && { sort: params.sort }),
         page: params?.page,
       })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
