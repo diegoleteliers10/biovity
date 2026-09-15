@@ -49,12 +49,10 @@ export const auth = betterAuth({
   trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS
     ? process.env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((s) => s.trim())
     : [process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000", "https://biovity.cl"],
-  experimental: {
-    joins: true,
-  },
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
+      joins: true,
     },
     useSecureCookies: process.env.NODE_ENV === "production",
     ipAddress: {
