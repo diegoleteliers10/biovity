@@ -234,7 +234,7 @@ function OrganizationHomeView({ onCta }: { onCta: () => void }) {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 [&>div>div]:h-full md:[&>div>div]:col-span-1">
         <StopClick className="min-w-0">
           <OrganizationRecentApplicationsCard applications={DEMO_ORG_APPLICATIONS} />
         </StopClick>

@@ -2,8 +2,11 @@ import { Calendar03Icon, File02Icon, Pulse01Icon } from "@hugeicons/core-free-ic
 import type { Application, ApplicationStatus } from "@/lib/api/applications"
 import type { Chat } from "@/lib/api/chats"
 import type { Job } from "@/lib/api/jobs"
+import type { Message } from "@/lib/api/messages"
+import type { User } from "@/lib/api/users"
 import type { Metric } from "@/lib/types/dashboard"
 import type { JobAlert } from "@/lib/types/job-alert"
+import type { UserMetrics } from "@/lib/types/user-metrics"
 
 /**
  * Synthetic fixtures for the public user-dashboard demo on `/`.
@@ -15,8 +18,8 @@ const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000).toISOString
 const daysAgo = (d: number) => new Date(Date.now() - d * 86_400_000).toISOString()
 
 export const DEMO_USER = {
-  name: "Aline Larroucau",
-  firstName: "Aline",
+  name: "Javiera Paredes",
+  firstName: "Javiera",
   title: "Biotecnóloga",
 }
 
@@ -52,7 +55,7 @@ function application(
     id,
     jobId,
     job: { id: jobId, title, organizationId: "demo-org" },
-    candidateId: "demo-aline",
+    candidateId: "demo-javiera",
     status,
     createdAt,
     updatedAt: createdAt,
@@ -83,20 +86,20 @@ export const DEMO_CHATS: DemoChat[] = [
   {
     id: "chat-1",
     recruiterId: "rec-1",
-    professionalId: "demo-aline",
+    professionalId: "demo-javiera",
     lastMessage: "¿Tienes disponibilidad el jueves a las 10:00?",
     unreadCountRecruiter: 0,
     unreadCountProfessional: 1,
     createdAt: daysAgo(3),
     updatedAt: hoursAgo(2),
     lastMessageFromRecruiter:
-      "Hola Aline, nos interesó tu perfil. ¿Tienes disponibilidad el jueves a las 10:00?",
+      "Hola Javiera, nos interesó tu perfil. ¿Tienes disponibilidad el jueves a las 10:00?",
     lastMessageFromRecruiterAt: hoursAgo(2),
   },
   {
     id: "chat-2",
     recruiterId: "rec-2",
-    professionalId: "demo-aline",
+    professionalId: "demo-javiera",
     lastMessage: "Te enviamos la oferta formal por correo.",
     unreadCountRecruiter: 0,
     unreadCountProfessional: 0,
@@ -109,7 +112,7 @@ export const DEMO_CHATS: DemoChat[] = [
   {
     id: "chat-3",
     recruiterId: "rec-3",
-    professionalId: "demo-aline",
+    professionalId: "demo-javiera",
     lastMessage: "Gracias por postular, revisaremos tu perfil esta semana.",
     unreadCountRecruiter: 0,
     unreadCountProfessional: 0,
@@ -213,7 +216,7 @@ export const DEMO_SAVED_JOB_IDS = ["job-1", "job-5"]
 export const DEMO_JOB_ALERTS: JobAlert[] = [
   {
     id: "alert-1",
-    userId: "demo-aline",
+    userId: "demo-javiera",
     keywords: "cultivo celular",
     location: "Santiago",
     category: "biotecnologia",
@@ -223,7 +226,7 @@ export const DEMO_JOB_ALERTS: JobAlert[] = [
   },
   {
     id: "alert-2",
-    userId: "demo-aline",
+    userId: "demo-javiera",
     keywords: null,
     location: "remoto",
     category: null,
@@ -238,4 +241,162 @@ export const DEMO_USER_NAV_BADGES: Record<string, number> = {
   "/dashboard/messages": 2,
   "/dashboard/applications": 12,
   "/dashboard/saved": 7,
+}
+
+/** User objects for the messages showcase (recruiter + Javiera herself). */
+function demoUser(
+  id: string,
+  name: string,
+  profession: string | null,
+  extra: Partial<User> = {}
+): User {
+  return {
+    id,
+    email: `${id}@demo.biovity.cl`,
+    name,
+    type: "professional",
+    isEmailVerified: true,
+    isActive: true,
+    organizationId: null,
+    avatar: null,
+    profession,
+    birthday: null,
+    phone: null,
+    location: null,
+    notificationPreferences: null,
+    createdAt: daysAgo(400),
+    updatedAt: daysAgo(5),
+    ...extra,
+  }
+}
+
+export const DEMO_PROFESSIONAL_USER = demoUser("demo-javiera", DEMO_USER.name, "Biotecnóloga")
+
+export const DEMO_RECRUITER_USER = demoUser("rec-1", "Camila Rojas", "Reclutadora I+D", {
+  type: "organization",
+  organizationId: "org-1",
+  organization: { id: "org-1", name: "Genomika Labs" },
+})
+
+/** Conversation for the messages showcase (senderId: rec-1 = recruiter side). */
+export const DEMO_CHAT_MESSAGES: Message[] = [
+  {
+    id: "msg-1",
+    chatId: "chat-1",
+    senderId: "rec-1",
+    content:
+      "Hola Javiera, vi tu perfil y nos pareció muy interesante tu experiencia en cultivo celular. ¿Tienes disponibilidad para conversar esta semana?",
+    type: "text",
+    contentType: null,
+    isRead: true,
+    createdAt: hoursAgo(26),
+  },
+  {
+    id: "msg-2",
+    chatId: "chat-1",
+    senderId: "demo-javiera",
+    content: "¡Hola Camila! Sí, con gusto. ¿Qué día y hora le acomoda al equipo?",
+    type: "text",
+    contentType: null,
+    isRead: true,
+    createdAt: hoursAgo(25),
+  },
+  {
+    id: "msg-3",
+    chatId: "chat-1",
+    senderId: "rec-1",
+    content:
+      "¿Te parece el jueves a las 10:00? Sería una entrevista de 45 minutos con la jefa de laboratorio.",
+    type: "text",
+    contentType: null,
+    isRead: true,
+    createdAt: hoursAgo(3),
+  },
+  {
+    id: "msg-4",
+    chatId: "chat-1",
+    senderId: "demo-javiera",
+    content: "Perfecto, jueves a las 10:00 me funciona. ¿Es presencial o por videollamada?",
+    type: "text",
+    contentType: null,
+    isRead: true,
+    createdAt: hoursAgo(2.5),
+  },
+  {
+    id: "msg-5",
+    chatId: "chat-1",
+    senderId: "rec-1",
+    content: "Por Google Meet, te dejo el link en el calendario. ¡Nos vemos el jueves!",
+    type: "text",
+    contentType: null,
+    isRead: false,
+    createdAt: hoursAgo(2),
+  },
+  {
+    id: "msg-6",
+    chatId: "chat-1",
+    senderId: "rec-1",
+    content: "",
+    type: "event",
+    contentType: {
+      eventId: "event-1",
+      title: "Entrevista técnica — Cultivo Celular",
+      description: "45 minutos con la jefa de laboratorio. Revisa el protocolo de la oferta antes.",
+      type: "interview",
+      startAt: "2026-09-24T10:00:00",
+      endAt: "2026-09-24T10:45:00",
+      meetingUrl: "https://meet.google.com/demo-biovity",
+      status: "confirmed",
+      participantStatus: "pending",
+      candidateName: DEMO_USER.name,
+    },
+    isRead: false,
+    createdAt: hoursAgo(1.5),
+  },
+]
+
+/** Full UserMetrics fixture for the metrics showcase (year view). */
+const MONTHS_2026 = Array.from(
+  { length: 12 },
+  (_, i) => `2026-${String(i + 1).padStart(2, "0")}-01`
+)
+const MONTHLY_APPLICATIONS = [0, 1, 0, 2, 3, 2, 4, 3, 6, 5, 7, 6]
+
+export const DEMO_USER_METRICS_DATA: UserMetrics = {
+  quickMetrics: {
+    totalApplications: 12,
+    activeApplications: 4,
+    responseRate: 67,
+  },
+  kpis: {
+    applicationsLast30Days: 6,
+    interviews: 3,
+    offers: 1,
+    avgResponseTimeDays: 2,
+    profileViews: 23,
+  },
+  applicationsTrend: MONTHS_2026.map((date, i) => ({
+    date,
+    applications: MONTHLY_APPLICATIONS[i],
+  })),
+  responseTimeDistribution: {
+    lessThan24h: 5,
+    oneToThreeDays: 4,
+    threeToSevenDays: 2,
+    moreThanSevenDays: 1,
+  },
+  statusBreakdown: {
+    pendiente: { count: 4, percentage: 33 },
+    entrevista: { count: 3, percentage: 25 },
+    oferta: { count: 1, percentage: 8 },
+    contratado: { count: 0, percentage: 0 },
+    rechazado: { count: 3, percentage: 25 },
+    desistido: { count: 1, percentage: 8 },
+  },
+  categoriesApplied: [
+    { category: "Biotecnología", count: 5, percentage: 42 },
+    { category: "Control de Calidad", count: 3, percentage: 25 },
+    { category: "Investigación", count: 2, percentage: 17 },
+    { category: "Bioinformática", count: 2, percentage: 17 },
+  ],
 }

@@ -76,7 +76,7 @@ function UserHomeView({ onCta }: { onCta: () => void }) {
       </div>
 
       {/* Recent Applications and Messages */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 [&>div>div]:h-full md:[&>div>div]:col-span-1">
         <StopClick className="min-w-0">
           <RecentApplicationsCard
             applications={DEMO_APPLICATIONS}

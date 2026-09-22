@@ -2,6 +2,8 @@ import { Calendar03Icon, File02Icon, FileAddIcon } from "@hugeicons/core-free-ic
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import type { Chat } from "@/lib/api/chats"
 import type { Job } from "@/lib/api/jobs"
+import type { User } from "@/lib/api/users"
+import type { GeographicDistributionEntry } from "@/lib/types/organization-metrics"
 import type {
   Applicant,
   ApplicationStage,
@@ -337,4 +339,83 @@ export const DEMO_ACCION_REQUERIDA = [
     count: 2,
     daysSince: 6,
   },
+]
+
+/** Hiring funnel numbers for the metrics showcase (mirrors ConversionFunnelCard props). */
+export const DEMO_FUNNEL = {
+  totalApps: 47,
+  reachedPendiente: 47,
+  reachedEntrevista: 12,
+  reachedOferta: 4,
+  reachedContratado: 2,
+  ratePendiente: 100,
+  rateEntrevista: 26,
+  rateOferta: 9,
+  rateContratado: 4,
+}
+
+/** Where candidates come from, for the geographic distribution map. */
+export const DEMO_GEO_DISTRIBUTION: GeographicDistributionEntry[] = [
+  { city: "Santiago, Chile", count: 24, percentage: 51 },
+  { city: "Valparaíso, Chile", count: 8, percentage: 17 },
+  { city: "Concepción, Chile", count: 6, percentage: 13 },
+  { city: "Antofagasta, Chile", count: 4, percentage: 9 },
+  { city: "La Serena, Chile", count: 3, percentage: 6 },
+  { city: "Temuco, Chile", count: 2, percentage: 4 },
+]
+
+/** Talent-pool rows for the "Explorar Talento" showcase. */
+function talentUser(
+  id: string,
+  name: string,
+  profession: string,
+  city: string,
+  skills: string[],
+  daysActive: number
+): User {
+  return {
+    id,
+    email: `${id}@demo.biovity.cl`,
+    name,
+    type: "professional",
+    isEmailVerified: true,
+    isActive: true,
+    organizationId: null,
+    avatar: null,
+    profession,
+    birthday: null,
+    phone: null,
+    location: { city, country: "Chile" },
+    notificationPreferences: null,
+    createdAt: daysAgo(200),
+    updatedAt: daysAgo(daysActive),
+    skills,
+  }
+}
+
+export const DEMO_TALENT_USERS: User[] = [
+  talentUser("cand-1", "Matías Contreras", "Biotecnólogo I+D", "Santiago", [
+    "Cultivo celular",
+    "HPLC",
+    "GMP",
+  ], 1),
+  talentUser("cand-2", "Rocío Vera", "Bioinformática", "Santiago", [
+    "Python",
+    "NGS",
+    "R",
+  ], 2),
+  talentUser("cand-3", "Josefa Muñoz", "Analista QC Microbiología", "Valparaíso", [
+    "Microbiología",
+    "ISO 17025",
+    "QC",
+  ], 3),
+  talentUser("cand-6", "Antonia Riquelme", "Biotecnóloga", "Concepción", [
+    "qPCR",
+    "ELISA",
+    "Cultivo celular",
+  ], 5),
+  talentUser("cand-7", "Tomás Herrera", "Químico Analista", "Antofagasta", [
+    "Espectroscopía",
+    "GC-MS",
+  ], 8),
 ]
