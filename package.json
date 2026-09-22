@@ -12,7 +12,8 @@
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
     "check": "biome check --write .",
-    "clean": "rm -rf .next"
+    "clean": "rm -rf .next",
+    "postinstall": "mkdir -p public/maplibre && cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs public/maplibre/"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.110",
