@@ -4,6 +4,11 @@ import { CTAContacto } from "@/components/landing/empresas/CTAContacto"
 import { FAQ } from "@/components/landing/empresas/FAQ"
 import { FeaturesATS } from "@/components/landing/empresas/FeaturesATS"
 import { HeroEmpresas } from "@/components/landing/empresas/HeroEmpresas"
+import { LazyOrganizationDashboardPreview } from "@/components/landing/empresas/LazyOrgDemo"
+import {
+  LazyFunnelGeoShowcase,
+  LazyTalentShowcase,
+} from "@/components/landing/empresas/LazyShowcases"
 // import { LogosEmpresas } from "@/components/landing/empresas/LogosEmpresas"
 import { Pricing } from "@/components/landing/empresas/Pricing"
 import { PropuestaValor } from "@/components/landing/empresas/PropuestaValor"
@@ -80,10 +85,13 @@ export default function EmpresasPage() {
       />
       <main className="flex flex-col relative">
         <HeroEmpresas />
+        <LazyOrganizationDashboardPreview />
         {/* TODO: Descomentar cuando tengamos logos de empresas clientes */}
         {/* <LogosEmpresas /> */}
         <PropuestaValor />
         <ComoFuncionaEmpresas />
+        <LazyTalentShowcase />
+        <LazyFunnelGeoShowcase />
         <FeaturesATS />
         <Pricing />
         {/* TODO: Descomentar cuando tengamos testimonios reales */}

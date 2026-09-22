@@ -22,6 +22,14 @@ import { createPortal } from "react-dom"
 
 import { cn } from "@/lib/utils"
 
+// MapLibre resolves its Web Worker relative to the bundled chunk URL, which
+// 404s under Next/Turbopack (/_next/static/chunks/maplibre-gl-worker.mjs) and
+// hangs every source (vector tiles, inline GeoJSON) forever with no error.
+// Serve the worker from public/ (synced by the postinstall script) instead.
+if (typeof window !== "undefined" && !MapLibreGL.config.WORKER_URL) {
+  MapLibreGL.config.WORKER_URL = "/maplibre/maplibre-gl-worker.mjs"
+}
+
 const defaultStyles = {
   dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
   light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",

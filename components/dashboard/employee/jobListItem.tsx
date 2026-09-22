@@ -25,6 +25,8 @@ interface JobListItemProps {
   onSave: (jobId: string) => void
   saveMutation: ReturnType<typeof useSaveJobMutation>
   removeMutation: ReturnType<typeof useRemoveSavedJobMutation>
+  /** Overrides the default navigation when provided (used by the public demo). */
+  onOpen?: (jobId: string) => void
 }
 
 export function JobListItem({
@@ -34,8 +36,10 @@ export function JobListItem({
   onSave,
   saveMutation,
   removeMutation,
+  onOpen,
 }: JobListItemProps) {
   const { push } = useRouter()
+  const handleOpen = () => (onOpen ? onOpen(job.id) : push(`/dashboard/job/${job.id}`))
   const salaryStr = formatJobSalary(job.salary)
   const locationStr = formatJobLocation(job.location) || "Sin especificar"
   const postedStr = job.createdAt ? formatFechaRelativa(new Date(job.createdAt)) : "—"
@@ -43,14 +47,14 @@ export function JobListItem({
 
   return (
     <Card
-      onClick={() => push(`/dashboard/job/${job.id}`)}
+      onClick={handleOpen}
       className="group relative cursor-pointer gap-0 overflow-hidden rounded-xl border-border/50 bg-surface-container-lowest py-0 shadow-none transition-colors duration-150 hover:bg-surface-container-low focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       role="link"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault()
-          push(`/dashboard/job/${job.id}`)
+          handleOpen()
         }
       }}
       aria-label={`Ver detalles de ${job.title}`}

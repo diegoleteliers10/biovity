@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Map,
+  MapArc,
   MapControls,
   MapMarker,
   MarkerContent,
@@ -76,14 +77,34 @@ function resolveCoordinates(cityName: string): [number, number] {
   return [-70.6693, -33.4489]
 }
 
+const SANTIAGO_COORDS: [number, number] = [-70.6693, -33.4489]
+
+/** Hub-spoke arcs from every city to Santiago, for the tile-less showcase map. */
+function buildSpokes(items: { city: string; coordinates: [number, number] }[]) {
+  return items
+    .filter(
+      (item) =>
+        item.coordinates[0] !== SANTIAGO_COORDS[0] || item.coordinates[1] !== SANTIAGO_COORDS[1]
+    )
+    .map((item) => ({ id: item.city, from: item.coordinates, to: SANTIAGO_COORDS }))
+}
+
 type GeographicDistributionCardProps = {
   isPending: boolean
   geographicDistribution?: GeographicDistributionEntry[]
+  /**
+   * Basemap mode. `tiles` (default) loads the Carto street basemap over the
+   * network; `blank` renders a tile-less canvas with hub-spoke arcs instead,
+   * so the visualization is crisp even when tile servers are unreachable
+   * (landing showcase, offline, tile-blocking adblockers).
+   */
+  basemap?: "tiles" | "blank"
 }
 
 export function GeographicDistributionCard({
   isPending,
   geographicDistribution,
+  basemap = "tiles",
 }: GeographicDistributionCardProps) {
   const [selectedCity, setSelectedCity] = useState<string | null>(null)
 
@@ -106,7 +127,7 @@ export function GeographicDistributionCard({
         <CardHeader>
           <Skeleton className="h-4 w-44" />
         </CardHeader>
-        <CardContent className="space-y-4">
+      <CardContent className="flex min-h-0 flex-1 flex-col space-y-4">
           <Skeleton className="h-[220px] w-full rounded-lg" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-full" />
@@ -120,7 +141,7 @@ export function GeographicDistributionCard({
   const hasData = items.length > 0
 
   return (
-    <Card className={`${dashboardRaisedCardClass} overflow-hidden`}>
+    <Card className={`${dashboardRaisedCardClass} flex h-full flex-col overflow-hidden`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle>Distribución geográfica</CardTitle>
@@ -142,15 +163,39 @@ export function GeographicDistributionCard({
         ) : (
           <>
             {/* Interactive Map */}
-            <div className="relative h-[230px] w-full overflow-hidden rounded-lg border border-border/40 bg-muted/20">
+            <div
+              className="relative flex min-h-[230px] w-full flex-1 flex-col overflow-hidden rounded-lg border border-border/40 bg-muted/20"
+              {...(basemap === "blank"
+                ? {
+                    style: {
+                      backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)",
+                      backgroundSize: "16px 16px",
+                    },
+                  }
+                : {})}
+            >
               <Map
                 center={[-70.9, -35.6]}
                 zoom={4.1}
                 minZoom={3}
                 maxZoom={12}
-                className="h-full w-full"
+                className="w-full flex-1"
+                theme="light"
+                {...(basemap === "blank" ? { blank: true } : {})}
               >
                 <MapControls position="top-right" showCompass={false} />
+
+                {basemap === "blank" && (
+                  <MapArc
+                    data={buildSpokes(items)}
+                    curvature={0.25}
+                    paint={{
+                      "line-color": "#0f766e",
+                      "line-width": 1.5,
+                      "line-opacity": 0.45,
+                    }}
+                  />
+                )}
 
                 {items.map((item) => {
                   const [lng, lat] = item.coordinates
@@ -206,7 +251,7 @@ export function GeographicDistributionCard({
             </div>
 
             {/* List breakdown */}
-            <div className="space-y-2.5 max-h-[160px] overflow-y-auto pr-1">
+            <div className="space-y-2.5 pr-1">
               {items.map((geo) => (
                 <div
                   key={geo.city}
