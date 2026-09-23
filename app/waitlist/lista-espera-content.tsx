@@ -108,7 +108,7 @@ export function ListaEsperaContent() {
             className="mb-6 inline-flex items-center justify-center transition-opacity hover:opacity-80"
           >
             <Image
-              src="/logoIcon.png"
+              src="/logoIcon.webp"
               alt="Biovity"
               width={54}
               height={54}

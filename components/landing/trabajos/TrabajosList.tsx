@@ -18,6 +18,9 @@ import { formatFechaRelativa } from "@/lib/utils"
 
 type TrabajosListProps = {
   trabajos: Trabajo[]
+  totalCount?: number
+  onShowMore?: () => void
+  isUpdating?: boolean
 }
 
 const getBeneficioIcon = (tipo: TipoBeneficio) => {
@@ -35,7 +38,7 @@ const getBeneficioIcon = (tipo: TipoBeneficio) => {
   }
 }
 
-export function TrabajosList({ trabajos }: TrabajosListProps) {
+export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: TrabajosListProps) {
   if (trabajos.length === 0) {
     return (
       <section className="py-16 bg-surface-container-lowest">
@@ -54,14 +57,16 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
     )
   }
 
-  const count = trabajos.length
+  const count = totalCount ?? trabajos.length
+  const remaining = count - trabajos.length
 
   return (
     <section className="bg-surface-container-lowest pb-24 pt-4">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-4 px-1">
-          <p className="text-xs sm:text-sm font-mono text-muted-foreground">
+          <p className="text-xs sm:text-sm font-mono text-muted-foreground" aria-live="polite">
             {count === 1 ? "1 oferta disponible" : `${count} ofertas disponibles`}
+            {isUpdating ? " · actualizando…" : ""}
           </p>
         </div>
 
@@ -169,6 +174,18 @@ export function TrabajosList({ trabajos }: TrabajosListProps) {
             </Link>
           ))}
         </div>
+
+        {onShowMore && remaining > 0 && (
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={onShowMore}
+              className="h-11 px-6 rounded-lg border border-border bg-surface-container-low text-sm font-medium text-foreground hover:border-secondary/50 hover:text-secondary transition-colors cursor-pointer"
+            >
+              Mostrar más ({remaining} restantes)
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

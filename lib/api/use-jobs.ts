@@ -1,6 +1,5 @@
 "use client"
-
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getResultErrorMessage } from "@/lib/result"
 import {
@@ -83,6 +82,9 @@ export function useJobsSearch(params?: {
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
+    // Evita el flash del spinner entre cambios de filtro: mantiene la lista
+    // anterior visible mientras llega la nueva (menos CLS en desktop).
+    placeholderData: keepPreviousData,
     refetchOnMount: "always",
   })
 }

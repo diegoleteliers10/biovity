@@ -8,6 +8,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import type { ServerSession } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 
@@ -29,7 +30,11 @@ interface HeaderProps {
 export const Header = ({ session }: HeaderProps) => {
   const pathname = usePathname()
   const [menuState, setMenuState] = useState(false)
-  const isLoggedIn = Boolean(session?.user)
+  // Si el layout no pasa sesion (render estatico), se resuelve en el cliente
+  // sin frenar el TTFB de la pagina.
+  const { data: clientSession } = authClient.useSession()
+  const effectiveSession = session ?? clientSession
+  const isLoggedIn = Boolean(effectiveSession?.user)
 
   return (
     <header className="contents">
@@ -42,12 +47,11 @@ export const Header = ({ session }: HeaderProps) => {
             <div className="flex w-full justify-between lg:w-auto">
               <Link href="/" aria-label="home" className="flex items-center gap-2">
                 <Image
-                  src="/logoIcon.png"
+                  src="/logoIcon.webp"
                   alt="Biovity Logo"
                   width={40}
                   height={40}
                   className="w-full h-full object-contain"
-                  priority
                 />
               </Link>
 

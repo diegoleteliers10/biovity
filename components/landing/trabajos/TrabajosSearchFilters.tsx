@@ -8,7 +8,7 @@ import {
   Search01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useReducer, useState } from "react"
+import { useCallback, useEffect, useReducer, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -125,6 +125,12 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
 
   const initialActiveCount = countActiveFilters(filterState)
   const [isExpanded, setIsExpanded] = useState(initialActiveCount > 0)
+
+  // Sincroniza la categoria si cambia desde fuera (badges) sin borrar
+  // lo que el usuario escribe en el formulario.
+  useEffect(() => {
+    dispatch({ type: "SET_FIELD", field: "categoria", value: filtros.categoria || "" })
+  }, [filtros.categoria])
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({

@@ -15,11 +15,16 @@ export const TRABAJOS_CATEGORIAS = [
 ] as const
 
 export function TrabajosCategoryBadges() {
-  const [urlState, setUrlState] = useQueryStates(trabajosParsers)
+  const [urlState, setUrlState] = useQueryStates(trabajosParsers, {
+    history: "push",
+    shallow: true,
+    scroll: false,
+    throttleMs: 300,
+  })
 
   const handleSelectCategoria = (catId: string) => {
     const isSelected = urlState.categoria === catId
-    setUrlState({ categoria: isSelected ? null : catId })
+    setUrlState({ categoria: isSelected ? null : catId, pagina: 1 })
   }
 
   return (

@@ -8,7 +8,7 @@ import { CapsuleClient } from "@/components/capsule/CapsuleClient"
 import { CapsuleLayout } from "@/components/capsule/CapsuleLayout"
 import { createCapsuleComponents } from "@/components/capsule/mdx-components"
 import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
-import { auth } from "@/lib/auth"
+import { getServerSession } from "@/lib/auth"
 import { getAllModuleProgress } from "@/lib/db/capsules"
 import { getCapsuleBySlug, getCapsulesByCategory } from "@/lib/posts"
 import type { Module, ModuleProgress } from "@/lib/types/capsulas"
@@ -85,7 +85,7 @@ export default async function CapsulePage({ params }: Props) {
   const { modules, quiz } = capsule.frontmatter
   const categoryLabel = CATEGORY_LABELS[category] ?? category
 
-  const session = await auth.api.getSession({ headers: new Headers() })
+  const session = await getServerSession()
   let moduleProgress: ModuleProgress[] = []
 
   if (session) {
