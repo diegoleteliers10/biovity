@@ -15,7 +15,7 @@ export function LoginContent() {
       <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
           <Image
-            src="/Login.png"
+            src="/Login.webp"
             alt="Persona frente a una puerta abierta"
             fill
             className="object-cover object-center"
@@ -36,7 +36,7 @@ export function LoginContent() {
               className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
             >
               <Image
-                src="/logoIcon.png"
+                src="/logoIcon.webp"
                 alt="Biovity"
                 width={50}
                 height={50}

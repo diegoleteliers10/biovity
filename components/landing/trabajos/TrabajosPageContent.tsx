@@ -146,7 +146,11 @@ type TipoBeneficio = "salud" | "vacaciones" | "formacion" | "equipo" | "otro"
 export function TrabajosPageContent() {
   const [urlState, setUrlState] = useQueryStates(trabajosParsers, {
     history: "push",
-    shallow: false,
+    // shallow evita una navegacion servidor en cada cambio de filtro.
+    // throttleMs fusiona cambios rapidos (badges + sort) en una sola URL.
+    shallow: true,
+    scroll: false,
+    throttleMs: 300,
   })
 
   const filtros = useMemo(() => urlStateToFiltros(urlState), [urlState])
@@ -154,6 +158,7 @@ export function TrabajosPageContent() {
   const {
     data: jobsResult,
     isLoading,
+    isFetching,
     isError,
     error,
   } = useJobsSearch({
@@ -170,7 +175,7 @@ export function TrabajosPageContent() {
   }, [jobs])
 
   const handleFiltrosChange = (newFiltros: FiltrosTrabajos) => {
-    setUrlState({ ...filtrosToUrlState(newFiltros), orden: urlState.orden })
+    setUrlState({ ...filtrosToUrlState(newFiltros), orden: urlState.orden, pagina: 1 })
   }
 
   const trabajosFiltrados = useMemo(() => {
@@ -234,13 +239,18 @@ export function TrabajosPageContent() {
     })
   }, [apiTrabajos, filtros])
 
+  // Paginacion cliente en bloques de 12: el backend no filtra por
+  // modalidad/ubicacion/salario, asi que esos filtros corren en cliente y
+  // paginar el DOM reduce el costo de render en desktop (100 tarjetas a la vez).
+  const PAGE_SIZE = 12
+  const totalPaginas = Math.max(1, Math.ceil(trabajosFiltrados.length / PAGE_SIZE))
+  const safePagina = Math.min(Math.max(1, urlState.pagina), totalPaginas)
+  const trabajosVisibles = trabajosFiltrados.slice(0, safePagina * PAGE_SIZE)
+  const hasMore = trabajosFiltrados.length > trabajosVisibles.length
+
   return (
     <>
-      <TrabajosSearchFilters
-        key={JSON.stringify(filtros)}
-        filtros={filtros}
-        onFiltrosChange={handleFiltrosChange}
-      />
+      <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
       {isLoading && (
         <section className="bg-white pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -287,11 +297,16 @@ export function TrabajosPageContent() {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end pb-4">
               <SortSelect
                 value={urlState.orden}
-                onChange={(orden) => setUrlState({ orden })}
+                onChange={(orden) => setUrlState({ orden, pagina: 1 })}
               />
             </div>
           </section>
-          <TrabajosList trabajos={trabajosFiltrados} />
+          <TrabajosList
+            trabajos={trabajosVisibles}
+            totalCount={trabajosFiltrados.length}
+            onShowMore={hasMore ? () => setUrlState({ pagina: safePagina + 1 }) : undefined}
+            isUpdating={isFetching}
+          />
         </>
       )}
     </>

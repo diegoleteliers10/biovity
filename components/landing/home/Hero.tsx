@@ -32,13 +32,9 @@ export function Hero() {
     <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-surface-container-lowest via-surface-container-low/40 to-surface-container-lowest py-32 sm:py-44 lg:py-56">
       {/* Ambient background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Mobile: lightweight GPU-free CSS radial gradient */}
-        <div className="md:hidden absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(132,131,212,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_70%_35%,rgba(0,107,94,0.12)_0%,transparent_60%)]" />
-
-        {/* Desktop: rich Gaussian blur glows */}
-        <div className="hidden md:block absolute top-[10%] left-[20%] w-[32rem] h-[32rem] rounded-full bg-[#8483d4]/15 blur-[120px]" />
-        <div className="hidden md:block absolute top-[18%] right-[18%] w-[36rem] h-[36rem] rounded-full bg-[#006b5e]/15 blur-[130px]" />
-        <div className="hidden md:block absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[48rem] h-[22rem] rounded-full bg-[#00374a]/10 blur-[100px]" />
+        {/* Capa unica de gradientes radiales (GPU-free): igual en mobile y desktop.
+            Antes, desktop usaba 3 divs de 32-48rem con blur 100-130px, costo alto de paint. */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(132,131,212,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_70%_35%,rgba(0,107,94,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_50%_95%,rgba(0,55,74,0.08)_0%,transparent_60%)]" />
 
         {/* Subtle grid pattern */}
         <div

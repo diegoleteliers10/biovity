@@ -24,7 +24,7 @@ export function CheckYourEmail({ email, loginHref, description }: CheckYourEmail
           className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
         >
           <Image
-            src="/logoIcon.png"
+            src="/logoIcon.webp"
             alt="Biovity"
             width={50}
             height={50}

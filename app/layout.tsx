@@ -11,23 +11,31 @@ import { QueryProvider } from "@/components/providers/QueryProvider"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 })
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 })
 
 const rubik = Rubik({
   variable: "--font-rubik",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  preload: false,
 })
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   subsets: ["latin"],
   weight: ["400"],
+  display: "swap",
+  preload: false,
 })
 
 // Use deployment URL on Vercel so OG image is reachable from the same origin

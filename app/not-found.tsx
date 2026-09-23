@@ -331,7 +331,7 @@ export default function NotFound() {
 
         <header className="relative z-20 flex w-full items-center justify-between p-6 md:p-8">
           <Link href="/" className="transition-opacity hover:opacity-80">
-            <Image src="/logoIcon.png" alt="Biovity" width={120} height={40} priority />
+            <Image src="/logoIcon.webp" alt="Biovity" width={120} height={40} priority />
           </Link>
         </header>
 

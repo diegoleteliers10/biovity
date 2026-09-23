@@ -24,7 +24,6 @@ const TransparencyGuarantee = dynamic(
       (mod) => mod.TransparencyGuarantee
     ),
   {
-    ssr: false,
     loading: () => (
       <div className="py-20 md:py-28 bg-surface-container-low animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +43,6 @@ const TransparencyGuarantee = dynamic(
 const ConexionTalento = dynamic(
   () => import("@/components/landing/home/BeamSection").then((mod) => mod.ConexionTalento),
   {
-    ssr: false,
     loading: () => (
       <div className="py-20 md:py-28 bg-surface-container-lowest animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,7 +101,6 @@ const MetricsShowcase = dynamic(
 const HowItWorks = dynamic(
   () => import("@/components/landing/home/HowItWorks").then((mod) => mod.HowItWorks),
   {
-    ssr: false,
     loading: () => (
       <div className="py-20 md:py-28 bg-surface-container-low animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -123,7 +120,6 @@ const HowItWorks = dynamic(
 const ForStudents = dynamic(
   () => import("@/components/landing/home/ForStudents").then((mod) => mod.ForStudents),
   {
-    ssr: false,
     loading: () => (
       <div className="py-20 md:py-28 bg-surface-container-lowest animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -142,7 +138,6 @@ const ForStudents = dynamic(
 const Categories = dynamic(
   () => import("@/components/landing/home/Categories").then((mod) => mod.Categories),
   {
-    ssr: false,
     loading: () => (
       <div className="py-20 md:py-28 bg-surface-container-low animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -160,7 +155,6 @@ const Categories = dynamic(
 )
 
 const CTA = dynamic(() => import("@/components/landing/home/CTA").then((mod) => mod.CTA), {
-  ssr: false,
   loading: () => (
     <div className="py-24 bg-surface-container-lowest animate-pulse">
       <div className="max-w-4xl mx-auto px-4 text-center">

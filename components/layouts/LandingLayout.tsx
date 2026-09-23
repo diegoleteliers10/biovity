@@ -1,13 +1,12 @@
-import { getServerSession } from "@/lib/auth"
 import { Footer } from "../common/Footer"
 import { Header } from "../common/Header"
 
-export const LandingLayout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await getServerSession()
-
+// Sin bloqueo de sesion: el Header resuelve la sesion en el cliente.
+// Antes, getServerSession() frenaba el TTFB de cada pagina publica (/, /jobs, /learn).
+export const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="overflow-x-hidden">
-      <Header session={session} />
+      <Header session={null} />
       {children}
       <Footer />
     </div>
