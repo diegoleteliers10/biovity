@@ -409,7 +409,7 @@ function SidebarContent({ className, ...props }: SidebarContentProps) {
       data-sidebar="content"
       className={cn(
         "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain group-data-[collapsible=icon]:overflow-hidden",
-        "[scrollbar-width:thin] [scrollbar-gutter:auto]",
+        "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className
       )}
       {...props}

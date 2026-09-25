@@ -79,7 +79,7 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
           session={session}
         />
         <SidebarInset
-          className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-gutter:stable]"
+          className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ viewTransitionName: "persistent-nav" }}
         >
           {children}
