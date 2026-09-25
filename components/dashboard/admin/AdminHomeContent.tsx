@@ -14,20 +14,18 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
+import dynamic from "next/dynamic"
 import Link from "next/link"
-import { useState } from "react"
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { memo, useMemo, useState } from "react"
+
+const RegistrationsChart = dynamic(
+  () => import("./admin-charts").then((m) => m.RegistrationsChart),
+  { ssr: false, loading: () => <Skeleton className="h-52 w-full" /> }
+)
+const TopJobsChart = dynamic(() => import("./admin-charts").then((m) => m.TopJobsChart), {
+  ssr: false,
+  loading: () => <Skeleton className="h-52 w-full" />,
+})
 
 type AdminStats = {
   users: {
@@ -121,7 +119,7 @@ interface RecentUsersResponse {
   total: number
 }
 
-export function TrendBadge({ value }: { value: number }) {
+export const TrendBadge = memo(function TrendBadge({ value }: { value: number }) {
   const positive = value >= 0
   return (
     <span
@@ -134,9 +132,7 @@ export function TrendBadge({ value }: { value: number }) {
       {value}%
     </span>
   )
-}
-
-const BAR_COLORS = ["#10b981", "#3b82f6"]
+})
 
 export function AdminHomeContent() {
   const [period, setPeriod] = useState<30 | 90>(30)
@@ -149,6 +145,9 @@ export function AdminHomeContent() {
   } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: fetchStats,
+    staleTime: 30_000,
+    gcTime: 300_000,
+    refetchOnWindowFocus: false,
   })
 
   const {
@@ -159,6 +158,9 @@ export function AdminHomeContent() {
   } = useQuery({
     queryKey: ["admin-registrations-trend", period],
     queryFn: () => fetchRegistrationsTrend(period),
+    staleTime: 30_000,
+    gcTime: 300_000,
+    refetchOnWindowFocus: false,
   })
 
   const {
@@ -169,72 +171,86 @@ export function AdminHomeContent() {
   } = useQuery({
     queryKey: ["admin-top-jobs"],
     queryFn: () => fetchTopJobs(10),
+    staleTime: 60_000,
+    gcTime: 300_000,
+    refetchOnWindowFocus: false,
   })
 
   const { data: recentUsers, isLoading: recentUsersLoading } = useQuery({
     queryKey: ["admin-recent-users"],
     queryFn: fetchRecentUsers,
     refetchInterval: 60_000,
+    staleTime: 30_000,
+    gcTime: 300_000,
+    refetchOnWindowFocus: false,
   })
 
   const hasErrors = statsError || trendError || topJobsError
 
-  const metrics: Metric[] = stats
-    ? [
-        {
-          title: "Usuarios totales",
-          value: stats.users.total,
-          subtitle: `${stats.users.professionals} prof. · ${stats.users.organizations} org.`,
-          icon: User02Icon,
-          href: "/dashboard/users",
-        },
-        {
-          title: "Usuarios activos",
-          value: stats.users.active,
-          subtitle: stats.users.inactive > 0 ? `${stats.users.inactive} inactivos` : undefined,
-          icon: UserGroupIcon,
-          href: "/dashboard/users",
-        },
-        {
-          title: "Nuevos (7d)",
-          value: stats.users.recentCount,
-          subtitle: stats.users.recentTrend !== 0 ? `vs período anterior` : undefined,
-          icon: User02Icon,
-          trend: `${stats.users.recentTrend >= 0 ? "+" : ""}${stats.users.recentTrend}%`,
-          trendPositive: stats.users.recentTrend >= 0,
-          href: "/dashboard/users",
-        },
-        {
-          title: "Lista de espera",
-          value: stats.waitlist.total,
-          subtitle:
-            stats.waitlist.total > 0
-              ? `${stats.waitlist.professionals} prof. · ${stats.waitlist.organizations} org.`
-              : undefined,
-          icon: File02Icon,
-        },
-        {
-          title: "Jobs activos",
-          value: stats.platform.activeJobs,
-          subtitle: undefined,
-          icon: FileAddIcon,
-          href: "/dashboard",
-        },
-        {
-          title: "Postulaciones",
-          value: stats.platform.totalApplications,
-          subtitle: undefined,
-          icon: File02Icon,
-          href: "/dashboard",
-        },
-      ]
-    : []
+  const metrics: Metric[] = useMemo(
+    () =>
+      stats
+        ? [
+            {
+              title: "Usuarios totales",
+              value: stats.users.total,
+              subtitle: `${stats.users.professionals} prof. · ${stats.users.organizations} org.`,
+              icon: User02Icon,
+              href: "/dashboard/users",
+            },
+            {
+              title: "Usuarios activos",
+              value: stats.users.active,
+              subtitle: stats.users.inactive > 0 ? `${stats.users.inactive} inactivos` : undefined,
+              icon: UserGroupIcon,
+              href: "/dashboard/users",
+            },
+            {
+              title: "Nuevos (7d)",
+              value: stats.users.recentCount,
+              subtitle: stats.users.recentTrend !== 0 ? `vs período anterior` : undefined,
+              icon: User02Icon,
+              trend: `${stats.users.recentTrend >= 0 ? "+" : ""}${stats.users.recentTrend}%`,
+              trendPositive: stats.users.recentTrend >= 0,
+              href: "/dashboard/users",
+            },
+            {
+              title: "Lista de espera",
+              value: stats.waitlist.total,
+              subtitle:
+                stats.waitlist.total > 0
+                  ? `${stats.waitlist.professionals} prof. · ${stats.waitlist.organizations} org.`
+                  : undefined,
+              icon: File02Icon,
+            },
+            {
+              title: "Jobs activos",
+              value: stats.platform.activeJobs,
+              subtitle: undefined,
+              icon: FileAddIcon,
+              href: "/dashboard",
+            },
+            {
+              title: "Postulaciones",
+              value: stats.platform.totalApplications,
+              subtitle: undefined,
+              icon: File02Icon,
+              href: "/dashboard",
+            },
+          ]
+        : [],
+    [stats]
+  )
 
-  const chartData = trend?.data.map((d) => ({
-    date: d.date.slice(5),
-    professionals: d.professionals,
-    organizations: d.organizations,
-  }))
+  const chartData = useMemo(
+    () =>
+      trend?.data.map((d) => ({
+        date: d.date.slice(5),
+        professionals: d.professionals,
+        organizations: d.organizations,
+      })) ?? [],
+    [trend]
+  )
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
@@ -318,46 +334,7 @@ export function AdminHomeContent() {
             {trendLoading ? (
               <Skeleton className="h-52 w-full" />
             ) : (
-              <ResponsiveContainer width="100%" height={208}>
-                <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 10 }}
-                    tickLine={false}
-                    axisLine={false}
-                    interval={period === 30 ? 6 : 17}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 10 }}
-                    tickLine={false}
-                    axisLine={false}
-                    allowDecimals={false}
-                  />
-                  <Tooltip
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                    labelStyle={{ fontWeight: 600 }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="professionals"
-                    stackId="1"
-                    stroke="#10b981"
-                    fill="#10b981"
-                    fillOpacity={0.7}
-                    name="Profesionales"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="organizations"
-                    stackId="2"
-                    stroke="#3b82f6"
-                    fill="#3b82f6"
-                    fillOpacity={0.7}
-                    name="Organizaciones"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              <RegistrationsChart data={chartData} interval={period === 30 ? 6 : 17} />
             )}
           </CardContent>
         </Card>
@@ -375,44 +352,7 @@ export function AdminHomeContent() {
                 ))}
               </div>
             ) : topJobs && topJobs.data.length > 0 ? (
-              <ResponsiveContainer width="100%" height={208}>
-                <BarChart
-                  data={topJobs.data}
-                  layout="vertical"
-                  margin={{ top: 0, right: 8, left: 0, bottom: 0 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    className="stroke-muted"
-                    horizontal={false}
-                  />
-                  <XAxis type="number" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
-                  <YAxis
-                    dataKey="title"
-                    type="category"
-                    tick={{ fontSize: 10 }}
-                    tickLine={false}
-                    axisLine={false}
-                    width={120}
-                    interval={0}
-                  />
-                  <Tooltip
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
-                    labelStyle={{ fontWeight: 600 }}
-                    formatter={(value, name) => [`${value} postulaciones`, name]}
-                  />
-                  <Bar
-                    dataKey="applications"
-                    name="Postulaciones"
-                    fill="#10b981"
-                    radius={[0, 4, 4, 0]}
-                  >
-                    {topJobs.data.map((_, index) => (
-                      <Cell key={index} fill={BAR_COLORS[index % BAR_COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <TopJobsChart data={topJobs.data} />
             ) : (
               <p className="text-sm text-muted-foreground">No hay datos disponibles.</p>
             )}

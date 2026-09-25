@@ -2,7 +2,7 @@
 
 import { TradeDownIcon, TradeUpIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { memo } from "react"
 import { dashboardTonalCardClass } from "@/components/dashboard/shared/surface-classes"
 import type { Metric } from "@/lib/types/dashboard"
@@ -56,7 +56,6 @@ const MetricBody = ({ metric }: { metric: Metric }) => {
 }
 
 export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) {
-  const router = useRouter()
   const href = metric.href
 
   if (!href) {
@@ -68,8 +67,8 @@ export const MetricCard = memo(function MetricCard({ metric }: MetricCardProps) 
   }
 
   return (
-    <button type="button" className={cardClass(true)} onClick={() => router.push(href)}>
+    <Link href={href} prefetch className={cardClass(true)}>
       <MetricBody metric={metric} />
-    </button>
+    </Link>
   )
 })
