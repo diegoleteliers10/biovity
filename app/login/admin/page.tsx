@@ -4,8 +4,6 @@ import { SessionRefresher } from "@/components/auth/SessionRefresher"
 import { AuthLoader } from "@/components/ui/auth-loader"
 import { AdminLoginContent } from "./admin-login-content"
 
-export const dynamic = "force-dynamic"
-
 export const metadata: Metadata = {
   title: "Administracion - Biovity",
   description: "Panel de administracion de Biovity",

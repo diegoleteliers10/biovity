@@ -9,8 +9,9 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useFeaturebase } from "featurebase-js/react"
+import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { type ReactElement, type ReactNode, useRef } from "react"
+import { memo, type ReactElement, type ReactNode, useMemo, useRef } from "react"
 import {
   Tooltip,
   TooltipContent,
@@ -42,16 +43,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import type { ServerSession } from "@/lib/auth"
 import { signOutAndRedirect } from "@/lib/auth-client"
 import type { NavData, NavExploreItem, NavItem } from "@/lib/types/nav"
+import { cn } from "@/lib/utils"
 
-function NavTooltip({
-  trigger,
-  content,
-  key: _key,
-}: {
-  trigger: ReactElement
-  content: ReactNode
-  key?: string
-}) {
+const NAV_BUTTON_CLASS = "hover:bg-sidebar-accent/50 transition-colors duration-150"
+const NAV_ICON_CLASS = "shrink-0"
+
+function NavTooltip({ trigger, content }: { trigger: ReactElement; content: ReactNode }) {
   return (
     <Tooltip side="right" align="center">
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
@@ -60,136 +57,49 @@ function NavTooltip({
   )
 }
 
-function NavItemWithTooltip({
-  item,
-  pathname,
-  isMobile,
-  onNavigate,
-}: {
-  item: NavItem
+type NavRowProps = {
+  item: NavItem | NavExploreItem
   pathname: string
+  collapsed: boolean
   isMobile: boolean
-  onNavigate: (url: string) => void
-}) {
-  const isActive = pathname === item.url
-  if (isMobile) {
-    return (
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={isActive}
-          size="default"
-          className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
-        >
-          <button
-            type="button"
-            onClick={() => onNavigate(item.url)}
-            className="flex items-center w-full focus:outline-none cursor-pointer"
-          >
-            <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
-            <span>{item.title}</span>
-            {"badge" in item && item.badge != null && (
-              <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                {item.badge}
-              </span>
-            )}
-          </button>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    )
-  }
-  return (
-    <NavTooltip
-      trigger={
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            asChild
-            isActive={isActive}
-            size="default"
-            className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
-          >
-            <button
-              type="button"
-              onClick={() => onNavigate(item.url)}
-              className="flex items-center w-full focus:outline-none cursor-pointer"
-            >
-              <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
-              <span>{item.title}</span>
-              {"badge" in item && item.badge != null && (
-                <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      }
-      content={<p>{item.title}</p>}
-    />
-  )
+  size: "default" | "sm"
+  onNavigate: () => void
 }
 
-function ExploreItemWithTooltip({
+const NavRow = memo(function NavRow({
   item,
   pathname,
-  state,
+  collapsed,
   isMobile,
+  size,
   onNavigate,
-}: {
-  item: NavExploreItem
-  pathname: string
-  state: "expanded" | "collapsed"
-  isMobile: boolean
-  onNavigate: (url: string) => void
-}) {
+}: NavRowProps) {
   const isActive = pathname === item.url
-  const tooltipText = item.tooltipCollapsed ?? item.title
-  if (isMobile) {
-    return (
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={isActive}
-          size="sm"
-          className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
+  const row = (
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild isActive={isActive} size={size} className={NAV_BUTTON_CLASS}>
+        <Link
+          href={item.url}
+          prefetch
+          onClick={onNavigate}
+          className="flex items-center w-full focus:outline-none cursor-pointer"
         >
-          <button
-            type="button"
-            onClick={() => onNavigate(item.url)}
-            className="flex items-center w-full focus:outline-none cursor-pointer"
-          >
-            <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
-            <span>{item.title}</span>
-          </button>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    )
-  }
-  return (
-    <NavTooltip
-      trigger={
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            asChild
-            isActive={isActive}
-            size="sm"
-            className="hover:bg-sidebar-accent/50 active:scale-[0.98] transition-all duration-150"
-          >
-            <button
-              type="button"
-              onClick={() => onNavigate(item.url)}
-              className="flex items-center w-full focus:outline-none cursor-pointer"
-            >
-              <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} />
-              <span>{item.title}</span>
-            </button>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      }
-      content={<p>{state === "collapsed" ? tooltipText : item.title}</p>}
-    />
+          <HugeiconsIcon icon={item.icon} size={20} strokeWidth={1.5} className={NAV_ICON_CLASS} />
+          <span>{item.title}</span>
+          {"badge" in item && item.badge != null && (
+            <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+              {item.badge}
+            </span>
+          )}
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   )
-}
+  if (isMobile || !collapsed) return row
+  const tooltipText =
+    "tooltipCollapsed" in item && item.tooltipCollapsed ? item.tooltipCollapsed : item.title
+  return <NavTooltip trigger={row} content={<p>{tooltipText}</p>} />
+})
 
 export type DashboardSidebarProps = {
   navData: NavData
@@ -220,6 +130,7 @@ export function DashboardSidebar({
   const { push } = useRouter()
   const { show: showFeaturebaseMessenger } = useFeaturebase()
   const feedbackPortalRef = useRef<HTMLButtonElement>(null)
+  const collapsed = state === "collapsed"
 
   const sessionUser = session?.user as
     | {
@@ -231,46 +142,41 @@ export function DashboardSidebar({
     | undefined
   const avatarUrl = avatarUrlProp ?? sessionUser?.avatar ?? sessionUser?.image
   const userTitle = professionProp ?? navData.user.title
-  const initials =
-    sessionUser?.name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() ?? navData.user.title.slice(0, 2).toUpperCase()
+  const initials = useMemo(
+    () =>
+      sessionUser?.name
+        ?.split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() ?? navData.user.title.slice(0, 2).toUpperCase(),
+    [sessionUser?.name, navData.user.title]
+  )
 
-  const handleNavigate = (url: string) => {
-    if (isMobile) {
-      setOpenMobile(false)
-    }
-    push(url)
+  const closeMobileSheet = () => {
+    if (isMobile) setOpenMobile(false)
   }
 
   const handleLogout = async () => {
-    try {
-      await signOutAndRedirect(logoutRedirect)
-    } catch (error) {
+    await signOutAndRedirect(logoutRedirect).catch((error: unknown) => {
       console.error("Unexpected logout error:", error)
       window.location.href = logoutRedirect
-    }
+    })
   }
 
   const handleViewProfile = () => {
-    handleNavigate(profileUrl)
+    closeMobileSheet()
+    push(profileUrl)
   }
 
   const handleFeedback = () => {
     feedbackPortalRef.current?.click()
-    if (isMobile) {
-      setOpenMobile(false)
-    }
+    closeMobileSheet()
   }
 
   const handleSupport = () => {
     showFeaturebaseMessenger()
-    if (isMobile) {
-      setOpenMobile(false)
-    }
+    closeMobileSheet()
   }
 
   const logoutItemClassName = logoutHoverContrastOnAccent
@@ -278,10 +184,10 @@ export function DashboardSidebar({
     : "cursor-pointer text-red-600 focus:text-red-600"
 
   return (
-    <Sidebar collapsible="icon" className="border-none">
+    <Sidebar collapsible="icon" animateOnHover={false} className="border-none">
       <SidebarHeader>
         <div className="flex items-center justify-between">
-          {state === "collapsed" ? (
+          {collapsed ? (
             <SidebarMenuItem
               className="w-full justify-center group/logo cursor-pointer"
               onClick={() => setOpen(!open)}
@@ -290,13 +196,13 @@ export function DashboardSidebar({
               <div className="relative">
                 <Logo
                   size="sm"
-                  className="group-hover/logo:opacity-0 transition-opacity duration-200"
+                  className="group-hover/logo:opacity-0 transition-opacity duration-150"
                 />
                 <HugeiconsIcon
                   icon={FlipRightIcon}
-                  size={24}
+                  size={20}
                   strokeWidth={1.5}
-                  className="absolute inset-0 m-auto size-4 opacity-0 group-hover/logo:opacity-100 transition-opacity duration-200"
+                  className="absolute inset-0 m-auto size-4 opacity-0 group-hover/logo:opacity-100 transition-opacity duration-150"
                 />
               </div>
             </SidebarMenuItem>
@@ -314,25 +220,25 @@ export function DashboardSidebar({
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Main Navigation */}
         <SidebarGroup>
           <SidebarMenu>
             {navData.navMain.map((item) => (
-              <div key={item.title}>
-                <NavItemWithTooltip
-                  item={item}
-                  pathname={pathname}
-                  isMobile={isMobile}
-                  onNavigate={handleNavigate}
-                />
-              </div>
+              <NavRow
+                key={item.title}
+                item={item}
+                pathname={pathname}
+                collapsed={collapsed}
+                isMobile={isMobile}
+                size="default"
+                onNavigate={closeMobileSheet}
+              />
             ))}
           </SidebarMenu>
         </SidebarGroup>
 
         {navData.profileProgress && (
           <>
-            <div className="mx-4 mb-4 p-5 bg-card border border-border rounded-xl transition-colors duration-300 group-data-[collapsible=icon]:hidden shrink-0">
+            <div className="mx-4 mb-4 p-5 bg-card border border-border rounded-xl group-data-[collapsible=icon]:hidden shrink-0">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <h3 className="font-semibold text-card-foreground mb-1 text-sm">
@@ -350,12 +256,12 @@ export function DashboardSidebar({
               </div>
               <div className="relative w-full bg-muted rounded-full h-2 mb-4 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-primary to-primary/80 h-2 rounded-full transition-all duration-500 ease-out"
+                  className="bg-gradient-to-r from-primary to-primary/80 h-2 rounded-full"
                   style={{ width: `${navData.profileProgress.percentage}%` }}
                 />
               </div>
               <button
-                className="w-full text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-1"
+                className="w-full text-xs font-medium text-primary hover:text-primary/80 hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-1"
                 type="button"
                 onClick={() => push(profileUrl)}
                 tabIndex={0}
@@ -366,49 +272,23 @@ export function DashboardSidebar({
             </div>
             <SidebarGroup className="hidden group-data-[collapsible=icon]:flex">
               <SidebarMenu>
-                {isMobile ? (
-                  <SidebarMenuItem>
-                    <button
-                      type="button"
-                      onClick={() => push(profileUrl)}
-                      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 size-8 aspect-square hover:bg-primary/20 transition-colors"
-                      aria-label={`Perfil ${navData.profileProgress?.percentage}%`}
-                    >
-                      <span className="text-[10px] font-bold tabular-nums">
-                        {navData.profileProgress.percentage}%
-                      </span>
-                    </button>
-                  </SidebarMenuItem>
-                ) : (
-                  <NavTooltip
-                    trigger={
-                      <SidebarMenuItem>
-                        <button
-                          type="button"
-                          onClick={() => push(profileUrl)}
-                          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 size-8 aspect-square hover:bg-primary/20 transition-colors"
-                          aria-label={`Perfil ${navData.profileProgress?.percentage}%`}
-                        >
-                          <span className="text-[10px] font-bold tabular-nums">
-                            {navData.profileProgress.percentage}%
-                          </span>
-                        </button>
-                      </SidebarMenuItem>
-                    }
-                    content={
-                      <>
-                        <p>Progreso del Perfil: {navData.profileProgress.percentage}%</p>
-                        <p className="text-xs text-secondary-foreground/70">Click para completar</p>
-                      </>
-                    }
-                  />
-                )}
+                <SidebarMenuItem>
+                  <button
+                    type="button"
+                    onClick={() => push(profileUrl)}
+                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer p-0 aspect-square hover:bg-primary/20 transition-colors duration-150"
+                    aria-label={`Perfil ${navData.profileProgress?.percentage}%`}
+                  >
+                    <span className="text-[10px] font-bold tabular-nums">
+                      {navData.profileProgress.percentage}%
+                    </span>
+                  </button>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroup>
           </>
         )}
 
-        {/* Explore Section */}
         {navData.explore && navData.explore.length > 0 && (
           <SidebarGroup>
             <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
@@ -416,15 +296,15 @@ export function DashboardSidebar({
             </SidebarGroupLabel>
             <SidebarMenu>
               {navData.explore.map((item) => (
-                <div key={item.title}>
-                  <ExploreItemWithTooltip
-                    item={item}
-                    pathname={pathname}
-                    state={state}
-                    isMobile={isMobile}
-                    onNavigate={handleNavigate}
-                  />
-                </div>
+                <NavRow
+                  key={item.title}
+                  item={item}
+                  pathname={pathname}
+                  collapsed={collapsed}
+                  isMobile={isMobile}
+                  size="sm"
+                  onNavigate={closeMobileSheet}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroup>
@@ -451,11 +331,12 @@ export function DashboardSidebar({
                         />
                       ) : null}
                       <AvatarFallback
-                        className={
+                        className={cn(
+                          "rounded-lg bg-gradient-to-br",
                           avatarGradient.from === "blue-500"
-                            ? "rounded-lg bg-gradient-to-br from-blue-500 to-purple-600"
-                            : "rounded-lg bg-gradient-to-br from-purple-500 to-blue-600"
-                        }
+                            ? "from-blue-500 to-purple-600"
+                            : "from-purple-500 to-blue-600"
+                        )}
                       >
                         <span className="text-white text-sm font-semibold">{initials}</span>
                       </AvatarFallback>
@@ -463,7 +344,7 @@ export function DashboardSidebar({
                   ) : (
                     <Skeleton className="size-8 rounded-lg bg-muted" />
                   )}
-                  {state !== "collapsed" && (
+                  {!collapsed && (
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       {session ? (
                         <>

@@ -10,6 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useReducer } from "react"
 import {
   authButtonClass,
@@ -21,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import { useMountEffect } from "@/hooks/use-mount-effect"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
@@ -82,6 +84,11 @@ const { signIn } = authClient
 
 export function AdminLoginContent() {
   const [state, dispatch] = useReducer(loginReducer, initialLoginState)
+  const router = useRouter()
+
+  useMountEffect(() => {
+    router.prefetch("/dashboard")
+  })
 
   const handleInputChange = (field: "email" | "password", value: string) => {
     dispatch({ type: "SET_FORM_FIELD", field, value })
@@ -89,6 +96,7 @@ export function AdminLoginContent() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (state.isLoading) return
     dispatch({ type: "SET_LOADING", value: true })
     dispatch({ type: "SET_ERRORS", errors: {} })
 
@@ -109,7 +117,8 @@ export function AdminLoginContent() {
     }
 
     authClient.$store.notify("$sessionSignal")
-    window.location.href = "/dashboard"
+    router.replace("/dashboard")
+    router.refresh()
   }
 
   return (
