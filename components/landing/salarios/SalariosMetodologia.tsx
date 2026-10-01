@@ -2,13 +2,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function SalariosMetodologia() {
   return (
-    <section className="py-20 md:py-28 bg-surface-container-low">
+    <section className="py-24 md:py-36 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="rounded-xl border border-border bg-surface-container-lowest shadow-none p-6 sm:p-8 md:p-10">
           <CardHeader className="px-0 pt-0 pb-4">
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-2 block">
-              Rigor & Fuentes
-            </span>
             <h2 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
               Metodología de Análisis Salarial
             </h2>

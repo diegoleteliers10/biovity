@@ -19,13 +19,7 @@ export type PlanItem = {
   isEnterprise?: boolean
 }
 
-export type FeatureATSItem = IconTitleDescription & {
-  badge?: string
-}
-
-export type PasoEmpresaItem = IconTitleDescription & {
-  number: string
-}
+export type PasoEmpresaItem = IconTitleDescription
 
 export type HeroStatEmpresaItem = {
   icon: IconSvgElement

@@ -39,22 +39,13 @@ const trajectoryData = TRAYECTORIA_CARRERA_CHILE.map((t) => ({
 export function SalariosUpskilling() {
   const reducedMotion = useReducedMotion()
   return (
-    <section className="py-20 md:py-28 bg-surface-container-low">
+    <section className="py-24 md:py-36 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-14 max-w-3xl">
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Impacto & Proyección
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+        <div className="mb-14 max-w-3xl md:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Impacto de <span className="text-accent font-semibold">habilidades clave</span> en la
             renta
           </h2>
-          <div className="space-y-3 text-muted-foreground leading-relaxed text-base sm:text-lg text-pretty">
-            <p>
-              Ciertas competencias técnicas, regulatorias y de postgrado generan un diferencial
-              sustancial en el salario base de biociencias en Chile.
-            </p>
-          </div>
         </div>
 
         {/* Matriz de impacto de habilidades - Clean borderless white cards on surface-container-low */}

@@ -1,24 +1,11 @@
 import {
-  Atom01Icon,
-  Award01Icon,
-  BrainIcon,
   Building02Icon,
   Building03Icon,
-  Chemistry01Icon,
-  Clock01Icon,
   FileSearchIcon,
-  FilterIcon,
   MicroscopeIcon,
-  Search01Icon,
-  Shield01Icon,
-  SparklesIcon,
-  Target01Icon,
-  TradeUpIcon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
 import type {
-  DiferenciadorBiovity,
-  FriccionWorkflow,
   HerramientaActual,
   HeroStatReclutamiento,
   MatrizComparativaItem,
@@ -119,98 +106,6 @@ export const HERRAMIENTAS_ACTUALES: HerramientaActual[] = [
       "Sin estandarización de habilidades técnicas ni evaluación preliminar de competencias de laboratorio.",
       "Incapacidad de escalar cuando se requiere contratar múltiples perfiles técnicos rápidamente.",
     ],
-  },
-]
-
-export const FRICCIONES_WORKFLOW: FriccionWorkflow[] = [
-  {
-    title: "Filtrado Ciego por Palabras Clave",
-    description:
-      "Los ATS tradicionales buscan coincidencias de texto rígidas. Si una vacante pide 'qPCR' y el candidato redactó 'Reacción en Cadena de la Polimerasa Cuantitativa', el sistema lo descarta sin que ningún humano lo evalúe.",
-    impacto: "Pérdida del 40% de candidatos de alto calibre por discrepancias de redacción técnica.",
-    sintomaComun: "Ternas vacías a pesar de contar con científicos altamente calificados en la base de datos.",
-    icon: Search01Icon,
-  },
-  {
-    title: "Saturación de Perfiles Sin Formación Científica",
-    description:
-      "Al publicar en portales masivos, el algoritmo expone la oferta a audiencias transversales. El equipo de selección recibe cientos de postulaciones de perfiles administrativos o sin experiencia en bioseguridad ni laboratorio.",
-    impacto: "Más de 35 horas de trabajo manual desperdiciadas en filtrar perfiles irrelevantes.",
-    sintomaComun: "Fatiga del reclutador y demoras de semanas antes de agendar las primeras entrevistas técnicas.",
-    icon: FilterIcon,
-  },
-  {
-    title: "Desconexión entre RRHH y el Líder Técnico / PI",
-    description:
-      "El equipo de Recursos Humanos no siempre maneja el vocabulario de equipamiento técnico (HPLC, GC-MS, Citometría de Flujo, Biorreactores). La retroalimentación con el Investigador Principal se vuelve lenta y confusa.",
-    impacto: "Candidatos mal preseleccionados que son descartados en la etapa de entrevista técnica final.",
-    sintomaComun: "Múltiples rondas de entrevistas fallidas y fricción entre el área de personas y el laboratorio.",
-    icon: BrainIcon,
-  },
-  {
-    title: "Falta de Validación de Normativas y Bioseguridad",
-    description:
-      "Las herramientas generales no permiten estructurar preguntas de descarte basadas en normativas críticas para la industria (GMP, GLP, ISO 17025, ISO 9001 o niveles de bioseguridad BSL-1/2/3).",
-    impacto: "Contratación de perfiles que requieren meses de reentrenamiento regulatorio antes de operar.",
-    sintomaComun: "Costos ocultos de onboarding y retrasos en la validación de lotes o ensayos de laboratorio.",
-    icon: Shield01Icon,
-  },
-]
-
-export const DIFERENCIADORES_BIOVITY: DiferenciadorBiovity[] = [
-  {
-    title: "Taxonomía Científica Nativa & AI Matching",
-    description:
-      "Biovity comprende las relaciones semánticas de más de 450 técnicas, reactivos, equipos e instrumentos de laboratorio. Entiende que HPLC, UPLC y cromatografía líquida forman parte de la misma familia analítica.",
-    tag: "Inteligencia de Dominio",
-    ventajaTecnica: "Scoring automático de compatibilidad técnica basado en experiencia real demostrada.",
-    metricaClave: "98% de precisión en calce de competencias",
-    icon: BrainIcon,
-  },
-  {
-    title: "Filtros Técnicos y Regulatorios Especializados",
-    description:
-      "Segmenta al instante candidatos según certificaciones de calidad (GMP, GLP, ISO), nivel de formación (Licenciatura, Magíster, Doctorado, Postdoc) y técnicas de laboratorio comprobadas.",
-    tag: "Filtros de Alta Precisión",
-    ventajaTecnica: "Búsqueda multidimensional por instrumentos, líneas de I+D y áreas de aplicación biotecnológica.",
-    metricaClave: "Filtros en 1 clic vs 30h de lectura de CVs",
-    icon: FilterIcon,
-  },
-  {
-    title: "Comunidad 100% Científica y Verificada en Chile",
-    description:
-      "Acceso directo a la red más activa de bioquímicos, biotecnólogos, químicos farmacéuticos, ingenieros químicos y científicos de materiales del país, listos para integrarse a empresas e instituciones.",
-    tag: "Red Curada",
-    ventajaTecnica: "Perfiles estandarizados con detalle de proyectos, publicaciones, patentes y técnicas de banco.",
-    metricaClave: "+500 profesionales activos en Chile",
-    icon: Atom01Icon,
-  },
-  {
-    title: "Pipeline ATS Diseñado para Laboratorios",
-    description:
-      "Gestiona postulantes a través de un tablero Kanban visual con etapas adaptadas al flujo de evaluación científica: Revisión Técnica, Prueba de Protocolo / Laboratorio, Entrevista con PI y Oferta.",
-    tag: "Flujo Especializado",
-    ventajaTecnica: "Notas colaborativas entre RRHH y jefaturas de laboratorio con rúbricas de evaluación técnica.",
-    metricaClave: "Reducción de 60% en ciclo de selección",
-    icon: SparklesIcon,
-  },
-  {
-    title: "Transparencia Salarial y Datos de Mercado",
-    description:
-      "Acceso a estudios continuos de compensaciones del sector biotecnológico y científico en Chile, permitiendo definir bandas salariales competitivas y realistas para cada nivel de experiencia.",
-    tag: "Inteligencia Salarial",
-    ventajaTecnica: "Benchmark salarial por cargo, región, posgrado y subsector industrial.",
-    metricaClave: "Datos actualizados del mercado chileno",
-    icon: TradeUpIcon,
-  },
-  {
-    title: "Implementación Inmediata Sin Fricción",
-    description:
-      "Sin contratos de permanencia forzada ni meses de parametrización. Comienza a publicar y evaluar candidatos en menos de 5 minutos desde cualquier navegador.",
-    tag: "Time-to-Value Inmediato",
-    ventajaTecnica: "Planes transparentes desde $0 con soporte directo y local en Chile.",
-    metricaClave: "Activo en < 5 minutos",
-    icon: Clock01Icon,
   },
 ]
 

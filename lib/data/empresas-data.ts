@@ -1,24 +1,17 @@
 import {
-  BrainIcon,
-  Building02Icon,
   Building03Icon,
   Chemistry01Icon,
   Clock01Icon,
   FileSearchIcon,
-  FilterIcon,
   MailSend01Icon,
-  Message01Icon,
   Search01Icon,
   Shield01Icon,
-  SparklesIcon,
   Target01Icon,
   Tick02Icon,
-  TradeUpIcon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
 import type {
   FAQItem,
-  FeatureATSItem,
   HeroStatEmpresaItem,
   PasoEmpresaItem,
   PlanItem,
@@ -130,86 +123,26 @@ export const PLANES_EMPRESAS: PlanItem[] = [
   },
 ]
 
-export const FEATURES_ATS: FeatureATSItem[] = [
-  {
-    icon: Search01Icon,
-    title: "Publicación de vacantes STEM",
-    description:
-      "Publica en minutos con campos especializados para técnicas experimentales, equipamiento y certificaciones de laboratorio.",
-  },
-  {
-    icon: UserMultiple02Icon,
-    title: "Base de talento verificado",
-    description:
-      "Accede a perfiles validados de bioquímicos, biotecnólogos, farmacéuticos e ingenieros en todo Chile.",
-  },
-  {
-    icon: FilterIcon,
-    title: "Filtros científicos avanzados",
-    description:
-      "Segmenta por líneas de investigación, nivel educativo (licenciatura, magíster, doctorado) y normativas técnicas.",
-  },
-  {
-    icon: TradeUpIcon,
-    title: "Pipeline visual tipo Kanban",
-    description:
-      "Gestiona a tus postulantes de manera ágil arrastrando tarjetas entre etapas de revisión, entrevista y oferta.",
-  },
-  {
-    icon: Message01Icon,
-    title: "Comunicación directa",
-    description:
-      "Envía actualizaciones de estado y coordina entrevistas directamente desde la plataforma sin fricciones.",
-  },
-  {
-    icon: Building02Icon,
-    title: "Página corporativa",
-    description:
-      "Muestra la cultura, proyectos de I+D y beneficios de tu organización para atraer a los mejores candidatos.",
-  },
-  {
-    icon: SparklesIcon,
-    title: "Ofertas destacadas",
-    description:
-      "Multiplica el alcance de tus vacantes críticas con posicionamiento prioritario y difusión en la comunidad.",
-  },
-  {
-    icon: BrainIcon,
-    title: "AI Matching de candidatos",
-    description:
-      "Clasificación inteligente que sugiere los perfiles con mayor compatibilidad técnica para cada cargo.",
-    badge: "Pro",
-  },
-]
-
 export const PASOS_EMPRESAS: PasoEmpresaItem[] = [
   {
     icon: Building03Icon,
     title: "Crea tu perfil de empresa",
-    description:
-      "Configura tu cuenta corporativa y presenta tu organización ante la mayor comunidad científica del país.",
-    number: "01",
+    description: "Configura tu cuenta corporativa en minutos.",
   },
   {
     icon: MailSend01Icon,
     title: "Publica tus vacantes",
-    description:
-      "Define los requisitos técnicos específicos y activa tu búsqueda en pocos minutos con alcance focalizado.",
-    number: "02",
+    description: "Define requisitos técnicos específicos y publica.",
   },
   {
     icon: FileSearchIcon,
     title: "Evalúa en el ATS integrado",
-    description:
-      "Revisa postulaciones con CVs formateados, filtra por habilidades clave y coordina etapas con tu equipo.",
-    number: "03",
+    description: "Filtra por habilidades y coordina etapas con tu equipo.",
   },
   {
     icon: Tick02Icon,
     title: "Contrata con precisión",
-    description:
-      "Conecta con los profesionales idóneos, agenda entrevistas y cierra contrataciones sin intermediarios.",
-    number: "04",
+    description: "Agenda entrevistas y cierra sin intermediarios.",
   },
 ]
 

@@ -78,7 +78,7 @@ export function CTAContacto() {
   }
 
   return (
-    <section id="contacto" className="py-20 md:py-28 bg-surface-container-lowest">
+    <section id="contacto" className="py-24 md:py-36 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Context & Direct Info */}
@@ -89,16 +89,12 @@ export function CTAContacto() {
             transition={ts(0)}
             className="lg:col-span-5"
           >
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-              Contacto Corporativo
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6 tracking-tight text-balance">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-5 tracking-tight text-balance">
               ¿Listo para encontrar tu próximo{" "}
               <span className="text-accent font-semibold">talento científico</span>?
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed text-pretty">
-              Comienza gratis con tu cuenta de empresa o déjanos un mensaje para coordinar una demo
-              personalizada de nuestras herramientas ATS y búsqueda de candidatos.
+              Comienza gratis o cuéntanos qué necesitas y te contactamos.
             </p>
 
             <div className="space-y-4 mb-8">
@@ -106,7 +102,7 @@ export function CTAContacto() {
                 href="mailto:empresas@biovity.cl"
                 className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
               >
-                <div className="size-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shrink-0">
+                <div className="size-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
                   <HugeiconsIcon icon={Mail01Icon} size={18} />
                 </div>
                 <span className="font-medium">empresas@biovity.cl</span>
@@ -116,7 +112,7 @@ export function CTAContacto() {
                 href="tel:+56912345678"
                 className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
               >
-                <div className="size-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shrink-0">
+                <div className="size-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
                   <HugeiconsIcon icon={CallIcon} size={18} />
                 </div>
                 <span className="font-medium">+56 9 1234 5678</span>
@@ -130,7 +126,7 @@ export function CTAContacto() {
               asChild
             >
               <Link href="/register/organization">
-                Crear cuenta de empresa
+                Publicar una oferta
                 <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
               </Link>
             </Button>
@@ -145,7 +141,7 @@ export function CTAContacto() {
             className="lg:col-span-7"
           >
             {isSubmitted ? (
-              <div className="bg-surface-container-low rounded-xl p-8 sm:p-12 text-center">
+              <div className="bg-surface-container-lowest rounded-xl p-8 sm:p-12 text-center">
                 <div className="size-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mx-auto mb-4 text-secondary">
                   <HugeiconsIcon icon={CheckmarkCircle02Icon} size={28} />
                 </div>
@@ -161,7 +157,7 @@ export function CTAContacto() {
               <form
                 ref={formRef}
                 onSubmit={handleSubmit}
-                className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10"
+                className="bg-surface-container-lowest rounded-xl p-6 sm:p-8 md:p-10"
               >
                 <div className="mb-6 pb-4 border-b border-border">
                   <h3 className="text-lg font-semibold text-foreground">

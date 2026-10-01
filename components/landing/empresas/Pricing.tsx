@@ -26,7 +26,7 @@ export function Pricing() {
   }
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-lowest" id="pricing">
+    <section className="py-24 md:py-36 bg-surface-container-low" id="pricing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 32 }}
@@ -35,16 +35,9 @@ export function Pricing() {
           transition={t(0)}
           className="text-center mb-12 max-w-3xl mx-auto"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Planes & Precios
-          </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Planes transparentes para cada <span className="text-accent font-semibold">etapa</span>
-          </h1>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Desde vacantes puntuales hasta soluciones integrales para equipos de reclutamiento
-            activo.
-          </p>
+          </h2>
         </m.div>
 
         {/* Monthly / Annual Billing Toggle */}
@@ -117,8 +110,8 @@ export function Pricing() {
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
               className={`relative rounded-xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 ${
                 plan.highlighted
-                  ? "bg-surface-container-low border-2 border-secondary"
-                  : "bg-surface-container-low hover:bg-surface-container-highest/60"
+                  ? "bg-surface-container-lowest border-2 border-secondary"
+                  : "bg-surface-container-lowest hover:bg-surface-container-highest/60"
               }`}
             >
               {plan.badge && (

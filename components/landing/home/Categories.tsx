@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import {
   getSpringTransition,
@@ -54,29 +53,21 @@ export function Categories() {
   }
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-low">
+    <section className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
           transition={t(0)}
-          className="text-center mb-16 max-w-3xl mx-auto"
+          className="text-center mb-12 max-w-3xl mx-auto md:mb-16"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Especialidades Científicas
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Explora oportunidades por{" "}
-            <span className="text-accent font-semibold">área de especialización</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
+            Explora por <span className="text-accent font-semibold">especialidad</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Filtra y encuentra vacantes en los sectores biotecnológicos y científicos de mayor
-            crecimiento en el país.
-          </p>
         </m.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORIES_HOME.map((category, index) => {
             const isViolet = index % 2 === 1
             return (
@@ -88,7 +79,7 @@ export function Categories() {
                 transition={ts(index * chainStagger)}
               >
                 <Link href={`/jobs?categoria=${category.id}`} className="block group">
-                  <div className="bg-surface-container-lowest rounded-xl p-6 flex items-center gap-4 transition-colors hover:bg-white/80">
+                  <div className="bg-surface-container-low rounded-xl p-6 flex items-center gap-4 transition-colors hover:bg-surface-container-highest/60">
                     <div
                       className={`shrink-0 size-11 rounded-lg flex items-center justify-center transition-colors ${
                         isViolet
@@ -116,19 +107,6 @@ export function Categories() {
               </m.div>
             )
           })}
-        </div>
-
-        <div className="text-center">
-          <Button
-            asChild
-            size="lg"
-            className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
-          >
-            <Link href="/jobs">
-              Ver todas las oportunidades
-              <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
-            </Link>
-          </Button>
         </div>
       </div>
     </section>

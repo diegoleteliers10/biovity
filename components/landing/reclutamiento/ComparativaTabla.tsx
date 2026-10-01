@@ -14,7 +14,7 @@ export function ComparativaTabla() {
   const [selectedMobileTab, setSelectedMobileTab] = useState<"biovity" | "ats" | "portales" | "headhunters">("biovity")
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-lowest" id="comparativa">
+    <section className="py-24 md:py-36 bg-surface-container-lowest" id="comparativa">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <m.div
@@ -24,16 +24,9 @@ export function ComparativaTabla() {
           transition={t(0)}
           className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Matriz de Evaluación Técnica
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Comparativa Detallada: <span className="text-accent font-semibold">Biovity</span> frente al mercado
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
+            <span className="text-accent font-semibold">Biovity</span> frente al mercado
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Compara objetivamente las capacidades de Biovity con los ATS corporativos, los portales
-            de empleo masivos y las agencias de headhunting tradicionales.
-          </p>
         </m.div>
 
         {/* Mobile View Switcher */}

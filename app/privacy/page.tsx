@@ -38,9 +38,6 @@ export default function PrivacidadPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-              Cumplimiento Ley N° 21.719 y Ley N° 19.628 • Chile
-            </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight text-balance">
               Política de Privacidad y Protección de Datos
             </h1>

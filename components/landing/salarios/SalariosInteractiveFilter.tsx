@@ -87,20 +87,13 @@ export function SalariosInteractiveFilter() {
   const handleExplore = () => setHasSearched(true)
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-lowest">
+    <section className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 max-w-3xl">
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Explorador Interactivo
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+        <div className="mb-12 max-w-3xl md:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Estima tu sueldo por{" "}
             <span className="text-accent font-semibold">carrera, industria y región</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Combina las tres dimensiones determinantes de la renta en Chile para obtener un rango
-            referencial estimado.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">

@@ -12,7 +12,7 @@ export function ProblemaSolucion() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-lowest">
+    <section className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 32 }}
@@ -21,16 +21,9 @@ export function ProblemaSolucion() {
           transition={t(0)}
           className="mb-16 max-w-3xl mx-auto text-center"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Diagnóstico & Infraestructura
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Por qué existe <span className="text-accent font-semibold">Biovity</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            El ecosistema científico chileno cuenta con talento de primer nivel, pero carecía de una
-            plataforma que resolviera las fricciones del mercado.
-          </p>
         </m.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto items-stretch">

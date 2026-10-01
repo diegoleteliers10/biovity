@@ -2,7 +2,6 @@
 
 import {
   ArrowRight01Icon,
-  CheckmarkCircle02Icon,
   Clock01Icon,
   FilterEditIcon,
   Search01Icon,
@@ -37,7 +36,7 @@ export function ConsejosGrid() {
   })
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-low relative">
+    <section className="py-24 md:py-36 bg-surface-container-low relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <m.div
@@ -48,11 +47,8 @@ export function ConsejosGrid() {
           className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10"
         >
           <div>
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-              Guías & Estrategias
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground tracking-tight">
-              Explora Consejos por Categoría
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight">
+              Explora por <span className="text-accent font-semibold">categoría</span>
             </h2>
           </div>
 
@@ -133,18 +129,11 @@ export function ConsejosGrid() {
                 className="flex flex-col justify-between rounded-xl bg-surface-container-lowest border border-border hover:border-secondary/40 hover:bg-surface-container-lowest/90 shadow-none transition-all group overflow-hidden"
               >
                 <div className="p-6">
-                  {/* Category & Badge */}
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <span className="inline-block px-3 py-1 rounded-full text-xs font-mono font-medium bg-secondary/10 text-secondary border border-secondary/20">
-                      {CONSEJOS_CATEGORIAS.find((c) => c.id === article.category)?.label ||
-                        "General"}
-                    </span>
-                    {article.badgeText && (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-accent/10 text-accent border border-accent/20">
-                        {article.badgeText}
-                      </span>
-                    )}
-                  </div>
+                  {/* Category */}
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-mono font-medium bg-secondary/10 text-secondary border border-secondary/20 mb-4">
+                    {CONSEJOS_CATEGORIAS.find((c) => c.id === article.category)?.label ||
+                      "General"}
+                  </span>
 
                   {/* Title */}
                   <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-secondary transition-colors leading-snug tracking-tight">
@@ -155,26 +144,6 @@ export function ConsejosGrid() {
                   <p className="text-xs sm:text-sm text-muted-foreground mb-5 line-clamp-3 leading-relaxed">
                     {article.description}
                   </p>
-
-                  {/* Key Takeaways */}
-                  <div className="space-y-2 pt-4 border-t border-border mb-4">
-                    <p className="text-xs font-mono font-semibold text-foreground uppercase tracking-wider">
-                      Puntos Clave:
-                    </p>
-                    {article.takeaways.map((takeaway) => (
-                      <div
-                        key={takeaway}
-                        className="flex items-start gap-2 text-xs text-muted-foreground"
-                      >
-                        <HugeiconsIcon
-                          icon={CheckmarkCircle02Icon}
-                          size={14}
-                          className="text-secondary shrink-0 mt-0.5"
-                        />
-                        <span>{takeaway}</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
 
                 {/* Footer Info & Link */}
