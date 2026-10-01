@@ -38,9 +38,6 @@ export default function CookiesPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-              Tecnologías Web & Transparencia
-            </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight text-balance">
               Política de Cookies y Almacenamiento
             </h1>
@@ -75,55 +72,55 @@ export default function CookiesPage() {
                 2. Tabla de Cookies Utilizadas
               </h2>
               <div className="overflow-x-auto rounded-xl border border-border bg-surface-container-lowest mt-4">
-                <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-surface-container-low border-b border-border text-muted-foreground font-mono text-[11px] uppercase">
+                <table className="w-full text-left text-xs sm:text-sm [word-break:break-word]">
+                  <thead className="bg-surface-container-low border-b border-border text-muted-foreground font-mono text-[10px] uppercase [&_th]:whitespace-nowrap">
                     <tr>
-                      <th scope="col" className="px-4 py-3 font-semibold">
+                      <th scope="col" className="px-2 py-3 font-semibold sm:px-4">
                         Cookie
                       </th>
-                      <th scope="col" className="px-4 py-3 font-semibold">
+                      <th scope="col" className="px-2 py-3 font-semibold sm:px-4">
                         Proveedor
                       </th>
-                      <th scope="col" className="px-4 py-3 font-semibold">
+                      <th scope="col" className="px-2 py-3 font-semibold sm:px-4">
                         Finalidad
                       </th>
-                      <th scope="col" className="px-4 py-3 font-semibold">
+                      <th scope="col" className="px-2 py-3 font-semibold sm:px-4">
                         Duración
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border text-muted-foreground">
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                      <td className="px-2 py-3 font-mono font-medium text-foreground break-all sm:px-4">
                         better-auth.session_token
                       </td>
-                      <td className="px-4 py-3">Biovity (Propia)</td>
-                      <td className="px-4 py-3">Sesión autenticada de usuario</td>
-                      <td className="px-4 py-3 font-mono">7 días</td>
+                      <td className="px-2 py-3 sm:px-4">Biovity (Propia)</td>
+                      <td className="px-2 py-3 sm:px-4">Sesión autenticada de usuario</td>
+                      <td className="px-2 py-3 font-mono sm:px-4">7 días</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                      <td className="px-2 py-3 font-mono font-medium text-foreground break-all sm:px-4">
                         better-auth.csrf_token
                       </td>
-                      <td className="px-4 py-3">Biovity (Propia)</td>
-                      <td className="px-4 py-3">Protección contra ataques CSRF</td>
-                      <td className="px-4 py-3 font-mono">Sesión</td>
+                      <td className="px-2 py-3 sm:px-4">Biovity (Propia)</td>
+                      <td className="px-2 py-3 sm:px-4">Protección contra ataques CSRF</td>
+                      <td className="px-2 py-3 font-mono sm:px-4">Sesión</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                      <td className="px-2 py-3 font-mono font-medium text-foreground break-all sm:px-4">
                         sidebar_state
                       </td>
-                      <td className="px-4 py-3">Biovity (Propia)</td>
-                      <td className="px-4 py-3">Preferencia visual de navegación</td>
-                      <td className="px-4 py-3 font-mono">30 días</td>
+                      <td className="px-2 py-3 sm:px-4">Biovity (Propia)</td>
+                      <td className="px-2 py-3 sm:px-4">Preferencia visual de navegación</td>
+                      <td className="px-2 py-3 font-mono sm:px-4">30 días</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-mono font-medium text-foreground">
+                      <td className="px-2 py-3 font-mono font-medium text-foreground break-all sm:px-4">
                         _vercel_analytics
                       </td>
-                      <td className="px-4 py-3">Vercel Inc.</td>
-                      <td className="px-4 py-3">Telemetría anónima de rendimiento</td>
-                      <td className="px-4 py-3 font-mono">Sesión</td>
+                      <td className="px-2 py-3 sm:px-4">Vercel Inc.</td>
+                      <td className="px-2 py-3 sm:px-4">Telemetría anónima de rendimiento</td>
+                      <td className="px-2 py-3 font-mono sm:px-4">Sesión</td>
                     </tr>
                   </tbody>
                 </table>

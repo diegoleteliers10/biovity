@@ -22,9 +22,6 @@ export function SectionHero() {
           transition={t()}
           className="max-w-3xl"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            APRENDE • CAPSULAS DE APRENDIZAJE
-          </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance">
             Cápsulas de aprendizaje para el{" "}
             <span className="text-accent font-semibold">sector biocientífico</span>

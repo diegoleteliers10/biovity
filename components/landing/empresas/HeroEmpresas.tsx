@@ -21,16 +21,6 @@ export function HeroEmpresas() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Green Plain Text Tag */}
-          <m.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.4, ease }}
-            className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-4 block"
-          >
-            Biovity para Empresas • ATS & Reclutamiento Científico
-          </m.span>
-
           {/* Main Headline */}
           <m.h1
             initial={{ opacity: 0, y: 24, scale: 0.99 }}
@@ -38,8 +28,7 @@ export function HeroEmpresas() {
             transition={{ duration: reducedMotion ? 0.01 : 0.5, ease }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
           >
-            Software ATS y Reclutamiento{" "}
-            <span className="text-accent font-semibold">Científico</span> en Chile
+            Recluta <span className="text-accent font-semibold">talento científico</span> en Chile
           </m.h1>
 
           {/* Subheadline */}
@@ -49,8 +38,8 @@ export function HeroEmpresas() {
             transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Centraliza candidatos, evalúa habilidades de laboratorio con scoring de IA y reduce tus
-            tiempos de contratación técnica en un 60%.
+            Publica ofertas técnicas, evalúa con scoring de IA y gestiona todo tu pipeline en un
+            solo ATS.
           </m.p>
 
           {/* CTA Group */}

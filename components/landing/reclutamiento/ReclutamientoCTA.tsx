@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -13,14 +13,8 @@ export function ReclutamientoCTA() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
-  const benefits = [
-    "Plan Free disponible para siempre",
-    "Sin comisiones sobre contratación",
-    "Acceso inmediato a la red científica de Chile",
-  ]
-
   return (
-    <section className="py-24 bg-surface-container-low border-t border-border/40">
+    <section className="py-28 md:py-40 bg-surface-container-low border-t border-border/40">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <m.div
           initial={{ opacity: 0, y: 32 }}
@@ -28,18 +22,13 @@ export function ReclutamientoCTA() {
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Evoluciona tu Selección Científica
-          </span>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-5 leading-tight tracking-tight text-balance">
             Deja atrás los filtros ciegos y{" "}
             <span className="text-accent font-semibold">recluta con precisión</span>
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-pretty">
-            Crea tu cuenta de organización en 2 minutos y publica tu primera oferta científica con
-            evaluación de técnicas y AI Matching integrado.
+          <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl mx-auto text-pretty">
+            Crea tu cuenta de organización y publica tu primera oferta científica.
           </p>
         </m.div>
 
@@ -48,7 +37,7 @@ export function ReclutamientoCTA() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={ts(LANDING_ANIMATION.sequenceDelay)}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Button
             size="lg"
@@ -68,21 +57,6 @@ export function ReclutamientoCTA() {
           >
             <Link href="/plans">Ver planes y precios</Link>
           </Button>
-        </m.div>
-
-        <m.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
-          className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-muted-foreground"
-        >
-          {benefits.map((benefit) => (
-            <div key={benefit} className="flex items-center gap-2">
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} className="text-secondary" />
-              <span>{benefit}</span>
-            </div>
-          ))}
         </m.div>
       </div>
     </section>

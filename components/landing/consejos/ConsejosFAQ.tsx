@@ -17,7 +17,7 @@ export function ConsejosFAQ() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-low relative">
+    <section className="py-24 md:py-36 bg-surface-container-low relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -26,16 +26,9 @@ export function ConsejosFAQ() {
           transition={t(0)}
           className="text-center mb-12"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Preguntas Frecuentes
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground tracking-tight mb-3">
-            Preguntas Frecuentes sobre Desarrollo Profesional
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight mb-0">
+            Preguntas <span className="text-accent font-semibold">frecuentes</span>
           </h2>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto text-pretty">
-            Respuestas directas a las dudas más comunes al ingresar o avanzar en la industria
-            biotecnológica y científica.
-          </p>
         </m.div>
 
         <m.div

@@ -24,7 +24,7 @@ export function MetricsShowcase() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
 
   return (
-    <section className="w-full bg-surface-container-lowest py-20 md:py-28">
+    <section className="w-full bg-surface-container-lowest py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
@@ -33,16 +33,9 @@ export function MetricsShowcase() {
           transition={t()}
           className="mb-10 text-center md:mb-12"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Tus métricas
-          </span>
-          <h2 className="text-2xl font-semibold text-foreground mb-4 tracking-tight text-balance sm:text-3xl md:text-4xl">
+          <h2 className="text-3xl font-semibold text-foreground mb-0 tracking-tight text-balance sm:text-4xl md:text-5xl">
             Tu búsqueda, <span className="text-accent font-semibold">con datos</span>
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-0 max-w-3xl mx-auto leading-relaxed text-pretty">
-            Cada postulación deja un rastro: cuántas enviaste, cuánto tardan en responderte y en qué
-            etapa va cada proceso. Todo medido automáticamente en tu panel de métricas.
-          </p>
         </m.div>
 
         <m.div
@@ -55,7 +48,7 @@ export function MetricsShowcase() {
           <ProductShot
             url="biovity.cl/dashboard/metrics"
             height="h-auto"
-            caption="Vista: Métricas · datos ilustrativos de 12 meses"
+            caption="Datos ilustrativos de 12 meses"
           >
             <div className="flex flex-col gap-4 p-4 sm:p-6">
               <DemoHeader
@@ -63,7 +56,7 @@ export function MetricsShowcase() {
                 subtitle="Analiza el rendimiento de tu búsqueda de empleo."
                 unreadNotifications={2}
               />
-              <ChartsGrid metricsData={DEMO_USER_METRICS_DATA} period="year" />
+              <ChartsGrid metricsData={DEMO_USER_METRICS_DATA} period="month" />
             </div>
           </ProductShot>
         </m.div>

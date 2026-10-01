@@ -224,10 +224,6 @@ export function SalariosCrowdsourcing() {
           transition={{ duration: reducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
           className="text-center mb-12 max-w-2xl mx-auto"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Encuesta Salarial Anónima
-          </span>
-
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
             Comparte tu sueldo y{" "}
             <span className="text-accent font-semibold">apoya a la comunidad</span>

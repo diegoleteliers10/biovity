@@ -17,7 +17,7 @@ export function ReclutamientoFAQ() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section id="faq-reclutamiento" className="py-20 md:py-28 bg-surface-container-lowest">
+    <section id="faq-reclutamiento" className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <m.div
@@ -27,15 +27,9 @@ export function ReclutamientoFAQ() {
           transition={t(0)}
           className="text-center mb-12"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Preguntas Frecuentes
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Dudas sobre <span className="text-accent font-semibold">herramientas de reclutamiento</span>
-          </h2>
-          <p className="text-base sm:text-lg text-muted-foreground text-pretty">
-            Respuestas a las consultas más comunes sobre migración, integración y capacidades técnicas de Biovity.
-          </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
+Preguntas <span className="text-accent font-semibold">frecuentes</span>
+</h2>
         </m.div>
 
         {/* Accordion List */}

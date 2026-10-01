@@ -239,7 +239,9 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                 />
                 <Tooltip
                   cursor={{ stroke: "#6366f1", strokeWidth: 1, strokeDasharray: "2 2" }}
-                  formatter={(value: number) => [`${value} postulaciones`, "Postulados"]}
+                  formatter={(value: number) =>
+                    [`${value} ${value === 1 ? "postulación" : "postulaciones"}`, "Postulados"]
+                  }
                   labelFormatter={(label) => formatTrendTick(String(label), period)}
                 />
                 <Area
@@ -348,7 +350,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                       className={`absolute inset-0 flex items-center pl-3 text-xs font-semibold ${row.textColor}`}
                     >
                       {row.count > 0
-                        ? `${row.count} postulaciones`
+                        ? `${row.count} ${row.count === 1 ? "postulación" : "postulaciones"}`
                         : "Sin postulaciones en este estado"}
                     </span>
                   </div>

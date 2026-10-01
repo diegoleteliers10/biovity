@@ -50,24 +50,20 @@ export function Hero() {
         <div className="text-center max-w-4xl mx-auto">
           {/* Heading */}
           <h1 className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:fill-mode-both text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 sm:mb-8 tracking-tight leading-[1.12] text-balance">
-            Donde el talento científico conecta con{" "}
-            <span className="text-secondary underline decoration-secondary/30 decoration-wavy decoration-from-font">
-              biotecnología
-            </span>{" "}
-            e <span className="text-accent">innovación I+D</span>
+            Empleos en biotecnología y ciencias,{" "}
+            <span className="text-accent">salarios transparentes</span>
           </h1>
 
           {/* Subtitle */}
           <p className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-100 motion-safe:fill-mode-both text-base sm:text-lg md:text-xl text-muted-foreground mb-10 sm:mb-14 max-w-2xl mx-auto leading-relaxed text-pretty">
-            Encuentra ofertas laborales verificadas con salarios transparentes en biotecnología,
-            bioquímica, química, laboratorios clínicos y centros de investigación en Chile.
+            Ofertas verificadas en laboratorios, centros de I+D y la industria científica de Chile.
           </p>
 
           {/* Main Interactive Search Console */}
           <div className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:delay-200 motion-safe:fill-mode-both max-w-3xl mx-auto mb-8 sm:mb-12">
             <form
               onSubmit={handleSearch}
-              className="rounded-2xl border-2 border-border/80 bg-surface-container-lowest p-2.5 sm:p-3 shadow-lg shadow-black/[0.03] backdrop-blur-sm transition-all focus-within:border-secondary/50 focus-within:shadow-secondary/5"
+              className="rounded-2xl border-2 border-border/80 bg-surface-container-lowest p-2.5 sm:p-3 transition-all focus-within:border-secondary/50"
             >
               <div className="flex flex-col sm:flex-row gap-2.5">
                 {/* Field 1: Query */}
@@ -79,7 +75,7 @@ export function Hero() {
                   />
                   <Input
                     aria-label="Buscar cargo o habilidad"
-                    placeholder="Cargo, técnica (PCR, HPLC) o especialidad"
+                    placeholder="Cargo, técnica o especialidad"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     className="pl-11 h-12 bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:bg-surface-container-low/40 rounded-xl"
@@ -97,7 +93,7 @@ export function Hero() {
                   />
                   <Input
                     aria-label="Buscar región o modalidad"
-                    placeholder="Región (Santiago, Valparaíso, Biobío, Remoto)"
+                    placeholder="Región, ciudad o Remoto"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="pl-11 h-12 bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:bg-surface-container-low/40 rounded-xl"

@@ -2,28 +2,17 @@
 
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { CONSEJOS_STATS } from "@/lib/data/consejos-carrera-data"
 
 export function ConsejosHero() {
   const reducedMotion = useReducedMotion()
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
 
   return (
     <section className="relative w-full overflow-hidden bg-surface-container-lowest pt-32 pb-16 md:pt-40 md:pb-24">
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Green Plain Text Tag */}
-          <m.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={t(0)}
-            className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-4 block"
-          >
-            Desarrollo Profesional en Biociencias & Biotech
-          </m.span>
-
           {/* Heading */}
           <m.h1
             initial={{ opacity: 0, y: 24, scale: 0.99 }}
@@ -31,9 +20,8 @@ export function ConsejosHero() {
             transition={ts(LANDING_ANIMATION.sequenceDelay)}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
           >
-            Consejos de Carrera en{" "}
-            <span className="text-secondary font-semibold">Biotecnología</span> y{" "}
-            <span className="text-accent font-semibold">Ciencias</span>
+            Consejos de carrera en{" "}
+            <span className="text-accent font-semibold">biotecnología y ciencias</span>
           </m.h1>
 
           {/* Subtitle */}
@@ -43,8 +31,7 @@ export function ConsejosHero() {
             transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Guías prácticas, optimización de CV para sistemas ATS, preparación de entrevistas
-            técnicas y estrategias comprobadas para transicionar con éxito de la academia a la
+            Optimiza tu CV para ATS, prepara entrevistas técnicas y transita de la academia a la
             industria.
           </m.p>
 
