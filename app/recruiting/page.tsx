@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
 import { ComparativaTabla } from "@/components/landing/reclutamiento/ComparativaTabla"
-import { ComoSeUsanHoy } from "@/components/landing/reclutamiento/ComoSeUsanHoy"
-import { DiferenciaBiovity } from "@/components/landing/reclutamiento/DiferenciaBiovity"
 import { FlujoComparativo } from "@/components/landing/reclutamiento/FlujoComparativo"
 import { QueSeUsaHoy } from "@/components/landing/reclutamiento/QueSeUsaHoy"
 import { ReclutamientoCTA } from "@/components/landing/reclutamiento/ReclutamientoCTA"
@@ -76,8 +74,6 @@ export default function ReclutamientoPage() {
       <main className="flex flex-col relative">
         <ReclutamientoHero />
         <QueSeUsaHoy />
-        <ComoSeUsanHoy />
-        <DiferenciaBiovity />
         <ComparativaTabla />
         <FlujoComparativo />
         <ReclutamientoFAQ />

@@ -17,16 +17,6 @@ export function NosotrosHero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Green Plain Text Tag */}
-          <m.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.4, ease }}
-            className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-4 block"
-          >
-            Sobre Biovity • El hogar de las biociencias
-          </m.span>
-
           {/* Main Headline */}
           <m.h1
             initial={{ opacity: 0, y: 24, scale: 0.99 }}
@@ -45,8 +35,8 @@ export function NosotrosHero() {
             transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed text-pretty"
           >
-            Construimos la infraestructura digital que conecta a investigadores, biotecnólogos y
-            profesionales de la ciencia con oportunidades transparentes y de alto impacto.
+            Construimos la infraestructura que conecta a la ciencia chilena con oportunidades
+            transparentes y de alto impacto.
           </m.p>
 
           {/* Key Metrics Grid - Clean borderless tonal cards */}

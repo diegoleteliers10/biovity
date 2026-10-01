@@ -1,6 +1,6 @@
 "use client"
 
-import { Search01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon, Search01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -275,7 +275,7 @@ export function DashboardPreview() {
   }
 
   return (
-    <section className="w-full bg-surface-container-lowest py-20 md:py-28">
+    <section className="w-full bg-surface-container-lowest py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
@@ -284,15 +284,11 @@ export function DashboardPreview() {
           transition={t()}
           className="mb-10 text-center md:mb-14"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            El producto • Demo interactiva
-          </span>
-          <h2 className="text-2xl font-semibold text-foreground mb-4 tracking-tight text-balance sm:text-3xl md:text-4xl">
+          <h2 className="text-3xl font-semibold text-foreground mb-3 tracking-tight text-balance sm:text-4xl md:text-5xl">
             Así se ve tu <span className="text-accent font-semibold">dashboard</span>
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-0 max-w-3xl mx-auto leading-relaxed text-pretty">
-            Explora el panel real de Biovity con datos de ejemplo: revisa tus postulaciones,
-            conversa con reclutadores, crea alertas y busca tu próximo empleo en ciencias.
+          <p className="text-base sm:text-lg text-muted-foreground mb-0 max-w-2xl mx-auto leading-relaxed text-pretty">
+            Explora la demo interactiva con datos de ejemplo.
           </p>
         </m.div>
 
@@ -340,24 +336,18 @@ export function DashboardPreview() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
           transition={t(0.15)}
-          className="mt-8 flex flex-col items-center gap-4"
+          className="mt-8 flex flex-col items-center gap-1"
         >
-          <p className="text-xs text-muted-foreground">
-            Navega desde el menú lateral — Dashboard y Buscar Empleos están activos en la demo.
-          </p>
-          <div className="flex flex-col items-center gap-3 sm:flex-row">
-            <Button size="lg" className="h-11 px-6 rounded-lg text-sm font-medium" asChild>
-              <Link href="/register">Crear cuenta gratis</Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-11 rounded-lg border-border/40 bg-surface-container-lowest text-sm font-medium hover:bg-surface-container-low"
-              asChild
-            >
-              <Link href="/jobs">Ver empleos publicados</Link>
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            className="h-10 px-4 text-sm font-medium text-muted-foreground hover:text-foreground"
+            asChild
+          >
+            <Link href="/register">
+              Crear cuenta gratis
+              <HugeiconsIcon icon={ArrowRight01Icon} size={15} className="ml-1.5" />
+            </Link>
+          </Button>
         </m.div>
       </div>
     </section>

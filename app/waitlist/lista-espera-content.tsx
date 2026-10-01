@@ -117,17 +117,11 @@ export function ListaEsperaContent() {
             />
           </Link>
 
-          {/* Green Plain Text Tag */}
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Acceso Anticipado • Ecosistema Biovity
-          </span>
-
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
             El nuevo estándar de empleo científico en Chile
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed text-pretty">
-            Únete a la lista de espera para acceder antes a vacantes especializadas, herramientas de
-            inteligencia salarial y reclutamiento técnico.
+            Accede antes a vacantes especializadas, datos salariales y reclutamiento técnico.
           </p>
         </m.div>
 

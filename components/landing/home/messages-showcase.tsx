@@ -1,7 +1,5 @@
 "use client"
 
-import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { useEffect, useRef, useState } from "react"
@@ -32,12 +30,6 @@ const PROFESSIONAL_ID = "demo-javiera"
 
 const formatTime = (iso: string) =>
   new Date(iso).toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" })
-
-const HIGHLIGHTS = [
-  "Mensajería en tiempo real con los reclutadores",
-  "Agenda de entrevistas dentro de la conversación",
-  "Envío de imágenes y documentos (CV, certificados)",
-]
 
 /**
  * Chat visualization for the landing: the real ChatHeader, MessageBubble and
@@ -175,37 +167,22 @@ export function MessagesShowcase() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
 
   return (
-    <section className="w-full bg-surface-container-low py-20 md:py-28">
+    <section className="w-full bg-surface-container-low py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16 [&>*]:min-w-0">
           <m.div
             initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: viewportMargin }}
             transition={t()}
+            className="text-center lg:text-left"
           >
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-              Conexión directa
-            </span>
-            <h2 className="text-2xl font-semibold text-foreground mb-4 tracking-tight text-balance sm:text-3xl md:text-4xl">
+            <h2 className="text-3xl font-semibold text-foreground mb-4 tracking-tight text-balance sm:text-4xl md:text-5xl">
               Habla directo con <span className="text-accent font-semibold">quien contrata</span>
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed text-pretty">
-              Sin intermediarios ni correos perdidos: la conversación con cada empresa vive junto a
-              tu postulación, y las entrevistas se agendan dentro del mismo chat.
+            <p className="text-base sm:text-lg text-muted-foreground mb-0 mx-auto max-w-xl leading-relaxed text-pretty lg:mx-0">
+              La conversación con cada empresa vive junto a tu postulación.
             </p>
-            <ul className="space-y-3">
-              {HIGHLIGHTS.map((item) => (
-                <li key={item} className="flex items-start gap-2.5">
-                  <HugeiconsIcon
-                    icon={CheckmarkCircle02Icon}
-                    size={18}
-                    className="mt-0.5 shrink-0 text-secondary"
-                  />
-                  <span className="text-sm text-foreground">{item}</span>
-                </li>
-              ))}
-            </ul>
           </m.div>
 
           <m.div
@@ -217,7 +194,7 @@ export function MessagesShowcase() {
             <ProductShot
               url="biovity.cl/dashboard/messages"
               height="h-[520px] lg:h-[560px]"
-              caption="Vista: Mensajes · datos ilustrativos — prueba responder la entrevista"
+              caption="Prueba responder la entrevista · datos ilustrativos"
             >
               <DemoChatThread />
             </ProductShot>

@@ -62,7 +62,7 @@ export function TalentShowcase() {
   }
 
   return (
-    <section className="w-full bg-surface-container-low py-20 md:py-28">
+    <section className="w-full bg-surface-container-low py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
@@ -71,17 +71,10 @@ export function TalentShowcase() {
           transition={t()}
           className="mb-10 text-center md:mb-12"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Pool de talento
-          </span>
-          <h2 className="text-2xl font-semibold text-foreground mb-4 tracking-tight text-balance sm:text-3xl md:text-4xl">
+          <h2 className="text-3xl font-semibold text-foreground mb-0 tracking-tight text-balance sm:text-4xl md:text-5xl">
             Explora el talento <span className="text-accent font-semibold">científico</span> de
             Chile
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-0 max-w-3xl mx-auto leading-relaxed text-pretty">
-            Busca por profesión, habilidades y ubicación dentro del pool de profesionales de
-            Biovity, revisa su perfil con un clic y escríbele directamente.
-          </p>
         </m.div>
 
         <m.div
@@ -107,7 +100,7 @@ export function TalentShowcase() {
               <div className="flex items-center gap-2">
                 <div className="relative min-w-0 flex-1">
                   <Input
-                    placeholder="Buscar por nombre, profesión o habilidad..."
+                    placeholder="Buscar talento..."
                     aria-label="Buscar talento (demo)"
                     className="h-11 bg-surface-container-low pl-10 text-sm"
                   />

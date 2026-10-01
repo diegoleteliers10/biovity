@@ -29,19 +29,12 @@ export function SalariosEmpresasB2B() {
       : { min: selected.seniorMin, max: selected.seniorMax }
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-lowest">
+    <section className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-14 max-w-3xl">
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Para Empresas & Reclutadores en Chile
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+        <div className="mb-14 max-w-3xl md:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Guía B2B de <span className="text-accent font-semibold">bandas salariales</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Datos de referencia para estructurar propuestas competitivas y retener talento técnico
-            clave en el ecosistema científico chileno.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-14 items-start">

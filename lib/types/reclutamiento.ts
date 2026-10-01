@@ -17,17 +17,6 @@ export type HerramientaActual = {
   tag: string
 }
 
-export type FriccionWorkflow = IconTitleDescription & {
-  impacto: string
-  sintomaComun: string
-}
-
-export type DiferenciadorBiovity = IconTitleDescription & {
-  tag: string
-  ventajaTecnica: string
-  metricaClave?: string
-}
-
 export type MatrizComparativaItem = {
   criterio: string
   descripcion: string

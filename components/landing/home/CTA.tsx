@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
@@ -27,14 +27,8 @@ export function CTA() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion, isMobile })
 
-  const benefits = [
-    "100% Gratuito para profesionales",
-    "Ofertas de empleo reales y verificadas",
-    "Bandas salariales transparentes",
-  ]
-
   return (
-    <section className="py-24 bg-surface-container-lowest">
+    <section className="py-28 md:py-40 bg-surface-container-low">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
@@ -42,18 +36,13 @@ export function CTA() {
           viewport={{ once: true, margin: viewportMargin }}
           transition={t(0)}
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Únete a la red
-          </span>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance">
-            ¿Listo para impulsar tu carrera en la{" "}
-            <span className="text-accent font-semibold">ciencia y biotecnología</span>?
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-5 leading-tight tracking-tight text-balance">
+            Empieza tu próxima etapa en la{" "}
+            <span className="text-accent font-semibold">ciencia</span>
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto text-pretty">
-            Ya seas un profesional explorando nuevas oportunidades o una empresa buscando talento
-            técnico especializado, Biovity es tu punto de encuentro.
+          <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl mx-auto text-pretty">
+            Profesionales y empresas, en un solo lugar.
           </p>
         </m.div>
 
@@ -64,7 +53,7 @@ export function CTA() {
           transition={ts(
             isMobile ? LANDING_ANIMATION_MOBILE.sequenceDelay : LANDING_ANIMATION.sequenceDelay
           )}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
         >
           <Button
             size="lg"
@@ -82,7 +71,7 @@ export function CTA() {
             className="w-full sm:w-auto h-11 px-6 bg-surface-container-lowest border-border hover:bg-surface-container-low rounded-lg text-sm font-medium"
             asChild
           >
-            <Link href="/register/organization">Acceso para Organizaciones</Link>
+            <Link href="/register/organization">Soy empresa</Link>
           </Button>
         </m.div>
 
@@ -95,14 +84,14 @@ export function CTA() {
               ? LANDING_ANIMATION_MOBILE.sequenceDelay * 2
               : LANDING_ANIMATION.sequenceDelay * 2
           )}
-          className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-muted-foreground"
         >
-          {benefits.map((benefit) => (
-            <div key={benefit} className="flex items-center gap-2">
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} className="text-secondary" />
-              <span>{benefit}</span>
-            </div>
-          ))}
+          <Link
+            href="/jobs?experiencia=junior"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-secondary font-medium transition-colors"
+          >
+            ¿Estudiante o recién graduado? Explora prácticas y vacantes junior
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} className="shrink-0" />
+          </Link>
         </m.div>
       </div>
     </section>

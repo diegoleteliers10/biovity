@@ -13,7 +13,7 @@ export function FlujoComparativo() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-20 md:py-28 bg-surface-container-low" id="flujo-comparativo">
+    <section className="py-24 md:py-36 bg-surface-container-low" id="flujo-comparativo">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <m.div
@@ -23,17 +23,9 @@ export function FlujoComparativo() {
           transition={t(0)}
           className="text-center mb-16 max-w-3xl mx-auto"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Flujo Paso a Paso • Proceso Operativo
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            El Proceso de Contratación:{" "}
-            <span className="text-accent font-semibold">Antes vs. Con Biovity</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
+            Antes vs. con <span className="text-accent font-semibold">Biovity</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Observa cómo se transforma cada etapa del ciclo de selección al reemplazar herramientas
-            dispersas por un ecosistema científico unificado.
-          </p>
         </m.div>
 
         {/* Timeline Comparison Cards */}

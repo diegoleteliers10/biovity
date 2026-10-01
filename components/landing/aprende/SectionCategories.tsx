@@ -19,23 +19,18 @@ export function SectionCategories() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
 
   return (
-    <section className="relative py-16 md:py-24">
+    <section className="relative py-24 md:py-36">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
           transition={t()}
+          className="mb-12 md:mb-16"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            CATEGORÍAS
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground mb-4 tracking-tight text-balance">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Contenido <span className="text-accent font-semibold">organizado</span> por área
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed text-pretty">
-            Explora cápsulas por disciplina científica.
-          </p>
         </m.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

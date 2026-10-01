@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { ComoFuncionaEmpresas } from "@/components/landing/empresas/ComoFuncionaEmpresas"
 import { CTAContacto } from "@/components/landing/empresas/CTAContacto"
 import { FAQ } from "@/components/landing/empresas/FAQ"
-import { FeaturesATS } from "@/components/landing/empresas/FeaturesATS"
 import { HeroEmpresas } from "@/components/landing/empresas/HeroEmpresas"
 import { LazyOrganizationDashboardPreview } from "@/components/landing/empresas/LazyOrgDemo"
 import {
@@ -92,7 +91,6 @@ export default function EmpresasPage() {
         <ComoFuncionaEmpresas />
         <LazyTalentShowcase />
         <LazyFunnelGeoShowcase />
-        <FeaturesATS />
         <Pricing />
         {/* TODO: Descomentar cuando tengamos testimonios reales */}
         {/* <Testimonios /> */}

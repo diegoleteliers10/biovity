@@ -17,7 +17,7 @@ export function FAQ() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section id="faq" className="py-20 md:py-28 bg-surface-container-low">
+    <section id="faq" className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 32 }}
@@ -26,15 +26,9 @@ export function FAQ() {
           transition={t(0)}
           className="text-center mb-12"
         >
-          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-            Preguntas Frecuentes
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Resolvemos tus <span className="text-accent font-semibold">dudas</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
+            Preguntas <span className="text-accent font-semibold">frecuentes</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground text-pretty">
-            Todo lo que necesitas saber sobre Biovity para empresas y organizaciones.
-          </p>
         </m.div>
 
         <m.div
@@ -43,13 +37,13 @@ export function FAQ() {
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={ts(LANDING_ANIMATION.sequenceDelay)}
         >
-          {/* Clean borderless accordion items on surface-container-low */}
+          {/* Clean tonal accordion items on surface-container-lowest */}
           <Accordion type="single" collapsible className="space-y-3">
             {FAQS_EMPRESAS.map((faq) => (
               <AccordionItem
                 key={faq.question}
                 value={faq.question}
-                className="bg-surface-container-lowest rounded-xl overflow-hidden transition-colors hover:bg-white/80"
+                className="bg-surface-container-low rounded-xl overflow-hidden transition-colors hover:bg-surface-container-highest/60"
               >
                 <AccordionTrigger className="w-full px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left transition-colors hover:no-underline font-semibold text-foreground text-sm sm:text-base gap-4 [&>svg]:text-muted-foreground">
                   {faq.question}
