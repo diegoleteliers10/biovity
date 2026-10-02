@@ -21,7 +21,7 @@ import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn, formatFechaRelativa } from "@/lib/utils"
 
 type WaitlistEntry = {
-  id: number
+  id: string
   email: string
   role: string
   createdAt: string
@@ -29,7 +29,7 @@ type WaitlistEntry = {
 }
 
 type InviteResult = {
-  id: number
+  id: string
   status: "sent" | "skipped" | "failed"
 }
 
@@ -41,8 +41,8 @@ type State = {
   inputSearch: string
   roleFilter: string
   page: number
-  selectedIds: Set<number>
-  sendingIds: Set<number>
+  selectedIds: Set<string>
+  sendingIds: Set<string>
   sendingAll: boolean
   refreshNonce: number
 }
@@ -54,13 +54,13 @@ type Action =
   | { type: "SET_INPUT_SEARCH"; value: string }
   | { type: "SET_ROLE_FILTER"; value: string }
   | { type: "SET_PAGE"; page: number }
-  | { type: "REMOVE_ITEM"; id: number }
+  | { type: "REMOVE_ITEM"; id: string }
   | { type: "RESTORE_ITEM"; item: WaitlistEntry }
-  | { type: "TOGGLE_SELECTED"; id: number }
-  | { type: "TOGGLE_SELECT_ALL"; ids: number[] }
+  | { type: "TOGGLE_SELECTED"; id: string }
+  | { type: "TOGGLE_SELECT_ALL"; ids: string[] }
   | { type: "CLEAR_SELECTED" }
-  | { type: "REMOVE_ITEMS"; ids: number[] }
-  | { type: "SET_SENDING"; ids: number[] }
+  | { type: "REMOVE_ITEMS"; ids: string[] }
+  | { type: "SET_SENDING"; ids: string[] }
   | { type: "CLEAR_SENDING" }
   | { type: "SET_SENDING_ALL"; value: boolean }
   | { type: "REFRESH" }
@@ -68,7 +68,7 @@ type Action =
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "SET_ITEMS": {
-      const preservedSelected = new Set<number>()
+      const preservedSelected = new Set<string>()
       for (const id of state.selectedIds) {
         if (action.items.some((i) => i.id === id)) preservedSelected.add(id)
       }
@@ -140,7 +140,7 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-function withoutId(set: Set<number>, id: number): Set<number> {
+function withoutId(set: Set<string>, id: string): Set<string> {
   const next = new Set(set)
   next.delete(id)
   return next
@@ -298,7 +298,7 @@ export function AdminWaitlistContent() {
     }, UNDO_TIMEOUT_MS)
   }, [state.selectedIds, state.items])
 
-  const handleSendInvites = useCallback(async (ids: number[] | "all") => {
+  const handleSendInvites = useCallback(async (ids: string[] | "all") => {
     const sendAll = ids === "all"
     if (
       (sendAll || ids.length > 1) &&
@@ -318,7 +318,7 @@ export function AdminWaitlistContent() {
       const res = await fetch("/api/admin/waitlist/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sendAll ? { all: true } : { ids }),
+        body: JSON.stringify(sendAll ? { scope: "all" } : { scope: "selected", ids }),
       })
       const data = await res.json().catch(() => null)
       if (!res.ok) {

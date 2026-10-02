@@ -5,7 +5,7 @@ import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"
 
 export type WaitlistEntry = {
-  id: number
+  id: string
   email: string
   role: string
   createdAt: string
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
   const result = await R.tryPromise({
     try: () =>
       pool.query<{
-        id: number
+        id: string
         email: string
         role: string
         created_at: Date

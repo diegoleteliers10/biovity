@@ -2,18 +2,19 @@ import { Result as R } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
-import { DbError } from "@/lib/errors"
+import { DbError, ParseError } from "@/lib/errors"
 import { sendWaitlistInviteEmail } from "@/lib/mail"
+import { adminWaitlistInviteSchema } from "@/lib/validations/admin-waitlist"
 
 type WaitlistRow = {
-  id: number
+  id: string
   email: string
   role: string
   invited_at: Date | null
 }
 
 type InviteResult = {
-  id: number
+  id: string
   status: "sent" | "skipped" | "failed"
 }
 
@@ -61,15 +62,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 })
   }
 
-  const body = await request.json().catch(() => null)
-  const ids = Array.isArray(body?.ids)
-    ? body.ids.map(Number).filter((id: number) => Number.isInteger(id) && id > 0)
-    : []
-  const sendAll = body?.all === true
+  const rawBody = await R.tryPromise({
+    try: () => request.json() as Promise<unknown>,
+    catch: (cause) =>
+      new ParseError({ message: "El cuerpo de la peticion no es JSON valido", cause }),
+  })
 
-  if (!sendAll && ids.length === 0) {
-    return NextResponse.json({ error: "No hay destinatarios" }, { status: 400 })
+  if (rawBody.isErr()) {
+    return NextResponse.json({ error: rawBody.error.message }, { status: 400 })
   }
+
+  const command = adminWaitlistInviteSchema.safeParse(rawBody.value)
+
+  if (!command.success) {
+    const reasons = command.error.issues.map((issue) => issue.message).join(". ")
+    return NextResponse.json({ error: `Peticion invalida: ${reasons}` }, { status: 400 })
+  }
+
+  const sendAll = command.data.scope === "all"
+  const ids = command.data.scope === "selected" ? command.data.ids : []
 
   const entries = sendAll
     ? await R.tryPromise({
@@ -82,7 +93,7 @@ export async function POST(request: NextRequest) {
     : await R.tryPromise({
         try: () =>
           pool.query<WaitlistRow>(
-            "SELECT id, email, role, invited_at FROM waitlist WHERE id = ANY($1)",
+            "SELECT id, email, role, invited_at FROM waitlist WHERE id = ANY($1::uuid[])",
             [ids]
           ),
         catch: (cause) => new DbError({ operation: "list_waitlist_invite_ids", cause }),
