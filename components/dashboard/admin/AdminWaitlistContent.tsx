@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn, formatFechaRelativa } from "@/lib/utils"
+import { MAX_INVITE_RECIPIENTS } from "@/lib/validations/admin-waitlist"
 
 type WaitlistEntry = {
   id: string
@@ -31,6 +32,15 @@ type WaitlistEntry = {
 type InviteResult = {
   id: string
   status: "sent" | "skipped" | "failed"
+}
+
+type InviteResponse = {
+  results: InviteResult[]
+  scope: "all" | "selected"
+  /** Entries still waiting for an invite when the request started */
+  pendingBefore: number
+  /** Entries this batch did not reach. Above zero means `all` was capped. */
+  remaining: number
 }
 
 type State = {
@@ -304,7 +314,7 @@ export function AdminWaitlistContent() {
       (sendAll || ids.length > 1) &&
       !window.confirm(
         sendAll
-          ? "¿Enviar el correo de acceso a todas las personas de la lista de espera que aún no lo han recibido?"
+          ? `¿Enviar el correo de acceso a las personas de la lista de espera que aún no lo han recibido? Se procesan en lotes de hasta ${MAX_INVITE_RECIPIENTS}.`
           : `¿Enviar el correo de acceso a los ${ids.length} seleccionados?`
       )
     ) {
@@ -324,7 +334,9 @@ export function AdminWaitlistContent() {
       if (!res.ok) {
         throw new Error((data as { error?: string })?.error ?? "Error al enviar correos")
       }
-      const results = ((data as { results?: InviteResult[] })?.results ?? []) as InviteResult[]
+      const payload = data as Partial<InviteResponse> | null
+      const results = payload?.results ?? []
+      const remaining = payload?.remaining ?? 0
       const sent = results.filter((r) => r.status === "sent").length
       const skipped = results.filter((r) => r.status === "skipped").length
       const failed = results.filter((r) => r.status === "failed").length
@@ -335,6 +347,12 @@ export function AdminWaitlistContent() {
         toast.success(`Correo(s) de acceso enviado(s) a ${sent} usuario(s)`)
       } else {
         toast.info("Todos los seleccionados ya fueron invitados")
+      }
+
+      // `all` sends one capped batch, so say what is left instead of implying
+      // the whole table was reached.
+      if (sendAll && remaining > 0) {
+        toast.warning(`Quedan ${remaining} entrada(s) sin invitar. Vuelve a enviar para continuar.`)
       }
       dispatch({ type: "REFRESH" })
     } catch (err) {

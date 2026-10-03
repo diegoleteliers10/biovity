@@ -1,10 +1,17 @@
-import { Result as R } from "better-result"
+import { Result as R, type Result } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 import { DbError, ParseError } from "@/lib/errors"
 import { sendWaitlistInviteEmail } from "@/lib/mail"
-import { adminWaitlistInviteSchema } from "@/lib/validations/admin-waitlist"
+import { adminWaitlistInviteSchema, MAX_INVITE_RECIPIENTS } from "@/lib/validations/admin-waitlist"
+
+/**
+ * Every recipient is an awaited Resend call, so the batch must fit the function
+ * time budget. `CONCURRENCY_LIMIT` and this value are what keep an `all`
+ * request from being cut off mid-flight.
+ */
+export const maxDuration = 60
 
 type WaitlistRow = {
   id: string
@@ -12,6 +19,12 @@ type WaitlistRow = {
   role: string
   invited_at: Date | null
 }
+
+/** Row of an `all` batch. `pending` counts every row still waiting, not the batch. */
+type PendingWaitlistRow = WaitlistRow & { pending: string }
+
+/** What one invite request will email, and how many entries were still waiting. */
+type InviteBatch = Result<{ rows: WaitlistRow[]; pendingBefore: number }, DbError>
 
 type InviteResult = {
   id: string
@@ -82,29 +95,48 @@ export async function POST(request: NextRequest) {
   const sendAll = command.data.scope === "all"
   const ids = command.data.scope === "selected" ? command.data.ids : []
 
-  const entries = sendAll
+  // Both scopes resolve to the same shape: the rows to email now, and how many
+  // entries were still waiting before this batch.
+  const batch: InviteBatch = sendAll
     ? await R.tryPromise({
-        try: () =>
-          pool.query<WaitlistRow>(
-            "SELECT id, email, role, invited_at FROM waitlist ORDER BY created_at ASC"
-          ),
+        try: async () => {
+          const { rows } = await pool.query<PendingWaitlistRow>(
+            `SELECT id, email, role, invited_at, count(*) OVER ()::text AS pending
+             FROM waitlist
+             WHERE invited_at IS NULL
+             ORDER BY created_at ASC
+             LIMIT $1`,
+            [MAX_INVITE_RECIPIENTS]
+          )
+          return {
+            rows,
+            pendingBefore: Number.parseInt(rows[0]?.pending ?? "0", 10),
+          }
+        },
         catch: (cause) => new DbError({ operation: "list_waitlist_invite_all", cause }),
       })
     : await R.tryPromise({
-        try: () =>
-          pool.query<WaitlistRow>(
+        try: async () => {
+          const { rows } = await pool.query<WaitlistRow>(
             "SELECT id, email, role, invited_at FROM waitlist WHERE id = ANY($1::uuid[])",
             [ids]
-          ),
+          )
+          return { rows, pendingBefore: rows.length }
+        },
         catch: (cause) => new DbError({ operation: "list_waitlist_invite_ids", cause }),
       })
 
-  if (entries.isErr()) {
-    console.error("[admin/waitlist/invite] Error:", entries.error)
+  if (batch.isErr()) {
+    console.error("[admin/waitlist/invite] Error:", batch.error)
     return NextResponse.json({ error: "Error al obtener lista de espera" }, { status: 500 })
   }
 
-  const results = await mapWithConcurrency(entries.value.rows, CONCURRENCY_LIMIT, sendInvite)
+  const results = await mapWithConcurrency(batch.value.rows, CONCURRENCY_LIMIT, sendInvite)
 
-  return NextResponse.json({ results })
+  return NextResponse.json({
+    results,
+    scope: command.data.scope,
+    pendingBefore: batch.value.pendingBefore,
+    remaining: Math.max(0, batch.value.pendingBefore - results.length),
+  })
 }
