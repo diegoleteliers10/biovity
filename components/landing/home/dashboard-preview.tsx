@@ -2,8 +2,6 @@
 
 import { ArrowRight01Icon, Search01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
@@ -19,8 +17,7 @@ import { DemoJobAlertsCard } from "@/components/landing/demo/demo-job-alerts-car
 import { type DemoNavItem, DemoSidebar } from "@/components/landing/demo/demo-sidebar"
 import { StopClick } from "@/components/landing/demo/stop-click"
 import { Button } from "@/components/ui/button"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import { Reveal } from "@/components/ui/scroll-reveal"
 import { formatJobLocation } from "@/lib/api/jobs"
 import type * as SavedJobsHooks from "@/lib/api/use-saved-jobs"
 import {
@@ -254,15 +251,7 @@ function UserJobsView({ onCta }: { onCta: () => void }) {
 
 export function DashboardPreview() {
   const { push } = useRouter()
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isReduced = Boolean(reducedMotion)
   const [view, setView] = useState("home")
-
-  const viewportMargin = isMobile
-    ? LANDING_ANIMATION_MOBILE.viewportMargin
-    : LANDING_ANIMATION.viewportMargin
-  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
 
   const handleCta = () => {
     toast.info("Crea tu cuenta gratis para usar el panel completo.", {
@@ -277,27 +266,19 @@ export function DashboardPreview() {
   return (
     <section className="w-full bg-surface-container-lowest py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: viewportMargin }}
-          transition={t()}
-          className="mb-10 text-center md:mb-14"
-        >
+        <Reveal className="mb-10 text-center md:mb-14">
           <h2 className="text-3xl font-semibold text-foreground mb-3 tracking-tight text-balance sm:text-4xl md:text-5xl">
             Así se ve tu <span className="text-accent font-semibold">dashboard</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground mb-0 max-w-2xl mx-auto leading-relaxed text-pretty">
             Explora la demo interactiva con datos de ejemplo.
           </p>
-        </m.div>
+        </Reveal>
 
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: viewportMargin }}
-          transition={t(0.1)}
-        >
+        {/* y={0}: this wraps a 620 px shell with a sidebar and a job list.
+            Translating it would make the compositor hold and re-raster a
+            viewport-sized layer every frame of the entrance. */}
+        <Reveal delay={0.1} y={0}>
           <DemoFrame
             url="biovity.cl/dashboard"
             activeView={view}
@@ -329,15 +310,9 @@ export function DashboardPreview() {
               <UserHomeView onCta={handleCta} />
             )}
           </DemoFrame>
-        </m.div>
+        </Reveal>
 
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: viewportMargin }}
-          transition={t(0.15)}
-          className="mt-8 flex flex-col items-center gap-1"
-        >
+        <Reveal delay={0.15} className="mt-8 flex flex-col items-center gap-1">
           <Button
             variant="ghost"
             className="h-10 px-4 text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -348,7 +323,7 @@ export function DashboardPreview() {
               <HugeiconsIcon icon={ArrowRight01Icon} size={15} className="ml-1.5" />
             </Link>
           </Button>
-        </m.div>
+        </Reveal>
       </div>
     </section>
   )

@@ -3,16 +3,9 @@
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
 import Link from "next/link"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import {
-  getSpringTransition,
-  getTransition,
-  LANDING_ANIMATION,
-  LANDING_ANIMATION_MOBILE,
-} from "@/lib/animations"
+import { Reveal } from "@/components/ui/scroll-reveal"
+import { LANDING_ANIMATION } from "@/lib/animations"
 import { CATEGORIES_HOME } from "@/lib/data/home-data"
 
 type CategoriesCountsResponse = {
@@ -20,21 +13,6 @@ type CategoriesCountsResponse = {
 }
 
 export function Categories() {
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isReduced = Boolean(reducedMotion)
-
-  const chainStagger = isMobile
-    ? LANDING_ANIMATION_MOBILE.chainStagger
-    : LANDING_ANIMATION.chainStagger
-  const viewportMargin = isMobile
-    ? LANDING_ANIMATION_MOBILE.viewportMargin
-    : LANDING_ANIMATION.viewportMargin
-  const yOffset = isReduced ? 0 : isMobile ? 14 : 24
-
-  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion, isMobile })
-
   const { data } = useQuery({
     queryKey: ["landing", "home", "categoriesCounts"],
     queryFn: async (): Promise<CategoriesCountsResponse> => {
@@ -55,28 +33,21 @@ export function Categories() {
   return (
     <section className="py-24 md:py-36 bg-surface-container-lowest">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: viewportMargin }}
-          transition={t(0)}
-          className="text-center mb-12 max-w-3xl mx-auto md:mb-16"
-        >
+        <Reveal className="text-center mb-12 max-w-3xl mx-auto md:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
             Explora por <span className="text-accent font-semibold">especialidad</span>
           </h2>
-        </m.div>
+        </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORIES_HOME.map((category, index) => {
             const isViolet = index % 2 === 1
             return (
-              <m.div
+              <Reveal
                 key={category.title}
-                initial={isReduced ? false : { opacity: 0, y: yOffset, scale: 0.98 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: viewportMargin }}
-                transition={ts(index * chainStagger)}
+                delay={LANDING_ANIMATION.chainStagger * index}
+                scale={0.98}
+                spring
               >
                 <Link href={`/jobs?categoria=${category.id}`} className="block group">
                   <div className="bg-surface-container-low rounded-xl p-6 flex items-center gap-4 transition-colors hover:bg-surface-container-highest/60">
@@ -104,7 +75,7 @@ export function Categories() {
                     />
                   </div>
                 </Link>
-              </m.div>
+              </Reveal>
             )
           })}
         </div>

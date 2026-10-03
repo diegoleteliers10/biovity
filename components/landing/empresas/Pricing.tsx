@@ -9,7 +9,8 @@ import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/ani
 import { PLANES_EMPRESAS } from "@/lib/data/empresas-data"
 import { Button } from "../../ui/button"
 
-export function Pricing() {
+export function Pricing({ heading = "h2" }: { heading?: "h1" | "h2" }) {
+  const Heading = heading
   const [isAnual, setIsAnual] = useState(false)
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
@@ -27,7 +28,7 @@ export function Pricing() {
 
   return (
     <section className="py-24 md:py-36 bg-surface-container-low" id="pricing">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <m.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -35,9 +36,10 @@ export function Pricing() {
           transition={t(0)}
           className="text-center mb-12 max-w-3xl mx-auto"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            Planes transparentes para cada <span className="text-accent font-semibold">etapa</span>
-          </h2>
+          <Heading className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
+            Planes de reclutamiento para cada{" "}
+            <span className="text-accent font-semibold">etapa</span>
+          </Heading>
         </m.div>
 
         {/* Monthly / Annual Billing Toggle */}
@@ -100,15 +102,11 @@ export function Pricing() {
         </m.div>
 
         {/* Pricing Cards Grid - Alternating borderless with highlighted border */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
-          {PLANES_EMPRESAS.map((plan, index) => (
-            <m.div
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 2xl:gap-8 mx-auto items-stretch">
+          {PLANES_EMPRESAS.map((plan) => (
+            <div
               key={plan.name}
-              initial={{ opacity: 0, y: 28, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className={`relative rounded-xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 ${
+              className={`relative rounded-xl p-6 sm:p-7 2xl:p-8 flex flex-col justify-between transition-colors duration-200 ${
                 plan.highlighted
                   ? "bg-surface-container-lowest border-2 border-secondary"
                   : "bg-surface-container-lowest hover:bg-surface-container-highest/60"
@@ -177,7 +175,7 @@ export function Pricing() {
                   <HugeiconsIcon icon={ArrowRight01Icon} size={14} className="ml-1.5" />
                 </a>
               </Button>
-            </m.div>
+            </div>
           ))}
         </div>
 

@@ -1,0 +1,659 @@
+{
+  "view": "actions",
+  "report": {
+    "id": "report",
+    "workflow": "report",
+    "site": "https://biovity.cl",
+    "generatedAt": "2026-10-03T20:29:58.171Z",
+    "summary": "Found 0 high, 40 medium, and 26 low technical issues across 41 crawled pages. Search Console and Google Analytics are not connected; provider-backed sections were skipped."
+  },
+  "findings": {
+    "schemaVersion": 1,
+    "scope": "returned-report",
+    "coverage": {
+      "state": "complete",
+      "detail": "Every finding in the declared report scope is represented."
+    },
+    "counts": {
+      "total": 11,
+      "returned": 11,
+      "fixes": 4,
+      "reviews": 7,
+      "open": 11
+    },
+    "completion": {
+      "state": "pending",
+      "instruction": "Before finishing, return one allowed outcome and reason for every open item; the outcome count must equal counts.returned. A review is a decision task, not an instruction to change the site. Do not silently drop findings."
+    },
+    "verification": {
+      "requiredAfterChanges": true,
+      "instruction": "After edits, run each changed item's verification and rerun the originating report. A code change alone does not close a finding.",
+      "reportCheck": "Rerun seo report with the same inputs and confirm the finding is absent or its evidence now matches the intended state."
+    },
+    "sourcePaths": [
+      "actions"
+    ],
+    "items": [
+      {
+        "id": "crawl:meta_description_duplicate",
+        "status": "open",
+        "title": "meta_description_duplicate: Duplicate meta description (13 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://biovity.cl/jobs",
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "meta_description_duplicate"
+            }
+          }
+        },
+        "sourcePath": "actions[0]",
+        "evidence": {
+          "ruleId": "meta_description_duplicate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "https://biovity.cl/jobs",
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm this description appears on only one URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Write a distinct description for each page that explains what is unique about that URL."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:title_duplicate",
+        "status": "open",
+        "title": "title_duplicate: Duplicate title (13 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://biovity.cl/jobs",
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "title_duplicate"
+            }
+          }
+        },
+        "sourcePath": "actions[1]",
+        "evidence": {
+          "ruleId": "title_duplicate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "https://biovity.cl/jobs",
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm this title appears on only one indexable URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Rewrite each title so it reflects the specific page, including the unique entity, intent, location, product, or angle."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:duplicate_content",
+        "status": "open",
+        "title": "duplicate_content: Duplicate content (13 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://biovity.cl/jobs",
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "duplicate_content"
+            }
+          }
+        },
+        "sourcePath": "actions[2]",
+        "evidence": {
+          "ruleId": "duplicate_content",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is high.",
+          "sampleUrls": [
+            "https://biovity.cl/jobs",
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm the duplicate mainContentHash appears on only one URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Consolidate duplicate pages with redirects or canonicals, or make each page meaningfully different for its own intent."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:h1_missing",
+        "status": "open",
+        "title": "h1_missing: Missing H1 (1 URL)",
+        "confidence": "high",
+        "severity": "low",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/plans"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "h1_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[3]",
+        "evidence": {
+          "ruleId": "h1_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 100; 1 URL is affected; estimated effort is low.",
+          "sampleUrls": [
+            "https://biovity.cl/plans"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm an H1 describes the page’s main visible topic."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Add one clear H1 near the top of the main content. Make it describe the specific page, not just a generic section label."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:noindex",
+        "status": "open",
+        "title": "noindex: Noindex found (1 URL)",
+        "confidence": "medium",
+        "severity": "medium",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/login"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "noindex"
+            }
+          }
+        },
+        "sourcePath": "actions[4]",
+        "evidence": {
+          "ruleId": "noindex",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/login"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl or URL Inspection and confirm no effective meta robots or X-Robots-Tag noindex remains, including the equivalent none directive."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"noindex: Noindex found (1 URL)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Remove the noindex directive if the page should rank. Leave it in place only for intentionally private or low-value pages.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:canonicalized_page",
+        "status": "open",
+        "title": "canonicalized_page: Canonicalized page (14 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 14,
+        "affectedUrls": {
+          "total": 14,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+            "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "canonicalized_page"
+            }
+          }
+        },
+        "sourcePath": "actions[5]",
+        "evidence": {
+          "ruleId": "canonicalized_page",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+            "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+            "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+            "https://biovity.cl/jobs?experiencia=junior",
+            "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+            "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+            "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm the canonical target matches the intended indexable URL."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"canonicalized_page: Canonicalized page (14 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. If this URL should rank, make the canonical self-referencing. If another URL is preferred, make internal links and sitemap entries point to that preferred URL.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:title_too_wide",
+        "status": "open",
+        "title": "title_too_wide: Title may truncate on some devices (4 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 4,
+        "affectedUrls": {
+          "total": 4,
+          "returned": 4,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+            "https://biovity.cl/privacy",
+            "https://biovity.cl/recruiting",
+            "https://biovity.cl/waitlist"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "title_too_wide"
+            }
+          }
+        },
+        "sourcePath": "actions[6]",
+        "evidence": {
+          "ruleId": "title_too_wide",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+            "https://biovity.cl/privacy",
+            "https://biovity.cl/recruiting",
+            "https://biovity.cl/waitlist"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the audit and review estimatedPixels, referencePixels, confidence, and profile. Confirm the important wording appears early."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"title_too_wide: Title may truncate on some devices (4 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Review the title rather than shortening it blindly. Put the clearest page-specific wording first and remove filler only when meaning is preserved.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:structured_data_missing",
+        "status": "open",
+        "title": "structured_data_missing: No structured data detected (3 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 3,
+        "affectedUrls": {
+          "total": 3,
+          "returned": 3,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/learn/bioinformatica",
+            "https://biovity.cl/learn/ia-biotech",
+            "https://biovity.cl/register"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "structured_data_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[7]",
+        "evidence": {
+          "ruleId": "structured_data_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/learn/bioinformatica",
+            "https://biovity.cl/learn/ia-biotech",
+            "https://biovity.cl/register"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm structuredDataFormats lists the added format, then validate the page with a structured data tester."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does a specific structured data type accurately describe the visible content on this page?",
+          "changeOnlyIf": "Add markup only when a specific schema type fits the page and every claimed property is supported by its visible content.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Add structured data only where a schema type genuinely describes the page, for example an article page describing its article. Validate the markup after adding it, and leave pages without a fitting schema type unmarked.",
+          "ifNotNeeded": "Leave the page unmarked and record that no suitable schema type was confirmed.",
+          "doNot": [
+            "Do not add Organization or another generic schema type only to clear this finding.",
+            "Do not copy site-wide markup onto unrelated page types."
+          ]
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:slow_response",
+        "status": "open",
+        "title": "slow_response: Slow response in this crawl (2 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 2,
+        "affectedUrls": {
+          "total": 2,
+          "returned": 2,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+            "https://biovity.cl/learn/ia-biotech/agentes-ai-biotech"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "slow_response"
+            }
+          }
+        },
+        "sourcePath": "actions[8]",
+        "evidence": {
+          "ruleId": "slow_response",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+            "https://biovity.cl/learn/ia-biotech/agentes-ai-biotech"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and compare repeated response times. Use field data where available for a user-experience decision."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"slow_response: Slow response in this crawl (2 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Repeat the check and use the performance report before changing anything. If the delay persists, check server timing, cache headers, database queries, CDN caching, and origin health.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:h1_multiple",
+        "status": "open",
+        "title": "h1_multiple: Multiple H1 headings (1 URL)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/brand"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "h1_multiple"
+            }
+          }
+        },
+        "sourcePath": "actions[9]",
+        "evidence": {
+          "ruleId": "h1_multiple",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/brand"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm h1Count matches the intended heading structure."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"h1_multiple: Multiple H1 headings (1 URL)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Review the headings before changing anything. If one heading describes the whole page, keep it as the H1 and move the others to H2 or below so the outline stays consistent.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:nofollow",
+        "status": "open",
+        "title": "nofollow: Nofollow found (1 URL)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "https://biovity.cl/login"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+              "ruleId": "nofollow"
+            }
+          }
+        },
+        "sourcePath": "actions[10]",
+        "evidence": {
+          "ruleId": "nofollow",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "https://biovity.cl/login"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm the effective meta robots and X-Robots-Tag rules no longer block following, including through the equivalent none directive."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"nofollow: Nofollow found (1 URL)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Remove nofollow from meta robots or X-Robots-Tag unless the page is intentionally isolated from link discovery.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      }
+    ]
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 21414,
+    "returnedBytes": 21649,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

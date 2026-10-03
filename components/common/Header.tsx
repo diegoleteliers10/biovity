@@ -38,11 +38,11 @@ export const Header = ({ session }: HeaderProps) => {
 
   return (
     <header className="contents">
-      <nav
-        data-state={menuState ? "open" : "closed"}
-        className="fixed z-20 w-full px-4 lg:px-2 lg:contain-paint"
-      >
-        <div className="mx-auto mt-4 max-w-4xl rounded-2xl border bg-background/50 px-6 backdrop-blur-lg transition-all duration-300 lg:px-5">
+      <nav data-state={menuState ? "open" : "closed"} className="fixed z-20 w-full px-4 lg:px-2">
+        {/* Solid pill, no backdrop-filter. A blurred backdrop cannot be cached by
+            the compositor: it re-sampled and re-blurred the pixels behind it on
+            every scroll frame, across the full viewport width. */}
+        <div className="mx-auto mt-4 max-w-4xl rounded-2xl border border-border bg-background px-6 lg:px-5">
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
               <Link href="/" aria-label="home" className="flex items-center gap-2">

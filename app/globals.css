@@ -106,15 +106,6 @@
     --radius-field: var(--radius);
 }
 
-@layer utilities {
-    /* Glass & gradients (Curated Organism) */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        border: 1px solid var(--border);
-    }
-}
-
 .dark {
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
@@ -166,6 +157,19 @@
     * {
         @apply border-border outline-ring/50;
     }
+    html {
+        /* Anchor jumps and programmatic scrollTo ease instead of snapping.
+            Disabled under prefers-reduced-motion so nothing moves on its own. */
+        scroll-behavior: smooth;
+        /* The header is a fixed pill, so every anchored section needs top
+            clearance or the jump hides the heading behind it. */
+        scroll-padding-top: 6.5rem;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
     body {
         @apply bg-background text-foreground;
     }
@@ -179,6 +183,38 @@
         font-feature-settings:
             "cv02", "cv03", "cv04", "cv11";
         letter-spacing: -0.02em;
+    }
+}
+
+@layer utilities {
+    /* Glass & gradients (Curated Organism) */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+    }
+
+    /*
+     * Reserve layout space for a lazy section without hiding its contents.
+     *
+     * content-visibility: auto is the wrong tool here. It skips rendering for
+     * any off-screen subtree, so the section's text never paints and its client
+     * component never hydrates until the visitor scrolls it into view. On a page
+     * whose sections are server-rendered for crawlers and for no-JS readers,
+     * that trades correctness for a paint saving we do not need: the sections
+     * below the fold are not being scrolled through at speed anyway.
+     *
+     * contain-intrinsic-size alone keeps the reserved box stable while a lazy
+     * chunk loads, which is the part that actually prevented scrollbar jumps.
+     */
+    .content-reserve {
+        contain-intrinsic-size: auto none 900px;
+    }
+
+    /* Same reservation for a section with a known body height, so the reserved
+       box is exact instead of estimated. */
+    .content-reserve-600 {
+        contain-intrinsic-size: auto none 600px;
     }
 }
 

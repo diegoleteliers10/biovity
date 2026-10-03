@@ -16,7 +16,7 @@ import {
 import { FAQS_RECLUTAMIENTO } from "@/lib/data/reclutamiento-data"
 
 export const metadata: Metadata = {
-  title: "Herramientas de Reclutamiento Científico en Chile | Biovity",
+  title: "Herramientas de Reclutamiento Científico en Chile",
   description:
     "Compara las herramientas de reclutamiento actuales (ATS tradicionales, portales masivos, headhunters) contra la precisión del ecosistema científico y AI Matching de Biovity.",
   keywords: [

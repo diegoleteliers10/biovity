@@ -82,11 +82,7 @@ function getJobBreadcrumbs(referer: string | null, jobTitle: string): Breadcrumb
     return segments
   }
 
-  return [
-    { label: "Inicio", href: "/" },
-    { label: "Trabajos", href: "/jobs" },
-    { label: jobTitle },
-  ]
+  return [{ label: "Inicio", href: "/" }, { label: "Trabajos", href: "/jobs" }, { label: jobTitle }]
 }
 
 function getInitials(name: string): string {
@@ -117,7 +113,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : `Postula a la vacante de ${job.title} en ${orgName} (${locStr}) a través de Biovity.`
 
   return {
-    title: `${job.title} - ${orgName} | Biovity`,
+    title: `${job.title} - ${orgName}`,
     description: desc,
     openGraph: {
       title: `${job.title} - ${orgName}`,

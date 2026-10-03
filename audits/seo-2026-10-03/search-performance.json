@@ -1,0 +1,2835 @@
+{
+  "workflow": "diagnose-property",
+  "site": "sc-domain:biovity.cl",
+  "generatedAt": "2026-10-03T20:34:25.531Z",
+  "summary": "Partial diagnosis; 1 significant anomaly signal; 3 observed retained query/page declines; no striking-distance opportunities; no quick-win candidates; 2 multi-URL query candidates.",
+  "steps": [
+    {
+      "tool": "seo_report_narrative",
+      "status": "completed",
+      "summary": "Generated a partial diagnosis because one or more source datasets were incomplete."
+    }
+  ],
+  "actions": [
+    {
+      "title": "Review movement during update overlap",
+      "action": "Do not assume the update caused the movement. First compare winning and losing templates, then test site changes, indexability, intent, and SERP changes as separate explanations.",
+      "confidence": "low"
+    },
+    {
+      "title": "Investigate largest page movement",
+      "action": "Open the page and check the queries that moved, whether the URL is still canonical/indexable, and whether the title, H1, or body changed recently.",
+      "confidence": "low"
+    },
+    {
+      "title": "Refresh decaying content",
+      "action": "Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings.",
+      "confidence": "medium"
+    },
+    {
+      "title": "Review multi-URL query candidates",
+      "action": "Confirm whether each URL set satisfies the same intent and inspect technical state. Consolidate only verified duplicate or same-intent pages; otherwise clarify the distinction.",
+      "confidence": "low"
+    }
+  ],
+  "output": {
+    "narrative": {
+      "site": "sc-domain:biovity.cl",
+      "generatedAt": "2026-10-03T20:34:25.530Z",
+      "dataStatus": "partial",
+      "periodDays": 90,
+      "period": {
+        "startDate": "2026-07-02",
+        "endDate": "2026-09-29"
+      },
+      "headline": "Partial diagnosis; 1 significant anomaly signal; 3 observed retained query/page declines; no striking-distance opportunities; no quick-win candidates; 2 multi-URL query candidates.",
+      "caveats": [
+        "Date window: 2026-07-02 to 2026-09-29.",
+        "Brand queries: included.",
+        "Data freshness: local cache allowed; rerun with --refresh to bypass cached GSC/HTTP data.",
+        "Search Console: included where the selected property returned usable data.",
+        "Google Analytics: not included in this narrative; use refresh-priorities when Google Analytics value should influence prioritisation.",
+        "Content verification: not run; recommendations are based on GSC/query data unless stated otherwise.",
+        "Partial page movement segments: 6 of 6 matched retained segments returned. 13 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings.",
+        "Partial query movement segments: 20 of 59 matched retained segments returned. 253 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings.",
+        "Partial country movement segments: 20 of 32 matched retained segments returned. 33 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings."
+      ],
+      "sections": [
+        {
+          "title": "Performance",
+          "bullets": [
+            "Average daily impressions spiked from 41.4 to 83.3.",
+            "https://biovity.cl/salarios gained 45 clicks compared with the previous window.",
+            "1 official Google update window overlapped the significant movement comparison window. This timing does not establish that the update caused the movement."
+          ]
+        },
+        {
+          "title": "Content Opportunities",
+          "bullets": [
+            "3 observed retained query/page declines need review. Start with \"biovity\" on https://www.biovity.cl/; it had 18 fewer clicks.",
+            "Top decay cluster: 1 finding in the Homepage template (impressions dropped), 18 fewer observed clicks across rows retained in both windows. Action: Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings. Example queries: biovity.",
+            "2 multi-URL query candidates need intent and technical review. Start with \"biovity\" and decide whether 3 ranking URLs answer the same intent."
+          ]
+        },
+        {
+          "title": "Change Measurements",
+          "bullets": [
+            "No measured changes are saved for this property yet."
+          ]
+        },
+        {
+          "title": "Technical Monitoring",
+          "bullets": [
+            "No crawl-diff run is saved yet.",
+            "No index-watch snapshot is saved yet.",
+            "No link-recover run is saved yet."
+          ]
+        }
+      ],
+      "priorities": [
+        {
+          "title": "Review movement during update overlap",
+          "confidence": "low",
+          "action": "Do not assume the update caused the movement. First compare winning and losing templates, then test site changes, indexability, intent, and SERP changes as separate explanations."
+        },
+        {
+          "title": "Investigate largest page movement",
+          "confidence": "low",
+          "action": "Open the page and check the queries that moved, whether the URL is still canonical/indexable, and whether the title, H1, or body changed recently."
+        },
+        {
+          "title": "Refresh decaying content",
+          "confidence": "medium",
+          "action": "Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings."
+        },
+        {
+          "title": "Review multi-URL query candidates",
+          "confidence": "low",
+          "action": "Confirm whether each URL set satisfies the same intent and inspect technical state. Consolidate only verified duplicate or same-intent pages; otherwise clarify the distinction."
+        }
+      ],
+      "diagnosis": {
+        "site": "sc-domain:biovity.cl",
+        "generatedAt": "2026-10-03T20:34:25.529Z",
+        "dataStatus": "partial",
+        "summary": {
+          "updateAttribution": "significant-movement-with-update-overlap",
+          "updateAttributionStatus": "available",
+          "classification": "significant-movement-with-update-overlap",
+          "significantAnomalies": 1,
+          "updateMatches": 1,
+          "largestPageMovements": 6,
+          "decayItems": 3,
+          "cannibalItems": 2,
+          "strikingDistanceItems": 0,
+          "quickWinItems": 0
+        },
+        "skippedSections": [],
+        "partialReasons": [
+          {
+            "section": "page movement segments",
+            "reason": "6 of 6 matched retained segments returned. 13 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings."
+          },
+          {
+            "section": "query movement segments",
+            "reason": "20 of 59 matched retained segments returned. 253 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings."
+          },
+          {
+            "section": "country movement segments",
+            "reason": "20 of 32 matched retained segments returned. 33 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings."
+          }
+        ],
+        "priorities": [
+          {
+            "label": "Review movement during update overlap",
+            "reason": "1 official update window overlaps the significant movement comparison window.",
+            "action": "Do not assume the update caused the movement. First compare winning and losing templates, then test site changes, indexability, intent, and SERP changes as separate explanations.",
+            "confidence": "low"
+          },
+          {
+            "label": "Investigate largest page movement",
+            "reason": "https://biovity.cl/salarios gained 45 clicks.",
+            "action": "Open the page and check the queries that moved, whether the URL is still canonical/indexable, and whether the title, H1, or body changed recently.",
+            "confidence": "low"
+          },
+          {
+            "label": "Refresh decaying content",
+            "reason": "3 observed retained query/page declines found; Homepage - lost impressions declined by 18 clicks.",
+            "action": "Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings.",
+            "confidence": "medium"
+          },
+          {
+            "label": "Review multi-URL query candidates",
+            "reason": "2 multi-URL query candidates found.",
+            "action": "Confirm whether each URL set satisfies the same intent and inspect technical state. Consolidate only verified duplicate or same-intent pages; otherwise clarify the distinction.",
+            "confidence": "low"
+          }
+        ],
+        "anomaly": {
+          "site": "sc-domain:biovity.cl",
+          "generatedAt": "2026-10-03T20:34:23.991Z",
+          "anomalies": [
+            {
+              "site": "sc-domain:biovity.cl",
+              "metric": "clicks",
+              "baselineStart": "2026-07-02",
+              "baselineEnd": "2026-09-22",
+              "comparisonStart": "2026-09-23",
+              "comparisonEnd": "2026-09-29",
+              "baselineMean": 0.976,
+              "comparisonMean": 1.429,
+              "baselineTotal": 81,
+              "comparisonTotal": 10,
+              "percentChange": 46.384,
+              "zScore": 1.126,
+              "significanceMethod": "none",
+              "direction": "normal",
+              "significant": false
+            },
+            {
+              "site": "sc-domain:biovity.cl",
+              "metric": "impressions",
+              "baselineStart": "2026-07-02",
+              "baselineEnd": "2026-09-22",
+              "comparisonStart": "2026-09-23",
+              "comparisonEnd": "2026-09-29",
+              "baselineMean": 41.422,
+              "comparisonMean": 83.286,
+              "baselineTotal": 3438,
+              "comparisonTotal": 583,
+              "percentChange": 101.068,
+              "zScore": 9.131,
+              "significanceMethod": "z-score",
+              "direction": "spike",
+              "significant": true
+            }
+          ],
+          "rows": 90,
+          "coverage": {
+            "status": "complete",
+            "requestedStart": "2026-07-02",
+            "requestedEnd": "2026-09-29",
+            "returnedRows": 90,
+            "observedDays": 90,
+            "invalidRows": 0,
+            "duplicateRows": 0,
+            "expectedDays": 90,
+            "missingDays": 0,
+            "baseline": {
+              "start": "2026-07-02",
+              "end": "2026-09-22",
+              "expectedDays": 83,
+              "observedDays": 83,
+              "missingDays": 0
+            },
+            "comparison": {
+              "start": "2026-09-23",
+              "end": "2026-09-29",
+              "expectedDays": 7,
+              "observedDays": 7,
+              "missingDays": 0
+            },
+            "caveats": []
+          }
+        },
+        "updateCorrelation": {
+          "site": "sc-domain:biovity.cl",
+          "generatedAt": "2026-10-03T20:34:24.198Z",
+          "anomalies": [
+            {
+              "site": "sc-domain:biovity.cl",
+              "metric": "clicks",
+              "baselineStart": "2026-07-02",
+              "baselineEnd": "2026-09-22",
+              "comparisonStart": "2026-09-23",
+              "comparisonEnd": "2026-09-29",
+              "baselineMean": 0.976,
+              "comparisonMean": 1.429,
+              "baselineTotal": 81,
+              "comparisonTotal": 10,
+              "percentChange": 46.384,
+              "zScore": 1.126,
+              "significanceMethod": "none",
+              "direction": "normal",
+              "significant": false
+            },
+            {
+              "site": "sc-domain:biovity.cl",
+              "metric": "impressions",
+              "baselineStart": "2026-07-02",
+              "baselineEnd": "2026-09-22",
+              "comparisonStart": "2026-09-23",
+              "comparisonEnd": "2026-09-29",
+              "baselineMean": 41.422,
+              "comparisonMean": 83.286,
+              "baselineTotal": 3438,
+              "comparisonTotal": 583,
+              "percentChange": 101.068,
+              "zScore": 9.131,
+              "significanceMethod": "z-score",
+              "direction": "spike",
+              "significant": true
+            }
+          ],
+          "overlappingUpdates": [
+            {
+              "id": "XhUDXP7A67iHCD2kmbVu",
+              "name": "September 2026 spam update",
+              "type": "spam",
+              "product": "Ranking",
+              "start": "2026-09-24T16:15:00+00:00",
+              "status": "rolling-out",
+              "sourceUrl": "https://status.search.google.com/incidents/XhUDXP7A67iHCD2kmbVu"
+            }
+          ],
+          "classification": "significant-movement-with-update-overlap",
+          "attribution": "not-established",
+          "confidence": "none",
+          "confounders": [],
+          "summary": "sc-domain:biovity.cl grew during a period that overlaps September 2026 spam update. The overlap is timing context and does not establish what caused the movement.",
+          "evidence": [
+            "Clicks changed 46% vs baseline (0.976 -> 1.429 per observed day, z 1.126).",
+            "Impressions rose 101% vs baseline (41.422 -> 83.286 per observed day, z 9.131).",
+            "1 official Google Ranking update window overlapped the comparison period: September 2026 spam update.",
+            "Clicks and impressions did not both meet the sharp-movement evidence threshold.",
+            "No saved or manually supplied overlapping site changes were found."
+          ],
+          "caveats": [
+            "GSC window: 90 days; recent comparison window: 7 days.",
+            "Update overlap padding: 3 days either side of the comparison window.",
+            "Data freshness: local GSC cache may have been used.",
+            "Source: official Google Search Status Dashboard Ranking incidents only; third-party volatility and unconfirmed chatter are not included.",
+            "An update-window overlap cannot establish causation, even when movement is large and no known site change was recorded.",
+            "Attribution remains not established. Use segment-impact and update-postmortem to describe which templates or intents moved, then test possible explanations separately."
+          ],
+          "actions": [
+            "Run update-postmortem and segment-impact next to find the winning or losing templates, queries, countries, and devices without assuming a cause.",
+            "For a surge, document the winning templates and reinforce them with internal links before changing pages that improved.",
+            "Add any missed deploy, pruning, blocking, or content changes to change-log so later comparisons include that evidence."
+          ],
+          "source": {
+            "name": "Google Search Status Dashboard incidents feed",
+            "url": "https://status.search.google.com/incidents.json",
+            "product": "Ranking"
+          }
+        },
+        "segments": {
+          "page": {
+            "schemaVersion": 2,
+            "site": "sc-domain:biovity.cl",
+            "dimension": "page",
+            "before": {
+              "startDate": "2026-04-03",
+              "endDate": "2026-07-01"
+            },
+            "after": {
+              "startDate": "2026-07-02",
+              "endDate": "2026-09-29"
+            },
+            "rangeDays": {
+              "before": 90,
+              "after": 90
+            },
+            "generatedAt": "2026-10-03T20:34:23.992Z",
+            "dataStatus": "partial",
+            "source": {
+              "provider": "google-search-console",
+              "dimension": "page",
+              "aggregationType": "auto",
+              "searchType": "web",
+              "dataState": "final",
+              "before": {
+                "rowsFetched": 8,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "after": {
+                "rowsFetched": 17,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "completeness": "retained-rows-only"
+            },
+            "methodology": {
+              "id": "gsc_matched_retained_segment_impact",
+              "version": 2,
+              "missingRowsTreatedAsZero": false,
+              "equalLengthAdjacentWindows": true,
+              "clickDeltaBasis": "after-minus-before",
+              "positionDeltaDefinition": "after-minus-before-positive-is-worse",
+              "causeLanguage": "signals-not-attribution"
+            },
+            "filters": {
+              "limit": 20,
+              "unmatchedLimit": 25,
+              "maxRows": 100000
+            },
+            "selection": {
+              "beforeSourceRows": 8,
+              "afterSourceRows": 17,
+              "beforeInvalidRows": 0,
+              "afterInvalidRows": 0,
+              "beforeDuplicateRows": 0,
+              "afterDuplicateRows": 0,
+              "beforeConflictingRows": 0,
+              "afterConflictingRows": 0,
+              "matchedRows": 6,
+              "unmatchedBeforeRows": 2,
+              "unmatchedAfterRows": 11,
+              "returnedRows": 6,
+              "limitedRows": 0,
+              "returnedUnmatchedRows": 13,
+              "limitedUnmatchedRows": 0
+            },
+            "summary": {
+              "matchedRows": 6,
+              "returnedRows": 6,
+              "unmatchedRows": 13,
+              "verdict": "6 of 6 matched retained segments returned. 13 one-window rows were kept as unmatched evidence and not converted to zero."
+            },
+            "items": [
+              {
+                "key": "https://biovity.cl/salarios",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 2,
+                "afterClicks": 47,
+                "clickDelta": 45,
+                "beforeImpressions": 208,
+                "afterImpressions": 3304,
+                "impressionDelta": 3096,
+                "beforePosition": 5.668,
+                "afterPosition": 5.719,
+                "positionDelta": 0.051
+              },
+              {
+                "key": "https://biovity.cl/",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 6,
+                "afterClicks": 32,
+                "clickDelta": 26,
+                "beforeImpressions": 31,
+                "afterImpressions": 217,
+                "impressionDelta": 186,
+                "beforePosition": 5.774,
+                "afterPosition": 9.207,
+                "positionDelta": 3.433
+              },
+              {
+                "key": "https://www.biovity.cl/",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 23,
+                "afterClicks": 0,
+                "clickDelta": -23,
+                "beforeImpressions": 160,
+                "afterImpressions": 1,
+                "impressionDelta": -159,
+                "beforePosition": 5.406,
+                "afterPosition": 2,
+                "positionDelta": -3.406
+              },
+              {
+                "key": "https://www.biovity.cl/lista-espera",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 2,
+                "afterClicks": 0,
+                "clickDelta": -2,
+                "beforeImpressions": 54,
+                "afterImpressions": 11,
+                "impressionDelta": -43,
+                "beforePosition": 4.519,
+                "afterPosition": 3.273,
+                "positionDelta": -1.246
+              },
+              {
+                "key": "https://www.biovity.cl/trabajos",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 2,
+                "afterClicks": 0,
+                "clickDelta": -2,
+                "beforeImpressions": 61,
+                "afterImpressions": 18,
+                "impressionDelta": -43,
+                "beforePosition": 6.951,
+                "afterPosition": 9.944,
+                "positionDelta": 2.993
+              },
+              {
+                "key": "https://www.biovity.cl/empresas",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 16,
+                "afterImpressions": 4,
+                "impressionDelta": -12,
+                "beforePosition": 2.438,
+                "afterPosition": 7,
+                "positionDelta": 4.562
+              }
+            ],
+            "unmatchedSegments": [
+              {
+                "key": "https://www.biovity.cl/salarios",
+                "clicks": 17,
+                "impressions": 974,
+                "position": 5.149,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/salaries",
+                "clicks": 7,
+                "impressions": 441,
+                "position": 5.304,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/trabajos",
+                "clicks": 4,
+                "impressions": 51,
+                "position": 13,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/lista-espera",
+                "clicks": 1,
+                "impressions": 19,
+                "position": 4.158,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/about",
+                "clicks": 0,
+                "impressions": 3,
+                "position": 4.333,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/career-tips",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 8,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/companies",
+                "clicks": 0,
+                "impressions": 5,
+                "position": 15.6,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/consejos-carrera",
+                "clicks": 0,
+                "impressions": 12,
+                "position": 8.417,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/cookies",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 7,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/jobs",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 2,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/privacidad",
+                "clicks": 0,
+                "impressions": 4,
+                "position": 6.75,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "https://biovity.cl/waitlist",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 9,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "http://biovity.cl/",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 1,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              }
+            ],
+            "warnings": [
+              "13 segments appeared in only one retained response. They are not treated as zero traffic or ranked as winners or losers."
+            ],
+            "caveats": [
+              "Only segments retained in both GSC responses receive movement deltas. Search Console can omit anonymized and lower-volume rows, so one-window absence is not proof of zero traffic.",
+              "Average position is impression-weighted provider data and is only compared when both retained rows have impressions.",
+              "Search Console segment data is observational. Movement can guide investigation but does not establish the cause of a ranking, demand, or CTR change."
+            ]
+          },
+          "query": {
+            "schemaVersion": 2,
+            "site": "sc-domain:biovity.cl",
+            "dimension": "query",
+            "before": {
+              "startDate": "2026-04-03",
+              "endDate": "2026-07-01"
+            },
+            "after": {
+              "startDate": "2026-07-02",
+              "endDate": "2026-09-29"
+            },
+            "rangeDays": {
+              "before": 90,
+              "after": 90
+            },
+            "generatedAt": "2026-10-03T20:34:23.994Z",
+            "dataStatus": "partial",
+            "source": {
+              "provider": "google-search-console",
+              "dimension": "query",
+              "aggregationType": "auto",
+              "searchType": "web",
+              "dataState": "final",
+              "before": {
+                "rowsFetched": 115,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "after": {
+                "rowsFetched": 256,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "completeness": "retained-rows-only"
+            },
+            "methodology": {
+              "id": "gsc_matched_retained_segment_impact",
+              "version": 2,
+              "missingRowsTreatedAsZero": false,
+              "equalLengthAdjacentWindows": true,
+              "clickDeltaBasis": "after-minus-before",
+              "positionDeltaDefinition": "after-minus-before-positive-is-worse",
+              "causeLanguage": "signals-not-attribution"
+            },
+            "filters": {
+              "limit": 20,
+              "unmatchedLimit": 25,
+              "maxRows": 100000
+            },
+            "selection": {
+              "beforeSourceRows": 115,
+              "afterSourceRows": 256,
+              "beforeInvalidRows": 0,
+              "afterInvalidRows": 0,
+              "beforeDuplicateRows": 0,
+              "afterDuplicateRows": 0,
+              "beforeConflictingRows": 0,
+              "afterConflictingRows": 0,
+              "matchedRows": 59,
+              "unmatchedBeforeRows": 56,
+              "unmatchedAfterRows": 197,
+              "returnedRows": 20,
+              "limitedRows": 39,
+              "returnedUnmatchedRows": 25,
+              "limitedUnmatchedRows": 228
+            },
+            "summary": {
+              "matchedRows": 59,
+              "returnedRows": 20,
+              "unmatchedRows": 253,
+              "verdict": "20 of 59 matched retained segments returned. 253 one-window rows were kept as unmatched evidence and not converted to zero."
+            },
+            "items": [
+              {
+                "key": "biovity",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 23,
+                "afterClicks": 16,
+                "clickDelta": -7,
+                "beforeImpressions": 81,
+                "afterImpressions": 75,
+                "impressionDelta": -6,
+                "beforePosition": 4.049,
+                "afterPosition": 4.867,
+                "positionDelta": 0.818
+              },
+              {
+                "key": "biotecnología carrera sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 2,
+                "clickDelta": 2,
+                "beforeImpressions": 19,
+                "afterImpressions": 61,
+                "impressionDelta": 42,
+                "beforePosition": 8,
+                "afterPosition": 5.918,
+                "positionDelta": -2.082
+              },
+              {
+                "key": "bioinformática sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 8,
+                "afterImpressions": 17,
+                "impressionDelta": 9,
+                "beforePosition": 4.25,
+                "afterPosition": 6.412,
+                "positionDelta": 2.162
+              },
+              {
+                "key": "biotecnologia",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 2,
+                "afterImpressions": 15,
+                "impressionDelta": 13,
+                "beforePosition": 3,
+                "afterPosition": 2.933,
+                "positionDelta": -0.067
+              },
+              {
+                "key": "biotecnologia sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 1,
+                "afterClicks": 0,
+                "clickDelta": -1,
+                "beforeImpressions": 7,
+                "afterImpressions": 9,
+                "impressionDelta": 2,
+                "beforePosition": 4,
+                "afterPosition": 5.333,
+                "positionDelta": 1.333
+              },
+              {
+                "key": "biotecnología sueldo chile",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 1,
+                "afterClicks": 0,
+                "clickDelta": -1,
+                "beforeImpressions": 53,
+                "afterImpressions": 59,
+                "impressionDelta": 6,
+                "beforePosition": 8.736,
+                "afterPosition": 7.034,
+                "positionDelta": -1.702
+              },
+              {
+                "key": "ingeniería en biotecnología sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 1,
+                "afterClicks": 0,
+                "clickDelta": -1,
+                "beforeImpressions": 6,
+                "afterImpressions": 44,
+                "impressionDelta": 38,
+                "beforePosition": 6,
+                "afterPosition": 7.977,
+                "positionDelta": 1.977
+              },
+              {
+                "key": "técnico en biotecnología sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 5,
+                "afterImpressions": 26,
+                "impressionDelta": 21,
+                "beforePosition": 4.2,
+                "afterPosition": 4,
+                "positionDelta": -0.2
+              },
+              {
+                "key": "bioinformatica",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 2,
+                "impressionDelta": 1,
+                "beforePosition": 2,
+                "afterPosition": 5,
+                "positionDelta": 3
+              },
+              {
+                "key": "bioinformático",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 1,
+                "impressionDelta": 0,
+                "beforePosition": 1,
+                "afterPosition": 10,
+                "positionDelta": 9
+              },
+              {
+                "key": "bioquimica",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 2,
+                "impressionDelta": 1,
+                "beforePosition": 3,
+                "afterPosition": 4.5,
+                "positionDelta": 1.5
+              },
+              {
+                "key": "bioquimica carrera",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 1,
+                "impressionDelta": 0,
+                "beforePosition": 3,
+                "afterPosition": 3,
+                "positionDelta": 0
+              },
+              {
+                "key": "bioquimica sueldo chile",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 6,
+                "impressionDelta": 4,
+                "beforePosition": 34.5,
+                "afterPosition": 18.5,
+                "positionDelta": -16
+              },
+              {
+                "key": "bioquímica",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 1,
+                "impressionDelta": 0,
+                "beforePosition": 2,
+                "afterPosition": 5,
+                "positionDelta": 3
+              },
+              {
+                "key": "bioquímica carrera sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 12,
+                "impressionDelta": 11,
+                "beforePosition": 77,
+                "afterPosition": 13.083,
+                "positionDelta": -63.917
+              },
+              {
+                "key": "biotecnologia cuanto gana",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 10,
+                "impressionDelta": 8,
+                "beforePosition": 9,
+                "afterPosition": 8.5,
+                "positionDelta": -0.5
+              },
+              {
+                "key": "biotecnologo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 2,
+                "impressionDelta": 1,
+                "beforePosition": 1,
+                "afterPosition": 3,
+                "positionDelta": 2
+              },
+              {
+                "key": "biotecnologo sueldo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 3,
+                "impressionDelta": 1,
+                "beforePosition": 8.5,
+                "afterPosition": 6,
+                "positionDelta": -2.5
+              },
+              {
+                "key": "biotecnologo trabajo",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 2,
+                "impressionDelta": 1,
+                "beforePosition": 30,
+                "afterPosition": 15.5,
+                "positionDelta": -14.5
+              },
+              {
+                "key": "biotecnología",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 17,
+                "impressionDelta": 16,
+                "beforePosition": 3,
+                "afterPosition": 2.647,
+                "positionDelta": -0.353
+              }
+            ],
+            "unmatchedSegments": [
+              {
+                "key": "bioinformatico sueldo",
+                "clicks": 1,
+                "impressions": 1,
+                "position": 1,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioinformática trabajo",
+                "clicks": 1,
+                "impressions": 1,
+                "position": 4,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "biotecnologia campo laboral",
+                "clicks": 1,
+                "impressions": 1,
+                "position": 3,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "biotecnologia trabajos",
+                "clicks": 1,
+                "impressions": 2,
+                "position": 23,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "biotecnología ucm",
+                "clicks": 1,
+                "impressions": 2,
+                "position": 2.5,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "cuanto gana un ingeniero en alimentos en chile",
+                "clicks": 1,
+                "impressions": 4,
+                "position": 1,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "en chile",
+                "clicks": 1,
+                "impressions": 8,
+                "position": 2.625,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "trabajo bioinformatico",
+                "clicks": 1,
+                "impressions": 1,
+                "position": 5,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "10 ańos",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 2,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "a cuánto puede llegar?",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 2,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "alguna otra fuente",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 6,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "ambas",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 2,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "and in chile",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 9,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "biogenetica carrera",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 3,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioinformatica empleo",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 7,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioinformatica utalca",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 3,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioinformática carrera",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 4,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioinformática chile",
+                "clicks": 0,
+                "impressions": 4,
+                "position": 3.25,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "biologia",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 1,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioquimica carrera cuanto gana",
+                "clicks": 0,
+                "impressions": 3,
+                "position": 10,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioquimica empleo",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 1,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioquimica pucv",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 2,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioquimica salario",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 10,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioquimica sueldo",
+                "clicks": 0,
+                "impressions": 13,
+                "position": 10.538,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bioquimica trabajos",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 1,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              }
+            ],
+            "warnings": [
+              "253 segments appeared in only one retained response. They are not treated as zero traffic or ranked as winners or losers."
+            ],
+            "caveats": [
+              "Only segments retained in both GSC responses receive movement deltas. Search Console can omit anonymized and lower-volume rows, so one-window absence is not proof of zero traffic.",
+              "Average position is impression-weighted provider data and is only compared when both retained rows have impressions.",
+              "Search Console segment data is observational. Movement can guide investigation but does not establish the cause of a ranking, demand, or CTR change."
+            ]
+          },
+          "device": {
+            "schemaVersion": 2,
+            "site": "sc-domain:biovity.cl",
+            "dimension": "device",
+            "before": {
+              "startDate": "2026-04-03",
+              "endDate": "2026-07-01"
+            },
+            "after": {
+              "startDate": "2026-07-02",
+              "endDate": "2026-09-29"
+            },
+            "rangeDays": {
+              "before": 90,
+              "after": 90
+            },
+            "generatedAt": "2026-10-03T20:34:23.995Z",
+            "dataStatus": "complete",
+            "source": {
+              "provider": "google-search-console",
+              "dimension": "device",
+              "aggregationType": "auto",
+              "searchType": "web",
+              "dataState": "final",
+              "before": {
+                "rowsFetched": 3,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "after": {
+                "rowsFetched": 3,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "completeness": "retained-rows-only"
+            },
+            "methodology": {
+              "id": "gsc_matched_retained_segment_impact",
+              "version": 2,
+              "missingRowsTreatedAsZero": false,
+              "equalLengthAdjacentWindows": true,
+              "clickDeltaBasis": "after-minus-before",
+              "positionDeltaDefinition": "after-minus-before-positive-is-worse",
+              "causeLanguage": "signals-not-attribution"
+            },
+            "filters": {
+              "limit": 20,
+              "unmatchedLimit": 25,
+              "maxRows": 100000
+            },
+            "selection": {
+              "beforeSourceRows": 3,
+              "afterSourceRows": 3,
+              "beforeInvalidRows": 0,
+              "afterInvalidRows": 0,
+              "beforeDuplicateRows": 0,
+              "afterDuplicateRows": 0,
+              "beforeConflictingRows": 0,
+              "afterConflictingRows": 0,
+              "matchedRows": 3,
+              "unmatchedBeforeRows": 0,
+              "unmatchedAfterRows": 0,
+              "returnedRows": 3,
+              "limitedRows": 0,
+              "returnedUnmatchedRows": 0,
+              "limitedUnmatchedRows": 0
+            },
+            "summary": {
+              "matchedRows": 3,
+              "returnedRows": 3,
+              "unmatchedRows": 0,
+              "verdict": "3 of 3 matched retained segments returned."
+            },
+            "items": [
+              {
+                "key": "MOBILE",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 28,
+                "afterClicks": 55,
+                "clickDelta": 27,
+                "beforeImpressions": 785,
+                "afterImpressions": 2788,
+                "impressionDelta": 2003,
+                "beforePosition": 4.856,
+                "afterPosition": 5.664,
+                "positionDelta": 0.808
+              },
+              {
+                "key": "DESKTOP",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 19,
+                "afterClicks": 35,
+                "clickDelta": 16,
+                "beforeImpressions": 541,
+                "afterImpressions": 1190,
+                "impressionDelta": 649,
+                "beforePosition": 6.172,
+                "afterPosition": 6.815,
+                "positionDelta": 0.643
+              },
+              {
+                "key": "TABLET",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 18,
+                "afterImpressions": 43,
+                "impressionDelta": 25,
+                "beforePosition": 4.833,
+                "afterPosition": 5.116,
+                "positionDelta": 0.283
+              }
+            ],
+            "unmatchedSegments": [],
+            "warnings": [],
+            "caveats": [
+              "Only segments retained in both GSC responses receive movement deltas. Search Console can omit anonymized and lower-volume rows, so one-window absence is not proof of zero traffic.",
+              "Average position is impression-weighted provider data and is only compared when both retained rows have impressions.",
+              "Search Console segment data is observational. Movement can guide investigation but does not establish the cause of a ranking, demand, or CTR change."
+            ]
+          },
+          "country": {
+            "schemaVersion": 2,
+            "site": "sc-domain:biovity.cl",
+            "dimension": "country",
+            "before": {
+              "startDate": "2026-04-03",
+              "endDate": "2026-07-01"
+            },
+            "after": {
+              "startDate": "2026-07-02",
+              "endDate": "2026-09-29"
+            },
+            "rangeDays": {
+              "before": 90,
+              "after": 90
+            },
+            "generatedAt": "2026-10-03T20:34:23.996Z",
+            "dataStatus": "partial",
+            "source": {
+              "provider": "google-search-console",
+              "dimension": "country",
+              "aggregationType": "auto",
+              "searchType": "web",
+              "dataState": "final",
+              "before": {
+                "rowsFetched": 46,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "after": {
+                "rowsFetched": 51,
+                "calls": 1,
+                "maxRows": 100000,
+                "possiblyTruncated": false
+              },
+              "completeness": "retained-rows-only"
+            },
+            "methodology": {
+              "id": "gsc_matched_retained_segment_impact",
+              "version": 2,
+              "missingRowsTreatedAsZero": false,
+              "equalLengthAdjacentWindows": true,
+              "clickDeltaBasis": "after-minus-before",
+              "positionDeltaDefinition": "after-minus-before-positive-is-worse",
+              "causeLanguage": "signals-not-attribution"
+            },
+            "filters": {
+              "limit": 20,
+              "unmatchedLimit": 25,
+              "maxRows": 100000
+            },
+            "selection": {
+              "beforeSourceRows": 46,
+              "afterSourceRows": 51,
+              "beforeInvalidRows": 0,
+              "afterInvalidRows": 0,
+              "beforeDuplicateRows": 0,
+              "afterDuplicateRows": 0,
+              "beforeConflictingRows": 0,
+              "afterConflictingRows": 0,
+              "matchedRows": 32,
+              "unmatchedBeforeRows": 14,
+              "unmatchedAfterRows": 19,
+              "returnedRows": 20,
+              "limitedRows": 12,
+              "returnedUnmatchedRows": 25,
+              "limitedUnmatchedRows": 8
+            },
+            "summary": {
+              "matchedRows": 32,
+              "returnedRows": 20,
+              "unmatchedRows": 33,
+              "verdict": "20 of 32 matched retained segments returned. 33 one-window rows were kept as unmatched evidence and not converted to zero."
+            },
+            "items": [
+              {
+                "key": "chl",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 44,
+                "afterClicks": 86,
+                "clickDelta": 42,
+                "beforeImpressions": 1018,
+                "afterImpressions": 3617,
+                "impressionDelta": 2599,
+                "beforePosition": 5.172,
+                "afterPosition": 5.871,
+                "positionDelta": 0.699
+              },
+              {
+                "key": "esp",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 2,
+                "afterClicks": 0,
+                "clickDelta": -2,
+                "beforeImpressions": 20,
+                "afterImpressions": 20,
+                "impressionDelta": 0,
+                "beforePosition": 2.6,
+                "afterPosition": 6.05,
+                "positionDelta": 3.45
+              },
+              {
+                "key": "deu",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 2,
+                "afterImpressions": 5,
+                "impressionDelta": 3,
+                "beforePosition": 9,
+                "afterPosition": 7,
+                "positionDelta": -2
+              },
+              {
+                "key": "ind",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 9,
+                "afterImpressions": 16,
+                "impressionDelta": 7,
+                "beforePosition": 3.444,
+                "afterPosition": 3.188,
+                "positionDelta": -0.256
+              },
+              {
+                "key": "mex",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 1,
+                "clickDelta": 1,
+                "beforeImpressions": 6,
+                "afterImpressions": 10,
+                "impressionDelta": 4,
+                "beforePosition": 6.667,
+                "afterPosition": 7.4,
+                "positionDelta": 0.733
+              },
+              {
+                "key": "ury",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 1,
+                "afterClicks": 0,
+                "clickDelta": -1,
+                "beforeImpressions": 1,
+                "afterImpressions": 3,
+                "impressionDelta": 2,
+                "beforePosition": 1,
+                "afterPosition": 10,
+                "positionDelta": 9
+              },
+              {
+                "key": "arg",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 5,
+                "afterImpressions": 21,
+                "impressionDelta": 16,
+                "beforePosition": 12.6,
+                "afterPosition": 4.429,
+                "positionDelta": -8.171
+              },
+              {
+                "key": "bgd",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 2,
+                "impressionDelta": 1,
+                "beforePosition": 4,
+                "afterPosition": 4.5,
+                "positionDelta": 0.5
+              },
+              {
+                "key": "bol",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 11,
+                "impressionDelta": 9,
+                "beforePosition": 4.5,
+                "afterPosition": 8.091,
+                "positionDelta": 3.591
+              },
+              {
+                "key": "bra",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 5,
+                "afterImpressions": 18,
+                "impressionDelta": 13,
+                "beforePosition": 6.6,
+                "afterPosition": 4.222,
+                "positionDelta": -2.378
+              },
+              {
+                "key": "can",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 7,
+                "afterImpressions": 9,
+                "impressionDelta": 2,
+                "beforePosition": 5.714,
+                "afterPosition": 6.111,
+                "positionDelta": 0.397
+              },
+              {
+                "key": "chn",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 2,
+                "impressionDelta": 0,
+                "beforePosition": 2.5,
+                "afterPosition": 10,
+                "positionDelta": 7.5
+              },
+              {
+                "key": "col",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 27,
+                "afterImpressions": 18,
+                "impressionDelta": -9,
+                "beforePosition": 3.333,
+                "afterPosition": 6.389,
+                "positionDelta": 3.056
+              },
+              {
+                "key": "dnk",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 12,
+                "afterImpressions": 19,
+                "impressionDelta": 7,
+                "beforePosition": 8.667,
+                "afterPosition": 7.316,
+                "positionDelta": -1.351
+              },
+              {
+                "key": "dom",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 1,
+                "impressionDelta": -1,
+                "beforePosition": 2,
+                "afterPosition": 1,
+                "positionDelta": -1
+              },
+              {
+                "key": "ecu",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 4,
+                "afterImpressions": 16,
+                "impressionDelta": 12,
+                "beforePosition": 4.25,
+                "afterPosition": 5,
+                "positionDelta": 0.75
+              },
+              {
+                "key": "egy",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 2,
+                "afterImpressions": 3,
+                "impressionDelta": 1,
+                "beforePosition": 5,
+                "afterPosition": 10.667,
+                "positionDelta": 5.667
+              },
+              {
+                "key": "fra",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 4,
+                "afterImpressions": 3,
+                "impressionDelta": -1,
+                "beforePosition": 5.5,
+                "afterPosition": 5,
+                "positionDelta": -0.5
+              },
+              {
+                "key": "gbr",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 3,
+                "afterImpressions": 9,
+                "impressionDelta": 6,
+                "beforePosition": 3.667,
+                "afterPosition": 7.444,
+                "positionDelta": 3.777
+              },
+              {
+                "key": "grc",
+                "evidenceScope": "matched-retained-segment",
+                "beforeClicks": 0,
+                "afterClicks": 0,
+                "clickDelta": 0,
+                "beforeImpressions": 1,
+                "afterImpressions": 1,
+                "impressionDelta": 0,
+                "beforePosition": 4,
+                "afterPosition": 3,
+                "positionDelta": -1
+              }
+            ],
+            "unmatchedSegments": [
+              {
+                "key": "cub",
+                "clicks": 1,
+                "impressions": 2,
+                "position": 6,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "isr",
+                "clicks": 1,
+                "impressions": 1,
+                "position": 1,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "are",
+                "clicks": 0,
+                "impressions": 7,
+                "position": 6.857,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "bel",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 10,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "che",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 2.5,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "cze",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 6,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "dza",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 9,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "hkg",
+                "clicks": 0,
+                "impressions": 4,
+                "position": 6.5,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "hnd",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 5.5,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "idn",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 10,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "mar",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 3,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "pry",
+                "clicks": 0,
+                "impressions": 5,
+                "position": 9,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "rus",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 22,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "sen",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 6,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "slv",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 9,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "swe",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 2,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "tha",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 3,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "tur",
+                "clicks": 0,
+                "impressions": 3,
+                "position": 18.333,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "vnm",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 18,
+                "retainedIn": "after",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "alb",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 8,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "aus",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 7.5,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "cri",
+                "clicks": 0,
+                "impressions": 3,
+                "position": 6,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "fin",
+                "clicks": 0,
+                "impressions": 2,
+                "position": 9,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "hrv",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 8,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              },
+              {
+                "key": "irq",
+                "clicks": 0,
+                "impressions": 1,
+                "position": 5,
+                "retainedIn": "before",
+                "reason": "not-retained-in-other-window"
+              }
+            ],
+            "warnings": [
+              "33 segments appeared in only one retained response. They are not treated as zero traffic or ranked as winners or losers."
+            ],
+            "caveats": [
+              "Only segments retained in both GSC responses receive movement deltas. Search Console can omit anonymized and lower-volume rows, so one-window absence is not proof of zero traffic.",
+              "Average position is impression-weighted provider data and is only compared when both retained rows have impressions.",
+              "Search Console segment data is observational. Movement can guide investigation but does not establish the cause of a ranking, demand, or CTR change."
+            ]
+          }
+        },
+        "decay": {
+          "schemaVersion": 1,
+          "site": "sc-domain:biovity.cl",
+          "generatedAt": "2026-10-03T20:34:23.996Z",
+          "comparison": "previous-period",
+          "ranges": {
+            "current": {
+              "startDate": "2026-07-02",
+              "endDate": "2026-09-29"
+            },
+            "previous": {
+              "startDate": "2026-04-03",
+              "endDate": "2026-07-01"
+            }
+          },
+          "rangeDays": 90,
+          "dataStatus": "complete",
+          "source": {
+            "provider": "google-search-console",
+            "dimensions": [
+              "query",
+              "page"
+            ],
+            "aggregationType": "auto",
+            "searchType": "web",
+            "dataState": "final",
+            "current": {
+              "rowsFetched": 312,
+              "calls": 1,
+              "maxRows": 100000,
+              "possiblyTruncated": false
+            },
+            "previous": {
+              "rowsFetched": 142,
+              "calls": 1,
+              "maxRows": 100000,
+              "possiblyTruncated": false
+            },
+            "completeness": "retained-query-rows-only"
+          },
+          "methodology": {
+            "id": "gsc_retained_query_page_decay_v2",
+            "version": 2,
+            "gscHistoryMonths": 16,
+            "missingRowsTreatedAsZero": false,
+            "urlShiftsExcluded": true,
+            "causeLanguage": "signals-not-attribution"
+          },
+          "filters": {
+            "minDropPct": 20,
+            "minPreviousClicks": 2,
+            "minClickLoss": 1,
+            "limit": 20,
+            "brand": "included"
+          },
+          "selection": {
+            "currentSourceRows": 312,
+            "previousSourceRows": 142,
+            "currentInvalidRows": 0,
+            "previousInvalidRows": 0,
+            "currentAggregatedRows": 312,
+            "previousAggregatedRows": 142,
+            "lowEvidenceRows": 138,
+            "lowActionabilityRows": 0,
+            "brandRows": 0,
+            "currentRowNotRetained": 0,
+            "urlShiftRows": 0,
+            "belowClickLossRows": 1,
+            "belowDropRows": 0,
+            "eligibleRows": 3,
+            "returnedRows": 3,
+            "limitedRows": 0,
+            "eligibleGroups": 3,
+            "returnedGroups": 3,
+            "limitedGroups": 0
+          },
+          "summary": {
+            "eligibleRows": 3,
+            "returnedRows": 3,
+            "groups": 3,
+            "observedRetainedQueryClickLoss": 22,
+            "returnedObservedRetainedQueryClickLoss": 22,
+            "brandFiltering": "included",
+            "verdict": "3 of 3 observed retained query/page declines returned for review."
+          },
+          "caveats": [
+            "Current window: 2026-07-02 to 2026-09-29; comparison: 2026-04-03 to 2026-07-01.",
+            "Only declines observed in retained GSC query/page rows are counted. Missing current rows are reported in selection and never converted to zero traffic.",
+            "Queries retained on a different current URL are counted as URL shifts and excluded from content-decay actions.",
+            "Search Console API history is limited to a rolling 16 months. Ranges outside that horizon are rejected instead of compared partially.",
+            "Search Console omits anonymized and lower-volume rows and does not guarantee every row. Signals do not establish cause."
+          ],
+          "recommendations": [
+            "Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings.",
+            "Review the shared /lista-espera/ pages pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings.",
+            "Review the shared /trabajos/ pages pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings."
+          ],
+          "items": [
+            {
+              "query": "biovity",
+              "url": "https://www.biovity.cl/",
+              "template": {
+                "id": "path:root",
+                "label": "Homepage",
+                "confidence": "high"
+              },
+              "clickLoss": 18,
+              "dropPct": 100,
+              "current": {
+                "clicks": 0,
+                "impressions": 1,
+                "ctr": 0,
+                "position": 2
+              },
+              "previous": {
+                "clicks": 18,
+                "impressions": 62,
+                "ctr": 0.2903,
+                "position": 3.92
+              },
+              "diagnosis": "lost_impressions",
+              "signals": [
+                "click_decline",
+                "impression_decline"
+              ],
+              "evidenceScope": "retained-query-page-row",
+              "recommendation": {
+                "principle": "C.8",
+                "evidenceRef": "Retained GSC row for \"biovity\" on https://www.biovity.cl/: 18.0 to 0.0 clicks (100.0% decline). Signals: click_decline, impression_decline.",
+                "action": "Check seasonality, query demand, SERP features, page indexability, and URL shifts before attributing this to content quality.",
+                "effort": "M",
+                "confidence": "medium"
+              }
+            },
+            {
+              "query": "biovity",
+              "url": "https://www.biovity.cl/lista-espera",
+              "template": {
+                "id": "path:lista-espera",
+                "label": "/lista-espera/ pages",
+                "confidence": "low"
+              },
+              "clickLoss": 2,
+              "dropPct": 100,
+              "current": {
+                "clicks": 0,
+                "impressions": 11,
+                "ctr": 0,
+                "position": 3.27
+              },
+              "previous": {
+                "clicks": 2,
+                "impressions": 37,
+                "ctr": 0.0541,
+                "position": 4.86
+              },
+              "diagnosis": "lost_impressions",
+              "signals": [
+                "click_decline",
+                "impression_decline"
+              ],
+              "evidenceScope": "retained-query-page-row",
+              "recommendation": {
+                "principle": "C.8",
+                "evidenceRef": "Retained GSC row for \"biovity\" on https://www.biovity.cl/lista-espera: 2.0 to 0.0 clicks (100.0% decline). Signals: click_decline, impression_decline.",
+                "action": "Check seasonality, query demand, SERP features, page indexability, and URL shifts before attributing this to content quality.",
+                "effort": "M",
+                "confidence": "medium"
+              }
+            },
+            {
+              "query": "biovity",
+              "url": "https://www.biovity.cl/trabajos",
+              "template": {
+                "id": "path:trabajos",
+                "label": "/trabajos/ pages",
+                "confidence": "low"
+              },
+              "clickLoss": 2,
+              "dropPct": 100,
+              "current": {
+                "clicks": 0,
+                "impressions": 3,
+                "ctr": 0,
+                "position": 1
+              },
+              "previous": {
+                "clicks": 2,
+                "impressions": 32,
+                "ctr": 0.0625,
+                "position": 2.38
+              },
+              "diagnosis": "lost_impressions",
+              "signals": [
+                "click_decline",
+                "impression_decline"
+              ],
+              "evidenceScope": "retained-query-page-row",
+              "recommendation": {
+                "principle": "C.8",
+                "evidenceRef": "Retained GSC row for \"biovity\" on https://www.biovity.cl/trabajos: 2.0 to 0.0 clicks (100.0% decline). Signals: click_decline, impression_decline.",
+                "action": "Check seasonality, query demand, SERP features, page indexability, and URL shifts before attributing this to content quality.",
+                "effort": "M",
+                "confidence": "medium"
+              }
+            }
+          ],
+          "groups": [
+            {
+              "id": "path:root:lost_impressions",
+              "label": "Homepage - lost impressions",
+              "diagnosis": "lost_impressions",
+              "template": {
+                "id": "path:root",
+                "label": "Homepage",
+                "confidence": "high"
+              },
+              "count": 1,
+              "urlCount": 1,
+              "totalClickLoss": 18,
+              "totalPreviousClicks": 18,
+              "averageDropPct": 100,
+              "sampleQueries": [
+                "biovity"
+              ],
+              "sampleUrls": [
+                "https://www.biovity.cl/"
+              ],
+              "recommendation": "Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings."
+            },
+            {
+              "id": "path:lista-espera:lost_impressions",
+              "label": "/lista-espera/ pages - lost impressions",
+              "diagnosis": "lost_impressions",
+              "template": {
+                "id": "path:lista-espera",
+                "label": "/lista-espera/ pages",
+                "confidence": "low"
+              },
+              "count": 1,
+              "urlCount": 1,
+              "totalClickLoss": 2,
+              "totalPreviousClicks": 2,
+              "averageDropPct": 100,
+              "sampleQueries": [
+                "biovity"
+              ],
+              "sampleUrls": [
+                "https://www.biovity.cl/lista-espera"
+              ],
+              "recommendation": "Review the shared /lista-espera/ pages pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings."
+            },
+            {
+              "id": "path:trabajos:lost_impressions",
+              "label": "/trabajos/ pages - lost impressions",
+              "diagnosis": "lost_impressions",
+              "template": {
+                "id": "path:trabajos",
+                "label": "/trabajos/ pages",
+                "confidence": "low"
+              },
+              "count": 1,
+              "urlCount": 1,
+              "totalClickLoss": 2,
+              "totalPreviousClicks": 2,
+              "averageDropPct": 100,
+              "sampleQueries": [
+                "biovity"
+              ],
+              "sampleUrls": [
+                "https://www.biovity.cl/trabajos"
+              ],
+              "recommendation": "Review the shared /trabajos/ pages pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings."
+            }
+          ],
+          "templates": [
+            {
+              "id": "path:root",
+              "label": "Homepage",
+              "count": 1,
+              "sampleUrls": [
+                "https://www.biovity.cl/"
+              ]
+            },
+            {
+              "id": "path:lista-espera",
+              "label": "/lista-espera/ pages",
+              "count": 1,
+              "sampleUrls": [
+                "https://www.biovity.cl/lista-espera"
+              ]
+            },
+            {
+              "id": "path:trabajos",
+              "label": "/trabajos/ pages",
+              "count": 1,
+              "sampleUrls": [
+                "https://www.biovity.cl/trabajos"
+              ]
+            }
+          ],
+          "ledgerSummary": "GSC: 2 calls, 454 rows",
+          "warnings": []
+        },
+        "cannibalization": {
+          "schemaVersion": 1,
+          "dataSource": "search-console-api",
+          "site": "sc-domain:biovity.cl",
+          "generatedAt": "2026-10-03T20:34:23.997Z",
+          "range": {
+            "startDate": "2026-07-02",
+            "endDate": "2026-09-29"
+          },
+          "rangeDays": 90,
+          "dataStatus": "complete",
+          "source": {
+            "provider": "google-search-console",
+            "searchType": "web",
+            "dataState": "final",
+            "pageExposure": {
+              "dimensions": [
+                "query",
+                "page"
+              ],
+              "aggregationType": "auto",
+              "rowsFetched": 312,
+              "validation": {
+                "retainedRows": 312,
+                "invalidRows": 0
+              },
+              "calls": 1,
+              "maxRows": 100000,
+              "possiblyTruncated": false
+            },
+            "propertyDemand": {
+              "dimensions": [
+                "query"
+              ],
+              "aggregationType": "byProperty",
+              "rowsFetched": 256,
+              "validation": {
+                "retainedRows": 256,
+                "invalidRows": 0
+              },
+              "calls": 1,
+              "maxRows": 100000,
+              "possiblyTruncated": false
+            },
+            "completeness": "complete"
+          },
+          "methodology": {
+            "id": "gsc_url_overlap_v2",
+            "version": 2,
+            "minimumPageImpressions": 10,
+            "minimumPageImpressionShare": 0.1,
+            "maximumDominantPageShare": 0.8,
+            "matching": "normalized_exact_query",
+            "finding": "url-overlap-candidate",
+            "requiresIntentReview": true
+          },
+          "verification": {
+            "status": "not-requested",
+            "technicalStateChecked": false,
+            "searchIntentChecked": false
+          },
+          "filters": {
+            "minImpressions": 50,
+            "limit": 20,
+            "brand": "included"
+          },
+          "selection": {
+            "sourceRows": 312,
+            "invalidRows": 0,
+            "validRows": 312,
+            "propertySourceRows": 256,
+            "propertyInvalidRows": 0,
+            "propertyQueryGroups": 256,
+            "queryGroups": 256,
+            "lowActionabilityQueries": 1,
+            "brandQueries": 0,
+            "belowMinimumQueries": 250,
+            "singlePageQueries": 0,
+            "incidentalPages": 10,
+            "dominantQueries": 3,
+            "missingPropertyQueries": 0,
+            "suppressedQueries": 0,
+            "eligibleClusters": 2,
+            "returnedClusters": 2,
+            "limitedClusters": 0,
+            "returnedSuppressions": 0,
+            "limitedSuppressions": 0
+          },
+          "summary": {
+            "eligibleClusters": 2,
+            "returnedClusters": 2,
+            "suppressedQueries": 0,
+            "brandFiltering": "included",
+            "verdict": "2 of 2 multi-URL query candidates returned for intent and technical review."
+          },
+          "templates": [
+            {
+              "id": "other",
+              "label": "Other page",
+              "count": 5,
+              "sampleUrls": [
+                "https://biovity.cl/",
+                "https://biovity.cl/salarios",
+                "https://biovity.cl/lista-espera"
+              ]
+            }
+          ],
+          "suppressed": [],
+          "suppressionSummary": {},
+          "items": [
+            {
+              "query": "biovity",
+              "pages": [
+                {
+                  "url": "https://biovity.cl/",
+                  "clicks": 16,
+                  "impressions": 62,
+                  "ctr": 0.2581,
+                  "position": 3.95,
+                  "impressionShare": 0.6139,
+                  "template": {
+                    "id": "other",
+                    "label": "Other page",
+                    "confidence": "low"
+                  }
+                },
+                {
+                  "url": "https://biovity.cl/salarios",
+                  "clicks": 0,
+                  "impressions": 23,
+                  "ctr": 0,
+                  "position": 2.48,
+                  "impressionShare": 0.2277,
+                  "template": {
+                    "id": "other",
+                    "label": "Other page",
+                    "confidence": "low"
+                  }
+                },
+                {
+                  "url": "https://biovity.cl/lista-espera",
+                  "clicks": 0,
+                  "impressions": 16,
+                  "ctr": 0,
+                  "position": 4.5,
+                  "impressionShare": 0.1584,
+                  "template": {
+                    "id": "other",
+                    "label": "Other page",
+                    "confidence": "low"
+                  }
+                }
+              ],
+              "pageCount": 3,
+              "materialPageClicks": 16,
+              "materialPageExposureImpressions": 101,
+              "pageExposureImpressions": 126,
+              "propertyImpressions": 75,
+              "observedPageExposureRatio": 1.68,
+              "additionalUrlExposures": 51,
+              "hhi": 0.4538,
+              "splitScore": 0.5462,
+              "largestPageShare": 0.6139,
+              "secondaryExposureShare": 0.3861,
+              "reviewContext": [],
+              "suggestedOwnerUrl": "https://biovity.cl/",
+              "ownerSelection": {
+                "method": "clicks_then_impressions_then_position",
+                "confidence": "low",
+                "requiresIntentReview": true
+              },
+              "priority": {
+                "method": "demand_impressions_x_secondary_exposure",
+                "score": 28.957,
+                "demandImpressions": 75,
+                "secondaryExposureShare": 0.3861,
+                "heuristic": true,
+                "estimatedClickLift": false
+              },
+              "template": {
+                "id": "other",
+                "label": "Other page",
+                "confidence": "low"
+              },
+              "recommendation": {
+                "principle": "C.6",
+                "evidenceRef": "GSC retained 3 material URLs for \"biovity\" across 126 page exposures and 75 property impressions; the largest material URL share was 61.4%.",
+                "action": "Compare the intent and technical state of these URLs. If they satisfy the same intent, choose a preferred page and align internal links, canonicals, and on-page focus. If they satisfy different intents, keep them separate and clarify the distinction. Treat https://biovity.cl/ only as the first review candidate based on observed clicks, impressions, and position.",
+                "effort": "M",
+                "confidence": "low"
+              }
+            },
+            {
+              "query": "cuanto gana un biotecnologo en chile",
+              "pages": [
+                {
+                  "url": "https://biovity.cl/salarios",
+                  "clicks": 1,
+                  "impressions": 59,
+                  "ctr": 0.0169,
+                  "position": 8.29,
+                  "impressionShare": 0.6782,
+                  "template": {
+                    "id": "other",
+                    "label": "Other page",
+                    "confidence": "low"
+                  }
+                },
+                {
+                  "url": "https://biovity.cl/salaries",
+                  "clicks": 0,
+                  "impressions": 28,
+                  "ctr": 0,
+                  "position": 5.57,
+                  "impressionShare": 0.3218,
+                  "template": {
+                    "id": "other",
+                    "label": "Other page",
+                    "confidence": "low"
+                  }
+                }
+              ],
+              "pageCount": 2,
+              "materialPageClicks": 1,
+              "materialPageExposureImpressions": 87,
+              "pageExposureImpressions": 87,
+              "propertyImpressions": 87,
+              "observedPageExposureRatio": 1,
+              "additionalUrlExposures": 0,
+              "hhi": 0.5635,
+              "splitScore": 0.4365,
+              "largestPageShare": 0.6782,
+              "secondaryExposureShare": 0.3218,
+              "reviewContext": [],
+              "suggestedOwnerUrl": "https://biovity.cl/salarios",
+              "ownerSelection": {
+                "method": "clicks_then_impressions_then_position",
+                "confidence": "low",
+                "requiresIntentReview": true
+              },
+              "priority": {
+                "method": "demand_impressions_x_secondary_exposure",
+                "score": 27.997,
+                "demandImpressions": 87,
+                "secondaryExposureShare": 0.3218,
+                "heuristic": true,
+                "estimatedClickLift": false
+              },
+              "template": {
+                "id": "other",
+                "label": "Other page",
+                "confidence": "low"
+              },
+              "recommendation": {
+                "principle": "C.6",
+                "evidenceRef": "GSC retained 2 material URLs for \"cuanto gana un biotecnologo en chile\" across 87 page exposures and 87 property impressions; the largest material URL share was 67.8%.",
+                "action": "Compare the intent and technical state of these URLs. If they satisfy the same intent, choose a preferred page and align internal links, canonicals, and on-page focus. If they satisfy different intents, keep them separate and clarify the distinction. Treat https://biovity.cl/salarios only as the first review candidate based on observed clicks, impressions, and position.",
+                "effort": "M",
+                "confidence": "low"
+              }
+            }
+          ],
+          "caveats": [
+            "Date window: 2026-07-02 to 2026-09-29 (90 days), using final GSC data where available.",
+            "This report finds queries with material exposure across multiple URLs. It does not prove that the URLs satisfy the same intent or that consolidation is correct.",
+            "Page exposure impressions can count more than one URL for a property impression. Property-level query impressions are reported separately instead of calling page exposure split demand.",
+            "Search Console retains top rows and omits anonymized queries, so absent rows are not proof of absent traffic.",
+            "The suggested owner is only a deterministic review starting point based on clicks, impressions, and position. Verify intent, indexability, redirects, and canonicals before changing URLs."
+          ],
+          "recommendations": [
+            "Review the highest-exposure candidates first. Confirm whether URLs serve the same intent and inspect technical state before changing canonicals, redirects, or content."
+          ],
+          "ledgerSummary": "GSC: 2 calls, 568 rows"
+        },
+        "strikingDistance": {
+          "site": "sc-domain:biovity.cl",
+          "generatedAt": "2026-10-03T20:34:23.998Z",
+          "range": {
+            "startDate": "2026-07-02",
+            "endDate": "2026-09-29"
+          },
+          "rangeDays": 90,
+          "source": {
+            "provider": "google-search-console",
+            "dimensions": [
+              "query",
+              "page"
+            ],
+            "searchType": "web",
+            "dataState": "final",
+            "rowsFetched": 312,
+            "calls": 1,
+            "maxRows": 100000,
+            "possiblyTruncated": false,
+            "completeness": "retained-query-rows-only"
+          },
+          "dataStatus": "filtered",
+          "selection": {
+            "sourceRows": 312,
+            "invalidRows": 0,
+            "outsidePositionRows": 293,
+            "belowMinimumRows": 19,
+            "lowActionabilityRows": 0,
+            "brandRows": 0,
+            "eligibleRows": 0,
+            "returnedRows": 0,
+            "limitedRows": 0
+          },
+          "methodology": {
+            "id": "gsc_striking_distance_v2",
+            "source": "google_search_console_query_page_rows",
+            "position": {
+              "minimumExclusive": 10,
+              "maximumInclusive": 20
+            },
+            "ctrEligibilityFilter": false,
+            "priority": {
+              "method": "impressions_x_position_proximity",
+              "formula": "impressions * clamp((21 - position) / 10, 0.1, 1)",
+              "heuristic": true,
+              "estimatedClickLift": false
+            },
+            "grouping": {
+              "population": "all_eligible_rows_before_limit",
+              "sharedTemplateMinimumUniqueUrls": 2,
+              "lowConfidenceTemplatesAreShared": false
+            }
+          },
+          "verification": {
+            "requested": false,
+            "attempted": 0,
+            "verified": 0,
+            "technical": 0,
+            "failed": 0
+          },
+          "items": [],
+          "templates": [],
+          "groups": [],
+          "summary": {
+            "eligibleRows": 0,
+            "returnedRows": 0,
+            "eligibleImpressions": 0,
+            "returnedImpressions": 0,
+            "uniqueEligibleUrls": 0,
+            "uniqueEligibleQueries": 0,
+            "groups": 0,
+            "brandFiltering": "included",
+            "verdict": "No retained query/page rows met the report filters."
+          },
+          "caveats": [
+            "Date window: 2026-07-02 to 2026-09-29, using final GSC data where available.",
+            "Selection: 312 source rows, 0 eligible, 0 returned.",
+            "Position is GSC average position for the property's topmost result per impression; it does not prove a URL ranked on a literal second results page every time.",
+            "Search Analytics exposes retained query rows only. Anonymized and lower-value queries can be absent even when pagination is exhausted.",
+            "Priority is a demand-and-position heuristic, not an estimated click lift or proof that a change will improve rankings.",
+            "Content verification: not run."
+          ],
+          "recommendations": [
+            "No action is recommended from this report. Lower the minimum impressions or widen the date window if you need long-tail inspection."
+          ]
+        },
+        "quickWins": {
+          "site": "sc-domain:biovity.cl",
+          "generatedAt": "2026-10-03T20:34:23.998Z",
+          "range": {
+            "startDate": "2026-07-02",
+            "endDate": "2026-09-29"
+          },
+          "rangeDays": 90,
+          "source": {
+            "provider": "google-search-console",
+            "dimensions": [
+              "query",
+              "page"
+            ],
+            "searchType": "web",
+            "dataState": "final",
+            "rowsFetched": 312,
+            "calls": 1,
+            "maxRows": 100000,
+            "possiblyTruncated": false,
+            "completeness": "retained-query-rows-only"
+          },
+          "dataStatus": "filtered",
+          "selection": {
+            "sourceRows": 312,
+            "invalidRows": 0,
+            "outsideBenchmarkPositionRows": 48,
+            "lowActionabilityRows": 1,
+            "brandRows": 0,
+            "benchmarkRows": 263,
+            "outsideCandidatePositionRows": 156,
+            "belowMinimumRows": 107,
+            "atOrAboveTargetRows": 0,
+            "eligibleRows": 0,
+            "returnedRows": 0,
+            "limitedRows": 0
+          },
+          "methodology": {
+            "id": "gsc_quick_wins_v2",
+            "source": "google_search_console_query_page_rows",
+            "position": {
+              "metric": "gsc_average_position",
+              "minimumInclusive": 4,
+              "maximumInclusive": 10
+            },
+            "benchmark": {
+              "method": "position_bucket_url_p75_v2",
+              "samplePopulation": "all_qualified_url_samples",
+              "leaveOut": "target_url",
+              "minimumUrlImpressions": 30,
+              "minimumQualifiedImpressions": 1000,
+              "minimumUrlSamples": 5,
+              "minimumPositiveUrlSamples": 3,
+              "fallback": {
+                "id": "seo_builtin_position_ctr",
+                "version": 1,
+                "kind": "built_in_heuristic",
+                "curve": {
+                  "1": 0.27,
+                  "2": 0.15,
+                  "3": 0.1,
+                  "4": 0.07,
+                  "5": 0.05,
+                  "6": 0.035,
+                  "7": 0.025,
+                  "8": 0.02,
+                  "9": 0.015,
+                  "10": 0.012
+                }
+              },
+              "heuristic": true
+            },
+            "priority": {
+              "method": "impressions_x_target_ctr_shortfall",
+              "formula": "impressions * max(0, target CTR - observed CTR)",
+              "heuristic": true,
+              "estimatedClickLift": false
+            }
+          },
+          "provenance": {
+            "inputScope": "provided_rows",
+            "selectionOrder": [
+              "valid_row",
+              "benchmark_position",
+              "query_quality",
+              "brand",
+              "candidate_position",
+              "minimum_impressions",
+              "target_ctr_shortfall",
+              "limit"
+            ],
+            "selection": {
+              "sourceRows": 312,
+              "invalidRows": 0,
+              "outsideBenchmarkPositionRows": 48,
+              "lowActionabilityRows": 1,
+              "brandRows": 0,
+              "benchmarkRows": 263,
+              "outsideCandidatePositionRows": 156,
+              "belowMinimumRows": 107,
+              "atOrAboveTargetRows": 0,
+              "eligibleRows": 0,
+              "returnedRows": 0,
+              "limitedRows": 0
+            },
+            "verification": {
+              "optional": true,
+              "population": "returned_rows_in_priority_order",
+              "fetchDeduplication": "exact_url"
+            }
+          },
+          "benchmark": {
+            "method": "position_bucket_url_p75_v2",
+            "peerRows": 263,
+            "byPosition": {
+              "1": {
+                "ctr": 0.27,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 45,
+                "impressions": 54,
+                "qualifiedImpressions": 43,
+                "urlSamples": 1,
+                "positiveUrlSamples": 1
+              },
+              "2": {
+                "ctr": 0.15,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 46,
+                "impressions": 95,
+                "qualifiedImpressions": 82,
+                "urlSamples": 1,
+                "positiveUrlSamples": 0
+              },
+              "3": {
+                "ctr": 0.1,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 60,
+                "impressions": 136,
+                "qualifiedImpressions": 118,
+                "urlSamples": 1,
+                "positiveUrlSamples": 1
+              },
+              "4": {
+                "ctr": 0.07,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 29,
+                "impressions": 142,
+                "qualifiedImpressions": 129,
+                "urlSamples": 2,
+                "positiveUrlSamples": 2
+              },
+              "5": {
+                "ctr": 0.05,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 24,
+                "impressions": 115,
+                "qualifiedImpressions": 90,
+                "urlSamples": 1,
+                "positiveUrlSamples": 1
+              },
+              "6": {
+                "ctr": 0.035,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 16,
+                "impressions": 160,
+                "qualifiedImpressions": 160,
+                "urlSamples": 2,
+                "positiveUrlSamples": 1
+              },
+              "7": {
+                "ctr": 0.025,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 15,
+                "impressions": 139,
+                "qualifiedImpressions": 129,
+                "urlSamples": 1,
+                "positiveUrlSamples": 1
+              },
+              "8": {
+                "ctr": 0.02,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 6,
+                "impressions": 146,
+                "qualifiedImpressions": 140,
+                "urlSamples": 1,
+                "positiveUrlSamples": 1
+              },
+              "9": {
+                "ctr": 0.015,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 11,
+                "impressions": 46,
+                "qualifiedImpressions": 37,
+                "urlSamples": 1,
+                "positiveUrlSamples": 0
+              },
+              "10": {
+                "ctr": 0.012,
+                "source": "builtin_position_ctr_curve_v1",
+                "samplePopulation": "all_qualified_url_samples",
+                "rows": 11,
+                "impressions": 28,
+                "qualifiedImpressions": 0,
+                "urlSamples": 0,
+                "positiveUrlSamples": 0
+              }
+            }
+          },
+          "verification": {
+            "requested": false,
+            "attemptedRows": 0,
+            "attemptedUrls": 0,
+            "verified": 0,
+            "technical": 0,
+            "failed": 0
+          },
+          "summary": {
+            "eligibleRows": 0,
+            "returnedRows": 0,
+            "eligibleImpressions": 0,
+            "returnedImpressions": 0,
+            "eligibleEstimatedCtrClickShortfall": 0,
+            "returnedEstimatedCtrClickShortfall": 0,
+            "uniqueEligibleUrls": 0,
+            "uniqueEligibleQueries": 0,
+            "repeatedQueryGroups": 0,
+            "templatePatterns": 0,
+            "brandFiltering": "included",
+            "verdict": "No retained rows met the quick-win report criteria."
+          },
+          "caveats": [
+            "Date window: 2026-07-02 to 2026-09-29, using final GSC data where available.",
+            "Selection: 312 source rows, 263 benchmark rows, 0 eligible rows, 0 returned.",
+            "Position is GSC average position across impressions; a value from 4 to 10 does not mean the URL ranked on page one for every impression.",
+            "Target CTR is a deterministic site-peer or versioned built-in heuristic. The calculated CTR click shortfall is for prioritisation and is not a traffic forecast.",
+            "Search Analytics exposes top retained query rows only. Anonymized and lower-value queries can be absent even after pagination is exhausted.",
+            "Page evidence was not requested; CTR shortfalls do not establish why CTR differs."
+          ],
+          "recommendations": [
+            "Adjust the minimum impressions only if you intentionally want a broader, lower-confidence review."
+          ],
+          "templates": [],
+          "templateRecommendations": [],
+          "groups": [],
+          "items": [],
+          "ledgerSummary": "GSC: 1 calls, 312 rows",
+          "warnings": []
+        }
+      },
+      "changeMeasurements": [],
+      "changeMeasurementAttempts": [],
+      "monitoring": {
+        "crawlRuns": [],
+        "indexWatch": {
+          "inspectedUrls": 0,
+          "currentIssues": 0,
+          "failed": 0,
+          "nonPass": 0,
+          "blocked": 0
+        }
+      },
+      "markdown": "# SEO report: sc-domain:biovity.cl\n\nPartial diagnosis; 1 significant anomaly signal; 3 observed retained query/page declines; no striking-distance opportunities; no quick-win candidates; 2 multi-URL query candidates.\n\nPeriod: 2026-07-02 to 2026-09-29\n\n## Report Caveats\n- Date window: 2026-07-02 to 2026-09-29.\n- Brand queries: included.\n- Data freshness: local cache allowed; rerun with --refresh to bypass cached GSC/HTTP data.\n- Search Console: included where the selected property returned usable data.\n- Google Analytics: not included in this narrative; use refresh-priorities when Google Analytics value should influence prioritisation.\n- Content verification: not run; recommendations are based on GSC/query data unless stated otherwise.\n- Partial page movement segments: 6 of 6 matched retained segments returned. 13 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings.\n- Partial query movement segments: 20 of 59 matched retained segments returned. 253 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings.\n- Partial country movement segments: 20 of 32 matched retained segments returned. 33 one-window rows were kept as unmatched evidence and not converted to zero. Inspect its retained-row source evidence and warnings.\n\n## Performance\n- Average daily impressions spiked from 41.4 to 83.3.\n- https://biovity.cl/salarios gained 45 clicks compared with the previous window.\n- 1 official Google update window overlapped the significant movement comparison window. This timing does not establish that the update caused the movement.\n\n## Content Opportunities\n- 3 observed retained query/page declines need review. Start with \"biovity\" on https://www.biovity.cl/; it had 18 fewer clicks.\n- Top decay cluster: 1 finding in the Homepage template (impressions dropped), 18 fewer observed clicks across rows retained in both windows. Action: Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings. Example queries: biovity.\n- 2 multi-URL query candidates need intent and technical review. Start with \"biovity\" and decide whether 3 ranking URLs answer the same intent.\n\n## Change Measurements\n- No measured changes are saved for this property yet.\n\n## Technical Monitoring\n- No crawl-diff run is saved yet.\n- No index-watch snapshot is saved yet.\n- No link-recover run is saved yet.\n\n## Priorities\n- Review movement during update overlap (low): Do not assume the update caused the movement. First compare winning and losing templates, then test site changes, indexability, intent, and SERP changes as separate explanations.\n- Investigate largest page movement (low): Open the page and check the queries that moved, whether the URL is still canonical/indexable, and whether the title, H1, or body changed recently.\n- Refresh decaying content (medium): Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings.\n- Review multi-URL query candidates (low): Confirm whether each URL set satisfies the same intent and inspect technical state. Consolidate only verified duplicate or same-intent pages; otherwise clarify the distinction."
+    }
+  },
+  "presentation": {
+    "tables": [
+      {
+        "id": "steps",
+        "title": "Steps",
+        "columns": [
+          {
+            "key": "tool",
+            "label": "Tool"
+          },
+          {
+            "key": "status",
+            "label": "Status"
+          },
+          {
+            "key": "summary",
+            "label": "Summary"
+          }
+        ],
+        "rows": [
+          {
+            "tool": "seo_report_narrative",
+            "status": "completed",
+            "summary": "Generated a partial diagnosis because one or more source datasets were incomplete."
+          }
+        ]
+      },
+      {
+        "id": "recommended_actions",
+        "title": "Recommended Actions",
+        "columns": [
+          {
+            "key": "priority",
+            "label": "Priority",
+            "type": "number"
+          },
+          {
+            "key": "title",
+            "label": "Title"
+          },
+          {
+            "key": "confidence",
+            "label": "Confidence"
+          },
+          {
+            "key": "action",
+            "label": "Action"
+          }
+        ],
+        "rows": [
+          {
+            "priority": 1,
+            "title": "Review movement during update overlap",
+            "confidence": "low",
+            "action": "Do not assume the update caused the movement. First compare winning and losing templates, then test site changes, indexability, intent, and SERP changes as separate explanations."
+          },
+          {
+            "priority": 2,
+            "title": "Investigate largest page movement",
+            "confidence": "low",
+            "action": "Open the page and check the queries that moved, whether the URL is still canonical/indexable, and whether the title, H1, or body changed recently."
+          },
+          {
+            "priority": 3,
+            "title": "Refresh decaying content",
+            "confidence": "medium",
+            "action": "Review the shared Homepage pattern, but verify technical state, seasonality, and SERP intent before applying one change across 1 retained query/page findings."
+          },
+          {
+            "priority": 4,
+            "title": "Review multi-URL query candidates",
+            "confidence": "low",
+            "action": "Confirm whether each URL set satisfies the same intent and inspect technical state. Consolidate only verified duplicate or same-intent pages; otherwise clarify the distinction."
+          }
+        ]
+      }
+    ],
+    "charts": []
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 67177,
+    "returnedBytes": 67177,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

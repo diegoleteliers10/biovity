@@ -46,8 +46,8 @@ export const CARRERA_CHART_DATA: CarreraChartItem[] = [
 ]
 
 export const SALARIOS_HERO_STATS: SalariosHeroStatItem[] = [
-  { icon: GraduationScrollIcon, value: "12", label: "carreras STEM analizadas", color: "#6366f1" },
-  { icon: Building02Icon, value: "8", label: "industrias evaluadas", color: "#3b82f6" },
+  { icon: GraduationScrollIcon, value: "12", label: "carreras STEM disponibles", color: "#6366f1" },
+  { icon: Building02Icon, value: "8", label: "industrias para filtrar", color: "#3b82f6" },
   { icon: Location05Icon, value: "16", label: "regiones de Chile", color: "#10b981" },
 ]
 

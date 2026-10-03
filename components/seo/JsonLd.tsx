@@ -1,3 +1,12 @@
+import { PLANES_EMPRESAS } from "@/lib/data/empresas-data"
+
+function articleAuthor(name: string, url?: string) {
+  if (name === "Equipo Biovity" || name === "Biovity") {
+    return { "@type": "Organization", name: "Biovity", url: "https://biovity.cl/about" }
+  }
+  return { "@type": "Person", name, ...(url ? { url } : {}) }
+}
+
 type JsonLdProps = {
   data: Record<string, unknown>
 }
@@ -6,10 +15,9 @@ type JsonLdProps = {
 export function JsonLd({ data }: JsonLdProps) {
   return (
     <script
-      id="json-ld"
       type="application/ld+json"
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
     />
   )
 }
@@ -155,13 +163,7 @@ export function ArticleJsonLd({
     image,
     datePublished,
     dateModified: dateModified || datePublished,
-    author: {
-      "@type": "Person",
-      name: authorName,
-      url:
-        authorUrl ||
-        `https://biovity.cl/blog/author/${authorName.toLowerCase().replace(/\s+/g, "-")}`,
-    },
+    author: articleAuthor(authorName, authorUrl),
     publisher: {
       "@type": "Organization",
       name: "Biovity",
@@ -212,13 +214,7 @@ export function BlogPostingJsonLd({
     image,
     datePublished,
     dateModified: dateModified || datePublished,
-    author: {
-      "@type": "Person",
-      name: authorName,
-      url:
-        authorUrl ||
-        `https://biovity.cl/blog/author/${authorName.toLowerCase().replace(/\s+/g, "-")}`,
-    },
+    author: articleAuthor(authorName, authorUrl),
     publisher: {
       "@type": "Organization",
       name: "Biovity",
@@ -429,33 +425,15 @@ export function SoftwareApplicationJsonLd() {
     url: "https://biovity.cl/companies",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web Browser",
-    offers: {
-      "@type": "AggregateOffer",
-      priceCurrency: "CLP",
-      lowPrice: "0",
-      offerCount: "3",
-      offers: [
-        {
-          "@type": "Offer",
-          name: "Plan Starter",
-          price: "0",
-          priceCurrency: "CLP",
-          description: "Plan gratuito para comenzar a reclutar",
-        },
-        {
-          "@type": "Offer",
-          name: "Plan Profesional",
-          priceCurrency: "CLP",
-          description: "Para empresas en crecimiento",
-        },
-        {
-          "@type": "Offer",
-          name: "Plan Enterprise",
-          priceCurrency: "CLP",
-          description: "Para grandes organizaciones",
-        },
-      ],
-    },
+    offers: PLANES_EMPRESAS.map((plan) => ({
+      "@type": "Offer",
+      name: plan.name,
+      description: plan.description,
+      url: `https://biovity.cl${plan.href}`,
+      ...(plan.price === "Personalizado"
+        ? {}
+        : { price: Number(plan.price.replaceAll(".", "")), priceCurrency: "CLP" }),
+    })),
     provider: {
       "@type": "Organization",
       name: "Biovity",

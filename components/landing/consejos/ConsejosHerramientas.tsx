@@ -14,8 +14,8 @@ export function ConsejosHerramientas() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-24 md:py-36 bg-surface-container-lowest relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="py-16 md:py-24 2xl:py-28 bg-surface-container-lowest relative overflow-hidden">
+      <div className="max-w-6xl 2xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -29,7 +29,7 @@ export function ConsejosHerramientas() {
           </h2>
         </m.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 2xl:gap-8">
           {CONSEJOS_HERRAMIENTAS.map((tool, idx) => (
             <m.div
               key={tool.id}

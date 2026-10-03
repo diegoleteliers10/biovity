@@ -1,0 +1,44 @@
+[
+  {
+    "route": "/index-md",
+    "exit": 0,
+    "content": "# Biovity: empleo científico en Chile\n\nPortal de empleo especializado en biotecnología, bioquímica, química, ingeniería y salud.\n\n- [Ofertas de empleo](https://biovity.cl/jobs)\n- [Reclutamiento para empresas](https://biovity.cl/companies)\n- [Planes y precios](https://biovity.cl/plans)\n- [Rangos salariales orientativos](https://biovity.cl/salaries)\n- [Consejos de carrera](https://biovity.cl/career-tips)\n- [Aprende bioinformática e IA](https://biovity.cl/learn)\n- [Blog](https://biovity.cl/blog)\n- [Sobre Biovity](https://biovity.cl/about)",
+    "error": ""
+  },
+  {
+    "route": "/empresas-md",
+    "exit": 0,
+    "content": "# Reclutamiento científico y ATS para empresas\n\nBiovity ofrece publicación de vacantes y gestión de candidatos para biotecnología, bioquímica, química, ingeniería y salud en Chile.\n\n## Free\n\n$0 CLP para siempre\n\nPara explorar la plataforma y publicar vacantes puntuales.\n\n- Hasta 2 ofertas activas simultáneas\n- Acceso a postulaciones y CVs completos\n- Panel ATS básico\n- Soporte estándar por email\n\n[Comenzar gratis](https://biovity.cl/register/organization)\n\n## Pro\n\n$40.000 CLP /mes\n\nPara empresas y laboratorios con procesos de contratación regulares.\n\n- Hasta 8 ofertas activas simultáneas\n- Búsqueda activa en la base de talentos\n- Filtros avanzados por técnicas y posgrados\n- 2 ofertas destacadas al mes\n- AI Matching de candidatos\n- Soporte prioritario por email y chat\n\n[Comenzar con Pro](https://biovity.cl/register/organization?plan=pro)\n\n## Business\n\n$80.000 CLP /mes\n\nPara equipos de RRHH y empresas biotecnológicas en fase de escalamiento.\n\n- Hasta 20 ofertas activas simultáneas\n- Acceso ilimitado a búsqueda de talentos\n- 5 ofertas destacadas al mes\n- Perfil de empresa personalizado\n- Evaluación colaborativa de candidatos\n- Reportes de rendimiento de vacantes\n- Soporte preferente dedicado\n\n[Comenzar con Business](https://biovity.cl/register/organization?plan=business)\n\n## Enterprise\n\nPrecio personalizado\n\nSoluciones a medida para corporaciones, consorcios y centros de I+D.\n\n- Ofertas activas ilimitadas\n- Pipeline y flujos de aprobación personalizados\n- Integraciones con ATS corporativo / HRIS\n- Account Manager y onboarding dedicado\n- SLA de servicio y soporte prioritario 24/7\n- Facturación corporativa personalizada\n\n[Contactar a ventas](https://biovity.cl/companies#contacto)\n\n[Funciones y preguntas frecuentes](https://biovity.cl/companies)",
+    "error": ""
+  },
+  {
+    "route": "/planes-md",
+    "exit": 0,
+    "content": "# Planes y precios de reclutamiento científico\n\nPrecios mensuales en pesos chilenos. La página ofrece un descuento de 20 % al seleccionar facturación anual.\n\n## Free\n\n$0 CLP para siempre\n\nPara explorar la plataforma y publicar vacantes puntuales.\n\n- Hasta 2 ofertas activas simultáneas\n- Acceso a postulaciones y CVs completos\n- Panel ATS básico\n- Soporte estándar por email\n\n[Comenzar gratis](https://biovity.cl/register/organization)\n\n## Pro\n\n$40.000 CLP /mes\n\nPara empresas y laboratorios con procesos de contratación regulares.\n\n- Hasta 8 ofertas activas simultáneas\n- Búsqueda activa en la base de talentos\n- Filtros avanzados por técnicas y posgrados\n- 2 ofertas destacadas al mes\n- AI Matching de candidatos\n- Soporte prioritario por email y chat\n\n[Comenzar con Pro](https://biovity.cl/register/organization?plan=pro)\n\n## Business\n\n$80.000 CLP /mes\n\nPara equipos de RRHH y empresas biotecnológicas en fase de escalamiento.\n\n- Hasta 20 ofertas activas simultáneas\n- Acceso ilimitado a búsqueda de talentos\n- 5 ofertas destacadas al mes\n- Perfil de empresa personalizado\n- Evaluación colaborativa de candidatos\n- Reportes de rendimiento de vacantes\n- Soporte preferente dedicado\n\n[Comenzar con Business](https://biovity.cl/register/organization?plan=business)\n\n## Enterprise\n\nPrecio personalizado\n\nSoluciones a medida para corporaciones, consorcios y centros de I+D.\n\n- Ofertas activas ilimitadas\n- Pipeline y flujos de aprobación personalizados\n- Integraciones con ATS corporativo / HRIS\n- Account Manager y onboarding dedicado\n- SLA de servicio y soporte prioritario 24/7\n- Facturación corporativa personalizada\n\n[Contactar a ventas](https://biovity.cl/companies#contacto)\n\n[Planes vigentes](https://biovity.cl/plans)",
+    "error": ""
+  },
+  {
+    "route": "/salarios-md",
+    "exit": 0,
+    "content": "# Sueldos en biotecnología y ciencias en Chile\n\nEstos valores son rangos orientativos de la página actual. No representan una encuesta salarial verificada ni garantizan una remuneración. Los montos están en pesos chilenos (CLP). Confirma si una oferta corresponde a sueldo bruto o líquido.\n\n- Bioinformática: junior $1.500.000 CLP, senior $3.200.000 CLP\n- Ing. Civil Química: junior $1.600.000 CLP, senior $3.050.000 CLP\n- Química y Farmacia: junior $1.700.000 CLP, senior $2.400.000 CLP\n- Ing. Biotecnología: junior $1.075.000 CLP, senior $2.000.000 CLP\n- Ing. Alimentos: junior $1.000.000 CLP, senior $1.900.000 CLP\n\n[Comparar rangos y experiencia](https://biovity.cl/salaries)\n\n[Compartir tu salario](https://biovity.cl/share-salary)",
+    "error": ""
+  },
+  {
+    "route": "/nosotros-md",
+    "exit": 0,
+    "content": "# Sobre Biovity\n\nBiovity conecta profesionales y estudiantes de biotecnología, bioquímica, química, ingeniería y salud con oportunidades de empleo científico en Chile.\n\n[Sobre Biovity](https://biovity.cl/about)\n\n[Ofertas de empleo](https://biovity.cl/jobs)",
+    "error": ""
+  },
+  {
+    "route": "/trabajos-md",
+    "exit": 0,
+    "content": "# Empleos en biotecnología y ciencias en Chile\n\nConsulta las ofertas vigentes en el portal. Usa sus filtros para comparar área, ubicación, modalidad y remuneración publicada por cada empresa.\n\n[Ver ofertas actuales](https://biovity.cl/jobs)\n\n[Consejos para preparar tu CV y entrevista](https://biovity.cl/career-tips)",
+    "error": ""
+  },
+  {
+    "route": "/llms.txt",
+    "exit": 0,
+    "content": "# Biovity\n\n> Biovity es la plataforma de empleo especializada en biotecnología, bioquímica, química, ingeniería química y salud en Chile. Conectamos profesionales y estudiantes con oportunidades científicas significativas.\n\n## Secciones Principales\n\n- [Inicio](https://biovity.cl): Portal principal con ofertas de empleo en ciencias\n- [Trabajos](https://biovity.cl/jobs): Bolsa de empleo científica con filtros por área, ubicación y salario\n- [Salarios](https://biovity.cl/salaries): Rangos salariales orientativos en ciencias en Chile\n- [Para Empresas](https://biovity.cl/companies): ATS especializado para reclutar talento científico\n- [Nosotros](https://biovity.cl/about): Misión y equipo detrás de Biovity\n- [Planes](https://biovity.cl/plans): Precios para empresas y organizaciones\n- [Lista de Espera](https://biovity.cl/waitlist): Únete a la comunidad científica\n\n- [Consejos de carrera](https://biovity.cl/career-tips): CV, entrevistas y transición a la industria\n- [Aprende](https://biovity.cl/learn): Cápsulas de bioinformática e IA para biotecnología\n- [Blog](https://biovity.cl/blog): Artículos de ciencias y empleo\n\n## Recursos para Agentes AI\n\nBiovity ofrece versiones en Markdown de sus páginas principales para facilitar el procesamiento por agentes AI:\n\n- [Inicio (Markdown)](https://biovity.cl/index-md)\n- [Empresas (Markdown)](https://biovity.cl/empresas-md)\n- [Trabajos (Markdown)](https://biovity.cl/trabajos-md)\n- [Salarios (Markdown)](https://biovity.cl/salarios-md)\n- [Nosotros (Markdown)](https://biovity.cl/nosotros-md)\n- [Planes (Markdown)](https://biovity.cl/planes-md)\n\n## Datos Estructurales\n\n- **Industria**: Empleo científico / Biotech\n- **Ubicación**: Chile\n- **Audiencia**: Profesionales, estudiantes y empresas del sector biocientífico\n- **Idioma**: Español (Chile)\n\n## Términos de Búsqueda Relacionados\n\nempleo biotecnología Chile, trabajo bioquímica, ofertas química, ingeniería química Chile, salario científico, contratar científicos Chile, ATS biotecnología, portal empleo científico",
+    "error": ""
+  }
+]

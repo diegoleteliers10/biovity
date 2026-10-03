@@ -3,6 +3,7 @@
 // THROW. EXCEPTIONAL CASE
 // REASON: DOM measurement (getBoundingClientRect, ResizeObserver) requires
 // access to the mounted DOM. No declarative React primitive covers this use case.
+import { useInView, useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import { type RefObject, useEffect, useId, useState } from "react"
 import { cn } from "@/lib/utils"
@@ -49,6 +50,10 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   const id = useId()
   const [pathD, setPathD] = useState("")
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 })
+  const reducedMotion = useReducedMotion()
+  // The sweep repaints the whole stroke on every frame. Pause it while the beam
+  // is off-screen so it never competes with the scroll it sits inside.
+  const inView = useInView(containerRef, { margin: "120px 0px" })
 
   const gradientCoordinates = reverse
     ? {
@@ -128,18 +133,11 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
 
     updatePath()
 
-    const t1 = setTimeout(updatePath, 50)
-    const t2 = setTimeout(updatePath, 200)
-    const t3 = setTimeout(updatePath, 500)
-    const t4 = setTimeout(updatePath, 1000)
-
+    // ResizeObserver already covers the late reflows these timeouts were
+    // chasing (fonts, images, dynamic viewports), so they only duplicated work.
     return () => {
       resizeObserver.disconnect()
       window.removeEventListener("resize", updatePath)
-      clearTimeout(t1)
-      clearTimeout(t2)
-      clearTimeout(t3)
-      clearTimeout(t4)
     }
   }, [containerRef, fromRef, toRef, curvature, startXOffset, startYOffset, endXOffset, endYOffset])
 
@@ -181,17 +179,26 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
             y1: "0%",
             y2: "0%",
           }}
-          animate={{
-            x1: gradientCoordinates.x1,
-            x2: gradientCoordinates.x2,
-            y1: gradientCoordinates.y1,
-            y2: gradientCoordinates.y2,
-          }}
+          animate={
+            inView && !reducedMotion
+              ? {
+                  x1: gradientCoordinates.x1,
+                  x2: gradientCoordinates.x2,
+                  y1: gradientCoordinates.y1,
+                  y2: gradientCoordinates.y2,
+                }
+              : {
+                  x1: "45%",
+                  x2: "35%",
+                  y1: gradientCoordinates.y1[0],
+                  y2: gradientCoordinates.y2[0],
+                }
+          }
           transition={{
             delay,
             duration,
             ease: [0.16, 1, 0.3, 1],
-            repeat: Infinity,
+            repeat: inView && !reducedMotion ? Infinity : 0,
             repeatDelay: 0,
           }}
         >

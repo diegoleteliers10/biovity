@@ -36,8 +36,8 @@ export function ConsejosGrid() {
   })
 
   return (
-    <section className="py-24 md:py-36 bg-surface-container-low relative">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16 md:py-24 2xl:py-28 bg-surface-container-low relative">
+      <div className="max-w-6xl 2xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -118,7 +118,7 @@ export function ConsejosGrid() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 2xl:gap-8">
             {filteredArticles.map((article, idx) => (
               <m.article
                 key={article.id}
@@ -131,8 +131,7 @@ export function ConsejosGrid() {
                 <div className="p-6">
                   {/* Category */}
                   <span className="inline-block px-3 py-1 rounded-full text-xs font-mono font-medium bg-secondary/10 text-secondary border border-secondary/20 mb-4">
-                    {CONSEJOS_CATEGORIAS.find((c) => c.id === article.category)?.label ||
-                      "General"}
+                    {CONSEJOS_CATEGORIAS.find((c) => c.id === article.category)?.label || "General"}
                   </span>
 
                   {/* Title */}

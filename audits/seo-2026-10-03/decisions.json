@@ -1,0 +1,328 @@
+{
+  "findings": [
+    {
+      "id": "crawl:meta_description_duplicate",
+      "title": "meta_description_duplicate: Duplicate meta description (13 URLs)",
+      "outcome": "not-needed",
+      "reason": "Las 12 variantes son filtros con canonical `/jobs`. No crear descripciones distintas solo para eliminar la alerta.",
+      "verification": "Confirmar canonical de las 12 variantes. Si se crean categorías indexables, auditar esas nuevas rutas."
+    },
+    {
+      "id": "crawl:title_duplicate",
+      "title": "title_duplicate: Duplicate title (13 URLs)",
+      "outcome": "not-needed",
+      "reason": "Las variantes consolidan su señal hacia `/jobs`. El título duplicado en estos filtros no demuestra una página indexable duplicada.",
+      "verification": "Revisar canonicals y URLs elegidas por Google en URL Inspection."
+    },
+    {
+      "id": "crawl:duplicate_content",
+      "title": "duplicate_content: Duplicate content (13 URLs)",
+      "outcome": "not-needed",
+      "reason": "La consolidación por canonical ya existe. No crear contenido artificial por combinación de filtros.",
+      "verification": "Conservar canonical `/jobs`. Revisar indexación antes de cambiar la política."
+    },
+    {
+      "id": "crawl:h1_missing",
+      "title": "h1_missing: Missing H1 (1 URL)",
+      "outcome": "deferred",
+      "reason": "Sí requiere cambio en `/plans`: su título visible es H2 y no existe H1.",
+      "verification": "Después de implementar, comprobar DOM y repetir el rastreo de `/plans`."
+    },
+    {
+      "id": "crawl:noindex",
+      "title": "noindex: Noindex found (1 URL)",
+      "outcome": "no-change",
+      "reason": "No requiere cambio: `/login` no es una landing que deba competir por búsquedas.",
+      "verification": "Conservar noindex en login. No aplicar esa política a páginas públicas útiles."
+    },
+    {
+      "id": "crawl:canonicalized_page",
+      "title": "canonicalized_page: Canonicalized page (14 URLs)",
+      "outcome": "deferred",
+      "reason": "Dos categorías de aprendizaje necesitan canonical propio. Las 12 variantes de empleo pueden conservar `/jobs`.",
+      "verification": "Repetir los 14 casos y comprobar cada destino. URL Inspection para categorías."
+    },
+    {
+      "id": "crawl:title_too_wide",
+      "title": "title_too_wide: Title may truncate on some devices (4 URLs)",
+      "outcome": "deferred",
+      "reason": "Revisar título final de cápsula, recruiting, privacidad y waitlist. La marca repetida es comprobable. La truncación es una estimación.",
+      "verification": "Revisar texto importante, marca única y medición de anchura después de editar."
+    },
+    {
+      "id": "crawl:structured_data_missing",
+      "title": "structured_data_missing: No structured data detected (3 URLs)",
+      "outcome": "deferred",
+      "reason": "CollectionPage y BreadcrumbList pueden describir categorías de aprendizaje. `/register` no necesita schema para eliminar la alerta.",
+      "verification": "Confirmar contenido visible, DOM y validación por cada categoría. No añadir schema genérico a registro."
+    },
+    {
+      "id": "crawl:slow_response",
+      "title": "slow_response: Slow response in this crawl (2 URLs)",
+      "outcome": "deferred",
+      "reason": "Dos respuestas lentas son observaciones aisladas. No prueban incumplimiento de Core Web Vitals.",
+      "verification": "Repetir tiempos y medir Lighthouse/CrUX antes de decidir un cambio."
+    },
+    {
+      "id": "crawl:h1_multiple",
+      "title": "h1_multiple: Multiple H1 headings (1 URL)",
+      "outcome": "deferred",
+      "reason": "El H1 extra de `/brand` es una muestra tipográfica. Se puede mantener el estilo con una etiqueta no principal. No es una penalización demostrada.",
+      "verification": "Comprobar estructura final y mantener la muestra visual."
+    },
+    {
+      "id": "crawl:nofollow",
+      "title": "nofollow: Nofollow found (1 URL)",
+      "outcome": "no-change",
+      "reason": "No requiere cambio de SEO en `/login`, fuera del contenido de adquisición.",
+      "verification": "Conservar la política de login y comprobar enlaces de las páginas públicas."
+    }
+  ],
+  "inventory": [
+    {
+      "url": "https://biovity.cl/",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/.",
+      "disposition": "Conservar portal. Mejorar HTML inicial y headings de demos. Enlazar salarios y empleos."
+    },
+    {
+      "url": "https://biovity.cl/about",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/about.",
+      "disposition": "Conservar. Reforzar identidad verificable del equipo y contacto."
+    },
+    {
+      "url": "https://biovity.cl/blog",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog.",
+      "disposition": "Marca única en título. Organizar guías por intención."
+    },
+    {
+      "url": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/cv-biotech-optimizado-ats.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/blog/estrategias-negociacion-salarial-primer-empleo-ciencias",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/estrategias-negociacion-salarial-primer-empleo-ciencias.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/blog/first-post",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/first-post.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/blog/guia-transicion-phd-postdoc-industria-biomedica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/guia-transicion-phd-postdoc-industria-biomedica.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/blog/habilidades-blandas-y-tecnicas-mas-demandadas-biotech",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/habilidades-blandas-y-tecnicas-mas-demandadas-biotech.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/blog/linkedin-y-networking-para-profesionales-de-biociencias",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/blog/linkedin-y-networking-para-profesionales-de-biociencias.",
+      "disposition": "Conservar artículo. Revisar autor real, fuentes y enlaces. En first-post, corregir tipo de autor Equipo Biovity."
+    },
+    {
+      "url": "https://biovity.cl/brand",
+      "evidence": "200. H1: 2. Canonical: https://biovity.cl/brand.",
+      "disposition": "Revisar heading de muestra. Decidir inclusión en sitemap como recurso de marca."
+    },
+    {
+      "url": "https://biovity.cl/career-tips",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/career-tips.",
+      "disposition": "Revisar métricas sin respaldo, fechas y autoría. Conectar guías y salarios."
+    },
+    {
+      "url": "https://biovity.cl/companies",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/companies.",
+      "disposition": "Conservar intención comercial ATS. Unificar ofertas y versiones Markdown."
+    },
+    {
+      "url": "https://biovity.cl/cookies",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/cookies.",
+      "disposition": "Conservar condiciones accesibles. Revisar precisión y marca repetida. Sin prioridad de keywords comerciales."
+    },
+    {
+      "url": "https://biovity.cl/jobs",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Revisar intención específica antes de editar."
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?experiencia=junior",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Civil%20Qu%C3%ADmica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Qu%C3%ADmica%20y%20Farmacia",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/jobs.",
+      "disposition": "Conservar como filtro. Canonical `/jobs`. No crear una landing por parámetro sin demanda y ofertas."
+    },
+    {
+      "url": "https://biovity.cl/learn",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/learn.",
+      "disposition": "Título específico. Incluir en sitemap y enlazar categorías."
+    },
+    {
+      "url": "https://biovity.cl/learn/bioinformatica",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/.",
+      "disposition": "Corregir canonical propio. Incluir en sitemap. Evaluar CollectionPage y breadcrumbs."
+    },
+    {
+      "url": "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python.",
+      "disposition": "Conservar recurso. Incluir en sitemap y revisar autoría, título y latencia."
+    },
+    {
+      "url": "https://biovity.cl/learn/ia-biotech",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/.",
+      "disposition": "Corregir canonical propio. Incluir en sitemap. Evaluar CollectionPage y breadcrumbs."
+    },
+    {
+      "url": "https://biovity.cl/learn/ia-biotech/agentes-ai-biotech",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/learn/ia-biotech/agentes-ai-biotech.",
+      "disposition": "Conservar recurso. Incluir en sitemap y revisar autoría, título y latencia."
+    },
+    {
+      "url": "https://biovity.cl/login",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/login.",
+      "disposition": "Conservar noindex/nofollow. Fuera de adquisición pública."
+    },
+    {
+      "url": "https://biovity.cl/plans",
+      "evidence": "200. H1: 0. Canonical: https://biovity.cl/plans.",
+      "disposition": "Añadir H1. Unificar precios y schema. Quitar FAQ no visible."
+    },
+    {
+      "url": "https://biovity.cl/privacy",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/privacy.",
+      "disposition": "Conservar condiciones accesibles. Revisar precisión y marca repetida. Sin prioridad de keywords comerciales."
+    },
+    {
+      "url": "https://biovity.cl/recruiting",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/recruiting.",
+      "disposition": "Diferenciar guía de proceso de companies. Revisar título y schema de producto."
+    },
+    {
+      "url": "https://biovity.cl/register",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/register.",
+      "disposition": "No añadir schema genérico. Revisar intención de indexación del registro por separado."
+    },
+    {
+      "url": "https://biovity.cl/salaries",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/salaries.",
+      "disposition": "Prioridad de demanda real. Añadir respaldo de datos, respuestas y FAQ visible. Conservar migración."
+    },
+    {
+      "url": "https://biovity.cl/share-salary",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/share-salary.",
+      "disposition": "Decidir indexación según utilidad pública y privacidad. No canonicalizar a salaries sin analizar contenido."
+    },
+    {
+      "url": "https://biovity.cl/terms",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/terms.",
+      "disposition": "Conservar condiciones accesibles. Revisar precisión y marca repetida. Sin prioridad de keywords comerciales."
+    },
+    {
+      "url": "https://biovity.cl/waitlist",
+      "evidence": "200. H1: 1. Canonical: https://biovity.cl/waitlist.",
+      "disposition": "Revisar vigencia y propósito de lista de espera. No retirar sin confirmar estado del producto."
+    },
+    {
+      "url": "https://biovity.cl/dashboard/offers",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/dashboard/talent",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/login/organization",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/login/professional",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/register/organization",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/register/organization?plan=business",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/register/organization?plan=pro",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    },
+    {
+      "url": "https://biovity.cl/register/professional",
+      "evidence": "Omitida por robots. Sin inspección de contenido.",
+      "disposition": "Conservar fuera del alcance público. No abrir robots solo para completar el audit."
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/component
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
 export const metadata: Metadata = {
-  title: "Política de Cookies | Biovity Chile",
+  title: "Política de Cookies",
   description:
     "Política de Cookies de Biovity. Conoce qué cookies y tecnologías de almacenamiento local utilizamos, sus finalidades y cómo gestionarlas.",
   openGraph: {

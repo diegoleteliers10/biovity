@@ -17,6 +17,13 @@ export const LANDING_ANIMATION = {
   chainStagger: 0.28,
   /** Viewport margin so elements start animating slightly before fully in view */
   viewportMargin: "0px 0px -80px 0px",
+  /**
+   * Ceiling for scroll-reveal travel. A reveal wrapper rasterizes its whole
+   * subtree while it moves, so a shorter offset keeps the first frames cheap and
+   * reads as snappier.
+   */
+  travel: 24,
+  travelCompact: 12,
   /** Custom ease-out for UI interactions */
   easeOut: [0.23, 1, 0.32, 1] as [number, number, number, number],
   /** Custom ease-in-out for on-screen movement */

@@ -5,19 +5,12 @@ import { SalariosInteractiveFilter } from "@/components/landing/salarios/Salario
 import { SalariosMetodologia } from "@/components/landing/salarios/SalariosMetodologia"
 import { SalariosUpskilling } from "@/components/landing/salarios/SalariosUpskilling"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import {
-  BreadcrumbJsonLd,
-  DatasetJsonLd,
-  FAQJsonLd,
-  OrganizationJsonLd,
-  WebSiteJsonLd,
-} from "@/components/seo/JsonLd"
-import { FAQS_SALARIOS } from "@/lib/data/salarios-data"
+import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
-  title: "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile",
+  title: "Sueldos en biotecnología, ciencias e ingeniería en Chile",
   description:
-    "Inteligencia salarial del mercado chileno en biociencias, química, farmacia, ingeniería y salud. Encuesta anónima Give to Get, impacto de habilidades y guías B2B en CLP.",
+    "Explora rangos salariales orientativos en biotecnología, bioquímica, farmacia e ingeniería en Chile. Compara carreras y experiencia en pesos chilenos.",
   keywords: [
     "sueldos biotecnología Chile",
     "salarios bioinformática",
@@ -34,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile",
     description:
-      "Inteligencia salarial del mercado chileno en biociencias, química, farmacia, ingeniería y salud. Encuesta anónima, impacto de habilidades y guías B2B en CLP.",
+      "Rangos salariales orientativos en biotecnología, bioquímica, farmacia e ingeniería en Chile. Compara carreras y experiencia en CLP.",
     url: "/salaries",
     images: [
       {
@@ -47,8 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     title: "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile",
-    description:
-      "Inteligencia salarial del mercado chileno en biociencias, química, farmacia, ingeniería y salud.",
+    description: "Rangos salariales orientativos en biotecnología y ciencias en Chile.",
     images: ["/og/home.png"],
   },
   alternates: {
@@ -60,23 +52,7 @@ export default function SalariosPage() {
   return (
     <LandingLayout>
       <WebSiteJsonLd />
-      <DatasetJsonLd
-        name="Portal de Salarios en Ciencias e Ingeniería | Biovity Chile"
-        description="Inteligencia salarial del mercado chileno en biociencias, quimica, farmacia, ingenieria y salud. Encuesta anonima Give to Get, impacto de habilidades y guias B2B en CLP."
-        url="https://biovity.cl/salaries"
-        creatorName="Biovity"
-        datePublished="2025-01-01"
-        keywords={[
-          "sueldos biotecnologia Chile",
-          "salarios bioinformatica",
-          "remuneraciones ingenieria quimica",
-          "sueldos por region Chile",
-          "biociencias salarios",
-          "bandas salariales empresas Chile",
-        ]}
-      />
       <OrganizationJsonLd />
-      <FAQJsonLd faqs={FAQS_SALARIOS} />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

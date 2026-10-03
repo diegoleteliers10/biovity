@@ -1,0 +1,1553 @@
+{
+  "url": "https://biovity.cl/",
+  "reportId": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+  "dataSources": {
+    "searchConsole": {
+      "status": "skipped",
+      "totalPages": 41,
+      "queriedPages": 0,
+      "joinedMetricPages": 0,
+      "joinedQueryPages": 0,
+      "pageLimit": 5000,
+      "pageLimitReached": false,
+      "retainedRowLimitReached": false,
+      "warning": "Search Console join skipped because no property was selected."
+    },
+    "analytics": {
+      "status": "skipped",
+      "observedMetrics": [],
+      "totalPages": 41,
+      "queriedPages": 0,
+      "joinedPages": 0,
+      "retainedRowLimit": 5000,
+      "retainedRowLimitReached": false,
+      "warning": "Analytics join skipped because no connection was selected."
+    }
+  },
+  "affectedUrls": [
+    {
+      "url": "https://biovity.cl/jobs",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?experiencia=junior",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?experiencia=junior",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?experiencia=junior",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Civil%20Qu%C3%ADmica",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Civil%20Qu%C3%ADmica",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Civil%20Qu%C3%ADmica",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Qu%C3%ADmica%20y%20Farmacia",
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Qu%C3%ADmica%20y%20Farmacia",
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Qu%C3%ADmica%20y%20Farmacia",
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+          "https://biovity.cl/jobs?experiencia=junior",
+          "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+          "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+        ]
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/login",
+      "ruleId": "noindex",
+      "title": "Noindex found",
+      "category": "indexability",
+      "severity": "medium",
+      "detail": "Meta robots noindex",
+      "evidence": {
+        "metaRobots": "noindex, nofollow"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/brand",
+      "ruleId": "h1_multiple",
+      "title": "Multiple H1 headings",
+      "category": "headings",
+      "severity": "low",
+      "detail": "2 H1 headings",
+      "evidence": {
+        "h1Count": 2
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Qu%C3%ADmica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?categoria=Qu%C3%ADmica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?categoria=Salud%20y%20Medicina"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?experiencia=junior",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?experiencia=junior"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Bioinform%C3%A1tica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?q=Bioinform%C3%A1tica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Alimentos",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?q=Ing.%20Alimentos"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?q=Ing.%20Biotecnolog%C3%ADa"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Ing.%20Civil%20Qu%C3%ADmica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?q=Ing.%20Civil%20Qu%C3%ADmica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/jobs?q=Qu%C3%ADmica%20y%20Farmacia",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/jobs",
+      "evidence": {
+        "canonical": "https://biovity.cl/jobs",
+        "finalUrl": "https://biovity.cl/jobs?q=Qu%C3%ADmica%20y%20Farmacia"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/bioinformatica",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/",
+      "evidence": {
+        "canonical": "https://biovity.cl/",
+        "finalUrl": "https://biovity.cl/learn/bioinformatica"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/bioinformatica",
+      "ruleId": "structured_data_missing",
+      "title": "No structured data detected",
+      "category": "structured-data",
+      "severity": "low",
+      "detail": "No structured data detected",
+      "evidence": {
+        "structuredDataFormats": [],
+        "schemaTypes": [],
+        "invalidJsonLdCount": 0,
+        "unrecognizedJsonLdTypeCount": 0
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+      "ruleId": "slow_response",
+      "title": "Slow response in this crawl",
+      "category": "response",
+      "severity": "low",
+      "detail": "2709ms",
+      "evidence": {
+        "responseTimeMs": 2709,
+        "thresholdMs": 2000
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+      "ruleId": "title_too_wide",
+      "title": "Title may truncate on some devices",
+      "category": "metadata",
+      "severity": "low",
+      "detail": "597.6px",
+      "evidence": {
+        "title": "Análisis de secuencias ADN con Python | Aprende | Biovity | Biovity",
+        "estimatedPixels": 597.6,
+        "referencePixels": 580,
+        "status": "over-reference",
+        "confidence": "high",
+        "profile": {
+          "id": "arial-20-v1",
+          "fontFamily": "Arial",
+          "fontSizePixels": 20,
+          "fontWeight": 400
+        },
+        "graphemeCount": 67,
+        "fallbackGraphemes": []
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/ia-biotech",
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "https://biovity.cl/",
+      "evidence": {
+        "canonical": "https://biovity.cl/",
+        "finalUrl": "https://biovity.cl/learn/ia-biotech"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/ia-biotech",
+      "ruleId": "structured_data_missing",
+      "title": "No structured data detected",
+      "category": "structured-data",
+      "severity": "low",
+      "detail": "No structured data detected",
+      "evidence": {
+        "structuredDataFormats": [],
+        "schemaTypes": [],
+        "invalidJsonLdCount": 0,
+        "unrecognizedJsonLdTypeCount": 0
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/learn/ia-biotech/agentes-ai-biotech",
+      "ruleId": "slow_response",
+      "title": "Slow response in this crawl",
+      "category": "response",
+      "severity": "low",
+      "detail": "2600ms",
+      "evidence": {
+        "responseTimeMs": 2600,
+        "thresholdMs": 2000
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/login",
+      "ruleId": "nofollow",
+      "title": "Nofollow found",
+      "category": "indexability",
+      "severity": "low",
+      "detail": "noindex, nofollow",
+      "evidence": {
+        "metaRobots": "noindex, nofollow"
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/plans",
+      "ruleId": "h1_missing",
+      "title": "Missing H1",
+      "category": "headings",
+      "severity": "low",
+      "detail": "No H1 found",
+      "evidence": {
+        "h1Count": 0
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/privacy",
+      "ruleId": "title_too_wide",
+      "title": "Title may truncate on some devices",
+      "category": "metadata",
+      "severity": "low",
+      "detail": "593.5px",
+      "evidence": {
+        "title": "Política de Privacidad y Protección de Datos | Biovity Chile | Biovity",
+        "estimatedPixels": 593.5,
+        "referencePixels": 580,
+        "status": "over-reference",
+        "confidence": "high",
+        "profile": {
+          "id": "arial-20-v1",
+          "fontFamily": "Arial",
+          "fontSizePixels": 20,
+          "fontWeight": 400
+        },
+        "graphemeCount": 70,
+        "fallbackGraphemes": []
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/recruiting",
+      "ruleId": "title_too_wide",
+      "title": "Title may truncate on some devices",
+      "category": "metadata",
+      "severity": "low",
+      "detail": "596.9px",
+      "evidence": {
+        "title": "Herramientas de Reclutamiento Científico en Chile | Biovity | Biovity",
+        "estimatedPixels": 596.9,
+        "referencePixels": 580,
+        "status": "over-reference",
+        "confidence": "high",
+        "profile": {
+          "id": "arial-20-v1",
+          "fontFamily": "Arial",
+          "fontSizePixels": 20,
+          "fontWeight": 400
+        },
+        "graphemeCount": 69,
+        "fallbackGraphemes": []
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/register",
+      "ruleId": "structured_data_missing",
+      "title": "No structured data detected",
+      "category": "structured-data",
+      "severity": "low",
+      "detail": "No structured data detected",
+      "evidence": {
+        "structuredDataFormats": [],
+        "schemaTypes": [],
+        "invalidJsonLdCount": 0,
+        "unrecognizedJsonLdTypeCount": 0
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    },
+    {
+      "url": "https://biovity.cl/waitlist",
+      "ruleId": "title_too_wide",
+      "title": "Title may truncate on some devices",
+      "category": "metadata",
+      "severity": "low",
+      "detail": "635.8px",
+      "evidence": {
+        "title": "Lista de Espera - Empleos en Biotecnología y Ciencias | Biovity | Biovity",
+        "estimatedPixels": 635.8,
+        "referencePixels": 580,
+        "status": "over-reference",
+        "confidence": "high",
+        "profile": {
+          "id": "arial-20-v1",
+          "fontFamily": "Arial",
+          "fontSizePixels": 20,
+          "fontWeight": 400
+        },
+        "graphemeCount": 73,
+        "fallbackGraphemes": []
+      },
+      "clicks": 0,
+      "impressions": 0,
+      "sessions": 0
+    }
+  ],
+  "selection": {
+    "totalMatchedRows": 66,
+    "returnedRows": 66,
+    "limit": 200,
+    "truncated": false
+  },
+  "warnings": [
+    "8 URLs disallowed SEO-Skill/0.2.37 (+https://seoskill.dev)/ in robots.txt. If the audit should reach them, allow the SEO-Skill token on only those public paths."
+  ],
+  "caveats": [],
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 48147,
+    "returnedBytes": 48382,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

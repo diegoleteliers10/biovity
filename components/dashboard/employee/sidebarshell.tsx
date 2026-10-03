@@ -78,10 +78,12 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
           profession={user?.profession}
           session={session}
         />
-        <SidebarInset
-          className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ viewTransitionName: "persistent-nav" }}
-        >
+        {/* No view-transition-name here. A named element must be snapshotted as its
+            own layer whenever a view transition runs, and this wrapper holds the
+            whole scrolling page, so each navigation rasterizes the entire
+            dashboard into a bitmap it then cross-fades. DirectionalTransition
+            already provides the slide; the snapshot bought nothing. */}
+        <SidebarInset className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {children}
         </SidebarInset>
       </SidebarProvider>

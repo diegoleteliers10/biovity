@@ -1,3 +1,4 @@
+import "@/app/landing-scroll.css"
 import { Footer } from "../common/Footer"
 import { Header } from "../common/Header"
 
@@ -5,7 +6,11 @@ import { Header } from "../common/Header"
 // Antes, getServerSession() frenaba el TTFB de cada pagina publica (/, /jobs, /learn).
 export const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="overflow-x-hidden">
+    // overflow-x: clip, not hidden. "hidden" makes the computed overflow-y
+    // "auto", which turns this wrapper into a nested scroll container and
+    // breaks scrollIntoView plus any scroll-linked animation. "clip" hides the
+    // same overflow and creates no scroll box.
+    <div className="landing-public overflow-x-clip">
       <Header session={null} />
       {children}
       <Footer />
