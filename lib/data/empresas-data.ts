@@ -10,12 +10,7 @@ import {
   Tick02Icon,
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
-import type {
-  FAQItem,
-  HeroStatEmpresaItem,
-  PasoEmpresaItem,
-  PlanItem,
-} from "@/lib/types/empresas"
+import type { FAQItem, HeroStatEmpresaItem, PasoEmpresaItem, PlanItem } from "@/lib/types/empresas"
 import type { IconTitleDescription } from "@/lib/types/landing"
 
 export const FAQS_EMPRESAS: FAQItem[] = [
@@ -117,7 +112,7 @@ export const PLANES_EMPRESAS: PlanItem[] = [
       "Facturación corporativa personalizada",
     ],
     cta: "Contactar a ventas",
-    href: "#contacto",
+    href: "/companies#contacto",
     highlighted: false,
     isEnterprise: true,
   },

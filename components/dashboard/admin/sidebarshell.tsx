@@ -30,10 +30,9 @@ export function DashboardShellAdmin({ children, defaultOpen, session }: Dashboar
           avatarGradient={{ from: "amber-500", to: "orange-600" }}
           session={session}
         />
-        <SidebarInset
-          className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ viewTransitionName: "persistent-nav" }}
-        >
+        {/* No view-transition-name: this wrapper is the entire scrolling page, and a
+            named element is snapshotted as its own layer on every navigation. */}
+        <SidebarInset className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {children}
         </SidebarInset>
       </SidebarProvider>

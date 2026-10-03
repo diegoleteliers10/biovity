@@ -1,0 +1,56 @@
+{
+  "url": "https://www.biovity.cl/salarios",
+  "finalUrl": "https://biovity.cl/salaries",
+  "generatedAt": "2026-10-03T20:35:27.328Z",
+  "summary": {
+    "hops": 3,
+    "finalStatus": 200,
+    "finalIndexable": true,
+    "issues": []
+  },
+  "chain": [
+    {
+      "url": "https://www.biovity.cl/salarios",
+      "status": 307,
+      "location": "https://biovity.cl/salarios",
+      "nextUrl": "https://biovity.cl/salarios",
+      "durationMs": 359
+    },
+    {
+      "url": "https://biovity.cl/salarios",
+      "status": 308,
+      "location": "/salaries/",
+      "nextUrl": "https://biovity.cl/salaries/",
+      "durationMs": 228
+    },
+    {
+      "url": "https://biovity.cl/salaries/",
+      "status": 308,
+      "location": "/salaries",
+      "nextUrl": "https://biovity.cl/salaries",
+      "durationMs": 258
+    },
+    {
+      "url": "https://biovity.cl/salaries",
+      "status": 200,
+      "durationMs": 282
+    }
+  ],
+  "finalPage": {
+    "title": "Portal de Salarios en Ciencias e Ingeniería | Biovity Chile | Biovity",
+    "canonical": "https://biovity.cl/salaries",
+    "metaRobots": "index, follow, index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+    "indexable": true
+  },
+  "warnings": [],
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 967,
+    "returnedBytes": 1199,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

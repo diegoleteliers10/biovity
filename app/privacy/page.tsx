@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/component
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad y Protección de Datos | Biovity Chile",
+  title: "Política de privacidad",
   description:
     "Política de Privacidad y Protección de Datos Personales de Biovity conforme a la Ley N° 19.628 y Ley N° 21.719 en Chile. Conoce el tratamiento de tus datos y tus derechos ARCO.",
   openGraph: {

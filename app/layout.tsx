@@ -38,10 +38,7 @@ const instrumentSerif = Instrument_Serif({
   preload: false,
 })
 
-// Use deployment URL on Vercel so OG image is reachable from the same origin
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://biovity.cl")
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -185,7 +182,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`} data-scroll-behavior="smooth">
+    <html
+      lang="es"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      data-scroll-behavior="smooth"
+    >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563EB" />
@@ -194,7 +195,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Biovity" />
         <link rel="apple-touch-icon" href="/images/ios/180.webp" sizes="180x180" />
-
       </head>
       <body className={`${rubik.variable} ${instrumentSerif.variable} antialiased`}>
         <NuqsAdapter>

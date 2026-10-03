@@ -400,29 +400,40 @@ function HighlightItem<T extends React.ElementType>({
 
   React.useEffect(() => {
     if (mode !== "parent") return
-    let rafId: number
+    // 0 means "not currently tracking". updateBounds sets it only while bounds
+    // keep changing; re-arm below from resize and scroll.
+    let rafId = 0
     let previousBounds: Bounds | null = null
     const shouldUpdateBounds =
       forceUpdateBounds === true || (contextForceUpdateBounds && forceUpdateBounds !== false)
 
     const updateBounds = () => {
-      if (!localRef.current) return
+      if (!isActive || !localRef.current) return
 
       const bounds = localRef.current.getBoundingClientRect()
 
       if (shouldUpdateBounds) {
-        if (
+        const unchanged =
           previousBounds &&
           previousBounds.top === bounds.top &&
           previousBounds.left === bounds.left &&
           previousBounds.width === bounds.width &&
           previousBounds.height === bounds.height
-        ) {
-          rafId = requestAnimationFrame(updateBounds)
+
+        previousBounds = bounds
+        setBounds(bounds)
+
+        // Track only while the highlight is actually moving. An unconditional
+        // re-arm turns this into a permanent rAF loop that reads layout every
+        // frame for as long as the item is active, which is the whole cost of a
+        // sidebar that stays mounted. Re-arm from the events that can move an
+        // item instead: a resize, and the nav's own scrolling.
+        if (unchanged) {
+          rafId = 0
           return
         }
-        previousBounds = bounds
         rafId = requestAnimationFrame(updateBounds)
+        return
       }
 
       setBounds(bounds)
@@ -433,7 +444,33 @@ function HighlightItem<T extends React.ElementType>({
       setActiveClassName(activeClassName ?? "")
     } else if (!activeValue) clearBounds()
 
-    if (shouldUpdateBounds) return () => cancelAnimationFrame(rafId)
+    if (!shouldUpdateBounds || !isActive) return
+
+    // Re-arm tracking when something can move the item. Without the per-frame
+    // re-arm inside updateBounds, these are the only moments bounds can change.
+    const rearm = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        rafId = 0
+        updateBounds()
+      })
+    }
+    const resizeObserver = new ResizeObserver(rearm)
+    let observedElement: Element | null = localRef.current
+    while (observedElement && observedElement !== document.body) {
+      resizeObserver.observe(observedElement)
+      observedElement = observedElement.parentElement
+    }
+
+    window.addEventListener("resize", rearm)
+    window.addEventListener("scroll", rearm, { passive: true, capture: true })
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId)
+      resizeObserver.disconnect()
+      window.removeEventListener("resize", rearm)
+      window.removeEventListener("scroll", rearm, { capture: true })
+    }
   }, [
     mode,
     isActive,

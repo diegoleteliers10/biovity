@@ -1,0 +1,80 @@
+[
+  {
+    "route": "/",
+    "exit": 0,
+    "result": "{\"title\":\"Empleos en Biotecnología y Ciencias en Chile\",\"h1\":[\"Empleos en biotecnología y ciencias, salarios transparentes\"],\"canonical\":\"https://biovity.cl\",\"types\":[\"Organization\",\"WebSite\",\"EmploymentAgency\"]}",
+    "error": ""
+  },
+  {
+    "route": "/companies",
+    "exit": 0,
+    "result": "{\"title\":\"Software ATS y Reclutamiento Científico en Chile | Biovity\",\"h1\":[\"Recluta talento científico en Chile\"],\"canonical\":\"https://biovity.cl/companies\",\"types\":[\"WebSite\",\"Organization\",\"SoftwareApplication\",\"FAQPage\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/plans",
+    "exit": 0,
+    "result": "{\"title\":\"Planes y Precios para Empresas | Biovity\",\"h1\":[\"Planes de reclutamiento para cada etapa\"],\"canonical\":\"https://biovity.cl/plans\",\"types\":[\"WebSite\",\"Organization\",\"SoftwareApplication\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/salaries",
+    "exit": 0,
+    "result": "{\"title\":\"Sueldos en biotecnología, ciencias e ingeniería en Chile | Biovity\",\"h1\":[\"Sueldos en biotecnología, ciencias e ingeniería en Chile\"],\"canonical\":\"https://biovity.cl/salaries\",\"types\":[\"WebSite\",\"Organization\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/career-tips",
+    "exit": 0,
+    "result": "{\"title\":\"Consejos de Carrera en Biociencias y Biotech | Biovity\",\"h1\":[\"Consejos de carrera en biotecnología y ciencias\"],\"canonical\":\"https://biovity.cl/career-tips\",\"types\":[\"Organization\",\"WebSite\",\"FAQPage\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/learn",
+    "exit": 0,
+    "result": "{\"title\":\"Aprende bioinformática e IA para biotecnología | Biovity\",\"h1\":[\"Cápsulas de aprendizaje para el sector biocientífico\"],\"canonical\":\"https://biovity.cl/learn\",\"types\":[\"WebSite\",\"Organization\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/learn/bioinformatica",
+    "exit": 0,
+    "result": "{\"title\":\"Aprende Bioinformática | Biovity\",\"h1\":[\"Cápsulas de Bioinformática\"],\"canonical\":\"https://biovity.cl/learn/bioinformatica\",\"types\":[\"CollectionPage\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/learn/ia-biotech",
+    "exit": 0,
+    "result": "{\"title\":\"Aprende IA y Biotech | Biovity\",\"h1\":[\"Cápsulas de IA y Biotech\"],\"canonical\":\"https://biovity.cl/learn/ia-biotech\",\"types\":[\"CollectionPage\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/brand",
+    "exit": 0,
+    "result": "{\"title\":\"Guía de Marca & Sistema de Diseño | Biovity\",\"h1\":[\"Guía de Marca y Sistema de Diseño\"],\"canonical\":\"https://biovity.cl/brand\",\"types\":[\"Organization\",\"WebSite\",\"AboutPage\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/blog",
+    "exit": 0,
+    "result": "{\"title\":\"Blog de Biotecnología y Ciencias en Chile | Biovity\",\"h1\":[\"Blog Biovity\"],\"canonical\":\"https://biovity.cl/blog\",\"types\":[\"WebSite\",\"Blog\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/privacy",
+    "exit": 0,
+    "result": "{\"title\":\"Política de privacidad | Biovity\",\"h1\":[\"Política de Privacidad y Protección de Datos\"],\"canonical\":\"https://biovity.cl/privacy\",\"types\":[\"WebSite\",\"Organization\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/recruiting",
+    "exit": 0,
+    "result": "{\"title\":\"Herramientas de Reclutamiento Científico en Chile | Biovity\",\"h1\":[\"Cómo se recluta en ciencias hoy, y cómo con Biovity\"],\"canonical\":\"https://biovity.cl/recruiting\",\"types\":[\"WebSite\",\"Organization\",\"SoftwareApplication\",\"FAQPage\",\"BreadcrumbList\"]}",
+    "error": ""
+  },
+  {
+    "route": "/waitlist",
+    "exit": 0,
+    "result": "{\"title\":\"Lista de espera de empleo científico | Biovity\",\"h1\":[\"El nuevo estándar de empleo científico en Chile\"],\"canonical\":\"https://biovity.cl/waitlist\",\"types\":[\"WebSite\",\"Organization\"]}",
+    "error": ""
+  }
+]

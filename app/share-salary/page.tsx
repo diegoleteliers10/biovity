@@ -4,7 +4,7 @@ import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
-  title: "Compartir Salario | Biovity Chile",
+  title: "Compartir Salario",
   description:
     "Comparte tu sueldo de forma anónima y ayuda a construir el primer dataset abierto de sueldos STEM, salud y ciencias en Chile.",
   keywords: [

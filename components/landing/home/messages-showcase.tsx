@@ -1,15 +1,12 @@
 "use client"
 
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import { ChatHeader } from "@/components/dashboard/employee/ChatHeader"
 import { MessageInput } from "@/components/dashboard/employee/MessageInput"
 import { ProductShot } from "@/components/landing/demo/product-shot"
 import { MessageBubble } from "@/components/ui/message-bubble"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
+import { Reveal } from "@/components/ui/scroll-reveal"
 import type { Message } from "@/lib/api/messages"
 import type * as MessagesHooks from "@/lib/api/use-messages"
 import {
@@ -157,40 +154,22 @@ function DemoChatThread() {
 }
 
 export function MessagesShowcase() {
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isReduced = Boolean(reducedMotion)
-
-  const viewportMargin = isMobile
-    ? LANDING_ANIMATION_MOBILE.viewportMargin
-    : LANDING_ANIMATION.viewportMargin
-  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
-
   return (
     <section className="w-full bg-surface-container-low py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16 [&>*]:min-w-0">
-          <m.div
-            initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: viewportMargin }}
-            transition={t()}
-            className="text-center lg:text-left"
-          >
+          <Reveal className="text-center lg:text-left">
             <h2 className="text-3xl font-semibold text-foreground mb-4 tracking-tight text-balance sm:text-4xl md:text-5xl">
               Habla directo con <span className="text-accent font-semibold">quien contrata</span>
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground mb-0 mx-auto max-w-xl leading-relaxed text-pretty lg:mx-0">
               La conversación con cada empresa vive junto a tu postulación.
             </p>
-          </m.div>
+          </Reveal>
 
-          <m.div
-            initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: viewportMargin }}
-            transition={t(0.1)}
-          >
+          {/* y={0}: the frame is 560 px tall, so a translate would promote it to a
+            viewport-sized composited layer. Opacity alone carries the entrance. */}
+          <Reveal delay={0.1} y={0}>
             <ProductShot
               url="biovity.cl/dashboard/messages"
               height="h-[520px] lg:h-[560px]"
@@ -198,7 +177,7 @@ export function MessagesShowcase() {
             >
               <DemoChatThread />
             </ProductShot>
-          </m.div>
+          </Reveal>
         </div>
       </div>
     </section>

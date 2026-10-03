@@ -7,29 +7,18 @@ export function SalariosMetodologia() {
         <Card className="rounded-xl border border-border bg-surface-container-lowest shadow-none p-6 sm:p-8 md:p-10">
           <CardHeader className="px-0 pt-0 pb-4">
             <h2 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
-              Metodología de Análisis Salarial
+              Cómo interpretar los rangos salariales
             </h2>
           </CardHeader>
           <CardContent className="px-0 pb-0 space-y-4 text-muted-foreground text-sm sm:text-base leading-relaxed text-pretty">
             <p>
-              Nuestros modelos estadísticos combinan datos abiertos de mercado laboral, encuestas
-              colaborativas anonimizadas e información de fuentes públicas chilenas:
+              Los rangos y simulaciones de esta página son orientativos. No representan una encuesta
+              salarial verificada ni garantizan una remuneración. Compara cada oferta según sus
+              responsabilidades, experiencia requerida, ubicación y beneficios.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 my-4">
-              {["Mifuturo.cl", "Indeed Chile", "Glassdoor", "Paylab Chile", "Robert Half"].map(
-                (source) => (
-                  <div
-                    key={source}
-                    className="bg-surface-container-low rounded-lg p-3 text-center text-xs font-medium text-foreground border border-border"
-                  >
-                    {source}
-                  </div>
-                )
-              )}
-            </div>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Los montos se normalizan en pesos chilenos líquidos mensuales (CLP) y se actualizan
-              trimestralmente con las contribuciones verificadas de la comunidad Biovity.
+            <p>
+              Los montos se muestran en pesos chilenos (CLP). Confirma con la empresa si una oferta
+              corresponde a sueldo bruto o líquido antes de comparar los valores.
             </p>
           </CardContent>
         </Card>

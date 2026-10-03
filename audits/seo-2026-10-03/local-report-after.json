@@ -1,0 +1,504 @@
+{
+  "view": "actions",
+  "report": {
+    "id": "report",
+    "workflow": "report",
+    "site": "http://localhost:3000",
+    "generatedAt": "2026-10-03T20:49:27.377Z",
+    "summary": "Found 0 high, 41 medium, and 42 low technical issues across 41 crawled pages. Search Console and Google Analytics are not connected; provider-backed sections were skipped."
+  },
+  "findings": {
+    "schemaVersion": 1,
+    "scope": "returned-report",
+    "coverage": {
+      "state": "complete",
+      "detail": "Every finding in the declared report scope is represented."
+    },
+    "counts": {
+      "total": 8,
+      "returned": 8,
+      "fixes": 3,
+      "reviews": 5,
+      "open": 8
+    },
+    "completion": {
+      "state": "pending",
+      "instruction": "Before finishing, return one allowed outcome and reason for every open item; the outcome count must equal counts.returned. A review is a decision task, not an instruction to change the site. Do not silently drop findings."
+    },
+    "verification": {
+      "requiredAfterChanges": true,
+      "instruction": "After edits, run each changed item's verification and rerun the originating report. A code change alone does not close a finding.",
+      "reportCheck": "Rerun seo report with the same inputs and confirm the finding is absent or its evidence now matches the intended state."
+    },
+    "sourcePaths": [
+      "actions"
+    ],
+    "items": [
+      {
+        "id": "crawl:meta_description_duplicate",
+        "status": "open",
+        "title": "meta_description_duplicate: Duplicate meta description (13 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "http://localhost:3000/jobs",
+            "http://localhost:3000/jobs?categoria=Bioqu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Biotecnolog%C3%ADa",
+            "http://localhost:3000/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "http://localhost:3000/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Salud%20y%20Medicina",
+            "http://localhost:3000/jobs?experiencia=junior",
+            "http://localhost:3000/jobs?q=Bioinform%C3%A1tica",
+            "http://localhost:3000/jobs?q=Ing.%20Alimentos"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "meta_description_duplicate"
+            }
+          }
+        },
+        "sourcePath": "actions[0]",
+        "evidence": {
+          "ruleId": "meta_description_duplicate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "http://localhost:3000/jobs",
+            "http://localhost:3000/jobs?categoria=Bioqu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Biotecnolog%C3%ADa",
+            "http://localhost:3000/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "http://localhost:3000/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Salud%20y%20Medicina",
+            "http://localhost:3000/jobs?experiencia=junior",
+            "http://localhost:3000/jobs?q=Bioinform%C3%A1tica",
+            "http://localhost:3000/jobs?q=Ing.%20Alimentos"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm this description appears on only one URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Write a distinct description for each page that explains what is unique about that URL."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:title_duplicate",
+        "status": "open",
+        "title": "title_duplicate: Duplicate title (13 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "http://localhost:3000/jobs",
+            "http://localhost:3000/jobs?categoria=Bioqu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Biotecnolog%C3%ADa",
+            "http://localhost:3000/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "http://localhost:3000/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Salud%20y%20Medicina",
+            "http://localhost:3000/jobs?experiencia=junior",
+            "http://localhost:3000/jobs?q=Bioinform%C3%A1tica",
+            "http://localhost:3000/jobs?q=Ing.%20Alimentos"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "title_duplicate"
+            }
+          }
+        },
+        "sourcePath": "actions[1]",
+        "evidence": {
+          "ruleId": "title_duplicate",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is low.",
+          "sampleUrls": [
+            "http://localhost:3000/jobs",
+            "http://localhost:3000/jobs?categoria=Bioqu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Biotecnolog%C3%ADa",
+            "http://localhost:3000/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "http://localhost:3000/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Salud%20y%20Medicina",
+            "http://localhost:3000/jobs?experiencia=junior",
+            "http://localhost:3000/jobs?q=Bioinform%C3%A1tica",
+            "http://localhost:3000/jobs?q=Ing.%20Alimentos"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm this title appears on only one indexable URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Rewrite each title so it reflects the specific page, including the unique entity, intent, location, product, or angle."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:duplicate_content",
+        "status": "open",
+        "title": "duplicate_content: Duplicate content (13 URLs)",
+        "confidence": "high",
+        "severity": "medium",
+        "affectedCount": 13,
+        "affectedUrls": {
+          "total": 13,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "http://localhost:3000/jobs",
+            "http://localhost:3000/jobs?categoria=Bioqu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Biotecnolog%C3%ADa",
+            "http://localhost:3000/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "http://localhost:3000/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Salud%20y%20Medicina",
+            "http://localhost:3000/jobs?experiencia=junior",
+            "http://localhost:3000/jobs?q=Bioinform%C3%A1tica",
+            "http://localhost:3000/jobs?q=Ing.%20Alimentos"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "duplicate_content"
+            }
+          }
+        },
+        "sourcePath": "actions[2]",
+        "evidence": {
+          "ruleId": "duplicate_content",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is high.",
+          "sampleUrls": [
+            "http://localhost:3000/jobs",
+            "http://localhost:3000/jobs?categoria=Bioqu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Biotecnolog%C3%ADa",
+            "http://localhost:3000/jobs?categoria=I+D%20Farmac%C3%A9utica",
+            "http://localhost:3000/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Qu%C3%ADmica",
+            "http://localhost:3000/jobs?categoria=Salud%20y%20Medicina",
+            "http://localhost:3000/jobs?experiencia=junior",
+            "http://localhost:3000/jobs?q=Bioinform%C3%A1tica",
+            "http://localhost:3000/jobs?q=Ing.%20Alimentos"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl and confirm the duplicate mainContentHash appears on only one URL."
+        },
+        "type": "fix",
+        "fix": {
+          "instruction": "Consolidate duplicate pages with redirects or canonicals, or make each page meaningfully different for its own intent."
+        },
+        "allowedOutcomes": [
+          "fixed",
+          "deferred",
+          "not-needed"
+        ]
+      },
+      {
+        "id": "crawl:canonical_mismatch",
+        "status": "open",
+        "title": "canonical_mismatch: Canonical differs from final URL (1 URL)",
+        "confidence": "medium",
+        "severity": "medium",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "http://localhost:3000/login"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "canonical_mismatch"
+            }
+          }
+        },
+        "sourcePath": "actions[3]",
+        "evidence": {
+          "ruleId": "canonical_mismatch",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "http://localhost:3000/login"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity medium --max-pages 100",
+          "expected": "Re-run the page audit and confirm the canonical matches the fetched final URL, or inspect the preferred target instead."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"canonical_mismatch: Canonical differs from final URL (1 URL)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. If this page should rank, make the canonical self-referencing. If another URL is preferred, make sure internal links and redirects also point there.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:noindex",
+        "status": "open",
+        "title": "noindex: Noindex found (1 URL)",
+        "confidence": "medium",
+        "severity": "medium",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "http://localhost:3000/login"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "noindex"
+            }
+          }
+        },
+        "sourcePath": "actions[4]",
+        "evidence": {
+          "ruleId": "noindex",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "http://localhost:3000/login"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity medium --max-pages 100",
+          "expected": "Re-run the crawl or URL Inspection and confirm no effective meta robots or X-Robots-Tag noindex remains, including the equivalent none directive."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"noindex: Noindex found (1 URL)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Remove the noindex directive if the page should rank. Leave it in place only for intentionally private or low-value pages.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:canonicalized_page",
+        "status": "open",
+        "title": "canonicalized_page: Canonicalized page (40 URLs)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 40,
+        "affectedUrls": {
+          "total": 40,
+          "returned": 10,
+          "complete": false,
+          "items": [
+            "http://localhost:3000/",
+            "http://localhost:3000/about",
+            "http://localhost:3000/blog",
+            "http://localhost:3000/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+            "http://localhost:3000/blog/cv-biotech-optimizado-ats",
+            "http://localhost:3000/blog/estrategias-negociacion-salarial-primer-empleo-ciencias",
+            "http://localhost:3000/blog/first-post",
+            "http://localhost:3000/blog/guia-transicion-phd-postdoc-industria-biomedica",
+            "http://localhost:3000/blog/habilidades-blandas-y-tecnicas-mas-demandadas-biotech",
+            "http://localhost:3000/blog/linkedin-y-networking-para-profesionales-de-biociencias"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "canonicalized_page"
+            }
+          }
+        },
+        "sourcePath": "actions[5]",
+        "evidence": {
+          "ruleId": "canonicalized_page",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "http://localhost:3000/",
+            "http://localhost:3000/about",
+            "http://localhost:3000/blog",
+            "http://localhost:3000/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+            "http://localhost:3000/blog/cv-biotech-optimizado-ats",
+            "http://localhost:3000/blog/estrategias-negociacion-salarial-primer-empleo-ciencias",
+            "http://localhost:3000/blog/first-post",
+            "http://localhost:3000/blog/guia-transicion-phd-postdoc-industria-biomedica",
+            "http://localhost:3000/blog/habilidades-blandas-y-tecnicas-mas-demandadas-biotech",
+            "http://localhost:3000/blog/linkedin-y-networking-para-profesionales-de-biociencias"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm the canonical target matches the intended indexable URL."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"canonicalized_page: Canonicalized page (40 URLs)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. If this URL should rank, make the canonical self-referencing. If another URL is preferred, make internal links and sitemap entries point to that preferred URL.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:nofollow",
+        "status": "open",
+        "title": "nofollow: Nofollow found (1 URL)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "http://localhost:3000/login"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "nofollow"
+            }
+          }
+        },
+        "sourcePath": "actions[6]",
+        "evidence": {
+          "ruleId": "nofollow",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "http://localhost:3000/login"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm the effective meta robots and X-Robots-Tag rules no longer block following, including through the equivalent none directive."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does the retained evidence and confirmed intent show that \"nofollow: Nofollow found (1 URL)\" needs a change?",
+          "changeOnlyIf": "Make a change only when the retained evidence and required intent support it.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Remove nofollow from meta robots or X-Robots-Tag unless the page is intentionally isolated from link discovery.",
+          "ifNotNeeded": "Record no change and cite the evidence or confirmed intent that makes a change unnecessary.",
+          "doNot": []
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      },
+      {
+        "id": "crawl:structured_data_missing",
+        "status": "open",
+        "title": "structured_data_missing: No structured data detected (1 URL)",
+        "confidence": "medium",
+        "severity": "low",
+        "affectedCount": 1,
+        "affectedUrls": {
+          "total": 1,
+          "returned": 1,
+          "complete": true,
+          "items": [
+            "http://localhost:3000/register"
+          ],
+          "report": {
+            "id": "affected-urls",
+            "params": {
+              "reportId": "crawl_b9ac14d9ee8e42b09528aafb9f155a14",
+              "ruleId": "structured_data_missing"
+            }
+          }
+        },
+        "sourcePath": "actions[7]",
+        "evidence": {
+          "ruleId": "structured_data_missing",
+          "source": "crawl",
+          "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+          "sampleUrls": [
+            "http://localhost:3000/register"
+          ]
+        },
+        "verification": {
+          "command": "seo crawl http://localhost:3000/ --severity low --max-pages 100",
+          "expected": "Re-run the crawl and confirm structuredDataFormats lists the added format, then validate the page with a structured data tester."
+        },
+        "type": "review",
+        "review": {
+          "question": "Does a specific structured data type accurately describe the visible content on this page?",
+          "changeOnlyIf": "Add markup only when a specific schema type fits the page and every claimed property is supported by its visible content.",
+          "ifConfirmed": "Observed state that needs intent confirmation before treating it as a defect. Add structured data only where a schema type genuinely describes the page, for example an article page describing its article. Validate the markup after adding it, and leave pages without a fitting schema type unmarked.",
+          "ifNotNeeded": "Leave the page unmarked and record that no suitable schema type was confirmed.",
+          "doNot": [
+            "Do not add Organization or another generic schema type only to clear this finding.",
+            "Do not copy site-wide markup onto unrelated page types."
+          ]
+        },
+        "allowedOutcomes": [
+          "changed",
+          "no-change",
+          "deferred"
+        ]
+      }
+    ]
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 16877,
+    "returnedBytes": 17112,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

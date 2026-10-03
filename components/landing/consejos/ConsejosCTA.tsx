@@ -14,7 +14,7 @@ export function ConsejosCTA() {
   const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-28 md:py-40 bg-surface-container-lowest">
+    <section className="py-20 md:py-28 2xl:py-32 bg-surface-container-lowest">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <m.div
           initial={{ opacity: 0, y: 32 }}
@@ -23,8 +23,7 @@ export function ConsejosCTA() {
           transition={t(0)}
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-5 leading-tight tracking-tight text-balance">
-            Impulsa tu carrera en{" "}
-            <span className="text-accent font-semibold">biociencias</span>
+            Impulsa tu carrera en <span className="text-accent font-semibold">biociencias</span>
           </h2>
 
           <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl mx-auto text-pretty">

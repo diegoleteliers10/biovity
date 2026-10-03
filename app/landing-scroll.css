@@ -1,0 +1,29 @@
+html:has(.landing-public) {
+  scroll-snap-type: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.landing-public) {
+    scroll-behavior: smooth;
+  }
+
+  @supports (animation-timeline: view()) {
+    .landing-public main > section:first-of-type {
+      view-timeline-name: --landing-hero;
+      view-timeline-axis: block;
+      view-timeline-inset: 0;
+    }
+
+    .landing-public main > section:first-of-type > [aria-hidden="true"] {
+      animation: landing-hero-depth linear both;
+      animation-timeline: --landing-hero;
+      animation-range: exit-crossing 0% exit-crossing 100%;
+    }
+  }
+}
+
+@keyframes landing-hero-depth {
+  to {
+    transform: translateY(12%);
+  }
+}

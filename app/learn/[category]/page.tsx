@@ -2,6 +2,7 @@ import { Result } from "better-result"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { BreadcrumbJsonLd, CollectionJsonLd } from "@/components/seo/JsonLd"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,10 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!cat) return {}
 
   return {
-    title: `${cat.name} — Cápsulas de Aprendizaje | Biovity`,
+    title: `Aprende ${cat.name}`,
     description: cat.description,
+    alternates: { canonical: `/learn/${category}` },
     openGraph: {
-      title: `${cat.name} — Cápsulas de Aprendizaje | Biovity`,
+      url: `/learn/${category}`,
+      title: `Aprende ${cat.name}`,
       description: cat.description,
       images: [
         { url: "/og/learn.png", width: 1200, height: 630, alt: `Aprende ${cat.name} en Biovity` },
@@ -49,6 +52,22 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <section className="relative pt-12 pb-16 md:pt-16 md:pb-24">
+      <CollectionJsonLd
+        name={`Aprende ${cat.name}`}
+        description={cat.description}
+        url={`https://biovity.cl/learn/${category}`}
+        items={capsules.map((capsule) => ({
+          name: capsule.frontmatter.title,
+          url: `https://biovity.cl/learn/${category}/${capsule.slug}`,
+        }))}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Inicio", url: "https://biovity.cl" },
+          { name: "Aprende", url: "https://biovity.cl/learn" },
+          { name: cat.name, url: `https://biovity.cl/learn/${category}` },
+        ]}
+      />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <Breadcrumb className="mb-16">
           <BreadcrumbList>
@@ -61,19 +80,19 @@ export default async function CategoryPage({ params }: Props) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{cat!.name}</BreadcrumbPage>
+              <BreadcrumbPage>{cat.name}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
         <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-          {cat!.name.toUpperCase()}
+          {cat.name.toUpperCase()}
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance">
-          Cápsulas de <span className="text-accent font-semibold">{cat!.name}</span>
+          Cápsulas de <span className="text-accent font-semibold">{cat.name}</span>
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed text-pretty">
-          {cat!.description}
+          {cat.description}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -6,15 +6,10 @@ import { MarcaLogo } from "@/components/landing/marca/MarcaLogo"
 import { MarcaPrinciples } from "@/components/landing/marca/MarcaPrinciples"
 import { MarcaTypography } from "@/components/landing/marca/MarcaTypography"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
-import {
-  AboutPageJsonLd,
-  BreadcrumbJsonLd,
-  OrganizationJsonLd,
-  WebSiteJsonLd,
-} from "@/components/seo/JsonLd"
+import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
-  title: "Guía de Marca & Sistema de Diseño | Biovity",
+  title: "Guía de Marca & Sistema de Diseño",
   description:
     "Conoce los fundamentos visuales, paleta de colores, tipografía, componentes y principios del System Design 'The Curated Organism' de Biovity.",
   keywords: [
@@ -55,7 +50,6 @@ export default function MarcaPage() {
     <LandingLayout>
       <OrganizationJsonLd />
       <WebSiteJsonLd />
-      <AboutPageJsonLd />
       <BreadcrumbJsonLd
         items={[
           { name: "Inicio", url: "https://biovity.cl" },

@@ -3,7 +3,7 @@ import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 import { ListaEsperaContent } from "./lista-espera-content"
 
 export const metadata: Metadata = {
-  title: "Lista de Espera - Empleos en Biotecnología y Ciencias | Biovity",
+  title: "Lista de espera de empleo científico",
   description:
     "Únete a la lista de espera de Biovity y sé el primero en conocer las nuevas oportunidades en biotecnología y ciencias en Chile.",
   openGraph: {

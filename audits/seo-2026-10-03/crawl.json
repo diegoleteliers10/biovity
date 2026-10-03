@@ -1,0 +1,2462 @@
+{
+  "id": "crawl_ca2f0f81ea544def9a2fd5c3f8b15068",
+  "definitionId": "crawl_def_c271f21c79788b133373",
+  "headline": "Processed 49 URL requests into 41 unique documents. Found 0 high, 40 medium, and 26 low issues.",
+  "status": "completed",
+  "requestEvidenceStatus": "available",
+  "configHash": "09aeb77fe2bec08e",
+  "config": {
+    "url": "https://biovity.cl/",
+    "mode": "site",
+    "strategy": "full",
+    "urls": [],
+    "maxPages": 100,
+    "maxDepth": 4,
+    "concurrency": 8,
+    "timeoutMs": 20000,
+    "include": [],
+    "exclude": [],
+    "respectRobots": true,
+    "useSitemap": true,
+    "checkExternal": false,
+    "checkAgentDiscovery": false,
+    "js": "off",
+    "refresh": false,
+    "fetchRate": {
+      "concurrency": 8
+    }
+  },
+  "access": {
+    "crawler": {
+      "name": "SEO Skill",
+      "robotsToken": "SEO-Skill",
+      "version": "0.2.37",
+      "userAgent": "SEO-Skill/0.2.37 (+https://seoskill.dev)",
+      "documentationUrl": "https://seoskill.dev/docs/crawler/"
+    },
+    "blockedRequests": 0,
+    "providers": {},
+    "samples": [],
+    "sampleLimit": 10,
+    "truncated": false
+  },
+  "summary": {
+    "totalPages": 41,
+    "statusOnlyPages": 0,
+    "indexablePages": 40,
+    "nonIndexablePages": 1,
+    "statusErrors": 0,
+    "discoveredUrls": 49,
+    "queuedUrls": 49,
+    "crawledUrls": 41,
+    "skippedUrls": 8,
+    "skipReasons": [
+      {
+        "reason": "robots-disallowed",
+        "impact": "coverage-affecting",
+        "count": 8
+      }
+    ],
+    "skippedUrlsByImpact": {
+      "coverageAffecting": 8,
+      "nonImpacting": 0
+    },
+    "failedUrls": 0,
+    "observedInternalLinks": 743,
+    "pageLimitReached": false,
+    "attemptedRequests": 49,
+    "responseRequests": 41,
+    "failedRequests": 0,
+    "abortedRequests": 0,
+    "extractionFailures": 0,
+    "requestByStatus": {
+      "200": 41,
+      "robots-disallowed": 8
+    },
+    "avgRequestMs": 686,
+    "highIssues": 0,
+    "mediumIssues": 40,
+    "lowIssues": 26,
+    "avgResponseMs": 686,
+    "byStatus": {
+      "200": 41
+    },
+    "byCategory": {
+      "headings": 2,
+      "metadata": 30,
+      "content": 13,
+      "indexability": 16,
+      "structured-data": 3,
+      "response": 2
+    }
+  },
+  "dataSources": {
+    "searchConsole": {
+      "status": "skipped",
+      "totalPages": 41,
+      "queriedPages": 0,
+      "joinedMetricPages": 0,
+      "joinedQueryPages": 0,
+      "pageLimit": 5000,
+      "pageLimitReached": false,
+      "retainedRowLimitReached": false,
+      "warning": "Search Console join skipped because no property was selected."
+    },
+    "analytics": {
+      "status": "skipped",
+      "observedMetrics": [],
+      "totalPages": 41,
+      "queriedPages": 0,
+      "joinedPages": 0,
+      "retainedRowLimit": 5000,
+      "retainedRowLimitReached": false,
+      "warning": "Analytics join skipped because no connection was selected."
+    }
+  },
+  "ai": {
+    "robotsTxt": {
+      "url": "https://biovity.cl/robots.txt",
+      "exists": true,
+      "availability": "available",
+      "status": 200,
+      "sitemapUrls": [
+        "https://biovity.cl/sitemap.xml"
+      ],
+      "contentSignals": [],
+      "botAccess": [
+        {
+          "userAgent": "GPTBot",
+          "allowed": true,
+          "declared": true,
+          "coveredByWildcard": true
+        },
+        {
+          "userAgent": "OAI-SearchBot",
+          "allowed": true,
+          "declared": true,
+          "coveredByWildcard": true
+        },
+        {
+          "userAgent": "ChatGPT-User",
+          "allowed": true,
+          "declared": false,
+          "coveredByWildcard": true
+        },
+        {
+          "userAgent": "ClaudeBot",
+          "allowed": true,
+          "declared": true,
+          "coveredByWildcard": true
+        },
+        {
+          "userAgent": "Claude-User",
+          "allowed": true,
+          "declared": false,
+          "coveredByWildcard": true
+        }
+      ]
+    },
+    "llmsTxt": {
+      "url": "https://biovity.cl/llms.txt",
+      "exists": true,
+      "status": 200
+    },
+    "agentResources": [
+      {
+        "url": "https://biovity.cl/.well-known/agent.json",
+        "exists": false,
+        "status": 404,
+        "contentType": "text/html; charset=utf-8"
+      },
+      {
+        "url": "https://biovity.cl/agent.json",
+        "exists": false,
+        "status": 404,
+        "contentType": "text/html; charset=utf-8"
+      },
+      {
+        "url": "https://biovity.cl/.well-known/mcp.json",
+        "exists": false,
+        "status": 404,
+        "contentType": "text/html; charset=utf-8"
+      },
+      {
+        "url": "https://biovity.cl/.well-known/ai-plugin.json",
+        "exists": false,
+        "status": 404,
+        "contentType": "text/html; charset=utf-8"
+      },
+      {
+        "url": "https://biovity.cl/.well-known/openapi.json",
+        "exists": false,
+        "status": 404,
+        "contentType": "text/html; charset=utf-8"
+      }
+    ]
+  },
+  "topFixes": [
+    {
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "count": 13,
+      "sampleUrls": [
+        "https://biovity.cl/jobs",
+        "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+        "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+        "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+        "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+      ],
+      "recommendation": "fix",
+      "score": 1455,
+      "scoreFactors": {
+        "severity": 1200,
+        "affectedUrls": 13,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "low",
+        "effortScore": 60
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is low.",
+      "howToFix": "Write a distinct description for each page that explains what is unique about that URL.",
+      "howToVerify": "Re-run the crawl and confirm this description appears on only one URL.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+        "expected": "Re-run the crawl and confirm this description appears on only one URL."
+      }
+    },
+    {
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "count": 13,
+      "sampleUrls": [
+        "https://biovity.cl/jobs",
+        "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+        "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+        "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+        "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+      ],
+      "recommendation": "fix",
+      "score": 1455,
+      "scoreFactors": {
+        "severity": 1200,
+        "affectedUrls": 13,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "low",
+        "effortScore": 60
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is low.",
+      "howToFix": "Rewrite each title so it reflects the specific page, including the unique entity, intent, location, product, or angle.",
+      "howToVerify": "Re-run the crawl and confirm this title appears on only one indexable URL.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+        "expected": "Re-run the crawl and confirm this title appears on only one indexable URL."
+      }
+    },
+    {
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "count": 13,
+      "sampleUrls": [
+        "https://biovity.cl/jobs",
+        "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+        "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+        "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+        "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+      ],
+      "recommendation": "fix",
+      "score": 1395,
+      "scoreFactors": {
+        "severity": 1200,
+        "affectedUrls": 13,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "high",
+        "effortScore": 0
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 1200; 13 URLs are affected; estimated effort is high.",
+      "howToFix": "Consolidate duplicate pages with redirects or canonicals, or make each page meaningfully different for its own intent.",
+      "howToVerify": "Re-run the crawl and confirm the duplicate mainContentHash appears on only one URL.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+        "expected": "Re-run the crawl and confirm the duplicate mainContentHash appears on only one URL."
+      }
+    },
+    {
+      "ruleId": "h1_missing",
+      "title": "Missing H1",
+      "category": "headings",
+      "severity": "low",
+      "count": 1,
+      "sampleUrls": [
+        "https://biovity.cl/plans"
+      ],
+      "recommendation": "fix",
+      "score": 162,
+      "scoreFactors": {
+        "severity": 100,
+        "affectedUrls": 1,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "low",
+        "effortScore": 60
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This ranks as a fix. Severity is 100; 1 URL is affected; estimated effort is low.",
+      "howToFix": "Add one clear H1 near the top of the main content. Make it describe the specific page, not just a generic section label.",
+      "howToVerify": "Re-run the crawl and confirm an H1 describes the page’s main visible topic.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+        "expected": "Re-run the crawl and confirm an H1 describes the page’s main visible topic."
+      }
+    }
+  ],
+  "reviewObservations": [
+    {
+      "ruleId": "noindex",
+      "title": "Noindex found",
+      "category": "indexability",
+      "severity": "medium",
+      "count": 1,
+      "sampleUrls": [
+        "https://biovity.cl/login"
+      ],
+      "recommendation": "review",
+      "score": 1245,
+      "scoreFactors": {
+        "severity": 1200,
+        "affectedUrls": 1,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "medium",
+        "effortScore": 30
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+      "howToFix": "Remove the noindex directive if the page should rank. Leave it in place only for intentionally private or low-value pages.",
+      "howToVerify": "Re-run the crawl or URL Inspection and confirm no effective meta robots or X-Robots-Tag noindex remains, including the equivalent none directive.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity medium --max-pages 100",
+        "expected": "Re-run the crawl or URL Inspection and confirm no effective meta robots or X-Robots-Tag noindex remains, including the equivalent none directive."
+      }
+    },
+    {
+      "ruleId": "title_too_wide",
+      "title": "Title may truncate on some devices",
+      "category": "metadata",
+      "severity": "low",
+      "count": 4,
+      "sampleUrls": [
+        "https://biovity.cl/learn/bioinformatica/analisis-secuencias-adn-python",
+        "https://biovity.cl/privacy",
+        "https://biovity.cl/recruiting",
+        "https://biovity.cl/waitlist"
+      ],
+      "recommendation": "review",
+      "score": 168,
+      "scoreFactors": {
+        "severity": 100,
+        "affectedUrls": 4,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "low",
+        "effortScore": 60
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+      "howToFix": "Review the title rather than shortening it blindly. Put the clearest page-specific wording first and remove filler only when meaning is preserved.",
+      "howToVerify": "Re-run the audit and review estimatedPixels, referencePixels, confidence, and profile. Confirm the important wording appears early.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+        "expected": "Re-run the audit and review estimatedPixels, referencePixels, confidence, and profile. Confirm the important wording appears early."
+      }
+    },
+    {
+      "ruleId": "h1_multiple",
+      "title": "Multiple H1 headings",
+      "category": "headings",
+      "severity": "low",
+      "count": 1,
+      "sampleUrls": [
+        "https://biovity.cl/brand"
+      ],
+      "recommendation": "review",
+      "score": 162,
+      "scoreFactors": {
+        "severity": 100,
+        "affectedUrls": 1,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "low",
+        "effortScore": 60
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+      "howToFix": "Review the headings before changing anything. If one heading describes the whole page, keep it as the H1 and move the others to H2 or below so the outline stays consistent.",
+      "howToVerify": "Re-run the crawl and confirm h1Count matches the intended heading structure.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+        "expected": "Re-run the crawl and confirm h1Count matches the intended heading structure."
+      }
+    },
+    {
+      "ruleId": "canonicalized_page",
+      "title": "Canonicalized page",
+      "category": "indexability",
+      "severity": "low",
+      "count": 14,
+      "sampleUrls": [
+        "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+        "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+        "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+        "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica",
+        "https://biovity.cl/jobs?categoria=Qu%C3%ADmica"
+      ],
+      "recommendation": "review",
+      "score": 158,
+      "scoreFactors": {
+        "severity": 100,
+        "affectedUrls": 14,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "medium",
+        "effortScore": 30
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+      "howToFix": "If this URL should rank, make the canonical self-referencing. If another URL is preferred, make internal links and sitemap entries point to that preferred URL.",
+      "howToVerify": "Re-run the crawl and confirm the canonical target matches the intended indexable URL.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+        "expected": "Re-run the crawl and confirm the canonical target matches the intended indexable URL."
+      }
+    },
+    {
+      "ruleId": "structured_data_missing",
+      "title": "No structured data detected",
+      "category": "structured-data",
+      "severity": "low",
+      "count": 3,
+      "sampleUrls": [
+        "https://biovity.cl/learn/bioinformatica",
+        "https://biovity.cl/learn/ia-biotech",
+        "https://biovity.cl/register"
+      ],
+      "recommendation": "review",
+      "score": 136,
+      "scoreFactors": {
+        "severity": 100,
+        "affectedUrls": 3,
+        "searchVisibleUrls": 0,
+        "clicks": 0,
+        "impressions": 0,
+        "sessions": 0,
+        "effort": "medium",
+        "effortScore": 30
+      },
+      "whyThisRanks": "No joined GSC visibility is available for these affected URLs; Search Console evidence is skipped. This is a review observation. Confirm it before scheduling implementation work.",
+      "howToFix": "Add structured data only where a schema type genuinely describes the page, for example an article page describing its article. Validate the markup after adding it, and leave pages without a fitting schema type unmarked.",
+      "howToVerify": "Re-run the crawl and confirm structuredDataFormats lists the added format, then validate the page with a structured data tester.",
+      "verification": {
+        "command": "seo crawl https://biovity.cl/ --severity low --max-pages 100",
+        "expected": "Re-run the crawl and confirm structuredDataFormats lists the added format, then validate the page with a structured data tester."
+      }
+    }
+  ],
+  "issueGroupsComplete": true,
+  "warnings": [
+    "8 URLs disallowed SEO-Skill/0.2.37 (+https://seoskill.dev)/ in robots.txt. If the audit should reach them, allow the SEO-Skill token on only those public paths."
+  ],
+  "caveats": [],
+  "issues": [
+    {
+      "ruleId": "h1_multiple",
+      "title": "Multiple H1 headings",
+      "category": "headings",
+      "severity": "low",
+      "url": "https://biovity.cl/brand",
+      "detail": "2 H1 headings",
+      "evidence": {
+        "h1Count": 2
+      }
+    },
+    {
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "url": "https://biovity.cl/jobs",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+        ]
+      }
+    },
+    {
+      "ruleId": "meta_description_duplicate",
+      "title": "Duplicate meta description",
+      "category": "metadata",
+      "severity": "medium",
+      "url": "https://biovity.cl/jobs",
+      "detail": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+      "evidence": {
+        "metaDescription": "Buscar empleos en biotecnología, bioquímica, química, ingeniería química, salud, laboratorio, I+D y farmacéutica en Chile. Encuentra trabajo en ciencias cerca de ti.",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+        ]
+      }
+    },
+    {
+      "ruleId": "duplicate_content",
+      "title": "Duplicate content",
+      "category": "content",
+      "severity": "medium",
+      "url": "https://biovity.cl/jobs",
+      "detail": "Duplicate main content",
+      "evidence": {
+        "mainContentHash": "428963a94547579bc127b1beede8af551835f9acb6a1fed622ab3e2e8236574d",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+        ]
+      }
+    },
+    {
+      "ruleId": "title_duplicate",
+      "title": "Duplicate title",
+      "category": "metadata",
+      "severity": "medium",
+      "url": "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+      "detail": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+      "evidence": {
+        "title": "Empleos en Biotecnología, Bioquímica y Ciencias | Biovity",
+        "duplicateCount": 13,
+        "sampleUrls": [
+          "https://biovity.cl/jobs",
+          "https://biovity.cl/jobs?categoria=Bioqu%C3%ADmica",
+          "https://biovity.cl/jobs?categoria=Biotecnolog%C3%ADa",
+          "https://biovity.cl/jobs?categoria=I+D%20Farmac%C3%A9utica",
+          "https://biovity.cl/jobs?categoria=Ingenier%C3%ADa%20Qu%C3%ADmica"
+        ]
+      }
+    }
+  ],
+  "requests": [
+    {
+      "requestedUrl": "https://biovity.cl/",
+      "outcome": "response",
+      "finalUrl": "https://biovity.cl/",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 605,
+      "redirectChain": [],
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "extraction": "complete"
+    },
+    {
+      "requestedUrl": "https://biovity.cl/about",
+      "outcome": "response",
+      "finalUrl": "https://biovity.cl/about",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 873,
+      "redirectChain": [],
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "extraction": "complete"
+    },
+    {
+      "requestedUrl": "https://biovity.cl/blog",
+      "outcome": "response",
+      "finalUrl": "https://biovity.cl/blog",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 756,
+      "redirectChain": [],
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "extraction": "complete"
+    },
+    {
+      "requestedUrl": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "outcome": "response",
+      "finalUrl": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 736,
+      "redirectChain": [],
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "extraction": "complete"
+    },
+    {
+      "requestedUrl": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "outcome": "response",
+      "finalUrl": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "durationMs": 641,
+      "redirectChain": [],
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "extraction": "complete"
+    }
+  ],
+  "pages": [
+    {
+      "url": "https://biovity.cl/",
+      "finalUrl": "https://biovity.cl/",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "responseHeaders": {
+        "access-control-allow-origin": "*",
+        "age": "55422",
+        "cache-control": "public, max-age=60, stale-while-revalidate=86400",
+        "connection": "close",
+        "content-disposition": "inline",
+        "content-encoding": "br",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 03 Oct 2026 20:30:01 GMT",
+        "etag": "W/\"b83865f43325beddbcc9ee9f4d882c46\"",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000",
+        "transfer-encoding": "chunked",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/",
+        "x-nextjs-prerender": "1",
+        "x-nextjs-stale-time": "300",
+        "x-vercel-cache": "HIT",
+        "x-vercel-id": "gru1::zjprf-1791059401473-158f3315cc45",
+        "x-xss-protection": "1; mode=block"
+      },
+      "responseTimeMs": 605,
+      "sizeBytes": 101403,
+      "usedJs": false,
+      "fetchSource": "network",
+      "cacheState": "miss",
+      "fetchDiagnostics": {
+        "source": "network",
+        "cache": "miss",
+        "fetched": true,
+        "rendered": false,
+        "blocked": false,
+        "durationMs": 605,
+        "retries": 0,
+        "rateLimit": {
+          "host": "biovity.cl",
+          "concurrency": 8,
+          "intervalCap": 4,
+          "intervalMs": 1000
+        },
+        "backpressure": {
+          "host": "biovity.cl",
+          "status": "ok",
+          "delayMs": 0,
+          "consecutiveSlow": 0,
+          "consecutiveBlocked": 0,
+          "consecutiveErrors": 0,
+          "recentP95Ms": 605
+        },
+        "robotsTxt": {
+          "url": "https://biovity.cl/robots.txt",
+          "cache": "miss",
+          "allowed": true,
+          "availability": "available",
+          "status": 200
+        },
+        "redirectChain": [],
+        "rendering": {
+          "mode": "off",
+          "status": "not-requested",
+          "raw": {
+            "source": "network",
+            "cache": "miss",
+            "url": "https://biovity.cl/",
+            "finalUrl": "https://biovity.cl/",
+            "status": 200
+          }
+        }
+      },
+      "blocked": false,
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "title": "Biovity | Empleos en Biotecnología y Ciencias en Chile",
+      "metaDescription": "Encuentra empleos en biotecnología, bioquímica, química, ingeniería química, salud y laboratorios en Chile. Portal de empleo especializado en biociencias. Gratis para profesionales.",
+      "canonical": "https://biovity.cl/",
+      "canonicalRaw": "https://biovity.cl/",
+      "canonicalStatus": "single",
+      "canonicalCandidates": [
+        {
+          "source": "html-head",
+          "raw": "https://biovity.cl/",
+          "resolved": "https://biovity.cl/"
+        }
+      ],
+      "metaRobots": "index, follow, index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+      "h1": "Empleos en biotecnología y ciencias, salarios transparentes",
+      "h1Count": 1,
+      "h2Count": 3,
+      "h3Count": 9,
+      "indexable": true,
+      "extractionStatus": "complete",
+      "wordCount": 31,
+      "contentExtraction": {
+        "requested": "crawler",
+        "used": "crawler",
+        "fallback": false,
+        "wordCountSource": "local_cjk_aware",
+        "baseUrl": "https://biovity.cl/"
+      },
+      "warnings": [],
+      "contentHash": "0f68383b68668911f90f258d4b9bfe245a7bf0f82afe48ccd9edddedf87654e3",
+      "mainContentHash": "b48ac1d13746e1ee82202f0ea80d5e395b52671833dd2a0f053ca3e1093e22d7",
+      "textRatio": 0.0029330726157674875,
+      "contentSample": "Empleos en biotecnología y ciencias, salarios transparentesOfertas verificadas en laboratorios, centros de I+D y la industria científica de Chile.Buscar EmpleosExplorar Estudio Salarial 2026·Publicar ofertas para empresasEmpresas verificadasSalarios visiblesOfertas realesGratis para profesionales",
+      "contentSketch": {
+        "version": 1,
+        "wordCount": 34,
+        "shingleSize": 5,
+        "sampledShingles": 30,
+        "hashes": [
+          "78bb510e21a51b7a",
+          "8453afcaa4164f94",
+          "238672a62748ccb8",
+          "2b6035fd6640efcf",
+          "788eb733e34cc1df"
+        ]
+      },
+      "lang": "es",
+      "hasViewport": true,
+      "isHttps": true,
+      "hasHsts": true,
+      "compression": "br",
+      "hreflang": [],
+      "mixedContentCount": 0,
+      "mixedContentSamples": [],
+      "imagesTotal": 2,
+      "imagesMissingAlt": 0,
+      "oversizedImageCandidates": [],
+      "outgoingInternalCount": 29,
+      "outgoingExternalCount": 4,
+      "sampleInternalLinks": [
+        "https://biovity.cl/",
+        "https://biovity.cl/about",
+        "https://biovity.cl/blog",
+        "https://biovity.cl/brand",
+        "https://biovity.cl/career-tips"
+      ],
+      "sampleExternalLinks": [
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity",
+        "https://facebook.com/biovity"
+      ],
+      "internalAnchorSamples": [
+        {
+          "href": "https://biovity.cl/jobs",
+          "text": "Trabajos"
+        },
+        {
+          "href": "https://biovity.cl/companies",
+          "text": "Empresas"
+        },
+        {
+          "href": "https://biovity.cl/about",
+          "text": "Nosotros"
+        },
+        {
+          "href": "https://biovity.cl/learn",
+          "text": "Aprende"
+        },
+        {
+          "href": "https://biovity.cl/blog",
+          "text": "Blog"
+        }
+      ],
+      "externalAnchorSamples": [],
+      "markdownAlternates": [],
+      "describedBy": [],
+      "schemaTypes": [
+        "Organization",
+        "ContactPoint",
+        "Country",
+        "WebSite",
+        "SearchAction"
+      ],
+      "structuredDataFormats": [
+        "json-ld"
+      ],
+      "googleRichResults": [],
+      "googleRichResultsSelection": {
+        "limit": 50,
+        "eligible": 0,
+        "returned": 0,
+        "omitted": 0,
+        "partial": false,
+        "eligibleByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "returnedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "omittedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        }
+      },
+      "schemaSameAs": [
+        "https://www.linkedin.com/company/biovity"
+      ],
+      "schemaSameAsEvidence": [
+        {
+          "url": "https://www.linkedin.com/company/biovity",
+          "block": 0,
+          "path": "$.sameAs",
+          "subjectTypes": [
+            "Organization"
+          ]
+        }
+      ],
+      "invalidSchemaSameAs": [],
+      "socialProfileLinks": [
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity",
+        "https://facebook.com/biovity"
+      ],
+      "invalidJsonLdCount": 0,
+      "invalidJsonLdSamples": [],
+      "unrecognizedJsonLdTypes": [],
+      "openGraphTitle": "Biovity | Empleos en Biotecnología y Biociencias en Chile",
+      "openGraphDescription": "Portal de empleo especializado en biotecnología, bioquímica, química e ingeniería química. Encuentra tu trabajo ideal en ciencias en Chile.",
+      "openGraphImage": "https://biovity.cl/og/home.png",
+      "twitterCard": "summary_large_image",
+      "author": "Biovity",
+      "hasDate": false,
+      "geo": {
+        "semanticHtml": true,
+        "structuredData": true,
+        "hasAuthor": true,
+        "hasDate": false,
+        "questionHeadings": 0,
+        "listCount": 6,
+        "tableCount": 0,
+        "structuredBlocks": 6,
+        "answerable": true,
+        "hasFaqSchema": false,
+        "hasQapageSchema": false,
+        "hasLlmsTxt": true,
+        "llmsTxtUrl": "https://biovity.cl/llms.txt",
+        "llmsTxtStatus": 200
+      },
+      "declaredIndexability": "indexable-candidate",
+      "crawlDepth": 0,
+      "contentAuditAllowed": true,
+      "internalInlinkCount": 41,
+      "internalLinkAuthorityScore": 100
+    },
+    {
+      "url": "https://biovity.cl/about",
+      "finalUrl": "https://biovity.cl/about",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "responseHeaders": {
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "public, max-age=60, stale-while-revalidate=86400",
+        "connection": "close",
+        "content-disposition": "inline",
+        "content-encoding": "br",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 03 Oct 2026 20:30:01 GMT",
+        "etag": "W/\"aea4d8be8373020b18dc3b42448522f2\"",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000",
+        "transfer-encoding": "chunked",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/about",
+        "x-nextjs-prerender": "1",
+        "x-nextjs-stale-time": "300",
+        "x-vercel-cache": "PRERENDER",
+        "x-vercel-id": "gru1::x47jx-1791059401466-90622e8c9329",
+        "x-xss-protection": "1; mode=block"
+      },
+      "responseTimeMs": 873,
+      "sizeBytes": 98196,
+      "usedJs": false,
+      "fetchSource": "network",
+      "cacheState": "miss",
+      "fetchDiagnostics": {
+        "source": "network",
+        "cache": "miss",
+        "fetched": true,
+        "rendered": false,
+        "blocked": false,
+        "durationMs": 873,
+        "retries": 0,
+        "rateLimit": {
+          "host": "biovity.cl",
+          "concurrency": 8,
+          "intervalCap": 4,
+          "intervalMs": 1000
+        },
+        "backpressure": {
+          "host": "biovity.cl",
+          "status": "ok",
+          "delayMs": 0,
+          "consecutiveSlow": 0,
+          "consecutiveBlocked": 0,
+          "consecutiveErrors": 0,
+          "recentP95Ms": 873
+        },
+        "robotsTxt": {
+          "url": "https://biovity.cl/robots.txt",
+          "cache": "miss",
+          "allowed": true,
+          "availability": "available",
+          "status": 200
+        },
+        "redirectChain": [],
+        "rendering": {
+          "mode": "off",
+          "status": "not-requested",
+          "raw": {
+            "source": "network",
+            "cache": "miss",
+            "url": "https://biovity.cl/about",
+            "finalUrl": "https://biovity.cl/about",
+            "status": 200
+          }
+        }
+      },
+      "blocked": false,
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "title": "Sobre Biovity | Plataforma de Empleo Científico en Chile | Biovity",
+      "metaDescription": "Conoce a Biovity y su misión de conectar talento científico con oportunidades significativas en el sector de biociencias en Chile.",
+      "canonical": "https://biovity.cl/about",
+      "canonicalRaw": "https://biovity.cl/about",
+      "canonicalStatus": "single",
+      "canonicalCandidates": [
+        {
+          "source": "html-head",
+          "raw": "https://biovity.cl/about",
+          "resolved": "https://biovity.cl/about"
+        }
+      ],
+      "metaRobots": "index, follow, index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+      "h1": "Impulsando el futuro del talento científico en Chile",
+      "h1Count": 1,
+      "h2Count": 4,
+      "h3Count": 7,
+      "indexable": true,
+      "extractionStatus": "complete",
+      "wordCount": 518,
+      "contentExtraction": {
+        "requested": "crawler",
+        "used": "crawler",
+        "fallback": false,
+        "wordCountSource": "local_cjk_aware",
+        "baseUrl": "https://biovity.cl/about"
+      },
+      "warnings": [
+        "Excluded 1 non-HTTP link URL from page link evidence."
+      ],
+      "contentHash": "f4f353f5cf9a505ec21423dec16efb8286f587562520ee2b11d9d17a1c159a8c",
+      "mainContentHash": "e0b66f9dec9538ca9e67808a1af4e3a4f4cb3095f92cbb83ec34ee74ce31bb52",
+      "textRatio": 0.04378646322059483,
+      "contentSample": "Impulsando el futuro del talento científico en ChileConstruimos la infraestructura que conecta a la ciencia chilena con oportunidades transparentes y de alto impacto.+500Profesionales y científicosEn la red activa en Chile100%Datos y ofertas verificadasSin vacantes fantasma15+Especialidades STEMBiot",
+      "contentSketch": {
+        "version": 1,
+        "wordCount": 550,
+        "shingleSize": 5,
+        "sampledShingles": 32,
+        "hashes": [
+          "98f926f4f0655d75",
+          "73eeec18a1364bd6",
+          "28ac53283b16bfc1",
+          "a32a1e99cdfc1e10",
+          "b9cc6fa3031ba081"
+        ]
+      },
+      "lang": "es",
+      "hasViewport": true,
+      "isHttps": true,
+      "hasHsts": true,
+      "compression": "br",
+      "hreflang": [],
+      "mixedContentCount": 0,
+      "mixedContentSamples": [],
+      "imagesTotal": 3,
+      "imagesMissingAlt": 0,
+      "oversizedImageCandidates": [],
+      "outgoingInternalCount": 22,
+      "outgoingExternalCount": 5,
+      "sampleInternalLinks": [
+        "https://biovity.cl/",
+        "https://biovity.cl/about",
+        "https://biovity.cl/blog",
+        "https://biovity.cl/brand",
+        "https://biovity.cl/career-tips"
+      ],
+      "sampleExternalLinks": [
+        "https://linkedin.com/in/diegoleteliers10",
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity",
+        "https://facebook.com/biovity"
+      ],
+      "internalAnchorSamples": [
+        {
+          "href": "https://biovity.cl/jobs",
+          "text": "Trabajos"
+        },
+        {
+          "href": "https://biovity.cl/companies",
+          "text": "Empresas"
+        },
+        {
+          "href": "https://biovity.cl/about",
+          "text": "Nosotros"
+        },
+        {
+          "href": "https://biovity.cl/learn",
+          "text": "Aprende"
+        },
+        {
+          "href": "https://biovity.cl/blog",
+          "text": "Blog"
+        }
+      ],
+      "externalAnchorSamples": [
+        {
+          "href": "https://linkedin.com/in/diegoleteliers10",
+          "text": "linkedin.com/in/diegoleteliers10"
+        }
+      ],
+      "markdownAlternates": [],
+      "describedBy": [],
+      "schemaTypes": [
+        "Organization",
+        "ContactPoint",
+        "Country",
+        "WebSite",
+        "SearchAction"
+      ],
+      "structuredDataFormats": [
+        "json-ld"
+      ],
+      "googleRichResults": [
+        {
+          "format": "json-ld",
+          "block": 3,
+          "path": "$",
+          "schemaType": "BreadcrumbList",
+          "feature": "breadcrumb",
+          "observedProperties": [
+            "itemListElement"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/breadcrumb",
+          "status": "required-properties-observed",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "This checks ListItem typing, positive integer positions, non-empty names, and URL or @id target shapes. Visible breadcrumb parity, target crawlability, and Search policies are not verified.",
+            "Observed properties do not guarantee that Google will show a breadcrumb rich result."
+          ]
+        }
+      ],
+      "googleRichResultsSelection": {
+        "limit": 50,
+        "eligible": 1,
+        "returned": 1,
+        "omitted": 0,
+        "partial": false,
+        "eligibleByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "returnedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "omittedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        }
+      },
+      "schemaSameAs": [
+        "https://www.linkedin.com/company/biovity"
+      ],
+      "schemaSameAsEvidence": [
+        {
+          "url": "https://www.linkedin.com/company/biovity",
+          "block": 0,
+          "path": "$.sameAs",
+          "subjectTypes": [
+            "Organization"
+          ]
+        },
+        {
+          "url": "https://www.linkedin.com/company/biovity",
+          "block": 2,
+          "path": "$.mainEntity.sameAs",
+          "subjectTypes": [
+            "Organization"
+          ]
+        }
+      ],
+      "invalidSchemaSameAs": [],
+      "socialProfileLinks": [
+        "https://linkedin.com/in/diegoleteliers10",
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity",
+        "https://facebook.com/biovity"
+      ],
+      "invalidJsonLdCount": 0,
+      "invalidJsonLdSamples": [],
+      "unrecognizedJsonLdTypes": [],
+      "openGraphTitle": "Nosotros | Conectando Talento Científico en Biovity",
+      "openGraphDescription": "Conoce a Biovity y su misión de conectar talento científico con oportunidades significativas en el sector de biociencias.",
+      "openGraphImage": "https://biovity.cl/og/about.png",
+      "twitterCard": "summary_large_image",
+      "author": "Biovity",
+      "hasDate": false,
+      "geo": {
+        "semanticHtml": true,
+        "structuredData": true,
+        "hasAuthor": true,
+        "hasDate": false,
+        "questionHeadings": 0,
+        "listCount": 5,
+        "tableCount": 0,
+        "structuredBlocks": 5,
+        "answerable": false,
+        "hasFaqSchema": false,
+        "hasQapageSchema": false,
+        "hasLlmsTxt": true,
+        "llmsTxtUrl": "https://biovity.cl/llms.txt",
+        "llmsTxtStatus": 200
+      },
+      "declaredIndexability": "indexable-candidate",
+      "crawlDepth": 0,
+      "contentAuditAllowed": true,
+      "internalInlinkCount": 34,
+      "internalLinkAuthorityScore": 83
+    },
+    {
+      "url": "https://biovity.cl/blog",
+      "finalUrl": "https://biovity.cl/blog",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "responseHeaders": {
+        "access-control-allow-origin": "*",
+        "age": "4230",
+        "cache-control": "public, max-age=60, stale-while-revalidate=86400",
+        "connection": "close",
+        "content-disposition": "inline",
+        "content-encoding": "br",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 03 Oct 2026 20:30:01 GMT",
+        "etag": "W/\"f3de91a03b614b8502fb8a01878c520b\"",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000",
+        "transfer-encoding": "chunked",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/blog",
+        "x-nextjs-prerender": "1",
+        "x-nextjs-stale-time": "300",
+        "x-vercel-cache": "HIT",
+        "x-vercel-id": "gru1::gqdgc-1791059401482-b33beec7d983",
+        "x-xss-protection": "1; mode=block"
+      },
+      "responseTimeMs": 756,
+      "sizeBytes": 113560,
+      "usedJs": false,
+      "fetchSource": "network",
+      "cacheState": "miss",
+      "fetchDiagnostics": {
+        "source": "network",
+        "cache": "miss",
+        "fetched": true,
+        "rendered": false,
+        "blocked": false,
+        "durationMs": 756,
+        "retries": 0,
+        "rateLimit": {
+          "host": "biovity.cl",
+          "concurrency": 8,
+          "intervalCap": 4,
+          "intervalMs": 1000
+        },
+        "backpressure": {
+          "host": "biovity.cl",
+          "status": "ok",
+          "delayMs": 0,
+          "consecutiveSlow": 0,
+          "consecutiveBlocked": 0,
+          "consecutiveErrors": 0,
+          "recentP95Ms": 756
+        },
+        "robotsTxt": {
+          "url": "https://biovity.cl/robots.txt",
+          "cache": "miss",
+          "allowed": true,
+          "availability": "available",
+          "status": 200
+        },
+        "redirectChain": [],
+        "rendering": {
+          "mode": "off",
+          "status": "not-requested",
+          "raw": {
+            "source": "network",
+            "cache": "miss",
+            "url": "https://biovity.cl/blog",
+            "finalUrl": "https://biovity.cl/blog",
+            "status": 200
+          }
+        }
+      },
+      "blocked": false,
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "title": "Blog de Biotecnología y Ciencias en Chile | Biovity | Biovity",
+      "metaDescription": "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
+      "canonical": "https://biovity.cl/blog",
+      "canonicalRaw": "https://biovity.cl/blog",
+      "canonicalStatus": "single",
+      "canonicalCandidates": [
+        {
+          "source": "html-head",
+          "raw": "https://biovity.cl/blog",
+          "resolved": "https://biovity.cl/blog"
+        }
+      ],
+      "metaRobots": "index, follow, index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+      "h1": "Blog Biovity",
+      "h1Count": 1,
+      "h2Count": 7,
+      "h3Count": 0,
+      "indexable": true,
+      "extractionStatus": "complete",
+      "wordCount": 235,
+      "contentExtraction": {
+        "requested": "crawler",
+        "used": "crawler",
+        "fallback": false,
+        "wordCountSource": "local_cjk_aware",
+        "baseUrl": "https://biovity.cl/blog"
+      },
+      "warnings": [],
+      "contentHash": "80c7e05645607ac4c8cfc2d0df08f124053360050a88e4f24ece6ab3491ba0ce",
+      "mainContentHash": "9bad145d72e5609857605edccbe45dd3198d5a068ab81e22a426e59fb894209d",
+      "textRatio": 0.015219607321721403,
+      "contentSample": "Blog BiovityAnálisis sobre el mercado laboral, avances en biotecnología y guías profesionales para la comunidad científica en Chile.Cómo optimizar tu CV para los filtros ATS en BiotechAprende a transformar una extensa lista de publicaciones académicas en un currículum ejecutivo centrado en resultado",
+      "contentSketch": {
+        "version": 1,
+        "wordCount": 245,
+        "shingleSize": 5,
+        "sampledShingles": 32,
+        "hashes": [
+          "8afe914753c9c7fb",
+          "5a79d6ca604d692e",
+          "c415ff0b00add4eb",
+          "cf178d900016743f",
+          "c29b8d0307bf70f1"
+        ]
+      },
+      "lang": "es",
+      "hasViewport": true,
+      "isHttps": true,
+      "hasHsts": true,
+      "compression": "br",
+      "hreflang": [],
+      "mixedContentCount": 0,
+      "mixedContentSamples": [],
+      "imagesTotal": 9,
+      "imagesMissingAlt": 0,
+      "oversizedImageCandidates": [],
+      "outgoingInternalCount": 27,
+      "outgoingExternalCount": 4,
+      "sampleInternalLinks": [
+        "https://biovity.cl/",
+        "https://biovity.cl/about",
+        "https://biovity.cl/blog",
+        "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+        "https://biovity.cl/blog/cv-biotech-optimizado-ats"
+      ],
+      "sampleExternalLinks": [
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity",
+        "https://facebook.com/biovity"
+      ],
+      "internalAnchorSamples": [
+        {
+          "href": "https://biovity.cl/jobs",
+          "text": "Trabajos"
+        },
+        {
+          "href": "https://biovity.cl/companies",
+          "text": "Empresas"
+        },
+        {
+          "href": "https://biovity.cl/about",
+          "text": "Nosotros"
+        },
+        {
+          "href": "https://biovity.cl/learn",
+          "text": "Aprende"
+        },
+        {
+          "href": "https://biovity.cl/blog",
+          "text": "Blog"
+        }
+      ],
+      "externalAnchorSamples": [],
+      "markdownAlternates": [],
+      "describedBy": [],
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "SearchAction",
+        "EntryPoint",
+        "Blog"
+      ],
+      "structuredDataFormats": [
+        "json-ld"
+      ],
+      "googleRichResults": [
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$.about[0]",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "datePublished",
+            "name",
+            "url"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        },
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$.about[1]",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "datePublished",
+            "name",
+            "url"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        },
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$.about[2]",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "datePublished",
+            "name",
+            "url"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        },
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$.about[3]",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "datePublished",
+            "name",
+            "url"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        },
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$.about[4]",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "datePublished",
+            "name",
+            "url"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        }
+      ],
+      "googleRichResultsSelection": {
+        "limit": 50,
+        "eligible": 8,
+        "returned": 8,
+        "omitted": 0,
+        "partial": false,
+        "eligibleByStatus": {
+          "no-required-properties": 7,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "returnedByStatus": {
+          "no-required-properties": 7,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "omittedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        }
+      },
+      "schemaSameAs": [],
+      "schemaSameAsEvidence": [],
+      "invalidSchemaSameAs": [],
+      "socialProfileLinks": [
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity",
+        "https://facebook.com/biovity"
+      ],
+      "invalidJsonLdCount": 0,
+      "invalidJsonLdSamples": [],
+      "unrecognizedJsonLdTypes": [],
+      "openGraphTitle": "Blog de Biotecnología y Ciencias en Chile | Biovity",
+      "openGraphDescription": "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
+      "openGraphImage": "https://biovity.cl/og/home.png",
+      "twitterCard": "summary_large_image",
+      "author": "Biovity",
+      "hasDate": true,
+      "geo": {
+        "semanticHtml": true,
+        "structuredData": true,
+        "hasAuthor": true,
+        "hasDate": true,
+        "questionHeadings": 0,
+        "listCount": 5,
+        "tableCount": 0,
+        "structuredBlocks": 5,
+        "answerable": true,
+        "hasFaqSchema": false,
+        "hasQapageSchema": false,
+        "hasLlmsTxt": true,
+        "llmsTxtUrl": "https://biovity.cl/llms.txt",
+        "llmsTxtStatus": 200
+      },
+      "declaredIndexability": "indexable-candidate",
+      "crawlDepth": 0,
+      "contentAuditAllowed": true,
+      "internalInlinkCount": 34,
+      "internalLinkAuthorityScore": 83
+    },
+    {
+      "url": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "finalUrl": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "responseHeaders": {
+        "access-control-allow-origin": "*",
+        "age": "3132",
+        "cache-control": "public, max-age=60, stale-while-revalidate=86400",
+        "connection": "close",
+        "content-disposition": "inline",
+        "content-encoding": "br",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 03 Oct 2026 20:30:01 GMT",
+        "etag": "W/\"2b88388dae46e3550133dd9298ee112b\"",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000",
+        "transfer-encoding": "chunked",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+        "x-nextjs-prerender": "1",
+        "x-nextjs-stale-time": "300",
+        "x-vercel-cache": "HIT",
+        "x-vercel-id": "gru1::pqwxg-1791059401455-484f1b0eebe3",
+        "x-xss-protection": "1; mode=block"
+      },
+      "responseTimeMs": 736,
+      "sizeBytes": 92036,
+      "usedJs": false,
+      "fetchSource": "network",
+      "cacheState": "miss",
+      "fetchDiagnostics": {
+        "source": "network",
+        "cache": "miss",
+        "fetched": true,
+        "rendered": false,
+        "blocked": false,
+        "durationMs": 736,
+        "retries": 0,
+        "rateLimit": {
+          "host": "biovity.cl",
+          "concurrency": 8,
+          "intervalCap": 4,
+          "intervalMs": 1000
+        },
+        "backpressure": {
+          "host": "biovity.cl",
+          "status": "ok",
+          "delayMs": 0,
+          "consecutiveSlow": 0,
+          "consecutiveBlocked": 0,
+          "consecutiveErrors": 0,
+          "recentP95Ms": 736
+        },
+        "robotsTxt": {
+          "url": "https://biovity.cl/robots.txt",
+          "cache": "miss",
+          "allowed": true,
+          "availability": "available",
+          "status": 200
+        },
+        "redirectChain": [],
+        "rendering": {
+          "mode": "off",
+          "status": "not-requested",
+          "raw": {
+            "source": "network",
+            "cache": "miss",
+            "url": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+            "finalUrl": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+            "status": 200
+          }
+        }
+      },
+      "blocked": false,
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "title": "Entrevista técnica en I+D y Bioinformática | Biovity",
+      "metaDescription": "Preguntas frecuentes, resolución de casos de estudio biológicos en vivo y cómo explicar tus metodologías experimentales con claridad comunicativa.",
+      "canonical": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "canonicalRaw": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+      "canonicalStatus": "single",
+      "canonicalCandidates": [
+        {
+          "source": "html-head",
+          "raw": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd",
+          "resolved": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd"
+        }
+      ],
+      "metaRobots": "index, follow, index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+      "h1": "Entrevista técnica en I+D y Bioinformática",
+      "h1Count": 1,
+      "h2Count": 8,
+      "h3Count": 0,
+      "indexable": true,
+      "extractionStatus": "complete",
+      "wordCount": 738,
+      "contentExtraction": {
+        "requested": "crawler",
+        "used": "crawler",
+        "fallback": false,
+        "wordCountSource": "local_cjk_aware",
+        "baseUrl": "https://biovity.cl/blog/como-preparar-entrevista-tecnica-biomedicina-rd"
+      },
+      "warnings": [],
+      "contentHash": "64deda852d55f85b9612aa94b1d6e281ec6efc12e5b44bfa891995e6fe7c5f4b",
+      "mainContentHash": "d43251fd5e1cfd1eaadf2ccee9e9d0f227e50147bd43799284f3490f929e4055",
+      "textRatio": 0.05222162828498805,
+      "contentSample": "InicioBlogEntrevista técnica en I+D y BioinformáticaEntrevista técnica en I+D y BioinformáticaPreguntas frecuentes, resolución de casos de estudio biológicos en vivo y cómo explicar tus metodologías experimentales con claridad comunicativa.12 ago 2026•Por Ing. Valentina RojasCompartir:Qué evalúa una",
+      "contentSketch": {
+        "version": 1,
+        "wordCount": 747,
+        "shingleSize": 5,
+        "sampledShingles": 32,
+        "hashes": [
+          "7062763c8bf00e20",
+          "1d3e973d763cce94",
+          "bb80d62c1dd1e015",
+          "82d9db2201002d2f",
+          "e67c19b573dd89e5"
+        ]
+      },
+      "lang": "es",
+      "hasViewport": true,
+      "isHttps": true,
+      "hasHsts": true,
+      "compression": "br",
+      "hreflang": [],
+      "mixedContentCount": 0,
+      "mixedContentSamples": [],
+      "imagesTotal": 3,
+      "imagesMissingAlt": 0,
+      "oversizedImageCandidates": [],
+      "outgoingInternalCount": 20,
+      "outgoingExternalCount": 6,
+      "sampleInternalLinks": [
+        "https://biovity.cl/",
+        "https://biovity.cl/about",
+        "https://biovity.cl/blog",
+        "https://biovity.cl/brand",
+        "https://biovity.cl/career-tips"
+      ],
+      "sampleExternalLinks": [
+        "https://twitter.com/intent/tweet?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcomo-preparar-entrevista-tecnica-biomedicina-rd&text=Mira%20este%20art%C3%ADculo%20de%20Biovity:",
+        "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcomo-preparar-entrevista-tecnica-biomedicina-rd",
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity"
+      ],
+      "internalAnchorSamples": [
+        {
+          "href": "https://biovity.cl/jobs",
+          "text": "Trabajos"
+        },
+        {
+          "href": "https://biovity.cl/companies",
+          "text": "Empresas"
+        },
+        {
+          "href": "https://biovity.cl/about",
+          "text": "Nosotros"
+        },
+        {
+          "href": "https://biovity.cl/learn",
+          "text": "Aprende"
+        },
+        {
+          "href": "https://biovity.cl/blog",
+          "text": "Blog"
+        }
+      ],
+      "externalAnchorSamples": [],
+      "markdownAlternates": [],
+      "describedBy": [],
+      "schemaTypes": [
+        "BlogPosting",
+        "Person",
+        "Organization",
+        "ImageObject",
+        "WebPage"
+      ],
+      "structuredDataFormats": [
+        "json-ld"
+      ],
+      "googleRichResults": [
+        {
+          "format": "json-ld",
+          "block": 0,
+          "path": "$",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "articleSection",
+            "author",
+            "dateModified",
+            "datePublished",
+            "description"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        },
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$",
+          "schemaType": "BreadcrumbList",
+          "feature": "breadcrumb",
+          "observedProperties": [
+            "itemListElement"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/breadcrumb",
+          "status": "required-properties-observed",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "This checks ListItem typing, positive integer positions, non-empty names, and URL or @id target shapes. Visible breadcrumb parity, target crawlability, and Search policies are not verified.",
+            "Observed properties do not guarantee that Google will show a breadcrumb rich result."
+          ]
+        }
+      ],
+      "googleRichResultsSelection": {
+        "limit": 50,
+        "eligible": 2,
+        "returned": 2,
+        "omitted": 0,
+        "partial": false,
+        "eligibleByStatus": {
+          "no-required-properties": 1,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "returnedByStatus": {
+          "no-required-properties": 1,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "omittedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        }
+      },
+      "schemaSameAs": [],
+      "schemaSameAsEvidence": [],
+      "invalidSchemaSameAs": [],
+      "socialProfileLinks": [
+        "https://twitter.com/intent/tweet?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcomo-preparar-entrevista-tecnica-biomedicina-rd&text=Mira%20este%20art%C3%ADculo%20de%20Biovity:",
+        "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcomo-preparar-entrevista-tecnica-biomedicina-rd",
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity"
+      ],
+      "invalidJsonLdCount": 0,
+      "invalidJsonLdSamples": [],
+      "unrecognizedJsonLdTypes": [],
+      "openGraphTitle": "Entrevista técnica en I+D y Bioinformática",
+      "openGraphDescription": "Preguntas frecuentes, resolución de casos de estudio biológicos en vivo y cómo explicar tus metodologías experimentales con claridad comunicativa.",
+      "openGraphImage": "https://biovity.cl/images/blog/biotech-chile.jpg",
+      "twitterCard": "summary_large_image",
+      "author": "Biovity",
+      "hasDate": true,
+      "geo": {
+        "semanticHtml": true,
+        "structuredData": true,
+        "hasAuthor": true,
+        "hasDate": true,
+        "questionHeadings": 0,
+        "listCount": 12,
+        "tableCount": 0,
+        "structuredBlocks": 12,
+        "answerable": true,
+        "hasFaqSchema": false,
+        "hasQapageSchema": false,
+        "hasLlmsTxt": true,
+        "llmsTxtUrl": "https://biovity.cl/llms.txt",
+        "llmsTxtStatus": 200
+      },
+      "declaredIndexability": "indexable-candidate",
+      "crawlDepth": 0,
+      "contentAuditAllowed": true,
+      "internalInlinkCount": 2,
+      "internalLinkAuthorityScore": 5
+    },
+    {
+      "url": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "finalUrl": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "responseHeaders": {
+        "access-control-allow-origin": "*",
+        "age": "0",
+        "cache-control": "public, max-age=60, stale-while-revalidate=86400",
+        "connection": "close",
+        "content-disposition": "inline",
+        "content-encoding": "br",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Sat, 03 Oct 2026 20:30:02 GMT",
+        "etag": "W/\"8cfe0bb6ca76c04dd01a45dec7274a75\"",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000",
+        "transfer-encoding": "chunked",
+        "vary": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "x-matched-path": "/blog/cv-biotech-optimizado-ats",
+        "x-nextjs-prerender": "1",
+        "x-nextjs-stale-time": "300",
+        "x-vercel-cache": "PRERENDER",
+        "x-vercel-id": "gru1::fv9zp-1791059402201-8b43498abb6f",
+        "x-xss-protection": "1; mode=block"
+      },
+      "responseTimeMs": 641,
+      "sizeBytes": 90325,
+      "usedJs": false,
+      "fetchSource": "network",
+      "cacheState": "miss",
+      "fetchDiagnostics": {
+        "source": "network",
+        "cache": "miss",
+        "fetched": true,
+        "rendered": false,
+        "blocked": false,
+        "durationMs": 641,
+        "retries": 0,
+        "rateLimit": {
+          "host": "biovity.cl",
+          "concurrency": 8,
+          "intervalCap": 4,
+          "intervalMs": 1000
+        },
+        "backpressure": {
+          "host": "biovity.cl",
+          "status": "ok",
+          "delayMs": 0,
+          "consecutiveSlow": 0,
+          "consecutiveBlocked": 0,
+          "consecutiveErrors": 0,
+          "recentP95Ms": 873
+        },
+        "robotsTxt": {
+          "url": "https://biovity.cl/robots.txt",
+          "cache": "hit",
+          "allowed": true,
+          "availability": "available",
+          "status": 200
+        },
+        "redirectChain": [],
+        "rendering": {
+          "mode": "off",
+          "status": "not-requested",
+          "raw": {
+            "source": "network",
+            "cache": "miss",
+            "url": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+            "finalUrl": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+            "status": 200
+          }
+        }
+      },
+      "blocked": false,
+      "robotsTxt": {
+        "url": "https://biovity.cl/robots.txt",
+        "allowed": true,
+        "availability": "available",
+        "status": 200,
+        "matchedLine": "Allow: /"
+      },
+      "title": "Cómo optimizar tu CV para los filtros ATS en Biotech | Biovity",
+      "metaDescription": "Aprende a transformar una extensa lista de publicaciones académicas en un currículum ejecutivo centrado en resultados, competencias técnicas y tecnologías clave.",
+      "canonical": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "canonicalRaw": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+      "canonicalStatus": "single",
+      "canonicalCandidates": [
+        {
+          "source": "html-head",
+          "raw": "https://biovity.cl/blog/cv-biotech-optimizado-ats",
+          "resolved": "https://biovity.cl/blog/cv-biotech-optimizado-ats"
+        }
+      ],
+      "metaRobots": "index, follow, index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1",
+      "h1": "Cómo optimizar tu CV para los filtros ATS en Biotech",
+      "h1Count": 1,
+      "h2Count": 8,
+      "h3Count": 0,
+      "indexable": true,
+      "extractionStatus": "complete",
+      "wordCount": 685,
+      "contentExtraction": {
+        "requested": "crawler",
+        "used": "crawler",
+        "fallback": false,
+        "wordCountSource": "local_cjk_aware",
+        "baseUrl": "https://biovity.cl/blog/cv-biotech-optimizado-ats"
+      },
+      "warnings": [],
+      "contentHash": "fb29264063b1aca1ebdb143c42baa7846337b2383164b70da9391e4d63915e4a",
+      "mainContentHash": "454040221e41cb2cb14916e14b91057f117b140189eaa51c29911e58dc66fd19",
+      "textRatio": 0.050021105951878427,
+      "contentSample": "InicioBlogCómo optimizar tu CV para los filtros ATS en BiotechCómo optimizar tu CV para los filtros ATS en BiotechAprende a transformar una extensa lista de publicaciones académicas en un currículum ejecutivo centrado en resultados, competencias técnicas y tecnologías clave.14 ago 2026•Por Dra. Cami",
+      "contentSketch": {
+        "version": 1,
+        "wordCount": 693,
+        "shingleSize": 5,
+        "sampledShingles": 32,
+        "hashes": [
+          "0a3e8681321da5a6",
+          "c29b8d0307bf70f1",
+          "8df0ca4b447c9bdd",
+          "4a4ac350f55c90b8",
+          "b06399d0a02afb27"
+        ]
+      },
+      "lang": "es",
+      "hasViewport": true,
+      "isHttps": true,
+      "hasHsts": true,
+      "compression": "br",
+      "hreflang": [],
+      "mixedContentCount": 0,
+      "mixedContentSamples": [],
+      "imagesTotal": 3,
+      "imagesMissingAlt": 0,
+      "oversizedImageCandidates": [],
+      "outgoingInternalCount": 20,
+      "outgoingExternalCount": 6,
+      "sampleInternalLinks": [
+        "https://biovity.cl/",
+        "https://biovity.cl/about",
+        "https://biovity.cl/blog",
+        "https://biovity.cl/brand",
+        "https://biovity.cl/career-tips"
+      ],
+      "sampleExternalLinks": [
+        "https://twitter.com/intent/tweet?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcv-biotech-optimizado-ats&text=Mira%20este%20art%C3%ADculo%20de%20Biovity:",
+        "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcv-biotech-optimizado-ats",
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity"
+      ],
+      "internalAnchorSamples": [
+        {
+          "href": "https://biovity.cl/jobs",
+          "text": "Trabajos"
+        },
+        {
+          "href": "https://biovity.cl/companies",
+          "text": "Empresas"
+        },
+        {
+          "href": "https://biovity.cl/about",
+          "text": "Nosotros"
+        },
+        {
+          "href": "https://biovity.cl/learn",
+          "text": "Aprende"
+        },
+        {
+          "href": "https://biovity.cl/blog",
+          "text": "Blog"
+        }
+      ],
+      "externalAnchorSamples": [],
+      "markdownAlternates": [],
+      "describedBy": [],
+      "schemaTypes": [
+        "BlogPosting",
+        "Person",
+        "Organization",
+        "ImageObject",
+        "WebPage"
+      ],
+      "structuredDataFormats": [
+        "json-ld"
+      ],
+      "googleRichResults": [
+        {
+          "format": "json-ld",
+          "block": 0,
+          "path": "$",
+          "schemaType": "BlogPosting",
+          "feature": "article",
+          "observedProperties": [
+            "articleSection",
+            "author",
+            "dateModified",
+            "datePublished",
+            "description"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/article",
+          "status": "no-required-properties",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "Google currently lists no required Article properties; author, dates, headline, and image are recommended where applicable.",
+            "Visible-content parity, image crawlability, Search policies, and actual appearance are not verified."
+          ]
+        },
+        {
+          "format": "json-ld",
+          "block": 1,
+          "path": "$",
+          "schemaType": "BreadcrumbList",
+          "feature": "breadcrumb",
+          "observedProperties": [
+            "itemListElement"
+          ],
+          "documentationUrl": "https://developers.google.com/search/docs/appearance/structured-data/breadcrumb",
+          "status": "required-properties-observed",
+          "missingRequiredProperties": [],
+          "limitations": [
+            "This checks ListItem typing, positive integer positions, non-empty names, and URL or @id target shapes. Visible breadcrumb parity, target crawlability, and Search policies are not verified.",
+            "Observed properties do not guarantee that Google will show a breadcrumb rich result."
+          ]
+        }
+      ],
+      "googleRichResultsSelection": {
+        "limit": 50,
+        "eligible": 2,
+        "returned": 2,
+        "omitted": 0,
+        "partial": false,
+        "eligibleByStatus": {
+          "no-required-properties": 1,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "returnedByStatus": {
+          "no-required-properties": 1,
+          "required-properties-observed": 1,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        },
+        "omittedByStatus": {
+          "no-required-properties": 0,
+          "required-properties-observed": 0,
+          "missing-required-properties": 0,
+          "retired": 0,
+          "not-assessed": 0
+        }
+      },
+      "schemaSameAs": [],
+      "schemaSameAsEvidence": [],
+      "invalidSchemaSameAs": [],
+      "socialProfileLinks": [
+        "https://twitter.com/intent/tweet?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcv-biotech-optimizado-ats&text=Mira%20este%20art%C3%ADculo%20de%20Biovity:",
+        "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fbiovity.cl%2Fblog%2Fcv-biotech-optimizado-ats",
+        "https://linkedin.com/company/biovity",
+        "https://twitter.com/biovity",
+        "https://instagram.com/biovity"
+      ],
+      "invalidJsonLdCount": 0,
+      "invalidJsonLdSamples": [],
+      "unrecognizedJsonLdTypes": [],
+      "openGraphTitle": "Cómo optimizar tu CV para los filtros ATS en Biotech",
+      "openGraphDescription": "Aprende a transformar una extensa lista de publicaciones académicas en un currículum ejecutivo centrado en resultados, competencias técnicas y tecnologías clave.",
+      "openGraphImage": "https://biovity.cl/images/blog/biotech-chile.jpg",
+      "twitterCard": "summary_large_image",
+      "author": "Biovity",
+      "hasDate": true,
+      "geo": {
+        "semanticHtml": true,
+        "structuredData": true,
+        "hasAuthor": true,
+        "hasDate": true,
+        "questionHeadings": 0,
+        "listCount": 10,
+        "tableCount": 0,
+        "structuredBlocks": 10,
+        "answerable": true,
+        "hasFaqSchema": false,
+        "hasQapageSchema": false,
+        "hasLlmsTxt": true,
+        "llmsTxtUrl": "https://biovity.cl/llms.txt",
+        "llmsTxtStatus": 200
+      },
+      "declaredIndexability": "indexable-candidate",
+      "crawlDepth": 0,
+      "contentAuditAllowed": true,
+      "internalInlinkCount": 2,
+      "internalLinkAuthorityScore": 5
+    }
+  ],
+  "url": "https://biovity.cl/",
+  "generatedAt": "2026-10-03T20:30:16.685Z",
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 471776,
+    "returnedBytes": 61384,
+    "truncated": true,
+    "arrayLimit": 5,
+    "stringLimit": 2000,
+    "omissions": [
+      {
+        "path": "ai.robotsTxt.botAccess",
+        "kind": "array",
+        "available": 21,
+        "returned": 5
+      },
+      {
+        "path": "ai.agentResources",
+        "kind": "array",
+        "available": 6,
+        "returned": 5
+      },
+      {
+        "path": "topFixes[0].sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "topFixes[1].sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "topFixes[2].sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "reviewObservations",
+        "kind": "array",
+        "available": 7,
+        "returned": 5
+      },
+      {
+        "path": "reviewObservations[3].sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "issues",
+        "kind": "array",
+        "available": 66,
+        "returned": 5
+      },
+      {
+        "path": "issues[1].evidence.sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "issues[2].evidence.sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "issues[3].evidence.sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "issues[4].evidence.sampleUrls",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "requests",
+        "kind": "array",
+        "available": 49,
+        "returned": 5
+      },
+      {
+        "path": "pages",
+        "kind": "array",
+        "available": 41,
+        "returned": 5
+      },
+      {
+        "path": "pages[0].contentSketch.hashes",
+        "kind": "array",
+        "available": 30,
+        "returned": 5
+      },
+      {
+        "path": "pages[0].sampleInternalLinks",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[0].internalAnchorSamples",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[0].schemaTypes",
+        "kind": "array",
+        "available": 9,
+        "returned": 5
+      },
+      {
+        "path": "pages[1].contentSketch.hashes",
+        "kind": "array",
+        "available": 32,
+        "returned": 5
+      },
+      {
+        "path": "pages[1].sampleInternalLinks",
+        "kind": "array",
+        "available": 22,
+        "returned": 5
+      },
+      {
+        "path": "pages[1].internalAnchorSamples",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[1].schemaTypes",
+        "kind": "array",
+        "available": 9,
+        "returned": 5
+      },
+      {
+        "path": "pages[2].contentSketch.hashes",
+        "kind": "array",
+        "available": 32,
+        "returned": 5
+      },
+      {
+        "path": "pages[2].sampleInternalLinks",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[2].internalAnchorSamples",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[2].schemaTypes",
+        "kind": "array",
+        "available": 8,
+        "returned": 5
+      },
+      {
+        "path": "pages[2].googleRichResults",
+        "kind": "array",
+        "available": 8,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].contentSketch.hashes",
+        "kind": "array",
+        "available": 32,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].sampleInternalLinks",
+        "kind": "array",
+        "available": 20,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].sampleExternalLinks",
+        "kind": "array",
+        "available": 6,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].internalAnchorSamples",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].schemaTypes",
+        "kind": "array",
+        "available": 7,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].googleRichResults[0].observedProperties",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "pages[3].socialProfileLinks",
+        "kind": "array",
+        "available": 6,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].contentSketch.hashes",
+        "kind": "array",
+        "available": 32,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].sampleInternalLinks",
+        "kind": "array",
+        "available": 20,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].sampleExternalLinks",
+        "kind": "array",
+        "available": 6,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].internalAnchorSamples",
+        "kind": "array",
+        "available": 25,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].schemaTypes",
+        "kind": "array",
+        "available": 7,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].googleRichResults[0].observedProperties",
+        "kind": "array",
+        "available": 10,
+        "returned": 5
+      },
+      {
+        "path": "pages[4].socialProfileLinks",
+        "kind": "array",
+        "available": 6,
+        "returned": 5
+      }
+    ],
+    "omissionsTruncated": false,
+    "detail": "Counts, provenance, caveats, and compact evidence are retained. Run the related focused report when more rows are needed."
+  }
+}

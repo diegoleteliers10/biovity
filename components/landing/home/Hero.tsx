@@ -30,13 +30,12 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-surface-container-lowest via-surface-container-low/40 to-surface-container-lowest py-32 sm:py-44 lg:py-56">
-      {/* Ambient background glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Capa unica de gradientes radiales (GPU-free): igual en mobile y desktop.
-            Antes, desktop usaba 3 divs de 32-48rem con blur 100-130px, costo alto de paint. */}
+      {/* Una sola capa de gradientes radiales + patron de puntos estatico.
+          Ninguna de las dos se anima, asi que el compositor las pinta una vez
+          y las reutiliza en todos los frames de scroll. */}
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(132,131,212,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_70%_35%,rgba(0,107,94,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_50%_95%,rgba(0,55,74,0.08)_0%,transparent_60%)]" />
 
-        {/* Subtle grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{

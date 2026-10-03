@@ -90,9 +90,9 @@ export function MarcaTypography() {
                 <span>DISPLAY HERO (h1)</span>
                 <span>text-3xl sm:text-5xl lg:text-6xl • font-semibold</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight">
+              <p className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight">
                 Software ATS y Reclutamiento <span className="text-accent">Científico</span>
-              </h1>
+              </p>
             </div>
 
             {/* Section Heading */}

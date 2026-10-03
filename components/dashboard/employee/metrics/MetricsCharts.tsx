@@ -50,6 +50,8 @@ const [
 type ChartsGridProps = {
   metricsData: UserMetrics | undefined
   period: MetricsPeriod
+  /** Off for off-screen embeds, where the series animation costs frames nobody sees. */
+  animated?: boolean
 }
 
 const MONTH_SHORT = [
@@ -99,7 +101,16 @@ const EmptyChartState = ({ message = "Sin datos suficientes" }: { message?: stri
   </div>
 )
 
-export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
+export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridProps) {
+  // Recharts animates each series by tweening the path `d` attribute, which is
+  // main-thread SVG geometry work per frame. The four charts below fire four of
+  // those loops at once, so an embed that sits below the fold opts out.
+  const chartAnimation = {
+    isAnimationActive: animated,
+    animationDuration: animated ? 400 : 0,
+    animationEasing: "ease-out" as const,
+  }
+
   if (!metricsData) {
     return (
       <div className="grid gap-4 lg:grid-cols-3">
@@ -239,9 +250,10 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                 />
                 <Tooltip
                   cursor={{ stroke: "#6366f1", strokeWidth: 1, strokeDasharray: "2 2" }}
-                  formatter={(value: number) =>
-                    [`${value} ${value === 1 ? "postulación" : "postulaciones"}`, "Postulados"]
-                  }
+                  formatter={(value: number) => [
+                    `${value} ${value === 1 ? "postulación" : "postulaciones"}`,
+                    "Postulados",
+                  ]}
                   labelFormatter={(label) => formatTrendTick(String(label), period)}
                 />
                 <Area
@@ -252,6 +264,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                   fill="url(#userAppGradient)"
                   dot={{ r: 3, fill: "#6366f1" }}
                   activeDot={{ r: 5 }}
+                  {...chartAnimation}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -301,7 +314,13 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                   cursor={{ fill: "rgba(16, 185, 129, 0.08)" }}
                   formatter={(val: number) => [`${val} aplicaciones`, "Postulaciones"]}
                 />
-                <Bar dataKey="count" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={45} />
+                <Bar
+                  dataKey="count"
+                  fill="#10b981"
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={45}
+                  {...chartAnimation}
+                />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -425,6 +444,7 @@ export function ChartsGrid({ metricsData, period }: ChartsGridProps) {
                       innerRadius={42}
                       outerRadius={68}
                       paddingAngle={3}
+                      {...chartAnimation}
                     >
                       {categoriesApplied.map((entry, index) => (
                         <Cell

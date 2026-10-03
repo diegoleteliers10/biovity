@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/component
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
 export const metadata: Metadata = {
-  title: "Términos y Condiciones de Uso | Biovity Chile",
+  title: "Términos y Condiciones de Uso",
   description:
     "Términos y condiciones de uso de la plataforma Biovity en Chile. Conoce las normas de uso para profesionales, estudiantes y empresas reclutadoras.",
   openGraph: {

@@ -1,0 +1,1665 @@
+{
+  "schemaVersion": 2,
+  "site": "sc-domain:biovity.cl",
+  "dimension": "query",
+  "before": {
+    "startDate": "2026-04-03",
+    "endDate": "2026-07-01"
+  },
+  "after": {
+    "startDate": "2026-07-02",
+    "endDate": "2026-09-29"
+  },
+  "rangeDays": {
+    "before": 90,
+    "after": 90
+  },
+  "generatedAt": "2026-10-03T20:35:25.906Z",
+  "dataStatus": "partial",
+  "source": {
+    "provider": "google-search-console",
+    "dimension": "query",
+    "aggregationType": "auto",
+    "searchType": "web",
+    "dataState": "final",
+    "before": {
+      "rowsFetched": 115,
+      "calls": 0,
+      "maxRows": 100000,
+      "possiblyTruncated": false
+    },
+    "after": {
+      "rowsFetched": 256,
+      "calls": 0,
+      "maxRows": 100000,
+      "possiblyTruncated": false
+    },
+    "completeness": "retained-rows-only"
+  },
+  "methodology": {
+    "id": "gsc_matched_retained_segment_impact",
+    "version": 2,
+    "missingRowsTreatedAsZero": false,
+    "equalLengthAdjacentWindows": true,
+    "clickDeltaBasis": "after-minus-before",
+    "positionDeltaDefinition": "after-minus-before-positive-is-worse",
+    "causeLanguage": "signals-not-attribution"
+  },
+  "filters": {
+    "limit": 100,
+    "unmatchedLimit": 100,
+    "maxRows": 100000
+  },
+  "selection": {
+    "beforeSourceRows": 115,
+    "afterSourceRows": 256,
+    "beforeInvalidRows": 0,
+    "afterInvalidRows": 0,
+    "beforeDuplicateRows": 0,
+    "afterDuplicateRows": 0,
+    "beforeConflictingRows": 0,
+    "afterConflictingRows": 0,
+    "matchedRows": 59,
+    "unmatchedBeforeRows": 56,
+    "unmatchedAfterRows": 197,
+    "returnedRows": 59,
+    "limitedRows": 0,
+    "returnedUnmatchedRows": 100,
+    "limitedUnmatchedRows": 153
+  },
+  "summary": {
+    "matchedRows": 59,
+    "returnedRows": 59,
+    "unmatchedRows": 253,
+    "verdict": "59 of 59 matched retained segments returned. 253 one-window rows were kept as unmatched evidence and not converted to zero."
+  },
+  "items": [
+    {
+      "key": "biovity",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 23,
+      "afterClicks": 16,
+      "clickDelta": -7,
+      "beforeImpressions": 81,
+      "afterImpressions": 75,
+      "impressionDelta": -6,
+      "beforePosition": 4.049,
+      "afterPosition": 4.867,
+      "positionDelta": 0.818
+    },
+    {
+      "key": "biotecnología carrera sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 2,
+      "clickDelta": 2,
+      "beforeImpressions": 19,
+      "afterImpressions": 61,
+      "impressionDelta": 42,
+      "beforePosition": 8,
+      "afterPosition": 5.918,
+      "positionDelta": -2.082
+    },
+    {
+      "key": "bioinformática sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 1,
+      "clickDelta": 1,
+      "beforeImpressions": 8,
+      "afterImpressions": 17,
+      "impressionDelta": 9,
+      "beforePosition": 4.25,
+      "afterPosition": 6.412,
+      "positionDelta": 2.162
+    },
+    {
+      "key": "biotecnologia",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 1,
+      "clickDelta": 1,
+      "beforeImpressions": 2,
+      "afterImpressions": 15,
+      "impressionDelta": 13,
+      "beforePosition": 3,
+      "afterPosition": 2.933,
+      "positionDelta": -0.067
+    },
+    {
+      "key": "biotecnologia sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 1,
+      "afterClicks": 0,
+      "clickDelta": -1,
+      "beforeImpressions": 7,
+      "afterImpressions": 9,
+      "impressionDelta": 2,
+      "beforePosition": 4,
+      "afterPosition": 5.333,
+      "positionDelta": 1.333
+    },
+    {
+      "key": "biotecnología sueldo chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 1,
+      "afterClicks": 0,
+      "clickDelta": -1,
+      "beforeImpressions": 53,
+      "afterImpressions": 59,
+      "impressionDelta": 6,
+      "beforePosition": 8.736,
+      "afterPosition": 7.034,
+      "positionDelta": -1.702
+    },
+    {
+      "key": "ingeniería en biotecnología sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 1,
+      "afterClicks": 0,
+      "clickDelta": -1,
+      "beforeImpressions": 6,
+      "afterImpressions": 44,
+      "impressionDelta": 38,
+      "beforePosition": 6,
+      "afterPosition": 7.977,
+      "positionDelta": 1.977
+    },
+    {
+      "key": "técnico en biotecnología sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 1,
+      "clickDelta": 1,
+      "beforeImpressions": 5,
+      "afterImpressions": 26,
+      "impressionDelta": 21,
+      "beforePosition": 4.2,
+      "afterPosition": 4,
+      "positionDelta": -0.2
+    },
+    {
+      "key": "bioinformatica",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 2,
+      "afterPosition": 5,
+      "positionDelta": 3
+    },
+    {
+      "key": "bioinformático",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 1,
+      "afterPosition": 10,
+      "positionDelta": 9
+    },
+    {
+      "key": "bioquimica",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 3,
+      "afterPosition": 4.5,
+      "positionDelta": 1.5
+    },
+    {
+      "key": "bioquimica carrera",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 3,
+      "afterPosition": 3,
+      "positionDelta": 0
+    },
+    {
+      "key": "bioquimica sueldo chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 6,
+      "impressionDelta": 4,
+      "beforePosition": 34.5,
+      "afterPosition": 18.5,
+      "positionDelta": -16
+    },
+    {
+      "key": "bioquímica",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 2,
+      "afterPosition": 5,
+      "positionDelta": 3
+    },
+    {
+      "key": "bioquímica carrera sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 12,
+      "impressionDelta": 11,
+      "beforePosition": 77,
+      "afterPosition": 13.083,
+      "positionDelta": -63.917
+    },
+    {
+      "key": "biotecnologia cuanto gana",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 10,
+      "impressionDelta": 8,
+      "beforePosition": 9,
+      "afterPosition": 8.5,
+      "positionDelta": -0.5
+    },
+    {
+      "key": "biotecnologo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 1,
+      "afterPosition": 3,
+      "positionDelta": 2
+    },
+    {
+      "key": "biotecnologo sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 3,
+      "impressionDelta": 1,
+      "beforePosition": 8.5,
+      "afterPosition": 6,
+      "positionDelta": -2.5
+    },
+    {
+      "key": "biotecnologo trabajo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 30,
+      "afterPosition": 15.5,
+      "positionDelta": -14.5
+    },
+    {
+      "key": "biotecnología",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 17,
+      "impressionDelta": 16,
+      "beforePosition": 3,
+      "afterPosition": 2.647,
+      "positionDelta": -0.353
+    },
+    {
+      "key": "biotecnología carrera",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 11,
+      "impressionDelta": 10,
+      "beforePosition": 3,
+      "afterPosition": 3.636,
+      "positionDelta": 0.636
+    },
+    {
+      "key": "biotecnología carrera chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 4,
+      "impressionDelta": 3,
+      "beforePosition": 4,
+      "afterPosition": 3,
+      "positionDelta": -1
+    },
+    {
+      "key": "biotecnología salario",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 3,
+      "impressionDelta": 1,
+      "beforePosition": 10.5,
+      "afterPosition": 4.667,
+      "positionDelta": -5.833
+    },
+    {
+      "key": "biotecnología sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 20,
+      "afterImpressions": 50,
+      "impressionDelta": 30,
+      "beforePosition": 8.4,
+      "afterPosition": 5.32,
+      "positionDelta": -3.08
+    },
+    {
+      "key": "biotecnología uc",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 3,
+      "impressionDelta": 2,
+      "beforePosition": 2,
+      "afterPosition": 4.667,
+      "positionDelta": 2.667
+    },
+    {
+      "key": "biotecnología udec",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 6,
+      "afterPosition": 5,
+      "positionDelta": -1
+    },
+    {
+      "key": "biotecnólogo sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 3,
+      "afterImpressions": 7,
+      "impressionDelta": 4,
+      "beforePosition": 8,
+      "afterPosition": 4.286,
+      "positionDelta": -3.714
+    },
+    {
+      "key": "cuanto gana un bioinformatico",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 10,
+      "impressionDelta": 8,
+      "beforePosition": 5.5,
+      "afterPosition": 3.1,
+      "positionDelta": -2.4
+    },
+    {
+      "key": "cuanto gana un biologo en chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 60,
+      "afterPosition": 60.5,
+      "positionDelta": 0.5
+    },
+    {
+      "key": "cuanto gana un bioquimico en chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 4,
+      "afterImpressions": 7,
+      "impressionDelta": 3,
+      "beforePosition": 35.25,
+      "afterPosition": 28,
+      "positionDelta": -7.25
+    },
+    {
+      "key": "cuanto gana un biotecnologo en chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 1,
+      "afterClicks": 1,
+      "clickDelta": 0,
+      "beforeImpressions": 5,
+      "afterImpressions": 87,
+      "impressionDelta": 82,
+      "beforePosition": 4.6,
+      "afterPosition": 7.414,
+      "positionDelta": 2.814
+    },
+    {
+      "key": "cuanto gana un ingeniero en biotecnologia",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 4,
+      "afterImpressions": 37,
+      "impressionDelta": 33,
+      "beforePosition": 3.5,
+      "afterPosition": 6.946,
+      "positionDelta": 3.446
+    },
+    {
+      "key": "cuanto gana un ingeniero en biotecnología",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 6,
+      "impressionDelta": 4,
+      "beforePosition": 8,
+      "afterPosition": 7,
+      "positionDelta": -1
+    },
+    {
+      "key": "cuanto gana una biotecnologa",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 3,
+      "impressionDelta": 2,
+      "beforePosition": 9,
+      "afterPosition": 4,
+      "positionDelta": -5
+    },
+    {
+      "key": "cuanto ganan",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 4,
+      "afterImpressions": 7,
+      "impressionDelta": 3,
+      "beforePosition": 1,
+      "afterPosition": 2.714,
+      "positionDelta": 1.714
+    },
+    {
+      "key": "cuanto ganan en chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 3,
+      "impressionDelta": 2,
+      "beforePosition": 1,
+      "afterPosition": 1.667,
+      "positionDelta": 0.667
+    },
+    {
+      "key": "cuanto ganan?",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 1,
+      "impressionDelta": -1,
+      "beforePosition": 3.5,
+      "afterPosition": 1,
+      "positionDelta": -2.5
+    },
+    {
+      "key": "cuánto gana",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 1,
+      "afterPosition": 1,
+      "positionDelta": 0
+    },
+    {
+      "key": "cuánto gana un bioquímico en chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 43,
+      "afterPosition": 13,
+      "positionDelta": -30
+    },
+    {
+      "key": "cuánto gana un biotecnologo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 5,
+      "impressionDelta": 4,
+      "beforePosition": 11,
+      "afterPosition": 8.4,
+      "positionDelta": -2.6
+    },
+    {
+      "key": "cuánto gana un ingeniero en biotecnología",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 13,
+      "impressionDelta": 12,
+      "beforePosition": 1,
+      "afterPosition": 5.923,
+      "positionDelta": 4.923
+    },
+    {
+      "key": "empleo bioquimico",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 7,
+      "impressionDelta": 6,
+      "beforePosition": 34,
+      "afterPosition": 16,
+      "positionDelta": -18
+    },
+    {
+      "key": "empleo biotecnologia",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 25,
+      "afterPosition": 27,
+      "positionDelta": 2
+    },
+    {
+      "key": "en que puede trabajar un ingeniero en biotecnología",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 3,
+      "afterPosition": 3,
+      "positionDelta": 0
+    },
+    {
+      "key": "ingenieria civil en biotecnologia",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 5,
+      "afterPosition": 4,
+      "positionDelta": -1
+    },
+    {
+      "key": "ingenieria en biotecnologia",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 3,
+      "impressionDelta": 2,
+      "beforePosition": 7,
+      "afterPosition": 4.667,
+      "positionDelta": -2.333
+    },
+    {
+      "key": "ingenieria en biotecnologia molecular",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 3,
+      "afterPosition": 3,
+      "positionDelta": 0
+    },
+    {
+      "key": "ingeniero en biotecnología sueldo chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 1,
+      "afterClicks": 1,
+      "clickDelta": 0,
+      "beforeImpressions": 4,
+      "afterImpressions": 19,
+      "impressionDelta": 15,
+      "beforePosition": 7.25,
+      "afterPosition": 7.421,
+      "positionDelta": 0.171
+    },
+    {
+      "key": "ingeniería en biotecnología marina y acuicultura",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 5,
+      "impressionDelta": 4,
+      "beforePosition": 2,
+      "afterPosition": 2.4,
+      "positionDelta": 0.4
+    },
+    {
+      "key": "ingeniería en biotecnología puntaje corte",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 3,
+      "afterPosition": 3,
+      "positionDelta": 0
+    },
+    {
+      "key": "ingeniería en biotecnología sueldo chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 27,
+      "impressionDelta": 26,
+      "beforePosition": 1,
+      "afterPosition": 9.037,
+      "positionDelta": 8.037
+    },
+    {
+      "key": "salario biotecnologo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 1,
+      "impressionDelta": 0,
+      "beforePosition": 9,
+      "afterPosition": 1,
+      "positionDelta": -8
+    },
+    {
+      "key": "sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 4,
+      "afterImpressions": 7,
+      "impressionDelta": 3,
+      "beforePosition": 1,
+      "afterPosition": 1.857,
+      "positionDelta": 0.857
+    },
+    {
+      "key": "sueldo biotecnologo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 5,
+      "afterImpressions": 9,
+      "impressionDelta": 4,
+      "beforePosition": 8.8,
+      "afterPosition": 5.778,
+      "positionDelta": -3.022
+    },
+    {
+      "key": "sueldo de biotecnologo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 3,
+      "afterImpressions": 8,
+      "impressionDelta": 5,
+      "beforePosition": 7,
+      "afterPosition": 4.875,
+      "positionDelta": -2.125
+    },
+    {
+      "key": "sueldo de un biotecnologo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 1,
+      "impressionDelta": -1,
+      "beforePosition": 1,
+      "afterPosition": 7,
+      "positionDelta": 6
+    },
+    {
+      "key": "sueldos",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 2,
+      "afterImpressions": 5,
+      "impressionDelta": 3,
+      "beforePosition": 1,
+      "afterPosition": 1.6,
+      "positionDelta": 0.6
+    },
+    {
+      "key": "trabajo bioquimico chile",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 31,
+      "afterPosition": 35.5,
+      "positionDelta": 4.5
+    },
+    {
+      "key": "y el sueldo",
+      "evidenceScope": "matched-retained-segment",
+      "beforeClicks": 0,
+      "afterClicks": 0,
+      "clickDelta": 0,
+      "beforeImpressions": 1,
+      "afterImpressions": 2,
+      "impressionDelta": 1,
+      "beforePosition": 2,
+      "afterPosition": 1,
+      "positionDelta": -1
+    }
+  ],
+  "unmatchedSegments": [
+    {
+      "key": "bioinformatico sueldo",
+      "clicks": 1,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioinformática trabajo",
+      "clicks": 1,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia campo laboral",
+      "clicks": 1,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia trabajos",
+      "clicks": 1,
+      "impressions": 2,
+      "position": 23,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología ucm",
+      "clicks": 1,
+      "impressions": 2,
+      "position": 2.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un ingeniero en alimentos en chile",
+      "clicks": 1,
+      "impressions": 4,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "en chile",
+      "clicks": 1,
+      "impressions": 8,
+      "position": 2.625,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "trabajo bioinformatico",
+      "clicks": 1,
+      "impressions": 1,
+      "position": 5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "10 ańos",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "a cuánto puede llegar?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "alguna otra fuente",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 6,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "ambas",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "and in chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 9,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biogenetica carrera",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioinformatica empleo",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 7,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioinformatica utalca",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioinformática carrera",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioinformática chile",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 3.25,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biologia",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimica carrera cuanto gana",
+      "clicks": 0,
+      "impressions": 3,
+      "position": 10,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimica empleo",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimica pucv",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimica salario",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 10,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimica sueldo",
+      "clicks": 0,
+      "impressions": 13,
+      "position": 10.538,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimica trabajos",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimico sueldo",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 10.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquimico trabajo",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 40,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquímica sueldo",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquímica trabajo",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 26,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "bioquímico empleo",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 17.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biosistemas salario",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 44.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotec chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia marina",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia medica carrera",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia salario",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia trabajo",
+      "clicks": 0,
+      "impressions": 6,
+      "position": 20,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologia usm",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologo cuanto gana",
+      "clicks": 0,
+      "impressions": 3,
+      "position": 5.333,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologo empleo",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 44.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnologo que es",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología campo laboral",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología carrera que es",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología chile",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 4.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología cuanto ganan",
+      "clicks": 0,
+      "impressions": 12,
+      "position": 6.083,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología empleo",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 20,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología genómica sueldo",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología molecular",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología trabajo",
+      "clicks": 0,
+      "impressions": 3,
+      "position": 6.333,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología ufro",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 2.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "biotecnología usach",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "campo laboral",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "campo laboral biotecnologia",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "campo laboral en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "campo laboral y sueldos",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "chile",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "como son los sueldos?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cual gana más",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 5.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un bioquimico",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un biotecnologo",
+      "clicks": 0,
+      "impressions": 19,
+      "position": 5.895,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un biotecnologo en españa",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un biólogo en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 60,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un científico en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 12,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un ingeniero bioquimico",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 11,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un ingeniero biotecnologo",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 8.75,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un ingeniero biotecnologo en chile",
+      "clicks": 0,
+      "impressions": 3,
+      "position": 4.333,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana un ingeniero en bioquimica",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 7,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto gana?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto ganan aproximadamente?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto ganan los bioquimicos",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto ganaría ?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto ganas?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto pagan",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 1.75,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto pagan aproximadamente?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto pagan?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuanto seria el sueldo",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuantos años son bioquimica",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuál es el sueldo en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 4,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuál es el sueldo promedio",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto es el sueldo en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto gana un bioquimico",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto gana un profesional",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto gana una bióloga",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto gana uno?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto ganan",
+      "clicks": 0,
+      "impressions": 4,
+      "position": 1.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto ganan en chile",
+      "clicks": 0,
+      "impressions": 2,
+      "position": 1.5,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto ganan?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto pagan",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 3,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto pagan?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto se gana",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto se gana al mes",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cuánto sería el sueldo?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "cómo es en chile",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "dame de todos",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 2,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "de la usm",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 11,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "de que trata?",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 1,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    },
+    {
+      "key": "diplomado biotecnologia",
+      "clicks": 0,
+      "impressions": 1,
+      "position": 7,
+      "retainedIn": "after",
+      "reason": "not-retained-in-other-window"
+    }
+  ],
+  "warnings": [
+    "253 segments appeared in only one retained response. They are not treated as zero traffic or ranked as winners or losers."
+  ],
+  "caveats": [
+    "Only segments retained in both GSC responses receive movement deltas. Search Console can omit anonymized and lower-volume rows, so one-window absence is not proof of zero traffic.",
+    "Average position is impression-weighted provider data and is only compared when both retained rows have impressions.",
+    "Search Console segment data is observational. Movement can guide investigation but does not establish the cause of a ranking, demand, or CTR change."
+  ],
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 30356,
+    "returnedBytes": 30591,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

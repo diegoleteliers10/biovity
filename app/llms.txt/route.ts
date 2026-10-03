@@ -8,11 +8,15 @@ const content = `# Biovity
 
 - [Inicio](https://biovity.cl): Portal principal con ofertas de empleo en ciencias
 - [Trabajos](https://biovity.cl/jobs): Bolsa de empleo científica con filtros por área, ubicación y salario
-- [Salarios](https://biovity.cl/salaries): Estudio de sueldos en biociencias (datos 2024-2025)
+- [Salarios](https://biovity.cl/salaries): Rangos salariales orientativos en ciencias en Chile
 - [Para Empresas](https://biovity.cl/companies): ATS especializado para reclutar talento científico
 - [Nosotros](https://biovity.cl/about): Misión y equipo detrás de Biovity
 - [Planes](https://biovity.cl/plans): Precios para empresas y organizaciones
 - [Lista de Espera](https://biovity.cl/waitlist): Únete a la comunidad científica
+
+- [Consejos de carrera](https://biovity.cl/career-tips): CV, entrevistas y transición a la industria
+- [Aprende](https://biovity.cl/learn): Cápsulas de bioinformática e IA para biotecnología
+- [Blog](https://biovity.cl/blog): Artículos de ciencias y empleo
 
 ## Recursos para Agentes AI
 

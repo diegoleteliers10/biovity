@@ -30,15 +30,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const capsule = result.value
   return {
-    title: `${capsule.frontmatter.title} | Aprende | Biovity`,
+    title: `${capsule.frontmatter.title}`,
     description: capsule.frontmatter.description,
     openGraph: {
       title: capsule.frontmatter.title,
       description: capsule.frontmatter.description,
       url: `/learn/${category}/${slug}`,
-      images: [
-        { url: "/og/learn.png", width: 1200, height: 630, alt: capsule.frontmatter.title },
-      ],
+      images: [{ url: "/og/learn.png", width: 1200, height: 630, alt: capsule.frontmatter.title }],
     },
     twitter: {
       title: capsule.frontmatter.title,

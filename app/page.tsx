@@ -5,7 +5,7 @@ import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { JobBoardJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "../components/seo/JsonLd"
 
 export const metadata: Metadata = {
-  title: "Biovity | Empleos en Biotecnología y Ciencias en Chile",
+  title: "Empleos en Biotecnología y Ciencias en Chile | Biovity",
   description:
     "Encuentra empleos en biotecnología, bioquímica, química, ingeniería química, salud y laboratorios en Chile. Portal de empleo especializado en biociencias. Gratis para profesionales.",
   keywords: [

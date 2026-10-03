@@ -1,7 +1,8 @@
 import { Result } from "better-result"
 import type { MetadataRoute } from "next"
 import { getJobs, type Job } from "@/lib/api/jobs"
-import { getAllPosts } from "@/lib/posts"
+import { APRENDE_CATEGORIES } from "@/lib/data/aprende-data"
+import { getAllPosts, getCapsulesByCategory } from "@/lib/posts"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://biovity.cl"
 
@@ -9,83 +10,84 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: siteUrl,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${siteUrl}/companies`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${siteUrl}/recruiting`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.85,
     },
     {
       url: `${siteUrl}/jobs`,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
       url: `${siteUrl}/salaries`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${siteUrl}/about`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${siteUrl}/plans`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${siteUrl}/blog`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${siteUrl}/career-tips`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${siteUrl}/waitlist`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     {
       url: `${siteUrl}/terms`,
-      lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.4,
     },
     {
       url: `${siteUrl}/privacy`,
-      lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.4,
     },
     {
       url: `${siteUrl}/cookies`,
-      lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.4,
     },
   ]
+
+  const learningUrls: MetadataRoute.Sitemap = [
+    { url: `${siteUrl}/learn` },
+    { url: `${siteUrl}/brand` },
+    { url: `${siteUrl}/share-salary` },
+    ...APRENDE_CATEGORIES.map((category) => ({ url: `${siteUrl}/learn/${category.slug}` })),
+  ]
+  const capsulesResult = await getCapsulesByCategory()
+  const capsuleUrls: MetadataRoute.Sitemap = Result.isOk(capsulesResult)
+    ? capsulesResult.value.map((capsule) => ({
+        url: `${siteUrl}/learn/${capsule.category}/${capsule.slug}`,
+        lastModified: new Date(capsule.frontmatter.date),
+      }))
+    : []
 
   const postsResult = await getAllPosts()
   const posts = Result.isOk(postsResult) ? postsResult.value : []
@@ -117,5 +119,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }))
 
-  return [...staticPages, ...blogUrls, ...jobUrls]
+  return [...staticPages, ...learningUrls, ...capsuleUrls, ...blogUrls, ...jobUrls]
 }

@@ -28,8 +28,8 @@ export function SalariosHero() {
             transition={t(LANDING_ANIMATION.sequenceDelay)}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight text-balance tracking-tight"
           >
-            Sueldos en <span className="text-accent font-semibold">ciencias e ingeniería</span> en
-            Chile
+            Sueldos en biotecnología,{" "}
+            <span className="text-accent font-semibold">ciencias e ingeniería</span> en Chile
           </m.h1>
 
           {/* Subtitle */}
@@ -39,7 +39,7 @@ export function SalariosHero() {
             transition={t(LANDING_ANIMATION.sequenceDelay * 2)}
             className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed text-pretty"
           >
-            Bandas salariales por carrera, experiencia y región, en CLP líquido.
+            Rangos orientativos por carrera y experiencia en pesos chilenos (CLP).
           </m.p>
 
           <m.div
@@ -49,7 +49,7 @@ export function SalariosHero() {
             className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground mb-12 bg-surface-container-low px-3 py-1 rounded-md"
           >
             <HugeiconsIcon icon={TradeUpIcon} size={14} className="text-accent" />
-            <span>Datos analizados y normalizados en CLP</span>
+            <span>Valores orientativos, sin muestra estadística publicada</span>
           </m.div>
 
           {/* Stats Grid - Matching /about styling, font size, and text-center structure */}

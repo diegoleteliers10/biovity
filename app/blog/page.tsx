@@ -7,7 +7,7 @@ import { BlogCollectionJsonLd, BreadcrumbJsonLd, WebSiteJsonLd } from "@/compone
 import { getAllPosts } from "@/lib/posts"
 
 export const metadata: Metadata = {
-  title: "Blog de Biotecnología y Ciencias en Chile | Biovity",
+  title: "Blog de Biotecnología y Ciencias en Chile",
   description:
     "Artículos y análisis sobre biotecnología, ciencias y el mercado laboral científico en Chile.",
   keywords: [

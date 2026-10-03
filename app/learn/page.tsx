@@ -7,7 +7,7 @@ import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
 
 export const metadata: Metadata = {
-  title: "Aprende | Biovity",
+  title: "Aprende bioinformática e IA para biotecnología",
   description:
     "Cápsulas de aprendizaje para el sector biocientífico. Aprende programación aplicada a biociencia y obtén certificados verificables.",
   keywords: ["aprendizaje", "bioinformática", "programación", "biociencia", "certificados"],

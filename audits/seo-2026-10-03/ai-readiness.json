@@ -1,0 +1,55 @@
+{
+  "view": "actions",
+  "report": {
+    "id": "ai-readiness",
+    "generatedAt": "2026-10-03T20:30:16.685Z",
+    "dataStatus": "complete"
+  },
+  "findings": {
+    "schemaVersion": 1,
+    "scope": "returned-report",
+    "coverage": {
+      "state": "unknown",
+      "detail": "The findings include every recognised item returned by this report; source acquisition completeness is not declared."
+    },
+    "counts": {
+      "total": 0,
+      "returned": 0,
+      "fixes": 0,
+      "reviews": 0,
+      "open": 0
+    },
+    "completion": {
+      "state": "not-required",
+      "instruction": "No returned finding needs completion accounting."
+    },
+    "verification": {
+      "requiredAfterChanges": true,
+      "instruction": "After edits, run each changed item's verification and rerun the originating report. A code change alone does not close a finding.",
+      "reportCheck": "Re-crawl at the same scope after a change and confirm the access or indexability signal resolved."
+    },
+    "sourcePaths": [
+      "topActions"
+    ],
+    "items": []
+  },
+  "retainedEvidence": {
+    "caveats": [
+      "This report deliberately has no aggregate readiness score. Google documents no separate technical requirements for its generative AI Search features.",
+      "llms.txt is treated as optional agent-discovery metadata, not a Google Search ranking or visibility factor.",
+      "Paragraph length and placement are observations only. Google does not require content chunking or special answer blocks for generative AI features.",
+      "Snippet controls reflect page-level publisher directives only. No detected restriction does not guarantee selection, visibility, or a displayed snippet.",
+      "robots.txt checks describe policy for the configured start URL only. They do not verify actual crawler requests or site-wide access."
+    ]
+  },
+  "outputBudget": {
+    "schemaVersion": 1,
+    "maxBytes": 98304,
+    "originalBytes": 1578,
+    "returnedBytes": 1811,
+    "truncated": false,
+    "omissions": [],
+    "omissionsTruncated": false,
+    "detail": "The complete structured report fits within the agent output budget."
+  }
+}

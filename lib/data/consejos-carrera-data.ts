@@ -19,13 +19,6 @@ import type {
   ConsejoStat,
 } from "@/lib/types/consejos-carrera"
 
-export const CONSEJOS_STATS: ConsejoStat[] = [
-  { value: "+45", label: "Guías y tutoriales especializados" },
-  { value: "92%", label: "Tasa de éxito en paso a la Industria" },
-  { value: "10k+", label: "Científicos capacitados en LATAM" },
-  { value: "100%", label: "Contenido redactado por mentores del sector" },
-]
-
 export const CONSEJOS_CATEGORIAS: ConsejoCategoria[] = [
   {
     id: "todos",
@@ -202,7 +195,7 @@ export const CONSEJOS_HERRAMIENTAS: ConsejoHerramienta[] = [
     id: "plantilla-cv-ats",
     title: "Plantilla CV Científico ATS-Friendly (Word / PDF)",
     description:
-      "Estructura probada en más de 200 selecciones exitosas en empresas de biotecnología, pharma y química analítica.",
+      "Plantilla para organizar experiencia, competencias y proyectos en biotecnología, pharma y química analítica.",
     tag: "Plantilla Descargable",
     buttonText: "Ver Plantilla CV",
     popular: true,
@@ -253,4 +246,14 @@ export const CONSEJOS_FAQS: ConsejoFAQItem[] = [
     answer:
       "Un CV académico (Curriculum Vitae) suele ser extenso (3-10 páginas), enfocado en becas, publicaciones, congresos y docencia. Un CV para empresas (Resume) debe concentrarse en 1 ó 2 páginas con enfoque en resultados concretos, resolución de problemas y competencias requeridas por la oferta de trabajo.",
   },
+]
+
+export const CONSEJOS_STATS: ConsejoStat[] = [
+  { value: String(CONSEJOS_ARTICULOS.length), label: "Guías de carrera" },
+  {
+    value: String(CONSEJOS_CATEGORIAS.filter((category) => category.id !== "todos").length),
+    label: "Categorías para explorar",
+  },
+  { value: "CV", label: "Preparación para filtros ATS" },
+  { value: "I+D", label: "Entrevistas técnicas e industria" },
 ]
