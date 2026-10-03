@@ -13,6 +13,8 @@
  * ```
  */
 
+// Admin waitlist schemas
+export * from "./admin-waitlist"
 // Application schemas
 export * from "./application"
 // Authentication schemas

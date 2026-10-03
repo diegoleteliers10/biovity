@@ -19,9 +19,10 @@ import {
 } from "@/components/ui/table"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { cn, formatFechaRelativa } from "@/lib/utils"
+import { MAX_INVITE_RECIPIENTS } from "@/lib/validations/admin-waitlist"
 
 type WaitlistEntry = {
-  id: number
+  id: string
   email: string
   role: string
   createdAt: string
@@ -29,8 +30,17 @@ type WaitlistEntry = {
 }
 
 type InviteResult = {
-  id: number
+  id: string
   status: "sent" | "skipped" | "failed"
+}
+
+type InviteResponse = {
+  results: InviteResult[]
+  scope: "all" | "selected"
+  /** Entries still waiting for an invite when the request started */
+  pendingBefore: number
+  /** Entries this batch did not reach. Above zero means `all` was capped. */
+  remaining: number
 }
 
 type State = {
@@ -41,8 +51,8 @@ type State = {
   inputSearch: string
   roleFilter: string
   page: number
-  selectedIds: Set<number>
-  sendingIds: Set<number>
+  selectedIds: Set<string>
+  sendingIds: Set<string>
   sendingAll: boolean
   refreshNonce: number
 }
@@ -54,13 +64,13 @@ type Action =
   | { type: "SET_INPUT_SEARCH"; value: string }
   | { type: "SET_ROLE_FILTER"; value: string }
   | { type: "SET_PAGE"; page: number }
-  | { type: "REMOVE_ITEM"; id: number }
+  | { type: "REMOVE_ITEM"; id: string }
   | { type: "RESTORE_ITEM"; item: WaitlistEntry }
-  | { type: "TOGGLE_SELECTED"; id: number }
-  | { type: "TOGGLE_SELECT_ALL"; ids: number[] }
+  | { type: "TOGGLE_SELECTED"; id: string }
+  | { type: "TOGGLE_SELECT_ALL"; ids: string[] }
   | { type: "CLEAR_SELECTED" }
-  | { type: "REMOVE_ITEMS"; ids: number[] }
-  | { type: "SET_SENDING"; ids: number[] }
+  | { type: "REMOVE_ITEMS"; ids: string[] }
+  | { type: "SET_SENDING"; ids: string[] }
   | { type: "CLEAR_SENDING" }
   | { type: "SET_SENDING_ALL"; value: boolean }
   | { type: "REFRESH" }
@@ -68,7 +78,7 @@ type Action =
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "SET_ITEMS": {
-      const preservedSelected = new Set<number>()
+      const preservedSelected = new Set<string>()
       for (const id of state.selectedIds) {
         if (action.items.some((i) => i.id === id)) preservedSelected.add(id)
       }
@@ -140,7 +150,7 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-function withoutId(set: Set<number>, id: number): Set<number> {
+function withoutId(set: Set<string>, id: string): Set<string> {
   const next = new Set(set)
   next.delete(id)
   return next
@@ -298,13 +308,13 @@ export function AdminWaitlistContent() {
     }, UNDO_TIMEOUT_MS)
   }, [state.selectedIds, state.items])
 
-  const handleSendInvites = useCallback(async (ids: number[] | "all") => {
+  const handleSendInvites = useCallback(async (ids: string[] | "all") => {
     const sendAll = ids === "all"
     if (
       (sendAll || ids.length > 1) &&
       !window.confirm(
         sendAll
-          ? "¿Enviar el correo de acceso a todas las personas de la lista de espera que aún no lo han recibido?"
+          ? `¿Enviar el correo de acceso a las personas de la lista de espera que aún no lo han recibido? Se procesan en lotes de hasta ${MAX_INVITE_RECIPIENTS}.`
           : `¿Enviar el correo de acceso a los ${ids.length} seleccionados?`
       )
     ) {
@@ -318,13 +328,15 @@ export function AdminWaitlistContent() {
       const res = await fetch("/api/admin/waitlist/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sendAll ? { all: true } : { ids }),
+        body: JSON.stringify(sendAll ? { scope: "all" } : { scope: "selected", ids }),
       })
       const data = await res.json().catch(() => null)
       if (!res.ok) {
         throw new Error((data as { error?: string })?.error ?? "Error al enviar correos")
       }
-      const results = ((data as { results?: InviteResult[] })?.results ?? []) as InviteResult[]
+      const payload = data as Partial<InviteResponse> | null
+      const results = payload?.results ?? []
+      const remaining = payload?.remaining ?? 0
       const sent = results.filter((r) => r.status === "sent").length
       const skipped = results.filter((r) => r.status === "skipped").length
       const failed = results.filter((r) => r.status === "failed").length
@@ -335,6 +347,12 @@ export function AdminWaitlistContent() {
         toast.success(`Correo(s) de acceso enviado(s) a ${sent} usuario(s)`)
       } else {
         toast.info("Todos los seleccionados ya fueron invitados")
+      }
+
+      // `all` sends one capped batch, so say what is left instead of implying
+      // the whole table was reached.
+      if (sendAll && remaining > 0) {
+        toast.warning(`Quedan ${remaining} entrada(s) sin invitar. Vuelve a enviar para continuar.`)
       }
       dispatch({ type: "REFRESH" })
     } catch (err) {

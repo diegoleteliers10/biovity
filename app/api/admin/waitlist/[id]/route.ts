@@ -3,24 +3,26 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"
+import { adminWaitlistEntryParamsSchema } from "@/lib/validations/admin-waitlist"
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth.api.getSession({ headers: _request.headers })
+  const session = await auth.api.getSession({ headers: request.headers })
   if (!isAdminSession(session)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 })
   }
 
-  const { id } = await params
-  const numericId = Number.parseInt(id, 10)
-  if (Number.isNaN(numericId)) {
-    return NextResponse.json({ error: "ID invalido" }, { status: 400 })
+  const entry = adminWaitlistEntryParamsSchema.safeParse(await params)
+
+  if (!entry.success) {
+    const reasons = entry.error.issues.map((issue) => issue.message).join(". ")
+    return NextResponse.json({ error: reasons }, { status: 400 })
   }
 
   const result = await R.tryPromise({
-    try: () => pool.query("DELETE FROM waitlist WHERE id = $1", [numericId]),
+    try: () => pool.query("DELETE FROM waitlist WHERE id = $1", [entry.data.id]),
     catch: (cause) => new DbError({ operation: "delete_waitlist_entry", cause }),
   })
 

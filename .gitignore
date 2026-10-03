@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# video project (separate Remotion workspace, own node_modules)
+/biovity-video/
+/public/biovity-empresas.mp4
+
 # waitlist data (contains user emails)
 /data/
 
