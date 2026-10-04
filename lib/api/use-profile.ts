@@ -8,6 +8,7 @@ import {
   type CreateResumeInput,
   createResume,
   getResumeByUserId,
+  type Resume,
   type UpdateResumeInput,
   updateResume,
   uploadResumeCv,
@@ -16,6 +17,7 @@ import {
   formatUserLocation,
   getUser,
   type UpdateUserInput,
+  type User,
   type UserLocation,
   updateUser,
   uploadAvatar,
@@ -30,9 +32,9 @@ export function useUser(id: string | undefined) {
   return useQuery({
     queryKey: profileKeys.user(id ?? ""),
     queryFn: async () => {
-      if (!id) throw new Error("User ID required")
+      if (!id) return Promise.reject(new Error("User ID required"))
       const result = await getUser(id)
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(id),
@@ -43,9 +45,9 @@ export function useResumeByUser(userId: string | undefined) {
   return useQuery({
     queryKey: profileKeys.resume(userId ?? ""),
     queryFn: async () => {
-      if (!userId) throw new Error("User ID required")
+      if (!userId) return Promise.reject(new Error("User ID required"))
       const result = await getResumeByUserId(userId)
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(userId),
@@ -57,11 +59,12 @@ export function useUpdateUserMutation(userId: string) {
   return useMutation({
     mutationFn: async (input: UpdateUserInput) => {
       const result = await updateUser(userId, input)
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
+    onSuccess: async (data) => {
+      if (data) queryClient.setQueryData(profileKeys.user(userId), data)
+      await queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
     },
   })
 }
@@ -71,11 +74,12 @@ export function useCreateResumeMutation(userId: string) {
   return useMutation({
     mutationFn: async (input: Omit<CreateResumeInput, "userId">) => {
       const result = await createResume({ ...input, userId })
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+    onSuccess: async (data) => {
+      if (data) queryClient.setQueryData(profileKeys.resume(userId), data)
+      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }
@@ -85,11 +89,12 @@ export function useUpdateResumeMutation(resumeId: string, userId: string) {
   return useMutation({
     mutationFn: async (input: UpdateResumeInput) => {
       const result = await updateResume(resumeId, input)
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+    onSuccess: async (data) => {
+      if (data) queryClient.setQueryData(profileKeys.resume(userId), data)
+      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }
@@ -99,11 +104,12 @@ export function useUploadResumeCvMutation(resumeId: string, userId: string) {
   return useMutation({
     mutationFn: async (file: File) => {
       const result = await uploadResumeCv(resumeId, file)
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+    onSuccess: async (data) => {
+      if (data) queryClient.setQueryData(profileKeys.resume(userId), data)
+      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }
@@ -113,13 +119,16 @@ export function useUploadAvatarMutation(userId: string) {
   return useMutation({
     mutationFn: async (file: File) => {
       const uploadResult = await uploadAvatar(file)
-      if (!R.isOk(uploadResult)) throw new Error(getResultErrorMessage(uploadResult.error))
+      if (!R.isOk(uploadResult))
+        return Promise.reject(new Error(getResultErrorMessage(uploadResult.error)))
       const updateResult = await updateUser(userId, { avatar: uploadResult.value })
-      if (!R.isOk(updateResult)) throw new Error(getResultErrorMessage(updateResult.error))
+      if (!R.isOk(updateResult))
+        return Promise.reject(new Error(getResultErrorMessage(updateResult.error)))
       return updateResult.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
+    onSuccess: async (data) => {
+      if (data) queryClient.setQueryData(profileKeys.user(userId), data)
+      await queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
     },
   })
 }
@@ -159,11 +168,14 @@ export function useDeleteAvatarMutation(userId: string) {
   return useMutation({
     mutationFn: async () => {
       const result = await deleteAvatar()
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
+    onSuccess: async () => {
+      queryClient.setQueryData<User>(profileKeys.user(userId), (old) =>
+        old ? { ...old, avatar: "" } : old
+      )
+      await queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
     },
   })
 }
@@ -173,11 +185,14 @@ export function useDeleteCvMutation(resumeId: string, userId: string) {
   return useMutation({
     mutationFn: async (cvPath: string) => {
       const result = await deleteCv(resumeId, cvPath)
-      if (!R.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+    onSuccess: async () => {
+      queryClient.setQueryData<Resume | null>(profileKeys.resume(userId), (old) =>
+        old ? { ...old, cvFile: null } : old
+      )
+      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }

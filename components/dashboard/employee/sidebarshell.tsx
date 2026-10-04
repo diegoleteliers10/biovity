@@ -23,7 +23,7 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
   const userId = session?.user?.id
   const { data: user } = useUser(userId)
   const { data: resume } = useResumeByUser(userId)
-  useNotificationsRealtime(userId)
+  useNotificationsRealtime(userId, session?.session.id)
 
   const { data: userMetrics } = useUserMetrics(userId, "month")
   const { data: savedJobs } = useSavedJobsByUser(userId, { page: 1, limit: 1 })

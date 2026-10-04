@@ -1,57 +1,26 @@
 "use client"
 
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useQueryState } from "nuqs"
 import type * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useAutoScrollToBottom } from "@/hooks/use-auto-scroll-to-bottom"
 import { getChatById } from "@/lib/api/chats"
-import { parseRealtimeMessage, uploadMessageAttachment } from "@/lib/api/messages"
-import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
+import { uploadMessageAttachment } from "@/lib/api/messages"
+import { useChatsByRecruiter } from "@/lib/api/use-chats"
 import {
   useMarkChatAsReadMutation,
   useMessages,
   useSendMessageMutation,
 } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
-import { useRealtimeUserTopic } from "@/lib/api/use-realtime-topics"
 import { getResultErrorMessage } from "@/lib/result"
-import { createClientBrowser } from "@/lib/supabase-browser"
 import { formatDateChilean } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { ChatListPanel } from "./ChatListPanel"
 import { ChatView } from "./ChatView"
 import { MessagesEmptyState } from "./MessagesEmptyState"
-
-function useChatMessageRealtime(
-  chatIdFromUrl: string,
-  userId: string | undefined,
-  queryClient: ReturnType<typeof useQueryClient>
-) {
-  const topic = useRealtimeUserTopic(userId)
-
-  useEffect(() => {
-    if (!chatIdFromUrl || !topic) return
-
-    const supabase = createClientBrowser()
-    if (!supabase) return
-
-    const channel = supabase
-      .channel(topic, { config: { private: true } })
-      .on("broadcast", { event: "message_insert" }, (payload) => {
-        const message = parseRealtimeMessage(payload)
-        if (message?.chatId === chatIdFromUrl) {
-          queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
-        }
-      })
-      .subscribe()
-
-    return () => {
-      channel.unsubscribe()
-    }
-  }, [chatIdFromUrl, queryClient, topic])
-}
 
 export function OrganizationMessagesContent() {
   const [mounted, setMounted] = useState(false)
@@ -67,7 +36,6 @@ export function OrganizationMessagesContent() {
   const recruiterId = session?.user?.id ?? undefined
 
   const { data: chats = [] } = useChatsByRecruiter(recruiterId)
-  useChatListRealtime(chats, recruiterId)
 
   const { data: chatFromUrl } = useQuery({
     queryKey: ["chat", "fromUrl", chatIdFromUrl],
@@ -82,10 +50,6 @@ export function OrganizationMessagesContent() {
     },
     enabled: Boolean(chatIdFromUrl),
   })
-
-  const queryClient = useQueryClient()
-
-  useChatMessageRealtime(chatIdFromUrl, recruiterId, queryClient)
 
   const [mobileView, setMobileView] = useState<"list" | "chat">(chatIdFromUrl ? "chat" : "list")
 

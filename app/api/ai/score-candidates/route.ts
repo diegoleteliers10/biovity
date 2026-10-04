@@ -77,6 +77,7 @@ export async function GET(request: NextRequest) {
 
   const scoresResult = await listLatestCandidateAssessments(access.job.id)
   if (scoresResult.isErr()) {
+    console.error("[Jev] Database operation failed", { operation: scoresResult.error.operation })
     return Response.json({ error: "No se pudieron cargar los análisis" }, { status: 500 })
   }
 
@@ -176,6 +177,7 @@ export async function POST(request: NextRequest) {
 
   const reservation = await enqueueCandidateAssessments(access.organizationId, assessments)
   if (reservation.isErr()) {
+    console.error("[Jev] Database operation failed", { operation: reservation.error.operation })
     return Response.json({ error: "No se pudieron guardar los análisis" }, { status: 500 })
   }
   if (!reservation.value.accepted) {

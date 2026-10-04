@@ -46,7 +46,7 @@ const DEFAULT_DASHBOARD_METRICS = {
 
 export function useOrgMetrics(organizationId: string | undefined) {
   return useQuery({
-    queryKey: orgDashboardKeys.metrics,
+    queryKey: [...orgDashboardKeys.metrics, organizationId],
     queryFn: async () => {
       if (!organizationId) throw new Error("organizationId is required")
       const result = await getOrganizationMetrics(organizationId, { period: "month" })
@@ -190,7 +190,7 @@ export function getMetricsCards(
 
 export function useOrgRecentApplications(organizationId: string | undefined) {
   return useQuery({
-    queryKey: orgDashboardKeys.recentApplications,
+    queryKey: [...orgDashboardKeys.recentApplications, organizationId],
     queryFn: async () => {
       if (!organizationId) throw new Error("Organization ID required")
 
@@ -244,7 +244,7 @@ export function useOrgRecentMessages() {
 
 export function useOrgUpcomingInterviews(userId: string | undefined) {
   return useQuery({
-    queryKey: orgDashboardKeys.upcomingInterviews,
+    queryKey: [...orgDashboardKeys.upcomingInterviews, userId],
     queryFn: async () => {
       const now = new Date().toISOString()
       const result = await getEvents({

@@ -36,9 +36,10 @@ export function useApplicationsByJob(jobId: string | undefined) {
   return useQuery({
     queryKey: applicationsKeys.byJob(jobId ?? ""),
     queryFn: async () => {
-      if (!jobId) throw new Error("Job ID required")
+      if (!jobId) return Promise.reject(new Error("Job ID required"))
       const result = await getApplicationsByJob(jobId, { limit: 100 })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(jobId),
@@ -49,9 +50,10 @@ export function useApplicationsByCandidate(candidateId: string | undefined) {
   return useQuery({
     queryKey: applicationsKeys.byCandidate(candidateId ?? ""),
     queryFn: async () => {
-      if (!candidateId) throw new Error("Candidate ID required")
+      if (!candidateId) return Promise.reject(new Error("Candidate ID required"))
       const result = await getApplicationsByCandidate(candidateId, { limit: 100 })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(candidateId),
@@ -72,15 +74,21 @@ export function useCreateApplicationMutation(candidateId: string | undefined) {
       answers?: { questionId: string; value: string }[]
     }) => {
       if (!candidateId?.trim()) {
-        throw new Error("No se pudo identificar al candidato. Vuelve a iniciar sesión.")
+        return Promise.reject(
+          new Error("No se pudo identificar al candidato. Vuelve a iniciar sesión.")
+        )
       }
       const result = await createApplication({ ...input, candidateId })
-      if (!Result.isOk(result)) throw new Error(getCreateApplicationErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getCreateApplicationErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
+    onSuccess: async (data) => {
       if (!candidateId?.trim()) return
-      queryClient.invalidateQueries({ queryKey: applicationsKeys.byCandidate(candidateId) })
+      queryClient.setQueryData<Application[]>(applicationsKeys.byCandidate(candidateId), (old) =>
+        old ? [data, ...old.filter((app) => app.id !== data.id)] : [data]
+      )
+      await queryClient.invalidateQueries({ queryKey: ["applications"] })
     },
   })
 }
@@ -90,16 +98,18 @@ export function useUpdateApplicationStatusMutation(jobId: string) {
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: ApplicationStatus }) => {
       const result = await updateApplicationStatus(id, status)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: (updatedApp) => {
+    onSuccess: async (updatedApp) => {
       queryClient.setQueryData<Application[]>(applicationsKeys.byJob(jobId), (old) => {
         if (!old) return old
         return old.map((app) =>
           app.id === updatedApp.id ? { ...app, status: updatedApp.status } : app
         )
       })
+      await queryClient.invalidateQueries({ queryKey: ["applications"] })
     },
   })
 }
@@ -116,13 +126,14 @@ export function useApplicationsByOrganization(
       params?.includeAnswers ? "with-answers" : "without-answers",
     ],
     queryFn: async () => {
-      if (!organizationId) throw new Error("Organization ID required")
+      if (!organizationId) return Promise.reject(new Error("Organization ID required"))
       const result = await getApplicationsByOrganization(organizationId, {
         page: params?.page,
         limit: params?.limit ?? 100,
         includeAnswers: params?.includeAnswers,
       })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(organizationId),

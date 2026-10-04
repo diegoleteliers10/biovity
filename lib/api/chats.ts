@@ -1,4 +1,5 @@
 import { Result as R, type Result } from "better-result"
+import { z } from "zod"
 import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
@@ -20,6 +21,30 @@ export type Chat = {
   isArchived?: boolean
 }
 
+const ChatResponseSchema = z.object({
+  id: z.string(),
+  recruiterId: z.string(),
+  professionalId: z.string(),
+  lastMessage: z.string().nullable().default(null),
+  unreadCountRecruiter: z.number().default(0),
+  unreadCountProfessional: z.number().default(0),
+  createdAt: z.string(),
+  updatedAt: z.string().optional(),
+  isPinned: z.boolean().optional(),
+  isArchived: z.boolean().optional(),
+})
+
+export function parseChatResponse(payload: unknown): Chat | null {
+  let value = payload
+  for (let depth = 0; depth < 2; depth++) {
+    if (value && typeof value === "object" && "data" in value) value = value.data
+  }
+  const parsed = ChatResponseSchema.safeParse(value)
+  return parsed.success
+    ? { ...parsed.data, updatedAt: parsed.data.updatedAt ?? parsed.data.createdAt }
+    : null
+}
+
 function extractChats(payload: unknown): Chat[] {
   if (Array.isArray(payload)) return payload as Chat[]
   if (!payload || typeof payload !== "object") return []
@@ -37,11 +62,14 @@ function extractChats(payload: unknown): Chat[] {
 }
 
 export async function getChatsByRecruiter(
-  recruiterId: string
+  recruiterId: string,
+  requestHeaders?: Headers
 ): Promise<Result<Chat[], ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/chats/recruiter/${recruiterId}`
 
-  const result = await fetchJson<unknown>(url)
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders)
+    : await fetchJson<unknown>(url)
 
   if (result.isErr()) return R.err(result.error)
 
@@ -110,5 +138,10 @@ export async function createOrFindChat(
 export async function getChatById(chatId: string): Promise<Result<Chat, ApiError | NetworkError>> {
   const url = `${API_BASE}/api/v1/chats/${chatId}`
 
-  return fetchJson<Chat>(url)
+  const result = await fetchJson<unknown>(url)
+  if (result.isErr()) return R.err(result.error)
+  const chat = parseChatResponse(result.value)
+  return chat
+    ? R.ok(chat)
+    : R.err(new ApiError({ status: 502, message: "Respuesta de chat inválida" }))
 }

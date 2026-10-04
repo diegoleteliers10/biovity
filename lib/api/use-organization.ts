@@ -18,9 +18,10 @@ export function useOrganization(id: string | undefined) {
   return useQuery({
     queryKey: organizationKeys.detail(id ?? ""),
     queryFn: async () => {
-      if (!id) throw new Error("Organization ID required")
+      if (!id) return Promise.reject(new Error("Organization ID required"))
       const result = await getOrganization(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(id),
@@ -32,11 +33,14 @@ export function useUpdateOrganizationMutation(organizationId: string) {
   return useMutation({
     mutationFn: async (input: UpdateOrganizationInput) => {
       const result = await updateOrganization(organizationId, input)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: organizationKeys.detail(organizationId) })
+      queryClient.invalidateQueries({ queryKey: ["org"] })
+      queryClient.invalidateQueries({ queryKey: ["user"] })
     },
   })
 }
@@ -46,13 +50,17 @@ export function useUploadOrganizationLogoMutation(organizationId: string) {
   return useMutation({
     mutationFn: async (file: File) => {
       const uploadResult = await uploadOrganizationLogo(file)
-      if (!Result.isOk(uploadResult)) throw new Error(getResultErrorMessage(uploadResult.error))
+      if (!Result.isOk(uploadResult))
+        return Promise.reject(new Error(getResultErrorMessage(uploadResult.error)))
       const updateResult = await updateOrganization(organizationId, { logo: uploadResult.value })
-      if (!Result.isOk(updateResult)) throw new Error(getResultErrorMessage(updateResult.error))
+      if (!Result.isOk(updateResult))
+        return Promise.reject(new Error(getResultErrorMessage(updateResult.error)))
       return updateResult.value
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: organizationKeys.detail(organizationId) })
+      queryClient.invalidateQueries({ queryKey: ["org"] })
+      queryClient.invalidateQueries({ queryKey: ["user"] })
     },
   })
 }

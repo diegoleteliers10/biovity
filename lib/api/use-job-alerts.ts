@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import type { JobAlert } from "@/lib/types/job-alert"
 import type { CreateJobAlertPayload } from "./job-alerts"
 import { createJobAlert, deleteJobAlert, getJobAlerts } from "./job-alerts"
 
@@ -12,14 +13,10 @@ export function useJobAlerts(userId: string | undefined) {
   return useQuery({
     queryKey: userId ? jobAlertsKeys.byUser(userId) : (["job-alerts", "user", "disabled"] as const),
     queryFn: async () => {
-      if (!userId) throw new Error("User ID required")
+      if (!userId) return Promise.reject(new Error("User ID required"))
       const result = await getJobAlerts(userId)
-      return result.match({
-        ok: (data) => data,
-        err: (e) => {
-          throw new Error(e.message)
-        },
-      })
+      if (result.isErr()) return Promise.reject(new Error(result.error.message))
+      return result.value
     },
     enabled: Boolean(userId),
     staleTime: 30 * 1000,
@@ -32,15 +29,14 @@ export function useCreateJobAlert() {
   return useMutation({
     mutationFn: async (payload: CreateJobAlertPayload) => {
       const result = await createJobAlert(payload)
-      return result.match({
-        ok: (data) => data,
-        err: (e) => {
-          throw new Error(e.message)
-        },
-      })
+      if (result.isErr()) return Promise.reject(new Error(result.error.message))
+      return result.value
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
+    onSuccess: async (data, variables) => {
+      queryClient.setQueryData<JobAlert[]>(jobAlertsKeys.byUser(variables.userId), (old) =>
+        old ? [data, ...old.filter((alert) => alert.id !== data.id)] : [data]
+      )
+      await queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
     },
   })
 }
@@ -51,15 +47,14 @@ export function useDeleteJobAlert() {
   return useMutation({
     mutationFn: async ({ id, userId }: { id: string; userId: string }) => {
       const result = await deleteJobAlert(id, userId)
-      return result.match({
-        ok: (data) => data,
-        err: (e) => {
-          throw new Error(e.message)
-        },
-      })
+      if (result.isErr()) return Promise.reject(new Error(result.error.message))
+      return result.value
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
+    onSuccess: async (_, variables) => {
+      queryClient.setQueryData<JobAlert[]>(jobAlertsKeys.byUser(variables.userId), (old) =>
+        old?.filter((alert) => alert.id !== variables.id)
+      )
+      await queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
     },
   })
 }

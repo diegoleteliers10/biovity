@@ -75,7 +75,8 @@ export type GetMessagesResponse = {
 
 export async function getMessagesByChatId(
   chatId: string,
-  params?: GetMessagesParams
+  params?: GetMessagesParams,
+  requestHeaders?: Headers
 ): Promise<Result<GetMessagesResponse, ApiError | NetworkError>> {
   const base = getBaseUrl()
   const searchParams = new URLSearchParams()
@@ -84,9 +85,14 @@ export async function getMessagesByChatId(
   const query = searchParams.toString()
   const url = `${base}/api/messages/${chatId}${query ? `?${query}` : ""}`
 
-  const result = await fetchJson<{ error?: string } & GetMessagesResponse>(url, {
-    credentials: "include",
-  })
+  const init: RequestInit = { credentials: "include" }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ error?: string } & GetMessagesResponse>(
+        url,
+        requestHeaders,
+        init
+      )
+    : await fetchJson<{ error?: string } & GetMessagesResponse>(url, init)
 
   if (result.isErr()) return R.err(result.error)
 

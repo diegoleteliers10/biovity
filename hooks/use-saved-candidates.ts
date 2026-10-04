@@ -1,8 +1,13 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Result as R } from "better-result"
-import { useCallback } from "react"
+import type { Result } from "better-result"
+
+async function mutationValue<T, E>(operation: Promise<Result<T, E>>): Promise<T> {
+  const result = await operation
+  return result.isOk() ? result.value : Promise.reject(result.error)
+}
+
 import {
   getSavedCandidates,
   isCandidateSaved,
@@ -18,7 +23,7 @@ export function useSavedCandidates(organizationId?: string) {
     queryFn: async () => {
       if (!organizationId) return []
       const result = await getSavedCandidates(organizationId)
-      return R.isOk(result) ? result.value : []
+      return result.isOk() ? result.value : Promise.reject(result.error)
     },
     enabled: Boolean(organizationId),
   })
@@ -30,7 +35,7 @@ export function useIsCandidateSaved(organizationId?: string, candidateId?: strin
     queryFn: async () => {
       if (!organizationId || !candidateId) return false
       const result = await isCandidateSaved(organizationId, candidateId)
-      return R.isOk(result) ? result.value : false
+      return result.isOk() ? result.value : Promise.reject(result.error)
     },
     enabled: Boolean(organizationId && candidateId),
   })
@@ -40,7 +45,7 @@ export function useSaveCandidateMutation(organizationId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (candidateId: string) => saveCandidate(organizationId, candidateId),
+    mutationFn: (candidateId: string) => mutationValue(saveCandidate(organizationId, candidateId)),
     onMutate: async (candidateId) => {
       await queryClient.cancelQueries({
         queryKey: [...savedCandidatesKey, "check", organizationId, candidateId],
@@ -55,12 +60,17 @@ export function useSaveCandidateMutation(organizationId: string) {
       return { previous }
     },
     onError: (_err, candidateId, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(
-          [...savedCandidatesKey, "check", organizationId, candidateId],
-          context.previous
-        )
+      if (context?.previous === undefined) {
+        queryClient.removeQueries({
+          queryKey: [...savedCandidatesKey, "check", organizationId, candidateId],
+          exact: true,
+        })
+        return
       }
+      queryClient.setQueryData(
+        [...savedCandidatesKey, "check", organizationId, candidateId],
+        context.previous
+      )
     },
     onSettled: (_data, _err, candidateId) => {
       queryClient.invalidateQueries({ queryKey: [...savedCandidatesKey, organizationId] })
@@ -75,7 +85,8 @@ export function useUnsaveCandidateMutation(organizationId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (candidateId: string) => unsaveCandidate(organizationId, candidateId),
+    mutationFn: (candidateId: string) =>
+      mutationValue(unsaveCandidate(organizationId, candidateId)),
     onMutate: async (candidateId) => {
       await queryClient.cancelQueries({
         queryKey: [...savedCandidatesKey, "check", organizationId, candidateId],
@@ -90,12 +101,17 @@ export function useUnsaveCandidateMutation(organizationId: string) {
       return { previous }
     },
     onError: (_err, candidateId, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(
-          [...savedCandidatesKey, "check", organizationId, candidateId],
-          context.previous
-        )
+      if (context?.previous === undefined) {
+        queryClient.removeQueries({
+          queryKey: [...savedCandidatesKey, "check", organizationId, candidateId],
+          exact: true,
+        })
+        return
       }
+      queryClient.setQueryData(
+        [...savedCandidatesKey, "check", organizationId, candidateId],
+        context.previous
+      )
     },
     onSettled: (_data, _err, candidateId) => {
       queryClient.invalidateQueries({ queryKey: [...savedCandidatesKey, organizationId] })

@@ -1,7 +1,13 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Result as R } from "better-result"
+import type { Result } from "better-result"
+
+async function mutationValue<T, E>(operation: Promise<Result<T, E>>): Promise<T> {
+  const result = await operation
+  return result.isOk() ? result.value : Promise.reject(result.error)
+}
+
 import {
   assignTag,
   createTag,
@@ -19,7 +25,7 @@ export function useCandidateTags(organizationId?: string) {
     queryFn: async () => {
       if (!organizationId) return []
       const result = await getTags(organizationId)
-      return R.isOk(result) ? result.value : []
+      return result.isOk() ? result.value : Promise.reject(result.error)
     },
     enabled: Boolean(organizationId),
   })
@@ -31,7 +37,7 @@ export function useCandidateTagList(candidateId?: string, organizationId?: strin
     queryFn: async () => {
       if (!candidateId || !organizationId) return []
       const result = await getCandidateTags(candidateId, organizationId)
-      return R.isOk(result) ? result.value : []
+      return result.isOk() ? result.value : Promise.reject(result.error)
     },
     enabled: Boolean(candidateId && organizationId),
   })
@@ -42,20 +48,20 @@ export function useCreateTagMutation(organizationId: string) {
 
   return useMutation({
     mutationFn: ({ name, color }: { name: string; color?: string }) =>
-      createTag(organizationId, name, color),
+      mutationValue(createTag(organizationId, name, color)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...tagsKey, organizationId] })
+      queryClient.invalidateQueries({ queryKey: tagsKey })
     },
   })
 }
 
-export function useDeleteTagMutation(organizationId: string) {
+export function useDeleteTagMutation(_organizationId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (tagId: string) => deleteTag(tagId),
+    mutationFn: (tagId: string) => mutationValue(deleteTag(tagId)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...tagsKey, organizationId] })
+      queryClient.invalidateQueries({ queryKey: tagsKey })
     },
   })
 }
@@ -65,7 +71,7 @@ export function useAssignTagMutation(organizationId: string) {
 
   return useMutation({
     mutationFn: ({ tagId, candidateId }: { tagId: string; candidateId: string }) =>
-      assignTag(tagId, candidateId),
+      mutationValue(assignTag(tagId, candidateId)),
     onMutate: async ({ candidateId }) => {
       await queryClient.cancelQueries({
         queryKey: [...tagsKey, "candidate", candidateId, organizationId],
@@ -82,7 +88,7 @@ export function useAssignTagMutation(organizationId: string) {
       queryClient.invalidateQueries({
         queryKey: [...tagsKey, "candidate", candidateId, organizationId],
       })
-      queryClient.invalidateQueries({ queryKey: [...tagsKey, organizationId] })
+      queryClient.invalidateQueries({ queryKey: tagsKey })
     },
   })
 }
@@ -92,7 +98,7 @@ export function useUnassignTagMutation(organizationId: string) {
 
   return useMutation({
     mutationFn: ({ tagId, candidateId }: { tagId: string; candidateId: string }) =>
-      unassignTag(tagId, candidateId),
+      mutationValue(unassignTag(tagId, candidateId)),
     onMutate: async ({ candidateId }) => {
       await queryClient.cancelQueries({
         queryKey: [...tagsKey, "candidate", candidateId, organizationId],
@@ -109,7 +115,7 @@ export function useUnassignTagMutation(organizationId: string) {
       queryClient.invalidateQueries({
         queryKey: [...tagsKey, "candidate", candidateId, organizationId],
       })
-      queryClient.invalidateQueries({ queryKey: [...tagsKey, organizationId] })
+      queryClient.invalidateQueries({ queryKey: tagsKey })
     },
   })
 }

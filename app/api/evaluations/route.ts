@@ -1,6 +1,8 @@
+import { Result } from "better-result"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { getServerSession } from "@/lib/auth"
+import { authorizeResource } from "@/lib/auth/resource-access"
 import { pool } from "@/lib/db"
 
 const evaluationSchema = z.object({
@@ -19,9 +21,13 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const applicationId = searchParams.get("applicationId")
 
-  if (!applicationId) {
+  if (!applicationId || !z.string().uuid().safeParse(applicationId).success) {
     return NextResponse.json({ error: "applicationId required" }, { status: 400 })
   }
+
+  const access = await authorizeResource({ kind: "application", id: applicationId }, "read")
+  if (access.isErr())
+    return NextResponse.json({ error: access.error.message }, { status: access.error.status })
 
   const result = await pool.query(
     `SELECT ae.*, u.name as evaluator_name
@@ -41,7 +47,12 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 })
   }
 
-  const body = await request.json()
+  const bodyResult = await Result.tryPromise({
+    try: () => request.json(),
+    catch: () => new Error("Invalid JSON"),
+  })
+  if (bodyResult.isErr()) return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 })
+  const body = bodyResult.value
   const parsed = evaluationSchema.partial().safeParse(body)
 
   if (!parsed.success) {
@@ -55,6 +66,10 @@ export async function PATCH(request: Request) {
   if (!applicationId || !rating) {
     return NextResponse.json({ error: "applicationId and rating required" }, { status: 400 })
   }
+
+  const access = await authorizeResource({ kind: "application", id: applicationId }, "recruit")
+  if (access.isErr())
+    return NextResponse.json({ error: access.error.message }, { status: access.error.status })
 
   const result = await pool.query(
     `INSERT INTO application_evaluation (application_id, evaluator_id, rating, notes, skills_assessment)

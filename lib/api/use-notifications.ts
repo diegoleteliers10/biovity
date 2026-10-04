@@ -3,11 +3,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useCallback, useSyncExternalStore } from "react"
 import { toast } from "sonner"
-import { getResultErrorMessage } from "@/lib/result"
+import { applyDashboardEvent, reconcileDashboardEvents } from "@/lib/realtime/dashboard-events"
+import { subscribeUserChannel, userChannelStatus } from "@/lib/realtime/user-channel"
 import { createClientBrowser } from "@/lib/supabase-browser"
-import { parseRealtimeMessage } from "./messages"
 import {
   getNotifications,
   markAllNotificationsRead,
@@ -26,12 +26,12 @@ export function useNotifications(userId: string | undefined) {
     queryKey: notificationsKeys.byUser(userId),
     queryFn: async () => {
       const result = await getNotifications()
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     refetchInterval: 30_000,
     refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    refetchOnMount: "always",
     enabled: Boolean(userId),
   })
 }
@@ -41,7 +41,7 @@ export function useMarkNotificationRead(userId: string | undefined) {
   return useMutation({
     mutationFn: async (id: string) => {
       const result = await markNotificationRead(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     onSuccess: (_data, id) => {
@@ -49,7 +49,10 @@ export function useMarkNotificationRead(userId: string | undefined) {
         if (!prev) return prev
         return {
           data: prev.data.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-          unreadCount: Math.max(0, prev.unreadCount - 1),
+          unreadCount: Math.max(
+            0,
+            prev.unreadCount - (prev.data.some((n) => n.id === id && !n.isRead) ? 1 : 0)
+          ),
         }
       })
     },
@@ -61,7 +64,7 @@ export function useMarkAllNotificationsRead(userId: string | undefined) {
   return useMutation({
     mutationFn: async () => {
       const result = await markAllNotificationsRead()
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     onSuccess: () => {
@@ -76,51 +79,35 @@ export function useMarkAllNotificationsRead(userId: string | undefined) {
   })
 }
 
-export function useNotificationsRealtime(userId: string | undefined) {
+export function useNotificationsRealtime(
+  userId: string | undefined,
+  sessionId: string | undefined
+) {
   const queryClient = useQueryClient()
   const { push } = useRouter()
-  const topic = useRealtimeUserTopic(userId)
-
-  useEffect(() => {
-    if (!userId || !topic) return
-
-    const supabase = createClientBrowser()
-    if (!supabase) return
-
-    const channel = supabase
-      .channel(topic, { config: { private: true } })
-      .on("broadcast", { event: "notification_insert" }, (payload) => {
-        const newRow = isRecord(payload) && isRecord(payload.payload) ? payload.payload : payload
-        queryClient.invalidateQueries({ queryKey: notificationsKeys.byUser(userId) })
-
-        if (!isRecord(newRow)) return
-        const title = String(newRow.title ?? "Nueva notificación")
-        const body = String(newRow.body ?? "")
-        const link = String(newRow.link ?? "")
-
-        toast.info(title, {
-          description: body,
-          duration: 8000,
-          action: link
-            ? {
-                label: "Ver",
-                onClick: () => push(link),
-              }
-            : undefined,
-        })
+  const topic = useRealtimeUserTopic(userId, sessionId)
+  const client = createClientBrowser()
+  const subscribe = useCallback(
+    (notify: () => void) => {
+      if (!client || !userId || !topic) return () => {}
+      return subscribeUserChannel(client, topic, {
+        onStatusChange: notify,
+        onConnected: () => reconcileDashboardEvents(queryClient, userId),
+        onEvent: (event) => {
+          const notification = applyDashboardEvent(queryClient, userId, event)
+          if (!notification) return
+          const link = notification.link?.startsWith("/dashboard") ? notification.link : null
+          toast.info(notification.title, {
+            id: notification.id,
+            description: notification.body,
+            duration: 8000,
+            action: link ? { label: "Ver", onClick: () => push(link) } : undefined,
+          })
+        },
       })
-      .on("broadcast", { event: "message_insert" }, (payload) => {
-        if (!parseRealtimeMessage(payload)) return
-        queryClient.invalidateQueries({ queryKey: ["chats"] })
-      })
-      .subscribe()
-
-    return () => {
-      supabase?.removeChannel(channel)
-    }
-  }, [userId, queryClient, push, topic])
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
+    },
+    [client, userId, topic, queryClient, push]
+  )
+  const snapshot = useCallback(() => userChannelStatus(client, topic), [client, topic])
+  return useSyncExternalStore(subscribe, snapshot, () => "CLOSED")
 }

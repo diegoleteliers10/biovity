@@ -41,7 +41,7 @@ export async function getPipelineStages(
   jobId: string
 ): Promise<Result<PipelineStage[], ApiError | NetworkError>> {
   const result = await fetchJson<unknown>(
-    `${API_BASE}/api/v1/pipeline-stages?jobId=${encodeURIComponent(jobId)}`
+    `${API_BASE}/api/v1/pipeline-stages/job/${encodeURIComponent(jobId)}`
   )
   if (result.isErr()) return Result.err(result.error)
   const stages = extractStages(result.value)
@@ -89,9 +89,10 @@ export function usePipelineStages(jobId: string | undefined) {
   return useQuery({
     queryKey: pipelineStagesKeys.byJob(jobId ?? ""),
     queryFn: async () => {
-      if (!jobId) throw new Error("Job ID required")
+      if (!jobId) return Promise.reject(new Error("Job ID required"))
       const result = await getPipelineStages(jobId)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(jobId),
@@ -103,7 +104,8 @@ export function useCreatePipelineStageMutation(jobId: string) {
   return useMutation({
     mutationFn: async (data: { name: string; color: string; order: number }) => {
       const result = await createPipelineStage(jobId, data)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     onSuccess: () => {
@@ -123,7 +125,8 @@ export function useUpdatePipelineStageMutation(jobId: string) {
       data: { name?: string; color?: string; order?: number }
     }) => {
       const result = await updatePipelineStage(id, data)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     onSuccess: () => {
@@ -137,10 +140,29 @@ export function useDeletePipelineStageMutation(jobId: string) {
   return useMutation({
     mutationFn: async (id: string) => {
       const result = await deletePipelineStage(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pipelineStagesKeys.byJob(jobId) })
     },
+  })
+}
+
+export function useReorderPipelineStagesMutation(jobId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (stageIds: string[]) => {
+      const result = await fetchJson<{ data: PipelineStage[] }>(
+        `${API_BASE}/api/v1/pipeline-stages/reorder/${encodeURIComponent(jobId)}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ stageIds }),
+        }
+      )
+      return result.isOk() ? result.value.data : Promise.reject(result.error)
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: pipelineStagesKeys.byJob(jobId) }),
   })
 }
