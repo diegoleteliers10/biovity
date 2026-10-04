@@ -142,7 +142,6 @@ export function useMarkChatAsReadMutation() {
             : chat
         )
       })
-      queryClient.invalidateQueries({ queryKey: ["chats"] })
     },
   })
 }

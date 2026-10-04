@@ -18,11 +18,32 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=86400" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/dashboard/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/_next/static/:path*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/((?!api|dashboard|_next/).*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=60, stale-while-revalidate=86400" }
       ]
     }
   ]

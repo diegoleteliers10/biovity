@@ -41,7 +41,7 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
     }
     const messageKey = ["messages", "chat", message.chatId]
     void client.cancelQueries({ queryKey: messageKey })
-    client.setQueryData<Message[]>(["messages", "chat", message.chatId], (current) =>
+    client.setQueryData<Message[]>(messageKey, (current) =>
       current && !current.some((item) => item.id === message.id) ? [...current, message] : current
     )
     client.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (current) =>
@@ -61,9 +61,6 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
           : chat
       )
     )
-    void client.invalidateQueries({ queryKey: messageKey })
-    void client.invalidateQueries({ queryKey: ["chats"] })
-    void client.invalidateQueries({ queryKey: ["chat", "fromUrl", message.chatId] })
     return null
   }
   const payload =
@@ -91,7 +88,6 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
     data: [notification, ...(previous?.data ?? [])].slice(0, 50),
     unreadCount: (previous?.unreadCount ?? 0) + (notification.isRead ? 0 : 1),
   }))
-  void client.invalidateQueries({ queryKey: key })
   return notification
 }
 
