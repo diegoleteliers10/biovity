@@ -30,11 +30,12 @@ export async function saveCandidate(
   candidateId: string,
   note?: string
 ): Promise<Result<SavedCandidate, ApiError | NetworkError>> {
-  return fetchJson(`${API_BASE}/api/v1/saved-candidates`, {
+  const result = await fetchJson<{ data: SavedCandidate }>(`${API_BASE}/api/v1/saved-candidates`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ organizationId, candidateId, note }),
   })
+  return result.map((response) => response.data)
 }
 
 export async function unsaveCandidate(
@@ -51,9 +52,9 @@ export async function isCandidateSaved(
   organizationId: string,
   candidateId: string
 ): Promise<Result<boolean, ApiError | NetworkError>> {
-  const result = await fetchJson<{ saved: boolean }>(
+  const result = await fetchJson<{ data: { saved: boolean } }>(
     `${API_BASE}/api/v1/saved-candidates/check?organizationId=${organizationId}&candidateId=${candidateId}`
   )
   if (result.isErr()) return R.err(result.error)
-  return R.ok(result.value.saved)
+  return R.ok(result.value.data.saved)
 }

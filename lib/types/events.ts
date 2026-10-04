@@ -72,6 +72,7 @@ export type UpdateEventInput = {
 }
 
 export type EventFilters = {
+  organizationId?: string
   userId?: string
   organizerId?: string
   type?: EventType

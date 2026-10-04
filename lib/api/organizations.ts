@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -75,9 +75,13 @@ function normalizeOrganization(raw: unknown): Organization | null {
 }
 
 export async function getOrganization(
-  id: string
+  id: string,
+  requestHeaders?: Headers
 ): Promise<Result<Organization, ApiError | NetworkError>> {
-  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/organizations/${id}`)
+  const url = `${API_BASE}/api/v1/organizations/${id}`
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders)
+    : await fetchJson<unknown>(url)
 
   if (result.isErr()) return R.err(result.error)
 

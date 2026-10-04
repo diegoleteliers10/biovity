@@ -16,7 +16,7 @@ type DashboardShellAdminProps = {
 
 export function DashboardShellAdmin({ children, defaultOpen, session }: DashboardShellAdminProps) {
   const userId = session?.user?.id
-  useNotificationsRealtime(userId)
+  useNotificationsRealtime(userId, session?.session.id)
   return (
     <DashboardSessionContext.Provider value={session ?? null}>
       <SidebarProvider

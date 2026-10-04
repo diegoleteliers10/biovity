@@ -227,7 +227,11 @@ export const updateCandidateStatusTool = tool({
   execute: async ({ applicationId, newStatus, reason }) => {
     validateToolInput("updateCandidateStatus", { applicationId })
     const { updateApplicationStatus } = await import("@/lib/api/applications")
-    const result = await updateApplicationStatus(applicationId, mapKanbanToApiStatus(newStatus))
+    const result = await updateApplicationStatus(
+      applicationId,
+      mapKanbanToApiStatus(newStatus),
+      await headers()
+    )
     if (!Result.isOk(result)) {
       return {
         success: false,

@@ -2,6 +2,7 @@ import { dash, sentinel } from "@better-auth/infra"
 import { betterAuth } from "better-auth"
 import { APIError, createAuthMiddleware } from "better-auth/api"
 import { nextCookies } from "better-auth/next-js"
+import { Result } from "better-result"
 import { headers } from "next/headers"
 import { cache } from "react"
 import { pool } from "@/lib/db"
@@ -57,6 +58,16 @@ export const auth = betterAuth({
         throw new APIError("CONFLICT", {
           message: "Ya existe una cuenta con este email.",
         })
+      }
+    }),
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/get-session") return
+      const returned = ctx.context.returned
+      if (!returned || typeof returned !== "object" || !("user" in returned)) return
+      const user = returned.user
+      if (user && typeof user === "object" && "isActive" in user && user.isActive === false) {
+        ctx.context.session = null
+        return ctx.json(null)
       }
     }),
   },
@@ -153,9 +164,7 @@ export const auth = betterAuth({
     updateAge: 86400,
     storeSessionInDatabase: true,
     cookieCache: {
-      enabled: true,
-      strategy: "jwe",
-      maxAge: 300,
+      enabled: false,
     },
   },
   verification: {
@@ -262,22 +271,21 @@ export const auth = betterAuth({
 
 export type UserRole = "admin" | "professional" | "organization"
 
-export function isAdminSession(session: { user: { email?: string } } | null): boolean {
-  if (!session?.user?.email) return false
+export function isAdminSession(
+  session: { user: { email?: string; isActive?: boolean | null } } | null
+): boolean {
+  if (!session?.user?.email || session.user.isActive === false) return false
   const user = session.user as { type?: string }
   const adminEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? []
   return adminEmails.includes(session.user.email) || user.type === "admin"
 }
 
 export const getServerSession = cache(async () => {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
-    return session
-  } catch {
-    return null
-  }
+  const result = await Result.tryPromise(async () =>
+    auth.api.getSession({ headers: await headers() })
+  )
+  if (result.isErr()) return null
+  return result.value?.user.isActive === false ? null : result.value
 })
 
 export async function getServerSessionWithRole() {

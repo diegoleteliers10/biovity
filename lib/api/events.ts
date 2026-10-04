@@ -1,6 +1,6 @@
 import { Result } from "better-result"
 import { type ApiError, NetworkError } from "@/lib/errors"
-import { fetchJson, fetchNoContent } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession, fetchNoContent } from "@/lib/result"
 import type {
   CreateEventInput,
   Event,
@@ -18,10 +18,12 @@ const API_BASE =
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
 export async function getEvents(
-  filters?: EventFilters
+  filters?: EventFilters,
+  requestHeaders?: Headers
 ): Promise<Result<PaginatedEventsResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (filters?.userId) searchParams.set("userId", filters.userId)
+  if (filters?.organizationId) searchParams.set("organizationId", filters.organizationId)
   if (filters?.organizerId) searchParams.set("organizerId", filters.organizerId)
   if (filters?.type) searchParams.set("type", filters.type)
   if (filters?.status) searchParams.set("status", filters.status)
@@ -33,7 +35,9 @@ export async function getEvents(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/events${query ? `?${query}` : ""}`
 
-  return fetchJson<PaginatedEventsResponse>(url)
+  return requestHeaders
+    ? fetchJsonWithSession<PaginatedEventsResponse>(url, requestHeaders)
+    : fetchJson<PaginatedEventsResponse>(url)
 }
 
 export async function getEventById(
@@ -45,61 +49,42 @@ export async function getEventById(
 }
 
 export async function createEvent(
-  input: CreateEventInput
+  input: CreateEventInput,
+  requestHeaders?: Headers
 ): Promise<Result<Event, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: Event }>(`${API_BASE}/api/v1/events`, {
+  const url = `${API_BASE}/api/v1/events`
+  const init: RequestInit = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
-  })
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data: Event }>(url, requestHeaders, init)
+    : await fetchJson<{ data: Event }>(url, init)
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)
 }
 
 export async function updateEvent(
   id: string,
-  input: UpdateEventInput
+  input: UpdateEventInput,
+  requestHeaders?: Headers
 ): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: EventWithParticipants }>(
-    `${API_BASE}/api/v1/events/${id}`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    }
-  )
+  const url = `${API_BASE}/api/v1/events/${id}`
+  const init: RequestInit = {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data: EventWithParticipants }>(url, requestHeaders, init)
+    : await fetchJson<{ data: EventWithParticipants }>(url, init)
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)
 }
 
 export async function deleteEvent(id: string): Promise<Result<void, ApiError | NetworkError>> {
   return fetchNoContent(`${API_BASE}/api/v1/events/${id}`, {
-    method: "DELETE",
-  })
-}
-
-export async function addEventParticipant(
-  eventId: string,
-  userId: string,
-  role: "attendee" | "guest" = "attendee"
-): Promise<Result<EventWithParticipants, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data: EventWithParticipants }>(
-    `${API_BASE}/api/v1/events/${eventId}/participants`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, role }),
-    }
-  )
-  if (result.isErr()) return Result.err(result.error)
-  return Result.ok(result.value.data)
-}
-
-export async function removeEventParticipant(
-  eventId: string,
-  userId: string
-): Promise<Result<void, ApiError | NetworkError>> {
-  return fetchNoContent(`${API_BASE}/api/v1/events/${eventId}/participants/${userId}`, {
     method: "DELETE",
   })
 }

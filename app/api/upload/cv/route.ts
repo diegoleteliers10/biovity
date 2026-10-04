@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { getSupabaseAdmin } from "@/lib/supabase"
 
-const BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "biovity_bucket"
+const BUCKET = process.env.SUPABASE_CV_BUCKET ?? "biovity_cv"
 const CV_PATH_PREFIX = "cv"
 
 export async function POST(request: Request) {

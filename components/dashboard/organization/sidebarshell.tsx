@@ -31,7 +31,7 @@ export function DashboardShellOrganization({
   const { data: organization } = useOrganization(organizationId)
 
   useOnboardingAutoComplete()
-  useNotificationsRealtime(userId)
+  useNotificationsRealtime(userId, session?.session.id)
 
   const { data: orgMetrics } = useOrganizationMetrics(organizationId, "month")
   const { data: chats } = useChatsByRecruiter(userId)

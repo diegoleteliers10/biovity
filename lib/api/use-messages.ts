@@ -2,38 +2,35 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
-import { useEffect } from "react"
-import { createClientBrowser } from "@/lib/supabase-browser"
 import {
   getMessagesByChatId,
   type Message,
   type MessageType,
   markChatAsRead,
-  parseRealtimeMessage,
   sendMessage,
 } from "./messages"
-import { useRealtimeUserTopic } from "./use-realtime-topics"
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
 }
 
 export function useMessages(chatId: string | undefined, userId: string | undefined) {
-  const queryClient = useQueryClient()
   const effectiveChatId = chatId?.trim() ? chatId : ""
-  const topic = useRealtimeUserTopic(userId)
 
   const query = useQuery({
     queryKey: messagesKeys.byChat(effectiveChatId),
     queryFn: async () => {
-      if (!effectiveChatId) throw new Error("Chat ID required")
+      if (!effectiveChatId) return Promise.reject(new Error("Chat ID required"))
       const result = await getMessagesByChatId(effectiveChatId, {
         limit: 100,
       })
-      if (!Result.isOk(result)) throw new Error(result.error.message)
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value.data ?? []
     },
-    enabled: Boolean(effectiveChatId),
+    enabled: Boolean(effectiveChatId && userId),
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchInterval: 15_000,
   })
 
   const messages = query.data
@@ -41,33 +38,6 @@ export function useMessages(chatId: string | undefined, userId: string | undefin
         (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       )
     : []
-
-  useEffect(() => {
-    if (!effectiveChatId || !topic) return
-
-    const supabase = createClientBrowser()
-    if (!supabase) return
-
-    const channel = supabase
-      .channel(topic, { config: { private: true } })
-      .on("broadcast", { event: "message_insert" }, (payload) => {
-        const msg = parseRealtimeMessage(payload)
-        if (!msg || msg.chatId !== effectiveChatId) return
-        queryClient.setQueryData(
-          messagesKeys.byChat(effectiveChatId),
-          (old: Message[] | undefined) => {
-            if (!old) return old
-            if (old.some((m) => m.id === msg.id)) return old
-            return [...old, msg]
-          }
-        )
-      })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [effectiveChatId, queryClient, topic])
 
   return {
     messages,
@@ -92,7 +62,7 @@ export function useSendMessageMutation() {
   return useMutation({
     mutationFn: async (input: SendMessageInput) => {
       const result = await sendMessage(input)
-      if (!Result.isOk(result)) throw new Error(result.error.message)
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     onMutate: async (input) => {
@@ -157,18 +127,19 @@ export function useMarkChatAsReadMutation() {
   return useMutation({
     mutationFn: async ({ chatId, userId }: { chatId: string; userId: string }) => {
       const result = await markChatAsRead(chatId, userId)
-      if (!Result.isOk(result)) throw new Error(result.error.message)
+      if (!Result.isOk(result)) return Promise.reject(result.error)
     },
     onSuccess: (_, variables) => {
-      // Reset unreadCount locally in cache
       queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {
         if (!prev) return prev
         return prev.map((chat) =>
           (chat as { id?: string }).id === variables.chatId
             ? {
                 ...chat,
-                unreadCountRecruiter: 0,
-                unreadCountProfessional: 0,
+                unreadCountRecruiter:
+                  chat.recruiterId === variables.userId ? 0 : chat.unreadCountRecruiter,
+                unreadCountProfessional:
+                  chat.professionalId === variables.userId ? 0 : chat.unreadCountProfessional,
               }
             : chat
         )

@@ -11,6 +11,7 @@ import { sanitizeInput } from "@/lib/ai/sanitize"
 import { externalTools } from "@/lib/ai/tools/external"
 import { organizationTools } from "@/lib/ai/tools/organization"
 import { auth } from "@/lib/auth"
+import { authorizeResource } from "@/lib/auth/resource-access"
 
 export const maxDuration = 60
 
@@ -22,7 +23,6 @@ export async function POST(req: NextRequest) {
     messages,
     jobOfferId,
     organizationId,
-    recruiterUserId,
   }: {
     messages: UIMessage[]
     jobOfferId?: string
@@ -40,7 +40,14 @@ export async function POST(req: NextRequest) {
     type?: string
   }
   const resolvedOrganizationId = organizationId ?? sessionUser.organizationId
-  const _resolvedRecruiterUserId = recruiterUserId ?? session.user.id
+  if (!resolvedOrganizationId)
+    return Response.json({ error: "Organización requerida" }, { status: 403 })
+  const access = await authorizeResource(
+    { kind: "organization", id: resolvedOrganizationId },
+    "recruit"
+  )
+  if (access.isErr())
+    return Response.json({ error: access.error.message }, { status: access.error.status })
 
   for (const msg of messages) {
     const msgAny = msg as unknown as { content?: string | Array<{ type?: string; text?: string }> }

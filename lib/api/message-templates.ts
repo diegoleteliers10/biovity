@@ -1,6 +1,7 @@
 import { Result as R, type Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent } from "@/lib/result"
+import { fetchApiData } from "./response"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -31,7 +32,8 @@ export async function getMessageTemplates(
   const result = await fetchJson<unknown>(base(organizationId))
   if (result.isErr()) return R.err(result.error)
   const raw = result.value
-  const arr = Array.isArray(raw) ? raw : []
+  const value = raw && typeof raw === "object" && "data" in raw ? raw.data : raw
+  const arr = Array.isArray(value) ? value : []
   return R.ok(arr as MessageTemplate[])
 }
 
@@ -39,7 +41,7 @@ export async function createMessageTemplate(
   organizationId: string,
   input: CreateMessageTemplateInput
 ): Promise<Result<MessageTemplate, ApiError | NetworkError>> {
-  return fetchJson<MessageTemplate>(base(organizationId), {
+  return fetchApiData<MessageTemplate>(base(organizationId), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
@@ -51,7 +53,7 @@ export async function updateMessageTemplate(
   id: string,
   input: UpdateMessageTemplateInput
 ): Promise<Result<MessageTemplate, ApiError | NetworkError>> {
-  return fetchJson<MessageTemplate>(`${base(organizationId)}/${id}`, {
+  return fetchApiData<MessageTemplate>(`${base(organizationId)}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),

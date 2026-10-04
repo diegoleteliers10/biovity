@@ -102,7 +102,17 @@ export async function enqueueCandidateAssessments(
         return { accepted: false, queued: 0 }
       }
 
-      const requestedJson = JSON.stringify(assessments)
+      const requestedJson = JSON.stringify(
+        assessments.map((assessment) => ({
+          application_id: assessment.applicationId,
+          candidate_id: assessment.candidateId,
+          job_id: assessment.jobId,
+          requested_by: assessment.requestedBy,
+          fingerprint: assessment.fingerprint,
+          job_snapshot: assessment.jobSnapshot,
+          candidate_snapshot: assessment.candidateSnapshot,
+        }))
+      )
       const countResult = await client.query<{ count: number }>(
         `WITH requested AS (
            SELECT * FROM jsonb_to_recordset($1::jsonb) AS item(

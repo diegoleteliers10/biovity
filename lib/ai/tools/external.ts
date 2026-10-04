@@ -12,7 +12,7 @@ import { createEvent, getEvents, updateEvent } from "@/lib/api/events"
 import {
   type CreateJobInput,
   createJob,
-  getJob,
+  getManagedJob,
   type UpdateJobInput,
   updateJob,
 } from "@/lib/api/jobs"
@@ -60,7 +60,7 @@ export const getJobViewsTool = tool({
   }),
   execute: async ({ jobId }) => {
     validateToolInput("getJobViews", { jobId })
-    const result = await getJob(jobId)
+    const result = await getManagedJob(jobId, await headers())
     if (!Result.isOk(result)) {
       return { error: "Error al obtener vistas del job", details: String(result.error) }
     }
@@ -135,7 +135,7 @@ export const createJobTool = tool({
       status: "active",
     }
 
-    const result = await createJob(input)
+    const result = await createJob(input, await headers())
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -207,7 +207,7 @@ export const updateJobTool = tool({
     if (location !== undefined) input.location = location
     if (status !== undefined) input.status = status
 
-    const result = await updateJob(jobId, input)
+    const result = await updateJob(jobId, input, await headers())
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -238,7 +238,7 @@ export const closeJobTool = tool({
   execute: async ({ jobId }) => {
     validateToolInput("closeJob", { jobId })
 
-    const result = await updateJob(jobId, { status: "closed" })
+    const result = await updateJob(jobId, { status: "closed" }, await headers())
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -267,7 +267,10 @@ export const getEventsByOrganizationTool = tool({
     limit: z.number().min(1).max(100).default(50),
   }),
   execute: async ({ organizationId, type, status, from, to, limit }) => {
-    const result = await getEvents({ organizerId: organizationId, type, status, from, to, limit })
+    const result = await getEvents(
+      { organizationId, type, status, from, to, limit },
+      await headers()
+    )
     if (!Result.isOk(result)) {
       return { error: "Error al obtener eventos", details: String(result.error) }
     }
@@ -336,7 +339,7 @@ export const createEventTool = tool({
       applicationId,
     }
 
-    const result = await createEvent(input)
+    const result = await createEvent(input, await headers())
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -395,7 +398,7 @@ export const updateEventTool = tool({
     if (meetingUrl !== undefined) input.meetingUrl = meetingUrl
     if (status !== undefined) input.status = status as EventStatus
 
-    const result = await updateEvent(eventId, input)
+    const result = await updateEvent(eventId, input, await headers())
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -427,7 +430,11 @@ export const updateApplicationStatusTool = tool({
   needsApproval: true,
   execute: async ({ applicationId, newStatus }) => {
     validateToolInput("updateApplicationStatus", { applicationId })
-    const result = await updateApplicationStatus(applicationId, newStatus as ApplicationStatus)
+    const result = await updateApplicationStatus(
+      applicationId,
+      newStatus as ApplicationStatus,
+      await headers()
+    )
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -467,7 +474,7 @@ export const getSubscriptionTool = tool({
     organizationId: z.string().min(1).max(100),
   }),
   execute: async ({ organizationId }) => {
-    const orgResult = await getOrganization(organizationId)
+    const orgResult = await getOrganization(organizationId, await headers())
     if (!Result.isOk(orgResult)) {
       return { error: "Error al obtener la organización", details: String(orgResult.error) }
     }
@@ -489,7 +496,7 @@ export const getChatsByRecruiterTool = tool({
     limit: z.number().min(1).max(100).default(50),
   }),
   execute: async ({ recruiterId, limit }) => {
-    const result = await getChatsByRecruiter(recruiterId)
+    const result = await getChatsByRecruiter(recruiterId, await headers())
     if (!Result.isOk(result)) {
       return { error: "Error al obtener los chats", details: String(result.error) }
     }
@@ -571,7 +578,7 @@ export const getChatMessagesTool = tool({
     cursor: z.string().max(100).optional(),
   }),
   execute: async ({ chatId, limit, cursor }) => {
-    const result = await getMessagesByChatId(chatId, { limit, cursor })
+    const result = await getMessagesByChatId(chatId, { limit, cursor }, await headers())
     if (!Result.isOk(result)) {
       return { error: "Error al obtener los mensajes", details: String(result.error) }
     }

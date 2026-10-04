@@ -124,25 +124,29 @@ export type CreateApplicationInput = {
 export async function createApplication(
   input: CreateApplicationInput
 ): Promise<Result<Application, ApiError | NetworkError>> {
-  return fetchJson<Application>(`${API_BASE}/api/v1/applications`, {
+  const result = await fetchJson<{ data: Application }>(`${API_BASE}/api/v1/applications`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
+  if (result.isErr()) return R.err(result.error)
+  return R.ok(result.value.data)
 }
 
 export async function updateApplicationStatus(
   id: string,
-  status: ApplicationStatus
+  status: ApplicationStatus,
+  requestHeaders?: Headers
 ): Promise<Result<Application, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data?: Application } | Application>(
-    `${API_BASE}/api/v1/applications/${id}/status`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    }
-  )
+  const url = `${API_BASE}/api/v1/applications/${id}/status`
+  const init = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data?: Application } | Application>(url, requestHeaders, init)
+    : await fetchJson<{ data?: Application } | Application>(url, init)
 
   if (result.isErr()) return R.err(result.error)
 

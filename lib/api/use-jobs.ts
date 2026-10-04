@@ -1,7 +1,6 @@
 "use client"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
-import { getResultErrorMessage } from "@/lib/result"
 import {
   type CreateJobInput,
   createJob,
@@ -10,11 +9,10 @@ import {
   getJobs,
   getJobsByOrganization,
   getManagedJob,
-  type Job,
-  type JobsByOrganizationResponse,
   type UpdateJobInput,
   updateJob,
 } from "./jobs"
+import { storeCreatedJob, storeDeletedJob, storeUpdatedJob } from "./jobs-cache"
 
 export const jobsKeys = {
   list: (organizationId?: string) => ["jobs", organizationId ?? ""] as const,
@@ -35,9 +33,9 @@ export function useJobs(organizationId: string | undefined) {
   return useQuery({
     queryKey: jobsKeys.list(organizationId),
     queryFn: async () => {
-      if (!organizationId) throw new Error("Organization ID required")
+      if (!organizationId) return Promise.reject(new Error("Organization ID required"))
       const result = await getJobsByOrganization(organizationId, { page: 1, limit: 100 })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value.data
     },
     enabled: Boolean(organizationId),
@@ -53,16 +51,18 @@ export function useJobsByOrganization(
       ...jobsKeys.byOrganization(organizationId ?? ""),
       params?.page ?? 1,
       params?.limit ?? 10,
+      params?.status ?? "",
+      params?.search?.trim() ?? "",
     ],
     queryFn: async () => {
-      if (!organizationId) throw new Error("Organization ID required")
+      if (!organizationId) return Promise.reject(new Error("Organization ID required"))
       const result = await getJobsByOrganization(organizationId, {
         page: params?.page ?? 1,
         limit: params?.limit ?? 10,
         status: params?.status,
         search: params?.search,
       })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     enabled: Boolean(organizationId),
@@ -86,7 +86,7 @@ export function useJobsSearch(params?: {
         ...(params?.sort && { sort: params.sort }),
         page: params?.page,
       })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     // Evita el flash del spinner entre cambios de filtro: mantiene la lista
@@ -100,9 +100,9 @@ export function useJob(id: string | undefined) {
   return useQuery({
     queryKey: jobsKeys.detail(id ?? ""),
     queryFn: async () => {
-      if (!id) throw new Error("Job ID required")
+      if (!id) return Promise.reject(new Error("Job ID required"))
       const result = await getJob(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     enabled: Boolean(id),
@@ -113,9 +113,9 @@ export function useManagedJob(id: string | undefined) {
   return useQuery({
     queryKey: [...jobsKeys.detail(id ?? ""), "managed"],
     queryFn: async () => {
-      if (!id) throw new Error("Job ID required")
+      if (!id) return Promise.reject(new Error("Job ID required"))
       const result = await getManagedJob(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     enabled: Boolean(id),
@@ -125,33 +125,18 @@ export function useManagedJob(id: string | undefined) {
 export function useCreateJobMutation(organizationId: string) {
   const queryClient = useQueryClient()
   return useMutation({
+    onMutate: () =>
+      Promise.all([
+        queryClient.cancelQueries({ queryKey: jobsKeys.list(organizationId) }),
+        queryClient.cancelQueries({ queryKey: jobsKeys.byOrganization(organizationId) }),
+      ]),
     mutationFn: async (input: Omit<CreateJobInput, "organizationId">) => {
       const result = await createJob({ ...input, organizationId })
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
     onSuccess: (newJob) => {
-      queryClient.setQueryData<Job[]>(jobsKeys.list(organizationId), (jobs) =>
-        jobs ? [newJob, ...jobs.filter((job) => job.id !== newJob.id)] : jobs
-      )
-      queryClient.setQueryData<JobsByOrganizationResponse>(
-        [...jobsKeys.byOrganization(organizationId), 1, 10],
-        (current) =>
-          current
-            ? {
-                ...current,
-                data: [newJob, ...current.data.filter((job) => job.id !== newJob.id)].slice(
-                  0,
-                  current.limit
-                ),
-                total: current.total + (current.data.some((job) => job.id === newJob.id) ? 0 : 1),
-                totalPages: Math.ceil(
-                  (current.total + (current.data.some((job) => job.id === newJob.id) ? 0 : 1)) /
-                    current.limit
-                ),
-              }
-            : current
-      )
+      storeCreatedJob(queryClient, organizationId, newJob)
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
       queryClient.invalidateQueries({ queryKey: ["jobs", "search"] })
@@ -162,12 +147,18 @@ export function useCreateJobMutation(organizationId: string) {
 export function useUpdateJobMutation(organizationId: string) {
   const queryClient = useQueryClient()
   return useMutation({
+    onMutate: () =>
+      Promise.all([
+        queryClient.cancelQueries({ queryKey: jobsKeys.list(organizationId) }),
+        queryClient.cancelQueries({ queryKey: jobsKeys.byOrganization(organizationId) }),
+      ]),
     mutationFn: async ({ id, input }: { id: string; input: UpdateJobInput }) => {
       const result = await updateJob(id, input)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
-    onSuccess: (_, { id }) => {
+    onSuccess: (job, { id }) => {
+      storeUpdatedJob(queryClient, organizationId, job)
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.detail(id) })
@@ -179,12 +170,18 @@ export function useUpdateJobMutation(organizationId: string) {
 export function useDeleteJobMutation(organizationId: string) {
   const queryClient = useQueryClient()
   return useMutation({
+    onMutate: () =>
+      Promise.all([
+        queryClient.cancelQueries({ queryKey: jobsKeys.list(organizationId) }),
+        queryClient.cancelQueries({ queryKey: jobsKeys.byOrganization(organizationId) }),
+      ]),
     mutationFn: async (id: string) => {
       const result = await deleteJob(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
+      storeDeletedJob(queryClient, organizationId, id)
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
       queryClient.invalidateQueries({ queryKey: ["jobs", "search"] })

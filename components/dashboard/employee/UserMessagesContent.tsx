@@ -10,7 +10,7 @@ import { EmptyStateView } from "@/components/dashboard/employee/EmptyStateView"
 import { MessageThread } from "@/components/dashboard/employee/MessageThread"
 import type { Chat } from "@/lib/api/chats"
 import { getChatById } from "@/lib/api/chats"
-import { useChatListRealtime, useChatsByProfessional } from "@/lib/api/use-chats"
+import { useChatsByProfessional } from "@/lib/api/use-chats"
 import {
   useMarkChatAsReadMutation,
   useMessages,
@@ -36,7 +36,6 @@ export function UserMessagesContent() {
   const [mobileView, setMobileView] = useState<"list" | "chat">("list")
 
   const { data: chats = [], isLoading: chatsLoading } = useChatsByProfessional(professionalId)
-  useChatListRealtime(chats, professionalId)
   const markChatAsRead = useMarkChatAsReadMutation()
 
   const { data: chatFromUrl } = useQuery({

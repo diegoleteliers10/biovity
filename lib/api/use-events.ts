@@ -11,7 +11,6 @@ import type {
   UpdateEventInput,
 } from "@/lib/types/events"
 import {
-  addEventParticipant,
   createEvent,
   createEventNote,
   deleteEvent,
@@ -19,7 +18,6 @@ import {
   getEventNotes,
   getEvents,
   getParticipantStatuses,
-  removeEventParticipant,
   updateEvent,
   updateParticipantStatus,
 } from "./events"
@@ -34,6 +32,7 @@ export const eventsKeys = {
 export function useEvents(filters?: {
   userId?: string
   organizerId?: string
+  organizationId?: string
   type?: EventType
   status?: EventStatus
   from?: string
@@ -45,7 +44,8 @@ export function useEvents(filters?: {
     queryKey: eventsKeys.list(filters),
     queryFn: async () => {
       const result = await getEvents(filters)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
   })
@@ -67,9 +67,10 @@ export function useEvent(id: string | undefined) {
   const query = useQuery({
     queryKey: eventsKeys.detail(id ?? ""),
     queryFn: async () => {
-      if (!id) throw new Error("Event ID required")
+      if (!id) return Promise.reject(new Error("Event ID required"))
       const result = await getEventById(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(id),
@@ -90,11 +91,12 @@ export function useCreateEvent() {
   return useMutation({
     mutationFn: async (input: CreateEventInput) => {
       const result = await createEvent(input)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
   })
 }
@@ -105,12 +107,13 @@ export function useUpdateEvent() {
   return useMutation({
     mutationFn: async ({ id, input }: { id: string; input: UpdateEventInput }) => {
       const result = await updateEvent(id, input)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
-      queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
   })
 }
@@ -121,49 +124,12 @@ export function useDeleteEvent() {
   return useMutation({
     mutationFn: async (id: string) => {
       const result = await deleteEvent(id)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: eventsKeys.all })
-    },
-  })
-}
-
-export function useAddEventParticipant() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({
-      eventId,
-      userId,
-      role,
-    }: {
-      eventId: string
-      userId: string
-      role?: "attendee" | "guest"
-    }) => {
-      const result = await addEventParticipant(eventId, userId, role)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
-      return result.value
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(eventsKeys.detail(data.id), data)
-    },
-  })
-}
-
-export function useRemoveEventParticipant() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async ({ eventId, userId }: { eventId: string; userId: string }) => {
-      const result = await removeEventParticipant(eventId, userId)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
-      return result.value
-    },
-    onSuccess: (_data, variables) => {
-      void queryClient.invalidateQueries({ queryKey: eventsKeys.detail(variables.eventId) })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
   })
 }
@@ -182,12 +148,13 @@ export function useUpdateParticipantStatus() {
       status: ParticipantStatus
     }) => {
       const result = await updateParticipantStatus(eventId, userId, status)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
-      void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
       queryClient.setQueriesData<Record<string, ParticipantStatus>>(
         { queryKey: ["events", "participant-statuses"] },
         (old) => ({ ...old, [variables.eventId]: variables.status })
@@ -200,9 +167,10 @@ export function useEventNotes(eventId: string | undefined) {
   const query = useQuery({
     queryKey: eventsKeys.notes(eventId ?? ""),
     queryFn: async () => {
-      if (!eventId) throw new Error("Event ID required")
+      if (!eventId) return Promise.reject(new Error("Event ID required"))
       const result = await getEventNotes(eventId)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: Boolean(eventId),
@@ -231,11 +199,12 @@ export function useCreateEventNote() {
       content: string
     }) => {
       const result = await createEventNote(eventId, authorId, content)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: (_data, variables) => {
-      void queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
+    onSuccess: async (_data, variables) => {
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
     },
   })
 }
@@ -245,7 +214,8 @@ export function useParticipantStatuses(eventIds: string[]) {
     queryKey: ["events", "participant-statuses", eventIds] as const,
     queryFn: async () => {
       const result = await getParticipantStatuses(eventIds)
-      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
     enabled: eventIds.length > 0,

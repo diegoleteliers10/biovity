@@ -282,11 +282,21 @@ export async function setUserActive(
 
 export async function updateUser(
   id: string,
-  input: UpdateUserInput
+  input: UpdateUserInput,
+  requestHeaders?: Headers
 ): Promise<Result<User, ApiError | NetworkError>> {
-  return fetchJson<User>(`${API_BASE}/api/v1/users/${id}`, {
+  const url = `${API_BASE}/api/v1/users/${id}`
+  const options = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
-  })
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders, options)
+    : await fetchJson<unknown>(url, options)
+  if (result.isErr()) return R.err(result.error)
+  const user = normalizeUser(result.value)
+  return user
+    ? R.ok(user)
+    : R.err(new ApiError({ status: 200, message: "Formato de usuario inválido" }))
 }

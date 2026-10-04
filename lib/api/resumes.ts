@@ -1,5 +1,5 @@
 import { Result as R, type Result } from "better-result"
-import type { ApiError, NetworkError } from "@/lib/errors"
+import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
@@ -97,7 +97,25 @@ export type CreateResumeInput = {
   cvFile?: ResumeCvFile
 }
 
-export type UpdateResumeInput = Partial<Omit<CreateResumeInput, "userId">>
+export type UpdateResumeInput = Partial<Omit<CreateResumeInput, "userId" | "cvFile">> & {
+  cvFile?: ResumeCvFile | null
+}
+
+function normalizeCvFile(value: unknown): ResumeCvFile | null {
+  if (!value || typeof value !== "object") return null
+  const file = value as ResumeCvFile
+  const queryPath = file.url ? new URLSearchParams(file.url.split("?")[1]).get("path") : null
+  const legacyPath = file.url?.match(
+    /\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/(cv\/[^?]+)/
+  )?.[1]
+  const decoded = legacyPath ? R.try(() => decodeURIComponent(legacyPath)) : null
+  const path = file.path ?? queryPath ?? (decoded?.isOk() ? decoded.value : undefined)
+  return {
+    ...file,
+    path,
+    url: path ? `/api/cv/signed-url?path=${encodeURIComponent(path)}` : file.url,
+  }
+}
 
 /** Normalizes API response to ensure Resume shape with arrays. */
 function normalizeResume(raw: unknown): Resume | null {
@@ -130,7 +148,7 @@ function normalizeResume(raw: unknown): Resume | null {
     certifications: Array.isArray(r.certifications) ? r.certifications : [],
     languages: Array.isArray(r.languages) ? r.languages : [],
     links: Array.isArray(r.links) ? r.links : [],
-    cvFile: (r.cvFile ?? r.cv_file) ? ((r.cvFile ?? r.cv_file) as ResumeCvFile) : null,
+    cvFile: normalizeCvFile(r.cvFile ?? r.cv_file),
     createdAt: String(r.createdAt ?? r.created_at ?? ""),
     updatedAt: String(r.updatedAt ?? r.updated_at ?? ""),
   }
@@ -157,29 +175,47 @@ export async function getResumeByUserId(
   return R.ok(normalized)
 }
 
+function resumeResponse(
+  result: Result<unknown, ApiError | NetworkError>
+): Result<Resume, ApiError | NetworkError> {
+  if (result.isErr()) return R.err(result.error)
+  const resume = normalizeResume(result.value)
+  return resume
+    ? R.ok(resume)
+    : R.err(new ApiError({ status: 200, message: "Formato de currículum inválido" }))
+}
+
 export async function getResume(id: string): Promise<Result<Resume, ApiError | NetworkError>> {
-  return fetchJson<Resume>(`${API_BASE}/api/v1/resumes/${id}`)
+  return resumeResponse(await fetchJson<unknown>(`${API_BASE}/api/v1/resumes/${id}`))
 }
 
 export async function createResume(
   input: CreateResumeInput
 ): Promise<Result<Resume, ApiError | NetworkError>> {
-  return fetchJson<Resume>(`${API_BASE}/api/v1/resumes`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
-  })
+  return resumeResponse(
+    await fetchJson<unknown>(`${API_BASE}/api/v1/resumes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    })
+  )
 }
 
 export async function updateResume(
   id: string,
-  input: UpdateResumeInput
+  input: UpdateResumeInput,
+  requestHeaders?: Headers
 ): Promise<Result<Resume, ApiError | NetworkError>> {
-  return fetchJson<Resume>(`${API_BASE}/api/v1/resumes/${id}`, {
+  const url = `${API_BASE}/api/v1/resumes/${id}`
+  const options = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
-  })
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders, options)
+    : await fetchJson<unknown>(url, options)
+  return resumeResponse(result)
 }
 
 export async function uploadResumeCv(
@@ -192,6 +228,7 @@ export async function uploadResumeCv(
   const uploadUrl = "/api/upload/cv"
 
   const uploadResult = await fetchJson<{
+    path?: string
     url?: string
     originalName?: string
     mimeType?: string
@@ -204,6 +241,7 @@ export async function uploadResumeCv(
   const uploadData = uploadResult.value
 
   const cvFile: ResumeCvFile = {
+    path: uploadData.path,
     url: uploadData.url,
     originalName: uploadData.originalName,
     mimeType: uploadData.mimeType,

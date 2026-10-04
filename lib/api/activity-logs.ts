@@ -1,6 +1,7 @@
 import { Result as R, type Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson } from "@/lib/result"
+import { fetchApiData } from "./response"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -13,7 +14,7 @@ export type ActivityLog = {
   userId: string
   action: string
   description: string
-  metadata?: Record<string, any> | null
+  metadata?: Record<string, unknown> | null
   createdAt: string
   user?: {
     id: string
@@ -27,7 +28,7 @@ export type CreateActivityLogInput = {
   userId: string
   action: string
   description: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 const base = (orgId: string) => `${API_BASE}/api/v1/organizations/${orgId}/activity-logs`
@@ -38,7 +39,8 @@ export async function getActivityLogs(
   const result = await fetchJson<unknown>(base(organizationId))
   if (result.isErr()) return R.err(result.error)
   const raw = result.value
-  const arr = Array.isArray(raw) ? raw : []
+  const value = raw && typeof raw === "object" && "data" in raw ? raw.data : raw
+  const arr = Array.isArray(value) ? value : []
   return R.ok(arr as ActivityLog[])
 }
 
@@ -46,7 +48,7 @@ export async function logActivity(
   organizationId: string,
   input: CreateActivityLogInput
 ): Promise<Result<ActivityLog, ApiError | NetworkError>> {
-  return fetchJson<ActivityLog>(base(organizationId), {
+  return fetchApiData<ActivityLog>(base(organizationId), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),

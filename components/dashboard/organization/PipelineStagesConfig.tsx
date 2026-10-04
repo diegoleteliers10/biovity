@@ -19,12 +19,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   type PipelineStage,
   useCreatePipelineStageMutation,
   useDeletePipelineStageMutation,
   usePipelineStages,
+  useReorderPipelineStagesMutation,
   useUpdatePipelineStageMutation,
 } from "@/lib/api/use-pipeline-stages"
 
@@ -50,6 +50,7 @@ export function PipelineStagesConfig({ jobId }: PipelineStagesConfigProps) {
   const { data: stages = [], isLoading } = usePipelineStages(jobId)
   const createMutation = useCreatePipelineStageMutation(jobId)
   const updateMutation = useUpdatePipelineStageMutation(jobId)
+  const reorderMutation = useReorderPipelineStagesMutation(jobId)
   const deleteMutation = useDeletePipelineStageMutation(jobId)
 
   const [newName, setNewName] = useState("")
@@ -76,11 +77,13 @@ export function PipelineStagesConfig({ jobId }: PipelineStagesConfigProps) {
       const sorted = [...stages].sort((a, b) => a.order - b.order)
       const idx = sorted.findIndex((s) => s.id === stage.id)
       if (idx <= 0) return
-      const prev = sorted[idx - 1]
-      updateMutation.mutate({ id: stage.id, data: { order: prev.order } })
-      updateMutation.mutate({ id: prev.id, data: { order: stage.order } })
+      ;[sorted[idx - 1], sorted[idx]] = [sorted[idx], sorted[idx - 1]]
+      reorderMutation.mutate(
+        sorted.map((item) => item.id),
+        { onError: (error) => toast.error(error.message) }
+      )
     },
-    [stages, updateMutation]
+    [stages, reorderMutation]
   )
 
   const handleMoveDown = useCallback(
@@ -88,11 +91,13 @@ export function PipelineStagesConfig({ jobId }: PipelineStagesConfigProps) {
       const sorted = [...stages].sort((a, b) => a.order - b.order)
       const idx = sorted.findIndex((s) => s.id === stage.id)
       if (idx === -1 || idx >= sorted.length - 1) return
-      const next = sorted[idx + 1]
-      updateMutation.mutate({ id: stage.id, data: { order: next.order } })
-      updateMutation.mutate({ id: next.id, data: { order: stage.order } })
+      ;[sorted[idx], sorted[idx + 1]] = [sorted[idx + 1], sorted[idx]]
+      reorderMutation.mutate(
+        sorted.map((item) => item.id),
+        { onError: (error) => toast.error(error.message) }
+      )
     },
-    [stages, updateMutation]
+    [stages, reorderMutation]
   )
 
   const handleDelete = useCallback(
@@ -153,7 +158,7 @@ export function PipelineStagesConfig({ jobId }: PipelineStagesConfigProps) {
                   <button
                     type="button"
                     onClick={() => handleMoveUp(stage)}
-                    disabled={index === 0}
+                    disabled={index === 0 || reorderMutation.isPending}
                     className="size-4 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30"
                     aria-label="Subir"
                   >
@@ -162,7 +167,7 @@ export function PipelineStagesConfig({ jobId }: PipelineStagesConfigProps) {
                   <button
                     type="button"
                     onClick={() => handleMoveDown(stage)}
-                    disabled={index === sorted.length - 1}
+                    disabled={index === sorted.length - 1 || reorderMutation.isPending}
                     className="size-4 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30"
                     aria-label="Bajar"
                   >

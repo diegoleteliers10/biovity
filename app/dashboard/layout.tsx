@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import type { ReactNode } from "react"
 import { FeaturebaseDashboardProvider } from "@/components/featurebase/FeaturebaseDashboardProvider"
+import { QueryProvider } from "@/components/providers/QueryProvider"
 import { checkUserRole, getServerSession } from "@/lib/auth"
 import {
   FEATUREBASE_APP_ID,
@@ -22,10 +23,14 @@ export default async function DashboardLayout({
   const role = await checkUserRole()
   if (!role) redirect("/")
 
-  const slot = role === "admin" ? admin : role === "organization" ? organization : user
+  const session = await getServerSession()
+  if (!session?.session.id) redirect("/login")
+  const selected = role === "admin" ? admin : role === "organization" ? organization : user
+  const slot = (
+    <QueryProvider key={`${session.user.id}:${session.session.id}`}>{selected}</QueryProvider>
+  )
 
   if (isFeaturebaseEnabled()) {
-    const session = await getServerSession()
     const sessionUser = session?.user as
       | { id?: string; email?: string; name?: string; avatar?: string }
       | undefined

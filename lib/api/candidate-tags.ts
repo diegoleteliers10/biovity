@@ -1,4 +1,4 @@
-import { Result as R, type Result } from "better-result"
+import type { Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent } from "@/lib/result"
 
@@ -24,7 +24,10 @@ export type CandidateTagAssignment = {
 export async function getTags(
   organizationId: string
 ): Promise<Result<CandidateTag[], ApiError | NetworkError>> {
-  return fetchJson(`${API_BASE}/api/v1/candidate-tags?organizationId=${organizationId}`)
+  const result = await fetchJson<{ data: CandidateTag[] }>(
+    `${API_BASE}/api/v1/candidate-tags?organizationId=${organizationId}`
+  )
+  return result.map((response) => response.data)
 }
 
 export async function createTag(
@@ -32,11 +35,12 @@ export async function createTag(
   name: string,
   color?: string
 ): Promise<Result<CandidateTag, ApiError | NetworkError>> {
-  return fetchJson(`${API_BASE}/api/v1/candidate-tags`, {
+  const result = await fetchJson<{ data: CandidateTag }>(`${API_BASE}/api/v1/candidate-tags`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ organizationId, name, color }),
   })
+  return result.map((response) => response.data)
 }
 
 export async function deleteTag(tagId: string): Promise<Result<void, ApiError | NetworkError>> {
@@ -47,11 +51,15 @@ export async function assignTag(
   tagId: string,
   candidateId: string
 ): Promise<Result<CandidateTagAssignment, ApiError | NetworkError>> {
-  return fetchJson(`${API_BASE}/api/v1/candidate-tags/${tagId}/assign`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ candidateId }),
-  })
+  const result = await fetchJson<{ data: CandidateTagAssignment }>(
+    `${API_BASE}/api/v1/candidate-tags/${tagId}/assign`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ candidateId }),
+    }
+  )
+  return result.map((response) => response.data)
 }
 
 export async function unassignTag(
@@ -70,7 +78,8 @@ export async function getCandidateTags(
   candidateId: string,
   organizationId: string
 ): Promise<Result<CandidateTag[], ApiError | NetworkError>> {
-  return fetchJson(
+  const result = await fetchJson<{ data: CandidateTag[] }>(
     `${API_BASE}/api/v1/candidate-tags/candidate/${candidateId}?organizationId=${organizationId}`
   )
+  return result.map((response) => response.data)
 }

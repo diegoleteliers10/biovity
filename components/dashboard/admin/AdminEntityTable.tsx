@@ -2,12 +2,12 @@
 
 import { ArrowLeft01Icon, ArrowRight01Icon, Refresh01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { type ParserBuilder, useQueryStates } from "nuqs"
-import { useCallback, useEffect, useReducer, useRef, useState } from "react"
+import { useCallback, useReducer, useRef, useState } from "react"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/dashboard/admin/ConfirmDialog"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import { setUserActive } from "@/lib/api/users"
-import { getResultErrorMessage } from "@/lib/result"
+import { fetchJson, getResultErrorMessage } from "@/lib/result"
 import type { AdminUser } from "@/lib/types/admin"
 import { formatDateChilean } from "@/lib/utils"
 
@@ -131,65 +131,35 @@ function createInitialState(): EntityState {
 const SEARCH_DEBOUNCE_MS = 400
 const PAGE_SIZE = 20
 
-function formatDate(iso: string): string {
-  try {
-    return formatDateChilean(iso, "d MMM yyyy")
-  } catch {
-    return iso
-  }
+function _formatDate(iso: string): string {
+  const result = Result.try(() => formatDateChilean(iso, "d MMM yyyy"))
+  return result.isOk() ? result.value : iso
 }
 
 function useEntityFetch(
   safePage: number,
   safeSearch: string,
   apiType: "professional" | "organization",
-  entityNamePlural: string,
-  extraSearchParams: Record<string, string> | undefined,
-  refreshNonce: number,
-  dispatch: React.Dispatch<EntityAction>
+  extraSearchParams: Record<string, string> | undefined
 ) {
-  const fetchItems = useCallback(async () => {
-    dispatch({ type: "SET_LOADING", loading: true })
-    try {
-      const params = new URLSearchParams()
-      params.set("page", String(safePage))
-      params.set("limit", String(PAGE_SIZE))
-      params.set("type", apiType)
-      if (safeSearch.trim()) params.set("search", safeSearch.trim())
-      if (extraSearchParams) {
-        for (const [key, value] of Object.entries(extraSearchParams)) {
-          if (value) params.set(key, value)
-        }
-      }
-
-      const res = await fetch(`/api/admin/users?${params}`)
-      const data = await res.json().catch(() => null)
-      if (!res.ok) {
-        throw new Error(
-          (data as { error?: string })?.error ?? `Error al cargar ${entityNamePlural}`
-        )
-      }
-      dispatch({
-        type: "SET_ITEMS",
-        items: data.data ?? [],
-        total: data.total ?? 0,
+  return useQuery({
+    queryKey: ["admin-users", apiType, safePage, safeSearch, extraSearchParams],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: String(safePage),
+        limit: String(PAGE_SIZE),
+        type: apiType,
       })
-    } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : `Error desconocido al cargar ${entityNamePlural}`
-      console.error(msg)
-      dispatch({ type: "SET_ERROR", error: msg })
-      dispatch({ type: "CLEAR_ITEMS" })
-    } finally {
-      dispatch({ type: "SET_LOADING", loading: false })
-    }
-  }, [safePage, safeSearch, apiType, entityNamePlural, extraSearchParams, dispatch])
-
-  useEffect(() => {
-    fetchItems()
-  }, [fetchItems, refreshNonce])
-
-  return fetchItems
+      if (safeSearch.trim()) params.set("search", safeSearch.trim())
+      for (const [key, value] of Object.entries(extraSearchParams ?? {})) {
+        if (value) params.set(key, value)
+      }
+      const result = await fetchJson<{ data: AdminUser[]; total: number }>(
+        `/api/admin/users?${params}`
+      )
+      return result.isOk() ? result.value : Promise.reject(result.error)
+    },
+  })
 }
 
 export type AdminEntityColumn = {
@@ -233,6 +203,7 @@ export function AdminEntityTable({
   extraSearchParams,
   onRowClick,
 }: AdminEntityTableProps) {
+  const queryClient = useQueryClient()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [urlState, setUrlState] = useQueryStates(parsers, {
@@ -242,17 +213,16 @@ export function AdminEntityTable({
   const safePage = urlState.page ?? 1
   const safeSearch = urlState.search ?? ""
 
-  const [state, dispatch] = useReducer(entityReducer, undefined, createInitialState)
-
-  const fetchItems = useEntityFetch(
-    safePage,
-    safeSearch,
-    apiType,
-    entityNamePlural,
-    extraSearchParams,
-    state.refreshNonce,
-    dispatch
-  )
+  const [localState, dispatch] = useReducer(entityReducer, undefined, createInitialState)
+  const entities = useEntityFetch(safePage, safeSearch, apiType, extraSearchParams)
+  const state = {
+    ...localState,
+    items: entities.data?.data ?? [],
+    total: entities.data?.total ?? 0,
+    loading: entities.isPending,
+    error: entities.error?.message ?? null,
+  }
+  const fetchItems = entities.refetch
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -277,26 +247,30 @@ export function AdminEntityTable({
 
   const handleToggleActive = async (item: AdminUser) => {
     dispatch({ type: "SET_TOGGLING_ID", id: item.id })
-    try {
-      const result = await setUserActive(item.id, !item.isActive)
-      if (!Result.isOk(result)) {
-        toast.error(getResultErrorMessage(result.error))
-        return
-      }
-      dispatch({ type: "UPDATE_ITEM", id: item.id, isActive: result.value.isActive })
-      toast.success(result.value.isActive ? `${entityName} activado` : `${entityName} desactivado`)
-    } finally {
-      dispatch({ type: "SET_TOGGLING_ID", id: null })
-      setConfirmToggleItem(null)
+    const result = await setUserActive(item.id, !item.isActive)
+    dispatch({ type: "SET_TOGGLING_ID", id: null })
+    setConfirmToggleItem(null)
+    if (result.isErr()) {
+      toast.error(getResultErrorMessage(result.error))
+      return
     }
+    dispatch({ type: "UPDATE_ITEM", id: item.id, isActive: result.value.isActive })
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    ])
+    toast.success(result.value.isActive ? `${entityName} activado` : `${entityName} desactivado`)
   }
 
   const handleBulkToggle = async (isActive: boolean) => {
     const ids = Array.from(state.selectedIds)
-    dispatch({ type: "BULK_UPDATE", ids, isActive })
     setConfirmBulkDeactivate(false)
     const results = await Promise.allSettled(ids.map((id) => setUserActive(id, isActive)))
-    const failed = results.filter((r) => r.status === "rejected").length
+    const failed = results.filter((r) => r.status === "rejected" || r.value.isErr()).length
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    ])
     if (failed > 0) {
       toast.error(`${failed} de ${ids.length} fallaron al actualizar`)
       dispatch({ type: "REFRESH" })
@@ -373,7 +347,7 @@ export function AdminEntityTable({
               Error al cargar {entityNamePlural}
             </p>
             <p className="text-muted-foreground text-xs">{state.error}</p>
-            <Button variant="outline" size="sm" onClick={fetchItems}>
+            <Button variant="outline" size="sm" onClick={() => fetchItems()}>
               Reintentar
             </Button>
           </div>

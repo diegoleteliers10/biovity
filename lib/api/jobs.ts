@@ -266,7 +266,8 @@ export async function getManagedJob(
 }
 
 export async function createJob(
-  input: CreateJobInput
+  input: CreateJobInput,
+  requestHeaders?: Headers
 ): Promise<Result<Job, ApiError | NetworkError>> {
   const { benefits, ...rest } = input
   const body = {
@@ -289,11 +290,19 @@ export async function createJob(
       : undefined,
   }
 
-  return fetchJson<Job>(`${API_BASE}/api/v1/jobs`, {
+  const init: RequestInit = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
-  })
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(`${API_BASE}/api/v1/jobs`, requestHeaders, init)
+    : await fetchJson<unknown>(`${API_BASE}/api/v1/jobs`, init)
+  if (result.isErr()) return R.err(result.error)
+  const job = normalizeJobResponse(result.value)
+  return job
+    ? R.ok(job)
+    : R.err(new ApiError({ status: 200, message: "Respuesta de oferta inválida" }))
 }
 
 export type UpdateJobInput = Partial<
@@ -302,7 +311,8 @@ export type UpdateJobInput = Partial<
 
 export async function updateJob(
   id: string,
-  input: UpdateJobInput
+  input: UpdateJobInput,
+  requestHeaders?: Headers
 ): Promise<Result<Job, ApiError | NetworkError>> {
   const { benefits, ...rest } = input
   const body = {
@@ -325,11 +335,19 @@ export async function updateJob(
       : undefined,
   }
 
-  return fetchJson<Job>(`${API_BASE}/api/v1/jobs/${id}`, {
+  const init: RequestInit = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
-  })
+  }
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(`${API_BASE}/api/v1/jobs/${id}`, requestHeaders, init)
+    : await fetchJson<unknown>(`${API_BASE}/api/v1/jobs/${id}`, init)
+  if (result.isErr()) return R.err(result.error)
+  const job = normalizeJobResponse(result.value)
+  return job
+    ? R.ok(job)
+    : R.err(new ApiError({ status: 200, message: "Respuesta de oferta inválida" }))
 }
 
 export async function deleteJob(id: string): Promise<Result<void, ApiError | NetworkError>> {
