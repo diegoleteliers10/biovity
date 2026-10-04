@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -70,12 +70,14 @@ export async function getQuestionsByJob(
 }
 
 export async function getOrgQuestionsByJob(
-  orgId: string,
-  jobId: string
+  _orgId: string,
+  jobId: string,
+  requestHeaders?: Headers
 ): Promise<Result<JobQuestion[], ApiError | NetworkError>> {
-  const result = await fetchJson<{ data?: JobQuestion[] } | JobQuestion[]>(
-    `${API_BASE}/api/v1/job-questions/job/${jobId}`
-  )
+  const url = `${API_BASE}/api/v1/job-questions/job/${jobId}`
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data?: JobQuestion[] } | JobQuestion[]>(url, requestHeaders)
+    : await fetchJson<{ data?: JobQuestion[] } | JobQuestion[]>(url)
   if (result.isErr()) return R.err(result.error)
   const parsed = result.value as Record<string, unknown>
   const level1: unknown = parsed?.data ?? parsed

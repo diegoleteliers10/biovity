@@ -28,7 +28,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Job } from "@/lib/api/jobs"
 import { useApplicationsByJob } from "@/lib/api/use-applications"
-import { useJob } from "@/lib/api/use-jobs"
+import { useManagedJob } from "@/lib/api/use-jobs"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { formatDateChilean, formatJobSalary } from "@/lib/utils"
 
@@ -70,7 +70,7 @@ export default function OfertaDetailPage() {
   const { push } = useRouter()
   const params = useParams<{ id: string }>()
   const jobId = params?.id ?? undefined
-  const { data: job, isLoading: jobLoading, error } = useJob(jobId)
+  const { data: job, isLoading: jobLoading, error } = useManagedJob(jobId)
   const { data: organization } = useOrganization(job?.organizationId)
   const { data: applications, isLoading: appsLoading } = useApplicationsByJob(jobId)
 

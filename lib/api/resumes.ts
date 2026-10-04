@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -137,9 +137,13 @@ function normalizeResume(raw: unknown): Resume | null {
 }
 
 export async function getResumeByUserId(
-  userId: string
+  userId: string,
+  requestHeaders?: Headers
 ): Promise<Result<Resume | null, ApiError | NetworkError>> {
-  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/resumes/user/${userId}`)
+  const url = `${API_BASE}/api/v1/resumes/user/${userId}`
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders)
+    : await fetchJson<unknown>(url)
 
   if (result.isErr()) {
     const error = result.error

@@ -37,6 +37,9 @@ export function DeleteJobAlertDialog({ job, onClose, organizationId }: DeleteJob
           <AlertDialogDescription>
             Se eliminará la oferta "{job?.title}". Esta acción no se puede deshacer.
           </AlertDialogDescription>
+          {deleteMutation.isError && (
+            <p className="text-sm text-destructive">{deleteMutation.error.message}</p>
+          )}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={deleteMutation.isPending}>Cancelar</AlertDialogCancel>

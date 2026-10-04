@@ -9,6 +9,9 @@ import {
   getJob,
   getJobs,
   getJobsByOrganization,
+  getManagedJob,
+  type Job,
+  type JobsByOrganizationResponse,
   type UpdateJobInput,
   updateJob,
 } from "./jobs"
@@ -17,7 +20,14 @@ export const jobsKeys = {
   list: (organizationId?: string) => ["jobs", organizationId ?? ""] as const,
   byOrganization: (organizationId: string) => ["jobs", "organization", organizationId] as const,
   search: (params?: { search?: string; page?: number; category?: string; sort?: string }) =>
-    ["jobs", "search", params?.search ?? "", params?.page ?? 1, params?.category ?? "", params?.sort ?? ""] as const,
+    [
+      "jobs",
+      "search",
+      params?.search ?? "",
+      params?.page ?? 1,
+      params?.category ?? "",
+      params?.sort ?? "",
+    ] as const,
   detail: (id: string) => ["jobs", "detail", id] as const,
 }
 
@@ -25,13 +35,10 @@ export function useJobs(organizationId: string | undefined) {
   return useQuery({
     queryKey: jobsKeys.list(organizationId),
     queryFn: async () => {
-      const result = await getJobs({ organizationId })
+      if (!organizationId) throw new Error("Organization ID required")
+      const result = await getJobsByOrganization(organizationId, { page: 1, limit: 100 })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
-      let jobs = result.value.data
-      if (organizationId && jobs.length > 0) {
-        jobs = jobs.filter((j) => j.organizationId === organizationId)
-      }
-      return jobs
+      return result.value.data
     },
     enabled: Boolean(organizationId),
   })
@@ -102,6 +109,19 @@ export function useJob(id: string | undefined) {
   })
 }
 
+export function useManagedJob(id: string | undefined) {
+  return useQuery({
+    queryKey: [...jobsKeys.detail(id ?? ""), "managed"],
+    queryFn: async () => {
+      if (!id) throw new Error("Job ID required")
+      const result = await getManagedJob(id)
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
+    },
+    enabled: Boolean(id),
+  })
+}
+
 export function useCreateJobMutation(organizationId: string) {
   const queryClient = useQueryClient()
   return useMutation({
@@ -110,7 +130,28 @@ export function useCreateJobMutation(organizationId: string) {
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
-    onSuccess: () => {
+    onSuccess: (newJob) => {
+      queryClient.setQueryData<Job[]>(jobsKeys.list(organizationId), (jobs) =>
+        jobs ? [newJob, ...jobs.filter((job) => job.id !== newJob.id)] : jobs
+      )
+      queryClient.setQueryData<JobsByOrganizationResponse>(
+        [...jobsKeys.byOrganization(organizationId), 1, 10],
+        (current) =>
+          current
+            ? {
+                ...current,
+                data: [newJob, ...current.data.filter((job) => job.id !== newJob.id)].slice(
+                  0,
+                  current.limit
+                ),
+                total: current.total + (current.data.some((job) => job.id === newJob.id) ? 0 : 1),
+                totalPages: Math.ceil(
+                  (current.total + (current.data.some((job) => job.id === newJob.id) ? 0 : 1)) /
+                    current.limit
+                ),
+              }
+            : current
+      )
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
       queryClient.invalidateQueries({ queryKey: ["jobs", "search"] })

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
-import { fetchJson } from "@/lib/result"
+import { fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
@@ -13,8 +13,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const period = searchParams.get("period") === "90" ? 90 : 30
 
-  const result = await fetchJson<ApplicationsTrendResponse>(
+  const result = await fetchJsonWithSession<ApplicationsTrendResponse>(
     `${API_BASE}/api/v1/admin/analytics/applications-trend?period=${period}`,
+    request.headers,
     { next: { revalidate: 120 } }
   )
 

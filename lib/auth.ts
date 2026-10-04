@@ -17,7 +17,28 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/update-user") {
+        const updates = ctx.body as { type?: unknown; organizationId?: unknown }
+        if (updates.type !== undefined || updates.organizationId !== undefined) {
+          throw new APIError("FORBIDDEN", {
+            message: "No puedes cambiar el tipo ni la organización de la cuenta.",
+          })
+        }
+      }
+
       if (ctx.path !== "/sign-in/email" && ctx.path !== "/sign-up/email") return
+
+      if (ctx.path === "/sign-up/email") {
+        const body = ctx.body as { type?: unknown; organizationId?: unknown }
+        if (
+          (body.type !== "professional" && body.type !== "organization") ||
+          body.organizationId !== undefined
+        ) {
+          throw new APIError("FORBIDDEN", {
+            message: "Tipo de cuenta o organización inválidos.",
+          })
+        }
+      }
 
       const email = (ctx.body as { email?: string })?.email
       if (!email?.trim()) return
@@ -113,7 +134,7 @@ export const auth = betterAuth({
       organizationId: {
         type: "string",
         required: false,
-        input: true,
+        input: false,
       },
     },
   },

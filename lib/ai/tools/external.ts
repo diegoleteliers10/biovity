@@ -1,5 +1,6 @@
 import { tool } from "ai"
 import { Result } from "better-result"
+import { headers } from "next/headers"
 import { z } from "zod"
 import {
   type ApplicationStatus,
@@ -452,7 +453,7 @@ export const getApplicationDetailTool = tool({
     applicationId: z.string().min(1).max(100),
   }),
   execute: async ({ applicationId }) => {
-    const result = await getApplicationDetail(applicationId)
+    const result = await getApplicationDetail(applicationId, await headers())
     if (!Result.isOk(result)) {
       return { error: "Error al obtener detalle de la postulación", details: String(result.error) }
     }
@@ -518,10 +519,11 @@ export const sendDirectMessageTool = tool({
   needsApproval: true,
   execute: async ({ professionalId, senderId, content, chatId }) => {
     validateToolInput("sendDirectMessage", { content })
+    const requestHeaders = await headers()
 
     let targetChatId = chatId
     if (!targetChatId) {
-      const chatResult = await createOrFindChat(professionalId)
+      const chatResult = await createOrFindChat(professionalId, requestHeaders)
       if (!Result.isOk(chatResult)) {
         return {
           success: false,
@@ -543,7 +545,7 @@ export const sendDirectMessageTool = tool({
       type: "text",
     }
 
-    const result = await sendMessage(input)
+    const result = await sendMessage(input, requestHeaders)
     if (!Result.isOk(result)) {
       return {
         success: false,

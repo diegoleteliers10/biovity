@@ -280,8 +280,15 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
         onOpenChange(true)
         return
       }
-      if (!isEdit && !publishSucceededRef.current && !isSubmitting && form.title.trim()) {
-        createMutation.mutate(buildPayload("draft"))
+      if (isSubmitting) return
+      if (!isEdit && !publishSucceededRef.current && form.title.trim()) {
+        createMutation.mutate(buildPayload("draft"), {
+          onSuccess: () => {
+            resetForm()
+            onOpenChange(false)
+          },
+        })
+        return
       }
       resetForm()
       onOpenChange(false)

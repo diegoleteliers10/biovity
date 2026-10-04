@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
-import { fetchJson } from "@/lib/result"
+import { fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
@@ -48,13 +48,13 @@ export async function GET(request: NextRequest) {
   }
   if (search) query.set("search", search)
 
-  const result = await fetchJson<{
+  const result = await fetchJsonWithSession<{
     data?: BackendUser[]
     total?: number
     page?: number
     limit?: number
     totalPages?: number
-  }>(`${API_BASE}/api/v1/users?${query.toString()}`)
+  }>(`${API_BASE}/api/v1/users?${query.toString()}`, request.headers)
 
   if (result.isErr()) {
     const err = result.error

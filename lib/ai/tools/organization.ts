@@ -1,14 +1,15 @@
 import { tool } from "ai"
 import { Result, type Result as ResultType } from "better-result"
+import { headers } from "next/headers"
 import { z } from "zod"
 import {
   getApplicationDetail,
-  getApplicationsByCandidate,
   getApplicationsByJob,
   getApplicationsByOrganization,
 } from "@/lib/api/applications"
 import { createOrFindChat } from "@/lib/api/chats"
-import { getJob, getJobQuestions, getJobs } from "@/lib/api/jobs"
+import { getOrgQuestionsByJob } from "@/lib/api/job-questions"
+import { getJobsByOrganization, getManagedJob } from "@/lib/api/jobs"
 import { sendMessage } from "@/lib/api/messages"
 import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
 import { getResumeByUserId } from "@/lib/api/resumes"
@@ -101,7 +102,7 @@ const getCvPathFromSignedUrl = (url: string): string | null => {
   try {
     const parsed = new URL(url, "http://localhost")
     const path = parsed.searchParams.get("path")
-    if (!path || !path.startsWith("cv/")) return null
+    if (!path?.startsWith("cv/")) return null
     return path
   } catch {
     return null
@@ -137,8 +138,13 @@ export const getCandidatesTool = tool({
   }),
   execute: async ({ jobOfferId, status }) => {
     validateToolInput("getCandidates", { jobOfferId })
+    const requestHeaders = await headers()
     const apiStatus = status !== "all" ? mapKanbanToApiStatus(status) : undefined
-    const result = await getApplicationsByJob(jobOfferId, { limit: 100, status: apiStatus })
+    const result = await getApplicationsByJob(
+      jobOfferId,
+      { limit: 100, status: apiStatus },
+      requestHeaders
+    )
     if (!Result.isOk(result)) {
       return { error: "No se pudieron obtener candidatos", details: String(result.error) }
     }
@@ -146,8 +152,8 @@ export const getCandidatesTool = tool({
     const applications = result.value
     const candidates = await Promise.all(
       applications.map(async (application) => {
-        const userResult = await getUser(application.candidateId)
-        const resumeResult = await getResumeByUserId(application.candidateId)
+        const userResult = await getUser(application.candidateId, requestHeaders)
+        const resumeResult = await getResumeByUserId(application.candidateId, requestHeaders)
         const user = getResultValue(userResult)
         const resume = getResultValue(resumeResult)
 
@@ -180,7 +186,7 @@ export const getJobOfferTool = tool({
   }),
   execute: async ({ jobOfferId }) => {
     validateToolInput("getJobOffer", { jobOfferId })
-    const result = await getJob(jobOfferId)
+    const result = await getManagedJob(jobOfferId, await headers())
     if (!Result.isOk(result)) {
       return { error: "No se pudo obtener la oferta", details: String(result.error) }
     }
@@ -196,12 +202,12 @@ export const getJobOffersTool = tool({
     limit: z.number().min(1).max(50).default(20),
   }),
   execute: async ({ organizationId, status, limit = 20 }) => {
-    const result = await getJobs({
+    if (!organizationId) return { error: "No se pudo validar la organización" }
+    const result = await getJobsByOrganization(
       organizationId,
-      status: status === "all" ? undefined : status,
-      limit,
-      page: 1,
-    })
+      { limit, page: 1, status: status === "all" ? undefined : status },
+      await headers()
+    )
 
     if (!Result.isOk(result)) {
       return { error: "No se pudieron obtener ofertas", details: String(result.error) }
@@ -251,7 +257,8 @@ export const sendMessageToCandidateTool = tool({
   needsApproval: true,
   execute: async ({ candidateId, recruiterId, subject, body }) => {
     validateToolInput("sendMessageToCandidate", { candidateId, subject, body })
-    const chatResult = await createOrFindChat(candidateId)
+    const requestHeaders = await headers()
+    const chatResult = await createOrFindChat(candidateId, requestHeaders)
     if (!Result.isOk(chatResult)) {
       return {
         success: false,
@@ -260,12 +267,15 @@ export const sendMessageToCandidateTool = tool({
       }
     }
 
-    const messageResult = await sendMessage({
-      chatId: chatResult.value.id,
-      senderId: recruiterId,
-      content: `${subject}\n\n${body}`,
-      type: "text",
-    })
+    const messageResult = await sendMessage(
+      {
+        chatId: chatResult.value.id,
+        senderId: recruiterId,
+        content: `${subject}\n\n${body}`,
+        type: "text",
+      },
+      requestHeaders
+    )
     if (!Result.isOk(messageResult)) {
       return {
         success: false,
@@ -288,19 +298,23 @@ export const searchCandidatesBySkillsTool = tool({
   }),
   execute: async ({ skills, minExperience = 0, limit = 10 }) => {
     validateToolInput("searchCandidatesBySkills", { skills })
-    const usersResult = await getUsers({
-      type: "professional",
-      limit: 100,
-      page: 1,
-      isActive: true,
-    })
+    const requestHeaders = await headers()
+    const usersResult = await getUsers(
+      {
+        type: "professional",
+        limit: 100,
+        page: 1,
+        isActive: true,
+      },
+      requestHeaders
+    )
     if (!Result.isOk(usersResult)) {
       return { error: "No se pudieron obtener candidatos", details: String(usersResult.error) }
     }
 
     const candidates = await Promise.all(
       usersResult.value.data.map(async (user) => {
-        const resumeResult = await getResumeByUserId(user.id)
+        const resumeResult = await getResumeByUserId(user.id, requestHeaders)
         const resume = getResultValue(resumeResult)
         const skillsList = Array.isArray(resume?.skills)
           ? resume.skills.map((skill) => (typeof skill === "string" ? skill : skill.name))
@@ -340,19 +354,23 @@ export const searchProfessionalsTool = tool({
   }),
   execute: async ({ name, profession, skills, minExperience = 0, limit = 10 }) => {
     validateToolInput("searchProfessionals", { name, profession, skills })
-    const usersResult = await getUsers({
-      type: "professional",
-      limit: 100,
-      page: 1,
-      isActive: true,
-    })
+    const requestHeaders = await headers()
+    const usersResult = await getUsers(
+      {
+        type: "professional",
+        limit: 100,
+        page: 1,
+        isActive: true,
+      },
+      requestHeaders
+    )
     if (!Result.isOk(usersResult)) {
       return { error: "No se pudieron obtener profesionales", details: String(usersResult.error) }
     }
 
     const candidates = await Promise.all(
       usersResult.value.data.map(async (user) => {
-        const resumeResult = await getResumeByUserId(user.id)
+        const resumeResult = await getResumeByUserId(user.id, requestHeaders)
         const resume = getResultValue(resumeResult)
         const skillsList = Array.isArray(resume?.skills)
           ? resume.skills.map((skill) => (typeof skill === "string" ? skill : skill.name))
@@ -408,7 +426,11 @@ export const getOrganizationStatsTool = tool({
   }),
   execute: async ({ organizationId }) => {
     validateToolInput("getOrganizationStats", { organizationId })
-    const metricsResult = await getOrganizationMetrics(organizationId, { period: "month" })
+    const metricsResult = await getOrganizationMetrics(
+      organizationId,
+      { period: "month" },
+      await headers()
+    )
     if (!Result.isOk(metricsResult)) {
       return { error: "No se pudieron obtener métricas", details: String(metricsResult.error) }
     }
@@ -420,20 +442,27 @@ export const getCandidateDetailTool = tool({
   description: "Obtiene el perfil detallado de un candidato específico",
   inputSchema: z.object({
     candidateId: z.string().min(1).max(100),
+    organizationId: z.string().uuid(),
   }),
-  execute: async ({ candidateId }) => {
-    validateToolInput("getCandidateDetail", { candidateId })
+  execute: async ({ candidateId, organizationId }) => {
+    validateToolInput("getCandidateDetail", { candidateId, organizationId })
+    const requestHeaders = await headers()
     const [userResult, resumeResult, applicationsResult] = await Promise.all([
-      getUser(candidateId),
-      getResumeByUserId(candidateId),
-      getApplicationsByCandidate(candidateId, { limit: 50, page: 1 }),
+      getUser(candidateId, requestHeaders),
+      getResumeByUserId(candidateId, requestHeaders),
+      getApplicationsByOrganization(organizationId, { limit: 100, page: 1 }, requestHeaders),
     ])
 
     if (!Result.isOk(userResult)) return { error: "Candidato no encontrado" }
     return {
       profile: userResult.value,
       resume: getResultValue(resumeResult),
-      applications: Result.isOk(applicationsResult) ? applicationsResult.value : [],
+      applications:
+        applicationsResult && Result.isOk(applicationsResult)
+          ? applicationsResult.value.data.filter(
+              (application) => application.candidateId === candidateId
+            )
+          : [],
     }
   },
 })
@@ -450,8 +479,11 @@ export const listApplicationsTool = tool({
   }),
   execute: async ({ organizationId, status, limit = 50 }) => {
     validateToolInput("listApplications", { organizationId })
-    const { getApplicationsByOrganization } = await import("@/lib/api/applications")
-    const result = await getApplicationsByOrganization(organizationId, { page: 1, limit })
+    const result = await getApplicationsByOrganization(
+      organizationId,
+      { page: 1, limit },
+      await headers()
+    )
     if (!Result.isOk(result)) {
       return { error: "No se pudieron obtener postulaciones", details: String(result.error) }
     }
@@ -472,7 +504,8 @@ export const getApplicationDossierTool = tool({
   }),
   execute: async ({ applicationId }) => {
     validateToolInput("getApplicationDossier", { applicationId })
-    const applicationResult = await getApplicationDetail(applicationId)
+    const requestHeaders = await headers()
+    const applicationResult = await getApplicationDetail(applicationId, requestHeaders)
     if (!Result.isOk(applicationResult)) {
       return {
         error: "No se pudo obtener la postulación",
@@ -482,8 +515,12 @@ export const getApplicationDossierTool = tool({
 
     const application = applicationResult.value
     const [resumeResult, questionsResult] = await Promise.all([
-      getResumeByUserId(application.candidateId),
-      getJobQuestions(application.jobId),
+      getResumeByUserId(application.candidateId, requestHeaders),
+      getOrgQuestionsByJob(
+        application.job?.organizationId ?? "",
+        application.jobId,
+        requestHeaders
+      ),
     ])
 
     const resume = getResultValue(resumeResult)
@@ -530,9 +567,14 @@ export const getJobApplicationsWithAnswersTool = tool({
   }),
   execute: async ({ organizationId, jobId, page = 1, limit = 10 }) => {
     validateToolInput("getJobApplicationsWithAnswers", { organizationId, jobId })
+    const requestHeaders = await headers()
     const [applicationsResult, questionsResult] = await Promise.all([
-      getApplicationsByOrganization(organizationId, { page, limit, includeAnswers: true }),
-      getJobQuestions(jobId),
+      getApplicationsByOrganization(
+        organizationId,
+        { page, limit, includeAnswers: true },
+        requestHeaders
+      ),
+      getOrgQuestionsByJob(organizationId, jobId, requestHeaders),
     ])
 
     if (!Result.isOk(applicationsResult)) {

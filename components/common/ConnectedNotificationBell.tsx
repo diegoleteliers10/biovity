@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useCallback } from "react"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import {
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
@@ -15,10 +16,12 @@ export function ConnectedNotificationBell({
 }: {
   showAgentTrigger?: boolean
 }) {
-  const { data } = useNotifications()
+  const session = useDashboardSession()
+  const userId = session?.user?.id
+  const { data } = useNotifications(userId)
   const { push } = useRouter()
-  const markRead = useMarkNotificationRead()
-  const markAllRead = useMarkAllNotificationsRead()
+  const markRead = useMarkNotificationRead(userId)
+  const markAllRead = useMarkAllNotificationsRead(userId)
 
   const notifications = data?.data ?? []
   const unreadCount = data?.unreadCount ?? 0
