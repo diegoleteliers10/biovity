@@ -361,7 +361,7 @@ test('calendar creation and deletion change the visible month without a GET', ()
   client.clear()
 })
 
-test('two pending notification reads refresh only after the last PATCH completes', async (t) => {
+test('two pending notification reads never refetch and keep the optimistic state', async (t) => {
   const { QueryObserver } = actualQuery
   const previous = global.fetch
   const key = ['notifications', orgId]
@@ -391,7 +391,7 @@ test('two pending notification reads refresh only after the last PATCH completes
   assert.equal(queryClient.getQueryData(key).data.find(row => row.id === 'B').isRead, true)
   finish.get('B')(new Response(null, { status: 204 }))
   await second
-  assert.equal(reads, 2)
+  assert.equal(reads, 1)
 })
 
 test('an incoming message updates the unread badge once before a chat GET', () => {

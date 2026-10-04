@@ -61,11 +61,6 @@ export function useMarkNotificationRead(userId: string | undefined) {
         context?.ids ?? [],
         context?.hiddenUnreadCount ?? 0
       ),
-    onSettled: () => {
-      if (queryClient.isMutating({ mutationKey: ["notifications", "read", userId ?? ""] }) > 1)
-        return
-      void queryClient.invalidateQueries({ queryKey: notificationsKeys.byUser(userId) })
-    },
   })
 }
 
@@ -89,11 +84,6 @@ export function useMarkAllNotificationsRead(userId: string | undefined) {
         context?.ids ?? [],
         context?.hiddenUnreadCount ?? 0
       ),
-    onSettled: () => {
-      if (queryClient.isMutating({ mutationKey: ["notifications", "read", userId ?? ""] }) > 1)
-        return
-      void queryClient.invalidateQueries({ queryKey: notificationsKeys.byUser(userId) })
-    },
   })
 }
 
