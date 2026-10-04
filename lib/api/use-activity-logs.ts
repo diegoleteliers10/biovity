@@ -25,7 +25,9 @@ export function useActivityLogs(organizationId: string | undefined) {
       return result.value
     },
     enabled: Boolean(safeOrgId),
-    refetchInterval: 30_000, // Refresh every 30 seconds
+    // Fallback only. The realtime broadcast is the primary path, so this poll
+    // just covers a dropped channel. It pauses while the tab is hidden.
+    refetchInterval: 60_000,
   })
 }
 
