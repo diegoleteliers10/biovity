@@ -83,10 +83,22 @@ const nextConfig: NextConfig = {
       { key: "X-XSS-Protection", value: "1; mode=block" },
     ]
 
+    // These routes authenticate with cookies. A public cache directive lets the
+    // edge store a 200 under the url alone and replay it to a later caller, so
+    // every user-scoped response must be private and must vary on Cookie.
+    const privateHeaders = [
+      { key: "Cache-Control", value: "private, no-store, max-age=0, must-revalidate" },
+      { key: "Vary", value: "Cookie" },
+    ]
+
     return [
       {
-        source: "/api/auth/:path*",
-        headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate, private" }],
+        source: "/api/:path*",
+        headers: privateHeaders,
+      },
+      {
+        source: "/dashboard/:path*",
+        headers: privateHeaders,
       },
       {
         source: "/:path*",

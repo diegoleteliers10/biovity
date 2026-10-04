@@ -75,3 +75,38 @@ test('the security catch-all still covers api and dashboard paths', () => {
 test('content-hashed assets stay immutable', () => {
   assert.match(cacheValue('/_next/static/:path*'), /immutable/)
 })
+
+require('./register-ts.cjs')
+const nextConfig = require('../next.config.ts').default
+
+const nextHeaders = async () => await nextConfig.headers()
+
+test('next.config.ts marks every user-scoped route private as a second layer', async () => {
+  const rules = await nextHeaders()
+  for (const source of ['/api/:path*', '/dashboard/:path*']) {
+    const rule = rules.find(item => item.source === source)
+    assert.ok(rule, `next.config.ts must declare ${source}`)
+    const cache = rule.headers.find(item => item.key === 'Cache-Control')?.value ?? ''
+    const vary = rule.headers.find(item => item.key === 'Vary')?.value ?? ''
+    assert.match(cache, /no-store/, `${source} must forbid storage`)
+    assert.match(cache, /private/, `${source} must forbid shared caches`)
+    assert.match(vary, /Cookie/, `${source} must vary on Cookie`)
+  }
+})
+
+test('the auth routes keep a private rule of their own', async () => {
+  const rules = await nextHeaders()
+  const covered = ['/api/:path*', '/dashboard/:path*'].some(source =>
+    rules.some(rule => rule.source === source)
+  )
+  assert.ok(covered, '/api/auth must stay inside a private rule')
+})
+
+test('the vercel.json and next.config.ts layers agree on the private value', async () => {
+  const rules = await nextHeaders()
+  const fromNext = rules
+    .filter(rule => ['/api/:path*', '/dashboard/:path*'].includes(rule.source))
+    .map(rule => rule.headers.find(item => item.key === 'Cache-Control')?.value)
+  const fromVercel = ['/api/:path*', '/dashboard/:path*'].map(cacheValue)
+  assert.deepEqual(fromVercel, fromNext, 'both config layers must send the same directive')
+})
