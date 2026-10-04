@@ -62,9 +62,12 @@ export function useUpdateUserMutation(userId: string) {
       if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       if (data) queryClient.setQueryData(profileKeys.user(userId), data)
-      await queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
     },
   })
 }
@@ -77,9 +80,12 @@ export function useCreateResumeMutation(userId: string) {
       if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       if (data) queryClient.setQueryData(profileKeys.resume(userId), data)
-      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }
@@ -92,9 +98,12 @@ export function useUpdateResumeMutation(resumeId: string, userId: string) {
       if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       if (data) queryClient.setQueryData(profileKeys.resume(userId), data)
-      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }
@@ -107,9 +116,12 @@ export function useUploadResumeCvMutation(resumeId: string, userId: string) {
       if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       if (data) queryClient.setQueryData(profileKeys.resume(userId), data)
-      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }
@@ -126,9 +138,12 @@ export function useUploadAvatarMutation(userId: string) {
         return Promise.reject(new Error(getResultErrorMessage(updateResult.error)))
       return updateResult.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       if (data) queryClient.setQueryData(profileKeys.user(userId), data)
-      await queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
     },
   })
 }
@@ -171,11 +186,14 @@ export function useDeleteAvatarMutation(userId: string) {
       if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async () => {
+    onSuccess: () => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       queryClient.setQueryData<User>(profileKeys.user(userId), (old) =>
         old ? { ...old, avatar: "" } : old
       )
-      await queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.user(userId) })
     },
   })
 }
@@ -188,11 +206,14 @@ export function useDeleteCvMutation(resumeId: string, userId: string) {
       if (!R.isOk(result)) return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async () => {
+    onSuccess: () => {
+      void queryClient.cancelQueries({ queryKey: ["profile"] })
+      void queryClient.invalidateQueries({ queryKey: ["talent", "professionals"] })
+
       queryClient.setQueryData<Resume | null>(profileKeys.resume(userId), (old) =>
         old ? { ...old, cvFile: null } : old
       )
-      await queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
+      void queryClient.invalidateQueries({ queryKey: profileKeys.resume(userId) })
     },
   })
 }

@@ -83,12 +83,19 @@ export function useCreateApplicationMutation(candidateId: string | undefined) {
         return Promise.reject(new Error(getCreateApplicationErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "recentApplications"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["jobs"] })
+
       if (!candidateId?.trim()) return
       queryClient.setQueryData<Application[]>(applicationsKeys.byCandidate(candidateId), (old) =>
         old ? [data, ...old.filter((app) => app.id !== data.id)] : [data]
       )
-      await queryClient.invalidateQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["applications"] })
     },
   })
 }
@@ -102,14 +109,21 @@ export function useUpdateApplicationStatusMutation(jobId: string) {
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (updatedApp) => {
+    onSuccess: (updatedApp) => {
+      void queryClient.cancelQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "recentApplications"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["jobs"] })
+
       queryClient.setQueryData<Application[]>(applicationsKeys.byJob(jobId), (old) => {
         if (!old) return old
         return old.map((app) =>
           app.id === updatedApp.id ? { ...app, status: updatedApp.status } : app
         )
       })
-      await queryClient.invalidateQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["applications"] })
     },
   })
 }

@@ -24,7 +24,7 @@ export function useIncrementJobViews() {
     onSuccess: (data, jobId) => {
       if (!data) return
 
-      queryClient.setQueryData(["job", jobId], (old: unknown) => {
+      queryClient.setQueriesData({ queryKey: ["jobs", "detail", jobId] }, (old: unknown) => {
         if (!old || typeof old !== "object") return old
         return { ...old, views: data.views }
       })

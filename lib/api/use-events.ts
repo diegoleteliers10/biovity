@@ -22,6 +22,8 @@ import {
   updateParticipantStatus,
 } from "./events"
 
+import { removeCalendarEvent, storeCalendarEvent } from "./events-cache"
+
 export const eventsKeys = {
   all: ["events"] as const,
   list: (filters?: Record<string, unknown>) => ["events", "list", filters] as const,
@@ -89,14 +91,21 @@ export function useCreateEvent() {
   const queryClient = useQueryClient()
 
   return useMutation({
+    onMutate: () => queryClient.cancelQueries({ queryKey: eventsKeys.all }),
     mutationFn: async (input: CreateEventInput) => {
       const result = await createEvent(input)
       if (!Result.isOk(result))
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+    onSuccess: (data, input) => {
+      void queryClient.cancelQueries({ queryKey: eventsKeys.all })
+      storeCalendarEvent(queryClient, data, input.organizationId)
+      void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
   })
 }
@@ -105,15 +114,22 @@ export function useUpdateEvent() {
   const queryClient = useQueryClient()
 
   return useMutation({
+    onMutate: () => queryClient.cancelQueries({ queryKey: eventsKeys.all }),
     mutationFn: async ({ id, input }: { id: string; input: UpdateEventInput }) => {
       const result = await updateEvent(id, input)
       if (!Result.isOk(result))
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      void queryClient.cancelQueries({ queryKey: eventsKeys.all })
+      void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
-      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+      storeCalendarEvent(queryClient, data)
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
   })
 }
@@ -122,14 +138,21 @@ export function useDeleteEvent() {
   const queryClient = useQueryClient()
 
   return useMutation({
+    onMutate: () => queryClient.cancelQueries({ queryKey: eventsKeys.all }),
     mutationFn: async (id: string) => {
       const result = await deleteEvent(id)
       if (!Result.isOk(result))
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+    onSuccess: (_data, id) => {
+      void queryClient.cancelQueries({ queryKey: eventsKeys.all })
+      removeCalendarEvent(queryClient, id)
+      void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
   })
 }
@@ -138,6 +161,7 @@ export function useUpdateParticipantStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
+    onMutate: () => queryClient.cancelQueries({ queryKey: eventsKeys.all }),
     mutationFn: async ({
       eventId,
       userId,
@@ -152,9 +176,14 @@ export function useUpdateParticipantStatus() {
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: (data, variables) => {
+      void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
-      await queryClient.invalidateQueries({ queryKey: eventsKeys.all })
+      storeCalendarEvent(queryClient, data)
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
       queryClient.setQueriesData<Record<string, ParticipantStatus>>(
         { queryKey: ["events", "participant-statuses"] },
         (old) => ({ ...old, [variables.eventId]: variables.status })
@@ -189,6 +218,7 @@ export function useCreateEventNote() {
   const queryClient = useQueryClient()
 
   return useMutation({
+    onMutate: () => queryClient.cancelQueries({ queryKey: eventsKeys.all }),
     mutationFn: async ({
       eventId,
       authorId,
@@ -203,8 +233,12 @@ export function useCreateEventNote() {
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
+
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.notes(variables.eventId) })
     },
   })
 }

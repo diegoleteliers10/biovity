@@ -1,9 +1,9 @@
 "use client"
 
-import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
 import dynamic from "next/dynamic"
 import { useState } from "react"
-import { reconcileDashboardResources } from "@/lib/realtime/resources"
+import { createQueryClient } from "@/lib/query-client"
 
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
@@ -14,21 +14,7 @@ const ReactQueryDevtools =
     : () => null
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        mutationCache: new MutationCache({
-          onSettled: (_data, error, _variables, _context, _mutation, context) => {
-            if (!error) reconcileDashboardResources(context.client)
-          },
-        }),
-        defaultOptions: {
-          queries: {
-            staleTime: 60 * 1000,
-          },
-        },
-      })
-  )
+  const [queryClient] = useState(createQueryClient)
 
   return (
     <QueryClientProvider client={queryClient}>

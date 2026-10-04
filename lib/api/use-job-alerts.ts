@@ -32,11 +32,12 @@ export function useCreateJobAlert() {
       if (result.isErr()) return Promise.reject(new Error(result.error.message))
       return result.value
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: (data, variables) => {
+      void queryClient.cancelQueries({ queryKey: ["job-alerts"] })
       queryClient.setQueryData<JobAlert[]>(jobAlertsKeys.byUser(variables.userId), (old) =>
         old ? [data, ...old.filter((alert) => alert.id !== data.id)] : [data]
       )
-      await queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
+      void queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
     },
   })
 }
@@ -50,11 +51,12 @@ export function useDeleteJobAlert() {
       if (result.isErr()) return Promise.reject(new Error(result.error.message))
       return result.value
     },
-    onSuccess: async (_, variables) => {
+    onSuccess: (_, variables) => {
+      void queryClient.cancelQueries({ queryKey: ["job-alerts"] })
       queryClient.setQueryData<JobAlert[]>(jobAlertsKeys.byUser(variables.userId), (old) =>
         old?.filter((alert) => alert.id !== variables.id)
       )
-      await queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
+      void queryClient.invalidateQueries({ queryKey: jobAlertsKeys.byUser(variables.userId) })
     },
   })
 }

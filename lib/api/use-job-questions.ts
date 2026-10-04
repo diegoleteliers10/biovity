@@ -49,6 +49,8 @@ export function useCreateQuestionMutation(
       return result.value
     },
     onSuccess: (newQuestion) => {
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "job", jobId] })
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "public", jobId] })
       queryClient.setQueryData<JobQuestion[]>(jobQuestionsKeys.byOrgJob(orgId, jobId), (old) => {
         if (!old) return [newQuestion]
         const withoutNew = old.filter((q) => q.id !== newQuestion.id)
@@ -70,6 +72,8 @@ export function useUpdateQuestionMutation(
       return result.value
     },
     onSuccess: (updated) => {
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "job", jobId] })
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "public", jobId] })
       queryClient.setQueryData<JobQuestion[]>(jobQuestionsKeys.byOrgJob(orgId, jobId), (old) =>
         old?.map((q) => (q.id === updated.id ? updated : q))
       )
@@ -88,6 +92,8 @@ export function useDeleteQuestionMutation(
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
     },
     onSuccess: (_, deletedId) => {
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "job", jobId] })
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "public", jobId] })
       queryClient.setQueryData<JobQuestion[]>(jobQuestionsKeys.byOrgJob(orgId, jobId), (old) =>
         old?.filter((q) => q.id !== deletedId)
       )
@@ -107,6 +113,8 @@ export function usePublishQuestionMutation(
       return result.value
     },
     onSuccess: (_, questionId) => {
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "job", jobId] })
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "public", jobId] })
       queryClient.setQueryData<JobQuestion[]>(jobQuestionsKeys.byOrgJob(orgId, jobId), (old) =>
         old?.map((q) => (q.id === questionId ? { ...q, status: "published" as const } : q))
       )
@@ -126,6 +134,8 @@ export function useUnpublishQuestionMutation(
       return result.value
     },
     onSuccess: (_, questionId) => {
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "job", jobId] })
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "public", jobId] })
       queryClient.setQueryData<JobQuestion[]>(jobQuestionsKeys.byOrgJob(orgId, jobId), (old) =>
         old?.map((q) => (q.id === questionId ? { ...q, status: "draft" as const } : q))
       )
@@ -144,6 +154,8 @@ export function useReorderQuestionsMutation(
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
     },
     onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "job", jobId] })
+      void queryClient.invalidateQueries({ queryKey: ["job-questions", "public", jobId] })
       queryClient.invalidateQueries({ queryKey: jobQuestionsKeys.byOrgJob(orgId, jobId) })
     },
   })

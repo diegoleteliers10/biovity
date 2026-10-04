@@ -20,3 +20,9 @@ export type UserChannel = {
   status: ConnectionStatus
   listeners: Set<UserEventListener>
 }
+
+export type DashboardSubscription = {
+  topic: string
+  close: () => void
+  previous: DashboardSubscription | null
+}

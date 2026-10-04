@@ -19,11 +19,9 @@ export function useMessages(chatId: string | undefined, userId: string | undefin
 
   const query = useQuery({
     queryKey: messagesKeys.byChat(effectiveChatId),
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       if (!effectiveChatId) return Promise.reject(new Error("Chat ID required"))
-      const result = await getMessagesByChatId(effectiveChatId, {
-        limit: 100,
-      })
+      const result = await getMessagesByChatId(effectiveChatId, { limit: 100 }, undefined, signal)
       if (!Result.isOk(result)) return Promise.reject(result.error)
       return result.value.data ?? []
     },
