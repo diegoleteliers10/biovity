@@ -406,3 +406,60 @@ test('an incoming message updates the unread badge once before a chat GET', () =
   assert.equal(client.getQueryData(key)[0].lastMessage, 'Live')
   client.clear()
 })
+
+async function mountObservers(t, client, keys) {
+  const reads = {}
+  for (const key of keys) {
+    reads[key] = 0
+    const observer = new actualQuery.QueryObserver(client, {
+      queryKey: [key, 'x'],
+      staleTime: Infinity,
+      queryFn: async () => {
+        reads[key] += 1
+        return []
+      },
+    })
+    t.after(observer.subscribe(() => {}))
+  }
+  await new Promise(resolve => setTimeout(resolve, 50))
+  for (const key of keys) reads[key] = 0
+  return reads
+}
+
+test('a burst of connects coalesces into one catch-up sweep', async t => {
+  const { reconcileDashboardResources } = require('../lib/realtime/resources.ts')
+  const client = new QueryClient()
+  t.after(() => client.clear())
+  const reads = await mountObservers(t, client, ['jobs', 'events'])
+
+  reconcileDashboardResources(client)
+  reconcileDashboardResources(client)
+  reconcileDashboardResources(client)
+
+  await new Promise(resolve => setTimeout(resolve, 1200))
+  assert.deepEqual(reads, { jobs: 1, events: 1 })
+})
+
+test('the catch-up sweep skips the realtime and lookup keys', async t => {
+  const { reconcileDashboardResources } = require('../lib/realtime/resources.ts')
+  const client = new QueryClient()
+  t.after(() => client.clear())
+  const reads = await mountObservers(t, client, ['realtime', 'fit-score', 'jobs'])
+
+  reconcileDashboardResources(client)
+  await new Promise(resolve => setTimeout(resolve, 1200))
+  assert.equal(reads.realtime, 0)
+  assert.equal(reads['fit-score'], 0)
+  assert.equal(reads.jobs, 1)
+})
+
+test('a single connect still sweeps, the coalescing never drops it', async t => {
+  const { reconcileDashboardResources } = require('../lib/realtime/resources.ts')
+  const client = new QueryClient()
+  t.after(() => client.clear())
+  const reads = await mountObservers(t, client, ['jobs'])
+
+  reconcileDashboardResources(client)
+  await new Promise(resolve => setTimeout(resolve, 1200))
+  assert.equal(reads.jobs, 1)
+})

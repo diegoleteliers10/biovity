@@ -34,7 +34,9 @@ export function useNotifications(userId: string | undefined) {
       }
       return result.value
     },
-    refetchInterval: 30_000,
+    // Fallback only. The realtime broadcast is the primary path, so this poll
+    // just covers a dropped channel. It pauses while the tab is hidden.
+    refetchInterval: 60_000,
     refetchOnWindowFocus: true,
     refetchOnMount: "always",
     enabled: Boolean(userId),

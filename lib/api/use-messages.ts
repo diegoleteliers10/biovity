@@ -28,7 +28,9 @@ export function useMessages(chatId: string | undefined, userId: string | undefin
     enabled: Boolean(effectiveChatId && userId),
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
-    refetchInterval: 15_000,
+    // Fallback only. The realtime broadcast is the primary path, so this poll
+    // just covers a dropped channel. It pauses while the tab is hidden.
+    refetchInterval: 30_000,
   })
 
   const messages = query.data

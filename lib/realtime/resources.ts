@@ -57,9 +57,24 @@ export function invalidateResource(client: QueryClient, payload: unknown) {
   return parsed.data.resource
 }
 
+// A channel can reach SUBSCRIBED more than once in quick succession, and each
+// connect asks for a full catch-up sweep. Coalesce those into one trailing
+// sweep so a burst of connects refetches each mounted query once. The trailing
+// edge always runs, so a reconnect after a real gap is never dropped.
+const RECONCILE_COALESCE_MS = 1_000
+const pendingReconciles = new WeakMap<QueryClient, ReturnType<typeof setTimeout>>()
+
+const shouldReconcile = (queryKey: readonly unknown[]) =>
+  !["realtime", "fit-score", "address-search"].includes(String(queryKey[0]))
+
 export function reconcileDashboardResources(client: QueryClient) {
-  void client.invalidateQueries({
-    predicate: (query) =>
-      !["realtime", "fit-score", "address-search"].includes(String(query.queryKey[0])),
-  })
+  const scheduled = pendingReconciles.get(client)
+  if (scheduled) clearTimeout(scheduled)
+  pendingReconciles.set(
+    client,
+    setTimeout(() => {
+      pendingReconciles.delete(client)
+      void client.invalidateQueries({ predicate: (query) => shouldReconcile(query.queryKey) })
+    }, RECONCILE_COALESCE_MS)
+  )
 }
