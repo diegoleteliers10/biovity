@@ -28,8 +28,12 @@ Module._load = function (name, parent, ...args) {
     useCallback: (fn) => fn,
     useSyncExternalStore: (subscribe, snapshot) => { disposers.push(subscribe(() => {})); return snapshot() },
   }
-  if (name === 'next/navigation') return { useRouter: () => ({ push() {} }) }
-  if (name === 'sonner') return { toast: { info() {} } }
+  if (name === 'next/navigation') return {
+    useRouter: () => ({ push() {} }),
+    useSearchParams: () => new URLSearchParams(''),
+  }
+  if (name === 'sonner') return { toast: { info() {}, custom() {}, dismiss() {} } }
+  if (name === '@/components/ui/message-toast') return { showMessageToast() {} }
   if (name === '@/lib/supabase-browser') return { createClientBrowser: () => supabase }
   if (name === './use-realtime-topics') return { useRealtimeUserTopic: () => 'fixture-topic' }
   return load.call(this, name, parent, ...args)
@@ -462,4 +466,33 @@ test('a single connect still sweeps, the coalescing never drops it', async t => 
   reconcileDashboardResources(client)
   await new Promise(resolve => setTimeout(resolve, 1200))
   assert.equal(reads.jobs, 1)
+})
+
+test('a message in the open chat does not raise the unread badge', () => {
+  const { applyDashboardEvent } = require('../lib/realtime/dashboard-events.ts')
+  const client = new QueryClient()
+  const key = ['chats', 'professional', orgId]
+  client.setQueryData(key, [{ id: job.id, recruiterId: orgId, professionalId: 'me', unreadCountRecruiter: 0, unreadCountProfessional: 0 }])
+  const event = { event: 'message_insert', payload: { id: 'open-chat-message', chatId: job.id, senderId: 'someone-else', content: 'Hola', createdAt: new Date().toISOString() } }
+  applyDashboardEvent(client, 'me', event, job.id)
+  assert.equal(client.getQueryData(key)[0].unreadCountProfessional, 0)
+  assert.equal(client.getQueryData(key)[0].lastMessage, 'Hola')
+  client.clear()
+})
+
+test('a message in a background chat still raises the unread badge', () => {
+  const { applyDashboardEvent } = require('../lib/realtime/dashboard-events.ts')
+  const client = new QueryClient()
+  const key = ['chats', 'professional', orgId]
+  client.setQueryData(key, [{ id: job.id, recruiterId: orgId, professionalId: 'me', unreadCountRecruiter: 0, unreadCountProfessional: 0 }])
+  const event = { event: 'message_insert', payload: { id: 'other-chat-message', chatId: job.id, senderId: 'someone-else', content: 'Hola', createdAt: new Date().toISOString() } }
+  applyDashboardEvent(client, 'me', event, 'a-different-chat')
+  assert.equal(client.getQueryData(key)[0].unreadCountProfessional, 1)
+  client.clear()
+})
+
+test('the viewer context only treats the chat param as open when it is set', () => {
+  const { activeChatId, isReadingMessages } = require('../lib/realtime/viewer-context.ts')
+  assert.equal(typeof isReadingMessages, 'function')
+  assert.equal(activeChatId(), null)
 })

@@ -20,7 +20,12 @@ const NotificationEventSchema = z.object({
   created_at: z.string(),
 })
 
-export function applyDashboardEvent(client: QueryClient, userId: string, event: UserEvent) {
+export function applyDashboardEvent(
+  client: QueryClient,
+  userId: string,
+  event: UserEvent,
+  activeChatId?: string | null
+) {
   if (event.event === "resource_changed") {
     invalidateResource(client, event.payload)
     return null
@@ -45,21 +50,22 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
       current && !current.some((item) => item.id === message.id) ? [...current, message] : current
     )
     client.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (current) =>
-      current?.map((chat) =>
-        chat.id === message.chatId
-          ? {
-              ...chat,
-              lastMessage: message.content,
-              updatedAt: message.createdAt,
-              unreadCountRecruiter:
-                (chat.unreadCountRecruiter ?? 0) +
-                (chat.recruiterId === userId && message.senderId !== userId ? 1 : 0),
-              unreadCountProfessional:
-                (chat.unreadCountProfessional ?? 0) +
-                (chat.professionalId === userId && message.senderId !== userId ? 1 : 0),
-            }
-          : chat
-      )
+      current?.map((chat) => {
+        if (chat.id !== message.chatId) return chat
+        // The message is already on screen, so it does not count as unread.
+        const visible = activeChatId === message.chatId
+        return {
+          ...chat,
+          lastMessage: message.content,
+          updatedAt: message.createdAt,
+          unreadCountRecruiter:
+            (chat.unreadCountRecruiter ?? 0) +
+            (!visible && chat.recruiterId === userId && message.senderId !== userId ? 1 : 0),
+          unreadCountProfessional:
+            (chat.unreadCountProfessional ?? 0) +
+            (!visible && chat.professionalId === userId && message.senderId !== userId ? 1 : 0),
+        }
+      })
     )
     return null
   }
