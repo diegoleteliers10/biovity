@@ -1,21 +1,22 @@
 import type { RealtimeChannel } from "@supabase/supabase-js"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useMountEffect } from "@/hooks/use-mount-effect"
+import { useRealtimeChatTopic } from "@/lib/api/use-realtime-topics"
 import { createClientBrowser } from "@/lib/supabase-browser"
 
 export function useChatPresence(chatId: string | undefined, myId: string | undefined) {
+  const topic = useRealtimeChatTopic(chatId, myId)
   const [isTyping, setIsTyping] = useState(false)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const channelRef = useRef<RealtimeChannel | null>(null)
 
   useEffect(() => {
-    if (!chatId || !myId) return
+    if (!chatId || !myId || !topic) return
     const supabase = createClientBrowser()
     if (!supabase) return
 
-    const room = `chat-${chatId}`
-    const channel = supabase.channel(room, {
-      config: { presence: { key: myId } },
+    const channel = supabase.channel(topic, {
+      config: { private: true, presence: { key: myId } },
     })
 
     channel
@@ -43,7 +44,7 @@ export function useChatPresence(chatId: string | undefined, myId: string | undef
       channelRef.current = null
       setIsTyping(false)
     }
-  }, [chatId, myId])
+  }, [chatId, myId, topic])
 
   useMountEffect(() => {
     return () => {

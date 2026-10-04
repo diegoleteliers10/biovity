@@ -3,13 +3,13 @@ import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
 import type { Chat } from "@/lib/api/chats"
 import type { Job } from "@/lib/api/jobs"
 import type { User } from "@/lib/api/users"
-import type { GeographicDistributionEntry } from "@/lib/types/organization-metrics"
 import type {
   Applicant,
   ApplicationStage,
   Metric,
   OrganizationRecentApplication,
 } from "@/lib/types/dashboard"
+import type { GeographicDistributionEntry } from "@/lib/types/organization-metrics"
 
 /**
  * Synthetic fixtures for the public organization-dashboard demo on `/companies`.
@@ -253,52 +253,79 @@ export const DEMO_KANBAN_BY_JOB: Record<string, Applicant[]> = {
 /** Pre-seeded AI scores displayed on the kanban cards (getScore callback shape). */
 export const DEMO_AI_SCORES: Record<string, CandidateScore> = {
   "cand-a-1": {
+    applicationId: "demo-application-a-1",
     candidateId: "cand-a-1",
+    revisionId: "00000000-0000-4000-8000-000000000001",
+    status: "ready",
     score: 92,
     label: "Excelente",
-    reason:
-      "Experiencia directa en cultivo celular y HPLC alineada con los requisitos de la oferta.",
-    strengths: ["5 años en cultivo celular", "Manejo de HPLC", "Magíster en Biotecnología"],
-    gaps: ["Sin experiencia en GMP"],
-    recommendation: "Avanzar",
+    confidence: 0.88,
+    sufficiency: 0.94,
+    distribution: null,
+    perQuestion: null,
+    explanationStatus: "pending",
+    errorCode: null,
+    updatedAt: new Date().toISOString(),
   },
   "cand-a-6": {
+    applicationId: "demo-application-a-6",
     candidateId: "cand-a-6",
+    revisionId: "00000000-0000-4000-8000-000000000002",
+    status: "ready",
     score: 78,
     label: "Bueno",
-    reason: "Perfil sólido en qPCR y análisis de datos; le falta experiencia en biorreactores.",
-    strengths: ["qPCR avanzado", "Publicaciones en revistas indexadas"],
-    gaps: ["Sin manejo de biorreactores"],
-    recommendation: "Avanzar",
+    confidence: 0.81,
+    sufficiency: 0.92,
+    distribution: null,
+    perQuestion: null,
+    explanationStatus: "pending",
+    errorCode: null,
+    updatedAt: new Date().toISOString(),
   },
   "cand-b-3": {
+    applicationId: "demo-application-b-3",
     candidateId: "cand-b-3",
+    revisionId: "00000000-0000-4000-8000-000000000003",
+    status: "ready",
     score: 61,
     label: "Regular",
-    reason:
-      "Cumple requisitos base de microbiología, pero con poca experiencia en control de calidad formal.",
-    strengths: ["Práctica en laboratorio clínico"],
-    gaps: ["Poca experiencia en QC", "Sin certificación ISO 17025"],
-    recommendation: "Evaluar",
+    confidence: 0.78,
+    sufficiency: 0.84,
+    distribution: null,
+    perQuestion: null,
+    explanationStatus: "pending",
+    errorCode: null,
+    updatedAt: new Date().toISOString(),
   },
   "cand-c-1": {
+    applicationId: "demo-application-c-1",
     candidateId: "cand-c-1",
+    revisionId: "00000000-0000-4000-8000-000000000004",
+    status: "ready",
     score: 88,
     label: "Excelente",
-    reason:
-      "Pipelines NGS y Python productivo; encaja directo con lo que busca el rol de bioinformática.",
-    strengths: ["Pipelines NGS propios", "Python/R", "Trabajo con equipos I+D"],
-    gaps: ["Inglés técnico intermedio"],
-    recommendation: "Avanzar",
+    confidence: 0.9,
+    sufficiency: 0.95,
+    distribution: null,
+    perQuestion: null,
+    explanationStatus: "pending",
+    errorCode: null,
+    updatedAt: new Date().toISOString(),
   },
   "cand-c-3": {
+    applicationId: "demo-application-c-3",
     candidateId: "cand-c-3",
+    revisionId: "00000000-0000-4000-8000-000000000005",
+    status: "ready",
     score: 43,
     label: "Bajo",
-    reason: "Perfil orientado a datos clínicos más que a bioinformática de investigación.",
-    strengths: ["Bases de SQL"],
-    gaps: ["Sin experiencia NGS", "Sin Python productivo"],
-    recommendation: "Descartar",
+    confidence: 0.74,
+    sufficiency: 0.82,
+    distribution: null,
+    perQuestion: null,
+    explanationStatus: "pending",
+    errorCode: null,
+    updatedAt: new Date().toISOString(),
   },
 }
 
@@ -394,28 +421,37 @@ function talentUser(
 }
 
 export const DEMO_TALENT_USERS: User[] = [
-  talentUser("cand-1", "Matías Contreras", "Biotecnólogo I+D", "Santiago", [
-    "Cultivo celular",
-    "HPLC",
-    "GMP",
-  ], 1),
-  talentUser("cand-2", "Rocío Vera", "Bioinformática", "Santiago", [
-    "Python",
-    "NGS",
-    "R",
-  ], 2),
-  talentUser("cand-3", "Josefa Muñoz", "Analista QC Microbiología", "Valparaíso", [
-    "Microbiología",
-    "ISO 17025",
-    "QC",
-  ], 3),
-  talentUser("cand-6", "Antonia Riquelme", "Biotecnóloga", "Concepción", [
-    "qPCR",
-    "ELISA",
-    "Cultivo celular",
-  ], 5),
-  talentUser("cand-7", "Tomás Herrera", "Químico Analista", "Antofagasta", [
-    "Espectroscopía",
-    "GC-MS",
-  ], 8),
+  talentUser(
+    "cand-1",
+    "Matías Contreras",
+    "Biotecnólogo I+D",
+    "Santiago",
+    ["Cultivo celular", "HPLC", "GMP"],
+    1
+  ),
+  talentUser("cand-2", "Rocío Vera", "Bioinformática", "Santiago", ["Python", "NGS", "R"], 2),
+  talentUser(
+    "cand-3",
+    "Josefa Muñoz",
+    "Analista QC Microbiología",
+    "Valparaíso",
+    ["Microbiología", "ISO 17025", "QC"],
+    3
+  ),
+  talentUser(
+    "cand-6",
+    "Antonia Riquelme",
+    "Biotecnóloga",
+    "Concepción",
+    ["qPCR", "ELISA", "Cultivo celular"],
+    5
+  ),
+  talentUser(
+    "cand-7",
+    "Tomás Herrera",
+    "Químico Analista",
+    "Antofagasta",
+    ["Espectroscopía", "GC-MS"],
+    8
+  ),
 ]

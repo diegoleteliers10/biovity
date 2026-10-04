@@ -1,94 +1,144 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result as R, type Result } from "better-result"
+import { useState } from "react"
+import { z } from "zod"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
-import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
-import type { Resume } from "@/lib/api/resumes"
 
-type ScoreEntry = {
+export type ScoreEntry = {
   score: CandidateScore
   analyzedAt: Date
 }
 
-export type { ScoreEntry }
+const CandidateScoreSchema = z.object({
+  applicationId: z.string(),
+  candidateId: z.string(),
+  revisionId: z.string(),
+  status: z.enum(["pending", "processing", "ready", "insufficient", "failed"]),
+  score: z.number().nullable(),
+  label: z.enum(["Bajo", "Regular", "Bueno", "Excelente"]).nullable(),
+  confidence: z.number().nullable(),
+  sufficiency: z.number().nullable(),
+  distribution: z.record(z.string(), z.number()).nullable(),
+  perQuestion: z.record(z.string(), z.unknown()).nullable(),
+  explanationStatus: z.enum(["pending", "processing", "ready", "failed", "expired"]),
+  errorCode: z.string().nullable(),
+  updatedAt: z.string(),
+}) satisfies z.ZodType<CandidateScore>
 
-export function useKanbanAIScoring() {
-  const [scores, setScores] = useState<Map<string, ScoreEntry>>(new Map())
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [analyzedAt, setAnalyzedAt] = useState<Date | null>(null)
-  const [error, setError] = useState<string | null>(null)
+const ScoresResponseSchema = z.object({ scores: z.array(CandidateScoreSchema) })
+const QueueResponseSchema = z.object({ queued: z.number() })
 
-  const analyze = useCallback(
-    async (
-      candidates: { id: string; data: CandidateContext }[],
-      jobOffer: JobOfferContext,
-      resumes?: Record<string, Resume>
-    ) => {
-      if (!candidates.length) return
+const scoreKeys = {
+  job: (jobId: string | null) => ["jev-scores", jobId] as const,
+}
 
-      setIsAnalyzing(true)
-      setError(null)
+async function fetchScores(
+  jobId: string
+): Promise<Result<z.infer<typeof ScoresResponseSchema>, Error>> {
+  const responseResult = await R.tryPromise({
+    try: () => fetch(`/api/ai/score-candidates?jobId=${encodeURIComponent(jobId)}`),
+    catch: (cause) =>
+      cause instanceof Error ? cause : new Error("No se pudo conectar con el análisis"),
+  })
+  if (responseResult.isErr()) return R.err(responseResult.error)
+  if (!responseResult.value.ok) return R.err(new Error("No se pudieron cargar los análisis"))
+  const bodyResult = await R.tryPromise({
+    try: () => responseResult.value.json(),
+    catch: () => new Error("La respuesta de análisis no es válida"),
+  })
+  if (bodyResult.isErr()) return R.err(bodyResult.error)
+  const parsed = ScoresResponseSchema.safeParse(bodyResult.value)
+  return parsed.success
+    ? R.ok(parsed.data)
+    : R.err(new Error("La respuesta de análisis no es válida"))
+}
 
-      try {
-        const candidatesWithResume = candidates.map((c) => {
-          const resume = resumes?.[c.id]
-          return {
-            ...c,
-            data: {
-              ...c.data,
-              skills: [...c.data.skills, ...(resume?.skills ?? [])],
-              resumeUrl: resume?.cvFile?.url,
-              experiences:
-                resume?.experiences
-                  ?.map((e) => [e.title, e.company, e.description].filter(Boolean).join(" - "))
-                  .filter(Boolean) ?? [],
-              certifications:
-                resume?.certifications?.map((cert) => cert.name || cert.title).filter(Boolean) ??
-                [],
-              languages:
-                resume?.languages?.map((lang) => lang.name || lang.language).filter(Boolean) ?? [],
-            },
-          }
-        })
+async function enqueueAssessments(
+  jobId: string | null,
+  applicationIds: string[]
+): Promise<Result<z.infer<typeof QueueResponseSchema>, Error>> {
+  const responseResult = await R.tryPromise({
+    try: () =>
+      fetch("/api/ai/score-candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId, applicationIds }),
+      }),
+    catch: (cause) =>
+      cause instanceof Error ? cause : new Error("No se pudo conectar con el análisis"),
+  })
+  if (responseResult.isErr()) return R.err(responseResult.error)
+  const bodyResult = await R.tryPromise({
+    try: () => responseResult.value.json(),
+    catch: () => new Error("La respuesta de análisis no es válida"),
+  })
+  if (bodyResult.isErr()) return R.err(bodyResult.error)
+  if (!responseResult.value.ok) {
+    const parsedError = z.object({ error: z.string() }).safeParse(bodyResult.value)
+    return R.err(
+      new Error(parsedError.success ? parsedError.data.error : "No se pudo iniciar el análisis")
+    )
+  }
+  const parsed = QueueResponseSchema.safeParse(bodyResult.value)
+  return parsed.success
+    ? R.ok(parsed.data)
+    : R.err(new Error("La respuesta de análisis no es válida"))
+}
 
-        const res = await fetch("/api/ai/score-candidates", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ candidates: candidatesWithResume, jobOffer }),
-        })
-
-        if (!res.ok) throw new Error("API error")
-
-        const data = (await res.json()) as { scores: CandidateScore[] }
-        const now = new Date()
-
-        setScores((prev) => {
-          const next = new Map(prev)
-          for (const s of data.scores) {
-            next.set(s.candidateId, { score: s, analyzedAt: now })
-          }
-          return next
-        })
-        setAnalyzedAt(now)
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Error al analizar")
-      } finally {
-        setIsAnalyzing(false)
+export function useKanbanAIScoring(jobId: string | null) {
+  const queryClient = useQueryClient()
+  const [actionError, setActionError] = useState<string | null>(null)
+  const query = useQuery({
+    queryKey: scoreKeys.job(jobId),
+    queryFn: () => fetchScores(jobId ?? ""),
+    enabled: Boolean(jobId),
+    refetchInterval: (state) =>
+      state.state.data?.isOk() &&
+      state.state.data.value.scores.some(
+        (score) => score.status === "pending" || score.status === "processing"
+      )
+        ? 2_000
+        : false,
+  })
+  const analyzeMutation = useMutation({
+    mutationFn: (applicationIds: string[]) => enqueueAssessments(jobId, applicationIds),
+    onMutate: () => setActionError(null),
+    onSuccess: (result) => {
+      if (result.isErr()) {
+        setActionError(result.error.message)
+        return
       }
+      void queryClient.invalidateQueries({ queryKey: scoreKeys.job(jobId) })
     },
-    []
+  })
+
+  const response = query.data?.isOk() ? query.data.value : null
+  const entries = new Map(
+    (response?.scores ?? []).map((score) => [
+      score.applicationId,
+      {
+        score,
+        analyzedAt: new Date(score.updatedAt),
+      },
+    ])
   )
 
-  const clearScores = useCallback(() => {
-    setScores(new Map())
-    setAnalyzedAt(null)
-    setError(null)
-  }, [])
-
-  const getScore = useCallback(
-    (candidateId: string): ScoreEntry | undefined => scores.get(candidateId),
-    [scores]
-  )
-
-  return { analyze, clearScores, getScore, scores, isAnalyzing, analyzedAt, error }
+  return {
+    analyze: (applicationIds: string[]) => analyzeMutation.mutate(applicationIds),
+    getScore: (candidateId: string) => entries.get(candidateId),
+    isAnalyzing:
+      analyzeMutation.isPending ||
+      (entries.size > 0 &&
+        [...entries.values()].some(
+          ({ score }) => score.status === "pending" || score.status === "processing"
+        )),
+    analyzedAt:
+      entries.size > 0
+        ? new Date(Math.max(...[...entries.values()].map(({ analyzedAt }) => analyzedAt.getTime())))
+        : null,
+    error: actionError ?? (query.data?.isErr() ? query.data.error.message : null),
+    scores: entries,
+  }
 }

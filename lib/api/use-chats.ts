@@ -7,6 +7,8 @@ import { getResultErrorMessage } from "@/lib/result"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import type { Chat } from "./chats"
 import { createOrFindChat, getChatsByProfessional, getChatsByRecruiter } from "./chats"
+import { parseRealtimeMessage } from "./messages"
+import { useRealtimeUserTopic } from "./use-realtime-topics"
 
 export const chatsKeys = {
   byRecruiter: (recruiterId: string) => ["chats", "recruiter", recruiterId] as const,
@@ -58,45 +60,39 @@ export function useCreateOrFindChatMutation(recruiterId: string | undefined) {
   })
 }
 
-export function useChatListRealtime(chats: Chat[]) {
+export function useChatListRealtime(chats: Chat[], userId: string | undefined) {
   const queryClient = useQueryClient()
+  const topic = useRealtimeUserTopic(userId)
   const chatIds = useMemo(() => {
     if (!Array.isArray(chats)) return new Set<string>()
     return new Set(chats.map((c) => c.id))
   }, [chats])
 
   useEffect(() => {
-    if (chatIds.size === 0) return
+    if (chatIds.size === 0 || !topic) return
 
     const supabase = createClientBrowser()
     if (!supabase) return
 
     const channel = supabase
-      .channel("chat-list-updates")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "message" },
-        (payload) => {
-          const row = payload.new as Record<string, unknown>
-          const r = (k: string) => row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]
-          const msgChatId = String(r("chatId") ?? r("chat_id") ?? "")
-          if (!chatIds.has(msgChatId)) return
+      .channel(topic, { config: { private: true } })
+      .on("broadcast", { event: "message_insert" }, (payload) => {
+        const message = parseRealtimeMessage(payload)
+        if (!message || !chatIds.has(message.chatId)) return
 
-          const content = String(r("content") ?? "")
-          const createdAt = String(r("createdAt") ?? r("created_at") ?? new Date().toISOString())
-
-          queryClient.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (prev) => {
-            if (!Array.isArray(prev)) return prev
-            return prev.map((chat) =>
-              chat.id === msgChatId ? { ...chat, lastMessage: content, updatedAt: createdAt } : chat
-            )
-          })
-        }
-      )
+        queryClient.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (prev) => {
+          if (!Array.isArray(prev)) return prev
+          return prev.map((chat) =>
+            chat.id === message.chatId
+              ? { ...chat, lastMessage: message.content, updatedAt: message.createdAt }
+              : chat
+          )
+        })
+      })
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [chatIds, queryClient])
+  }, [chatIds, queryClient, topic])
 }

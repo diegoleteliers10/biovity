@@ -1,6 +1,6 @@
 "use client"
 
-import { useQueries, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
@@ -11,10 +11,8 @@ import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
-import type { CandidateContext, JobOfferContext } from "@/lib/ai/types"
+import type { JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
-import type { Resume } from "@/lib/api/resumes"
-import { getResumeByUserId } from "@/lib/api/resumes"
 import { useLogActivityMutation } from "@/lib/api/use-activity-logs"
 import {
   applicationsKeys,
@@ -70,33 +68,6 @@ export function OrganizationApplicationsContent() {
   const [selectionMode, setSelectionMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
-  const candidateUserIds = useMemo(
-    () => (applications ?? []).flatMap((a) => (a.candidateId ? [a.candidateId] : [])),
-    [applications]
-  )
-
-  const resumeQueries = useQueries({
-    queries: candidateUserIds.map((userId) => ({
-      queryKey: ["resume", "byUserId", userId],
-      queryFn: async () => {
-        const result = await getResumeByUserId(userId)
-        if (result.isOk()) return result.value
-        return null
-      },
-    })),
-  })
-
-  const resumes = useMemo(() => {
-    const map: Record<string, Resume> = {}
-    candidateUserIds.forEach((userId, index) => {
-      const resume = resumeQueries[index]?.data
-      if (resume) {
-        map[userId] = resume
-      }
-    })
-    return map
-  }, [candidateUserIds, resumeQueries])
-
   const [eventModal, setEventModal] = useState<{
     isOpen: boolean
     applicant: Applicant | null
@@ -139,22 +110,13 @@ export function OrganizationApplicationsContent() {
     setSelectionMode(false)
   }, [])
 
-  const candidates = useMemo(
-    () =>
-      (applications ?? []).map((app) => ({
-        id: app.candidateId,
-        data: {
-          name: app.candidate?.name ?? "Sin nombre",
-          education: app.candidate?.education ?? "",
-          skills: app.candidate?.skills ?? [],
-          yearsOfExperience: app.candidate?.yearsOfExperience ?? 0,
-          bio: app.candidate?.bio ?? "",
-        } as CandidateContext,
-      })),
-    [applications]
-  )
-
-  const { analyze, clearScores, getScore, isAnalyzing, analyzedAt } = useKanbanAIScoring()
+  const {
+    analyze,
+    getScore,
+    isAnalyzing,
+    analyzedAt,
+    error: scoreError,
+  } = useKanbanAIScoring(selectedJobId)
 
   const createChatMutation = useCreateOrFindChatMutation(recruiterId)
 
@@ -199,17 +161,17 @@ export function OrganizationApplicationsContent() {
 
   const [scoreModal, setScoreModal] = useState<{
     isOpen: boolean
-    candidateId: string | null
+    applicationId: string | null
     score: CandidateScore | null
-  }>({ isOpen: false, candidateId: null, score: null })
+  }>({ isOpen: false, applicationId: null, score: null })
 
   const handleScoreClick = useCallback(
-    (candidateId: string) => {
-      const entry = getScore(candidateId)
+    (applicationId: string) => {
+      const entry = getScore(applicationId)
       if (entry) {
         setScoreModal({
           isOpen: true,
-          candidateId,
+          applicationId,
           score: entry.score,
         })
       }
@@ -259,7 +221,16 @@ export function OrganizationApplicationsContent() {
         }
       )
     },
-    [selectedJobId, updateStatusMutation, queryClient]
+    [
+      selectedJobId,
+      updateStatusMutation,
+      queryClient,
+      applications,
+      jobList,
+      organizationId,
+      recruiterId,
+      logActivityMutation.mutate,
+    ]
   )
 
   const handleBulkReject = useCallback(() => {
@@ -374,14 +345,14 @@ export function OrganizationApplicationsContent() {
                 <div className="flex items-center justify-between mb-1">
                   <h2 className="text-base font-semibold text-foreground">{selectedJob.title}</h2>
                   <div className="flex items-center gap-2">
-                    {jobOfferContext && (
+                    {selectedJobId && (
                       <AnalyzeButton
-                        onAnalyze={() => analyze(candidates, jobOfferContext, resumes)}
+                        onAnalyze={() =>
+                          analyze((applications ?? []).map((application) => application.id))
+                        }
                         isAnalyzing={isAnalyzing}
                         analyzedAt={analyzedAt}
-                        onClear={clearScores}
-                        disabled={candidates.length === 0}
-                        jobOffer={jobOfferContext}
+                        disabled={!applications?.length}
                       />
                     )}
                     <button
@@ -401,6 +372,11 @@ export function OrganizationApplicationsContent() {
                       {selectionMode ? "Salir seleccion" : "Seleccionar"}
                     </button>
                   </div>
+                  {scoreError && (
+                    <p role="alert" className="mt-2 text-xs text-destructive">
+                      {scoreError}
+                    </p>
+                  )}
                 </div>
                 <p className="text-muted-foreground text-sm">
                   {selectedJob.location?.isRemote ? "Remoto" : "Presencial"} ·{" "}
@@ -414,9 +390,9 @@ export function OrganizationApplicationsContent() {
                 {appsLoading ? (
                   <div className="flex h-full items-center justify-center py-12">
                     <div className="space-y-3 w-full p-3 lg:p-4">
-                      {Array.from({ length: 3 }).map((_, i) => (
+                      {["first", "second", "third"].map((key) => (
                         <div
-                          key={`app-skeleton-${i}`}
+                          key={`app-skeleton-${key}`}
                           className="flex items-center gap-3 rounded-lg bg-surface-container-low p-3"
                         >
                           <div className="size-8 animate-pulse rounded-full bg-surface-container-highest/60" />
@@ -487,14 +463,15 @@ export function OrganizationApplicationsContent() {
         />
       )}
 
-      {scoreModal.candidateId && scoreModal.score && jobOfferContext && (
+      {scoreModal.applicationId && scoreModal.score && selectedJobId && (
         <AIScoreModal
           open={scoreModal.isOpen}
           onOpenChange={(open) => setScoreModal((prev) => ({ ...prev, isOpen: open }))}
           score={scoreModal.score}
-          jobOffer={jobOfferContext}
+          jobId={selectedJobId}
           candidateName={
-            applicants.find((a) => a.candidateId === scoreModal.candidateId)?.candidateName ?? ""
+            applicants.find((applicant) => applicant.id === scoreModal.applicationId)
+              ?.candidateName ?? ""
           }
         />
       )}

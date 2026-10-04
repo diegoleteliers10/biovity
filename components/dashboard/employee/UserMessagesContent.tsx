@@ -36,7 +36,7 @@ export function UserMessagesContent() {
   const [mobileView, setMobileView] = useState<"list" | "chat">("list")
 
   const { data: chats = [], isLoading: chatsLoading } = useChatsByProfessional(professionalId)
-  useChatListRealtime(chats)
+  useChatListRealtime(chats, professionalId)
   const markChatAsRead = useMarkChatAsReadMutation()
 
   const { data: chatFromUrl } = useQuery({
@@ -77,7 +77,7 @@ export function UserMessagesContent() {
     isError: messagesError,
     error: messagesErrorDetail,
     refetch: refetchMessages,
-  } = useMessages(selectedChat?.id)
+  } = useMessages(selectedChat?.id, professionalId)
   const sendMutation = useSendMessageMutation()
 
   const formatMessageTime = (iso: string) => {

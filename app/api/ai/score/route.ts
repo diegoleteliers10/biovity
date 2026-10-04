@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
   const result = parseScoreResult(raw)
 
   if (!result) {
-    return Response.json({ score: 50, label: "Regular", reason: "No se pudo calcular el score" })
+    return Response.json({ error: "No se pudo calcular la compatibilidad" }, { status: 502 })
   }
 
   return Response.json(result)

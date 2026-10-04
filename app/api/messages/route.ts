@@ -6,7 +6,9 @@ import { getSupabaseAdmin } from "@/lib/supabase"
 import { createMessageSchema } from "@/lib/validations/messages"
 
 export async function POST(request: Request) {
-  const session = await auth.api.getSession({ headers: await headers() })
+  const requestHeaders = await headers()
+  const cookie = requestHeaders.get("cookie")
+  const session = await auth.api.getSession({ headers: requestHeaders })
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
@@ -57,6 +59,7 @@ export async function POST(request: Request) {
     headers: {
       "Content-Type": "application/json",
       ...(process.env.INTERNAL_API_KEY && { "x-internal-key": process.env.INTERNAL_API_KEY }),
+      ...(cookie ? { cookie } : {}),
     },
     body: JSON.stringify({ lastMessage: content }),
   }).catch(() => {})

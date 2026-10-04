@@ -7,7 +7,7 @@ import type * as React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useAutoScrollToBottom } from "@/hooks/use-auto-scroll-to-bottom"
 import { getChatById } from "@/lib/api/chats"
-import { uploadMessageAttachment } from "@/lib/api/messages"
+import { parseRealtimeMessage, uploadMessageAttachment } from "@/lib/api/messages"
 import { useChatListRealtime, useChatsByRecruiter } from "@/lib/api/use-chats"
 import {
   useMarkChatAsReadMutation,
@@ -15,6 +15,7 @@ import {
   useSendMessageMutation,
 } from "@/lib/api/use-messages"
 import { useUser } from "@/lib/api/use-profile"
+import { useRealtimeUserTopic } from "@/lib/api/use-realtime-topics"
 import { getResultErrorMessage } from "@/lib/result"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import { formatDateChilean } from "@/lib/utils"
@@ -25,25 +26,31 @@ import { MessagesEmptyState } from "./MessagesEmptyState"
 
 function useChatMessageRealtime(
   chatIdFromUrl: string,
+  userId: string | undefined,
   queryClient: ReturnType<typeof useQueryClient>
 ) {
+  const topic = useRealtimeUserTopic(userId)
+
   useEffect(() => {
-    if (!chatIdFromUrl) return
+    if (!chatIdFromUrl || !topic) return
 
     const supabase = createClientBrowser()
     if (!supabase) return
 
     const channel = supabase
-      .channel(`chat-messages-${chatIdFromUrl}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "message" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
+      .channel(topic, { config: { private: true } })
+      .on("broadcast", { event: "message_insert" }, (payload) => {
+        const message = parseRealtimeMessage(payload)
+        if (message?.chatId === chatIdFromUrl) {
+          queryClient.invalidateQueries({ queryKey: ["chat", "fromUrl", chatIdFromUrl] })
+        }
       })
       .subscribe()
 
     return () => {
       channel.unsubscribe()
     }
-  }, [chatIdFromUrl, queryClient])
+  }, [chatIdFromUrl, queryClient, topic])
 }
 
 export function OrganizationMessagesContent() {
@@ -60,7 +67,7 @@ export function OrganizationMessagesContent() {
   const recruiterId = session?.user?.id ?? undefined
 
   const { data: chats = [] } = useChatsByRecruiter(recruiterId)
-  useChatListRealtime(chats)
+  useChatListRealtime(chats, recruiterId)
 
   const { data: chatFromUrl } = useQuery({
     queryKey: ["chat", "fromUrl", chatIdFromUrl],
@@ -78,7 +85,7 @@ export function OrganizationMessagesContent() {
 
   const queryClient = useQueryClient()
 
-  useChatMessageRealtime(chatIdFromUrl, queryClient)
+  useChatMessageRealtime(chatIdFromUrl, recruiterId, queryClient)
 
   const [mobileView, setMobileView] = useState<"list" | "chat">(chatIdFromUrl ? "chat" : "list")
 
@@ -123,7 +130,7 @@ export function OrganizationMessagesContent() {
     isError: messagesError,
     error: messagesErrorDetail,
     refetch: refetchMessages,
-  } = useMessages(selectedChat?.id)
+  } = useMessages(selectedChat?.id, recruiterId)
   const sendMutation = useSendMessageMutation()
   const markAsReadMutation = useMarkChatAsReadMutation()
 

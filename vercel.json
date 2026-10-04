@@ -3,6 +3,14 @@
     {
       "path": "/api/cron",
       "schedule": "0 10 */5 * *"
+    },
+    {
+      "path": "/api/ai/score-worker",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/realtime/outbox-worker",
+      "schedule": "* * * * *"
     }
   ],
   "regions": ["cle1"],

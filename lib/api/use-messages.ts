@@ -9,16 +9,19 @@ import {
   type Message,
   type MessageType,
   markChatAsRead,
+  parseRealtimeMessage,
   sendMessage,
 } from "./messages"
+import { useRealtimeUserTopic } from "./use-realtime-topics"
 
 export const messagesKeys = {
   byChat: (chatId: string) => ["messages", "chat", chatId] as const,
 }
 
-export function useMessages(chatId: string | undefined) {
+export function useMessages(chatId: string | undefined, userId: string | undefined) {
   const queryClient = useQueryClient()
   const effectiveChatId = chatId?.trim() ? chatId : ""
+  const topic = useRealtimeUserTopic(userId)
 
   const query = useQuery({
     queryKey: messagesKeys.byChat(effectiveChatId),
@@ -40,58 +43,31 @@ export function useMessages(chatId: string | undefined) {
     : []
 
   useEffect(() => {
-    if (!effectiveChatId) return
+    if (!effectiveChatId || !topic) return
 
     const supabase = createClientBrowser()
     if (!supabase) return
 
     const channel = supabase
-      .channel(`chat:${effectiveChatId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "message",
-        },
-        (payload) => {
-          const row = payload.new as Record<string, unknown>
-          if (!row?.id) return
-          const r = (k: string) =>
-            (row[k] ?? row[k.replace(/([A-Z])/g, "_$1").toLowerCase()]) as
-              | string
-              | boolean
-              | unknown
-              | undefined
-          const chatIdVal = String(r("chatId") ?? r("chat_id") ?? "")
-          if (chatIdVal !== effectiveChatId) return
-          const msg: Message = {
-            id: row.id as string,
-            chatId: chatIdVal || effectiveChatId,
-            senderId: String(r("senderId") ?? r("sender_id") ?? ""),
-            content: String(r("content") ?? ""),
-            type: (r("type") as MessageType) ?? "text",
-            contentType:
-              ((r("contentType") ?? r("content_type")) as Record<string, unknown> | null) ?? null,
-            isRead: Boolean(r("isRead") ?? r("is_read") ?? false),
-            createdAt: String(r("createdAt") ?? r("created_at") ?? new Date().toISOString()),
+      .channel(topic, { config: { private: true } })
+      .on("broadcast", { event: "message_insert" }, (payload) => {
+        const msg = parseRealtimeMessage(payload)
+        if (!msg || msg.chatId !== effectiveChatId) return
+        queryClient.setQueryData(
+          messagesKeys.byChat(effectiveChatId),
+          (old: Message[] | undefined) => {
+            if (!old) return old
+            if (old.some((m) => m.id === msg.id)) return old
+            return [...old, msg]
           }
-          queryClient.setQueryData(
-            messagesKeys.byChat(effectiveChatId),
-            (old: Message[] | undefined) => {
-              if (!old) return old
-              if (old.some((m) => m.id === msg.id)) return old
-              return [...old, msg]
-            }
-          )
-        }
-      )
+        )
+      })
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [effectiveChatId, queryClient])
+  }, [effectiveChatId, queryClient, topic])
 
   return {
     messages,

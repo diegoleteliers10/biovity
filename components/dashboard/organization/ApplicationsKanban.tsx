@@ -17,7 +17,6 @@ import {
   Cancel01Icon,
   CheckmarkCircle02Icon,
   CheckmarkCircleIcon,
-  CircleIcon,
   File02Icon,
   Message01Icon,
   MoreHorizontalIcon,
@@ -51,10 +50,10 @@ const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[]
 
 type ApplicantCardProps = {
   applicant: Applicant
-  getScore?: (candidateId: string) => ScoreEntry | undefined
+  getScore?: (applicationId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
-  onScoreClick?: (candidateId: string) => void
+  onScoreClick?: (applicationId: string) => void
   onViewProfile?: (candidateId: string) => void
   onViewDetail?: (applicationId: string) => void
   onMessage?: (candidateId: string) => void
@@ -88,7 +87,7 @@ function ApplicantCard({
     e.stopPropagation()
   }
 
-  const scoreEntry = getScore ? getScore(applicant.candidateId) : undefined
+  const scoreEntry = getScore ? getScore(applicant.id) : undefined
 
   return (
     <Card
@@ -149,8 +148,15 @@ function ApplicantCard({
 
         <div className="flex items-start gap-3 pr-6">
           {/* Avatar / Selection Trigger */}
-          <div
+          <button
+            type="button"
+            aria-label={
+              selectionMode
+                ? `${isSelected ? "Quitar" : "Seleccionar"} a ${applicant.candidateName}`
+                : `Ver perfil de ${applicant.candidateName}`
+            }
             className="relative shrink-0 cursor-pointer group/avatar"
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               if (selectionMode) {
                 e.stopPropagation()
@@ -194,7 +200,7 @@ function ApplicantCard({
                 <HugeiconsIcon icon={CheckmarkCircleIcon} size={12} />
               </div>
             )}
-          </div>
+          </button>
 
           {/* Candidate details */}
           <div className="flex flex-1 flex-col gap-1.5 min-w-0">
@@ -222,7 +228,7 @@ function ApplicantCard({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation()
-                      onScoreClick?.(applicant.candidateId)
+                      onScoreClick?.(applicant.id)
                     }}
                     className="inline-block animate-in fade-in duration-300 hover:opacity-90 cursor-pointer"
                   >
@@ -283,10 +289,10 @@ function KanbanColumn({
 }: {
   stage: (typeof STAGES)[number]
   applicants: Applicant[]
-  getScore?: (candidateId: string) => ScoreEntry | undefined
+  getScore?: (applicationId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
-  onScoreClick?: (candidateId: string) => void
+  onScoreClick?: (applicationId: string) => void
   onViewProfile?: (candidateId: string) => void
   onViewDetail?: (applicationId: string) => void
   onMessage?: (candidateId: string) => void
@@ -362,10 +368,10 @@ export function ApplicationsKanban({
   /** Called when dragging to 'entrevista' or 'contratado' stages */
   onCreateEvent?: (applicant: Applicant, eventType: "interview" | "onboarding") => void
   /** Get score for a candidate */
-  getScore?: (candidateId: string) => ScoreEntry | undefined
+  getScore?: (applicationId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
-  onScoreClick?: (candidateId: string) => void
+  onScoreClick?: (applicationId: string) => void
   onViewProfile?: (candidateId: string) => void
   onViewDetail?: (applicationId: string) => void
   onMessage?: (candidateId: string) => void
