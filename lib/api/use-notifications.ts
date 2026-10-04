@@ -13,6 +13,7 @@ import {
   markNotificationRead,
   type NotificationsResponse,
 } from "./notifications"
+import { useRealtimeUserTopic } from "./use-realtime-topics"
 
 export const notificationsKeys = {
   all: ["notifications"] as const,
@@ -75,47 +76,39 @@ export function useMarkAllNotificationsRead() {
 export function useNotificationsRealtime(userId: string | undefined) {
   const queryClient = useQueryClient()
   const { push } = useRouter()
+  const topic = useRealtimeUserTopic(userId)
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId || !topic) return
 
     const supabase = createClientBrowser()
     if (!supabase) return
 
     const channel = supabase
-      .channel(`realtime-notifications-${userId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notification",
-          filter: `user_id=eq.${userId}`,
-        },
-        (payload) => {
-          const newRow = payload.new
-          queryClient.invalidateQueries({ queryKey: notificationsKeys.all })
+      .channel(topic, { config: { private: true } })
+      .on("broadcast", { event: "notification_insert" }, (payload) => {
+        const newRow = payload
+        queryClient.invalidateQueries({ queryKey: notificationsKeys.all })
 
-          const title = String(newRow.title ?? "Nueva notificacion")
-          const body = String(newRow.body ?? "")
-          const link = String(newRow.link ?? "")
+        const title = String(newRow.title ?? "Nueva notificacion")
+        const body = String(newRow.body ?? "")
+        const link = String(newRow.link ?? "")
 
-          toast.info(title, {
-            description: body,
-            duration: 8000,
-            action: link
-              ? {
-                  label: "Ver",
-                  onClick: () => push(link),
-                }
-              : undefined,
-          })
-        }
-      )
+        toast.info(title, {
+          description: body,
+          duration: 8000,
+          action: link
+            ? {
+                label: "Ver",
+                onClick: () => push(link),
+              }
+            : undefined,
+        })
+      })
       .subscribe()
 
     return () => {
       supabase?.removeChannel(channel)
     }
-  }, [userId, queryClient, push])
+  }, [userId, queryClient, push, topic])
 }

@@ -23,6 +23,45 @@ export type Message = {
   createdAt: string
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+export function parseRealtimeMessage(payload: unknown): Message | null {
+  if (!isRecord(payload)) return null
+
+  const id = payload.id
+  const chatId = payload.chatId ?? payload.chat_id
+  if (typeof id !== "string" || typeof chatId !== "string") return null
+
+  const rawType = payload.type
+  const messageType: MessageType =
+    rawType === "event" || rawType === "audio" || rawType === "image" || rawType === "file"
+      ? rawType
+      : "text"
+  const rawContentType = payload.content_type ?? payload.contentType
+
+  return {
+    id,
+    chatId,
+    senderId:
+      typeof (payload.senderId ?? payload.sender_id) === "string"
+        ? String(payload.senderId ?? payload.sender_id)
+        : "",
+    content: typeof payload.content === "string" ? payload.content : "",
+    type: messageType,
+    contentType: isRecord(rawContentType) ? rawContentType : null,
+    isRead:
+      typeof (payload.isRead ?? payload.is_read) === "boolean"
+        ? Boolean(payload.isRead ?? payload.is_read)
+        : false,
+    createdAt:
+      typeof (payload.createdAt ?? payload.created_at) === "string"
+        ? String(payload.createdAt ?? payload.created_at)
+        : new Date().toISOString(),
+  }
+}
+
 export type GetMessagesParams = {
   limit?: number
   cursor?: string

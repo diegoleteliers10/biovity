@@ -6,10 +6,16 @@ import { fetchJson } from "@/lib/result"
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export async function POST(request: Request) {
-  console.log("POST /api/chats/create called")
-  const session = await auth.api.getSession({ headers: await headers() })
+  const requestHeaders = await headers()
+  const session = await auth.api.getSession({ headers: requestHeaders })
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+  if (session.user.type !== "organization") {
+    return NextResponse.json(
+      { error: "Solo una organización puede iniciar el chat" },
+      { status: 403 }
+    )
   }
 
   const body = await request.json().catch(() => null)
@@ -20,9 +26,12 @@ export async function POST(request: Request) {
   }
 
   const recruiterId = session.user.id
+  const cookie = requestHeaders.get("cookie")
+  const forwardedHeaders: HeadersInit = cookie ? { cookie } : {}
 
   const existingResult = await fetchJson<unknown>(
-    `${API_BASE}/api/v1/chats/recruiter/${recruiterId}`
+    `${API_BASE}/api/v1/chats/recruiter/${recruiterId}`,
+    { headers: forwardedHeaders }
   )
 
   if (existingResult.isErr()) {
@@ -50,7 +59,7 @@ export async function POST(request: Request) {
 
   const createResult = await fetchJson<unknown>(`${API_BASE}/api/v1/chats`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...forwardedHeaders },
     body: JSON.stringify({ recruiterId, professionalId }),
   })
 

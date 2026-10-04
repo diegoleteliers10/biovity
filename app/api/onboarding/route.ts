@@ -1,3 +1,4 @@
+import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { getServerSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
@@ -6,6 +7,8 @@ import { updateOnboardingSchema } from "@/lib/validations/onboarding"
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
 export async function GET() {
+  const requestHeaders = await headers()
+  const cookie = requestHeaders.get("cookie")
   const session = await getServerSession()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 })
@@ -35,6 +38,7 @@ export async function GET() {
           ...(process.env.INTERNAL_API_KEY && {
             "x-internal-key": process.env.INTERNAL_API_KEY,
           }),
+          ...(cookie ? { cookie } : {}),
         },
         signal: AbortSignal.timeout(1500),
       })

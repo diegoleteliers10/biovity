@@ -1,0 +1,37 @@
+name: Background workers
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biovity-background-workers
+  cancel-in-progress: false
+
+jobs:
+  process-queues:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Process Jev queue
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error --max-time 240 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://biovity.cl/api/ai/score-worker
+
+      - name: Dispatch Realtime outbox
+        if: always()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error --max-time 60 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://biovity.cl/api/realtime/outbox-worker
