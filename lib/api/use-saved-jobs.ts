@@ -112,7 +112,8 @@ export function useSaveJobMutation() {
       if (result.isErr()) return Promise.reject(new Error(result.error.message))
       return result.value
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: (data, variables) => {
+      void queryClient.cancelQueries({ queryKey: ["saved-jobs"] })
       queryClient.setQueriesData<SavedJobsByUserResponse | InfiniteData<SavedJobsByUserResponse>>(
         { queryKey: savedJobsKeys.byUser(variables.userId) },
         (old) => updateSavedJobsCache(old, variables.jobId, data)
@@ -120,8 +121,8 @@ export function useSaveJobMutation() {
       queryClient.setQueryData(savedJobsKeys.check(variables.userId, variables.jobId), {
         isSaved: true,
       })
-      await queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
-      await queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
+      void queryClient.invalidateQueries({
         queryKey: savedJobsKeys.check(variables.userId, variables.jobId),
       })
     },
@@ -137,7 +138,8 @@ export function useRemoveSavedJobMutation() {
       if (result.isErr()) return Promise.reject(new Error(result.error.message))
       return result.value
     },
-    onSuccess: async (_, variables) => {
+    onSuccess: (_, variables) => {
+      void queryClient.cancelQueries({ queryKey: ["saved-jobs"] })
       queryClient.setQueriesData<SavedJobsByUserResponse | InfiniteData<SavedJobsByUserResponse>>(
         { queryKey: savedJobsKeys.byUser(variables.userId) },
         (old) => updateSavedJobsCache(old, variables.jobId, null)
@@ -145,8 +147,8 @@ export function useRemoveSavedJobMutation() {
       queryClient.setQueryData(savedJobsKeys.check(variables.userId, variables.jobId), {
         isSaved: false,
       })
-      await queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
-      await queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({ queryKey: savedJobsKeys.byUser(variables.userId) })
+      void queryClient.invalidateQueries({
         queryKey: savedJobsKeys.check(variables.userId, variables.jobId),
       })
     },

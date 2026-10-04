@@ -46,10 +46,21 @@ Do not finalize before the new CV reader is deployed. Keep the public bucket for
 
 ## Automated checks
 
-Frontend: `node --test tests/data-flows.test.cjs tests/professional-data-flows.test.cjs tests/cv-security.test.cjs` and `npx tsc --noEmit`.
+Frontend: `node --test tests/data-flows.test.cjs tests/professional-data-flows.test.cjs tests/cv-security.test.cjs tests/session-revocation.test.cjs tests/mutation-latency.test.cjs` and `npx tsc --noEmit`.
 
 Backend: `npm test -- --runInBand` and `npx tsc --noEmit`.
 
 Live probes: frontend `node --test tests/jev-postgres-smoke.cjs tests/realtime-live.cjs`. The Jev probe uses rollback. The Realtime probe removes its temporary grant. Backend `TEST_MIGRATION_APPLIED=true TEST_ENV_FILE=/absolute/path/to/frontend/.env node --test test/dashboard-realtime-smoke.cjs` also uses rollback.
 
 These checks do not prove a complete browser session or a real payment. Run the use cases above after deployment.
+
+## Latency checks
+
+1. Keep two permitted accounts open. Send a message. Check the message, badge, and notification without navigation.
+2. Mark two notifications read in quick succession. The count must change before the requests end. If a request fails, its unread state must return.
+3. Create and delete a job. Check the offers list after the write response. It must not wait for a list GET.
+4. Create an event in the visible calendar month. Check that it appears after the write response. Switch months to check date filters.
+5. Keep the dashboard open for more than five minutes. Send messages during channel renewal. Check that no message waits for the polling interval.
+6. Inspect the network after a notification read. It must not reload unrelated profile or metrics panels.
+
+The automated latency tests use real query observers and mutations with delayed reads. They prove the cache and mutation behavior. Complete the two-account checks on the deployed app to measure user-visible latency.

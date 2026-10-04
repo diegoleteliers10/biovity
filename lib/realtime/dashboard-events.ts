@@ -6,6 +6,8 @@ import type { NotificationsResponse } from "@/lib/api/notifications"
 import { invalidateResource, reconcileDashboardResources } from "./resources"
 import type { UserEvent } from "./types"
 
+const receivedMessages = new WeakMap<QueryClient, Set<string>>()
+
 const NotificationEventSchema = z.object({
   id: z.string(),
   user_id: z.string(),
@@ -26,6 +28,17 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
   if (event.event === "message_insert") {
     const message = parseRealtimeMessage(event.payload)
     if (!message) return null
+    let received = receivedMessages.get(client)
+    if (!received) {
+      received = new Set()
+      receivedMessages.set(client, received)
+    }
+    if (received.has(message.id)) return null
+    received.add(message.id)
+    if (received.size > 1000) {
+      const oldest = received.values().next().value
+      if (oldest !== undefined) received.delete(oldest)
+    }
     const messageKey = ["messages", "chat", message.chatId]
     void client.cancelQueries({ queryKey: messageKey })
     client.setQueryData<Message[]>(["messages", "chat", message.chatId], (current) =>
@@ -34,7 +47,17 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
     client.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (current) =>
       current?.map((chat) =>
         chat.id === message.chatId
-          ? { ...chat, lastMessage: message.content, updatedAt: message.createdAt }
+          ? {
+              ...chat,
+              lastMessage: message.content,
+              updatedAt: message.createdAt,
+              unreadCountRecruiter:
+                (chat.unreadCountRecruiter ?? 0) +
+                (chat.recruiterId === userId && message.senderId !== userId ? 1 : 0),
+              unreadCountProfessional:
+                (chat.unreadCountProfessional ?? 0) +
+                (chat.professionalId === userId && message.senderId !== userId ? 1 : 0),
+            }
           : chat
       )
     )
@@ -63,6 +86,7 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
   const key = ["notifications", userId]
   const current = client.getQueryData<NotificationsResponse>(key)
   if (current?.data.some((item) => item.id === notification.id)) return null
+  void client.cancelQueries({ queryKey: key })
   client.setQueryData<NotificationsResponse>(key, (previous) => ({
     data: [notification, ...(previous?.data ?? [])].slice(0, 50),
     unreadCount: (previous?.unreadCount ?? 0) + (notification.isRead ? 0 : 1),
@@ -71,10 +95,6 @@ export function applyDashboardEvent(client: QueryClient, userId: string, event: 
   return notification
 }
 
-export function reconcileDashboardEvents(client: QueryClient, userId: string) {
+export function reconcileDashboardEvents(client: QueryClient, _userId: string) {
   reconcileDashboardResources(client)
-  void client.invalidateQueries({ queryKey: ["messages"] })
-  void client.invalidateQueries({ queryKey: ["chats"] })
-  void client.invalidateQueries({ queryKey: ["chat", "fromUrl"] })
-  void client.invalidateQueries({ queryKey: ["notifications", userId] })
 }

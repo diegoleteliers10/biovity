@@ -11,11 +11,12 @@ export type NotificationsResponse = {
   unreadCount: number
 }
 
-export async function getNotifications(): Promise<
-  Result<NotificationsResponse, ApiError | NetworkError>
-> {
+export async function getNotifications(
+  signal?: AbortSignal
+): Promise<Result<NotificationsResponse, ApiError | NetworkError>> {
   return fetchJson<NotificationsResponse>(`${API_BASE}/api/notifications`, {
     credentials: "include",
+    signal,
   })
 }
 

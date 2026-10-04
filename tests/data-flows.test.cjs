@@ -21,7 +21,7 @@ Module._load = function (name, parent, ...args) {
     ...actualQuery,
     useMutation: (options) => options,
     useQueryClient: () => queryClient,
-    useQuery: () => ({ data: [], isLoading: false }),
+    useQuery: (options) => ({ data: [], isLoading: false, options }),
   }
   if (name === 'react') return {
     useEffect: (subscribe) => { const dispose = subscribe(); if (dispose) disposers.push(dispose) },
@@ -257,4 +257,152 @@ test('server-side job and event tools forward the authenticated session', async 
   assert.equal(seen.length, 5)
   assert.ok(seen.every((call) => call.cookie === cookie))
   assert.ok(seen.at(-1).url.includes('organizationId='))
+})
+
+test('a pending notification GET cannot remove a notification delivered live', async () => {
+  const { applyDashboardEvent } = require('../lib/realtime/dashboard-events.ts')
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  const key = ['notifications', orgId]
+  client.setQueryData(key, { data: [], unreadCount: 0 })
+  let completeGet
+  const stale = client.fetchQuery({ queryKey: key, queryFn: () => new Promise(resolve => { completeGet = resolve }) }).then(() => {}, () => {})
+  applyDashboardEvent(client, orgId, { event: 'notification_insert', payload: {
+    id: 'live-notification', user_id: orgId, type: 'message', title: 'Message', body: null,
+    link: null, data: null, is_read: false, created_at: new Date().toISOString(),
+  } })
+  completeGet({ data: [], unreadCount: 0 })
+  await stale
+  assert.equal(client.getQueryData(key).data[0]?.id, 'live-notification')
+  assert.equal(client.getQueryData(key).unreadCount, 1)
+  client.clear()
+})
+
+test('topic rotation keeps the old subscription live until the replacement joins', async () => {
+  const { subscribeDashboardChannel } = require('../lib/realtime/dashboard-subscription.ts')
+  const channels = new Map()
+  const removed = []
+  const client = {
+    channel(topic) {
+      if (channels.has(topic)) return channels.get(topic)
+      const channel = { handlers: new Map(), on(_type, filter, callback) { this.handlers.set(filter.event, callback); return this }, subscribe(callback) { this.status = callback; return this } }
+      channels.set(topic, channel)
+      return channel
+    },
+    async removeChannel(channel) { removed.push(channel); return 'ok' },
+  }
+  let events = 0
+  const listener = { onEvent() { events += 1 }, onConnected() {}, onStatusChange() {} }
+  const leaveOld = subscribeDashboardChannel(client, 'user:session', 'old', listener)
+  channels.get('old').status('SUBSCRIBED')
+  leaveOld()
+  const leaveNew = subscribeDashboardChannel(client, 'user:session', 'new', listener)
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(removed.length, 0)
+  channels.get('old').handlers.get('notification_insert')({ payload: {} })
+  assert.equal(events, 1)
+  channels.get('new').status('SUBSCRIBED')
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(removed.length, 1)
+  leaveNew()
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(removed.length, 2)
+})
+
+test('notification read changes the count before its PATCH completes', async (t) => {
+  const previous = global.fetch
+  t.after(() => { global.fetch = previous; queryClient.clear() })
+  queryClient.clear()
+  const key = ['notifications', orgId]
+  queryClient.setQueryData(key, { data: [{ id: 'read-now', isRead: false }], unreadCount: 1 })
+  let finishPatch
+  global.fetch = () => new Promise(resolve => { finishPatch = resolve })
+  const notifications = require('../lib/api/use-notifications.ts')
+  const options = notifications.useMarkNotificationRead(orgId)
+  const mutation = queryClient.getMutationCache().build(queryClient, options)
+  const execution = mutation.execute('read-now')
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(queryClient.getQueryData(key).unreadCount, 0)
+  assert.equal(mutation.state.status, 'pending')
+  finishPatch(new Response(null, { status: 204 }))
+  await execution
+  assert.equal(mutation.state.status, 'success')
+})
+
+test('mark all read handles hidden unread rows and rollback preserves new notifications', () => {
+  const { readNotifications, restoreUnreadNotifications } = require('../lib/api/notification-cache.ts')
+  const client = new QueryClient()
+  const key = ['notifications', orgId]
+  client.setQueryData(key, { data: [{ id: 'old', isRead: false }], unreadCount: 80 })
+  const context = readNotifications(client, orgId)
+  assert.equal(client.getQueryData(key).unreadCount, 0)
+  client.setQueryData(key, current => ({ data: [{ id: 'new', isRead: false }, ...current.data], unreadCount: 1 }))
+  restoreUnreadNotifications(client, orgId, context.ids, context.hiddenUnreadCount)
+  assert.equal(client.getQueryData(key).unreadCount, 81)
+  assert.equal(client.getQueryData(key).data[0].id, 'new')
+  client.clear()
+})
+
+test('calendar creation and deletion change the visible month without a GET', () => {
+  const { storeCalendarEvent, removeCalendarEvent } = require('../lib/api/events-cache.ts')
+  const client = new QueryClient()
+  const key = ['events', 'list', { organizerId: orgId, from: '2026-10-01', to: '2026-10-31', limit: 100 }]
+  const outsideKey = ['events', 'list', { organizerId: orgId, from: '2026-11-01', to: '2026-11-30', limit: 100 }]
+  const page = { data: [], total: 0, page: 1, limit: 100, totalPages: 0 }
+  client.setQueryData(key, page)
+  client.setQueryData(outsideKey, page)
+  const event = { id: job.id, organizerId: orgId, title: 'Interview', startAt: '2026-10-20T12:00:00Z', type: 'interview', status: 'scheduled' }
+  storeCalendarEvent(client, event)
+  assert.equal(client.getQueryData(key).data[0].id, event.id)
+  assert.equal(client.getQueryData(key).total, 1)
+  assert.equal(client.getQueryData(outsideKey).total, 0)
+  removeCalendarEvent(client, event.id)
+  assert.equal(client.getQueryData(key).data.length, 0)
+  assert.equal(client.getQueryData(key).total, 0)
+  client.clear()
+})
+
+test('two pending notification reads refresh only after the last PATCH completes', async (t) => {
+  const { QueryObserver } = actualQuery
+  const previous = global.fetch
+  const key = ['notifications', orgId]
+  queryClient.clear()
+  const rows = [{ id: 'A', isRead: false }, { id: 'B', isRead: false }]
+  queryClient.setQueryData(key, { data: rows, unreadCount: 2 })
+  const finish = new Map()
+  let reads = 0
+  global.fetch = (url, init) => {
+    if (init.method === 'PATCH') return new Promise(resolve => finish.set(new URL(url).searchParams.get('id'), resolve))
+    reads += 1
+    return Promise.resolve(Response.json({ data: rows, unreadCount: 2 }))
+  }
+  const hooks = require('../lib/api/use-notifications.ts')
+  const queryOptions = hooks.useNotifications(orgId).options
+  const observer = new QueryObserver(queryClient, { ...queryOptions, staleTime: Infinity, refetchOnMount: false, refetchInterval: false })
+  const unsubscribe = observer.subscribe(() => {})
+  const first = queryClient.getMutationCache().build(queryClient, hooks.useMarkNotificationRead(orgId)).execute('A')
+  const second = queryClient.getMutationCache().build(queryClient, hooks.useMarkNotificationRead(orgId)).execute('B')
+  t.after(async () => { for (const resolve of finish.values()) resolve(new Response(null, { status: 204 })); await Promise.allSettled([first, second]); global.fetch = previous; unsubscribe(); queryClient.clear() })
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(queryClient.getQueryData(key).unreadCount, 0)
+  finish.get('A')(new Response(null, { status: 204 }))
+  await first
+  assert.equal(reads, 0)
+  await observer.refetch()
+  assert.equal(queryClient.getQueryData(key).data.find(row => row.id === 'B').isRead, true)
+  finish.get('B')(new Response(null, { status: 204 }))
+  await second
+  assert.equal(reads, 2)
+})
+
+test('an incoming message updates the unread badge once before a chat GET', () => {
+  const { applyDashboardEvent } = require('../lib/realtime/dashboard-events.ts')
+  const client = new QueryClient()
+  const key = ['chats', 'recruiter', orgId]
+  client.setQueryData(key, [{ id: job.id, recruiterId: orgId, professionalId: 'candidate', unreadCountRecruiter: 0, unreadCountProfessional: 0 }])
+  const event = { event: 'message_insert', payload: { id: 'badge-message', chatId: job.id, senderId: 'candidate', content: 'Live', createdAt: new Date().toISOString() } }
+  applyDashboardEvent(client, orgId, event)
+  applyDashboardEvent(client, orgId, event)
+  assert.equal(client.getQueryData(key)[0].unreadCountRecruiter, 1)
+  assert.equal(client.getQueryData(key)[0].lastMessage, 'Live')
+  client.clear()
 })

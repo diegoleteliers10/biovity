@@ -136,6 +136,10 @@ export function useCreateJobMutation(organizationId: string) {
       return result.value
     },
     onSuccess: (newJob) => {
+      void queryClient.cancelQueries({ queryKey: ["jobs"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics", organizationId] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics", organizationId] })
+
       storeCreatedJob(queryClient, organizationId, newJob)
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
@@ -158,6 +162,10 @@ export function useUpdateJobMutation(organizationId: string) {
       return result.value
     },
     onSuccess: (job, { id }) => {
+      void queryClient.cancelQueries({ queryKey: ["jobs"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics", organizationId] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics", organizationId] })
+
       storeUpdatedJob(queryClient, organizationId, job)
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })
@@ -181,6 +189,10 @@ export function useDeleteJobMutation(organizationId: string) {
       return result.value
     },
     onSuccess: (_data, id) => {
+      void queryClient.cancelQueries({ queryKey: ["jobs"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics", organizationId] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics", organizationId] })
+
       storeDeletedJob(queryClient, organizationId, id)
       queryClient.invalidateQueries({ queryKey: jobsKeys.list(organizationId) })
       queryClient.invalidateQueries({ queryKey: jobsKeys.byOrganization(organizationId) })

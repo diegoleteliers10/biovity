@@ -40,8 +40,10 @@ test('private Realtime accepts a valid grant, broadcasts immediately, and reject
     channel.subscribe((state) => { if (state !== 'CLOSED') { clearTimeout(timeout); resolve(state) } })
   })
   assert.equal(status, 'SUBSCRIBED', 'A valid private grant must join')
+  const emittedAt = performance.now()
   await pool.query('SELECT realtime.send($1::jsonb, $2, $3, true)', [JSON.stringify({ nonce }), 'diagnostic_probe', topic])
   assert.equal(await received, true)
+  console.log(`Private broadcast delivery: ${Math.round(performance.now() - emittedAt)} ms`)
   const unknown = client.channel(`biovity:user:${randomUUID()}`, { config: { private: true } })
   const denied = await new Promise((resolve) => {
     const timeout = setTimeout(() => resolve('TIMEOUT'), 10000)
