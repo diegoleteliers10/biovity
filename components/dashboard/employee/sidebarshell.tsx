@@ -9,6 +9,7 @@ import { useSavedJobsByUser } from "@/lib/api/use-saved-jobs"
 import { useUserMetrics } from "@/lib/api/use-user-metrics"
 import type { ServerSession } from "@/lib/auth"
 import { NAV_DATA } from "@/lib/data/nav-data"
+import { useOpenChatId } from "@/lib/realtime/viewer-context"
 import { computeProfileCompletion } from "@/lib/utils/profile-completion"
 import { DashboardSessionContext } from "../DashboardSessionContext"
 import { DashboardSidebar } from "../shared/DashboardSidebar"
@@ -29,10 +30,16 @@ export function DashboardShell({ children, defaultOpen, session }: DashboardShel
   const { data: savedJobs } = useSavedJobsByUser(userId, { page: 1, limit: 1 })
   const { data: chats } = useChatsByProfessional(userId)
 
+  const openChatId = useOpenChatId()
+
   const unreadMessages = useMemo(() => {
     if (!chats) return 0
-    return chats.reduce((sum, c) => sum + (c.unreadCountProfessional ?? 0), 0)
-  }, [chats])
+    // The open conversation is on screen, so it is not outstanding work.
+    return chats.reduce(
+      (sum, c) => (c.id === openChatId ? sum : sum + (c.unreadCountProfessional ?? 0)),
+      0
+    )
+  }, [chats, openChatId])
 
   const navData = useMemo(() => {
     const items = NAV_DATA.navMain.map((item) => ({ ...item }))

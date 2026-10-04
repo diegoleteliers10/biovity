@@ -431,8 +431,8 @@ export function ChatListItem({
             </span>
           </div>
           <p className="truncate text-sm text-muted-foreground">{chat.lastMessage ?? "—"}</p>
-          {unreadCount > 0 && (
-            <span className="mt-1.5 inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-secondary text-secondary-foreground text-xs font-medium">
+          {unreadCount > 0 && !isSelected && (
+            <span className="mt-1.5 inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}

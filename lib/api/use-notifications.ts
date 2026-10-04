@@ -5,9 +5,11 @@ import { Result } from "better-result"
 import { useRouter } from "next/navigation"
 import { useCallback, useSyncExternalStore } from "react"
 import { toast } from "sonner"
+import { showMessageToast } from "@/components/ui/message-toast"
 import { applyDashboardEvent, reconcileDashboardEvents } from "@/lib/realtime/dashboard-events"
 import { subscribeDashboardChannel } from "@/lib/realtime/dashboard-subscription"
 import { userChannelStatus } from "@/lib/realtime/user-channel"
+import { activeChatId, isReadingMessages } from "@/lib/realtime/viewer-context"
 import { createClientBrowser } from "@/lib/supabase-browser"
 import { readNotifications, restoreUnreadNotifications } from "./notification-cache"
 import { getNotifications, markAllNotificationsRead, markNotificationRead } from "./notifications"
@@ -104,9 +106,18 @@ export function useNotificationsRealtime(
         onStatusChange: notify,
         onConnected: () => reconcileDashboardEvents(queryClient, userId),
         onEvent: (event) => {
-          const notification = applyDashboardEvent(queryClient, userId, event)
+          const notification = applyDashboardEvent(queryClient, userId, event, activeChatId())
           if (!notification) return
+          // A message the user is already reading needs no toast. The
+          // notification itself stays so the list and the bell remain truthful.
+          if (notification.type === "message" && isReadingMessages()) return
           const link = notification.link?.startsWith("/dashboard") ? notification.link : null
+          if (notification.type === "message") {
+            showMessageToast(notification, () => {
+              if (link) push(link)
+            })
+            return
+          }
           toast.info(notification.title, {
             id: notification.id,
             description: notification.body,
