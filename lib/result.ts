@@ -2,6 +2,10 @@ import { Result as R, type Result } from "better-result"
 import { ApiError, DbError, NetworkError } from "@/lib/errors"
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL ?? ""
+const SESSION_COOKIE_NAMES = new Set([
+  "better-auth.session_token",
+  "__Secure-better-auth.session_token",
+])
 
 /**
  * Browser calls go same-origin (`/api/v1/...`) so the Better Auth session
@@ -24,6 +28,25 @@ function withServerAuth(init?: RequestInit): RequestInit {
   const headers = new Headers(init?.headers)
   headers.set("x-internal-key", key)
   return { ...init, headers }
+}
+
+function getSessionCookie(headers: Headers): string {
+  return (headers.get("cookie") ?? "")
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .filter((cookie) => SESSION_COOKIE_NAMES.has(cookie.split("=", 1)[0] ?? ""))
+    .join("; ")
+}
+
+async function fetchJsonWithSession<T>(
+  input: RequestInfo,
+  requestHeaders: Headers,
+  init?: RequestInit
+): Promise<Result<T, ApiError | NetworkError>> {
+  const headers = new Headers(init?.headers)
+  const sessionCookie = getSessionCookie(requestHeaders)
+  if (sessionCookie) headers.set("cookie", sessionCookie)
+  return fetchJson<T>(input, { ...init, headers })
 }
 
 function getErrorMessage(data: unknown, fallback: string): string {
@@ -145,6 +168,7 @@ export {
   ApiError,
   DbError,
   fetchJson,
+  fetchJsonWithSession,
   fetchNoContent,
   fetchOk,
   fetchWithFallback,

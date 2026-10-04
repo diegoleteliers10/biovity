@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { auth, isAdminSession } from "@/lib/auth"
-import { fetchJson } from "@/lib/result"
+import { fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
 
@@ -13,8 +13,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const limit = Math.min(50, Math.max(1, Number.parseInt(searchParams.get("limit") ?? "10", 10)))
 
-  const result = await fetchJson<unknown>(
+  const result = await fetchJsonWithSession<unknown>(
     `${API_BASE}/api/v1/admin/analytics/top-jobs?limit=${limit}`,
+    request.headers,
     { next: { revalidate: 120 } }
   )
 
