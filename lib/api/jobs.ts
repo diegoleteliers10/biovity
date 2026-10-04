@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson, fetchNoContent } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession, fetchNoContent } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -178,7 +178,8 @@ function normalizeJobResponse(raw: unknown): Job | null {
 
 export async function getJobsByOrganization(
   organizationId: string,
-  params?: GetJobsByOrganizationParams
+  params?: GetJobsByOrganizationParams,
+  requestHeaders?: Headers
 ): Promise<Result<JobsByOrganizationResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
@@ -189,7 +190,9 @@ export async function getJobsByOrganization(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/jobs/organization/${organizationId}${query ? `?${query}` : ""}`
 
-  return fetchJson<JobsByOrganizationResponse>(url)
+  return requestHeaders
+    ? fetchJsonWithSession<JobsByOrganizationResponse>(url, requestHeaders)
+    : fetchJson<JobsByOrganizationResponse>(url)
 }
 
 export async function getJobs(
@@ -230,7 +233,7 @@ export async function getJob(id: string): Promise<Result<Job, ApiError | Network
 
   if (primaryResult.isOk()) {
     const job = normalizeJobResponse(primaryResult.value)
-    if (job && job.benefits && job.benefits.length > 0) {
+    if (job?.benefits && job.benefits.length > 0) {
       return R.ok(job)
     }
   }
@@ -244,6 +247,20 @@ export async function getJob(id: string): Promise<Result<Job, ApiError | Network
   }
 
   const job = normalizeJobResponse(primaryResult.value)
+  if (!job) return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
+  return R.ok(job)
+}
+
+export async function getManagedJob(
+  id: string,
+  requestHeaders?: Headers
+): Promise<Result<Job, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/jobs/managed/${id}`
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders)
+    : await fetchJson<unknown>(url)
+  if (result.isErr()) return R.err(result.error)
+  const job = normalizeJobResponse(result.value)
   if (!job) return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
   return R.ok(job)
 }

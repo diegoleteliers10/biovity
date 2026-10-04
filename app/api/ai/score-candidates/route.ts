@@ -9,7 +9,7 @@ import type { CandidateAssessmentInput, ScoreDetails } from "@/lib/ai/decision/t
 import { processJevQueue } from "@/lib/ai/decision/worker"
 import { type Application, getApplicationsByJob } from "@/lib/api/applications"
 import type { Job } from "@/lib/api/jobs"
-import { getJob } from "@/lib/api/jobs"
+import { getManagedJob } from "@/lib/api/jobs"
 import type { Resume } from "@/lib/api/resumes"
 import { getResumeByUserId } from "@/lib/api/resumes"
 import { auth } from "@/lib/auth"
@@ -35,8 +35,11 @@ const RequestSchema = z.object({
   applicationIds: z.array(z.string().uuid()).max(JEV_MAX_APPLICATIONS_PER_REQUEST).optional(),
 })
 
-async function loadApplicationResume(application: Application): Promise<ResumeLoad> {
-  const resumeResult = await getResumeByUserId(application.candidateId)
+async function loadApplicationResume(
+  application: Application,
+  requestHeaders: Headers
+): Promise<ResumeLoad> {
+  const resumeResult = await getResumeByUserId(application.candidateId, requestHeaders)
   if (resumeResult.isErr()) return { kind: "failed", application }
   if (resumeResult.value && resumeResult.value.userId !== application.candidateId) {
     return { kind: "failed", application }
@@ -44,42 +47,23 @@ async function loadApplicationResume(application: Application): Promise<ResumeLo
   return { kind: "loaded", application, resume: resumeResult.value }
 }
 
-function isOrganizationJob(jobOrganizationId: string, organizationId: string): boolean {
-  return jobOrganizationId === organizationId
-}
-
-async function getAuthorizedJob(jobId: string): Promise<JobAccess> {
-  const session = await auth.api.getSession({ headers: await headers() })
+async function getAuthorizedJob(jobId: string, requestHeaders: Headers): Promise<JobAccess> {
+  const session = await auth.api.getSession({ headers: requestHeaders })
   if (!session?.user?.id) {
     return { kind: "denied", response: Response.json({ error: "No autenticado" }, { status: 401 }) }
   }
 
-  const organizationId = session.user.organizationId
-  if (!organizationId) {
-    return {
-      kind: "denied",
-      response: Response.json({ error: "Se requiere una cuenta de empresa" }, { status: 403 }),
-    }
-  }
-
-  const jobResult = await getJob(jobId)
+  const jobResult = await getManagedJob(jobId, requestHeaders)
   if (jobResult.isErr()) {
     return {
       kind: "denied",
       response: Response.json({ error: "No se pudo validar la oferta" }, { status: 502 }),
     }
   }
-  if (!isOrganizationJob(jobResult.value.organizationId, organizationId)) {
-    return {
-      kind: "denied",
-      response: Response.json({ error: "No tienes acceso a esta oferta" }, { status: 403 }),
-    }
-  }
-
   return {
     kind: "authorized",
     userId: session.user.id,
-    organizationId,
+    organizationId: jobResult.value.organizationId,
     job: jobResult.value,
   }
 }
@@ -88,7 +72,7 @@ export async function GET(request: NextRequest) {
   const jobId = z.string().uuid().safeParse(request.nextUrl.searchParams.get("jobId"))
   if (!jobId.success) return Response.json({ error: "Oferta inválida" }, { status: 400 })
 
-  const access = await getAuthorizedJob(jobId.data)
+  const access = await getAuthorizedJob(jobId.data, await headers())
   if (access.kind === "denied") return access.response
 
   const scoresResult = await listLatestCandidateAssessments(access.job.id)
@@ -115,14 +99,21 @@ export async function POST(request: NextRequest) {
   if (!parsed?.success)
     return Response.json({ error: "Solicitud de análisis inválida" }, { status: 400 })
 
-  const access = await getAuthorizedJob(parsed.data.jobId)
+  const requestHeaders = await headers()
+  const access = await getAuthorizedJob(parsed.data.jobId, requestHeaders)
   if (access.kind === "denied") return access.response
 
-  const applicationsResult = await getApplicationsByJob(access.job.id, {
-    page: 1,
-    limit: JEV_MAX_APPLICATIONS_PER_REQUEST,
-  })
+  const applicationsResult = await getApplicationsByJob(
+    access.job.id,
+    { page: 1, limit: JEV_MAX_APPLICATIONS_PER_REQUEST },
+    requestHeaders
+  )
   if (applicationsResult.isErr()) {
+    console.error("[Jev] Could not load applications", {
+      error: applicationsResult.error._tag,
+      status:
+        applicationsResult.error._tag === "ApiError" ? applicationsResult.error.status : undefined,
+    })
     return Response.json({ error: "No se pudieron cargar las postulaciones" }, { status: 502 })
   }
 
@@ -151,9 +142,14 @@ export async function POST(request: NextRequest) {
   const assessments: CandidateAssessmentInput[] = []
   for (let offset = 0; offset < selectedApplications.length; offset += 10) {
     const batch = selectedApplications.slice(offset, offset + 10)
-    const batchResults = await Promise.all(batch.map(loadApplicationResume))
+    const batchResults = await Promise.all(
+      batch.map((application) => loadApplicationResume(application, requestHeaders))
+    )
 
     if (batchResults.some((result) => result.kind === "failed")) {
+      console.error("[Jev] Could not load an applicant resume", {
+        failedCount: batchResults.filter((result) => result.kind === "failed").length,
+      })
       return Response.json(
         { error: "No se pudo cargar el perfil de una postulación" },
         { status: 502 }

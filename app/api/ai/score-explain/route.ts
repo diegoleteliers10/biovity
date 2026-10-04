@@ -9,7 +9,7 @@ import {
 } from "@/lib/ai/decision/constants"
 import type { ScoreExplanation } from "@/lib/ai/decision/types"
 import { resolveModel } from "@/lib/ai/provider"
-import { getJob } from "@/lib/api/jobs"
+import { getManagedJob } from "@/lib/api/jobs"
 import { auth } from "@/lib/auth"
 import {
   claimCandidateExplanation,
@@ -86,16 +86,13 @@ export async function POST(request: NextRequest) {
   const parsed = RequestSchema.safeParse(requestResult.value)
   if (!parsed.success) return errorResponse("Solicitud inválida", 400)
 
-  const session = await auth.api.getSession({ headers: await headers() })
+  const requestHeaders = await headers()
+  const session = await auth.api.getSession({ headers: requestHeaders })
   if (!session?.user?.id) return errorResponse("No autenticado", 401)
-  const organizationId = session.user.organizationId
-  if (!organizationId) return errorResponse("Se requiere una cuenta de empresa", 403)
 
-  const jobResult = await getJob(parsed.data.jobId)
+  const jobResult = await getManagedJob(parsed.data.jobId, requestHeaders)
   if (jobResult.isErr()) return errorResponse("No se pudo validar la oferta", 502)
-  if (jobResult.value.organizationId !== organizationId) {
-    return errorResponse("No tienes acceso a esta oferta", 403)
-  }
+  const organizationId = jobResult.value.organizationId
 
   const storedResult = await getStoredCandidateExplanation(
     parsed.data.revisionId,

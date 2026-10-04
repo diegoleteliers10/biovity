@@ -100,9 +100,8 @@ export function useSendMessageMutation() {
       await queryClient.cancelQueries({
         queryKey: messagesKeys.byChat(input.chatId),
       })
-      const previous = queryClient.getQueryData<Message[]>(messagesKeys.byChat(input.chatId))
       const tempMessage: Message = {
-        id: `temp-${Date.now()}`,
+        id: `temp-${crypto.randomUUID()}`,
         chatId: input.chatId,
         senderId: input.senderId,
         content: input.content,
@@ -116,27 +115,25 @@ export function useSendMessageMutation() {
         if (old.some((m) => m.id === tempMessage.id)) return old
         return [...old, tempMessage]
       })
-      return { previous }
+      return { tempId: tempMessage.id }
     },
     mutationKey: ["sendMessage"],
-    onError: (_err, _input, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(messagesKeys.byChat(_input.chatId), context.previous)
-      }
+    onError: (_err, input, context) => {
+      if (!context?.tempId) return
+      queryClient.setQueryData<Message[]>(messagesKeys.byChat(input.chatId), (old) =>
+        old?.filter((message) => message.id !== context.tempId)
+      )
     },
-    onSuccess: (newMessage) => {
+    onSuccess: (newMessage, _input, context) => {
       queryClient.setQueryData(
         messagesKeys.byChat(newMessage.chatId),
         (old: Message[] | undefined) => {
           if (!old) return old
-          const tempIndex = old.findIndex((m) => m.id.startsWith("temp-"))
-          if (tempIndex >= 0) {
-            const next = [...old]
-            next[tempIndex] = newMessage
-            return next
+          const withoutThisOptimistic = old.filter((message) => message.id !== context?.tempId)
+          if (withoutThisOptimistic.some((message) => message.id === newMessage.id)) {
+            return withoutThisOptimistic
           }
-          if (old.some((m) => m.id === newMessage.id)) return old
-          return [...old, newMessage]
+          return [...withoutThisOptimistic, newMessage]
         }
       )
       queryClient.setQueriesData<Record<string, unknown>[]>({ queryKey: ["chats"] }, (prev) => {

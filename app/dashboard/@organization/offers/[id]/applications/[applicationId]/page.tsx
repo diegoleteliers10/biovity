@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getApplicationDetail } from "@/lib/api/applications"
-import { getQuestionsByJob } from "@/lib/api/job-questions"
+import { getOrgQuestionsByJob } from "@/lib/api/job-questions"
 import { useUpdateApplicationStatusMutation } from "@/lib/api/use-applications"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { formatUserLocation, useResumeByUser, useUser } from "@/lib/api/use-profile"
@@ -89,6 +89,8 @@ export default function OrganizationApplicationDetailPage() {
   const params = useParams<{ id: string; applicationId: string }>()
   const jobId = params?.id
   const applicationId = params?.applicationId
+  const session = useDashboardSession()
+  const organizationId = (session?.user as { organizationId?: string })?.organizationId ?? ""
 
   const applicationQuery = useQuery({
     queryKey: ["applications", "detail", applicationId],
@@ -112,7 +114,7 @@ export default function OrganizationApplicationDetailPage() {
     queryKey: ["job-questions", "job", jobId],
     queryFn: async () => {
       if (!jobId) throw new Error("Job ID required")
-      const result = await getQuestionsByJob(jobId)
+      const result = await getOrgQuestionsByJob(organizationId, jobId)
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
@@ -122,7 +124,6 @@ export default function OrganizationApplicationDetailPage() {
   const questionLabelById = new Map((questionsQuery.data ?? []).map((q) => [q.id, q.label]))
   const candidateName = application?.candidate?.name ?? candidateProfile?.name ?? "Candidato"
 
-  const session = useDashboardSession()
   const recruiterId = session?.user?.id
   const updateStatusMutation = useUpdateApplicationStatusMutation(jobId ?? "")
   const createChatMutation = useCreateOrFindChatMutation(recruiterId)

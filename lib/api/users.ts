@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -176,8 +176,17 @@ export type UsersPaginatedResponse = {
   totalPages: number
 }
 
+type UsersApiResponse = {
+  data?: User[]
+  total?: number
+  page?: number
+  limit?: number
+  totalPages?: number
+}
+
 export async function getUsers(
-  params?: GetUsersParams
+  params?: GetUsersParams,
+  requestHeaders?: Headers
 ): Promise<Result<UsersPaginatedResponse, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
@@ -202,13 +211,9 @@ export async function getUsers(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/users${query ? `?${query}` : ""}`
 
-  const result = await fetchJson<{
-    data?: User[]
-    total?: number
-    page?: number
-    limit?: number
-    totalPages?: number
-  }>(url)
+  const result = requestHeaders
+    ? await fetchJsonWithSession<UsersApiResponse>(url, requestHeaders)
+    : await fetchJson<UsersApiResponse>(url)
 
   if (result.isErr()) return R.err(result.error)
 
@@ -223,8 +228,14 @@ export async function getUsers(
   })
 }
 
-export async function getUser(id: string): Promise<Result<User, ApiError | NetworkError>> {
-  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/users/${id}`)
+export async function getUser(
+  id: string,
+  requestHeaders?: Headers
+): Promise<Result<User, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/users/${id}`
+  const result = requestHeaders
+    ? await fetchJsonWithSession<unknown>(url, requestHeaders)
+    : await fetchJson<unknown>(url)
 
   if (result.isErr()) return R.err(result.error)
 

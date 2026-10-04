@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson, fetchNoContent } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession, fetchNoContent } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -29,35 +29,36 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 export function parseRealtimeMessage(payload: unknown): Message | null {
   if (!isRecord(payload)) return null
+  const eventPayload = isRecord(payload.payload) ? payload.payload : payload
 
-  const id = payload.id
-  const chatId = payload.chatId ?? payload.chat_id
+  const id = eventPayload.id
+  const chatId = eventPayload.chatId ?? eventPayload.chat_id
   if (typeof id !== "string" || typeof chatId !== "string") return null
 
-  const rawType = payload.type
+  const rawType = eventPayload.type
   const messageType: MessageType =
     rawType === "event" || rawType === "audio" || rawType === "image" || rawType === "file"
       ? rawType
       : "text"
-  const rawContentType = payload.content_type ?? payload.contentType
+  const rawContentType = eventPayload.content_type ?? eventPayload.contentType
 
   return {
     id,
     chatId,
     senderId:
-      typeof (payload.senderId ?? payload.sender_id) === "string"
-        ? String(payload.senderId ?? payload.sender_id)
+      typeof (eventPayload.senderId ?? eventPayload.sender_id) === "string"
+        ? String(eventPayload.senderId ?? eventPayload.sender_id)
         : "",
-    content: typeof payload.content === "string" ? payload.content : "",
+    content: typeof eventPayload.content === "string" ? eventPayload.content : "",
     type: messageType,
     contentType: isRecord(rawContentType) ? rawContentType : null,
     isRead:
-      typeof (payload.isRead ?? payload.is_read) === "boolean"
-        ? Boolean(payload.isRead ?? payload.is_read)
+      typeof (eventPayload.isRead ?? eventPayload.is_read) === "boolean"
+        ? Boolean(eventPayload.isRead ?? eventPayload.is_read)
         : false,
     createdAt:
-      typeof (payload.createdAt ?? payload.created_at) === "string"
-        ? String(payload.createdAt ?? payload.created_at)
+      typeof (eventPayload.createdAt ?? eventPayload.created_at) === "string"
+        ? String(eventPayload.createdAt ?? eventPayload.created_at)
         : new Date().toISOString(),
   }
 }
@@ -114,7 +115,8 @@ export type SendMessageInput = {
 }
 
 export async function sendMessage(
-  input: SendMessageInput
+  input: SendMessageInput,
+  requestHeaders?: Headers
 ): Promise<Result<Message, ApiError | NetworkError>> {
   const base = getBaseUrl()
   const payload = {
@@ -125,12 +127,16 @@ export async function sendMessage(
     contentType: input.contentType ?? null,
   }
 
-  const result = await fetchJson<{ error?: string } & Message>(`${base}/api/messages`, {
+  const url = `${base}/api/messages`
+  const init = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify(payload),
-  })
+  } satisfies RequestInit
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ error?: string } & Message>(url, requestHeaders, init)
+    : await fetchJson<{ error?: string } & Message>(url, init)
 
   if (result.isErr()) return R.err(result.error)
 

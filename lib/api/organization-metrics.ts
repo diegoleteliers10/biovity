@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 import type {
   OrganizationMetrics,
   OrganizationMetricsFilters,
@@ -11,9 +11,15 @@ const API_BASE =
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
+type OrganizationMetricsResponse = {
+  data?: { data?: OrganizationMetrics; dashboard?: never }
+  dashboard?: never
+}
+
 export async function getOrganizationMetrics(
   organizationId: string,
-  filters?: OrganizationMetricsFilters
+  filters?: OrganizationMetricsFilters,
+  requestHeaders?: Headers
 ): Promise<Result<OrganizationMetrics, ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (filters?.period) searchParams.set("period", filters.period)
@@ -23,10 +29,9 @@ export async function getOrganizationMetrics(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/organizations/${organizationId}/metrics${query ? `?${query}` : ""}`
 
-  const result = await fetchJson<{
-    data?: { data?: OrganizationMetrics; dashboard?: never }
-    dashboard?: never
-  }>(url)
+  const result = requestHeaders
+    ? await fetchJsonWithSession<OrganizationMetricsResponse>(url, requestHeaders)
+    : await fetchJson<OrganizationMetricsResponse>(url)
 
   if (result.isErr()) return R.err(result.error)
 

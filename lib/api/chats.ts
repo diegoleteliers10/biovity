@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -63,22 +63,28 @@ export async function getChatsByProfessional(
 }
 
 export async function createOrFindChat(
-  professionalId: string
+  professionalId: string,
+  requestHeaders?: Headers
 ): Promise<Result<Chat, ApiError | NetworkError>> {
   const base =
     typeof window !== "undefined"
       ? ""
       : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
 
-  const result = await fetchJson<{ data?: Chat; error?: string; message?: string }>(
-    `${base}/api/chats/create`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ professionalId }),
-    }
-  )
+  const url = `${base}/api/chats/create`
+  const init = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ professionalId }),
+  } satisfies RequestInit
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data?: Chat; error?: string; message?: string }>(
+        url,
+        requestHeaders,
+        init
+      )
+    : await fetchJson<{ data?: Chat; error?: string; message?: string }>(url, init)
 
   if (result.isErr()) return R.err(result.error)
 

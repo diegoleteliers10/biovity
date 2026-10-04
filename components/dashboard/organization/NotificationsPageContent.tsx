@@ -21,6 +21,7 @@ import {
 } from "@/lib/api/use-notifications"
 import type { NotificationType } from "@/lib/types/dashboard"
 import { cn, formatFechaRelativa } from "@/lib/utils"
+import { useDashboardSession } from "../DashboardSessionContext"
 
 const ALLOWED_LINK_PREFIX = "/"
 
@@ -45,16 +46,17 @@ function getNotificationIcon(type: NotificationType) {
       return Message01Icon
     case "job_alert":
       return Notification01Icon
-    case "system":
     default:
       return CheckmarkCircle02Icon
   }
 }
 
 export function NotificationsPageContent() {
-  const { data, isLoading } = useNotifications()
-  const markRead = useMarkNotificationRead()
-  const markAllRead = useMarkAllNotificationsRead()
+  const session = useDashboardSession()
+  const userId = session?.user?.id
+  const { data, isLoading } = useNotifications(userId)
+  const markRead = useMarkNotificationRead(userId)
+  const markAllRead = useMarkAllNotificationsRead(userId)
   const router = useRouter()
   const [filter, setFilter] = useState<FilterTab>("all")
 
@@ -184,32 +186,24 @@ export function NotificationsPageContent() {
             return (
               <div
                 key={notification.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  if (!notification.isRead) markRead.mutate(notification.id)
-                  if (notification.link && isInternalLink(notification.link)) {
-                    router.push(notification.link)
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault()
-                    if (!notification.isRead) markRead.mutate(notification.id)
-                    if (notification.link && isInternalLink(notification.link)) {
-                      router.push(notification.link)
-                    }
-                  }
-                }}
                 className={cn(
-                  "rounded-xl bg-surface-container-lowest border border-border/50 p-4 sm:p-5 shadow-none flex items-start gap-3.5 transition-colors cursor-pointer hover:border-border/80",
+                  "rounded-xl bg-surface-container-lowest border border-border/50 p-4 sm:p-5 shadow-none flex items-start gap-3.5 transition-colors hover:border-border/80",
                   !notification.isRead && "border-l-4 border-l-secondary"
                 )}
               >
                 <div className="size-9 rounded-lg bg-surface-container-low border border-border/40 flex items-center justify-center text-secondary shrink-0 mt-0.5">
                   <HugeiconsIcon icon={Icon} size={18} />
                 </div>
-                <div className="flex-1 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!notification.isRead) markRead.mutate(notification.id)
+                    if (notification.link && isInternalLink(notification.link)) {
+                      router.push(notification.link)
+                    }
+                  }}
+                  className="flex flex-1 min-w-0 flex-col bg-transparent text-left"
+                >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <p
                       className={cn(
@@ -235,15 +229,14 @@ export function NotificationsPageContent() {
                       {notification.body}
                     </p>
                   )}
-                </div>
+                </button>
                 {!notification.isRead && (
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-8 px-2.5 rounded-md border border-border/40 bg-surface-container-lowest hover:bg-surface-container-low text-xs font-medium text-muted-foreground hover:text-foreground transition-colors shrink-0 shadow-none"
-                    onClick={(e) => {
-                      e.stopPropagation()
+                    onClick={() => {
                       markRead.mutate(notification.id)
                     }}
                   >

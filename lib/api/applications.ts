@@ -1,6 +1,6 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchJsonWithSession } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -87,7 +87,8 @@ export async function getApplicationsByCandidate(
 
 export async function getApplicationsByJob(
   jobId: string,
-  params?: GetApplicationsByJobParams
+  params?: GetApplicationsByJobParams,
+  requestHeaders?: Headers
 ): Promise<Result<Application[], ApiError | NetworkError>> {
   const searchParams = new URLSearchParams()
   if (params?.page != null) searchParams.set("page", String(params.page))
@@ -97,7 +98,9 @@ export async function getApplicationsByJob(
   const query = searchParams.toString()
   const url = `${API_BASE}/api/v1/applications/job/${jobId}${query ? `?${query}` : ""}`
 
-  const result = await fetchJson<{ data?: Application[] } | Application[]>(url)
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data?: Application[] } | Application[]>(url, requestHeaders)
+    : await fetchJson<{ data?: Application[] } | Application[]>(url)
 
   if (result.isErr()) return R.err(result.error)
 
@@ -151,11 +154,13 @@ export async function updateApplicationStatus(
 }
 
 export async function getApplicationDetail(
-  id: string
+  id: string,
+  requestHeaders?: Headers
 ): Promise<Result<Application, ApiError | NetworkError>> {
-  const result = await fetchJson<{ data?: Application } | Application>(
-    `${API_BASE}/api/v1/applications/${id}`
-  )
+  const url = `${API_BASE}/api/v1/applications/${id}`
+  const result = requestHeaders
+    ? await fetchJsonWithSession<{ data?: Application } | Application>(url, requestHeaders)
+    : await fetchJson<{ data?: Application } | Application>(url)
 
   if (result.isErr()) return R.err(result.error)
 
@@ -180,9 +185,18 @@ export type ApplicationsByOrganizationResponse = {
   totalPages: number
 }
 
+type ApplicationsByOrganizationPayload = {
+  data?: Application[]
+  total?: number
+  page?: number
+  limit?: number
+  totalPages?: number
+}
+
 export async function getApplicationsByOrganization(
   organizationId: string,
-  params?: { page?: number; limit?: number; includeAnswers?: boolean }
+  params?: { page?: number; limit?: number; includeAnswers?: boolean },
+  requestHeaders?: Headers
 ): Promise<Result<ApplicationsByOrganizationResponse, ApiError | NetworkError>> {
   const buildQuery = (includeAnswers: boolean | undefined) => {
     const searchParams = new URLSearchParams()
@@ -192,16 +206,12 @@ export async function getApplicationsByOrganization(
     return searchParams.toString() ? `?${searchParams.toString()}` : ""
   }
 
-  const runRequest = (includeAnswers: boolean | undefined) =>
-    fetchJson<{
-      data?: Application[]
-      total?: number
-      page?: number
-      limit?: number
-      totalPages?: number
-    }>(
-      `${API_BASE}/api/v1/applications/organization/${organizationId}${buildQuery(includeAnswers)}`
-    )
+  const runRequest = (includeAnswers: boolean | undefined) => {
+    const url = `${API_BASE}/api/v1/applications/organization/${organizationId}${buildQuery(includeAnswers)}`
+    return requestHeaders
+      ? fetchJsonWithSession<ApplicationsByOrganizationPayload>(url, requestHeaders)
+      : fetchJson<ApplicationsByOrganizationPayload>(url)
+  }
 
   let result = await runRequest(params?.includeAnswers)
 

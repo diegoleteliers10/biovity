@@ -9,6 +9,7 @@ import {
   getJob,
   getJobs,
   getJobsByOrganization,
+  getManagedJob,
   type Job,
   type JobsByOrganizationResponse,
   type UpdateJobInput,
@@ -34,13 +35,10 @@ export function useJobs(organizationId: string | undefined) {
   return useQuery({
     queryKey: jobsKeys.list(organizationId),
     queryFn: async () => {
-      const result = await getJobs({ organizationId })
+      if (!organizationId) throw new Error("Organization ID required")
+      const result = await getJobsByOrganization(organizationId, { page: 1, limit: 100 })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
-      let jobs = result.value.data
-      if (organizationId && jobs.length > 0) {
-        jobs = jobs.filter((j) => j.organizationId === organizationId)
-      }
-      return jobs
+      return result.value.data
     },
     enabled: Boolean(organizationId),
   })
@@ -104,6 +102,19 @@ export function useJob(id: string | undefined) {
     queryFn: async () => {
       if (!id) throw new Error("Job ID required")
       const result = await getJob(id)
+      if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
+      return result.value
+    },
+    enabled: Boolean(id),
+  })
+}
+
+export function useManagedJob(id: string | undefined) {
+  return useQuery({
+    queryKey: [...jobsKeys.detail(id ?? ""), "managed"],
+    queryFn: async () => {
+      if (!id) throw new Error("Job ID required")
+      const result = await getManagedJob(id)
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },
