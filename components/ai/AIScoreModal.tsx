@@ -28,6 +28,7 @@ const ExplanationResponseSchema = z.object({
   status: z.enum(["ready", "processing", "failed", "expired"]),
   explanation: z
     .object({
+      evidenceFormat: z.literal("plain-text").optional(),
       reason: z.string(),
       strengths: z.array(EvidenceItemSchema),
       gaps: z.array(EvidenceItemSchema),

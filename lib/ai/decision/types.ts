@@ -47,6 +47,7 @@ export type JevAssessment = {
 }
 
 export type ScoreExplanation = {
+  evidenceFormat?: "plain-text"
   reason: string
   strengths: { text: string; evidence: string }[]
   gaps: { text: string; evidence: string }[]
