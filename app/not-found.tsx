@@ -382,7 +382,7 @@ export default function NotFound() {
 
               <m.p
                 variants={itemVariants}
-                className="mb-10 text-pretty text-base leading-relaxed text-[#71787d] md:text-lg"
+                className="mb-10 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg"
               >
                 Esta secuencia no existe en nuestro genoma. Vuelve al inicio para descubrir nuevas
                 oportunidades en biotecnologia, bioquimica y ciencias de la salud.

@@ -53,10 +53,10 @@ const BRAND_COLORS: ColorToken[] = [
   {
     name: "Slate Gray",
     role: "Muted Text",
-    hex: "#71787d",
-    rgb: "113, 120, 125",
+    hex: "#5f6569",
+    rgb: "95, 101, 105",
     cssVar: "--muted-foreground",
-    bgClass: "bg-[#71787d]",
+    bgClass: "bg-[#5f6569]",
     textLight: true,
     description: "Párrafos descriptivos, subtítulos, etiquetas secundarias y metadatos de apoyo.",
   },

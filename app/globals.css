@@ -70,7 +70,12 @@
 
     /* Text on tonal surfaces */
     --muted: var(--surface-container-highest);
-    --muted-foreground: #71787d;
+    /* Was #71787d, which failed WCAG AA on every surface it is used on:
+       4.48:1 on white, 4.04:1 on --surface-container-low, 3.46:1 on
+       --muted. It carries most of the small secondary text in the product, so
+       one token was making most of the app non-compliant. #5f6569 keeps the
+       same hue and weight at 5.91 / 5.33 / 4.57. */
+    --muted-foreground: #5f6569;
 
     --primary-container: #1d4e63;
 
