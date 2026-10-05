@@ -35,10 +35,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import type { Evaluation } from "@/hooks/use-evaluations"
 import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
 import type { JobOfferContext } from "@/lib/ai/types"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import { cn } from "@/lib/utils"
+import { EvaluationSummary } from "./EvaluationSummary"
 
 const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[] = [
   { id: "pendiente", label: "Pendiente", icon: File02Icon },
@@ -50,6 +52,7 @@ const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[]
 
 type ApplicantCardProps = {
   applicant: Applicant
+  getEvaluations?: (applicationId: string) => Evaluation[] | null
   getScore?: (applicationId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
@@ -65,6 +68,7 @@ type ApplicantCardProps = {
 function ApplicantCard({
   applicant,
   getScore,
+  getEvaluations,
   isAnalyzing: analyzing,
   jobOffer: _jobOffer,
   onScoreClick,
@@ -255,6 +259,16 @@ function ApplicantCard({
               </div>
             )}
 
+            {getEvaluations && (
+              <div className="mt-1 border-t border-border/20 pt-2">
+                {getEvaluations(applicant.id) === null ? (
+                  <p className="text-xs text-muted-foreground">Evaluación no disponible</p>
+                ) : (
+                  <EvaluationSummary evaluations={getEvaluations(applicant.id) ?? []} />
+                )}
+              </div>
+            )}
+
             {/* Metadata Footer */}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground mt-1 pt-1 border-t border-border/10">
               <span>Aplicó: {applicant.dateApplied}</span>
@@ -278,6 +292,7 @@ function KanbanColumn({
   stage,
   applicants,
   getScore,
+  getEvaluations,
   isAnalyzing,
   onScoreClick,
   onViewProfile,
@@ -289,6 +304,7 @@ function KanbanColumn({
 }: {
   stage: (typeof STAGES)[number]
   applicants: Applicant[]
+  getEvaluations?: (applicationId: string) => Evaluation[] | null
   getScore?: (applicationId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
@@ -330,6 +346,7 @@ function KanbanColumn({
             key={a.id}
             applicant={a}
             getScore={getScore}
+            getEvaluations={getEvaluations}
             isAnalyzing={isAnalyzing}
             onScoreClick={onScoreClick}
             onViewProfile={onViewProfile}
@@ -352,6 +369,7 @@ export function ApplicationsKanban({
   onStatusChange,
   onCreateEvent,
   getScore,
+  getEvaluations,
   isAnalyzing,
   jobOffer,
   onScoreClick,
@@ -368,6 +386,7 @@ export function ApplicationsKanban({
   /** Called when dragging to 'entrevista' or 'contratado' stages */
   onCreateEvent?: (applicant: Applicant, eventType: "interview" | "onboarding") => void
   /** Get score for a candidate */
+  getEvaluations?: (applicationId: string) => Evaluation[] | null
   getScore?: (applicationId: string) => ScoreEntry | undefined
   isAnalyzing?: boolean
   jobOffer?: JobOfferContext
@@ -461,6 +480,7 @@ export function ApplicationsKanban({
             stage={stage}
             applicants={applicantsByStage.get(stage.id) ?? []}
             getScore={getScore}
+            getEvaluations={getEvaluations}
             isAnalyzing={isAnalyzing}
             jobOffer={jobOffer}
             onScoreClick={onScoreClick}

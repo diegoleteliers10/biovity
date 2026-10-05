@@ -1,26 +1,24 @@
 "use client"
 
+import { Result } from "better-result"
+import { useState } from "react"
+import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import {
-  Cancel01Icon,
-  CheckmarkCircle02Icon,
-  Clock01Icon,
-  Loading01Icon,
-  SparklesIcon,
-  StarIcon,
-  Tag01Icon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -31,360 +29,449 @@ import {
   useEvaluations,
   useUpsertEvaluationMutation,
 } from "@/hooks/use-evaluations"
+import type { ApplicationStage } from "@/lib/types/dashboard"
 import { cn, formatDateChilean } from "@/lib/utils"
+import { CONTEXTS, CRITERIA, DECISIONS, QUICK_TAGS, STAGES } from "./ScorecardSheet.constants"
+import type {
+  EvaluationDraft,
+  EvaluationEditorProps,
+  EvaluationLoaderProps,
+  ScorecardSheetProps,
+} from "./ScorecardSheet.types"
 
-type RatingOption = {
-  value: Evaluation["rating"]
-  title: string
-  subtitle: string
-  color: string
-  activeBg: string
-  icon: typeof CheckmarkCircle02Icon
+function makeDraft(existing: Evaluation | undefined): EvaluationDraft {
+  const skills = existing?.skills_assessment
+  return {
+    rating: existing?.rating ?? null,
+    context: skills?.context ?? "cv_review",
+    technical: skills?.technical ?? "0",
+    cultural: skills?.cultural ?? "0",
+    expectations: skills?.expectations ?? "0",
+    notes: existing?.notes ?? "",
+    tags:
+      skills?.tags
+        ?.split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean) ?? [],
+  }
 }
 
-const DECISIONS: RatingOption[] = [
-  {
-    value: "positive",
-    title: "Avanzar",
-    subtitle: "Recomendado",
-    color: "text-secondary",
-    activeBg: "bg-secondary/10 border-secondary/40 ring-2 ring-secondary/20",
-    icon: CheckmarkCircle02Icon,
-  },
-  {
-    value: "neutral",
-    title: "Evaluar",
-    subtitle: "Con dudas",
-    color: "text-foreground",
-    activeBg: "bg-surface-container-highest/60 border-border/60 ring-2 ring-ring/20",
-    icon: Clock01Icon,
-  },
-  {
-    value: "negative",
-    title: "Descartar",
-    subtitle: "No recomendado",
-    color: "text-destructive",
-    activeBg: "bg-destructive/10 border-destructive/40 ring-2 ring-destructive/20",
-    icon: Cancel01Icon,
-  },
-]
+export function ScorecardSheet(props: ScorecardSheetProps) {
+  const [open, setOpen] = useState(false)
+  const [dirty, setDirty] = useState(false)
+  const [discard, setDiscard] = useState(false)
+  const [saving, setSaving] = useState(false)
 
-const QUICK_TAGS = [
-  "Experiencia relevante",
-  "Excelente comunicación",
-  "Disponibilidad inmediata",
-  "Formación destacada",
-  "Pretensión salarial alta",
-  "Falta experiencia específica",
-  "Requiere relocalización",
-]
-
-function getCandidateInitials(name: string | undefined): string {
-  if (!name?.trim()) return "?"
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase()
-}
-
-function DimensionalRating({
-  label,
-  value,
-  onChange,
-}: {
-  label: string
-  value: number
-  onChange: (val: number) => void
-}) {
-  const [hoverVal, setHoverVal] = useState<number | null>(null)
-  const current = hoverVal ?? value
-  const labels = ["Insuficiente", "Bajo", "Aceptable", "Bueno", "Excelente"]
+  function changeOpen(next: boolean) {
+    if (!next && saving) return
+    if (!next && dirty) {
+      setDiscard(true)
+      return
+    }
+    setOpen(next)
+  }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl border border-border/40 bg-surface-container-low shadow-none hover:bg-surface-container-lowest transition-colors">
-      <span className="text-xs font-medium text-foreground">{label}</span>
-      <div className="flex items-center gap-2">
-        <fieldset
-          aria-label={`Calificación de ${label}`}
-          className="m-0 flex items-center gap-1 border-0 p-0"
-          onMouseLeave={() => setHoverVal(null)}
-        >
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onMouseEnter={() => setHoverVal(star)}
-              onClick={() => onChange(star)}
-              className="p-1 rounded-md hover:bg-surface-container-highest/40 transition-colors focus:outline-none cursor-pointer"
-              aria-label={`Calificar ${star} estrellas para ${label}`}
-            >
-              <HugeiconsIcon
-                icon={StarIcon}
-                size={18}
-                className={cn(
-                  "transition-colors",
-                  star <= current ? "text-secondary fill-secondary" : "text-muted-foreground/25"
+    <>
+      <Sheet open={open} onOpenChange={changeOpen}>
+        <SheetTrigger asChild>{props.children}</SheetTrigger>
+        <SheetContent className="w-full sm:max-w-lg h-full p-0 gap-0 border-l border-border/40 bg-surface-container-lowest shadow-none overflow-hidden">
+          <SheetHeader className="border-b border-border/40 bg-surface-container-low p-6 text-left shrink-0">
+            <div className="flex items-center gap-3 pr-8">
+              <Avatar className="size-11 border border-border/40 shadow-none">
+                {props.candidateAvatar && (
+                  <AvatarImage src={props.candidateAvatar} alt={props.candidateName} />
                 )}
-              />
-            </button>
-          ))}
-        </fieldset>
-        <span className="text-xs font-medium text-muted-foreground min-w-[70px] text-right">
-          {current > 0 ? labels[current - 1] : "Sin evaluar"}
-        </span>
-      </div>
-    </div>
+                <AvatarFallback>
+                  {props.candidateName.trim().slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <SheetTitle className="truncate">{props.candidateName}</SheetTitle>
+                {props.candidateProfession && (
+                  <p className="text-xs text-muted-foreground">{props.candidateProfession}</p>
+                )}
+              </div>
+            </div>
+            <SheetDescription className="sr-only">
+              Evaluación interna del candidato
+            </SheetDescription>
+          </SheetHeader>
+          {open && (
+            <EvaluationLoader
+              key={props.applicationId}
+              {...props}
+              onDirtyChange={setDirty}
+              onSavingChange={setSaving}
+              onClose={() => changeOpen(false)}
+            />
+          )}
+        </SheetContent>
+      </Sheet>
+      <AlertDialog open={discard} onOpenChange={setDiscard}>
+        <AlertDialogContent className="shadow-none">
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Descartar los cambios?</AlertDialogTitle>
+            <AlertDialogDescription>Los cambios sin guardar se perderán.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Seguir editando</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setDirty(false)
+                setOpen(false)
+              }}
+            >
+              Descartar cambios
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 
-export function ScorecardSheet({
-  applicationId,
-  candidateName,
-  candidateAvatar,
-  candidateProfession,
-  children,
-}: {
-  applicationId: string
-  candidateName: string
-  candidateAvatar?: string | null
-  candidateProfession?: string | null
-  children: React.ReactNode
-}) {
-  const { data: evaluations } = useEvaluations(applicationId)
-  const upsertMutation = useUpsertEvaluationMutation(applicationId)
+function EvaluationLoader(props: EvaluationLoaderProps) {
+  const session = useDashboardSession()
+  const query = useEvaluations(props.applicationId)
+  const [loaded, setLoaded] = useState(false)
+  if (!loaded && query.isFetchedAfterMount && !query.isError && query.data !== undefined) {
+    setLoaded(true)
+  }
+  if (!session?.user.id)
+    return (
+      <p role="alert" className="p-6">
+        No se pudo identificar al evaluador. Vuelve a iniciar sesión.
+      </p>
+    )
+  if (loaded && query.data !== undefined)
+    return (
+      <EvaluationEditor
+        {...props}
+        evaluations={query.data}
+        evaluatorId={session.user.id}
+        refreshError={query.isError}
+      />
+    )
+  if (query.isError)
+    return (
+      <div className="p-6 space-y-3">
+        <p role="alert">No se pudieron cargar las evaluaciones.</p>
+        <Button variant="outline" onClick={() => void query.refetch()}>
+          Reintentar
+        </Button>
+      </div>
+    )
+  return (
+    <p role="status" className="p-6">
+      Cargando evaluación...
+    </p>
+  )
+}
 
-  const existing = evaluations?.[0]
-  const [rating, setRating] = useState<Evaluation["rating"]>("positive")
-  const [notes, setNotes] = useState("")
-  const [technical, setTechnical] = useState(0)
-  const [cultural, setCultural] = useState(0)
-  const [expectations, setExpectations] = useState(0)
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [open, setOpen] = useState(false)
+function EvaluationEditor(props: EvaluationEditorProps) {
+  const [existing, setExisting] = useState(() =>
+    props.evaluations.find((evaluation) => evaluation.evaluator_id === props.evaluatorId)
+  )
+  const [draft, setDraft] = useState(() => makeDraft(existing))
+  const [savedDraft, setSavedDraft] = useState(() => makeDraft(existing))
+  const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [targetStage, setTargetStage] = useState<ApplicationStage | null>(null)
+  const [stagePending, setStagePending] = useState(false)
+  const mutation = useUpsertEvaluationMutation(props.applicationId)
+  const needsNotes = draft.rating === "neutral" || draft.rating === "negative"
+  const canSave = draft.rating !== null && (!needsNotes || draft.notes.trim().length > 0)
 
-  useEffect(() => {
-    if (existing) {
-      setRating(existing.rating ?? "positive")
-      setNotes(existing.notes ?? "")
-      const sa = existing.skills_assessment ?? {}
-      setTechnical(Number(sa.technical) || 0)
-      setCultural(Number(sa.cultural) || 0)
-      setExpectations(Number(sa.expectations) || 0)
-      if (sa.tags) {
-        setSelectedTags(sa.tags.split(",").filter(Boolean))
-      }
-    }
-  }, [existing])
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
+  function update(patch: Partial<EvaluationDraft>) {
+    const next = { ...draft, ...patch }
+    setDraft(next)
+    props.onDirtyChange(JSON.stringify(next) !== JSON.stringify(savedDraft))
+    setSaved(false)
+    setError(null)
   }
 
-  const handleSave = () => {
-    const skillsAssessment: Record<string, string> = {
-      technical: String(technical),
-      cultural: String(cultural),
-      expectations: String(expectations),
-      tags: selectedTags.join(","),
+  async function save() {
+    if (!canSave || draft.rating === null || mutation.isPending) return
+    props.onSavingChange(true)
+    const result = await mutation.mutateAsync({
+      rating: draft.rating,
+      notes: draft.notes.trim(),
+      skillsAssessment: {
+        ...existing?.skills_assessment,
+        context: draft.context,
+        technical: draft.technical,
+        cultural: draft.cultural,
+        expectations: draft.expectations,
+        tags: draft.tags.join(","),
+      },
+    })
+    props.onSavingChange(false)
+    if (result.isErr()) {
+      setError("No se pudo guardar la evaluación. Tus cambios siguen aquí. Reintenta.")
+      return
     }
+    setExisting(result.value)
+    setSavedDraft(draft)
+    props.onDirtyChange(false)
+    setSaved(true)
+    setError(null)
+  }
 
-    upsertMutation.mutate(
-      { rating, notes: notes.trim() || undefined, skillsAssessment },
-      {
-        onSuccess: () => {
-          toast.success("Evaluación guardada correctamente")
-          setOpen(false)
-        },
-        onError: (err) => {
-          toast.error(err instanceof Error ? err.message : "Error al guardar evaluación")
-        },
-      }
+  async function changeStage() {
+    if (!targetStage || !props.onStatusChange || stagePending) return
+    setStagePending(true)
+    const stage = targetStage
+    const result = await Result.tryPromise(() =>
+      Promise.resolve(props.onStatusChange?.(props.applicationId, stage))
     )
+    setStagePending(false)
+    setTargetStage(null)
+    if (result.isErr())
+      setError("La evaluación está guardada. No se pudo cambiar la etapa. Reintenta.")
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full p-0 gap-0 border-l border-border/40 bg-surface-container-lowest shadow-none overflow-hidden">
-        {/* Header */}
-        <SheetHeader className="border-b border-border/40 bg-surface-container-low p-6 text-left shrink-0">
-          <Badge
-            variant="outline"
-            className="w-fit mb-2.5 gap-1.5 border-accent/25 bg-accent/15 text-[11px] font-mono font-medium text-accent px-2.5 py-0.5"
-          >
-            <HugeiconsIcon icon={SparklesIcon} size={13} />
-            Scorecard de Selección
-          </Badge>
-          <div className="flex items-center gap-3.5 mt-1">
-            <Avatar className="size-12 border border-border/40 shadow-none shrink-0">
-              {candidateAvatar && <AvatarImage src={candidateAvatar} alt={candidateName} />}
-              <AvatarFallback className="bg-secondary/10 text-secondary font-semibold text-sm">
-                {getCandidateInitials(candidateName)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="space-y-0.5 min-w-0">
-              <SheetTitle className="text-base font-semibold text-foreground truncate">
-                {candidateName}
-              </SheetTitle>
-              <p className="text-xs text-muted-foreground truncate">
-                {candidateProfession ?? "Candidato"}
-              </p>
-            </div>
+    <>
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {props.refreshError && (
+          <p role="alert" className="text-xs text-destructive">
+            No se pudo actualizar la evaluación. Tus cambios siguen aquí.
+          </p>
+        )}
+        <fieldset disabled={mutation.isPending} className="space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="evaluation-context" className="text-sm font-medium">
+              Contexto
+            </label>
+            <select
+              id="evaluation-context"
+              value={draft.context}
+              onChange={(event) => update({ context: event.target.value })}
+              className="w-full rounded-md border border-border bg-surface-container-low p-2 text-sm"
+            >
+              {CONTEXTS.map((context) => (
+                <option key={context.value} value={context.value}>
+                  {context.label}
+                </option>
+              ))}
+            </select>
           </div>
-          <SheetDescription className="text-xs text-muted-foreground mt-2">
-            Registra tu calificación, puntuaciones por competencia y observaciones internas.
-          </SheetDescription>
-        </SheetHeader>
-
-        {/* Scrollable Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Decisión General */}
-          <div className="space-y-2.5">
-            <span className="block text-xs leading-4 font-medium text-foreground">
-              Dictamen de Selección
-            </span>
-            <div className="grid grid-cols-3 gap-2.5">
-              {DECISIONS.map((d) => {
-                const active = rating === d.value
-                return (
-                  <button
-                    key={d.value}
-                    type="button"
-                    onClick={() => setRating(d.value)}
-                    className={cn(
-                      "flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all duration-150 cursor-pointer",
-                      active
-                        ? d.activeBg
-                        : "border-border/40 bg-surface-container-low text-muted-foreground hover:border-border/60 hover:bg-surface-container-lowest"
-                    )}
-                  >
-                    <HugeiconsIcon
-                      icon={d.icon}
-                      size={20}
-                      className={cn("mb-1", active ? d.color : "text-muted-foreground")}
-                    />
-                    <span
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium mb-2">Dictamen</legend>
+            <div className="grid grid-cols-3 gap-2">
+              {DECISIONS.map((decision) => (
+                <button
+                  key={decision.value}
+                  type="button"
+                  aria-pressed={draft.rating === decision.value}
+                  onClick={() => update({ rating: decision.value })}
+                  className={cn(
+                    "rounded-lg border p-3 text-xs font-medium",
+                    draft.rating === decision.value
+                      ? "bg-secondary/10 text-secondary border-secondary/40"
+                      : "bg-surface-container-low border-border/40"
+                  )}
+                >
+                  {decision.label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <div className="space-y-3">
+            {CRITERIA.map((criterion) => (
+              <fieldset key={criterion.key} className="rounded-lg border border-border/40 p-3">
+                <legend className="px-1 text-xs font-medium">{criterion.label}</legend>
+                <div className="flex flex-wrap gap-2">
+                  {["0", "1", "2", "3", "4", "5"].map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-label={`${criterion.label}: ${value === "0" ? "No evaluado" : value}`}
+                      aria-pressed={draft[criterion.key] === value}
+                      onClick={() => update({ [criterion.key]: value })}
                       className={cn(
-                        "text-xs font-semibold block",
-                        active ? "text-foreground" : "text-muted-foreground"
+                        "rounded-md border px-3 py-2 text-xs",
+                        draft[criterion.key] === value
+                          ? "bg-secondary/10 border-secondary/40 text-secondary"
+                          : "border-border/40"
                       )}
                     >
-                      {d.title}
-                    </span>
-                    <span className="text-xs text-muted-foreground mt-0.5">{d.subtitle}</span>
-                  </button>
-                )
-              })}
-            </div>
+                      {value === "0" ? "No evaluado" : value}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
           </div>
-
-          {/* Calificación por Criterios */}
-          <div className="space-y-2.5">
-            <span className="block text-xs leading-4 font-medium text-foreground">
-              Evaluación por Criterios
-            </span>
-            <div className="space-y-2">
-              <DimensionalRating
-                label="Fit Técnico & Experiencia"
-                value={technical}
-                onChange={setTechnical}
-              />
-              <DimensionalRating
-                label="Fit Cultural & Actitud"
-                value={cultural}
-                onChange={setCultural}
-              />
-              <DimensionalRating
-                label="Pretensión & Condiciones"
-                value={expectations}
-                onChange={setExpectations}
-              />
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium mb-2">Etiquetas de feedback</legend>
+            <div className="flex flex-wrap gap-2">
+              {[...new Set([...QUICK_TAGS, ...draft.tags])].map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  aria-pressed={draft.tags.includes(tag)}
+                  onClick={() =>
+                    update({
+                      tags: draft.tags.includes(tag)
+                        ? draft.tags.filter((item) => item !== tag)
+                        : [...draft.tags, tag],
+                    })
+                  }
+                  className={cn(
+                    "rounded-md border px-3 py-2 text-xs",
+                    draft.tags.includes(tag)
+                      ? "bg-secondary/10 border-secondary/40 text-secondary"
+                      : "border-border/40"
+                  )}
+                >
+                  {tag}
+                </button>
+              ))}
             </div>
-          </div>
-
-          {/* Tags Rápidos */}
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
-              <HugeiconsIcon icon={Tag01Icon} size={14} />
-              <span>Etiquetas de Feedback</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {QUICK_TAGS.map((tag) => {
-                const selected = selectedTags.includes(tag)
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTag(tag)}
-                    className={cn(
-                      "px-2.5 py-1 rounded-md text-xs font-medium border transition-all cursor-pointer",
-                      selected
-                        ? "bg-secondary/10 text-secondary border-secondary/30"
-                        : "bg-surface-container-low text-muted-foreground border-border/40 hover:border-border/60 hover:text-foreground"
-                    )}
-                  >
-                    {tag}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Notas Internas */}
-          <div className="space-y-2.5">
-            <label
-              htmlFor="evaluation-notes"
-              className="block text-xs leading-4 font-medium text-foreground"
-            >
-              Notas e Impresiones Internas
+          </fieldset>
+          <div className="space-y-2">
+            <label htmlFor="evaluation-notes" className="text-sm font-medium">
+              Notas internas {needsNotes ? "(obligatorias)" : "(opcionales)"}
             </label>
             <Textarea
               id="evaluation-notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Escribe aquí observaciones clave de la entrevista, fortalezas, debilidades o preguntas para la siguiente ronda..."
-              className="min-h-[110px] text-sm resize-y"
+              value={draft.notes}
+              required={needsNotes}
+              onChange={(event) => update({ notes: event.target.value })}
+              className="min-h-28 resize-y"
             />
           </div>
-
-          {/* Última edición */}
-          {existing && (
-            <p className="text-xs text-muted-foreground border-t border-border/40 pt-3">
-              Última evaluación registrada por{" "}
-              <span className="font-medium text-foreground">
-                {existing.evaluator_name || "reclutador"}
-              </span>{" "}
-              el {formatDateChilean(existing.updated_at, "d MMM yyyy HH:mm")}
+        </fieldset>
+        {error && (
+          <p role="alert" className="text-sm text-destructive">
+            {error}
+          </p>
+        )}
+        {saved && (
+          <div className="space-y-3 border-t border-border/40 pt-4">
+            <p role="status" className="text-sm font-medium text-secondary">
+              Evaluación guardada
             </p>
-          )}
-        </div>
-
-        {/* Footer */}
-        <SheetFooter className="border-t border-border/40 bg-surface-container-lowest p-4 flex items-center justify-between gap-3 shrink-0 sm:justify-between">
-          <SheetClose asChild>
-            <Button variant="ghost" type="button" className="h-9 rounded-md px-3">
-              Cancelar
-            </Button>
-          </SheetClose>
-          <Button
-            type="button"
-            onClick={handleSave}
-            disabled={upsertMutation.isPending}
-            className="h-9 rounded-md px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium"
-          >
-            {upsertMutation.isPending ? (
-              <>
-                <HugeiconsIcon icon={Loading01Icon} size={15} className="mr-1.5 animate-spin" />
-                Guardando…
-              </>
-            ) : (
-              "Guardar evaluación"
+            <div className="flex flex-wrap gap-2">
+              {props.onScheduleInterview && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    props.onClose()
+                    props.onScheduleInterview?.()
+                  }}
+                >
+                  Agendar entrevista
+                </Button>
+              )}
+              {props.onSendMessage && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    props.onClose()
+                    props.onSendMessage?.()
+                  }}
+                >
+                  Enviar mensaje
+                </Button>
+              )}
+            </div>
+            {props.onStatusChange && (
+              <fieldset className="space-y-2">
+                <legend className="text-xs font-medium mb-2">Cambiar etapa</legend>
+                <div className="flex flex-wrap gap-2">
+                  {STAGES.filter((stage) => stage.value !== props.applicationStatus).map(
+                    (stage) => (
+                      <Button
+                        key={stage.value}
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setTargetStage(stage.value)}
+                      >
+                        {stage.label}
+                      </Button>
+                    )
+                  )}
+                </div>
+              </fieldset>
             )}
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          </div>
+        )}
+        {existing && (
+          <p className="text-xs text-muted-foreground">
+            Tu última evaluación: {formatDateChilean(existing.updated_at, "d MMM yyyy HH:mm")}
+          </p>
+        )}
+        {props.evaluations.some((evaluation) => evaluation.evaluator_id !== props.evaluatorId) && (
+          <details className="border-t border-border/40 pt-4">
+            <summary className="cursor-pointer text-sm font-medium">
+              Evaluaciones del equipo
+            </summary>
+            <div className="space-y-4 pt-3">
+              {props.evaluations
+                .filter((evaluation) => evaluation.evaluator_id !== props.evaluatorId)
+                .map((evaluation) => (
+                  <article
+                    key={evaluation.id}
+                    className="rounded-lg border border-border/40 p-3 space-y-2"
+                  >
+                    <p className="text-sm font-medium">
+                      {evaluation.evaluator_name || "Reclutador"}
+                    </p>
+                    <p className="text-xs">
+                      {DECISIONS.find((decision) => decision.value === evaluation.rating)?.label}
+                    </p>
+                    {evaluation.notes && (
+                      <p className="whitespace-pre-wrap text-xs text-muted-foreground">
+                        {evaluation.notes}
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {formatDateChilean(evaluation.updated_at, "d MMM yyyy HH:mm")}
+                    </p>
+                  </article>
+                ))}
+            </div>
+          </details>
+        )}
+      </div>
+      <div className="shrink-0 border-t border-border/40 p-4 flex justify-between gap-3">
+        <Button variant="ghost" disabled={mutation.isPending} onClick={props.onClose}>
+          Cerrar
+        </Button>
+        <Button
+          disabled={!canSave || mutation.isPending}
+          onClick={() => void save()}
+          className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+        >
+          {mutation.isPending ? "Guardando..." : "Guardar evaluación"}
+        </Button>
+      </div>
+      <AlertDialog
+        open={targetStage !== null}
+        onOpenChange={(open) => {
+          if (!open && !stagePending) setTargetStage(null)
+        }}
+      >
+        <AlertDialogContent className="shadow-none">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              ¿Cambiar la etapa a {STAGES.find((stage) => stage.value === targetStage)?.label}?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              La evaluación está guardada. Confirma el cambio de etapa.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={stagePending}>Cancelar</AlertDialogCancel>
+            <Button disabled={stagePending} onClick={() => void changeStage()}>
+              {stagePending ? "Cambiando..." : "Confirmar cambio"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }

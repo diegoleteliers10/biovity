@@ -3,7 +3,6 @@
 import {
   Cancel01Icon,
   Delete03Icon,
-  Download01Icon,
   Message01Icon,
   Search01Icon,
   UserMultipleIcon,
@@ -75,6 +74,9 @@ export function PipelineToolbar({
   onSearchChange,
   stageFilter,
   onStageFilterChange,
+  evaluationFilter = "all",
+  onEvaluationFilterChange,
+  evaluationsAvailable = true,
   selectedCount,
   selectedApplicants,
   onClearSelection,
@@ -86,6 +88,9 @@ export function PipelineToolbar({
   onSearchChange: (query: string) => void
   stageFilter: ApplicationStage | "all"
   onStageFilterChange: (stage: ApplicationStage | "all") => void
+  evaluationFilter?: string
+  onEvaluationFilterChange?: (value: string) => void
+  evaluationsAvailable?: boolean
   selectedCount: number
   selectedApplicants: Applicant[]
   onClearSelection: () => void
@@ -130,6 +135,24 @@ export function PipelineToolbar({
             ))}
           </SelectContent>
         </Select>
+        {onEvaluationFilterChange && (
+          <Select
+            value={evaluationFilter}
+            onValueChange={onEvaluationFilterChange}
+            disabled={!evaluationsAvailable}
+          >
+            <SelectTrigger className="h-9 w-[190px]" aria-label="Filtrar por evaluación">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas las evaluaciones</SelectItem>
+              <SelectItem value="unevaluated">Sin evaluar</SelectItem>
+              <SelectItem value="positive">Avanzar</SelectItem>
+              <SelectItem value="neutral">Con dudas</SelectItem>
+              <SelectItem value="negative">Descartar</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       {selectedCount > 0 && (
