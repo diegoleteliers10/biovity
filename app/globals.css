@@ -110,7 +110,13 @@
     --destructive-foreground: #ffffff;
     --border: #e2e2e4;
     --input: #e2e2e4;
-    --ring: rgba(0, 107, 94, 0.3);
+    /*
+     * The focus ring now derives from --primary instead of hardcoding the
+     * secondary teal. A ring a different hue from the control it surrounds
+     * reads as an error state, which is what the green ring on the blue
+     * primary button looked like.
+     */
+    --ring: color-mix(in oklch, var(--primary) 45%, transparent);
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
@@ -160,7 +166,20 @@
     --popover-foreground: #e8e8ea;
     --muted: #353538;
     --muted-foreground: #a3a3a8;
-    --primary: #d6e6ec;
+    /*
+     * Was #d6e6ec. That is oklch(0.915 0.019 222), so it kept the brand hue but
+     * dropped the chroma from 0.0616 to 0.019 and read as grey, not teal. Every
+     * filled button turned into a washed-out slab.
+     *
+     * This is oklch(0.760 0.075 228): same hue as the brand #00374a
+     * (oklch 0.315 0.062 228), more chroma than the brand has. It has to carry
+     * three jobs at once, and tests/contrast.test.cjs checks all three against
+     * every dark surface:
+     *   - filled button edge, needs 3:1 (WCAG 1.4.11)
+     *   - link text, needs 4.5:1, because text-primary appears 127 times
+     *   - its own foreground on top, needs 4.5:1
+     */
+    --primary: #7dbbd7;
     --primary-foreground: #00374a;
     --secondary: #2fbf9f;
     --secondary-foreground: #00281f;
@@ -180,7 +199,9 @@
     --destructive-foreground: #2a0808;
     --border: rgb(232 232 234 / 0.14);
     --input: rgb(232 232 234 / 0.2);
-    --ring: rgb(47 191 159 / 0.45);
+    /* Was rgb(47 191 159 / 0.45), which is --secondary: a green ring around a blue
+       primary button. Now derived from --primary like the light theme. */
+    --ring: color-mix(in oklch, var(--primary) 55%, transparent);
     --chart-1: #f0b429;
     --chart-2: #4ade9f;
     --chart-3: #7cc4ea;
