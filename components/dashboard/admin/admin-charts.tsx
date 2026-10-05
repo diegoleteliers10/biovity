@@ -29,7 +29,7 @@ export type TopJobPoint = {
   applicationRate: number
 }
 
-const BAR_COLORS = ["#10b981", "#3b82f6"]
+const BAR_COLORS = ["var(--chart-2)", "var(--chart-3)"]
 
 export const RegistrationsChart = memo(function RegistrationsChart({
   data,
@@ -58,8 +58,8 @@ export const RegistrationsChart = memo(function RegistrationsChart({
           type="monotone"
           dataKey="professionals"
           stackId="1"
-          stroke="#10b981"
-          fill="#10b981"
+          stroke="var(--chart-2)"
+          fill="var(--chart-2)"
           fillOpacity={0.7}
           name="Profesionales"
           isAnimationActive={false}
@@ -68,8 +68,8 @@ export const RegistrationsChart = memo(function RegistrationsChart({
           type="monotone"
           dataKey="organizations"
           stackId="2"
-          stroke="#3b82f6"
-          fill="#3b82f6"
+          stroke="var(--chart-3)"
+          fill="var(--chart-3)"
           fillOpacity={0.7}
           name="Organizaciones"
           isAnimationActive={false}
@@ -102,7 +102,7 @@ export const TopJobsChart = memo(function TopJobsChart({ data }: { data: TopJobP
         <Bar
           dataKey="applications"
           name="Postulaciones"
-          fill="#10b981"
+          fill="var(--chart-2)"
           radius={[0, 4, 4, 0]}
           isAnimationActive={false}
         >
