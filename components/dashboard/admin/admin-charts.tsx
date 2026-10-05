@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
+import { chartTooltipStyles } from "@/components/ui/chart-tooltip-styles"
 
 export type TrendPoint = {
   date: string
@@ -51,8 +52,8 @@ export const RegistrationsChart = memo(function RegistrationsChart({
         />
         <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} allowDecimals={false} />
         <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8 }}
-          labelStyle={{ fontWeight: 600 }}
+          {...chartTooltipStyles}
+          labelStyle={{ ...chartTooltipStyles.labelStyle, fontWeight: 600 }}
         />
         <Area
           type="monotone"
@@ -95,8 +96,8 @@ export const TopJobsChart = memo(function TopJobsChart({ data }: { data: TopJobP
           interval={0}
         />
         <Tooltip
-          contentStyle={{ fontSize: 12, borderRadius: 8 }}
-          labelStyle={{ fontWeight: 600 }}
+          {...chartTooltipStyles}
+          labelStyle={{ ...chartTooltipStyles.labelStyle, fontWeight: 600 }}
           formatter={(value, name) => [`${value} postulaciones`, name]}
         />
         <Bar

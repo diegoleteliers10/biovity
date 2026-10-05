@@ -73,7 +73,7 @@ export function MessageBubble({
               "relative rounded-2xl px-4 py-2.5",
               "text-sm leading-relaxed",
               isOwn
-                ? "bg-primary text-primary-foreground rounded-tr-sm"
+                ? "bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container rounded-tr-sm"
                 : "bg-surface-container-low text-foreground rounded-tl-sm"
             )}
           >
@@ -432,7 +432,7 @@ export function ChatListItem({
           </div>
           <p className="truncate text-sm text-muted-foreground">{chat.lastMessage ?? "—"}</p>
           {unreadCount > 0 && !isSelected && (
-            <span className="mt-1.5 inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
+            <span className="mt-1.5 inline-flex size-5 min-w-5 items-center justify-center rounded-full bg-secondary text-xs font-medium text-secondary-foreground dark:bg-secondary-container dark:text-on-secondary-container dark:ring-1 dark:ring-secondary-soft/35">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}

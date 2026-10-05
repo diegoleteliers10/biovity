@@ -11,6 +11,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useId, useState } from "react"
+import { chartTooltipStyles } from "@/components/ui/chart-tooltip-styles"
 
 const [LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis] = await Promise.all([
   import("recharts").then((m) => m.LineChart),
@@ -467,7 +468,7 @@ export function OrganizationMetricsContent() {
                 <LineChart data={chartData}>
                   <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
+                  <Tooltip {...chartTooltipStyles} />
                   <Line
                     type="monotone"
                     dataKey="aplicaciones"
@@ -627,6 +628,7 @@ export function OrganizationMetricsContent() {
                   <XAxis dataKey="bucket" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
                   <Tooltip
+                    {...chartTooltipStyles}
                     cursor={{ fill: "var(--muted)" }}
                     formatter={(value: number) => [value.toLocaleString("es-CL"), "Postulaciones"]}
                   />

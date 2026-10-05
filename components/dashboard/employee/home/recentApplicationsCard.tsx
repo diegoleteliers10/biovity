@@ -25,7 +25,10 @@ function getStatusChipClass(status: string): { chip: string; label: string } {
     case "pendiente":
       return { chip: "bg-surface-container-highest text-muted-foreground", label: "Pendiente" }
     case "entrevista":
-      return { chip: "bg-primary/10 text-primary", label: "Entrevista" }
+      return {
+        chip: "bg-primary/10 text-primary dark:bg-secondary-container dark:text-on-secondary-container dark:ring-1 dark:ring-secondary-soft/35",
+        label: "Entrevista",
+      }
     case "oferta":
       return { chip: "bg-accent/10 text-accent", label: "Oferta" }
     case "contratado":

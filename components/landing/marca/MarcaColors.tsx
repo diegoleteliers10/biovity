@@ -96,6 +96,51 @@ const SURFACE_COLORS: ColorToken[] = [
   },
 ]
 
+const DARK_COLORS: Record<string, Pick<ColorToken, "hex" | "rgb" | "bgClass" | "textLight">> = {
+  "--primary": {
+    hex: "#d6e6ec",
+    rgb: "214, 230, 236",
+    bgClass: "bg-primary",
+    textLight: false,
+  },
+  "--secondary": {
+    hex: "#2fbf9f",
+    rgb: "47, 191, 159",
+    bgClass: "bg-secondary",
+    textLight: false,
+  },
+  "--accent": {
+    hex: "#9594e0",
+    rgb: "149, 148, 224",
+    bgClass: "bg-accent",
+    textLight: false,
+  },
+  "--muted-foreground": {
+    hex: "#a3a3a8",
+    rgb: "163, 163, 168",
+    bgClass: "bg-muted-foreground",
+    textLight: false,
+  },
+  "--surface-container-lowest": {
+    hex: "#1a1a1a",
+    rgb: "26, 26, 26",
+    bgClass: "bg-surface-container-lowest border border-border/40",
+    textLight: true,
+  },
+  "--surface-container-low": {
+    hex: "#212123",
+    rgb: "33, 33, 35",
+    bgClass: "bg-surface-container-low border border-border/30",
+    textLight: true,
+  },
+  "--surface-container-highest": {
+    hex: "#353538",
+    rgb: "53, 53, 56",
+    bgClass: "bg-surface-container-highest",
+    textLight: true,
+  },
+}
+
 export function MarcaColors() {
   const [copiedHex, setCopiedHex] = useState<string | null>(null)
 
@@ -132,12 +177,26 @@ export function MarcaColors() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {BRAND_COLORS.map((color) => (
-              <ColorCard
-                key={color.hex}
-                color={color}
-                isCopied={copiedHex === color.hex}
-                onCopy={() => handleCopy(color.hex)}
-              />
+              <div key={color.cssVar} className="contents">
+                <div className="contents dark:hidden">
+                  <ColorCard
+                    color={color}
+                    isCopied={copiedHex === color.hex}
+                    onCopy={() => handleCopy(color.hex)}
+                  />
+                </div>
+                <div className="hidden dark:contents">
+                  <ColorCard
+                    color={{
+                      ...color,
+                      ...DARK_COLORS[color.cssVar],
+                      name: color.name.replace(" (White)", ""),
+                    }}
+                    isCopied={copiedHex === DARK_COLORS[color.cssVar].hex}
+                    onCopy={() => handleCopy(DARK_COLORS[color.cssVar].hex)}
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -152,12 +211,26 @@ export function MarcaColors() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {SURFACE_COLORS.map((color) => (
-              <ColorCard
-                key={color.hex}
-                color={color}
-                isCopied={copiedHex === color.hex}
-                onCopy={() => handleCopy(color.hex)}
-              />
+              <div key={color.cssVar} className="contents">
+                <div className="contents dark:hidden">
+                  <ColorCard
+                    color={color}
+                    isCopied={copiedHex === color.hex}
+                    onCopy={() => handleCopy(color.hex)}
+                  />
+                </div>
+                <div className="hidden dark:contents">
+                  <ColorCard
+                    color={{
+                      ...color,
+                      ...DARK_COLORS[color.cssVar],
+                      name: color.name.replace(" (White)", ""),
+                    }}
+                    isCopied={copiedHex === DARK_COLORS[color.cssVar].hex}
+                    onCopy={() => handleCopy(DARK_COLORS[color.cssVar].hex)}
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -177,31 +250,27 @@ function ColorCard({
 }) {
   return (
     <Card className="rounded-xl border border-border/40 bg-surface-container-low shadow-none overflow-hidden transition-all hover:border-secondary/40">
-      <div
-        className={`h-28 w-full p-4 flex flex-col justify-between cursor-pointer group relative ${color.bgClass}`}
+      <button
+        type="button"
+        className={`text-left h-28 w-full p-4 flex flex-col justify-between cursor-pointer group relative ${color.bgClass}`}
         onClick={onCopy}
-        role="button"
-        tabIndex={0}
         aria-label={`Copiar color ${color.name} ${color.hex}`}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            onCopy()
-          }
-        }}
       >
         <div className="flex items-center justify-between">
           <span
             className={`text-xs font-mono font-semibold px-2 py-0.5 rounded-full ${
               color.textLight
                 ? "bg-white/20 text-white backdrop-blur-xs"
-                : "bg-black/10 text-foreground"
+                : "bg-black/10 text-foreground dark:text-[#111827]"
             }`}
           >
             {color.role}
           </span>
           <div
             className={`size-7 rounded-md flex items-center justify-center transition-transform group-hover:scale-110 ${
-              color.textLight ? "bg-white/20 text-white" : "bg-black/10 text-foreground"
+              color.textLight
+                ? "bg-white/20 text-white"
+                : "bg-black/10 text-foreground dark:text-[#111827]"
             }`}
           >
             <HugeiconsIcon icon={isCopied ? Tick02Icon : Copy01Icon} size={14} />
@@ -209,12 +278,12 @@ function ColorCard({
         </div>
         <span
           className={`text-lg font-mono font-bold tracking-wider ${
-            color.textLight ? "text-white" : "text-foreground"
+            color.textLight ? "text-white" : "text-foreground dark:text-[#111827]"
           }`}
         >
           {color.hex}
         </span>
-      </div>
+      </button>
 
       <CardHeader className="p-4 pb-2">
         <CardTitle className="text-base font-semibold text-foreground flex items-center justify-between">
