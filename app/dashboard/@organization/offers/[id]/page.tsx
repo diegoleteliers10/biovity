@@ -183,7 +183,10 @@ export default function OfertaDetailPage() {
             </div>
 
             {/* Salary */}
-            <div className="flex items-center gap-2 rounded-lg bg-[#f3f3f5] px-4 py-2.5">
+            {/* This band was a hardcoded light-theme literal, so it stayed
+                near-white in the dark theme and the salary text lost its
+                background. --surface-container-low is the same tone in both. */}
+            <div className="flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-2.5">
               <HugeiconsIcon
                 icon={Cash02Icon}
                 size={16}
