@@ -2,11 +2,15 @@ html:has(.landing-public) {
   scroll-snap-type: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html:has(.landing-public) {
-    scroll-behavior: smooth;
-  }
+/*
+ * `scroll-behavior: smooth` used to sit on the document here. It makes every
+ * wheel and trackpad scroll animate instead of tracking the input, which reads
+ * as low fluidity, and the landing has a single in-page anchor
+ * (/companies#contacto). A document-wide smooth scroll cost every scroll on
+ * every landing page to serve that one link, so it is gone.
+ */
 
+@media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .landing-public main > section:first-of-type {
       view-timeline-name: --landing-hero;
@@ -26,4 +30,18 @@ html:has(.landing-public) {
   to {
     transform: translateY(12%);
   }
+}
+
+/*
+ * tw-animate-css puts `filter: blur(var(--tw-enter-blur, 0))` in its `enter`
+ * keyframe, and the hero uses `animate-in` with `fill-mode-both`. The fill mode
+ * keeps the end state, so those elements held `filter: blur(0px)` for the life
+ * of the page. A zero blur paints nothing, but it still puts each element in a
+ * filter rendering context, which costs a render surface and blocks cheap
+ * layer promotion. The hero heading, lede and search row are the large boxes
+ * that pay for it. `!important` is required because a plain declaration loses
+ * to a filling animation, and the blur is a no-op we are only removing.
+ */
+.landing-public .motion-safe\:animate-in {
+  filter: none !important;
 }
