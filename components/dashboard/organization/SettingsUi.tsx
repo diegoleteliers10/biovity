@@ -27,7 +27,7 @@ export function OrgSwitch({
         onChange={(e) => onCheckedChange(e.target.checked)}
         className="peer sr-only"
       />
-      <span className="block h-[26px] w-11 cursor-pointer rounded-full bg-muted-foreground transition-colors peer-checked:bg-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring" />
+      <span className="block h-[26px] w-11 cursor-pointer rounded-full bg-muted-foreground transition-colors peer-checked:bg-primary dark:peer-checked:bg-secondary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ring" />
       <span className="pointer-events-none absolute top-[3px] left-[3px] size-5 cursor-pointer rounded-full bg-white transition-transform peer-checked:translate-x-[18px]" />
     </>
   )

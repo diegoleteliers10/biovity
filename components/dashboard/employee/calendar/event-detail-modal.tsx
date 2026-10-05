@@ -50,7 +50,8 @@ const EVENT_TYPE_LABELS: Record<Event["type"], string> = {
 }
 
 const EVENT_TYPE_COLORS: Record<Event["type"], string> = {
-  interview: "bg-primary/10 text-primary",
+  interview:
+    "bg-primary/10 text-primary dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
   onboarding: "bg-secondary/10 text-secondary",
   task_deadline: "bg-accent/10 text-accent",
   announcement: "bg-surface-container-highest text-muted-foreground",
@@ -63,7 +64,8 @@ const STATUS_LABELS: Record<Event["status"], string> = {
 }
 
 const STATUS_COLORS: Record<Event["status"], string> = {
-  scheduled: "bg-primary/10 text-primary",
+  scheduled:
+    "bg-primary/10 text-primary dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
   completed: "bg-secondary/10 text-secondary",
   cancelled: "bg-destructive/10 text-destructive",
 }

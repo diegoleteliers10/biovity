@@ -58,11 +58,14 @@ const statusLabels: Record<string, string> = {
 }
 
 const statusColors: Record<string, string> = {
-  pendiente: "bg-secondary/10 text-secondary border-secondary/20",
-  entrevista: "bg-primary/10 text-primary border-primary/20",
+  pendiente:
+    "bg-secondary/10 text-secondary border-secondary/20 dark:bg-info/15 dark:text-info dark:border-info/30",
+  entrevista:
+    "bg-primary/10 text-primary border-primary/20 dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
   oferta: "bg-warning/10 text-warning border-warning/20",
   rechazado: "bg-destructive/10 text-destructive border-destructive/20",
-  contratado: "bg-secondary/10 text-secondary border-secondary/20",
+  contratado:
+    "bg-secondary/10 text-secondary border-secondary/20 dark:bg-secondary dark:text-secondary-foreground dark:border-secondary",
 }
 
 type KpiCardProps = {
@@ -441,7 +444,7 @@ export function OrganizationMetricsContent() {
                     <div className="flex items-center gap-2">
                       <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary"
+                          className="h-full bg-primary dark:bg-secondary-soft"
                           style={{
                             width: `${metrics ? (count / Math.max(1, metrics.pipeline.totalApplications)) * 100 : 0}%`,
                           }}

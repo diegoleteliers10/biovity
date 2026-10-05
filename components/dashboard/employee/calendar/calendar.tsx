@@ -86,7 +86,7 @@ export function Calendar({
   const getEventTypeColor = (type: CalendarEvent["type"]) => {
     switch (type) {
       case "interview":
-        return "bg-primary text-primary-foreground"
+        return "bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35"
       case "onboarding":
         return "bg-secondary text-secondary-foreground"
       case "task_deadline":

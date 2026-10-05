@@ -162,8 +162,8 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
           label: "En entrevista",
           count: statusBreakdown.entrevista.count,
           percentage: statusBreakdown.entrevista.percentage,
-          bgColor: "bg-primary/15",
-          textColor: "text-primary",
+          bgColor: "bg-primary/15 dark:bg-secondary-container",
+          textColor: "text-primary dark:text-on-secondary-container",
           icon: Message01Icon,
         },
         {
