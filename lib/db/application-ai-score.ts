@@ -439,16 +439,17 @@ export async function finishCandidateExplanation(
 
 export async function failCandidateExplanation(
   revisionId: string,
-  leaseToken: string
+  leaseToken: string,
+  errorCode = "explanation_failed"
 ): Promise<Result<boolean, DbError>> {
   return R.tryPromise({
     try: async () => {
       const result = await pool.query(
         `UPDATE application_ai_score
-         SET explanation_status = 'failed', error_code = 'explanation_failed',
+         SET explanation_status = 'failed', error_code = $3,
              lease_until = NULL, updated_at = now()
          WHERE id = $1 AND lease_token = $2 AND explanation_status = 'processing'`,
-        [revisionId, leaseToken]
+        [revisionId, leaseToken, errorCode]
       )
       return result.rowCount === 1
     },
@@ -460,12 +461,19 @@ export async function getStoredCandidateExplanation(
   revisionId: string,
   jobId: string
 ): Promise<
-  Result<{ status: string; explanation: Record<string, unknown> | null } | null, DbError>
+  Result<
+    {
+      status: string
+      explanation: Record<string, unknown> | null
+      errorCode: string | null
+    } | null,
+    DbError
+  >
 > {
   return R.tryPromise({
     try: async () => {
       const result = await pool.query(
-        `SELECT explanation_status AS status, explanation
+        `SELECT explanation_status AS status, explanation, error_code AS "errorCode"
          FROM application_ai_score WHERE id = $1 AND job_id = $2`,
         [revisionId, jobId]
       )
@@ -474,6 +482,7 @@ export async function getStoredCandidateExplanation(
       const parsed = z
         .object({
           status: z.string(),
+          errorCode: z.string().nullable(),
           explanation: z.record(z.string(), z.unknown()).nullable(),
         })
         .parse(row)

@@ -23,11 +23,13 @@ type ScoreExplanation = {
 }
 type ExplanationResponse = {
   status: "ready" | "processing" | "failed" | "expired"
+  error?: string
   explanation?: ScoreExplanation
 }
 
 const EvidenceItemSchema = z.object({ text: z.string(), evidence: z.string() })
 const ExplanationResponseSchema = z.object({
+  error: z.string().optional(),
   status: z.enum(["ready", "processing", "failed", "expired"]),
   explanation: z
     .object({
@@ -149,7 +151,9 @@ export function AIScoreModal({ score, jobId, candidateName, open, onOpenChange }
           </div>
         ) : response?.status === "failed" || explanationQuery.data?.isErr() ? (
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>No se pudo generar la explicación. El score de Jev no cambia.</p>
+            <p>
+              {response?.error ?? "No se pudo generar la explicación. El score de Jev no cambia."}
+            </p>
             <button
               type="button"
               className="text-primary underline"
