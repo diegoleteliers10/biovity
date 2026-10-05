@@ -60,6 +60,7 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     docsUrl: "https://z.ai",
     defaultModel: "glm-5.2",
     models: [
+      { id: "glm-5.3-flash", label: "GLM-5.3 Flash", supportsTools: true },
       { id: "glm-5.2", label: "GLM-5.2", supportsTools: true },
       { id: "glm-5-turbo", label: "GLM-5 Turbo", supportsTools: true },
       { id: "glm-4.7", label: "GLM-4.7", supportsTools: true },
