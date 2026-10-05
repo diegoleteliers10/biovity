@@ -18,7 +18,10 @@ export default function Loading() {
       {/* Metrics Cards skeleton */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((n) => (
-          <div key={n} className="border border-border/80 bg-white rounded-lg p-6">
+          <div
+            key={n}
+            className="border border-border/80 bg-surface-container-lowest rounded-lg p-6"
+          >
             <div className="flex flex-row items-center justify-between pb-2">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="size-4 rounded" />
@@ -31,7 +34,7 @@ export default function Loading() {
 
       {/* Recent Applications and Messages skeleton */}
       <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="border border-border/80 bg-white rounded-lg p-6">
+        <div className="border border-border/80 bg-surface-container-lowest rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <Skeleton className="h-5 w-36" />
             <Skeleton className="h-4 w-16" />
@@ -55,7 +58,7 @@ export default function Loading() {
           </div>
         </div>
 
-        <div className="border border-border/80 bg-white rounded-lg p-6">
+        <div className="border border-border/80 bg-surface-container-lowest rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <Skeleton className="h-5 w-32" />
             <Skeleton className="h-4 w-16" />
@@ -87,7 +90,7 @@ export default function Loading() {
           {[1, 2, 3, 4].map((n) => (
             <div
               key={n + 100}
-              className="border border-border/80 bg-white rounded-lg p-4 space-y-3"
+              className="border border-border/80 bg-surface-container-lowest rounded-lg p-4 space-y-3"
             >
               <Skeleton className="h-4 w-full" />
               <Skeleton className="size-3/4" />
@@ -105,7 +108,7 @@ export default function Loading() {
       <div className="mt-4 space-y-2">
         <Skeleton className="h-6 w-36" />
         <Skeleton className="h-4 w-80" />
-        <div className="mt-4 border border-border/80 bg-white rounded-lg p-6">
+        <div className="mt-4 border border-border/80 bg-surface-container-lowest rounded-lg p-6">
           <Skeleton className="size-48 mb-4" />
           <Skeleton className="h-10 w-full max-w-md rounded" />
         </div>

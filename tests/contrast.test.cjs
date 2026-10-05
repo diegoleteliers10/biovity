@@ -51,18 +51,32 @@ const contrast = (a, b) => {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-/** Read a token from the light `:root` block only, so dark overrides are ignored. */
-function lightToken(name) {
+/** Read a token from one theme block, so the other theme's value is ignored. */
+function token(theme, name) {
   // Match the `.dark {` block, not the first `.dark` in the file: the custom
-  // variant on line 4 also contains it, and it sits before `:root`.
-  const start = globals.indexOf(':root')
-  const end = globals.indexOf('\n.dark {')
-  assert.ok(start !== -1 && end > start, 'globals.css must have a :root block followed by .dark')
-  const root = globals.slice(start, end)
-  const match = root.match(new RegExp(`${name}:\\s*([^;]+);`))
-  assert.ok(match, `--${name} must be declared in :root so this can check it`)
+  // variant near the top also contains it, and it sits before `:root`.
+  const start = globals.indexOf(theme === 'dark' ? '\n.dark {' : ':root')
+  const end = theme === 'dark' ? globals.indexOf('\n@layer base') : globals.indexOf('\n.dark {')
+  assert.ok(start !== -1 && end > start, `globals.css must have a ${theme} block`)
+  const block = globals.slice(start, end)
+  const match = block.match(new RegExp(`${name}:\\s*([^;]+);`))
+  assert.ok(match, `--${name} must be declared in the ${theme} block so this can check it`)
   return match[1].trim()
 }
+
+const lightToken = name => token('light', name)
+const darkToken = name => token('dark', name)
+
+// Every surface a token can be painted on. Light mirrors card-on-white;
+// dark walks the full tonal ladder from the page up to the highest surface.
+const lightSurfaces = ['background', 'card', 'surface-container-low', 'surface-container-highest']
+const darkSurfaces = [
+  'background',
+  'surface-container-lowest',
+  'surface-container-low',
+  'surface-raised',
+  'surface-container-highest',
+]
 
 // Every surface these text tokens are actually painted on.
 const surfaces = ['background', 'card', 'surface-container-low', 'surface-container-highest']
@@ -123,4 +137,138 @@ test('the oklch conversion matches the hex it replaced', () => {
   // Guards the maths above, so a future refactor cannot silently pass everything.
   assert.ok(Math.abs(contrast('oklch(1 0 0)', '#ffffff') - 1) < 0.001)
   assert.ok(Math.abs(contrast('#ffffff', '#000000') - 21) < 0.01)
+})
+
+// The hard rule, enforced in both themes and both directions:
+//
+//   a state colour must clear 4.5:1 as TEXT on every surface it is painted on,
+//   and its -foreground must clear 4.5:1 ON the state colour itself.
+//
+// The dashboard already distinguished "pendiente" from "completado" with raw
+// amber and emerald. Collapsing them onto two colours would make those
+// indicators stop communicating anything, which is why the tokens exist rather
+// than a mapping onto primary and secondary.
+const STATES = ['success', 'warning', 'info', 'destructive']
+
+for (const theme of ['light', 'dark']) {
+  const read = theme === 'dark' ? darkToken : lightToken
+  const surfaceNames = theme === 'dark' ? darkSurfaces : lightSurfaces
+
+  for (const state of STATES) {
+    test(`--${state} clears AA in the ${theme} theme`, () => {
+      const value = read(state)
+      for (const surface of surfaceNames) {
+        const ratio = contrast(value, read(surface))
+        assert.ok(
+          ratio >= 4.5,
+          `--${state} ${value} as text on --${surface} is ${report(ratio)}, needs 4.5:1`
+        )
+      }
+    })
+
+    test(`--${state}-foreground clears AA on --${state} in the ${theme} theme`, () => {
+      const fg = read(`${state}-foreground`)
+      const ratio = contrast(fg, read(state))
+      assert.ok(
+        ratio >= 4.5,
+        `--${state}-foreground ${fg} on --${state} is ${report(ratio)}, needs 4.5:1`
+      )
+    })
+  }
+
+  test(`--accent-foreground clears AA on --accent in the ${theme} theme`, () => {
+    const ratio = contrast(read('accent-foreground'), read('accent'))
+    assert.ok(
+      ratio >= 4.5,
+      `--accent-foreground on --accent is ${report(ratio)}, needs 4.5:1`
+    )
+  })
+
+  test(`every foreground pair in the ${theme} theme clears AA`, () => {
+    // A -foreground is meant to sit on its own token. Catches the pattern that
+    // produced white on the periwinkle accent, 3.40:1 light and 2.77:1 dark.
+    const pairs = [
+      ['primary', 'primary-foreground'],
+      ['secondary', 'secondary-foreground'],
+      ['accent', 'accent-foreground'],
+      ['tertiary', 'tertiary-foreground'],
+      ['on-primary-container', 'primary-container'],
+      ...STATES.map(state => [state, `${state}-foreground`]),
+    ]
+    const failures = []
+    for (const [background, foreground] of pairs) {
+      const ratio = contrast(read(foreground), read(background))
+      if (ratio < 4.5) failures.push(`${foreground} on ${background} is ${report(ratio)}`)
+    }
+    assert.deepEqual(failures, [], failures.join('; '))
+  })
+
+  test(`text tokens clear AA on every surface in the ${theme} theme`, () => {
+    const failures = []
+    for (const foreground of ['foreground', 'muted-foreground']) {
+      for (const surface of surfaceNames) {
+        const ratio = contrast(read(foreground), read(surface))
+        if (ratio < 4.5) {
+          failures.push(`${foreground} on ${surface} is ${report(ratio)}`)
+        }
+      }
+    }
+    assert.deepEqual(failures, [], failures.join('; '))
+  })
+}
+
+test('both themes declare the same token names', () => {
+  // A token present in :root and missing from .dark silently keeps its light
+  // value in dark mode. That is how the three --surface-container-* tokens were
+  // pure white on a dark page.
+  const namesIn = (theme) => {
+    const start = globals.indexOf(theme === 'dark' ? '\n.dark {' : ':root')
+    const end = theme === 'dark' ? globals.indexOf('\n@layer base') : globals.indexOf('\n.dark {')
+    return [...globals.slice(start, end).matchAll(/^\s{4}--([a-z0-9-]+):/gm)].map(m => m[1])
+  }
+  const structural = name => !/^color-|^radius/.test(name)
+  const light = namesIn('light').filter(structural)
+  const dark = namesIn('dark').filter(structural)
+  const missingInDark = light.filter(name => !dark.includes(name))
+  const missingInLight = dark.filter(name => !light.includes(name))
+  assert.deepEqual(missingInDark, [], `dark theme is missing: ${missingInDark.join(', ')}`)
+  assert.deepEqual(missingInLight, [], `light theme is missing: ${missingInLight.join(', ')}`)
+})
+test('every token mapped in @theme resolves in both themes', () => {
+  // Tailwind only emits a utility for a token once something uses it, so a
+  // mapping can rot silently. This checks the declaration side: whatever
+  // @theme inline exposes must have a value in :root and in .dark.
+  const themeBlock = globals.slice(globals.indexOf('@theme'), globals.indexOf(':root'))
+  const mapped = [...themeBlock.matchAll(/--color-([a-z0-9-]+):\s*var\(--([a-z0-9-]+)\)/g)].map(
+    m => m[2]
+  )
+  assert.ok(mapped.length > 20, `expected the theme to map tokens, found ${mapped.length}`)
+  const missing = []
+  for (const name of mapped) {
+    for (const theme of ['light', 'dark']) {
+      try {
+        token(theme, name)
+      } catch {
+        missing.push(`${name} (${theme})`)
+      }
+    }
+  }
+  assert.deepEqual(missing, [], `mapped but not declared: ${missing.join(', ')}`)
+})
+
+test('the dark theme is reachable from the document class', () => {
+  // `@custom-variant dark (&:is(.dark *))` is descendant-only, so the class has
+  // to sit on <html> for the tokens to reach <body>. The theme script does that.
+  assert.match(globals, /@custom-variant dark \(&:is\(\.dark \*\)\)/)
+  const theme = fs.readFileSync(
+    path.join(__dirname, '..', 'lib', 'theme.ts'),
+    'utf8'
+  )
+  assert.match(theme, /classList\.toggle\('dark'/, 'the theme script must set the class')
+  const layout = fs.readFileSync(path.join(__dirname, '..', 'app', 'layout.tsx'), 'utf8')
+  assert.match(
+    layout,
+    /dangerouslySetInnerHTML=\{\{ __html: themeScript \}\}/,
+    'the script must be inlined in the document head, before first paint'
+  )
 })

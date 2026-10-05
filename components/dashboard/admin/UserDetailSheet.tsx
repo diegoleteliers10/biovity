@@ -95,9 +95,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
 
           <div className="flex-1 space-y-5 overflow-y-auto px-4 py-4">
             <div className="space-y-3">
-              <h3 className="text-xs leading-4 font-medium text-foreground">
-                Informacion
-              </h3>
+              <h3 className="text-xs leading-4 font-medium text-foreground">Informacion</h3>
 
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Email</label>
@@ -125,9 +123,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-xs leading-4 font-medium text-foreground">
-                Editar
-              </h3>
+              <h3 className="text-xs leading-4 font-medium text-foreground">Editar</h3>
 
               <div className="space-y-1.5">
                 <label htmlFor="edit-name" className="text-xs text-muted-foreground">
@@ -162,10 +158,18 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
           </div>
 
           <div className="flex items-center justify-end gap-2 border-t border-border/60 px-4 py-3">
-            <Button variant="outline" className="h-9 px-4 text-sm" onClick={() => handleOpenChange(false)}>
+            <Button
+              variant="outline"
+              className="h-9 px-4 text-sm"
+              onClick={() => handleOpenChange(false)}
+            >
               Cancelar
             </Button>
-            <Button className="h-9 px-4 text-sm" onClick={handleSave} disabled={!hasChanges || saving}>
+            <Button
+              className="h-9 px-4 text-sm"
+              onClick={handleSave}
+              disabled={!hasChanges || saving}
+            >
               {saving ? "Guardando..." : "Guardar cambios"}
             </Button>
           </div>

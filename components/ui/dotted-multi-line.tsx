@@ -45,7 +45,7 @@ export function DottedMultiLineChart() {
       <CardHeader>
         <CardTitle>
           Multi Line Chart
-          <Badge variant="outline" className="text-red-500 bg-red-500/10 border-none ml-2">
+          <Badge variant="outline" className="text-destructive bg-destructive/10 border-none ml-2">
             <HugeiconsIcon icon={TradeDownIcon} className="size-4" />
             <span>-5.2%</span>
           </Badge>

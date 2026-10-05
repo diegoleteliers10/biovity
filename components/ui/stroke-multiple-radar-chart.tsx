@@ -51,7 +51,7 @@ export function StrokeMultipleRadarChart() {
       <CardHeader className="items-center pb-4">
         <CardTitle>
           Radar Chart
-          <Badge variant="outline" className="text-green-500 bg-green-500/10 border-none ml-2">
+          <Badge variant="outline" className="text-success bg-success/10 border-none ml-2">
             <HugeiconsIcon icon={TradeUpIcon} className="size-4" />
             <span>5.2%</span>
           </Badge>

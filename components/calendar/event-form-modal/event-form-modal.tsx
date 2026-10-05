@@ -286,7 +286,7 @@ export function EventFormModal({
                 {showCandidateDropdown &&
                   candidateResults?.data &&
                   candidateResults.data.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-border/30 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-popover border border-border/30 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                       {candidateResults.data.map((user) => (
                         <button
                           key={user.id}

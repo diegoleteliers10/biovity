@@ -578,7 +578,11 @@ function MarkerContent({ children, className }: MarkerContentProps) {
 
 function DefaultMarkerIcon() {
   return (
-    <div className="relative h-4 w-4 rounded-full border-2 border-white bg-blue-500 shadow-lg" />
+    // The blue stays on purpose. This is the "you are here" dot, and every map
+    // in the world draws it blue. It sits over the Carto raster, which has its
+    // own light and dark basemaps, and #3b82f6 reads on both. The ring uses a
+    // token so it does not stay white when the basemap goes dark.
+    <div className="relative h-4 w-4 rounded-full border-2 border-popover bg-blue-500 shadow-lg" />
   )
 }
 
@@ -961,8 +965,8 @@ function CompassButton({ onClick }: { onClick: () => void }) {
         className="size-5"
         style={{ transformStyle: "preserve-3d" }}
       >
-        <path d="M12 2L16 12H12V2Z" className="fill-red-500" />
-        <path d="M12 2L8 12H12V2Z" className="fill-red-300" />
+        <path d="M12 2L16 12H12V2Z" className="fill-destructive" />
+        <path d="M12 2L8 12H12V2Z" className="fill-destructive/50" />
         <path d="M12 22L16 12H12V22Z" className="fill-muted-foreground/60" />
         <path d="M12 22L8 12H12V22Z" className="fill-muted-foreground/30" />
       </svg>
