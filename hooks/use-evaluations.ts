@@ -1,56 +1,120 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { z } from "zod"
+import { ApiError } from "@/lib/errors"
+import { type Evaluation, type EvaluationInput, evaluationSchema } from "@/lib/evaluations"
 
-export type Evaluation = {
-  id: string
-  application_id: string
-  evaluator_id: string
-  evaluator_name: string
-  rating: "positive" | "neutral" | "negative"
-  notes: string | null
-  skills_assessment: Record<string, string>
-  created_at: string
-  updated_at: string
+import type { EvaluationQueryData } from "@/lib/evaluations/types"
+
+export type { Evaluation } from "@/lib/evaluations"
+
+async function fetchEvaluationData<T>(
+  url: string,
+  schema: z.ZodType<T>,
+  init?: RequestInit
+): Promise<Result<T, Error>> {
+  return Result.gen(async function* () {
+    const response = yield* Result.await(
+      Result.tryPromise({
+        try: () => fetch(url, init),
+        catch: () => new ApiError({ status: 0, message: "No se pudo conectar. Intenta de nuevo" }),
+      })
+    )
+    const body = yield* Result.await(
+      Result.tryPromise({
+        try: () => response.json(),
+        catch: () =>
+          new ApiError({
+            status: response.status,
+            message: "Respuesta inválida. Intenta de nuevo",
+          }),
+      })
+    )
+    if (!response.ok) {
+      const parsedError = z.object({ error: z.string() }).safeParse(body)
+      return Result.err(
+        new ApiError({
+          status: response.status,
+          message: parsedError.success
+            ? parsedError.data.error
+            : "No se pudo completar la solicitud",
+        })
+      )
+    }
+    const parsed = schema.safeParse(body)
+    return parsed.success
+      ? Result.ok(parsed.data)
+      : Result.err(
+          new ApiError({
+            status: response.status,
+            message: "Datos de evaluación inválidos. Intenta de nuevo",
+          })
+        )
+  })
 }
 
-const evalKey = (applicationId: string) => ["evaluations", applicationId] as const
+function useEvaluationQuery(applicationIds: readonly string[], batch: boolean) {
+  const ids = [...new Set(applicationIds)].sort()
+  const queryClient = useQueryClient()
+  const queryKey = ["evaluations", batch ? "batch" : "single", ids]
+  const query = useQuery({
+    queryKey,
+    queryFn: async (): Promise<EvaluationQueryData> => {
+      const evaluations: Evaluation[] = []
+      for (let offset = 0; offset < ids.length; offset += 100) {
+        const chunk = ids.slice(offset, offset + 100)
+        const params = new URLSearchParams(
+          batch ? { applicationIds: chunk.join(",") } : { applicationId: chunk[0] ?? "" }
+        )
+        const result = await fetchEvaluationData(
+          `/api/evaluations?${params}`,
+          z.array(evaluationSchema)
+        )
+        if (result.isErr()) {
+          const previous = queryClient.getQueryData<EvaluationQueryData>(queryKey)
+          return { kind: "failed", evaluations: previous?.evaluations, error: result.error }
+        }
+        evaluations.push(...result.value)
+      }
+      return { kind: "ready", evaluations }
+    },
+    enabled: ids.length > 0,
+    staleTime: 30 * 1000,
+    refetchOnMount: "always",
+  })
+  const error = query.data?.kind === "failed" ? query.data.error : query.error
+  return {
+    ...query,
+    data: query.data?.evaluations,
+    error,
+    isError: error !== null,
+  }
+}
 
 export function useEvaluations(applicationId: string | undefined) {
-  return useQuery({
-    queryKey: evalKey(applicationId ?? ""),
-    queryFn: async () => {
-      if (!applicationId) return [] as Evaluation[]
-      const res = await fetch(`/api/evaluations?applicationId=${applicationId}`)
-      if (!res.ok) return [] as Evaluation[]
-      return res.json() as Promise<Evaluation[]>
-    },
-    enabled: Boolean(applicationId),
-    staleTime: 30 * 1000,
-  })
+  return useEvaluationQuery(applicationId ? [applicationId] : [], false)
+}
+
+export function useEvaluationBatch(applicationIds: readonly string[]) {
+  return useEvaluationQuery(applicationIds, true)
 }
 
 export function useUpsertEvaluationMutation(applicationId: string | undefined) {
   const queryClient = useQueryClient()
-
   return useMutation({
-    mutationFn: async (input: {
-      rating: "positive" | "neutral" | "negative"
-      notes?: string
-      skillsAssessment?: Record<string, string>
-    }) => {
-      const res = await fetch("/api/evaluations", {
+    mutationFn: async (input: EvaluationInput): Promise<Result<Evaluation, Error>> => {
+      if (!applicationId)
+        return Result.err(new ApiError({ status: 400, message: "Selecciona una postulación" }))
+      return fetchEvaluationData("/api/evaluations", evaluationSchema, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ applicationId, ...input }),
       })
-      if (!res.ok) throw new Error("Failed to save evaluation")
-      return res.json() as Promise<Evaluation>
     },
-    onSuccess: () => {
-      if (applicationId) {
-        queryClient.invalidateQueries({ queryKey: evalKey(applicationId) })
-      }
+    onSuccess: (result) => {
+      if (result.isOk()) return queryClient.invalidateQueries({ queryKey: ["evaluations"] })
     },
   })
 }

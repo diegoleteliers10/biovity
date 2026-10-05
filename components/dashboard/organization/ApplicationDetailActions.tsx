@@ -7,7 +7,9 @@ import {
   NoteAddIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Result } from "better-result"
 import { useState } from "react"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,8 +30,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { useEvaluations } from "@/hooks/use-evaluations"
 import type { ApplicationStage } from "@/lib/types/dashboard"
 import { ApplicationNotes } from "./ApplicationNotes"
+import { EvaluationSummary } from "./EvaluationSummary"
 import { ScorecardSheet } from "./ScorecardSheet"
 
 const STATUS_OPTIONS: { value: ApplicationStage; label: string }[] = [
@@ -61,15 +65,27 @@ export function ApplicationDetailActions({
   onScheduleInterview?: (candidateId: string) => void
   onSendMessage?: (candidateId: string) => void
 }) {
+  const evaluationQuery = useEvaluations(applicationId)
   const [rejectReason, setRejectReason] = useState("")
+
+  async function changeStage(stage: ApplicationStage) {
+    if (!onStatusChange) return
+    const result = await Result.tryPromise(() =>
+      Promise.resolve(onStatusChange(applicationId, stage))
+    )
+    if (result.isErr()) toast.error("No se pudo cambiar la etapa. Reintenta.")
+  }
 
   return (
     <div className="space-y-4">
       {/* Status bar */}
       <div className="flex flex-wrap items-center gap-3">
         <Select
-          defaultValue={applicationStatus}
-          onValueChange={(v) => onStatusChange?.(applicationId, v as ApplicationStage)}
+          value={applicationStatus}
+          onValueChange={(value) => {
+            const stage = STATUS_OPTIONS.find((option) => option.value === value)?.value
+            if (stage) void changeStage(stage)
+          }}
         >
           <SelectTrigger className="h-9 w-[160px]">
             <SelectValue />
@@ -106,6 +122,12 @@ export function ApplicationDetailActions({
           candidateName={candidateName}
           candidateAvatar={candidateAvatar}
           candidateProfession={candidateProfession}
+          applicationStatus={applicationStatus}
+          onStatusChange={onStatusChange}
+          onScheduleInterview={
+            onScheduleInterview ? () => onScheduleInterview(candidateId) : undefined
+          }
+          onSendMessage={onSendMessage ? () => onSendMessage(candidateId) : undefined}
         >
           <Button
             variant="outline"
@@ -146,7 +168,7 @@ export function ApplicationDetailActions({
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  onStatusChange?.(applicationId, "rechazado")
+                  void changeStage("rechazado")
                   setRejectReason("")
                 }}
                 className="bg-destructive text-white hover:bg-destructive/90"
@@ -157,6 +179,29 @@ export function ApplicationDetailActions({
           </AlertDialogContent>
         </AlertDialog>
       </div>
+
+      <section
+        className="space-y-3 rounded-xl bg-surface-container-low p-4"
+        aria-label="Evaluación humana"
+      >
+        <h3 className="text-xs font-medium">Evaluación del equipo</h3>
+        {evaluationQuery.isLoading ? (
+          <p className="text-xs text-muted-foreground">Cargando evaluaciones...</p>
+        ) : evaluationQuery.isError ? (
+          <div role="alert" className="text-xs text-destructive">
+            No se pudieron cargar las evaluaciones.
+            <button
+              type="button"
+              onClick={() => void evaluationQuery.refetch()}
+              className="ml-2 underline"
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : (
+          <EvaluationSummary evaluations={evaluationQuery.data ?? []} mode="detail" />
+        )}
+      </section>
 
       {/* Notes section */}
       <ApplicationNotes applicationId={applicationId} />

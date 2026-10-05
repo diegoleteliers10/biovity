@@ -10,7 +10,9 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useParams, useRouter } from "next/navigation"
-import { addTransitionType, startTransition, useCallback } from "react"
+import { addTransitionType, startTransition, useCallback, useState } from "react"
+import { toast } from "sonner"
+import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { ApplicationDetailActions } from "@/components/dashboard/organization/ApplicationDetailActions"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
@@ -90,6 +92,7 @@ export default function OrganizationApplicationDetailPage() {
   const jobId = params?.id
   const applicationId = params?.applicationId
   const session = useDashboardSession()
+  const [interviewCandidateId, setInterviewCandidateId] = useState<string | null>(null)
   const organizationId = (session?.user as { organizationId?: string })?.organizationId ?? ""
 
   const applicationQuery = useQuery({
@@ -129,18 +132,15 @@ export default function OrganizationApplicationDetailPage() {
   const createChatMutation = useCreateOrFindChatMutation(recruiterId)
 
   const handleStatusChange = useCallback(
-    (applicationId: string, newStage: ApplicationStage) => {
-      updateStatusMutation.mutate({ id: applicationId, status: newStage as ApplicationStage })
+    async (applicationId: string, newStage: ApplicationStage) => {
+      await updateStatusMutation.mutateAsync({ id: applicationId, status: newStage })
     },
     [updateStatusMutation]
   )
 
-  const handleScheduleInterview = useCallback(
-    (candidateId: string) => {
-      push(`/dashboard/calendar?create=interview&candidateId=${candidateId}`)
-    },
-    [push]
-  )
+  const handleScheduleInterview = useCallback((candidateId: string) => {
+    setInterviewCandidateId(candidateId)
+  }, [])
 
   const handleSendMessage = useCallback(
     (candidateId: string) => {
@@ -149,6 +149,8 @@ export default function OrganizationApplicationDetailPage() {
         onSuccess: (chat) => {
           push(`/dashboard/messages?chat=${chat.id}`)
         },
+        onError: () =>
+          toast.error("La evaluación sigue guardada. No se pudo abrir el chat. Reintenta."),
       })
     },
     [recruiterId, createChatMutation, push]
@@ -384,6 +386,17 @@ export default function OrganizationApplicationDetailPage() {
           </CardContent>
         </Card>
       </div>
+      {interviewCandidateId && recruiterId && organizationId && (
+        <EventFormModal
+          isOpen
+          onClose={() => setInterviewCandidateId(null)}
+          organizerId={recruiterId}
+          organizationId={organizationId}
+          candidateId={interviewCandidateId}
+          applicationId={applicationId}
+          lockedType="interview"
+        />
+      )}
     </DirectionalTransition>
   )
 }

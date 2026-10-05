@@ -10,6 +10,7 @@ import { AnalyzeButton } from "@/components/ai/AnalyzeButton"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
+import { useEvaluationBatch } from "@/hooks/use-evaluations"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
@@ -21,6 +22,7 @@ import {
 } from "@/lib/api/use-applications"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useJobs } from "@/lib/api/use-jobs"
+import { latestEvaluationByApplication } from "@/lib/evaluations"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import type { EventType } from "@/lib/types/events"
 import { formatDateChilean } from "@/lib/utils"
@@ -65,6 +67,7 @@ export function OrganizationApplicationsContent() {
 
   const [searchQuery, setSearchQuery] = useState("")
   const [stageFilter, setStageFilter] = useState<ApplicationStage | "all">("all")
+  const [evaluationFilter, setEvaluationFilter] = useState("all")
   const [selectionMode, setSelectionMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
@@ -81,17 +84,54 @@ export function OrganizationApplicationsContent() {
 
   const applicants = useMemo(() => (applications ?? []).map(applicationToApplicant), [applications])
 
+  const evaluationQuery = useEvaluationBatch(applicants.map((applicant) => applicant.id))
+  const evaluationsByApplication = useMemo(() => {
+    const grouped = new Map<string, NonNullable<typeof evaluationQuery.data>>()
+    for (const evaluation of evaluationQuery.data ?? []) {
+      const items = grouped.get(evaluation.application_id) ?? []
+      grouped.set(evaluation.application_id, [...items, evaluation])
+    }
+    return grouped
+  }, [evaluationQuery.data])
+  const getEvaluations = useCallback(
+    (applicationId: string) =>
+      evaluationQuery.isLoading || evaluationQuery.isError
+        ? null
+        : (evaluationsByApplication.get(applicationId) ?? []),
+    [evaluationQuery.isLoading, evaluationQuery.isError, evaluationsByApplication]
+  )
+
   const filteredApplicants = useMemo(() => {
     let result = applicants
     if (stageFilter !== "all") {
       result = result.filter((a) => a.stage === stageFilter)
+    }
+    if (evaluationFilter !== "all") {
+      result =
+        evaluationQuery.isLoading || evaluationQuery.isError
+          ? []
+          : result.filter((applicant) => {
+              const evaluations = evaluationsByApplication.get(applicant.id) ?? []
+              const latest = latestEvaluationByApplication(evaluations).get(applicant.id)
+              return evaluationFilter === "unevaluated"
+                ? !latest
+                : latest?.rating === evaluationFilter
+            })
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       result = result.filter((a) => a.candidateName.toLowerCase().includes(q))
     }
     return result
-  }, [applicants, stageFilter, searchQuery])
+  }, [
+    applicants,
+    stageFilter,
+    searchQuery,
+    evaluationFilter,
+    evaluationsByApplication,
+    evaluationQuery.isLoading,
+    evaluationQuery.isError,
+  ])
 
   const handleToggleSelection = useCallback((id: string) => {
     setSelectedIds((prev) => {
@@ -414,6 +454,11 @@ export function OrganizationApplicationsContent() {
                         onSearchChange={setSearchQuery}
                         stageFilter={stageFilter}
                         onStageFilterChange={setStageFilter}
+                        evaluationFilter={evaluationFilter}
+                        onEvaluationFilterChange={setEvaluationFilter}
+                        evaluationsAvailable={
+                          !evaluationQuery.isLoading && !evaluationQuery.isError
+                        }
                         selectedCount={selectedIds.size}
                         selectedApplicants={filteredApplicants.filter((a) => selectedIds.has(a.id))}
                         onClearSelection={handleClearSelection}
@@ -422,12 +467,37 @@ export function OrganizationApplicationsContent() {
                         onBulkAdvance={handleBulkAdvance}
                       />
                     </div>
+                    {evaluationQuery.isError && (
+                      <div
+                        role="alert"
+                        className="flex items-center gap-2 text-xs text-destructive"
+                      >
+                        No se pudieron cargar las evaluaciones.
+                        <button
+                          type="button"
+                          onClick={() => void evaluationQuery.refetch()}
+                          className="underline"
+                        >
+                          Reintentar
+                        </button>
+                        {evaluationFilter !== "all" && (
+                          <button
+                            type="button"
+                            onClick={() => setEvaluationFilter("all")}
+                            className="underline"
+                          >
+                            Mostrar todas
+                          </button>
+                        )}
+                      </div>
+                    )}
                     <div className="flex-1 min-h-0 overflow-hidden">
                       <ApplicationsKanban
                         applicants={filteredApplicants}
                         onStatusChange={handleStatusChange}
                         onCreateEvent={handleCreateEvent}
                         getScore={getScore}
+                        getEvaluations={getEvaluations}
                         isAnalyzing={isAnalyzing}
                         jobOffer={jobOfferContext ?? undefined}
                         onScoreClick={handleScoreClick}
