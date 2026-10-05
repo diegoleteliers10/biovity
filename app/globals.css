@@ -158,17 +158,17 @@
         @apply border-border outline-ring/50;
     }
     html {
-        /* Anchor jumps and programmatic scrollTo ease instead of snapping.
-            Disabled under prefers-reduced-motion so nothing moves on its own. */
-        scroll-behavior: smooth;
+        /* No `scroll-behavior: smooth` here on purpose. On the root element it
+            does not ease anchor jumps, it animates every wheel and trackpad
+            scroll so it lags the input, which reads as low fluidity on a high
+            refresh display. The app has four in-page anchors in total
+            (/companies#contacto, #comparativa, #colores, #componentes), so the
+            rule cost every scroll on every page to serve four links. Restore it
+            per anchor with scrollIntoView({ behavior: "smooth" }) if an eased
+            jump is ever wanted again. */
         /* The header is a fixed pill, so every anchored section needs top
             clearance or the jump hides the heading behind it. */
         scroll-padding-top: 6.5rem;
-    }
-    @media (prefers-reduced-motion: reduce) {
-        html {
-            scroll-behavior: auto;
-        }
     }
     body {
         @apply bg-background text-foreground;
