@@ -45,8 +45,10 @@ const MenuButton = ({
     onClick={onClick}
     disabled={disabled}
     title={title}
+    aria-label={title}
+    aria-pressed={isActive ?? false}
     className={cn(
-      "inline-flex size-7 items-center justify-center rounded text-sm transition-colors",
+      "inline-flex size-7 items-center justify-center rounded text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
       isActive
         ? "bg-secondary/10 text-secondary"
         : "text-muted-foreground hover:bg-muted hover:text-foreground",
