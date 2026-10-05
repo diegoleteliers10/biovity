@@ -1,11 +1,12 @@
 "use client"
 
-import { AlertCircleIcon, CheckmarkCircle02Icon, Target02Icon } from "@hugeicons/core-free-icons"
+import { AlertCircleIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result as R, type Result } from "better-result"
 import { z } from "zod"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
+import { ScoreExplanationSummary, ScoreExplanationView } from "@/components/ai/ScoreExplanationView"
 import {
   Dialog,
   DialogContent,
@@ -13,14 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/animate-ui/components/radix/dialog"
+import type { ScoreExplanation } from "@/lib/ai/decision/types"
 
-type EvidenceItem = { text: string; evidence: string }
-type ScoreExplanation = {
-  reason: string
-  strengths: EvidenceItem[]
-  gaps: EvidenceItem[]
-  recommendation: "Avanzar" | "Evaluar" | "Descartar"
-}
 type ExplanationResponse = {
   status: "ready" | "processing" | "failed" | "expired"
   error?: string
@@ -96,20 +91,21 @@ export function AIScoreModal({ score, jobId, candidateName, open, onOpenChange }
 
   const response = explanationQuery.data?.isOk() ? explanationQuery.data.value : null
   const explanation = response?.explanation
-  const scoreValue = score.score === null ? "Sin score" : `Compatibilidad: ${score.score}/100`
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-2xl max-h-[85dvh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {scoreValue} · {candidateName}
-          </DialogTitle>
+          <DialogTitle className="pr-8">Compatibilidad de {candidateName}</DialogTitle>
           <DialogDescription>
             Este valor mide compatibilidad con la oferta. No representa una probabilidad de éxito en
             el puesto.
           </DialogDescription>
         </DialogHeader>
+
+        {score.status === "ready" && (
+          <ScoreExplanationSummary score={score.score} reason={explanation?.reason} />
+        )}
 
         {score.status === "insufficient" ? (
           <div className="rounded-lg border p-4 text-sm text-muted-foreground">
@@ -124,31 +120,7 @@ export function AIScoreModal({ score, jobId, candidateName, open, onOpenChange }
             El análisis no se completó. Vuelve a solicitarlo desde la oferta.
           </div>
         ) : explanation ? (
-          <div className="space-y-4">
-            <div className="rounded-lg border bg-muted/30 p-3">
-              <p className="text-xs font-medium text-muted-foreground">Compatibilidad</p>
-              <p className="mt-1 text-sm">{explanation.reason}</p>
-            </div>
-            {explanation.strengths.length > 0 && (
-              <EvidenceList
-                title="Coincidencias"
-                icon={CheckmarkCircle02Icon}
-                items={explanation.strengths}
-              />
-            )}
-            {explanation.gaps.length > 0 && (
-              <EvidenceList
-                title="Aspectos para revisar"
-                icon={Target02Icon}
-                items={explanation.gaps}
-              />
-            )}
-            <p className="text-xs text-muted-foreground">
-              Sugerencia: {explanation.recommendation}. La decisión requiere revisión humana.
-              {score.confidence !== null &&
-                ` Confianza de Jev: ${Math.round(score.confidence * 100)}%. Este valor no mide exactitud.`}
-            </p>
-          </div>
+          <ScoreExplanationView explanation={explanation} />
         ) : response?.status === "failed" || explanationQuery.data?.isErr() ? (
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>
@@ -156,7 +128,7 @@ export function AIScoreModal({ score, jobId, candidateName, open, onOpenChange }
             </p>
             <button
               type="button"
-              className="text-primary underline"
+              className="inline-flex min-h-10 items-center rounded-md px-3 text-secondary-soft underline underline-offset-4 hover:bg-secondary-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
               onClick={() => retryMutation.mutate()}
               disabled={retryMutation.isPending}
             >
@@ -168,38 +140,26 @@ export function AIScoreModal({ score, jobId, candidateName, open, onOpenChange }
             La explicación expiró. Vuelve a analizar la compatibilidad para generar una nueva.
           </p>
         ) : response?.status === "processing" ? (
-          <p className="text-sm text-muted-foreground">Generando explicación...</p>
+          <ExplanationSkeleton />
         ) : (
-          <p className="text-sm text-muted-foreground">Generando explicación...</p>
+          <ExplanationSkeleton />
         )}
       </DialogContent>
     </Dialog>
   )
 }
 
-function EvidenceList({
-  title,
-  icon,
-  items,
-}: {
-  title: string
-  icon: typeof CheckmarkCircle02Icon
-  items: EvidenceItem[]
-}) {
+function ExplanationSkeleton() {
   return (
-    <section className="space-y-2">
-      <h3 className="flex items-center gap-1 text-sm font-medium">
-        <HugeiconsIcon icon={icon} size={14} />
-        {title}
-      </h3>
-      <ul className="space-y-2">
-        {items.map((item) => (
-          <li key={`${item.text}:${item.evidence}`} className="rounded-lg border p-3 text-sm">
-            <p>{item.text}</p>
-            <p className="mt-1 border-l-2 pl-2 text-xs text-muted-foreground">“{item.evidence}”</p>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <div role="status" aria-label="Generando explicación" className="space-y-5 py-2">
+      <p className="text-sm text-muted-foreground">Generando explicación...</p>
+      <div aria-hidden="true" className="space-y-3">
+        <div className="h-10 w-24 rounded-md bg-muted/50" />
+        <div className="h-3 w-4/5 rounded bg-muted/50" />
+        <div className="h-3 w-3/5 rounded bg-muted/50" />
+        <div className="h-20 rounded-lg bg-surface-container-low" />
+        <div className="h-20 rounded-lg bg-surface-container-low" />
+      </div>
+    </div>
   )
 }

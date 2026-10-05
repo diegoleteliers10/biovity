@@ -199,8 +199,8 @@
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: var(--primary-foreground);
-    --sidebar-accent: var(--surface-container-highest);
-    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-accent: var(--secondary-container);
+    --sidebar-accent-foreground: var(--on-secondary-container);
     --sidebar-border: var(--border);
     --sidebar-ring: var(--ring);
     /* daisyUI chat compatibility */

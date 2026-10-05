@@ -48,7 +48,8 @@ import { useTheme } from "@/lib/theme"
 import type { NavData, NavExploreItem, NavItem } from "@/lib/types/nav"
 import { cn } from "@/lib/utils"
 
-const NAV_BUTTON_CLASS = "hover:bg-sidebar-accent/50 transition-colors duration-150"
+const NAV_BUTTON_CLASS =
+  "hover:bg-sidebar-accent/50 dark:hover:bg-sidebar-accent dark:hover:text-sidebar-accent-foreground transition-colors duration-150 motion-reduce:transition-none"
 const NAV_ICON_CLASS = "shrink-0"
 
 function NavTooltip({ trigger, content }: { trigger: ReactElement; content: ReactNode }) {
