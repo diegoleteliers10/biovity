@@ -9,7 +9,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        // The hover mixes toward --foreground instead of using an alpha. An
+        // alpha blends with whatever is behind the button, so the same class
+        // meant a lighter colour in light mode and a darker one in dark mode.
+        // On #7dbbd7 the alpha version dropped the label to 4.16:1. Mixing
+        // toward the foreground is direction-independent: the label keeps its
+        // contrast in both themes, which is what the secondary variant below
+        // already does.
+        default:
+          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_12%)] active:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_20%)]",
         outline:
           "border-border hover:bg-input/50 hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:bg-input/30",
         secondary:

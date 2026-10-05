@@ -217,6 +217,93 @@ for (const theme of ['light', 'dark']) {
   })
 }
 
+test('the primary keeps enough chroma to read as a colour', () => {
+  // The dark --primary was #d6e6ec, oklch(0.915 0.019 222): it kept the brand
+  // hue but dropped the chroma from 0.0616 to 0.019, so every filled button came
+  // out grey. A token that desaturates this far is a bug even though it passes
+  // every contrast check, because nothing measures "does this look like the
+  // brand".
+  const srgbToOklch = (hex) => {
+    const m = hex.replace('#', '').match(/../g).map(c => parseInt(c, 16) / 255)
+    const [r, g, b] = m.map(srgbLinear)
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+    const q = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+    const A = 1.9779984951 * l - 2.428592205 * q + 0.4505937099 * s
+    const B = 0.0259040371 * l + 0.7827717662 * q - 0.808675766 * s
+    return Math.hypot(A, B)
+  }
+  const brand = srgbToOklch(lightToken('primary'))
+  const failures = []
+  for (const theme of ['light', 'dark']) {
+    const chroma = srgbToOklch(token(theme, 'primary'))
+    // Half the brand chroma is the floor. The dark value was at 31% of it.
+    if (chroma < brand * 0.5) {
+      failures.push(
+        `${theme} --primary chroma is ${chroma.toFixed(4)}, brand is ${brand.toFixed(4)}`
+      )
+    }
+  }
+  assert.deepEqual(failures, [], failures.join('; '))
+})
+
+test('a filled button keeps its edge on every surface', () => {
+  // WCAG 1.4.11 asks 3:1 for the boundary of a control, which no ratio in this
+  // file checked. A primary button that melts into the page is unusable even
+  // when its label is legible.
+  for (const theme of ['light', 'dark']) {
+    const surfaces = theme === 'dark' ? darkSurfaces : lightSurfaces
+    const fill = token(theme, 'primary')
+    const failures = surfaces
+      .map(surface => [surface, contrast(fill, token(theme, surface))])
+      .filter(([, ratio]) => ratio < 3)
+      .map(([surface, ratio]) => `${theme}: --primary on ${surface} is ${report(ratio)}`)
+    assert.deepEqual(failures, [], failures.join('; '))
+  }
+})
+
+test('the primary works as link text on every surface', () => {
+  // text-primary appears 127 times. It needs the full 4.5:1, not the 3:1 a
+  // button edge would settle for, so the two requirements are checked apart.
+  for (const theme of ['light', 'dark']) {
+    const surfaces = theme === 'dark' ? darkSurfaces : lightSurfaces
+    const failures = surfaces
+      .map(surface => [surface, contrast(token(theme, 'primary'), token(theme, surface))])
+      .filter(([, ratio]) => ratio < 4.5)
+      .map(([surface, ratio]) => `${theme}: --primary as text on ${surface} is ${report(ratio)}`)
+    assert.deepEqual(failures, [], failures.join('; '))
+  }
+})
+
+test('the primary hover does not blend with an alpha', () => {
+  // `hover:bg-primary/80` mixes with whatever sits behind the button, so one
+  // class meant two different colours. On the dark primary it put the label at
+  // 4.16:1, under AA, and the button looked bleached. An alpha cannot be
+  // checked statically because its result depends on the backdrop, so the rule
+  // is that the class must not exist.
+  const button = fs.readFileSync(path.join(__dirname, '..', 'components', 'ui', 'button.tsx'), 'utf8')
+  assert.doesNotMatch(
+    button,
+    /hover:bg-primary\/\d/,
+    'the primary hover must mix toward a token, not use an alpha over an unknown backdrop'
+  )
+  assert.match(button, /hover:bg-\[color-mix\(in_oklch,var\(--primary\)/)
+})
+
+test('the focus ring shares the hue of the control it surrounds', () => {
+  // Both themes used the secondary teal for --ring, so a green ring surrounded
+  // the blue primary button and read as an error state. The ring now derives
+  // from --primary, so it cannot drift away from it.
+  for (const theme of ['light', 'dark']) {
+    const ring = token(theme, 'ring')
+    assert.match(
+      ring,
+      /color-mix\(in oklch, var\(--primary\)/,
+      `${theme} --ring must derive from --primary, found: ${ring}`
+    )
+  }
+})
+
 test('both themes declare the same token names', () => {
   // A token present in :root and missing from .dark silently keeps its light
   // value in dark mode. That is how the three --surface-container-* tokens were
