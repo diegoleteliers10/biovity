@@ -69,7 +69,7 @@ export function MarcaPrinciples() {
                 ease: "easeOut",
               }}
             >
-              <Card className="rounded-xl border-0 shadow-none bg-surface-container-lowest p-6 sm:p-8 h-full transition-colors hover:bg-white">
+              <Card className="rounded-xl border-0 shadow-none bg-surface-container-lowest p-6 sm:p-8 h-full transition-colors hover:bg-white dark:hover:bg-surface-raised">
                 <CardHeader className="p-0 mb-4">
                   <div className="size-11 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary mb-4">
                     <HugeiconsIcon icon={p.icon} size={22} />

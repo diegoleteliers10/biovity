@@ -16,6 +16,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { chartTooltipStyles } from "@/components/ui/chart-tooltip-styles"
 import type { MetricsPeriod } from "@/lib/types/organization-metrics"
 import type { UserMetrics } from "@/lib/types/user-metrics"
 
@@ -256,6 +257,7 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                   allowDecimals={false}
                 />
                 <Tooltip
+                  {...chartTooltipStyles}
                   cursor={{ stroke: "var(--chart-1)", strokeWidth: 1, strokeDasharray: "2 2" }}
                   formatter={(value: number) => [
                     `${value} ${value === 1 ? "postulación" : "postulaciones"}`,
@@ -318,6 +320,7 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                   allowDecimals={false}
                 />
                 <Tooltip
+                  {...chartTooltipStyles}
                   cursor={{ fill: "var(--muted)" }}
                   formatter={(val: number) => [`${val} aplicaciones`, "Postulaciones"]}
                 />
@@ -437,6 +440,7 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Tooltip
+                      {...chartTooltipStyles}
                       formatter={(val: number, name: string) => [
                         `${val} postulaciones (${categoriesApplied.find((c) => c.category === name)?.percentage ?? 0}%)`,
                         name,

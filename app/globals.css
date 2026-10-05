@@ -34,6 +34,9 @@
     --color-muted: var(--muted);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-secondary: var(--secondary);
+    --color-secondary-container: var(--secondary-container);
+    --color-on-secondary-container: var(--on-secondary-container);
+    --color-secondary-soft: var(--secondary-soft);
     --color-primary-foreground: var(--primary-foreground);
     --color-primary: var(--primary);
     --color-popover-foreground: var(--popover-foreground);
@@ -68,6 +71,9 @@
     --primary-foreground: #ffffff;
     --secondary: #006b5e;
     --secondary-foreground: #ffffff;
+    --secondary-container: #dcefe6;
+    --on-secondary-container: #174d3b;
+    --secondary-soft: #28785e;
     --accent: #8483d4;
     /* Dark on the periwinkle accent. White was 3.40:1, below AA. */
     --accent-foreground: #111827;
@@ -166,6 +172,9 @@
     --on-primary-container: #a9d8ea;
     --secondary: #2fbf9f;
     --secondary-foreground: #00281f;
+    --secondary-container: #24483e;
+    --on-secondary-container: #b8ead7;
+    --secondary-soft: #82c9b3;
     --accent: #9594e0;
     --accent-foreground: #111827;
     --tertiary: var(--foreground);
@@ -181,9 +190,9 @@
     --border: #555558;
     --input: var(--border);
     --ring: color-mix(in oklch, var(--primary) 55%, transparent);
-    --chart-1: var(--primary);
+    --chart-1: var(--on-secondary-container);
     --chart-2: var(--secondary);
-    --chart-3: var(--on-primary-container);
+    --chart-3: var(--secondary-soft);
     --chart-4: var(--accent);
     --chart-5: var(--warning);
     --sidebar: var(--surface-container-low);

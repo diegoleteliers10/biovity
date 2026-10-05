@@ -9,21 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // The hover mixes toward --background, not --foreground. The button fill is the
-        // lightest thing on the page in the dark theme (slate-200 on zinc-900),
-        // so mixing toward --foreground was a 1.00:1 change: the hover did
-        // nothing at all. It also has to avoid an alpha, because an alpha
-        // blends with whatever sits behind the button and the same class then
-        // meant two different colours. Toward --background the fill recedes
-        // from the eye in both themes, and the label keeps its contrast:
-        // measured 9.71:1 at 6%, 8.92:1 at 10%.
         default:
-          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),var(--background)_10%)] active:bg-[color-mix(in_oklch,var(--primary),var(--background)_16%)]",
+          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),var(--background)_10%)] active:bg-[color-mix(in_oklch,var(--primary),var(--background)_16%)] dark:bg-secondary dark:text-secondary-foreground dark:hover:bg-[color-mix(in_oklch,var(--secondary),var(--background)_8%)] dark:active:bg-[color-mix(in_oklch,var(--secondary),var(--background)_14%)] dark:focus-visible:border-secondary dark:focus-visible:ring-secondary/40",
         outline:
           "border-border hover:bg-input/50 hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:bg-input/30",
-        // Same reasoning as the default variant: mix toward --background so the
-        // hover reads in the dark theme, where --secondary is teal-500 and
-        // --foreground is nearly white.
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--background)_12%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:

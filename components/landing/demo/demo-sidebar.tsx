@@ -73,7 +73,7 @@ export function DemoSidebar({
         <HugeiconsIcon icon={item.icon} size={24} strokeWidth={1.5} className="shrink-0" />
         <span className="truncate">{item.title}</span>
         {item.badge != null && (
-          <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full tabular-nums">
+          <span className="ml-auto bg-green-100 text-green-800 dark:bg-secondary-container dark:text-on-secondary-container dark:ring-1 dark:ring-secondary-soft/35 text-xs px-2 py-1 rounded-full tabular-nums">
             {item.badge}
           </span>
         )}

@@ -274,6 +274,7 @@ for (const theme of ['light', 'dark']) {
     const pairs = [
       ['primary', 'primary-foreground'],
       ['secondary', 'secondary-foreground'],
+      ['secondary-container', 'on-secondary-container'],
       ['accent', 'accent-foreground'],
       ['tertiary', 'tertiary-foreground'],
       ['on-primary-container', 'primary-container'],

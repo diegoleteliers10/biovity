@@ -69,7 +69,8 @@ function ApplicationStatusChip({ status }: { status: ApplicationStatus }) {
     },
     entrevista: {
       label: "Entrevista",
-      className: "bg-accent/15 text-foreground border border-accent/25",
+      className:
+        "bg-accent/15 text-foreground border border-accent/25 dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
     },
     oferta: {
       label: "Oferta recibida",

@@ -90,7 +90,7 @@ const NavRow = memo(function NavRow({
           <HugeiconsIcon icon={item.icon} size={20} strokeWidth={1.5} className={NAV_ICON_CLASS} />
           <span>{item.title}</span>
           {"badge" in item && item.badge != null && (
-            <span className="ml-auto bg-success/10 text-success text-xs px-2 py-1 rounded-full">
+            <span className="ml-auto bg-success/10 text-success dark:bg-secondary-container dark:text-on-secondary-container dark:ring-1 dark:ring-secondary-soft/35 text-xs px-2 py-1 rounded-full">
               {item.badge}
             </span>
           )}
