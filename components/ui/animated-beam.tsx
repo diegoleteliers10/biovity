@@ -35,7 +35,10 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   toRef,
   curvature = 0,
   reverse = false,
-  duration = Math.random() * 3 + 4,
+  // Was Math.random() * 3 + 4. A random prop default makes the server and the
+  // client disagree on the first paint, and re-randomises on every remount, so
+  // the animation never looks the same twice. Pass `duration` to vary it.
+  duration = 4,
   delay = 0,
   pathColor = "gray",
   pathWidth = 2,
