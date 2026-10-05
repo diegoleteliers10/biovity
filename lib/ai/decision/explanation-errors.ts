@@ -19,6 +19,8 @@ export function explanationErrorMessage(code: string | null): string {
       return "El proveedor de IA rechazó la clave de API. Revisa la configuración. El score de Jev no cambia."
     case "provider_timeout":
       return "La explicación superó el tiempo de espera. Vuelve a intentar. El score de Jev no cambia."
+    case "invalid_explanation_format":
+      return "El proveedor de IA devolvió una explicación con formato inválido. Vuelve a intentar. El score de Jev no cambia."
     case "unsupported_evidence":
       return "La explicación no contiene citas válidas del perfil o de la oferta. Vuelve a intentar. El score de Jev no cambia."
     default:
