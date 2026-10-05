@@ -11,13 +11,13 @@ let mode = 'ready'
 const failures = []
 const saved = []
 const requests = []
-const explanation = { reason: 'El perfil acredita PCR, pero no secuenciación.', strengths: [{text:'Experiencia pertinente',evidence:'Experiencia en PCR'}], gaps: [{text:'No documenta secuenciación',evidence:'PCR y secuenciación'}], recommendation: 'Evaluar' }
+const explanation = { reason: 'El perfil acredita PCR, pero no secuenciación.', strengths: [{text:'Experiencia pertinente',evidenceId:'candidate.0'}], gaps: [{text:'No documenta secuenciación',evidenceId:'job.0'}], recommendation: 'Evaluar' }
 process.env.ZAI_API_KEY = 'fixture-only'
 global.fetch = async (url, options) => {
   const body = JSON.parse(options.body)
   requests.push({ url, body })
   if (mode === 'balance') return Response.json({ error: { message: 'Insufficient balance or no resource package. Please recharge.' } }, {status:429})
-  const object = mode === 'unsupported' ? { ...explanation, strengths: [{text:'Experiencia',evidence:'Diez años de experiencia'}] } : explanation
+  const object = mode === 'unsupported' ? { ...explanation, strengths: [{text:'Experiencia',evidenceId:'candidate.unknown'}] } : mode === 'wrong-role' ? { ...explanation, gaps: [{text:'Brecha',evidenceId:'candidate.0'}] } : mode === 'format' ? { ...explanation, reason: 'x'.repeat(1201) } : explanation
   return Response.json({ id:'fixture',object:'chat.completion',created:1,model:'glm-5.3-flash',choices:[{index:0,message:{role:'assistant',content:JSON.stringify(object)},finish_reason:'stop'}],usage:{prompt_tokens:10,completion_tokens:10,total_tokens:20} })
 }
 const load = Module._load
@@ -69,4 +69,44 @@ test('invented evidence is rejected even with valid JSON',async()=>{
   assert.equal(body.status,'failed')
   assert.equal(failures.at(-1)[2],'unsupported_evidence')
   assert.equal(saved.length,1)
+})
+
+test('resolved evidence preserves exact source text',async()=>{
+  mode='ready'
+  const body=await (await POST(request(true))).json()
+  assert.equal(body.status,'ready')
+  assert.equal(body.explanation.strengths[0].evidence,'Experiencia en PCR')
+  assert.equal(body.explanation.gaps[0].evidence,'Experiencia en PCR y secuenciación')
+  assert.equal('evidenceId' in body.explanation.strengths[0],false)
+})
+
+test('schema failures have a distinct error code',async()=>{
+  mode='format'
+  const count=saved.length
+  const body=await (await POST(request(true))).json()
+  assert.equal(body.status,'failed')
+  assert.equal(failures.at(-1)[2],'invalid_explanation_format')
+  assert.equal(saved.length,count)
+})
+test('gaps cannot cite candidate evidence',async()=>{
+  mode='wrong-role'
+  const count=saved.length
+  const body=await (await POST(request(true))).json()
+  assert.equal(body.status,'failed')
+  assert.equal(failures.at(-1)[2],'unsupported_evidence')
+  assert.equal(saved.length,count)
+})
+test('long nested sources produce deterministic exact bounded excerpts',()=>{
+  const {buildEvidenceCatalog,resolveExplanationEvidence}=require('../lib/ai/decision/explanation-evidence.ts')
+  const source='PCR y secuenciación. '.repeat(100)+'z'.repeat(500)
+  const catalog=buildEvidenceCatalog({}, {experience:[{description:source}]})
+  assert.deepEqual([...catalog], [...buildEvidenceCatalog({}, {experience:[{description:source}]})])
+  for(const [id,excerpt] of catalog){assert.match(id,/^candidate\./);assert.ok(excerpt.length<=240);assert.ok(source.includes(excerpt))}
+  assert.equal(resolveExplanationEvidence({...explanation,strengths:[{text:'Experiencia',evidenceId:'job.0'}],gaps:[]},catalog),null)
+  assert.equal(buildEvidenceCatalog({},{}).size,0)
+})
+
+test('a valid explanation longer than 400 characters remains usable',()=>{
+  const {GeneratedExplanationSchema}=require('../lib/ai/decision/explanation-evidence.ts')
+  assert.equal(GeneratedExplanationSchema.safeParse({...explanation,reason:'x'.repeat(650)}).success,true)
 })

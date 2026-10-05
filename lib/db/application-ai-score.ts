@@ -2,6 +2,7 @@ import { Result as R, type Result } from "better-result"
 import { z } from "zod"
 import {
   JEV_DAILY_ANALYSIS_LIMIT,
+  JEV_EXPLANATION_PROMPT_VERSION,
   JEV_LEASE_SECONDS,
   JEV_MAX_ATTEMPTS,
   JEV_MINIMUM_DATA_SUFFICIENCY,
@@ -423,13 +424,13 @@ export async function finishCandidateExplanation(
          SET explanation = $3::jsonb,
              explanation_status = 'ready',
              explanation_model = $4,
-             explanation_prompt_version = 1,
+             explanation_prompt_version = $5,
              candidate_snapshot = '{}'::jsonb,
              per_question = NULL,
              lease_until = NULL,
              updated_at = now()
          WHERE id = $1 AND lease_token = $2 AND explanation_status = 'processing'`,
-        [revisionId, leaseToken, JSON.stringify(explanation), model]
+        [revisionId, leaseToken, JSON.stringify(explanation), model, JEV_EXPLANATION_PROMPT_VERSION]
       )
       return result.rowCount === 1
     },
