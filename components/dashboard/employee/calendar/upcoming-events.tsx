@@ -99,7 +99,7 @@ export function UpcomingEvents({
   const getEventTypeDot = (type: Event["type"]) => {
     switch (type) {
       case "interview":
-        return "bg-primary"
+        return "bg-primary dark:bg-secondary-soft"
       case "onboarding":
         return "bg-secondary"
       case "task_deadline":

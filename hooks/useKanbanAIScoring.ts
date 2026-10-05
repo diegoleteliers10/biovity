@@ -28,7 +28,10 @@ const CandidateScoreSchema = z.object({
 }) satisfies z.ZodType<CandidateScore>
 
 const ScoresResponseSchema = z.object({ scores: z.array(CandidateScoreSchema) })
-const QueueResponseSchema = z.object({ queued: z.number() })
+const QueueResponseSchema = z.object({
+  queued: z.number(),
+  warning: z.string().nullable().optional(),
+})
 
 const scoreKeys = {
   job: (jobId: string | null) => ["jev-scores", jobId] as const,
@@ -110,6 +113,7 @@ export function useKanbanAIScoring(jobId: string | null) {
         setActionError(result.error.message)
         return
       }
+      setActionError(result.value.warning ?? null)
       void queryClient.invalidateQueries({ queryKey: scoreKeys.job(jobId) })
     },
   })

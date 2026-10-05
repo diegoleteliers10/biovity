@@ -35,7 +35,11 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
   const getEventTypeInfo = (type: CalendarEvent["type"]) => {
     switch (type) {
       case "interview":
-        return { color: "bg-primary/10 text-primary", label: "Entrevista" }
+        return {
+          color:
+            "bg-primary/10 text-primary dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
+          label: "Entrevista",
+        }
       case "onboarding":
         return {
           color: "bg-secondary/10 text-secondary",

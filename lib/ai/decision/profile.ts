@@ -5,14 +5,16 @@ import { sanitizeInput } from "@/lib/ai/sanitize"
 import type { Application } from "@/lib/api/applications"
 import type { Job } from "@/lib/api/jobs"
 import type { Resume } from "@/lib/api/resumes"
-import { JEV_MODEL_VERSION, JEV_RUBRIC_VERSION } from "./constants"
+import { JEV_MAX_CV_TEXT_LENGTH, JEV_MODEL_VERSION, JEV_RUBRIC_VERSION } from "./constants"
 import type { CandidateAssessmentInput } from "./types"
 
 const ProfileTextSchema = z.string().trim().max(5000)
 
 function safeProfileText(value: unknown): string {
   if (typeof value !== "string" || !value.trim()) return ""
-  return sanitizeInput(ProfileTextSchema.parse(value).trim(), "jev-assessment")
+  const text = ProfileTextSchema.parse(value)
+  sanitizeInput(text, "jev-assessment")
+  return text
 }
 
 function jobSkills(job: Job): string[] {
@@ -30,13 +32,17 @@ function resumeSkills(resume: Resume): string[] {
   })
 }
 
-function snapshotExperiences(resume: Resume): Array<Record<string, string>> {
+function snapshotExperiences(resume: Resume): Array<Record<string, string | boolean>> {
   return resume.experiences.flatMap((experience) => {
     const title = safeProfileText(experience.title ?? experience.position)
     const company = safeProfileText(experience.company)
     const description = safeProfileText(experience.description)
-    const entry = { title, company, description }
-    return Object.values(entry).some(Boolean) ? [entry] : []
+    const startDate = safeProfileText(experience.startDate ?? experience.startYear)
+    const endDate = safeProfileText(experience.endDate ?? experience.endYear)
+    const current = experience.current ?? experience.stillWorking
+    const dates = { title, company, description, startDate, endDate }
+    const entry = typeof current === "boolean" ? { ...dates, current } : dates
+    return Object.values(dates).some(Boolean) ? [entry] : []
   })
 }
 
@@ -82,6 +88,7 @@ export function prepareCandidateAssessment(args: {
   resume: Resume | null
   organizationId: string
   requestedBy: string
+  cvText: string
 }): Result<CandidateAssessmentInput, Error> {
   return R.try({
     try: () => {
@@ -99,7 +106,10 @@ export function prepareCandidateAssessment(args: {
             ? "Híbrido"
             : "Presencial",
       }
+      const cvText = z.string().trim().max(JEV_MAX_CV_TEXT_LENGTH).parse(args.cvText)
+      sanitizeInput(cvText, "jev-assessment")
       const candidateSnapshot = {
+        cvText,
         summary: safeProfileText(resume?.summary),
         skills: resume ? resumeSkills(resume) : [],
         experiences: resume ? snapshotExperiences(resume) : [],

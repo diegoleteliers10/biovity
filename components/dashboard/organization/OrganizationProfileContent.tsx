@@ -159,13 +159,13 @@ function addressToFormData(addr: OrganizationAddress | null | undefined): OrgFor
 const pillTabClass = cn(
   "h-auto flex-none cursor-pointer gap-2 rounded-full border-transparent px-3.5 py-2 text-xs leading-4",
   "font-medium text-muted-foreground hover:bg-surface-container-highest/40 hover:text-foreground",
-  "data-[state=active]:rounded-full data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground data-[state=active]:hover:bg-primary data-[state=active]:hover:text-primary-foreground"
+  "data-[state=active]:rounded-full data-[state=active]:border-transparent data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground data-[state=active]:hover:bg-primary data-[state=active]:hover:text-primary-foreground dark:data-[state=active]:bg-secondary-container dark:data-[state=active]:text-on-secondary-container dark:data-[state=active]:hover:bg-secondary-container dark:data-[state=active]:hover:text-on-secondary-container"
 )
 
 const dangerTabClass = cn(
   pillTabClass,
   "text-destructive hover:bg-destructive/10 hover:text-destructive",
-  "data-[state=active]:bg-destructive data-[state=active]:text-white data-[state=active]:hover:bg-destructive data-[state=active]:hover:text-white"
+  "data-[state=active]:bg-destructive data-[state=active]:text-white data-[state=active]:hover:bg-destructive data-[state=active]:hover:text-white dark:data-[state=active]:bg-destructive dark:data-[state=active]:text-destructive-foreground dark:data-[state=active]:hover:bg-destructive dark:data-[state=active]:hover:text-destructive-foreground"
 )
 
 function ProfileSkeleton() {

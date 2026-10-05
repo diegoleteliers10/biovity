@@ -25,14 +25,16 @@ const EVENT_STATUSES: { value: EventStatus; label: string }[] = [
 ]
 
 const typeColor: Record<EventType, string> = {
-  interview: "bg-primary/10 text-primary border-primary/20",
+  interview:
+    "bg-primary/10 text-primary border-primary/20 dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
   onboarding: "bg-secondary/10 text-secondary border-secondary/20",
   task_deadline: "bg-accent/10 text-accent border-accent/20",
   announcement: "bg-muted/40 text-muted-foreground border-border/30",
 }
 
 const statusColor: Record<EventStatus, string> = {
-  scheduled: "bg-primary/10 text-primary border-primary/20",
+  scheduled:
+    "bg-primary/10 text-primary border-primary/20 dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35",
   completed: "bg-secondary/10 text-secondary border-secondary/20",
   cancelled: "bg-destructive/10 text-destructive border-destructive/20",
 }

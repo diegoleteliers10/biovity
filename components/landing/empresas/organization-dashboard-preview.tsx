@@ -274,7 +274,7 @@ function OrganizationHomeView({ onCta }: { onCta: () => void }) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">{interview.position}</span>
-                  <span className="inline-flex items-center rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-foreground">
+                  <span className="inline-flex items-center rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-foreground dark:bg-secondary-container dark:text-on-secondary-container dark:ring-1 dark:ring-secondary-soft/35">
                     {interview.type}
                   </span>
                 </div>

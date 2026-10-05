@@ -77,7 +77,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
   const getEventTypeColor = (type: Event["type"]) => {
     switch (type) {
       case "interview":
-        return "bg-primary/10 text-primary border-primary/20"
+        return "bg-primary/10 text-primary border-primary/20 dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35"
       case "onboarding":
         return "bg-secondary/10 text-secondary border-secondary/20"
       case "task_deadline":

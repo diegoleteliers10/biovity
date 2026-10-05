@@ -180,7 +180,6 @@ export function GeographicDistributionCard({
                 minZoom={3}
                 maxZoom={12}
                 className="w-full flex-1"
-                theme="light"
                 {...(basemap === "blank" ? { blank: true } : {})}
               >
                 <MapControls position="top-right" showCompass={false} />
@@ -215,7 +214,7 @@ export function GeographicDistributionCard({
                             style={{ width: `${bubbleSize + 8}px`, height: `${bubbleSize + 8}px` }}
                           />
                           <div
-                            className="flex items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-[10px] shadow-md border-2 border-white dark:border-background transition-all"
+                            className="flex items-center justify-center rounded-full bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container font-bold text-[10px] shadow-md border-2 border-white dark:border-background transition-all"
                             style={{ width: `${bubbleSize}px`, height: `${bubbleSize}px` }}
                           >
                             {item.count}
