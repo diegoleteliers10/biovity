@@ -81,7 +81,7 @@ export function SearchAddress({ onSelectLocation }: SearchAddressProps) {
             value={selectedItem ? parsedAddress?.label || selectedItem.label || query : query}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Buscar direccion..."
-            className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
           />
           {loading && (
             <div className="size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
@@ -109,7 +109,7 @@ export function SearchAddress({ onSelectLocation }: SearchAddressProps) {
                       handleSelect(item)
                       setOpen(false)
                     }}
-                    className="relative flex w-full cursor-pointer items-center gap-2 bg-transparent px-2 py-2 text-sm text-foreground outline-none select-none hover:bg-accent hover:text-accent-foreground"
+                    className="relative flex w-full cursor-pointer items-center gap-2 bg-transparent px-2 py-2 text-sm text-foreground outline-none select-none hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
                   >
                     <HugeiconsIcon
                       icon={LocationIcon}

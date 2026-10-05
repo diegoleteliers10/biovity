@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
+import { themeScript } from "@/lib/theme"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -188,8 +189,20 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <head>
+        {/* Was #2563EB, a Tailwind blue this brand does not use. The theme script
+            below rewrites this to the dark chrome once it knows the theme, so it
+            has to be declared first. */}
+        <meta name="theme-color" content="#00374a" />
+        {/*
+          Blocking, so the class is on <html> before the first paint. Without it
+          the dashboard renders light and then flips, which reads as a flash on
+          every navigation. Kept inline and dependency-free on purpose.
+        */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: themeScript is a
+            module-level constant with no interpolation, and the script has to be
+            inline and blocking to run before first paint. */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563EB" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -202,7 +215,33 @@ export default function RootLayout({
             <MotionProvider>{children}</MotionProvider>
           </QueryProvider>
         </NuqsAdapter>
-        <Toaster position="bottom-right" richColors />
+        {/*
+          richColors paints the sonner default palette, which is the blue this
+          product is not. Keep it for the semantic structure it provides and
+          override every colour with a token, so all 69 call sites pick up the
+          brand palette without changing one of them.
+        */}
+        <Toaster
+          position="bottom-right"
+          richColors
+          closeButton
+          toastOptions={{
+            classNames: {
+              toast:
+                "group rounded-[var(--radius)] border border-border bg-card text-card-foreground shadow-lg",
+              title: "text-foreground",
+              description: "text-muted-foreground",
+              actionButton: "bg-primary text-primary-foreground rounded-md",
+              cancelButton: "bg-muted text-muted-foreground rounded-md",
+              closeButton: "bg-card border-border text-muted-foreground hover:text-foreground",
+              success: "bg-card text-card-foreground",
+              error: "bg-card text-card-foreground",
+              warning: "bg-card text-card-foreground",
+              info: "bg-card text-card-foreground",
+              loading: "bg-card text-card-foreground",
+            },
+          }}
+        />
       </body>
       <Analytics />
       <SpeedInsights />

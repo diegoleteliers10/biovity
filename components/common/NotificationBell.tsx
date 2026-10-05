@@ -85,7 +85,7 @@ export function NotificationBell({
             {unreadCount > 0 && onMarkAllRead && (
               <button
                 type="button"
-                className="text-xs font-medium text-secondary hover:underline cursor-pointer transition-colors"
+                className="text-xs font-medium text-secondary hover:underline cursor-pointer transition-colors outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
                 onClick={onMarkAllRead}
                 id="mark-all-read-btn"
               >
@@ -111,7 +111,7 @@ export function NotificationBell({
                     key={notification.id}
                     type="button"
                     className={cn(
-                      "flex items-start gap-3 p-3 rounded-lg transition-colors w-full text-left cursor-pointer",
+                      "flex items-start gap-3 p-3 rounded-lg transition-colors w-full text-left cursor-pointer outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30",
                       notification.isRead
                         ? "hover:bg-surface-container-low/70 opacity-75"
                         : "bg-surface-container-low/40 hover:bg-surface-container-low border-l-2 border-l-secondary"
@@ -151,7 +151,7 @@ export function NotificationBell({
           <div className="border-t border-border/40 p-2 bg-surface-container-low/40">
             <button
               type="button"
-              className="w-full h-8 flex items-center justify-center rounded-lg border border-border/40 bg-surface-container-lowest hover:bg-surface-container-low text-xs font-medium text-foreground transition-colors cursor-pointer"
+              className="w-full h-8 flex items-center justify-center rounded-lg border border-border/40 bg-surface-container-lowest hover:bg-surface-container-low text-xs font-medium text-foreground transition-colors cursor-pointer outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
               onClick={() => router.push("/dashboard/notifications")}
             >
               Ver todas las notificaciones

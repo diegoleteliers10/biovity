@@ -59,7 +59,7 @@ export const Header = ({ session }: HeaderProps) => {
                 type="button"
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState === true ? "Close Menu" : "Open Menu"}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
               >
                 <span className="relative block size-6" aria-hidden>
                   <m.span

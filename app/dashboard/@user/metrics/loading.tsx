@@ -9,7 +9,7 @@ export default function Loading() {
           <Skeleton className="h-9 w-80" />
           <Skeleton className="h-5 w-96" />
         </div>
-        <div className="flex items-center gap-2 rounded-lg border p-1 bg-white">
+        <div className="flex items-center gap-2 rounded-lg border p-1 bg-surface-container-lowest">
           <Skeleton className="h-8 w-10" />
           <Skeleton className="h-8 w-10" />
           <Skeleton className="h-8 w-10" />
@@ -19,7 +19,10 @@ export default function Loading() {
       {/* Metrics Cards skeleton */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3, 4, 5, 6].map((n) => (
-          <div key={n} className="border border-border/80 bg-white rounded-lg p-6">
+          <div
+            key={n}
+            className="border border-border/80 bg-surface-container-lowest rounded-lg p-6"
+          >
             <div className="flex flex-row items-center justify-between pb-2">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="size-4 rounded" />
@@ -32,13 +35,13 @@ export default function Loading() {
 
       {/* Charts skeleton */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
-        <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-surface-container-lowest rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-surface-container-lowest rounded-lg h-[300px] animate-pulse" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="border border-border/80 bg-white rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
-        <div className="border border-border/80 bg-white rounded-lg h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-surface-container-lowest rounded-lg lg:col-span-2 h-[300px] animate-pulse" />
+        <div className="border border-border/80 bg-surface-container-lowest rounded-lg h-[300px] animate-pulse" />
       </div>
     </div>
   )

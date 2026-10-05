@@ -59,7 +59,7 @@ const statusLabels: Record<string, string> = {
 const statusColors: Record<string, string> = {
   pendiente: "bg-secondary/10 text-secondary border-secondary/20",
   entrevista: "bg-primary/10 text-primary border-primary/20",
-  oferta: "bg-yellow-500/10 text-yellow-700 border-yellow-500/20",
+  oferta: "bg-warning/10 text-warning border-warning/20",
   rechazado: "bg-destructive/10 text-destructive border-destructive/20",
   contratado: "bg-secondary/10 text-secondary border-secondary/20",
 }
@@ -78,12 +78,7 @@ function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: K
     <Card className={`${dashboardRaisedCardClass} gap-0`}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle>{title}</CardTitle>
-        <HugeiconsIcon
-          icon={Icon}
-          size={16}
-          strokeWidth={1.5}
-          className="text-muted-foreground"
-        />
+        <HugeiconsIcon icon={Icon} size={16} strokeWidth={1.5} className="text-muted-foreground" />
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-foreground tracking-tight tabular-nums">
@@ -632,7 +627,7 @@ export function OrganizationMetricsContent() {
                   <XAxis dataKey="bucket" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
                   <Tooltip
-                    cursor={{ fill: "rgba(0, 107, 94, 0.08)" }}
+                    cursor={{ fill: "var(--muted)" }}
                     formatter={(value: number) => [value.toLocaleString("es-CL"), "Postulaciones"]}
                   />
                   <Bar dataKey="count" fill="var(--secondary)" radius={[4, 4, 0, 0]} />

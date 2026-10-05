@@ -4,6 +4,8 @@ import {
   Comment01Icon,
   CustomerSupportIcon,
   FlipRightIcon,
+  Moon01Icon,
+  Sun01Icon,
   TransitionRightIcon,
   User02Icon,
 } from "@hugeicons/core-free-icons"
@@ -42,6 +44,7 @@ import { Logo } from "@/components/ui/logo"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { ServerSession } from "@/lib/auth"
 import { signOutAndRedirect } from "@/lib/auth-client"
+import { useTheme } from "@/lib/theme"
 import type { NavData, NavExploreItem, NavItem } from "@/lib/types/nav"
 import { cn } from "@/lib/utils"
 
@@ -87,7 +90,7 @@ const NavRow = memo(function NavRow({
           <HugeiconsIcon icon={item.icon} size={20} strokeWidth={1.5} className={NAV_ICON_CLASS} />
           <span>{item.title}</span>
           {"badge" in item && item.badge != null && (
-            <span className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+            <span className="ml-auto bg-success/10 text-success text-xs px-2 py-1 rounded-full">
               {item.badge}
             </span>
           )}
@@ -129,6 +132,7 @@ export function DashboardSidebar({
   const pathname = usePathname()
   const { push } = useRouter()
   const { show: showFeaturebaseMessenger } = useFeaturebase()
+  const { theme, toggle, ready } = useTheme()
   const feedbackPortalRef = useRef<HTMLButtonElement>(null)
   const collapsed = state === "collapsed"
 
@@ -179,9 +183,11 @@ export function DashboardSidebar({
     closeMobileSheet()
   }
 
+  const isDark = ready && theme === "dark"
+
   const logoutItemClassName = logoutHoverContrastOnAccent
-    ? "cursor-pointer text-red-600 hover:text-accent-foreground focus:text-accent-foreground"
-    : "cursor-pointer text-red-600 focus:text-red-600"
+    ? "cursor-pointer text-destructive hover:text-accent-foreground focus:text-accent-foreground"
+    : "cursor-pointer text-destructive focus:text-destructive"
 
   return (
     <Sidebar collapsible="icon" animateOnHover={false} className="border-none">
@@ -386,6 +392,15 @@ export function DashboardSidebar({
                     className="mr-2"
                   />
                   Soporte
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={toggle} className="cursor-pointer" aria-pressed={isDark}>
+                  <HugeiconsIcon
+                    icon={isDark ? Sun01Icon : Moon01Icon}
+                    size={16}
+                    strokeWidth={1.5}
+                    className="mr-2"
+                  />
+                  {isDark ? "Tema claro" : "Tema oscuro"}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"

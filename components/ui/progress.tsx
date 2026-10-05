@@ -13,6 +13,10 @@ function Progress({
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
+      // `value` has to reach the Root, not just the Indicator. Radix derives
+      // aria-valuenow and data-state from it, so without this the bar reports
+      // itself indeterminate to assistive tech while it visibly advances.
+      value={value}
       className={cn(
         "relative flex h-1 w-full items-center overflow-x-hidden rounded-md bg-muted",
         className
@@ -21,8 +25,8 @@ function Progress({
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="size-full flex-1 bg-primary transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        className="size-full flex-1 bg-primary transition-transform"
+        style={{ transform: `translateX(-${100 - (value ?? 0)}%)` }}
       />
     </ProgressPrimitive.Root>
   )

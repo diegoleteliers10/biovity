@@ -76,7 +76,14 @@ const PERIOD_AXIS_LABEL: Record<MetricsPeriod, string> = {
   custom: "período",
 }
 
-const CATEGORY_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#f43f5e", "#8b5cf6", "#0ea5e9"]
+const CATEGORY_COLORS = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--secondary)",
+]
 
 function formatTrendTick(value: string, period: MetricsPeriod): string {
   if (!value) return ""
@@ -163,8 +170,8 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
           label: "Con oferta",
           count: statusBreakdown.oferta.count,
           percentage: statusBreakdown.oferta.percentage,
-          bgColor: "bg-amber-500/15",
-          textColor: "text-amber-700",
+          bgColor: "bg-warning/15",
+          textColor: "text-warning",
           icon: Calendar03Icon,
         },
         {
@@ -223,8 +230,8 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
               >
                 <defs>
                   <linearGradient id="userAppGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -249,7 +256,7 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                   allowDecimals={false}
                 />
                 <Tooltip
-                  cursor={{ stroke: "#6366f1", strokeWidth: 1, strokeDasharray: "2 2" }}
+                  cursor={{ stroke: "var(--chart-1)", strokeWidth: 1, strokeDasharray: "2 2" }}
                   formatter={(value: number) => [
                     `${value} ${value === 1 ? "postulación" : "postulaciones"}`,
                     "Postulados",
@@ -259,10 +266,10 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                 <Area
                   type="monotone"
                   dataKey="applications"
-                  stroke="#6366f1"
+                  stroke="var(--chart-1)"
                   strokeWidth={2.5}
                   fill="url(#userAppGradient)"
-                  dot={{ r: 3, fill: "#6366f1" }}
+                  dot={{ r: 3, fill: "var(--chart-1)" }}
                   activeDot={{ r: 5 }}
                   {...chartAnimation}
                 />
@@ -311,12 +318,12 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                   allowDecimals={false}
                 />
                 <Tooltip
-                  cursor={{ fill: "rgba(16, 185, 129, 0.08)" }}
+                  cursor={{ fill: "var(--muted)" }}
                   formatter={(val: number) => [`${val} aplicaciones`, "Postulaciones"]}
                 />
                 <Bar
                   dataKey="count"
-                  fill="#10b981"
+                  fill="var(--chart-2)"
                   radius={[6, 6, 0, 0]}
                   maxBarSize={45}
                   {...chartAnimation}

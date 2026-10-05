@@ -51,7 +51,7 @@ const statusColors: Record<string, string> = {
   closed: "bg-muted text-muted-foreground",
   borrador: "bg-accent/10 text-accent border border-accent/20",
   draft: "bg-accent/10 text-accent border border-accent/20",
-  paused: "bg-yellow-100 text-yellow-800",
+  paused: "bg-warning/10 text-warning",
   expired: "bg-destructive/10 text-destructive border border-destructive/20",
 }
 

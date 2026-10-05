@@ -18,7 +18,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_CHIP: Record<string, string> = {
   active: "bg-secondary/10 text-secondary",
   draft: "bg-surface-container-highest text-muted-foreground",
-  paused: "bg-yellow-500/10 text-yellow-700",
+  paused: "bg-warning/10 text-warning",
   closed: "bg-surface-container-highest text-foreground",
   expired: "bg-destructive/10 text-destructive",
 }
