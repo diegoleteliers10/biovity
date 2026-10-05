@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { explanationPlainText } from "./explanation-text"
 import type { ScoreExplanation } from "./types"
 
 const EvidenceItemSchema = z.object({
@@ -16,7 +17,7 @@ export const GeneratedExplanationSchema = z.object({
 function sourceExcerpts(value: unknown): string[] {
   if (typeof value === "string") {
     const excerpts: string[] = []
-    let remaining = value.trim()
+    let remaining = explanationPlainText(value)
     while (remaining.length > 0) {
       const window = remaining.slice(0, 240)
       const boundary = remaining.length > 240 ? window.lastIndexOf(" ") : window.length
@@ -57,5 +58,11 @@ export function resolveExplanationEvidence(
     if (!evidence || !item.evidenceId.startsWith("job.")) return null
     gaps.push({ text: item.text, evidence })
   }
-  return { reason: generated.reason, strengths, gaps, recommendation: generated.recommendation }
+  return {
+    evidenceFormat: "plain-text",
+    reason: generated.reason,
+    strengths,
+    gaps,
+    recommendation: generated.recommendation,
+  }
 }

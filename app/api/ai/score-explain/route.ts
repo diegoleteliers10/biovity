@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
           "Explica una evaluación de compatibilidad entre una trayectoria profesional y una oferta laboral.",
           "Jev calculó el score. No cambies, repitas, ni traduzcas ese número como probabilidad de éxito.",
           "Escribe reason en dos frases breves, preferiblemente menos de 400 caracteres. Cada text debe tener como máximo 240 caracteres. Incluye solo las fortalezas y brechas más relevantes, hasta cinco de cada una.",
+          "Redacta cada text como un título concreto y breve, idealmente de menos de 90 caracteres. No escribas párrafos en los títulos ni etiquetas HTML en ningún campo.",
           "No inventes fortalezas, brechas, años, habilidades ni formación.",
           "Cada evidenceId debe ser un ID del catálogo evidenceCatalog. No escribas ni reformules citas. Usa IDs candidate para fortalezas e IDs job para brechas. Selecciona evidencia profesional que sustente cada afirmación. Si no hay evidencia pertinente, deja la lista vacía.",
           "Para una brecha, cita el requisito de la oferta y explica que el perfil no lo documenta. No afirmes que el candidato carece de una habilidad cuando solo falta evidencia.",
