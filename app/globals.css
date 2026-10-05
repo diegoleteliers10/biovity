@@ -27,6 +27,7 @@
     --color-input: var(--input);
     --color-border: var(--border);
     --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -90,8 +91,8 @@
        same hue and weight at 5.91 / 5.33 / 4.57. */
     --muted-foreground: #5f6569;
 
-    --primary-container: #1d4e63;
-    --on-primary-container: #ffffff;
+    --primary-container: #dbeaf0;
+    --on-primary-container: #00374a;
 
     /* State tokens. The dashboard already communicated state with raw Tailwind
        amber, emerald, red and yellow, so the system now names them. Each value
@@ -146,75 +147,53 @@
 }
 
 .dark {
-    /*
-     * Dark theme. Supplied by design, then completed so the whole system has a
-     * value here. `--background` is a step below `--surface-container-lowest`
-     * so the tonal ladder reads in the same direction as light mode, where
-     * `--card` equals `--background`. `--accent-foreground` is dark on both
-     * themes: white on the periwinkle accent was 3.40:1 light and 2.77:1 dark.
-     * tests/contrast.test.cjs checks every pair here.
-     */
-    --background: #141414;
+    color-scheme: dark;
     --surface-container-lowest: #1a1a1a;
     --surface-container-low: #212123;
     --surface-raised: #28282b;
     --surface-container-highest: #353538;
-    --card: #1a1a1a;
-    --popover: #28282b;
+    --background: var(--surface-container-lowest);
+    --card: var(--surface-raised);
+    --popover: var(--surface-raised);
     --foreground: #e8e8ea;
-    --card-foreground: #e8e8ea;
-    --popover-foreground: #e8e8ea;
-    --muted: #353538;
+    --card-foreground: var(--foreground);
+    --popover-foreground: var(--foreground);
+    --muted: var(--surface-container-highest);
     --muted-foreground: #a3a3a8;
-    /*
-     * Was #d6e6ec. That is oklch(0.915 0.019 222), so it kept the brand hue but
-     * dropped the chroma from 0.0616 to 0.019 and read as grey, not teal. Every
-     * filled button turned into a washed-out slab.
-     *
-     * This is oklch(0.760 0.075 228): same hue as the brand #00374a
-     * (oklch 0.315 0.062 228), more chroma than the brand has. It has to carry
-     * three jobs at once, and tests/contrast.test.cjs checks all three against
-     * every dark surface:
-     *   - filled button edge, needs 3:1 (WCAG 1.4.11)
-     *   - link text, needs 4.5:1, because text-primary appears 127 times
-     *   - its own foreground on top, needs 4.5:1
-     */
-    --primary: #7dbbd7;
+    --primary: #d6e6ec;
     --primary-foreground: #00374a;
+    --primary-container: #00374a;
+    --on-primary-container: #a9d8ea;
     --secondary: #2fbf9f;
     --secondary-foreground: #00281f;
     --accent: #9594e0;
     --accent-foreground: #111827;
-    --tertiary: #e8e8ea;
-    --tertiary-foreground: #141414;
-    --primary-container: #00374a;
-    --on-primary-container: #a9d8ea;
-    --success: #4ade9f;
-    --success-foreground: #06231a;
+    --tertiary: var(--foreground);
+    --tertiary-foreground: var(--background);
+    --success: var(--secondary);
+    --success-foreground: var(--secondary-foreground);
     --warning: #f0b429;
     --warning-foreground: #2a1c00;
-    --info: #7cc4ea;
-    --info-foreground: #04202e;
+    --info: var(--on-primary-container);
+    --info-foreground: var(--primary-container);
     --destructive: #fca5a5;
     --destructive-foreground: #2a0808;
-    --border: rgb(232 232 234 / 0.14);
-    --input: rgb(232 232 234 / 0.2);
-    /* Was rgb(47 191 159 / 0.45), which is --secondary: a green ring around a blue
-       primary button. Now derived from --primary like the light theme. */
+    --border: #555558;
+    --input: var(--border);
     --ring: color-mix(in oklch, var(--primary) 55%, transparent);
-    --chart-1: #f0b429;
-    --chart-2: #4ade9f;
-    --chart-3: #7cc4ea;
-    --chart-4: #9594e0;
-    --chart-5: #f87171;
-    --sidebar: #1a1a1a;
-    --sidebar-foreground: #e8e8ea;
-    --sidebar-primary: #d6e6ec;
-    --sidebar-primary-foreground: #00374a;
-    --sidebar-accent: #28282b;
-    --sidebar-accent-foreground: #e8e8ea;
-    --sidebar-border: rgb(232 232 234 / 0.14);
-    --sidebar-ring: #2fbf9f;
+    --chart-1: var(--primary);
+    --chart-2: var(--secondary);
+    --chart-3: var(--on-primary-container);
+    --chart-4: var(--accent);
+    --chart-5: var(--warning);
+    --sidebar: var(--surface-container-low);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--surface-container-highest);
+    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
     /* daisyUI chat compatibility */
     --color-base-100: var(--background);
     --color-base-200: var(--secondary);

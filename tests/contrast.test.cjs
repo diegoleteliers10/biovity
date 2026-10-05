@@ -26,9 +26,36 @@ function oklchToLinear(L, C, hDeg) {
   ].map(v => Math.min(1, Math.max(0, v)))
 }
 
-/** Relative luminance from either a hex literal or an oklch() literal. */
-function luminance(value) {
+/** Read the Tailwind palette for external color references. */
+const palette = (() => {
+  const theme = fs.readFileSync(
+    path.join(__dirname, '..', 'node_modules', 'tailwindcss', 'theme.css'),
+    'utf8'
+  )
+  const out = {}
+  for (const m of theme.matchAll(/(--color-[a-z0-9-]+):\s*([^;]+);/g)) out[m[1]] = m[2].trim()
+  return out
+})()
+
+/** Resolve theme aliases to a color literal. */
+function resolve(value, depth = 0, theme) {
+  if (depth > 8) throw new Error(`var() chain too deep: ${value}`)
   const text = value.trim()
+  const ref = text.match(/^var\(\s*(--[a-z0-9-]+)\s*\)$/i)
+  if (!ref) return text
+  const name = ref[1]
+  const themeValue = theme && !(name in palette) && rawToken(theme, name)
+  if (!themeValue && !(name in palette)) {
+    throw new Error(
+      `${name} is not in the Tailwind palette. A token points at it, so it has to resolve.`
+    )
+  }
+  return resolve(themeValue || palette[name], depth + 1, theme)
+}
+
+/** Relative luminance from a hex literal or an oklch() literal. */
+function luminance(rawValue) {
+  const text = resolve(rawValue)
 
   const hex = text.match(/^#([0-9a-fA-F]{3,8})$/)
   if (hex) {
@@ -52,7 +79,7 @@ const contrast = (a, b) => {
 }
 
 /** Read a token from one theme block, so the other theme's value is ignored. */
-function token(theme, name) {
+function rawToken(theme, name) {
   // Match the `.dark {` block, not the first `.dark` in the file: the custom
   // variant near the top also contains it, and it sits before `:root`.
   const start = globals.indexOf(theme === 'dark' ? '\n.dark {' : ':root')
@@ -63,6 +90,8 @@ function token(theme, name) {
   assert.ok(match, `--${name} must be declared in the ${theme} block so this can check it`)
   return match[1].trim()
 }
+
+const token = (theme, name) => resolve(rawToken(theme, name), 0, theme)
 
 const lightToken = name => token('light', name)
 const darkToken = name => token('dark', name)
@@ -131,6 +160,61 @@ test('no muted-foreground literal is hardcoded in a class', () => {
       })
   }
   assert.deepEqual(offenders, [], `use text-muted-foreground instead: ${offenders.join(', ')}`)
+})
+
+test('no surface literal is hardcoded in a class', () => {
+  // The salary band on the offer page was bg-[#f3f3f5], the light value of
+  // --surface-container-low. It stayed near-white in the dark theme, so the
+  // salary text lost its background. A literal bypasses the token, so a token
+  // fix can never reach it. This catches any light-theme surface, not just
+  // muted-foreground.
+  const walk = dir => {
+    const out = []
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === 'node_modules' || entry.name === '.next') continue
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) out.push(...walk(full))
+      else if (entry.name.endsWith('.tsx')) out.push(full)
+    }
+    return out
+  }
+  // These render literal swatches on purpose: the brand reference page, and
+  // the not-found page which is a fixed light surface by design.
+  const allowed = new Set([
+    path.join('components', 'landing', 'marca', 'MarcaColors.tsx'),
+    path.join('app', 'not-found.tsx'),
+  ])
+  // The light values of every surface token. A class carrying one of these is
+  // frozen at the light theme.
+  const lightSurfaces = [
+    lightToken('surface-container-lowest'),
+    lightToken('surface-container-low'),
+    lightToken('surface-container-highest'),
+    lightToken('card'),
+    lightToken('background'),
+  ]
+  const offenders = []
+  for (const file of [...walk('app'), ...walk('components')]) {
+    if (allowed.has(file)) continue
+    fs.readFileSync(file, 'utf8')
+      .split('\n')
+      .forEach((line, i) => {
+        for (const value of lightSurfaces) {
+          if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+            // `[#]` is a character class matching a literal #. Writing `\#` here
+            // would be an escaped # in a template literal, which loses the
+            // brackets. Strip the # from the token and put it back in a class.
+            const pattern = new RegExp(`(bg|text|border)-\\[#${value.slice(1)}\\]`, 'i')
+            if (pattern.test(line)) offenders.push(`${file}:${i + 1} ${value}`)
+          }
+        }
+      })
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    `use a surface token so both themes follow: ${offenders.join(', ')}`
+  )
 })
 
 test('the oklch conversion matches the hex it replaced', () => {
@@ -217,34 +301,25 @@ for (const theme of ['light', 'dark']) {
   })
 }
 
-test('the primary keeps enough chroma to read as a colour', () => {
-  // The dark --primary was #d6e6ec, oklch(0.915 0.019 222): it kept the brand
-  // hue but dropped the chroma from 0.0616 to 0.019, so every filled button came
-  // out grey. A token that desaturates this far is a bug even though it passes
-  // every contrast check, because nothing measures "does this look like the
-  // brand".
-  const srgbToOklch = (hex) => {
-    const m = hex.replace('#', '').match(/../g).map(c => parseInt(c, 16) / 255)
-    const [r, g, b] = m.map(srgbLinear)
-    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
-    const q = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
-    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
-    const A = 1.9779984951 * l - 2.428592205 * q + 0.4505937099 * s
-    const B = 0.0259040371 * l + 0.7827717662 * q - 0.808675766 * s
-    return Math.hypot(A, B)
+test('the dark palette uses the requested values', () => {
+  const expected = {
+    'surface-container-lowest': '#1a1a1a',
+    'surface-container-low': '#212123',
+    'surface-raised': '#28282b',
+    'surface-container-highest': '#353538',
+    foreground: '#e8e8ea',
+    'muted-foreground': '#a3a3a8',
+    primary: '#d6e6ec',
+    'primary-foreground': '#00374a',
+    'primary-container': '#00374a',
+    'on-primary-container': '#a9d8ea',
+    secondary: '#2fbf9f',
+    'secondary-foreground': '#00281f',
+    accent: '#9594e0',
   }
-  const brand = srgbToOklch(lightToken('primary'))
-  const failures = []
-  for (const theme of ['light', 'dark']) {
-    const chroma = srgbToOklch(token(theme, 'primary'))
-    // Half the brand chroma is the floor. The dark value was at 31% of it.
-    if (chroma < brand * 0.5) {
-      failures.push(
-        `${theme} --primary chroma is ${chroma.toFixed(4)}, brand is ${brand.toFixed(4)}`
-      )
-    }
+  for (const [name, value] of Object.entries(expected)) {
+    assert.equal(darkToken(name), value)
   }
-  assert.deepEqual(failures, [], failures.join('; '))
 })
 
 test('a filled button keeps its edge on every surface', () => {
