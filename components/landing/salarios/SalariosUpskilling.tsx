@@ -25,7 +25,7 @@ const [LineChart, Line, XAxis, YAxis, CartesianGrid] = await Promise.all([
 const chartConfig = {
   monthlyClp: {
     label: "Sueldo líquido mensual (CLP)",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
@@ -123,11 +123,7 @@ export function SalariosUpskilling() {
                     data={trajectoryData}
                     margin={{ top: 16, right: 16, left: 8, bottom: 8 }}
                   >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      vertical={false}
-                      stroke="hsl(var(--border))"
-                    />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                     <XAxis
                       dataKey="level"
                       tickLine={false}

@@ -127,7 +127,7 @@ export function GeographicDistributionCard({
         <CardHeader>
           <Skeleton className="h-4 w-44" />
         </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col space-y-4">
+        <CardContent className="flex min-h-0 flex-1 flex-col space-y-4">
           <Skeleton className="h-[220px] w-full rounded-lg" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-full" />
@@ -190,7 +190,7 @@ export function GeographicDistributionCard({
                     data={buildSpokes(items)}
                     curvature={0.25}
                     paint={{
-                      "line-color": "#0f766e",
+                      "line-color": "var(--secondary)",
                       "line-width": 1.5,
                       "line-opacity": 0.45,
                     }}
