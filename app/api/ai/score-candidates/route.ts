@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server"
 import { after } from "next/server"
 import { z } from "zod"
 import { JEV_MAX_APPLICATIONS_PER_REQUEST } from "@/lib/ai/decision/constants"
+import { CandidateCvError, loadCandidateCvText } from "@/lib/ai/decision/cv"
 import { prepareCandidateAssessment } from "@/lib/ai/decision/profile"
 import type { CandidateAssessmentInput, ScoreDetails } from "@/lib/ai/decision/types"
 import { processJevQueue } from "@/lib/ai/decision/worker"
@@ -27,8 +28,9 @@ type JobAccess =
   | { kind: "authorized"; userId: string; organizationId: string; job: Job }
 
 type ResumeLoad =
-  | { kind: "failed"; application: Application }
-  | { kind: "loaded"; application: Application; resume: Resume | null }
+  | { kind: "failed"; application: Application; message: string }
+  | { kind: "loaded"; application: Application; resume: Resume | null; cvText: string }
+  | { kind: "profile-only"; application: Application; resume: Resume; cvText: ""; message: string }
 
 const RequestSchema = z.object({
   jobId: z.string().uuid(),
@@ -40,11 +42,47 @@ async function loadApplicationResume(
   requestHeaders: Headers
 ): Promise<ResumeLoad> {
   const resumeResult = await getResumeByUserId(application.candidateId, requestHeaders)
-  if (resumeResult.isErr()) return { kind: "failed", application }
+  if (resumeResult.isErr())
+    return {
+      kind: "failed",
+      application,
+      message: "No se pudo cargar el perfil de una postulación. Vuelve a intentar.",
+    }
   if (resumeResult.value && resumeResult.value.userId !== application.candidateId) {
-    return { kind: "failed", application }
+    return {
+      kind: "failed",
+      application,
+      message: "No se pudo cargar el perfil de una postulación. Vuelve a intentar.",
+    }
   }
-  return { kind: "loaded", application, resume: resumeResult.value }
+  const resume = resumeResult.value
+  const hasProfile = Boolean(
+    resume &&
+      (resume.summary?.trim() ||
+        resume.skills.length ||
+        resume.experiences.length ||
+        resume.education.length)
+  )
+  if (!resume?.cvFile && application.resumeUrl) {
+    const message =
+      "El CV de la postulación no está registrado en el perfil. Actualiza el CV y vuelve a analizar."
+    return resume && hasProfile
+      ? { kind: "profile-only", application, resume, cvText: "", message }
+      : { kind: "failed", application, message }
+  }
+  const cvResult = await loadCandidateCvText(resume)
+  if (cvResult.isErr()) {
+    const readableIssue =
+      cvResult.error instanceof CandidateCvError &&
+      (cvResult.error.reason === "no_text" || cvResult.error.reason === "invalid_pdf")
+    const message = readableIssue
+      ? "No se pudo extraer texto del CV. Actualiza el PDF con texto seleccionable y vuelve a analizar."
+      : "No se pudo cargar el CV. Revisa el archivo del perfil y vuelve a intentar."
+    return readableIssue && resume && hasProfile
+      ? { kind: "profile-only", application, resume, cvText: "", message }
+      : { kind: "failed", application, message }
+  }
+  return { kind: "loaded", application, resume, cvText: cvResult.value }
 }
 
 async function getAuthorizedJob(jobId: string, requestHeaders: Headers): Promise<JobAccess> {
@@ -141,27 +179,24 @@ export async function POST(request: NextRequest) {
   }
 
   const assessments: CandidateAssessmentInput[] = []
+  const warnings: string[] = []
   for (let offset = 0; offset < selectedApplications.length; offset += 10) {
     const batch = selectedApplications.slice(offset, offset + 10)
     const batchResults = await Promise.all(
       batch.map((application) => loadApplicationResume(application, requestHeaders))
     )
 
-    if (batchResults.some((result) => result.kind === "failed")) {
-      console.error("[Jev] Could not load an applicant resume", {
-        failedCount: batchResults.filter((result) => result.kind === "failed").length,
-      })
-      return Response.json(
-        { error: "No se pudo cargar el perfil de una postulación" },
-        { status: 502 }
-      )
-    }
-
     for (const result of batchResults) {
+      if (result.kind === "failed") {
+        warnings.push(result.message)
+        continue
+      }
+      if (result.kind === "profile-only") warnings.push(result.message)
       const assessment = prepareCandidateAssessment({
         application: result.application,
         job: access.job,
-        resume: result.kind === "loaded" ? result.resume : null,
+        resume: result.resume,
+        cvText: result.cvText,
         organizationId: access.organizationId,
         requestedBy: access.userId,
       })
@@ -173,6 +208,13 @@ export async function POST(request: NextRequest) {
       }
       assessments.push(assessment.value)
     }
+  }
+
+  if (assessments.length === 0) {
+    return Response.json(
+      { error: warnings[0] ?? "No se pudieron cargar los perfiles" },
+      { status: 502 }
+    )
   }
 
   const reservation = await enqueueCandidateAssessments(access.organizationId, assessments)
@@ -188,5 +230,13 @@ export async function POST(request: NextRequest) {
   }
 
   after(async () => processJevQueue())
-  return Response.json({ queued: reservation.value.queued }, { status: 202 })
+  return Response.json(
+    {
+      queued: reservation.value.queued,
+      warning: warnings.length
+        ? `${warnings.length} postulaciones requieren revisión. ${warnings[0]} Los perfiles disponibles continúan con el análisis.`
+        : null,
+    },
+    { status: 202 }
+  )
 }

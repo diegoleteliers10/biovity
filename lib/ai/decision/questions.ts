@@ -3,7 +3,7 @@ import { JEV_SCORE_CRITERIA } from "./constants"
 
 export const JEV_QUESTIONS = {
   compatibility: score(
-    "¿Qué tan bien coincide la experiencia profesional documentada de esta persona con los requisitos explícitos de la oferta? Considera solo la información del estado. No infieras datos que no aparecen.",
+    "¿Qué tan bien coincide la experiencia profesional documentada de esta persona con los requisitos explícitos de la oferta? Usa el resumen, el texto del CV y los antecedentes estructurados del candidato como fuentes complementarias. Considera solo la información del estado. No infieras datos que no aparecen.",
     JEV_SCORE_CRITERIA
   ),
   skills: noul(
@@ -16,6 +16,6 @@ export const JEV_QUESTIONS = {
     "¿La formación académica documentada es pertinente para las funciones y requisitos de la oferta?"
   ),
   sufficientData: noul(
-    "¿El perfil contiene información profesional suficiente para comparar sus antecedentes con los requisitos de esta oferta?"
+    "¿El resumen, el texto del CV o los antecedentes estructurados contienen información profesional suficiente para comparar al candidato con la oferta? Tener datos suficientes no significa cumplir los requisitos. Un CV con antecedentes relevantes permite evaluar aunque las listas del perfil estén vacías. La falta de una habilidad o formación requerida afecta compatibilidad, no suficiencia de datos."
   ),
 } as const
