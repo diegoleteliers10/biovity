@@ -213,7 +213,7 @@ function ApplicantCard({
                   <HugeiconsIcon
                     icon={StarIcon}
                     size={12}
-                    className="shrink-0 text-amber-500 fill-amber-500"
+                    className="shrink-0 text-warning fill-warning"
                   />
                 )}
               </div>

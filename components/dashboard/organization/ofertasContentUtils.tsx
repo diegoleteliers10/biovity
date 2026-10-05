@@ -33,7 +33,7 @@ const statusColors: Record<string, string> = {
   closed: "bg-surface-container-highest text-muted-foreground",
   borrador: "bg-surface-container-highest text-muted-foreground",
   draft: "bg-surface-container-highest text-muted-foreground",
-  paused: "bg-yellow-500/10 text-yellow-700",
+  paused: "bg-warning/10 text-warning",
   expired: "bg-destructive/10 text-destructive",
 }
 

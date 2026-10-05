@@ -170,8 +170,8 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
           label: "Con oferta",
           count: statusBreakdown.oferta.count,
           percentage: statusBreakdown.oferta.percentage,
-          bgColor: "bg-amber-500/15",
-          textColor: "text-amber-700",
+          bgColor: "bg-warning/15",
+          textColor: "text-warning",
           icon: Calendar03Icon,
         },
         {

@@ -419,7 +419,7 @@ export function ChatListItem({
             </AvatarFallback>
           </Avatar>
           {isOnline && (
-            <div className="absolute -bottom-0.5 -right-0.5 size-3 bg-green-500 rounded-full border-2 border-background" />
+            <div className="absolute -bottom-0.5 -right-0.5 size-3 bg-success rounded-full border-2 border-background" />
           )}
         </div>
 

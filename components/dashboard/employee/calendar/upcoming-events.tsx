@@ -36,7 +36,7 @@ const PARTICIPANT_STATUS_LABELS: Record<ParticipantStatus, string> = {
 }
 
 const PARTICIPANT_STATUS_COLORS: Record<ParticipantStatus, string> = {
-  pending: "bg-amber-500/10 text-amber-700",
+  pending: "bg-warning/10 text-warning",
   accepted: "bg-secondary/10 text-secondary",
   declined: "bg-destructive/10 text-destructive",
 }
