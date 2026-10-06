@@ -98,17 +98,17 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
               <h3 className="text-xs leading-4 font-medium text-foreground">Informacion</h3>
 
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Email</label>
+                <p className="text-xs text-muted-foreground">Email</p>
                 <p className="text-sm">{user.email}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs text-muted-foreground">Estado</label>
+                  <p className="text-xs text-muted-foreground">Estado</p>
                   <span
                     className={
                       user.isActive
-                        ? "block w-fit rounded-md bg-secondary/10 px-2 py-0.5 text-xs font-medium text-secondary"
+                        ? "block w-fit rounded-md bg-secondary/10 px-2 py-0.5 text-xs font-medium text-secondary dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35"
                         : "block w-fit rounded-md bg-surface-container-highest px-2 py-0.5 text-xs font-medium text-muted-foreground"
                     }
                   >
@@ -116,7 +116,7 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
                   </span>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs text-muted-foreground">Registrado</label>
+                  <p className="text-xs text-muted-foreground">Registrado</p>
                   <p className="text-sm">{formatFechaRelativa(user.createdAt)}</p>
                 </div>
               </div>

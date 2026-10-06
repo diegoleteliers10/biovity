@@ -13,6 +13,7 @@ import {
   GeneratedExplanationSchema,
   resolveExplanationEvidence,
 } from "@/lib/ai/decision/explanation-evidence"
+import { logExplanationAudit } from "@/lib/ai/explanation-audit"
 import { resolveModel } from "@/lib/ai/provider"
 import { getManagedJob } from "@/lib/api/jobs"
 import { auth } from "@/lib/auth"
@@ -93,9 +94,25 @@ export async function POST(request: NextRequest) {
   if (leaseResult.isErr()) return errorResponse("No se pudo iniciar la explicación")
   if (!leaseResult.value) return Response.json({ status: "processing" }, { status: 202 })
 
+  const auditContext = {
+    userId: session.user.id,
+    organizationId,
+    jobId: parsed.data.jobId,
+    revisionId: parsed.data.revisionId,
+    startTime: Date.now(),
+  }
   const assessment = assessmentResult.value
   const evidenceCatalog = buildEvidenceCatalog(assessment.jobSnapshot, assessment.candidateSnapshot)
-  const resolved = await resolveModel(organizationId, "explanation")
+  const resolution = await R.tryPromise(() => resolveModel(organizationId, "explanation"))
+  if (resolution.isErr()) {
+    const code = explanationErrorCode(
+      resolution.error instanceof Error ? resolution.error : new Error("Model resolution failed")
+    )
+    await failCandidateExplanation(parsed.data.revisionId, leaseResult.value, code)
+    await logExplanationAudit(auditContext, { status: "failed", errorCode: code })
+    return Response.json({ status: "failed", error: explanationErrorMessage(code) })
+  }
+  const resolved = resolution.value
   const generated = await R.tryPromise({
     try: () =>
       generateObject({
@@ -108,7 +125,10 @@ export async function POST(request: NextRequest) {
           : { schema: GeneratedExplanationSchema }),
         maxOutputTokens: 3500,
         maxRetries: 0,
-        abortSignal: AbortSignal.timeout(JEV_EXPLANATION_TIMEOUT_MS),
+        abortSignal: AbortSignal.any([
+          request.signal,
+          AbortSignal.timeout(JEV_EXPLANATION_TIMEOUT_MS),
+        ]),
         system: [
           `Responde solo JSON válido con este esquema: ${JSON.stringify(z.toJSONSchema(GeneratedExplanationSchema))}.`,
           "Explica una evaluación de compatibilidad entre una trayectoria profesional y una oferta laboral.",
@@ -139,6 +159,14 @@ export async function POST(request: NextRequest) {
   if (generated.isErr()) {
     const code = explanationErrorCode(generated.error)
     await failCandidateExplanation(parsed.data.revisionId, leaseResult.value, code)
+    await logExplanationAudit(
+      auditContext,
+      {
+        status: request.signal.aborted ? "aborted" : "failed",
+        errorCode: code,
+      },
+      resolved
+    )
     return Response.json(
       { status: "failed", error: explanationErrorMessage(code) },
       { status: 200 }
@@ -152,6 +180,15 @@ export async function POST(request: NextRequest) {
   if (!explanation) {
     const code = parsedExplanation.success ? "unsupported_evidence" : "invalid_explanation_format"
     await failCandidateExplanation(parsed.data.revisionId, leaseResult.value, code)
+    await logExplanationAudit(
+      auditContext,
+      {
+        status: "failed",
+        errorCode: code,
+        usage: generated.value.usage,
+      },
+      resolved
+    )
     return Response.json(
       { status: "failed", error: explanationErrorMessage(code) },
       { status: 200 }
@@ -164,8 +201,25 @@ export async function POST(request: NextRequest) {
     explanation,
     resolved.modelId
   )
-  if (savedResult.isErr() || !savedResult.value)
+  if (savedResult.isErr() || !savedResult.value) {
+    await logExplanationAudit(
+      auditContext,
+      {
+        status: "failed",
+        errorCode: savedResult.isErr()
+          ? "explanation_persistence_failed"
+          : "explanation_lease_lost",
+        usage: generated.value.usage,
+      },
+      resolved
+    )
     return errorResponse("No se pudo guardar la explicación")
+  }
 
+  await logExplanationAudit(
+    auditContext,
+    { status: "ready", usage: generated.value.usage },
+    resolved
+  )
   return Response.json({ status: "ready", explanation })
 }

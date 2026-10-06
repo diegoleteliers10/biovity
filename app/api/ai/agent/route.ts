@@ -1,6 +1,9 @@
 import { convertToModelMessages, stepCountIs, type UIMessage } from "ai"
+import { Result } from "better-result"
 import { headers } from "next/headers"
-import type { NextRequest } from "next/server"
+import { after, type NextRequest } from "next/server"
+import { z } from "zod"
+import { createAgentAudit } from "@/lib/ai/agent-audit"
 import { AIAuditService, aiAuditService } from "@/lib/ai/audit"
 import { findProviderModel } from "@/lib/ai/byok/registry"
 import { AI_LIMITS } from "@/lib/ai/env"
@@ -13,22 +16,39 @@ import { organizationTools } from "@/lib/ai/tools/organization"
 import { auth } from "@/lib/auth"
 import { authorizeResource } from "@/lib/auth/resource-access"
 
+const AgentRequestSchema = z.object({
+  messages: z.array(
+    z.object({
+      id: z.string(),
+      role: z.enum(["system", "user", "assistant"]),
+      parts: z.array(
+        z.custom<UIMessage["parts"][number]>((value) => {
+          if (
+            typeof value !== "object" ||
+            value === null ||
+            !("type" in value) ||
+            typeof value.type !== "string"
+          )
+            return false
+          return value.type !== "text" || ("text" in value && typeof value.text === "string")
+        })
+      ),
+    })
+  ),
+  jobOfferId: z.string().optional(),
+  organizationId: z.string().optional(),
+})
+
 export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now()
-  let flagged = false
 
-  const {
-    messages,
-    jobOfferId,
-    organizationId,
-  }: {
-    messages: UIMessage[]
-    jobOfferId?: string
-    organizationId?: string
-    recruiterUserId?: string
-  } = await req.json()
+  const body = await Result.tryPromise(() => req.json())
+  if (body.isErr()) return Response.json({ error: "Solicitud inválida" }, { status: 400 })
+  const parsed = AgentRequestSchema.safeParse(body.value)
+  if (!parsed.success) return Response.json({ error: "Solicitud inválida" }, { status: 400 })
+  const { messages, jobOfferId, organizationId } = parsed.data
 
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user?.id) {
@@ -40,46 +60,45 @@ export async function POST(req: NextRequest) {
     type?: string
   }
   const resolvedOrganizationId = organizationId ?? sessionUser.organizationId
-  if (!resolvedOrganizationId)
+  const audit = createAgentAudit(
+    {
+      userId: session.user.id,
+      inputHash: AIAuditService.hashInput(JSON.stringify(messages)),
+      startTime,
+      organizationId: resolvedOrganizationId,
+      jobOfferId,
+    },
+    (record) => aiAuditService.log(record)
+  )
+  if (!resolvedOrganizationId) {
+    await audit.finish("blocked")
     return Response.json({ error: "Organización requerida" }, { status: 403 })
+  }
   const access = await authorizeResource(
     { kind: "organization", id: resolvedOrganizationId },
     "recruit"
   )
-  if (access.isErr())
+  if (access.isErr()) {
+    await audit.finish("blocked")
     return Response.json({ error: access.error.message }, { status: access.error.status })
+  }
 
   for (const msg of messages) {
-    const msgAny = msg as unknown as { content?: string | Array<{ type?: string; text?: string }> }
-    const text = typeof msgAny.content === "string" ? msgAny.content : ""
-    if (text) {
-      try {
-        sanitizeInput(text, session.user.id)
-      } catch (error) {
-        if (error instanceof PromptInjectionError) {
-          flagged = true
-          await aiAuditService
-            .log({
-              userId: session.user.id,
-              endpoint: "/api/ai/agent",
-              inputHash: AIAuditService.hashInput(text),
-              outputSummary: "BLOCKED: Prompt injection detected",
-              toolsCalled: [],
-              flagged: true,
-              durationMs: Date.now() - startTime,
-              metadata: { detectedPattern: error.detectedPattern },
-            })
-            .catch(() => {})
-
-          return Response.json(
-            {
-              error: "Solicitud bloqueada por seguridad",
-              code: "ERR_PROMPT_INJECTION",
-            },
-            { status: 400 }
-          )
-        }
-      }
+    const text = msg.parts
+      .filter((part) => part.type === "text")
+      .map((part) => part.text)
+      .join("\n")
+    const sanitized = Result.try(() => sanitizeInput(text, session.user.id))
+    if (sanitized.isErr()) {
+      const blocked = sanitized.error instanceof PromptInjectionError
+      await audit.finish(blocked ? "blocked" : "failed")
+      return Response.json(
+        {
+          error: blocked ? "Solicitud bloqueada por seguridad" : "No se pudo procesar la solicitud",
+          code: blocked ? "ERR_PROMPT_INJECTION" : "ERR_AGENT_REQUEST",
+        },
+        { status: blocked ? 400 : 500 }
+      )
     }
   }
 
@@ -95,9 +114,16 @@ export async function POST(req: NextRequest) {
     jobOfferId,
   })
 
-  const resolved = await resolveModel(resolvedOrganizationId)
+  const resolution = await Result.tryPromise(() => resolveModel(resolvedOrganizationId))
+  if (resolution.isErr()) {
+    await audit.finish("failed")
+    return Response.json({ error: "No se pudo iniciar el agente" }, { status: 500 })
+  }
+  const resolved = resolution.value
+  audit.setModel(resolved)
   const capability = findProviderModel(resolved.provider, resolved.modelId)
   if (resolved.source === "byok" && capability && !capability.supportsTools) {
+    await audit.finish("blocked")
     return Response.json(
       {
         error: "El modelo seleccionado no soporta herramientas",
@@ -107,35 +133,41 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const result = streamText({
-    model: resolved.model,
-    messages: await convertToModelMessages(messages),
-    stopWhen: stepCountIs(AI_LIMITS.DEFAULT_MAX_STEPS),
-    tools: allTools,
-    system: systemPrompt,
-  })
-
-  aiAuditService
-    .log({
-      userId: session.user.id,
-      endpoint: "/api/ai/agent",
-      inputHash: AIAuditService.hashInput(
-        JSON.stringify({ messageCount: messages.length, jobOfferId })
-      ),
-      outputSummary: "Streaming response initiated",
-      toolsCalled: Object.keys(allTools),
-      flagged,
-      durationMs: Date.now() - startTime,
-      metadata: {
-        jobOfferId,
-        organizationId: resolvedOrganizationId,
-        provider: resolved.provider,
-        modelId: resolved.modelId,
-        source: resolved.source,
-      },
+  const conversion = await Result.tryPromise(() => convertToModelMessages(messages))
+  if (conversion.isErr()) {
+    await audit.finish("failed")
+    return Response.json({ error: "No se pudo procesar la solicitud" }, { status: 400 })
+  }
+  const stream = Result.try(() =>
+    streamText({
+      model: resolved.model,
+      messages: conversion.value,
+      stopWhen: stepCountIs(AI_LIMITS.DEFAULT_MAX_STEPS),
+      tools: allTools,
+      system: systemPrompt,
+      abortSignal: req.signal,
+      experimental_onToolCallFinish: ({ toolCall }) => audit.recordTool(toolCall.toolName),
+      onError: () => audit.recordError(),
+      onAbort: () => audit.finish("aborted"),
+      onFinish: ({ totalUsage, finishReason }) =>
+        audit.finish(finishReason === "error" ? "failed" : "ready", totalUsage),
     })
-    .catch(() => {})
-
+  )
+  if (stream.isErr()) {
+    await audit.finish("failed")
+    return Response.json({ error: "No se pudo iniciar el agente" }, { status: 500 })
+  }
+  const result = stream.value
+  after(async () => {
+    await Result.tryPromise(() =>
+      Promise.resolve(
+        result.consumeStream({
+          onError: () => audit.recordError(),
+        })
+      )
+    )
+    await audit.finish(req.signal.aborted ? "aborted" : "failed")
+  })
   return result.toUIMessageStreamResponse({
     originalMessages: messages,
     sendReasoning: true,

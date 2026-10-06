@@ -1,13 +1,8 @@
 "use client"
 
-import {
-  AlertCircleIcon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  Refresh01Icon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useReducer, useRef } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { Result } from "better-result"
+import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,262 +15,199 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useMountEffect } from "@/hooks/use-mount-effect"
+import { aiLogsResponseSchema } from "@/lib/admin/ai-logs-schema"
+import { ApiError, NetworkError, ParseError } from "@/lib/errors"
 import { formatFechaRelativa } from "@/lib/utils"
 
-type AILogEntry = {
-  id: string
-  userId: string
-  endpoint: string
-  inputHash: string
-  outputSummary: string | null
-  toolsCalled: unknown[]
-  flagged: boolean
-  durationMs: number | null
-  timestamp: string
-  metadata: unknown | null
+async function fetchLogs(params: URLSearchParams) {
+  return Result.gen(async function* () {
+    const response = yield* Result.await(
+      Result.tryPromise({
+        try: () => fetch(`/api/admin/ai-logs?${params}`),
+        catch: (cause) =>
+          new NetworkError({ message: "No se pudo cargar los logs. Reintenta.", cause }),
+      })
+    )
+    if (!response.ok)
+      return Result.err(
+        new ApiError({ status: response.status, message: "No se pudo cargar los logs. Reintenta." })
+      )
+    const body = yield* Result.await(
+      Result.tryPromise({
+        try: async () => {
+          const body: unknown = await response.json()
+          return body
+        },
+        catch: (cause) => new ParseError({ message: "La respuesta de logs es inválida.", cause }),
+      })
+    )
+    const parsed = aiLogsResponseSchema.safeParse(body)
+    return parsed.success
+      ? Result.ok(parsed.data)
+      : Result.err(
+          new ParseError({ message: "La respuesta de logs es inválida.", cause: parsed.error })
+        )
+  })
 }
 
-type State = {
-  items: AILogEntry[]
-  total: number
-  loading: boolean
-  error: string | null
-  inputSearch: string
-  flaggedFilter: string
-  page: number
+function duration(ms: number | null) {
+  if (ms === null) return "Sin datos"
+  return ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(1)} s`
 }
 
-type Action =
-  | { type: "SET_ITEMS"; items: AILogEntry[]; total: number }
-  | { type: "SET_LOADING"; loading: boolean }
-  | { type: "SET_ERROR"; error: string }
-  | { type: "SET_INPUT_SEARCH"; value: string }
-  | { type: "SET_FLAGGED_FILTER"; value: string }
-  | { type: "SET_PAGE"; page: number }
-  | { type: "REFRESH" }
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "SET_ITEMS":
-      return { ...state, items: action.items, total: action.total, error: null }
-    case "SET_LOADING":
-      return { ...state, loading: action.loading }
-    case "SET_ERROR":
-      return { ...state, error: action.error }
-    case "SET_INPUT_SEARCH":
-      return { ...state, inputSearch: action.value }
-    case "SET_FLAGGED_FILTER":
-      return { ...state, flaggedFilter: action.value }
-    case "SET_PAGE":
-      return { ...state, page: action.page }
-    case "REFRESH":
-      return { ...state, page: 1 }
+function statusLabel(status: string | null) {
+  switch (status) {
+    case "ready":
+      return "Completado"
+    case "insufficient":
+      return "Datos insuficientes"
+    case "failed":
+      return "Fallido"
+    case "blocked":
+      return "Bloqueado"
+    case "aborted":
+      return "Cancelado"
+    default:
+      return "Sin datos"
   }
 }
 
-const INITIAL: State = {
-  items: [],
-  total: 0,
-  loading: true,
-  error: null,
-  inputSearch: "",
-  flaggedFilter: "",
-  page: 1,
-}
-
-const PAGE_SIZE = 20
-const SEARCH_DEBOUNCE_MS = 400
-
-const FLAGGED_OPTIONS = [
-  { value: "", label: "Todos" },
-  { value: "true", label: "Marcados" },
-  { value: "false", label: "No marcados" },
-]
-
-function useAILogsFetch(
-  page: number,
-  search: string,
-  flagged: string,
-  dispatch: React.Dispatch<Action>
-) {
-  const fetchLogs = useCallback(
-    async (p: number, s: string, f: string) => {
-      dispatch({ type: "SET_LOADING", loading: true })
-      try {
-        const params = new URLSearchParams()
-        params.set("page", String(p))
-        params.set("limit", String(PAGE_SIZE))
-        if (s.trim()) params.set("search", s.trim())
-        if (f) params.set("flagged", f)
-
-        const res = await fetch(`/api/admin/ai-logs?${params}`)
-        const data = await res.json().catch(() => null)
-        if (!res.ok) {
-          throw new Error((data as { error?: string })?.error ?? "Error al cargar logs de AI")
-        }
-        dispatch({ type: "SET_ITEMS", items: data.data ?? [], total: data.total ?? 0 })
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Error desconocido"
-        dispatch({ type: "SET_ERROR", error: msg })
-      } finally {
-        dispatch({ type: "SET_LOADING", loading: false })
-      }
-    },
-    [dispatch]
-  )
-
-  useEffect(() => {
-    fetchLogs(page, search, flagged)
-  }, [page, search, flagged, fetchLogs])
-
-  return fetchLogs
+function actorType(type: string | null) {
+  switch (type) {
+    case "professional":
+      return "Profesional"
+    case "organization":
+      return "Organización"
+    case "admin":
+      return "Administrador"
+    default:
+      return type ?? "Sin datos"
+  }
 }
 
 export function AdminAILogsContent() {
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [state, dispatch] = useReducer(reducer, INITIAL)
-
-  const fetchLogs = useAILogsFetch(state.page, state.inputSearch, state.flaggedFilter, dispatch)
-
-  const handleSearchChange = useCallback((value: string) => {
-    dispatch({ type: "SET_INPUT_SEARCH", value })
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      dispatch({ type: "SET_PAGE", page: 1 })
-      debounceRef.current = null
-    }, SEARCH_DEBOUNCE_MS)
-  }, [])
-
-  useMountEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-    }
+  const [inputSearch, setInputSearch] = useState("")
+  const [filters, setFilters] = useState({ search: "", flagged: "", page: 1 })
+  const params = new URLSearchParams({ page: String(filters.page), limit: "20" })
+  if (filters.search) params.set("search", filters.search)
+  if (filters.flagged) params.set("flagged", filters.flagged)
+  const query = useQuery({
+    queryKey: ["admin-ai-logs", params.toString()],
+    queryFn: () => fetchLogs(params),
+    retry: false,
   })
-
-  const handleFlaggedFilterChange = useCallback((value: string) => {
-    dispatch({ type: "SET_FLAGGED_FILTER", value })
-    dispatch({ type: "SET_PAGE", page: 1 })
-  }, [])
-
-  function formatDuration(ms: number | null): string {
-    if (ms == null) return "—"
-    if (ms < 1000) return `${ms}ms`
-    return `${(ms / 1000).toFixed(1)}s`
-  }
-
-  const totalPages = Math.max(1, Math.ceil(state.total / PAGE_SIZE))
+  const result = query.data
+  const data = result?.isOk() ? result.value : null
+  const error = result?.isErr()
+    ? result.error.message
+    : query.isError
+      ? "No se pudo cargar los logs. Reintenta."
+      : null
+  const pages = Math.max(1, data?.totalPages ?? 1)
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-            Logs de AI
-          </h1>
-          <p className="mt-1 text-pretty text-sm text-muted-foreground">
-            Registro de interacciones con inteligencia artificial para auditoria y deteccion de
-            abuso.
-          </p>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => dispatch({ type: "REFRESH" })}
-          disabled={state.loading}
-          aria-label="Refrescar"
-        >
-          <HugeiconsIcon icon={Refresh01Icon} size={18} />
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Logs de AI</h1>
+        <Button variant="outline" onClick={() => query.refetch()} disabled={query.isFetching}>
+          Actualizar
         </Button>
       </div>
-
-      <div className="flex flex-wrap items-center gap-3">
+      <form
+        className="flex flex-wrap items-center gap-3"
+        onSubmit={(event) => {
+          event.preventDefault()
+          setFilters({ ...filters, search: inputSearch.trim(), page: 1 })
+        }}
+      >
         <Input
-          placeholder="Buscar por usuario o endpoint..."
-          value={state.inputSearch}
-          onChange={(e) => handleSearchChange(e.target.value)}
+          placeholder="Nombre, email, ID u operación"
+          value={inputSearch}
+          onChange={(event) => setInputSearch(event.target.value)}
           className="max-w-sm h-11"
           aria-label="Buscar logs de AI"
         />
+        <Button type="submit" variant="outline">
+          Buscar
+        </Button>
         <select
-          value={state.flaggedFilter}
-          onChange={(e) => handleFlaggedFilterChange(e.target.value)}
+          value={filters.flagged}
+          onChange={(event) => setFilters({ ...filters, flagged: event.target.value, page: 1 })}
           className="h-11 rounded-lg border border-border/40 bg-surface-container-low px-3 text-sm"
-          aria-label="Filtrar por flagged"
+          aria-label="Filtrar marcas"
         >
-          {FLAGGED_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
+          <option value="">Todos</option>
+          <option value="true">Marcados</option>
+          <option value="false">No marcados</option>
         </select>
-      </div>
-
-      <div className="rounded-lg border">
-        {state.loading ? (
+      </form>
+      <div className="rounded-lg border overflow-x-auto">
+        {query.isPending ? (
           <div className="space-y-3 p-6">
-            {[0, 1, 2, 3].map((n) => (
-              <Skeleton key={n} className="h-10 w-full" />
+            {[0, 1, 2, 3].map((key) => (
+              <Skeleton key={key} className="h-10 w-full" />
             ))}
           </div>
-        ) : state.error ? (
-          <div className="flex flex-col items-center justify-center gap-2 p-12">
-            <p className="text-destructive text-sm font-medium">Error al cargar logs de AI</p>
-            <p className="text-muted-foreground text-xs">{state.error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchLogs(state.page, state.inputSearch, state.flaggedFilter)}
-            >
+        ) : error ? (
+          <div className="flex flex-col items-center gap-3 p-12">
+            <p className="text-destructive text-sm">{error}</p>
+            <Button variant="outline" onClick={() => query.refetch()}>
               Reintentar
             </Button>
           </div>
-        ) : state.items.length === 0 ? (
-          <div className="flex items-center justify-center p-12 text-muted-foreground">
-            {state.inputSearch.trim() || state.flaggedFilter
-              ? "No se encontraron logs con esos filtros"
-              : "No hay interacciones de AI registradas"}
+        ) : !data?.data.length ? (
+          <div className="p-12 text-center text-muted-foreground">
+            No hay interacciones con estos filtros
           </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Usuario</TableHead>
-                <TableHead>Endpoint</TableHead>
-                <TableHead>Duracion</TableHead>
-                <TableHead>Flags</TableHead>
-                <TableHead>Output</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Operación</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Proveedor</TableHead>
+                <TableHead>Modelo</TableHead>
+                <TableHead>Tokens de entrada</TableHead>
+                <TableHead>Tokens de salida</TableHead>
+                <TableHead>Duración</TableHead>
+                <TableHead>Herramientas ejecutadas</TableHead>
+                <TableHead>Marca</TableHead>
                 <TableHead>Fecha</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {state.items.map((log) => (
+              {data.data.map((log) => (
                 <TableRow key={log.id} className={log.flagged ? "bg-destructive/5" : undefined}>
-                  <TableCell className="font-mono text-xs max-w-[120px]">
-                    <span className="truncate block" title={log.userId}>
-                      {log.userId.slice(0, 12)}...
-                    </span>
-                  </TableCell>
-                  <TableCell className="max-w-[160px]">
-                    <span className="truncate block text-xs font-mono" title={log.endpoint}>
-                      {log.endpoint}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-xs">{formatDuration(log.durationMs)}</TableCell>
                   <TableCell>
-                    {log.flagged ? (
-                      <Badge variant="destructive" className="gap-1 text-xs">
-                        <HugeiconsIcon icon={AlertCircleIcon} size={12} />
-                        Flagged
-                      </Badge>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
+                    <span className="block font-medium">
+                      {log.userName || "Usuario no disponible"}
+                    </span>
+                    <span className="block text-xs text-muted-foreground">
+                      {log.userEmail || log.userId}
+                    </span>
+                  </TableCell>
+                  <TableCell>{actorType(log.userType)}</TableCell>
+                  <TableCell className="font-mono text-xs">{log.endpoint}</TableCell>
+                  <TableCell>
+                    {statusLabel(log.status)}
+                    {log.errorCode && (
+                      <span className="block text-xs text-muted-foreground">{log.errorCode}</span>
                     )}
                   </TableCell>
-                  <TableCell className="max-w-[200px]">
-                    <span className="truncate block text-xs" title={log.outputSummary ?? undefined}>
-                      {log.outputSummary ?? "—"}
-                    </span>
+                  <TableCell>{log.provider ?? "Sin datos"}</TableCell>
+                  <TableCell>{log.modelId ?? "Sin datos"}</TableCell>
+                  <TableCell>{log.inputTokens ?? "Sin datos"}</TableCell>
+                  <TableCell>{log.outputTokens ?? "Sin datos"}</TableCell>
+                  <TableCell className="whitespace-nowrap">{duration(log.durationMs)}</TableCell>
+                  <TableCell>
+                    {log.toolsCalled === null
+                      ? "Sin datos"
+                      : log.toolsCalled.join(", ") || "Ninguna"}
+                  </TableCell>
+                  <TableCell>
+                    {log.flagged ? <Badge variant="destructive">Marcado</Badge> : "Sin marca"}
                   </TableCell>
                   <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                     {formatFechaRelativa(log.timestamp)}
@@ -286,32 +218,25 @@ export function AdminAILogsContent() {
           </Table>
         )}
       </div>
-
-      {state.total > 0 && (
+      {data && data.total > 0 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Pagina {state.page} de {totalPages} ({state.total} logs)
+            Página {filters.page} de {pages} ({data.total} logs)
           </p>
           <div className="flex gap-2">
             <Button
               variant="outline"
-              size="sm"
-              onClick={() => dispatch({ type: "SET_PAGE", page: Math.max(1, state.page - 1) })}
-              disabled={state.page <= 1}
-              aria-label="Pagina anterior"
+              disabled={filters.page <= 1 || query.isFetching}
+              onClick={() => setFilters({ ...filters, page: filters.page - 1 })}
             >
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={18} />
+              Anterior
             </Button>
             <Button
               variant="outline"
-              size="sm"
-              onClick={() =>
-                dispatch({ type: "SET_PAGE", page: Math.min(totalPages, state.page + 1) })
-              }
-              disabled={state.page >= totalPages}
-              aria-label="Pagina siguiente"
+              disabled={filters.page >= pages || query.isFetching}
+              onClick={() => setFilters({ ...filters, page: filters.page + 1 })}
             >
-              <HugeiconsIcon icon={ArrowRight01Icon} size={18} />
+              Siguiente
             </Button>
           </div>
         </div>
