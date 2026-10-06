@@ -11,7 +11,7 @@ import type { CategoryHomeItem } from "@/lib/types/home"
 export const CATEGORIES_HOME: CategoryHomeItem[] = [
   {
     icon: MicroscopeIcon,
-    id: "Biotecnología",
+    id: "biotecnologia",
     title: "Biotecnología",
     positions: "Explorar ofertas",
     color: "from-blue-500 to-blue-600",
@@ -19,7 +19,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: TestTubeIcon,
-    id: "Bioquímica",
+    id: "bioquimica",
     title: "Bioquímica",
     positions: "Explorar ofertas",
     color: "from-green-500 to-green-600",
@@ -27,7 +27,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: Atom01Icon,
-    id: "Química",
+    id: "quimica",
     title: "Química",
     positions: "Explorar ofertas",
     color: "from-purple-500 to-purple-600",
@@ -35,7 +35,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: Chemistry01Icon,
-    id: "Ingeniería Química",
+    id: "ingenieria-quimica",
     title: "Ingeniería Química",
     positions: "Explorar ofertas",
     color: "from-orange-500 to-orange-600",
@@ -43,7 +43,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: StethoscopeIcon,
-    id: "Salud y Medicina",
+    id: "salud",
     title: "Salud y Medicina",
     positions: "Explorar ofertas",
     color: "from-red-500 to-red-600",
@@ -51,7 +51,7 @@ export const CATEGORIES_HOME: CategoryHomeItem[] = [
   },
   {
     icon: PillIcon,
-    id: "I+D Farmacéutica",
+    id: "farmacia",
     title: "I+D Farmacéutica",
     positions: "Explorar ofertas",
     color: "from-teal-500 to-teal-600",
