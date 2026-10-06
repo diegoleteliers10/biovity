@@ -1,21 +1,11 @@
 import { Result as R } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
+import { normalizeAILog } from "@/lib/admin/ai-logs"
+import { aiLogsQuerySchema } from "@/lib/admin/ai-logs-schema"
+import type { AILogRow } from "@/lib/admin/ai-logs-types"
 import { auth, isAdminSession } from "@/lib/auth"
 import { pool } from "@/lib/db"
 import { DbError } from "@/lib/errors"
-
-export type AILogEntry = {
-  id: string
-  userId: string
-  endpoint: string
-  inputHash: string
-  outputSummary: string | null
-  toolsCalled: unknown[]
-  flagged: boolean
-  durationMs: number | null
-  timestamp: string
-  metadata: unknown | null
-}
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({ headers: request.headers })
@@ -24,11 +14,11 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = new URL(request.url)
-  const page = Math.max(1, Number.parseInt(searchParams.get("page") ?? "1", 10))
-  const limit = Math.min(50, Math.max(1, Number.parseInt(searchParams.get("limit") ?? "20", 10)))
-  const search = searchParams.get("search")?.trim()
-  const flaggedFilter = searchParams.get("flagged")
-  const endpointFilter = searchParams.get("endpoint")?.trim()
+  const parsed = aiLogsQuerySchema.safeParse(Object.fromEntries(searchParams))
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Filtros inválidos" }, { status: 400 })
+  }
+  const { page, limit, search, flagged: flaggedFilter, endpoint: endpointFilter } = parsed.data
   const offset = (page - 1) * limit
 
   const conditions: string[] = []
@@ -36,19 +26,21 @@ export async function GET(request: NextRequest) {
   let paramIndex = 1
 
   if (flaggedFilter === "true" || flaggedFilter === "false") {
-    conditions.push(`flagged = $${paramIndex}`)
+    conditions.push(`l.flagged = $${paramIndex}`)
     params.push(flaggedFilter === "true")
     paramIndex++
   }
 
   if (endpointFilter) {
-    conditions.push(`endpoint ILIKE $${paramIndex}`)
+    conditions.push(`l.endpoint ILIKE $${paramIndex}`)
     params.push(`%${endpointFilter}%`)
     paramIndex++
   }
 
   if (search) {
-    conditions.push(`(user_id ILIKE $${paramIndex} OR endpoint ILIKE $${paramIndex})`)
+    conditions.push(
+      `(l.user_id ILIKE $${paramIndex} OR l.endpoint ILIKE $${paramIndex} OR u.name ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex})`
+    )
     params.push(`%${search}%`)
     paramIndex++
   }
@@ -58,7 +50,7 @@ export async function GET(request: NextRequest) {
   const countResult = await R.tryPromise({
     try: () =>
       pool.query<{ count: string }>(
-        `SELECT COUNT(*)::text AS count FROM ai_interaction_logs WHERE ${whereClause}`,
+        `SELECT COUNT(*)::text AS count FROM ai_interaction_logs l LEFT JOIN "user" u ON u.id::text = l.user_id WHERE ${whereClause}`,
         params
       ),
     catch: (cause) => new DbError({ operation: "count_ai_logs", cause }),
@@ -73,21 +65,11 @@ export async function GET(request: NextRequest) {
 
   const result = await R.tryPromise({
     try: () =>
-      pool.query<{
-        id: string
-        user_id: string
-        endpoint: string
-        input_hash: string
-        output_summary: string | null
-        tools_called: unknown
-        flagged: boolean
-        duration_ms: number | null
-        timestamp: Date
-        metadata: unknown
-      }>(
-        `SELECT id, user_id, endpoint, input_hash, output_summary, tools_called, flagged, duration_ms, timestamp, metadata
-         FROM ai_interaction_logs WHERE ${whereClause}
-         ORDER BY timestamp DESC
+      pool.query<AILogRow>(
+        `SELECT l.id, l.user_id, u.name AS user_name, u.email AS user_email, u.type::text AS user_type,
+                l.endpoint, l.tools_called, l.flagged, l.duration_ms, l.timestamp, l.metadata
+         FROM ai_interaction_logs l LEFT JOIN "user" u ON u.id::text = l.user_id WHERE ${whereClause}
+         ORDER BY l.timestamp DESC, l.id DESC
          LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
         [...params, limit, offset]
       ),
@@ -99,18 +81,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Error al obtener logs de AI" }, { status: 500 })
   }
 
-  const logs: AILogEntry[] = result.value.rows.map((row) => ({
-    id: row.id,
-    userId: row.user_id,
-    endpoint: row.endpoint,
-    inputHash: row.input_hash,
-    outputSummary: row.output_summary,
-    toolsCalled: Array.isArray(row.tools_called) ? row.tools_called : [],
-    flagged: row.flagged,
-    durationMs: row.duration_ms,
-    timestamp: row.timestamp?.toISOString() ?? new Date().toISOString(),
-    metadata: row.metadata,
-  }))
+  const logs = result.value.rows.map(normalizeAILog)
 
   return NextResponse.json({
     data: logs,

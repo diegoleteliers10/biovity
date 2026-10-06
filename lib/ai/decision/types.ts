@@ -53,3 +53,8 @@ export type ScoreExplanation = {
   gaps: { text: string; evidence: string }[]
   recommendation: "Avanzar" | "Evaluar" | "Descartar"
 }
+
+export type JevAuditOutcome =
+  | { status: "ready" | "insufficient"; result: JevAssessment }
+  | { status: "failed"; errorCode: "provider_error" | "persistence_error"; result?: JevAssessment }
+  | { status: "aborted"; errorCode: "lease_lost"; result: JevAssessment }

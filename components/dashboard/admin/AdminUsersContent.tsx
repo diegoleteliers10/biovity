@@ -33,7 +33,14 @@ const usersColumns: AdminEntityColumn[] = [
     key: "isActive",
     header: "Estado",
     render: (u) => (
-      <Badge variant={u.isActive ? "default" : "secondary"}>
+      <Badge
+        variant={u.isActive ? "default" : "secondary"}
+        className={
+          u.isActive
+            ? "dark:bg-secondary-container dark:text-on-secondary-container dark:border-secondary-soft/35"
+            : undefined
+        }
+      >
         {u.isActive ? "Activo" : "Inactivo"}
       </Badge>
     ),
