@@ -5,23 +5,6 @@ import { useCallback, useEffect, useState } from "react"
 export type Theme = "light" | "dark"
 
 const STORAGE_KEY = "biovity-theme"
-const DARK_QUERY = "(prefers-color-scheme: dark)"
-
-function readStored(): Theme | null {
-  if (typeof window === "undefined") return null
-  try {
-    const value = window.localStorage.getItem(STORAGE_KEY)
-    return value === "dark" || value === "light" ? value : null
-  } catch {
-    // Private mode or blocked storage. The OS preference still applies.
-    return null
-  }
-}
-
-function systemTheme(): Theme {
-  if (typeof window === "undefined") return "light"
-  return window.matchMedia(DARK_QUERY).matches ? "dark" : "light"
-}
 
 function apply(theme: Theme) {
   const root = document.documentElement
@@ -46,8 +29,9 @@ function syncBrowserChrome(theme: Theme) {
 }
 
 /**
- * Theme state for the dashboard only. The landing has no toggle, so it keeps
- * following the OS through the shared tokens.
+ * Theme state for the dashboard only. Light is the default for everyone: a
+ * visitor who has never chosen sees light even when the OS is set to dark. The
+ * landing has no toggle, so it stays light as well.
  *
  * The first render is always "light" on purpose: `app/layout.tsx` is a Server
  * Component, so the real class is set by the blocking script in its head before
@@ -75,20 +59,6 @@ export function useTheme() {
     }
   }, [])
 
-  // Follow the OS only while the visitor has never chosen. An explicit choice
-  // must survive the sun going down.
-  useEffect(() => {
-    if (readStored()) return
-    const media = window.matchMedia(DARK_QUERY)
-    const onChange = () => {
-      const next = systemTheme()
-      apply(next)
-      setTheme(next)
-    }
-    media.addEventListener("change", onChange)
-    return () => media.removeEventListener("change", onChange)
-  }, [])
-
   return { theme, setTheme: apply, toggle, ready }
 }
 
@@ -96,7 +66,10 @@ export function useTheme() {
  * Runs before first paint. Without it the page renders light and then flips,
  * which reads as a flash on every navigation.
  *
+ * Only an explicit stored choice turns the dark class on. A visitor with a dark
+ * OS and no stored preference gets light.
+ *
  * Deliberately inline and dependency-free: it has to be a blocking script in
  * the document head, so it cannot wait for a bundle.
  */
-export const themeScript = `(function(){try{var s=localStorage.getItem('${STORAGE_KEY}');var d=s?s==='dark':matchMedia('${DARK_QUERY}').matches;var r=document.documentElement;r.classList.toggle('dark',d);r.dataset.theme=d?'dark':'light';var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?'${CHROME.dark}':'${CHROME.light}'}catch(e){}})()`
+export const themeScript = `(function(){try{var d=localStorage.getItem('${STORAGE_KEY}')==='dark';var r=document.documentElement;r.classList.toggle('dark',d);r.dataset.theme=d?'dark':'light';var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?'${CHROME.dark}':'${CHROME.light}'}catch(e){}})()`

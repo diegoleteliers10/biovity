@@ -91,16 +91,14 @@ function getDocumentTheme(): Theme | null {
   return null
 }
 
-// Get system preference
-function getSystemTheme(): Theme {
-  if (typeof window === "undefined") return "light"
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-}
-
+/**
+ * The map tiles must follow the app theme, never the OS. A light page with dark
+ * tiles reads as a bug, and the OS preference is not a theme the user chose
+ * here. The head script in `app/layout.tsx` always writes `data-theme`, so a
+ * missing value means the script bailed and light is the correct fallback.
+ */
 function useResolvedTheme(themeProp?: "light" | "dark"): Theme {
-  const [detectedTheme, setDetectedTheme] = useState<Theme>(
-    () => getDocumentTheme() ?? getSystemTheme()
-  )
+  const [detectedTheme, setDetectedTheme] = useState<Theme>(() => getDocumentTheme() ?? "light")
 
   useEffect(() => {
     if (themeProp) return // Skip detection if theme is provided via prop
@@ -118,20 +116,7 @@ function useResolvedTheme(themeProp?: "light" | "dark"): Theme {
       attributeFilter: ["class", "data-theme"],
     })
 
-    // Also watch for system preference changes
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    const handleSystemChange = (e: MediaQueryListEvent) => {
-      // Only use system preference if no document class is set
-      if (!getDocumentTheme()) {
-        setDetectedTheme(e.matches ? "dark" : "light")
-      }
-    }
-    mediaQuery.addEventListener("change", handleSystemChange)
-
-    return () => {
-      observer.disconnect()
-      mediaQuery.removeEventListener("change", handleSystemChange)
-    }
+    return () => observer.disconnect()
   }, [themeProp])
 
   return themeProp ?? detectedTheme
