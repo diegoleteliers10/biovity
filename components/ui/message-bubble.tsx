@@ -2,16 +2,21 @@
 
 import {
   Calendar04Icon,
+  Cancel01Icon,
   CheckmarkCircle02Icon,
   Download04Icon,
   Edit01Icon,
   File02Icon,
+  Mail01Icon,
   Pdf01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useState } from "react"
+import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import type { MessageType } from "@/lib/api/messages"
+import { offerLetterPdfUrl, respondToOfferLetter } from "@/lib/api/offer-letters"
 import { useUser } from "@/lib/api/use-profile"
 import { cn } from "@/lib/utils"
 
@@ -31,6 +36,8 @@ type MessageBubbleProps = {
   formatTime: (iso: string) => string
   onEventAction?: (eventId: string, action: "accept" | "decline") => void
   onEditEvent?: (eventId: string) => void
+  /** The viewer is the candidate who received the offer. */
+  isOfferRecipient?: boolean
 }
 
 export function MessageBubble({
@@ -42,6 +49,7 @@ export function MessageBubble({
   formatTime,
   onEventAction,
   onEditEvent,
+  isOfferRecipient,
 }: MessageBubbleProps) {
   return (
     <div className={cn("flex w-full", isOwn ? "justify-end" : "justify-start")}>
@@ -68,29 +76,36 @@ export function MessageBubble({
           </div>
 
           {/* Bubble */}
-          <div
-            className={cn(
-              "relative rounded-2xl px-4 py-2.5",
-              "text-sm leading-relaxed",
-              isOwn
-                ? "bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container rounded-tr-sm"
-                : "bg-surface-container-low text-foreground rounded-tl-sm"
-            )}
-          >
-            <MessageContent
+          {message.type === "offer" ? (
+            <OfferMessageCard
               message={message}
-              isOwn={isOwn}
-              onEventAction={onEventAction}
-              onEditEvent={onEditEvent}
+              canRespond={Boolean(isOfferRecipient && !isOwn)}
             />
+          ) : (
+            <div
+              className={cn(
+                "relative rounded-2xl px-4 py-2.5",
+                "text-sm leading-relaxed",
+                isOwn
+                  ? "bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container rounded-tr-sm"
+                  : "bg-surface-container-low text-foreground rounded-tl-sm"
+              )}
+            >
+              <MessageContent
+                message={message}
+                isOwn={isOwn}
+                onEventAction={onEventAction}
+                onEditEvent={onEditEvent}
+              />
 
-            {/* Read receipt for own messages */}
-            {isOwn && message.type === "text" && (
-              <div className="mt-1 flex justify-end">
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} className="opacity-60" />
-              </div>
-            )}
-          </div>
+              {/* Read receipt for own messages */}
+              {isOwn && message.type === "text" && (
+                <div className="mt-1 flex justify-end">
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} className="opacity-60" />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -338,6 +353,145 @@ function EventMessageCard({
           </Button>
         </div>
       )}
+    </div>
+  )
+}
+
+type OfferContentShape = {
+  offerLetterId?: string
+  title?: string
+  status?: "sent" | "accepted" | "rejected"
+}
+
+function OfferMessageCard({
+  message,
+  canRespond,
+}: {
+  message: MessageBubbleProps["message"]
+  canRespond: boolean
+}) {
+  const content = (message.contentType ?? {}) as OfferContentShape
+  const offerLetterId = content.offerLetterId ?? ""
+  const [status, setStatus] = useState(content.status ?? "sent")
+  const [isResponding, setIsResponding] = useState(false)
+
+  const handleRespond = async (response: "accepted" | "rejected") => {
+    if (!offerLetterId) return
+    setIsResponding(true)
+    const result = await respondToOfferLetter(offerLetterId, response)
+    setIsResponding(false)
+    if (!result.isOk()) {
+      toast.error(
+        result.error._tag === "ApiError"
+          ? result.error.message
+          : "No se pudo registrar tu respuesta"
+      )
+      return
+    }
+    setStatus(response)
+    toast.success(
+      response === "accepted"
+        ? "Oferta aceptada. La empresa fue notificada."
+        : "Oferta rechazada. La empresa fue notificada."
+    )
+  }
+
+  const statusBadge =
+    status === "accepted"
+      ? {
+          label: "Aceptada",
+          className:
+            "bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/30",
+          icon: CheckmarkCircle02Icon,
+        }
+      : status === "rejected"
+        ? {
+            label: "Rechazada",
+            className: "bg-destructive/10 text-destructive border border-destructive/30",
+            icon: Cancel01Icon,
+          }
+        : {
+            label: "Pendiente de respuesta",
+            className:
+              "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30",
+            icon: Mail01Icon,
+          }
+
+  return (
+    <div className="w-[290px] sm:w-[330px] overflow-hidden rounded-2xl border border-border/50 bg-surface-container-lowest text-foreground shadow-none">
+      {/* Encabezado */}
+      <div className="flex items-start gap-3 border-b border-border/40 bg-surface-container-low px-4 py-3">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+          <HugeiconsIcon icon={Mail01Icon} size={18} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-secondary">
+            Carta de oferta
+          </p>
+          <p className="truncate text-sm font-semibold leading-snug">
+            {content.title ?? message.content}
+          </p>
+        </div>
+        <span
+          className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${statusBadge.className}`}
+        >
+          <HugeiconsIcon icon={statusBadge.icon} size={12} />
+          {statusBadge.label}
+        </span>
+      </div>
+
+      {/* Preview del PDF */}
+      {offerLetterId && (
+        <iframe
+          title="Vista previa de la carta de oferta"
+          src={`${offerLetterPdfUrl(offerLetterId)}#toolbar=0&view=FitH`}
+          loading="lazy"
+          className="h-52 w-full border-0 bg-white"
+        />
+      )}
+
+      {/* Acciones */}
+      <div className="space-y-2 px-4 py-3">
+        {offerLetterId && (
+          <a
+            href={offerLetterPdfUrl(offerLetterId)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-border/50 py-1.5 text-xs font-medium text-foreground transition-colors duration-150 hover:bg-surface-container-highest/40"
+          >
+            <HugeiconsIcon icon={Pdf01Icon} size={14} />
+            Abrir carta completa
+          </a>
+        )}
+
+        {canRespond && status === "sent" && (
+          <div className="flex gap-2 pt-0.5">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={isResponding}
+              onClick={() => void handleRespond("rejected")}
+              className="h-8 flex-1 rounded-lg text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+            >
+              Rechazar
+            </Button>
+            <Button
+              size="sm"
+              disabled={isResponding}
+              onClick={() => void handleRespond("accepted")}
+              className="h-8 flex-1 rounded-lg text-xs"
+            >
+              {isResponding ? "Enviando..." : "Aceptar oferta"}
+            </Button>
+          </div>
+        )}
+
+        {!canRespond && status === "sent" && (
+          <p className="text-center text-[11px] text-muted-foreground">
+            Esperando la respuesta del candidato.
+          </p>
+        )}
+      </div>
     </div>
   )
 }

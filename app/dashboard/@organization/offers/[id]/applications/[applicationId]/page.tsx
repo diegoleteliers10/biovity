@@ -15,6 +15,7 @@ import { toast } from "sonner"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { ApplicationDetailActions } from "@/components/dashboard/organization/ApplicationDetailActions"
+import { OfferLetterEditorDialog } from "@/components/dashboard/organization/offer-letter/OfferLetterEditorDialog"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -24,6 +25,7 @@ import { getApplicationDetail } from "@/lib/api/applications"
 import { getOrgQuestionsByJob } from "@/lib/api/job-questions"
 import { useUpdateApplicationStatusMutation } from "@/lib/api/use-applications"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
+import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { formatUserLocation, useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { getResultErrorMessage } from "@/lib/result"
 import type { ApplicationStage } from "@/lib/types/dashboard"
@@ -93,6 +95,7 @@ export default function OrganizationApplicationDetailPage() {
   const applicationId = params?.applicationId
   const session = useDashboardSession()
   const [interviewCandidateId, setInterviewCandidateId] = useState<string | null>(null)
+  const [offerDialogOpen, setOfferDialogOpen] = useState(false)
   const organizationId = (session?.user as { organizationId?: string })?.organizationId ?? ""
 
   const applicationQuery = useQuery({
@@ -126,6 +129,7 @@ export default function OrganizationApplicationDetailPage() {
 
   const questionLabelById = new Map((questionsQuery.data ?? []).map((q) => [q.id, q.label]))
   const candidateName = application?.candidate?.name ?? candidateProfile?.name ?? "Candidato"
+  const { data: organization } = useOrganization(application?.job?.organizationId ?? undefined)
 
   const recruiterId = session?.user?.id
   const updateStatusMutation = useUpdateApplicationStatusMutation(jobId ?? "")
@@ -301,6 +305,7 @@ export default function OrganizationApplicationDetailPage() {
               onStatusChange={handleStatusChange}
               onScheduleInterview={handleScheduleInterview}
               onSendMessage={handleSendMessage}
+              onSendOffer={() => setOfferDialogOpen(true)}
             />
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -395,6 +400,21 @@ export default function OrganizationApplicationDetailPage() {
           candidateId={interviewCandidateId}
           applicationId={applicationId}
           lockedType="interview"
+        />
+      )}
+      {offerDialogOpen && application && (
+        <OfferLetterEditorDialog
+          key={application.id}
+          applicationId={application.id}
+          candidateName={candidateName}
+          jobTitle={application.job?.title ?? "la posición"}
+          companyName={organization?.name ?? ""}
+          salary={{
+            min: application.salaryMin ?? undefined,
+            max: application.salaryMax ?? undefined,
+            currency: application.salaryCurrency ?? undefined,
+          }}
+          onClose={() => setOfferDialogOpen(false)}
         />
       )}
     </DirectionalTransition>

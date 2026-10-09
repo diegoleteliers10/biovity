@@ -22,6 +22,7 @@ import {
 } from "@/lib/api/use-applications"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useJobs } from "@/lib/api/use-jobs"
+import { useOrganization } from "@/lib/api/use-organization-mutations"
 import { latestEvaluationByApplication } from "@/lib/evaluations"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import type { EventType } from "@/lib/types/events"
@@ -30,6 +31,7 @@ import { useDashboardSession } from "../DashboardSessionContext"
 import { dashboardRaisedCardClass } from "../shared/surface-classes"
 import { ApplicationsKanban } from "./ApplicationsKanban"
 import { JobSelector, NoApplicantsEmptyState, NoJobSelectedState } from "./applicationsUtils"
+import { OfferLetterEditorDialog } from "./offer-letter/OfferLetterEditorDialog"
 import { PipelineToolbar } from "./PipelineToolbar"
 
 function applicationToApplicant(app: Application): Applicant {
@@ -58,6 +60,8 @@ export function OrganizationApplicationsContent() {
   const { data: jobs, isLoading: jobsLoading, error: jobsError } = useJobs(organizationId)
   const jobList = jobs ?? []
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
+  const [offerDialogApp, setOfferDialogApp] = useState<Applicant | null>(null)
+  const { data: organization } = useOrganization(organizationId)
 
   const { data: applications, isLoading: appsLoading } = useApplicationsByJob(
     selectedJobId ?? undefined
@@ -504,6 +508,7 @@ export function OrganizationApplicationsContent() {
                         onViewProfile={handleViewProfile}
                         onViewDetail={handleViewDetail}
                         onMessage={handleSendMessage}
+                        onSendOffer={setOfferDialogApp}
                         selectionMode={selectionMode}
                         selectedIds={selectedIds}
                         onToggleSelection={handleToggleSelection}
@@ -543,6 +548,25 @@ export function OrganizationApplicationsContent() {
             applicants.find((applicant) => applicant.id === scoreModal.applicationId)
               ?.candidateName ?? ""
           }
+        />
+      )}
+
+      {offerDialogApp && selectedJob && (
+        <OfferLetterEditorDialog
+          key={offerDialogApp.id}
+          applicationId={offerDialogApp.id}
+          candidateName={offerDialogApp.candidateName}
+          jobTitle={selectedJob.title}
+          companyName={organization?.name ?? ""}
+          salary={selectedJob.salary}
+          workMode={
+            selectedJob.location?.isRemote
+              ? "Remoto"
+              : selectedJob.location?.isHybrid
+                ? "Híbrido"
+                : "Presencial"
+          }
+          onClose={() => setOfferDialogApp(null)}
         />
       )}
     </div>

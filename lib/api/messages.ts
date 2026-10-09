@@ -10,7 +10,7 @@ const API_BASE =
 const getBaseUrl = () =>
   typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000")
 
-export type MessageType = "text" | "event" | "audio" | "image" | "file"
+export type MessageType = "text" | "event" | "audio" | "image" | "file" | "offer"
 
 export type Message = {
   id: string

@@ -233,6 +233,7 @@ export function MessageThread({
                 key={msg.id}
                 message={msg}
                 isOwn={msg.senderId === professionalId}
+                isOfferRecipient={msg.senderId !== professionalId}
                 senderName={msg.senderId === professionalId ? "Tú" : recruiterName}
                 senderInitials={
                   msg.senderId === professionalId
