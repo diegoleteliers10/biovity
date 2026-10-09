@@ -274,10 +274,12 @@ export default async function CompanyProfilePage({ params }: Props) {
                           {job.title}
                         </h3>
                         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                          <span className="inline-flex items-center gap-1">
-                            <HugeiconsIcon icon={Location05Icon} size={13} />
-                            {formatJobLocation(job.location) || "Chile"}
-                          </span>
+                          {getModalidad(job.location) !== "Remoto" && (
+                            <span className="inline-flex items-center gap-1">
+                              <HugeiconsIcon icon={Location05Icon} size={13} />
+                              {formatJobLocation(job.location) || "Chile"}
+                            </span>
+                          )}
                           <span className="rounded-full border border-secondary/20 bg-secondary/10 px-2 py-0.5 font-mono font-medium text-secondary">
                             {getModalidad(job.location)}
                           </span>

@@ -283,11 +283,19 @@ export default async function TrabajoDetailPage({ params }: Props) {
 
             {/* Meta información */}
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
-              <div className="flex items-center gap-1.5 font-medium text-foreground">
-                <HugeiconsIcon icon={Location05Icon} size={16} className="text-muted-foreground" />
-                <span>{ubicacion}</span>
-              </div>
-              <span className="text-border/60">•</span>
+              {modalidad !== "remoto" && (
+                <>
+                  <div className="flex items-center gap-1.5 font-medium text-foreground">
+                    <HugeiconsIcon
+                      icon={Location05Icon}
+                      size={16}
+                      className="text-muted-foreground"
+                    />
+                    <span>{ubicacion}</span>
+                  </div>
+                  <span className="text-border/60">•</span>
+                </>
+              )}
               <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20 capitalize">
                 {modalidad === "hibrido" ? "Híbrido" : modalidad}
               </span>

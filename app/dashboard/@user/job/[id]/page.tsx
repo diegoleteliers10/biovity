@@ -264,7 +264,9 @@ export default function JobDetailPage() {
                   strokeWidth={1.5}
                   className="size-3.5 shrink-0"
                 />
-                {locationStr} · {modalidad}
+                {modalidad === "remoto"
+                  ? "Remoto"
+                  : `${locationStr} · ${modalidad === "hibrido" ? "Híbrido" : modalidad}`}
               </span>
               <span className="inline-flex items-center rounded-md bg-surface-container-highest px-2 py-0.5 text-xs leading-4 text-muted-foreground">
                 {[job.experienceLevel, job.employmentType].filter(Boolean).join(" · ") ||

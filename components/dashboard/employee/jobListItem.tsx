@@ -116,10 +116,14 @@ export function JobListItem({
                 <span className="truncate">{job.organization?.name ?? "Organización"}</span>
               )}
               <span className="shrink-0 text-border">|</span>
-              <div className="flex min-w-0 items-center gap-1.5">
+              <span className="shrink-0 inline-flex items-center gap-1.5">
                 <HugeiconsIcon icon={Location05Icon} size={16} className="shrink-0" />
-                <span className="truncate">{locationStr}</span>
-              </div>
+                <span className="truncate">
+                  {modalidad === "remoto"
+                    ? "Remoto"
+                    : `${locationStr} · ${modalidad === "hibrido" ? "Híbrido" : modalidad}`}
+                </span>
+              </span>
             </div>
 
             <div className="flex flex-col gap-y-2 sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-0 sm:shrink-0">
@@ -131,9 +135,6 @@ export function JobListItem({
           </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs sm:mt-0">
-            <span className="rounded-md bg-surface-container-highest px-2 py-0.5 font-medium text-muted-foreground">
-              {modalidad === "hibrido" ? "Híbrido" : modalidad}
-            </span>
             {job.employmentType && (
               <span className="rounded-md bg-surface-container-highest px-2 py-0.5 font-medium text-muted-foreground">
                 {job.employmentType === "Full-time"
