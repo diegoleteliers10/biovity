@@ -26,7 +26,7 @@ type BrandingTabProps = {
   organizationId: string
 }
 
-const INDUSTRY_OPTIONS = [
+export const INDUSTRY_OPTIONS = [
   "Biotecnología",
   "Bioquímica",
   "Química",
@@ -42,7 +42,7 @@ const INDUSTRY_OPTIONS = [
   "Otros",
 ]
 
-const SIZE_OPTIONS = [
+export const SIZE_OPTIONS = [
   "1-10 empleados",
   "11-50 empleados",
   "51-200 empleados",
