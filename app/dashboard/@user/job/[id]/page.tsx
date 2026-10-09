@@ -14,6 +14,7 @@ import {
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Image from "next/image"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
@@ -156,6 +157,7 @@ export default function JobDetailPage() {
   }
 
   const organizationName = job.organization?.name ?? organization?.name ?? "Organización"
+  const organizationLogo = job.organization?.logo ?? organization?.logo ?? ""
   const organizationSlug = job.organization?.slug ?? organization?.slug ?? undefined
   const companyHref = organizationSlug ? `/companies/${organizationSlug}` : null
   const locationStr = formatJobLocation(job.location) || "Sin especificar"
@@ -184,17 +186,54 @@ export default function JobDetailPage() {
             </div>
 
             <div className="mt-4 flex items-center gap-3">
-              <div
-                className="grid size-10 place-items-center rounded-lg border border-border/40 bg-surface-container-low text-primary"
-                aria-hidden
-              >
-                <HugeiconsIcon
-                  icon={Briefcase01Icon}
-                  size={24}
-                  strokeWidth={1.5}
-                  className="size-5"
-                />
-              </div>
+              {companyHref ? (
+                <Link
+                  href={companyHref}
+                  className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-border/40 bg-surface-container-low text-primary"
+                  aria-label={`Ver perfil de ${organizationName}`}
+                >
+                  {organizationLogo ? (
+                    <Image
+                      src={organizationLogo}
+                      alt={organizationName}
+                      width={40}
+                      height={40}
+                      className="size-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <HugeiconsIcon
+                      icon={Briefcase01Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="size-5"
+                    />
+                  )}
+                </Link>
+              ) : (
+                <div
+                  className="grid size-10 shrink-0 place-items-center rounded-lg border border-border/40 bg-surface-container-low text-primary"
+                  aria-hidden
+                >
+                  {organizationLogo ? (
+                    <Image
+                      src={organizationLogo}
+                      alt={organizationName}
+                      width={40}
+                      height={40}
+                      className="size-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <HugeiconsIcon
+                      icon={Briefcase01Icon}
+                      size={24}
+                      strokeWidth={1.5}
+                      className="size-5"
+                    />
+                  )}
+                </div>
+              )}
               <div className="min-w-0">
                 <p className="truncate font-mono text-xs text-muted-foreground tabular-nums">
                   {job.id}
