@@ -8,6 +8,7 @@ import type { Job } from "@/lib/api/jobs"
 import { useJobsByOrganization, useUpdateJobMutation } from "@/lib/api/use-jobs"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { CreateJobDialog } from "./CreateJobDialog"
+import { CloseJobAlertDialog } from "./ofertas/CloseJobAlertDialog"
 import { DeleteJobAlertDialog } from "./ofertas/DeleteJobAlertDialog"
 import { EmptyJobsState, JobsGrid } from "./ofertas/JobsGrid"
 import { OfertasContentSkeleton } from "./ofertas/OfertasContentSkeleton"
@@ -24,6 +25,7 @@ export function OfertasContent() {
   const [editingJob, setEditingJob] = useState<Job | null>(null)
   const [dialogNonce, setDialogNonce] = useState(0)
   const [deleteConfirmJob, setDeleteConfirmJob] = useState<Job | null>(null)
+  const [closeConfirmJob, setCloseConfirmJob] = useState<Job | null>(null)
   const updateJobMutation = useUpdateJobMutation(organizationId ?? "")
   const { completeStep } = useOnboarding()
 
@@ -44,6 +46,10 @@ export function OfertasContent() {
 
   const handleDeleteClick = (job: Job) => {
     setDeleteConfirmJob(job)
+  }
+
+  const handleCloseOfferClick = (job: Job) => {
+    setCloseConfirmJob(job)
   }
 
   const handlePublishJob = (job: Job) => {
@@ -97,6 +103,7 @@ export function OfertasContent() {
           onEdit={handleEditJob}
           onDelete={handleDeleteClick}
           onPublish={handlePublishJob}
+          onCloseOffer={handleCloseOfferClick}
           onCreate={handleCreateOffer}
           onDuplicate={handleDuplicateJob}
         />
@@ -113,6 +120,12 @@ export function OfertasContent() {
       <DeleteJobAlertDialog
         job={deleteConfirmJob}
         onClose={() => setDeleteConfirmJob(null)}
+        organizationId={organizationId}
+      />
+
+      <CloseJobAlertDialog
+        job={closeConfirmJob}
+        onClose={() => setCloseConfirmJob(null)}
         organizationId={organizationId}
       />
     </div>

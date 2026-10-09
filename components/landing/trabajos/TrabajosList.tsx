@@ -11,7 +11,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
+import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import type { TipoBeneficio, Trabajo } from "@/lib/types/trabajos"
 import { formatFechaRelativa } from "@/lib/utils"
@@ -39,6 +39,8 @@ const getBeneficioIcon = (tipo: TipoBeneficio) => {
 }
 
 export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: TrabajosListProps) {
+  const { push } = useRouter()
+
   if (trabajos.length === 0) {
     return (
       <section className="py-16 bg-surface-container-lowest">
@@ -97,7 +99,24 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
                 {/* Segunda fila: Empresa | Ubicación, Beneficios, Salario */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <div className="flex min-w-0 shrink-0 items-center gap-2 text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground truncate">{trabajo.empresa}</span>
+                    {trabajo.empresaSlug ? (
+                      <button
+                        type="button"
+                        onClick={(e: React.MouseEvent) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          push(`/companies/${trabajo.empresaSlug}`)
+                        }}
+                        className="font-medium text-foreground truncate hover:text-secondary transition-colors cursor-pointer"
+                        aria-label={`Ver perfil de ${trabajo.empresa}`}
+                      >
+                        {trabajo.empresa}
+                      </button>
+                    ) : (
+                      <span className="font-medium text-foreground truncate">
+                        {trabajo.empresa}
+                      </span>
+                    )}
                     <span className="shrink-0 text-border">•</span>
                     <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
                       <HugeiconsIcon

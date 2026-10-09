@@ -12,9 +12,9 @@ import type {
   NivelExperiencia,
   Trabajo,
 } from "@/lib/types/trabajos"
+import { type OrdenTrabajos, SortSelect } from "./SortSelect"
 import { TrabajosList } from "./TrabajosList"
 import { TrabajosSearchFilters } from "./TrabajosSearchFilters"
-import { SortSelect, type OrdenTrabajos } from "./SortSelect"
 
 function urlStateToFiltros(state: {
   q: string
@@ -118,6 +118,7 @@ function jobToTrabajo(job: Job): Trabajo {
     id: job.id,
     titulo: job.title,
     empresa: job.organization?.name ?? "Empresa",
+    empresaSlug: job.organization?.slug,
     ubicacion: locationStr || job.location?.city || "Chile",
     modalidad: getModalidadTrabajo(job.location),
     formato: normalizeFormato(job.employmentType),

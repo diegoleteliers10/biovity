@@ -3,8 +3,10 @@
 import { Upload01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
+import Link from "next/link"
 import { useCallback, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -24,7 +26,7 @@ type BrandingTabProps = {
   organizationId: string
 }
 
-const INDUSTRY_OPTIONS = [
+export const INDUSTRY_OPTIONS = [
   "Biotecnología",
   "Bioquímica",
   "Química",
@@ -40,7 +42,7 @@ const INDUSTRY_OPTIONS = [
   "Otros",
 ]
 
-const SIZE_OPTIONS = [
+export const SIZE_OPTIONS = [
   "1-10 empleados",
   "11-50 empleados",
   "51-200 empleados",
@@ -83,6 +85,9 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
     industry: "",
     size: "",
     logo: "",
+    foundedYear: "",
+    linkedinUrl: "",
+    twitterUrl: "",
   })
 
   const startEditing = useCallback(() => {
@@ -92,6 +97,9 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
         industry: org.industry ?? "",
         size: org.size ?? "",
         logo: org.logo ?? "",
+        foundedYear: org.foundedYear ? String(org.foundedYear) : "",
+        linkedinUrl: org.linkedinUrl ?? "",
+        twitterUrl: org.twitterUrl ?? "",
       })
     }
     setIsEditing(true)
@@ -109,11 +117,15 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
   )
 
   const handleSave = useCallback(async () => {
+    const foundedYear = Number.parseInt(form.foundedYear, 10)
     await updateMutation.mutateAsync({
       description: form.description || undefined,
       industry: form.industry || undefined,
       size: form.size || undefined,
       logo: form.logo || undefined,
+      foundedYear: Number.isFinite(foundedYear) ? foundedYear : undefined,
+      linkedinUrl: form.linkedinUrl.trim() || undefined,
+      twitterUrl: form.twitterUrl.trim() || undefined,
     })
     setIsEditing(false)
   }, [form, updateMutation])
@@ -205,6 +217,41 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <FieldLabel htmlFor="brand-founded-year">Año de fundación</FieldLabel>
+            <Input
+              id="brand-founded-year"
+              type="number"
+              min={1500}
+              max={2100}
+              value={form.foundedYear}
+              onChange={(e) => setForm((p) => ({ ...p, foundedYear: e.target.value }))}
+              placeholder="1998"
+              className="h-9"
+            />
+          </div>
+          <div className="space-y-2">
+            <FieldLabel htmlFor="brand-linkedin">LinkedIn</FieldLabel>
+            <Input
+              id="brand-linkedin"
+              type="url"
+              value={form.linkedinUrl}
+              onChange={(e) => setForm((p) => ({ ...p, linkedinUrl: e.target.value }))}
+              placeholder="https://www.linkedin.com/company/mi-empresa"
+              className="h-9"
+            />
+          </div>
+          <div className="space-y-2">
+            <FieldLabel htmlFor="brand-twitter">X (Twitter)</FieldLabel>
+            <Input
+              id="brand-twitter"
+              type="url"
+              value={form.twitterUrl}
+              onChange={(e) => setForm((p) => ({ ...p, twitterUrl: e.target.value }))}
+              placeholder="https://x.com/miempresa"
+              className="h-9"
+            />
+          </div>
         </div>
 
         <div className="flex justify-end gap-2.5">
@@ -235,6 +282,16 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
         <Button variant="secondary" onClick={startEditing} className="h-9 rounded-md px-3">
           Editar branding
         </Button>
+        {org.slug && (
+          <Link
+            href={`/companies/${org.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-9 items-center rounded-md border border-border/60 px-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-container-highest/40"
+          >
+            Ver página pública
+          </Link>
+        )}
       </div>
 
       <p className="max-w-[62ch] text-base leading-7 text-foreground text-pretty">
@@ -251,6 +308,38 @@ export function BrandingTab({ organizationId }: BrandingTabProps) {
         <div className="min-w-0">
           <p className="text-xs leading-4 font-medium text-muted-foreground">Tamaño</p>
           <p className="mt-1 text-sm leading-6 text-foreground">{org.size ?? "No especificado"}</p>
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs leading-4 font-medium text-muted-foreground">Año de fundación</p>
+          <p className="mt-1 text-sm leading-6 text-foreground">
+            {org.foundedYear ?? "No especificado"}
+          </p>
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs leading-4 font-medium text-muted-foreground">Redes sociales</p>
+          <div className="mt-1 flex flex-col gap-0.5 text-sm leading-6">
+            {org.linkedinUrl ? (
+              <a
+                href={org.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                LinkedIn
+              </a>
+            ) : null}
+            {org.twitterUrl ? (
+              <a
+                href={org.twitterUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                X (Twitter)
+              </a>
+            ) : null}
+            {!org.linkedinUrl && !org.twitterUrl && "No especificadas"}
+          </div>
         </div>
       </div>
     </div>

@@ -38,6 +38,9 @@ export type UpdateOrganizationInput = {
   description?: string
   industry?: string
   size?: string
+  foundedYear?: number
+  linkedinUrl?: string
+  twitterUrl?: string
 }
 
 export type Organization = {
@@ -51,9 +54,48 @@ export type Organization = {
   description: string | null
   industry: string | null
   size: string | null
+  slug?: string | null
+  foundedYear?: number | null
+  linkedinUrl?: string | null
+  twitterUrl?: string | null
   subscriptionId: string | null
   createdAt: string
   updatedAt: string
+}
+
+/** Public company profile served by GET /organizations/public endpoints. */
+export type PublicOrganization = {
+  id: string
+  name: string
+  slug?: string
+  website: string
+  logo?: string
+  description?: string
+  industry?: string
+  size?: string
+  foundedYear?: number
+  linkedinUrl?: string
+  twitterUrl?: string
+  location?: {
+    city?: string
+    state?: string
+    country?: string
+  }
+  activeJobsCount: number
+  createdAt: string
+}
+
+export type GetPublicOrganizationsParams = {
+  page?: number
+  limit?: number
+}
+
+export type PublicOrganizationsResponse = {
+  data: PublicOrganization[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
 function normalizeOrganization(raw: unknown): Organization | null {
@@ -92,6 +134,48 @@ export async function getOrganization(
   return R.ok(organization)
 }
 
+function normalizePublicOrganization(raw: unknown): PublicOrganization | null {
+  if (!raw || typeof raw !== "object") return null
+  const obj = raw as Record<string, unknown>
+  const level1: unknown = obj.data ?? obj
+  if (!level1 || typeof level1 !== "object") return null
+  const org = level1 as Record<string, unknown>
+  const id = String(org.id ?? "")
+  if (!id) return null
+  return {
+    id,
+    name: String(org.name ?? ""),
+    slug: typeof org.slug === "string" ? org.slug : undefined,
+    website: String(org.website ?? ""),
+    logo: typeof org.logo === "string" ? org.logo : undefined,
+    description: typeof org.description === "string" ? org.description : undefined,
+    industry: typeof org.industry === "string" ? org.industry : undefined,
+    size: typeof org.size === "string" ? org.size : undefined,
+    foundedYear: typeof org.foundedYear === "number" ? org.foundedYear : undefined,
+    linkedinUrl: typeof org.linkedinUrl === "string" ? org.linkedinUrl : undefined,
+    twitterUrl: typeof org.twitterUrl === "string" ? org.twitterUrl : undefined,
+    location:
+      org.location && typeof org.location === "object"
+        ? (org.location as PublicOrganization["location"])
+        : undefined,
+    activeJobsCount: typeof org.activeJobsCount === "number" ? org.activeJobsCount : 0,
+    createdAt: String(org.createdAt ?? ""),
+  }
+}
+
+export async function getPublicOrganization(
+  slugOrId: string
+): Promise<Result<PublicOrganization, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/organizations/public/${encodeURIComponent(slugOrId)}`
+  const result = await fetchJson<unknown>(url)
+  if (result.isErr()) return R.err(result.error)
+  const organization = normalizePublicOrganization(result.value)
+  if (!organization) {
+    return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
+  }
+  return R.ok(organization)
+}
+
 export async function createOrganization(
   input: CreateOrganizationInput
 ): Promise<Result<Organization, ApiError | NetworkError>> {
@@ -99,6 +183,31 @@ export async function createOrganization(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
+  })
+}
+
+export async function getPublicOrganizations(
+  params?: GetPublicOrganizationsParams
+): Promise<Result<PublicOrganizationsResponse, ApiError | NetworkError>> {
+  const searchParams = new URLSearchParams()
+  if (params?.page != null) searchParams.set("page", String(params.page))
+  if (params?.limit != null) searchParams.set("limit", String(params.limit))
+  const query = searchParams.toString()
+  const url = `${API_BASE}/api/v1/organizations/public${query ? `?${query}` : ""}`
+  const result = await fetchJson<unknown>(url)
+  if (result.isErr()) return R.err(result.error)
+
+  const data = result.value as Record<string, unknown>
+  const rawOrganizations = Array.isArray(data.data) ? data.data : []
+  const organizations = rawOrganizations
+    .map(normalizePublicOrganization)
+    .filter((org): org is PublicOrganization => Boolean(org))
+  return R.ok({
+    data: organizations,
+    total: typeof data.total === "number" ? data.total : organizations.length,
+    page: typeof data.page === "number" ? data.page : 1,
+    limit: typeof data.limit === "number" ? data.limit : (params?.limit ?? 20),
+    totalPages: typeof data.totalPages === "number" ? data.totalPages : 1,
   })
 }
 

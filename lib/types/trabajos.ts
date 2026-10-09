@@ -18,6 +18,7 @@ export type Trabajo = {
   id: string
   titulo: string
   empresa: string
+  empresaSlug?: string
   ubicacion: string
   modalidad: ModalidadTrabajo
   formato: FormatoTrabajo

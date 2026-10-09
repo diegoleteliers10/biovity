@@ -29,7 +29,11 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
-import { BrandingTab } from "@/components/dashboard/organization/BrandingTab"
+import {
+  BrandingTab,
+  INDUSTRY_OPTIONS,
+  SIZE_OPTIONS,
+} from "@/components/dashboard/organization/BrandingTab"
 import { DangerZoneTab } from "@/components/dashboard/organization/DangerZoneTab"
 import { OrganizationOffersTimeline } from "@/components/dashboard/organization/OrganizationOffersTimeline"
 import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
@@ -38,7 +42,15 @@ import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 import type { OrganizationAddress } from "@/lib/api/organizations"
 import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
@@ -79,6 +91,12 @@ type OrgFormData = {
   website: string
   phone: string
   address: { street: string; city: string; country: string; state?: string; zipCode?: string }
+  description: string
+  industry: string
+  size: string
+  foundedYear: string
+  linkedinUrl: string
+  twitterUrl: string
 }
 
 function PanelSection({
@@ -245,6 +263,12 @@ export function OrganizationProfileContent() {
     website: "",
     phone: "",
     address: { street: "", city: "", country: "" },
+    description: "",
+    industry: "",
+    size: "",
+    foundedYear: "",
+    linkedinUrl: "",
+    twitterUrl: "",
   })
 
   const profileData: UserFormData = {
@@ -271,6 +295,12 @@ export function OrganizationProfileContent() {
         website: organization.website ?? "",
         phone: organization.phone ?? "",
         address: addressToFormData(organization.address),
+        description: organization.description ?? "",
+        industry: organization.industry ?? "",
+        size: organization.size ?? "",
+        foundedYear: organization.foundedYear ? String(organization.foundedYear) : "",
+        linkedinUrl: organization.linkedinUrl ?? "",
+        twitterUrl: organization.twitterUrl ?? "",
       })
     }
   }, [user, session, organization])
@@ -317,10 +347,17 @@ export function OrganizationProfileContent() {
         location: hasLocation ? location : undefined,
       })
       const hasAddress = orgForm.address.street || orgForm.address.city || orgForm.address.country
+      const foundedYear = Number.parseInt(orgForm.foundedYear, 10)
       await updateOrgMutation.mutateAsync({
         name: orgForm.name,
         website: orgForm.website || undefined,
         phone: orgForm.phone || undefined,
+        description: orgForm.description || undefined,
+        industry: orgForm.industry || undefined,
+        size: orgForm.size || undefined,
+        foundedYear: Number.isFinite(foundedYear) ? foundedYear : undefined,
+        linkedinUrl: orgForm.linkedinUrl.trim() || undefined,
+        twitterUrl: orgForm.twitterUrl.trim() || undefined,
         address: hasAddress
           ? {
               street: orgForm.address.street || undefined,
@@ -703,6 +740,23 @@ export function OrganizationProfileContent() {
                           placeholder="+56 9 1234 5678"
                         />
                       </div>
+                      <div className="space-y-1.5">
+                        <label
+                          htmlFor="org-founded-year"
+                          className="block text-xs leading-4 font-medium"
+                        >
+                          Año de fundación
+                        </label>
+                        <Input
+                          id="org-founded-year"
+                          type="number"
+                          min={1500}
+                          max={2100}
+                          value={orgForm.foundedYear}
+                          onChange={(e) => handleOrgInputChange("foundedYear", e.target.value)}
+                          placeholder="1998"
+                        />
+                      </div>
                       <div className="space-y-1.5 sm:col-span-2">
                         <label
                           htmlFor="org-address"
@@ -722,6 +776,94 @@ export function OrganizationProfileContent() {
                               })
                             }
                           }}
+                        />
+                      </div>
+                      <div className="space-y-1.5 sm:col-span-2">
+                        <label
+                          htmlFor="org-description"
+                          className="block text-xs leading-4 font-medium"
+                        >
+                          Descripción
+                        </label>
+                        <Textarea
+                          id="org-description"
+                          value={orgForm.description}
+                          onChange={(e) => handleOrgInputChange("description", e.target.value)}
+                          placeholder="Describe tu empresa..."
+                          rows={4}
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label
+                          htmlFor="org-industry"
+                          className="block text-xs leading-4 font-medium"
+                        >
+                          Industria
+                        </label>
+                        <Select
+                          value={orgForm.industry}
+                          onValueChange={(v) => handleOrgInputChange("industry", v)}
+                        >
+                          <SelectTrigger id="org-industry" className="h-9 w-full">
+                            <SelectValue placeholder="Selecciona industria" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {INDUSTRY_OPTIONS.map((opt) => (
+                              <SelectItem key={opt} value={opt}>
+                                {opt}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label htmlFor="org-size" className="block text-xs leading-4 font-medium">
+                          Tamaño de la empresa
+                        </label>
+                        <Select
+                          value={orgForm.size}
+                          onValueChange={(v) => handleOrgInputChange("size", v)}
+                        >
+                          <SelectTrigger id="org-size" className="h-9 w-full">
+                            <SelectValue placeholder="Selecciona rango" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SIZE_OPTIONS.map((opt) => (
+                              <SelectItem key={opt} value={opt}>
+                                {opt}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label
+                          htmlFor="org-linkedin"
+                          className="block text-xs leading-4 font-medium"
+                        >
+                          LinkedIn
+                        </label>
+                        <Input
+                          id="org-linkedin"
+                          type="url"
+                          value={orgForm.linkedinUrl}
+                          onChange={(e) => handleOrgInputChange("linkedinUrl", e.target.value)}
+                          placeholder="https://www.linkedin.com/company/mi-empresa"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label
+                          htmlFor="org-twitter"
+                          className="block text-xs leading-4 font-medium"
+                        >
+                          X (Twitter)
+                        </label>
+                        <Input
+                          id="org-twitter"
+                          type="url"
+                          value={orgForm.twitterUrl}
+                          onChange={(e) => handleOrgInputChange("twitterUrl", e.target.value)}
+                          placeholder="https://x.com/miempresa"
                         />
                       </div>
                     </div>
@@ -749,6 +891,54 @@ export function OrganizationProfileContent() {
                       <OrgField
                         label="Dirección"
                         value={formatAddress(organization?.address ?? null) || EMPTY_PLACEHOLDER}
+                      />
+                      <OrgField
+                        label="Industria"
+                        value={organization?.industry || EMPTY_PLACEHOLDER}
+                      />
+                      <OrgField label="Tamaño" value={organization?.size || EMPTY_PLACEHOLDER} />
+                      <OrgField
+                        label="Año de fundación"
+                        value={organization?.foundedYear ?? EMPTY_PLACEHOLDER}
+                      />
+                      <OrgField
+                        label="Redes sociales"
+                        value={
+                          organization?.linkedinUrl || organization?.twitterUrl ? (
+                            <span className="flex flex-col gap-0.5">
+                              {organization?.linkedinUrl && (
+                                <a
+                                  href={
+                                    organization.linkedinUrl.startsWith("http")
+                                      ? organization.linkedinUrl
+                                      : `https://${organization.linkedinUrl}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline"
+                                >
+                                  LinkedIn
+                                </a>
+                              )}
+                              {organization?.twitterUrl && (
+                                <a
+                                  href={
+                                    organization.twitterUrl.startsWith("http")
+                                      ? organization.twitterUrl
+                                      : `https://${organization.twitterUrl}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary hover:underline"
+                                >
+                                  X (Twitter)
+                                </a>
+                              )}
+                            </span>
+                          ) : (
+                            EMPTY_PLACEHOLDER
+                          )
+                        }
                       />
                     </div>
                   )}

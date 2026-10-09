@@ -1,6 +1,7 @@
 import { Result } from "better-result"
 import type { MetadataRoute } from "next"
 import { getJobs, type Job } from "@/lib/api/jobs"
+import { getPublicOrganizations } from "@/lib/api/organizations"
 import { APRENDE_CATEGORIES } from "@/lib/data/aprende-data"
 import { getAllPosts, getCapsulesByCategory } from "@/lib/posts"
 
@@ -119,5 +120,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }))
 
-  return [...staticPages, ...learningUrls, ...capsuleUrls, ...blogUrls, ...jobUrls]
+  const orgsResult = await getPublicOrganizations({ limit: 100 })
+  const companyUrls: MetadataRoute.Sitemap = Result.isOk(orgsResult)
+    ? orgsResult.value.data
+        .filter((org) => Boolean(org.slug))
+        .map((org) => ({
+          url: `${siteUrl}/companies/${org.slug}`,
+          lastModified: new Date(org.createdAt),
+          changeFrequency: "weekly" as const,
+          priority: 0.6,
+        }))
+    : []
+
+  return [...staticPages, ...learningUrls, ...capsuleUrls, ...blogUrls, ...jobUrls, ...companyUrls]
 }

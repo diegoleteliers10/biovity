@@ -14,6 +14,7 @@ import { Result } from "better-result"
 import type { Metadata } from "next"
 import { headers } from "next/headers"
 import Image from "next/image"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Fragment } from "react"
 import { JobViewsTracker } from "@/components/common/job-views-tracker"
@@ -36,7 +37,7 @@ import {
   type JobBenefit,
   type JobLocation,
 } from "@/lib/api/jobs"
-import { getOrganization } from "@/lib/api/organizations"
+import { getPublicOrganization } from "@/lib/api/organizations"
 import { formatFechaLarga, formatJobSalary } from "@/lib/utils"
 
 type Props = {
@@ -83,14 +84,6 @@ function getJobBreadcrumbs(referer: string | null, jobTitle: string): Breadcrumb
   }
 
   return [{ label: "Inicio", href: "/" }, { label: "Trabajos", href: "/jobs" }, { label: jobTitle }]
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/)
-  if (parts.length >= 2 && parts[0] && parts[1]) {
-    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-  }
-  return name.slice(0, 2).toUpperCase()
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -153,15 +146,20 @@ export default async function TrabajoDetailPage({ params }: Props) {
 
   const job = jobResult.value
   let organizationName = job.organization?.name
-  let organizationLogo = ""
+  let organizationLogo = job.organization?.logo ?? ""
+  let organizationSlug = job.organization?.slug ?? ""
   if (job.organizationId) {
-    const orgResult = await getOrganization(job.organizationId)
+    // Public endpoint: anonymous visitors cannot read organizations directly.
+    // Fills in the fields the job payload may lack (logo, slug).
+    const orgResult = await getPublicOrganization(job.organizationId)
     if (Result.isOk(orgResult)) {
       organizationName = organizationName ?? orgResult.value.name
-      organizationLogo = orgResult.value.logo ?? ""
+      organizationLogo = organizationLogo || (orgResult.value.logo ?? "")
+      organizationSlug = organizationSlug || (orgResult.value.slug ?? "")
     }
   }
   organizationName = organizationName ?? "Organización"
+  const companyHref = organizationSlug ? `/companies/${organizationSlug}` : null
 
   const modalidad = getJobModalidad(job.location)
   const ubicacion = formatJobLocation(job.location) || "Sin especificar"
@@ -227,24 +225,54 @@ export default async function TrabajoDetailPage({ params }: Props) {
             </span>
 
             <div className="flex items-center gap-3.5 mb-4">
-              <div className="size-12 rounded-xl bg-surface-container-low border border-border/40 text-secondary flex items-center justify-center shrink-0 overflow-hidden font-mono font-semibold text-sm">
-                {organizationLogo ? (
-                  <Image
-                    src={organizationLogo}
-                    alt={organizationName}
-                    width={48}
-                    height={48}
-                    className="size-full object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <HugeiconsIcon icon={Briefcase01Icon} size={22} className="text-secondary" />
-                )}
-              </div>
+              {companyHref ? (
+                <Link
+                  href={companyHref}
+                  className="size-12 rounded-xl bg-surface-container-low border border-border/40 text-secondary flex items-center justify-center shrink-0 overflow-hidden font-mono font-semibold text-sm hover:border-secondary/40 transition-colors"
+                  aria-label={`Ver perfil de ${organizationName}`}
+                >
+                  {organizationLogo ? (
+                    <Image
+                      src={organizationLogo}
+                      alt={organizationName}
+                      width={48}
+                      height={48}
+                      className="size-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <HugeiconsIcon icon={Briefcase01Icon} size={22} className="text-secondary" />
+                  )}
+                </Link>
+              ) : (
+                <div className="size-12 rounded-xl bg-surface-container-low border border-border/40 text-secondary flex items-center justify-center shrink-0 overflow-hidden font-mono font-semibold text-sm">
+                  {organizationLogo ? (
+                    <Image
+                      src={organizationLogo}
+                      alt={organizationName}
+                      width={48}
+                      height={48}
+                      className="size-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <HugeiconsIcon icon={Briefcase01Icon} size={22} className="text-secondary" />
+                  )}
+                </div>
+              )}
               <div className="min-w-0">
-                <p className="text-lg font-semibold text-foreground tracking-tight truncate">
-                  {organizationName}
-                </p>
+                {companyHref ? (
+                  <Link
+                    href={companyHref}
+                    className="text-lg font-semibold text-foreground tracking-tight truncate hover:text-secondary"
+                  >
+                    {organizationName}
+                  </Link>
+                ) : (
+                  <p className="text-lg font-semibold text-foreground tracking-tight truncate">
+                    {organizationName}
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground font-mono">ID: {job.id.slice(0, 8)}</p>
               </div>
             </div>

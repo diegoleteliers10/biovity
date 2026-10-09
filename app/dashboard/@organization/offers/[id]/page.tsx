@@ -5,17 +5,23 @@ import {
   Briefcase01Icon,
   Cash02Icon,
   Clock01Icon,
+  Edit01Icon,
   EyeIcon,
   Home02Icon,
+  LockIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { addTransitionType, startTransition, ViewTransition } from "react"
+import { addTransitionType, startTransition, useState, ViewTransition } from "react"
+import { CreateJobDialog } from "@/components/dashboard/organization/CreateJobDialog"
+import { CloseJobAlertDialog } from "@/components/dashboard/organization/ofertas/CloseJobAlertDialog"
 import { QuestionsManager } from "@/components/dashboard/organization/QuestionsManager"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -74,6 +80,11 @@ export default function OfertaDetailPage() {
   const { data: organization } = useOrganization(job?.organizationId)
   const { data: applications, isLoading: appsLoading } = useApplicationsByJob(jobId)
 
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [closeDialogOpen, setCloseDialogOpen] = useState(false)
+  const canManage = Boolean(job?.organizationId)
+  const canClose = job?.status === "active" || job?.status === "paused"
+
   if (!jobId) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
@@ -114,6 +125,9 @@ export default function OfertaDetailPage() {
   const salaryStr = formatJobSalary(job.salary)
   const modalidad = getJobModalidad(job.location)
   const locationStr = formatJobLocation(job.location)
+  const companySlug = organization?.slug ?? job.organization?.slug ?? undefined
+  const companyHref = companySlug ? `/companies/${companySlug}` : null
+  const organizationDisplayName = organization?.name ?? job.organization?.name ?? "Organización"
 
   return (
     <DirectionalTransition>
@@ -144,7 +158,17 @@ export default function OfertaDetailPage() {
                   </ViewTransition>
                 </h1>
                 <p className="mt-1 text-muted-foreground text-sm">
-                  {organization?.name ?? job.organization?.name ?? "Organización"}
+                  {companyHref ? (
+                    <Link
+                      href={companyHref}
+                      className="hover:text-foreground transition-colors"
+                      aria-label={`Ver perfil de ${organizationDisplayName}`}
+                    >
+                      {organizationDisplayName}
+                    </Link>
+                  ) : (
+                    organizationDisplayName
+                  )}
                 </p>
               </div>
               <span
@@ -234,6 +258,31 @@ export default function OfertaDetailPage() {
                 </div>
               )}
             </div>
+            {/* Actions */}
+            {canManage && (
+              <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border/10 pt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditDialogOpen(true)}
+                  className="h-8 rounded-lg px-3 text-xs font-medium"
+                >
+                  <HugeiconsIcon icon={Edit01Icon} size={15} strokeWidth={1.5} />
+                  Editar oferta
+                </Button>
+                {canClose && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCloseDialogOpen(true)}
+                    className="h-8 rounded-lg px-3 text-xs font-medium text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <HugeiconsIcon icon={LockIcon} size={15} strokeWidth={1.5} />
+                    Cerrar oferta
+                  </Button>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -339,6 +388,23 @@ export default function OfertaDetailPage() {
             />
           </TabsContent>
         </Tabs>
+
+        {canManage && (
+          <>
+            <CreateJobDialog
+              organizationId={job.organizationId}
+              open={editDialogOpen}
+              onOpenChange={setEditDialogOpen}
+              job={job}
+            />
+            <CloseJobAlertDialog
+              job={job}
+              open={closeDialogOpen}
+              onClose={() => setCloseDialogOpen(false)}
+              organizationId={job.organizationId}
+            />
+          </>
+        )}
       </div>
     </DirectionalTransition>
   )
