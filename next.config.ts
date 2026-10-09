@@ -11,6 +11,11 @@ const API_PROXY_TARGET = (
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
+  // takumi-pdf ships a WASM renderer. Bundling it makes Turbopack walk its
+  // dynamic loader and emit a ~800 MB function, which Vercel rejects (250 MB
+  // limit). Externalized, Node resolves it at runtime and the Node entry
+  // reads the .wasm straight from node_modules.
+  serverExternalPackages: ["takumi-pdf"],
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
