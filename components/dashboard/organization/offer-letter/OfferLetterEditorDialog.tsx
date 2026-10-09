@@ -37,6 +37,9 @@ type OfferLetterEditorDialogProps = {
   signerName?: string
   signerRole?: string
   companyAddress?: string
+  companyLogo?: string | null
+  hrContactName?: string
+  hrContactEmail?: string
   onClose: () => void
   onSent?: () => void
 }
@@ -45,6 +48,14 @@ function formatClp(value: number | undefined): string {
   if (value == null) return ""
   return `$${new Intl.NumberFormat("es-CL").format(value)}`
 }
+
+const CONTRACT_TYPES = [
+  "Contrato de trabajo, plazo indefinido",
+  "Contrato de trabajo, plazo fijo",
+  "Contrato de obra o servicios",
+  "Contrato de prácticas",
+  "Contrato de sustitución",
+]
 
 function Field({
   label,
@@ -77,6 +88,9 @@ export function OfferLetterEditorDialog({
   signerName,
   signerRole,
   companyAddress,
+  companyLogo,
+  hrContactName,
+  hrContactEmail,
   onClose,
   onSent,
 }: OfferLetterEditorDialogProps) {
@@ -87,6 +101,22 @@ export function OfferLetterEditorDialog({
         ? formatClp(salary.min)
         : ""
 
+  const issueDate = useMemo(() => {
+    try {
+      return new Intl.DateTimeFormat("es-CL", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date())
+    } catch {
+      return ""
+    }
+  }, [])
+  const letterRef = useMemo(
+    () => `OF-${new Date().getFullYear()}-${applicationId.slice(0, 4).toUpperCase()}`,
+    [applicationId]
+  )
+
   const [form, setForm] = useState({
     greeting: "Estimado/a {candidate}:",
     intro: "",
@@ -96,11 +126,22 @@ export function OfferLetterEditorDialog({
     benefits: "",
     startDate: "",
     workMode: workMode ?? "Presencial",
+    contractType: "Contrato de trabajo, plazo indefinido",
+    workSchedule: "Jornada completa",
+    probationPeriod: "3 meses",
+    noticePeriod: "",
+    vacationDays: "",
+    bonusDetails: "",
+    offerValidUntil: "",
     conditions: "",
     closing: "",
+    acceptanceNote: "",
     signerName: signerName ?? "",
     signerRole: signerRole ?? "",
     companyAddress: companyAddress ?? "",
+    hrContactName: hrContactName ?? "",
+    hrContactEmail: hrContactEmail ?? "",
+    hrContactPhone: "",
   })
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isRendering, setIsRendering] = useState(false)
@@ -112,6 +153,9 @@ export function OfferLetterEditorDialog({
       companyName,
       candidateName,
       jobTitle,
+      logoUrl: companyLogo ?? undefined,
+      letterRef,
+      issueDate,
       greeting: form.greeting,
       intro: form.intro,
       positionSummary: form.positionSummary,
@@ -123,13 +167,24 @@ export function OfferLetterEditorDialog({
         .filter(Boolean),
       startDate: form.startDate,
       workMode: form.workMode,
+      contractType: form.contractType,
+      workSchedule: form.workSchedule,
+      probationPeriod: form.probationPeriod,
+      noticePeriod: form.noticePeriod,
+      vacationDays: form.vacationDays,
+      bonusDetails: form.bonusDetails,
+      offerValidUntil: form.offerValidUntil,
       conditions: form.conditions,
       closing: form.closing,
+      acceptanceNote: form.acceptanceNote,
       signerName: form.signerName,
       signerRole: form.signerRole,
       companyAddress: form.companyAddress,
+      hrContactName: form.hrContactName,
+      hrContactEmail: form.hrContactEmail,
+      hrContactPhone: form.hrContactPhone,
     }),
-    [companyName, candidateName, jobTitle, form]
+    [companyName, candidateName, jobTitle, companyLogo, letterRef, issueDate, form]
   )
   const letterDataRef = useRef(letterData)
   useEffect(() => {
@@ -269,6 +324,92 @@ export function OfferLetterEditorDialog({
                   onChange={(e) => update("benefits", e.target.value)}
                   placeholder={"Seguro de salud\nDías administrativos\nCapacitaciones"}
                   rows={4}
+                />
+              </Field>
+              <Field label="Tipo de contrato" full>
+                <Select value={form.contractType} onValueChange={(v) => update("contractType", v)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecciona tipo de contrato" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CONTRACT_TYPES.map((opt) => (
+                      <SelectItem key={opt} value={opt}>
+                        {opt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field label="Jornada / horario">
+                <Input
+                  value={form.workSchedule}
+                  onChange={(e) => update("workSchedule", e.target.value)}
+                  placeholder="Jornada completa, 45 h semanales"
+                />
+              </Field>
+              <Field label="Período de prueba">
+                <Input
+                  value={form.probationPeriod}
+                  onChange={(e) => update("probationPeriod", e.target.value)}
+                  placeholder="3 meses"
+                />
+              </Field>
+              <Field label="Preaviso">
+                <Input
+                  value={form.noticePeriod}
+                  onChange={(e) => update("noticePeriod", e.target.value)}
+                  placeholder="30 días"
+                />
+              </Field>
+              <Field label="Vacaciones">
+                <Input
+                  value={form.vacationDays}
+                  onChange={(e) => update("vacationDays", e.target.value)}
+                  placeholder="15 días hábiles al año"
+                />
+              </Field>
+              <Field label="Vigencia de la oferta">
+                <Input
+                  value={form.offerValidUntil}
+                  onChange={(e) => update("offerValidUntil", e.target.value)}
+                  placeholder="15 de enero, 2027"
+                />
+              </Field>
+              <Field label="Bonos e incentivos" full>
+                <Textarea
+                  value={form.bonusDetails}
+                  onChange={(e) => update("bonusDetails", e.target.value)}
+                  placeholder="Aguinaldo, bonos por resultados, comisiones..."
+                  rows={3}
+                />
+              </Field>
+              <Field label="Nota de aceptación" full>
+                <Textarea
+                  value={form.acceptanceNote}
+                  onChange={(e) => update("acceptanceNote", e.target.value)}
+                  rows={3}
+                />
+              </Field>
+              <Field label="Contacto RR.HH.: nombre">
+                <Input
+                  value={form.hrContactName}
+                  onChange={(e) => update("hrContactName", e.target.value)}
+                  placeholder="Nombre del contacto"
+                />
+              </Field>
+              <Field label="Contacto RR.HH.: email">
+                <Input
+                  type="email"
+                  value={form.hrContactEmail}
+                  onChange={(e) => update("hrContactEmail", e.target.value)}
+                  placeholder="rrhh@empresa.cl"
+                />
+              </Field>
+              <Field label="Contacto RR.HH.: teléfono">
+                <Input
+                  value={form.hrContactPhone}
+                  onChange={(e) => update("hrContactPhone", e.target.value)}
+                  placeholder="+56 9 1234 5678"
                 />
               </Field>
               <Field label="Condiciones adicionales" full>
