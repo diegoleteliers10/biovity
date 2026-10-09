@@ -2,6 +2,7 @@
 
 import { Bookmark02Icon, Cash02Icon, Clock01Icon, Location05Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -99,7 +100,21 @@ export function JobListItem({
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div className="flex min-w-0 shrink-0 items-center gap-2 text-xs text-muted-foreground">
-              <span className="truncate">{job.organization?.name ?? "Organización"}</span>
+              {job.organization?.slug ? (
+                <Link
+                  href={`/companies/${job.organization.slug}`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }}
+                  className="truncate font-medium text-foreground hover:text-secondary transition-colors"
+                  aria-label={`Ver perfil de ${job.organization.name ?? "la empresa"}`}
+                >
+                  {job.organization.name ?? "Organización"}
+                </Link>
+              ) : (
+                <span className="truncate">{job.organization?.name ?? "Organización"}</span>
+              )}
               <span className="shrink-0 text-border">|</span>
               <div className="flex min-w-0 items-center gap-1.5">
                 <HugeiconsIcon icon={Location05Icon} size={16} className="shrink-0" />

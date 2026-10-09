@@ -14,6 +14,7 @@ import {
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { HtmlContent } from "@/components/dashboard/shared/HtmlContent"
@@ -155,6 +156,8 @@ export default function JobDetailPage() {
   }
 
   const organizationName = job.organization?.name ?? organization?.name ?? "Organización"
+  const organizationSlug = job.organization?.slug ?? organization?.slug ?? undefined
+  const companyHref = organizationSlug ? `/companies/${organizationSlug}` : null
   const locationStr = formatJobLocation(job.location) || "Sin especificar"
   const modalidad = getJobModalidad(job.location)
   const salaryStr = formatJobSalary(job.salary)
@@ -196,7 +199,17 @@ export default function JobDetailPage() {
                 <p className="truncate font-mono text-xs text-muted-foreground tabular-nums">
                   {job.id}
                 </p>
-                <p className="text-sm font-medium text-foreground">{organizationName}</p>
+                {companyHref ? (
+                  <Link
+                    href={companyHref}
+                    className="text-sm font-medium text-foreground hover:text-secondary transition-colors"
+                    aria-label={`Ver perfil de ${organizationName}`}
+                  >
+                    {organizationName}
+                  </Link>
+                ) : (
+                  <p className="text-sm font-medium text-foreground">{organizationName}</p>
+                )}
               </div>
             </div>
 

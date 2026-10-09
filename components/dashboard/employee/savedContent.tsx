@@ -8,6 +8,7 @@ import {
   Location05Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { useCallback, useMemo } from "react"
@@ -54,6 +55,8 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
   }
 
   const organizationName = job?.organization?.name ?? organization?.name ?? "Organización"
+  const organizationSlug = job?.organization?.slug ?? organization?.slug ?? undefined
+  const companyHref = organizationSlug ? `/companies/${organizationSlug}` : null
   const locationStr = formatJobLocation(job?.location) || "Sin especificar"
   const salaryStr = job ? getSalaryDisplay(job) : "—"
   const postedStr = getPostedDisplay(job?.createdAt)
@@ -78,7 +81,21 @@ function SavedJobCard({ userId, jobId }: { userId: string; jobId: string }) {
             <CardTitle className="text-sm font-medium leading-tight line-clamp-2 text-foreground">
               {jobLoading ? "Cargando..." : (job?.title ?? "Vacante")}
             </CardTitle>
-            <p className="text-xs text-muted-foreground truncate">{organizationName}</p>
+            {companyHref ? (
+              <Link
+                href={companyHref}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+                className="text-xs text-muted-foreground truncate hover:text-secondary transition-colors"
+                aria-label={`Ver perfil de ${organizationName}`}
+              >
+                {organizationName}
+              </Link>
+            ) : (
+              <p className="text-xs text-muted-foreground truncate">{organizationName}</p>
+            )}
           </div>
 
           <div className="flex items-center gap-2 shrink-0">

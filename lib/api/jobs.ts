@@ -38,6 +38,8 @@ export type JobBenefitInput = {
 export type JobOrganization = {
   id: string
   name: string
+  slug?: string
+  logo?: string
 }
 
 export type Job = {
