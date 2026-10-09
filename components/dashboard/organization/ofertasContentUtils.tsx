@@ -9,6 +9,7 @@ import {
   EyeIcon,
   FileAddIcon,
   Globe02Icon,
+  LockIcon,
   MoreHorizontalIcon,
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
@@ -65,10 +66,18 @@ interface OfertaCardProps {
   onEdit: (job: Job) => void
   onDelete: (job: Job) => void
   onPublish: (job: Job) => void
+  onCloseOffer: (job: Job) => void
   onDuplicate?: (job: Job) => void
 }
 
-export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: OfertaCardProps) {
+export function OfertaCard({
+  job,
+  onEdit,
+  onDelete,
+  onPublish,
+  onCloseOffer,
+  onDuplicate,
+}: OfertaCardProps) {
   const { push } = useRouter()
   const salaryStr = formatJobSalary(job.salary)
 
@@ -179,6 +188,18 @@ export function OfertaCard({ job, onEdit, onDelete, onPublish, onDuplicate }: Of
               >
                 <HugeiconsIcon icon={Globe02Icon} size={18} strokeWidth={1.5} className="mr-2" />
                 Publicar
+              </DropdownMenuItem>
+            )}
+            {(job.status === "active" || job.status === "paused") && (
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onCloseOffer(job)
+                }}
+              >
+                <HugeiconsIcon icon={LockIcon} size={18} strokeWidth={1.5} className="mr-2" />
+                Cerrar oferta
               </DropdownMenuItem>
             )}
             <DropdownMenuItem

@@ -15,6 +15,7 @@ interface JobsGridProps {
   onEdit: (job: Job) => void
   onDelete: (job: Job) => void
   onPublish: (job: Job) => void
+  onCloseOffer: (job: Job) => void
   onCreate: () => void
   onDuplicate?: (job: Job) => void
 }
@@ -24,6 +25,7 @@ export function JobsGrid({
   onEdit,
   onDelete,
   onPublish,
+  onCloseOffer,
   onCreate,
   onDuplicate,
 }: JobsGridProps) {
@@ -37,6 +39,7 @@ export function JobsGrid({
             onEdit={onEdit}
             onDelete={onDelete}
             onPublish={onPublish}
+            onCloseOffer={onCloseOffer}
             onDuplicate={onDuplicate}
           />
         ))}
