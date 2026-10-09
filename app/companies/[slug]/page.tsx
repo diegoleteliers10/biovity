@@ -336,15 +336,6 @@ export default async function CompanyProfilePage({ params }: Props) {
               ) : (
                 <p className="text-sm text-muted-foreground">{org.name} aún no comparte enlaces.</p>
               )}
-
-              {activeJobs.length > 0 && (
-                <a
-                  href="#ofertas"
-                  className="mt-4 flex h-10 w-full items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition-[transform,background-color] duration-150 ease-out hover:bg-primary/90 active:scale-[0.98]"
-                >
-                  Ver {org.activeJobsCount} {org.activeJobsCount === 1 ? "oferta" : "ofertas"}
-                </a>
-              )}
             </div>
             {memberSince && (
               <p className="mt-3 text-center font-mono text-xs text-muted-foreground">
