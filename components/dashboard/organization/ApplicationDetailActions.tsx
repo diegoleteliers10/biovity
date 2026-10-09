@@ -3,6 +3,7 @@
 import {
   Calendar04Icon,
   Cancel01Icon,
+  Mail01Icon,
   Message01Icon,
   NoteAddIcon,
 } from "@hugeicons/core-free-icons"
@@ -54,6 +55,7 @@ export function ApplicationDetailActions({
   onStatusChange,
   onScheduleInterview,
   onSendMessage,
+  onSendOffer,
 }: {
   applicationId: string
   applicationStatus: ApplicationStage
@@ -64,6 +66,7 @@ export function ApplicationDetailActions({
   onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
   onScheduleInterview?: (candidateId: string) => void
   onSendMessage?: (candidateId: string) => void
+  onSendOffer?: () => void
 }) {
   const evaluationQuery = useEvaluations(applicationId)
   const [rejectReason, setRejectReason] = useState("")
@@ -115,6 +118,11 @@ export function ApplicationDetailActions({
         >
           <HugeiconsIcon icon={Message01Icon} size={14} className="mr-1.5" />
           Mensaje
+        </Button>
+
+        <Button variant="outline" onClick={() => onSendOffer?.()} className="h-9 rounded-md px-3">
+          <HugeiconsIcon icon={Mail01Icon} size={14} className="mr-1.5" />
+          Enviar oferta
         </Button>
 
         <ScorecardSheet

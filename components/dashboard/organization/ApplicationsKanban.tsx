@@ -18,6 +18,7 @@ import {
   CheckmarkCircle02Icon,
   CheckmarkCircleIcon,
   File02Icon,
+  Mail01Icon,
   Message01Icon,
   MoreHorizontalIcon,
   StarIcon,
@@ -60,6 +61,7 @@ type ApplicantCardProps = {
   onViewProfile?: (candidateId: string) => void
   onViewDetail?: (applicationId: string) => void
   onMessage?: (candidateId: string) => void
+  onSendOffer?: (applicant: Applicant) => void
   isSelected?: boolean
   selectionMode?: boolean
   onToggleSelection?: (id: string) => void
@@ -75,6 +77,7 @@ function ApplicantCard({
   onViewProfile,
   onViewDetail,
   onMessage,
+  onSendOffer,
   isSelected,
   selectionMode,
   onToggleSelection,
@@ -145,6 +148,13 @@ function ApplicantCard({
               >
                 <HugeiconsIcon icon={Message01Icon} size={16} />
                 Enviar mensaje
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => onSendOffer?.(applicant)}
+                className="cursor-pointer"
+              >
+                <HugeiconsIcon icon={Mail01Icon} size={16} />
+                Enviar carta de oferta
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -298,6 +308,7 @@ function KanbanColumn({
   onViewProfile,
   onViewDetail,
   onMessage,
+  onSendOffer,
   selectedIds,
   selectionMode,
   onToggleSelection,
@@ -312,6 +323,7 @@ function KanbanColumn({
   onViewProfile?: (candidateId: string) => void
   onViewDetail?: (applicationId: string) => void
   onMessage?: (candidateId: string) => void
+  onSendOffer?: (applicant: Applicant) => void
   selectedIds?: Set<string>
   selectionMode?: boolean
   onToggleSelection?: (id: string) => void
@@ -352,6 +364,7 @@ function KanbanColumn({
             onViewProfile={onViewProfile}
             onViewDetail={onViewDetail}
             onMessage={onMessage}
+            onSendOffer={onSendOffer}
             isSelected={selectedIds?.has(a.id) ?? false}
             selectionMode={selectionMode}
             onToggleSelection={onToggleSelection}
@@ -376,6 +389,7 @@ export function ApplicationsKanban({
   onViewProfile,
   onViewDetail,
   onMessage,
+  onSendOffer,
   selectionMode,
   selectedIds,
   onToggleSelection,
@@ -394,6 +408,7 @@ export function ApplicationsKanban({
   onViewProfile?: (candidateId: string) => void
   onViewDetail?: (applicationId: string) => void
   onMessage?: (candidateId: string) => void
+  onSendOffer?: (applicant: Applicant) => void
   selectionMode?: boolean
   selectedIds?: Set<string>
   onToggleSelection?: (id: string) => void
@@ -487,6 +502,7 @@ export function ApplicationsKanban({
             onViewProfile={onViewProfile}
             onViewDetail={onViewDetail}
             onMessage={onMessage}
+            onSendOffer={onSendOffer}
             selectedIds={selectedIds}
             selectionMode={selectionMode}
             onToggleSelection={onToggleSelection}
