@@ -117,15 +117,19 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
                         {trabajo.empresa}
                       </span>
                     )}
-                    <span className="shrink-0 text-border">•</span>
-                    <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
-                      <HugeiconsIcon
-                        icon={Location05Icon}
-                        size={16}
-                        className="shrink-0 text-muted-foreground"
-                      />
-                      <span className="truncate">{trabajo.ubicacion}</span>
-                    </div>
+                    {trabajo.modalidad !== "remoto" && (
+                      <>
+                        <span className="shrink-0 text-border">•</span>
+                        <div className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
+                          <HugeiconsIcon
+                            icon={Location05Icon}
+                            size={16}
+                            className="shrink-0 text-muted-foreground"
+                          />
+                          <span className="truncate">{trabajo.ubicacion}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-y-2 sm:flex-row sm:items-center sm:gap-x-4 sm:gap-y-0 sm:shrink-0">

@@ -283,11 +283,19 @@ export default async function TrabajoDetailPage({ params }: Props) {
 
             {/* Meta información */}
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
-              <div className="flex items-center gap-1.5 font-medium text-foreground">
-                <HugeiconsIcon icon={Location05Icon} size={16} className="text-muted-foreground" />
-                <span>{ubicacion}</span>
-              </div>
-              <span className="text-border/60">•</span>
+              {modalidad !== "remoto" && (
+                <>
+                  <div className="flex items-center gap-1.5 font-medium text-foreground">
+                    <HugeiconsIcon
+                      icon={Location05Icon}
+                      size={16}
+                      className="text-muted-foreground"
+                    />
+                    <span>{ubicacion}</span>
+                  </div>
+                  <span className="text-border/60">•</span>
+                </>
+              )}
               <span className="px-2.5 py-1 rounded-full font-mono text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20 capitalize">
                 {modalidad === "hibrido" ? "Híbrido" : modalidad}
               </span>
@@ -412,12 +420,14 @@ export default async function TrabajoDetailPage({ params }: Props) {
                         {ubicacion}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/30">
-                      <span className="text-muted-foreground text-xs sm:text-sm">Modalidad:</span>
-                      <span className="font-medium text-foreground text-xs sm:text-sm capitalize">
-                        {modalidad === "hibrido" ? "Híbrido" : modalidad}
-                      </span>
-                    </div>
+                    {modalidad !== "remoto" && (
+                      <div className="flex justify-between items-center py-2 border-b border-border/30">
+                        <span className="text-muted-foreground text-xs sm:text-sm">Modalidad:</span>
+                        <span className="font-medium text-foreground text-xs sm:text-sm capitalize">
+                          {modalidad === "hibrido" ? "Híbrido" : modalidad}
+                        </span>
+                      </div>
+                    )}
                     {job.employmentType && (
                       <div className="flex justify-between items-center py-2 border-b border-border/30">
                         <span className="text-muted-foreground text-xs sm:text-sm">Jornada:</span>
@@ -426,13 +436,13 @@ export default async function TrabajoDetailPage({ params }: Props) {
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center py-2 border-b border-border/30">
+                    <div className="py-2">
                       <span className="text-muted-foreground text-xs sm:text-sm">
                         Compensación:
                       </span>
-                      <span className="font-mono font-semibold text-secondary tabular-nums text-xs sm:text-sm">
+                      <p className="mt-1.5 font-mono text-base sm:text-lg font-semibold text-secondary tabular-nums">
                         {salaryStr}
-                      </span>
+                      </p>
                     </div>
                   </div>
                 </div>
