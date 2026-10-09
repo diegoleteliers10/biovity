@@ -409,6 +409,8 @@ export default function OrganizationApplicationDetailPage() {
           candidateName={candidateName}
           jobTitle={application.job?.title ?? "la posición"}
           companyName={organization?.name ?? ""}
+          companyLogo={organization?.logo ?? null}
+          signerName={organization?.name ?? undefined}
           salary={{
             min: application.salaryMin ?? undefined,
             max: application.salaryMax ?? undefined,

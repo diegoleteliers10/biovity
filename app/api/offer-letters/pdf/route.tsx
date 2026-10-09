@@ -1,18 +1,9 @@
-import { googleFonts } from "@takumi-rs/helpers"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import { render } from "takumi-pdf"
-import { defaultOfferLetterData, OfferLetterDocument } from "@/components/pdf/offer-letter-document"
+import { defaultOfferLetterData } from "@/components/pdf/offer-letter-document"
 import type { OfferLetterData } from "@/lib/api/offer-letters"
 import { auth } from "@/lib/auth"
-
-// Reuse the font fetch across renders: Google Fonts fetch per request would
-// add hundreds of ms to every preview.
-let fontsPromise: Promise<Awaited<ReturnType<typeof googleFonts>>> | null = null
-function getFonts() {
-  fontsPromise ??= googleFonts(["Inter"])
-  return fontsPromise
-}
+import { renderOfferLetterToPdf } from "@/lib/offer-letter-pdf"
 
 export async function POST(request: Request) {
   const requestHeaders = await headers()
@@ -36,10 +27,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const pdf = await render(<OfferLetterDocument data={letterData} />, {
-      size: "a4",
-      fonts: await getFonts(),
-    })
+    const pdf = await renderOfferLetterToPdf(letterData)
     return new NextResponse(Buffer.from(pdf), {
       status: 200,
       headers: {

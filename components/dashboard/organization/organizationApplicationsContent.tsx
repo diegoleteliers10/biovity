@@ -558,6 +558,7 @@ export function OrganizationApplicationsContent() {
           candidateName={offerDialogApp.candidateName}
           jobTitle={selectedJob.title}
           companyName={organization?.name ?? ""}
+          companyLogo={organization?.logo ?? null}
           salary={selectedJob.salary}
           workMode={
             selectedJob.location?.isRemote

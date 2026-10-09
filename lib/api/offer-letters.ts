@@ -13,6 +13,9 @@ export type OfferLetterData = {
   companyName: string
   candidateName: string
   jobTitle: string
+  logoUrl?: string
+  letterRef?: string
+  issueDate?: string
   greeting?: string
   intro?: string
   positionSummary?: string
@@ -21,11 +24,22 @@ export type OfferLetterData = {
   benefits?: string[]
   startDate?: string
   workMode?: string
+  contractType?: string
+  workSchedule?: string
+  probationPeriod?: string
+  noticePeriod?: string
+  vacationDays?: string
+  bonusDetails?: string
+  offerValidUntil?: string
   conditions?: string
   closing?: string
+  acceptanceNote?: string
   signerName?: string
   signerRole?: string
   companyAddress?: string
+  hrContactName?: string
+  hrContactEmail?: string
+  hrContactPhone?: string
 }
 
 export type OfferLetter = {

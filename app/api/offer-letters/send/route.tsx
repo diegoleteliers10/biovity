@@ -1,22 +1,14 @@
-import { googleFonts } from "@takumi-rs/helpers"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
-import { render } from "takumi-pdf"
-import { defaultOfferLetterData, OfferLetterDocument } from "@/components/pdf/offer-letter-document"
+import { defaultOfferLetterData } from "@/components/pdf/offer-letter-document"
 import type { OfferLetterData } from "@/lib/api/offer-letters"
 import { auth } from "@/lib/auth"
+import { renderOfferLetterToPdf } from "@/lib/offer-letter-pdf"
 import { fetchJsonWithSession } from "@/lib/result"
 import { getSupabaseAdmin } from "@/lib/supabase"
 
 const API_BASE = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"
-
-// Fonts are fetched once per server instance and cached in module scope.
-let fontsPromise: Promise<Awaited<ReturnType<typeof googleFonts>>> | null = null
-function getFonts() {
-  fontsPromise ??= googleFonts(["Inter"])
-  return fontsPromise
-}
 
 type SendBody = {
   applicationId?: string
@@ -79,10 +71,7 @@ export async function POST(request: Request) {
   // 2. Render the PDF server-side.
   let pdfBytes: Uint8Array
   try {
-    pdfBytes = await render(<OfferLetterDocument data={letterData} />, {
-      size: "a4",
-      fonts: await getFonts(),
-    })
+    pdfBytes = await renderOfferLetterToPdf(letterData)
   } catch (error) {
     console.error("[offer-letters/send] render failed:", error)
     return NextResponse.json({ error: "No se pudo generar el PDF" }, { status: 500 })
