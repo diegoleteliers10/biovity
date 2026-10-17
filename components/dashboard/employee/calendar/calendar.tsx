@@ -3,8 +3,9 @@
 import { format } from "date-fns"
 import type React from "react"
 import { useState } from "react"
+import { DEFAULT_EVENT_TIME_ZONE } from "@/lib/event-time"
 import type { Event } from "@/lib/types/events"
-import { getChileanDate } from "@/lib/utils"
+
 import { DayModal } from "./day-modal"
 import { EventDetailModal } from "./event-detail-modal"
 import { EventTooltip } from "./event-tooltip"
@@ -13,6 +14,7 @@ type CalendarEvent = {
   readonly id: string
   readonly title: string
   readonly startAt: string
+  readonly timeZone?: string
   readonly description?: string
   readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
@@ -22,6 +24,8 @@ const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes
 
 type CalendarProps = {
   readonly currentDate: Date
+  currentUserId?: string
+  currentUserRole?: "professional" | "organization"
   events?: Event[]
   isLoading?: boolean
   onCreateEvent?: (date: Date) => void
@@ -32,6 +36,8 @@ const EMPTY_CALENDAR_EVENTS: Event[] = []
 
 export function Calendar({
   currentDate,
+  currentUserId,
+  currentUserRole,
   events = EMPTY_CALENDAR_EVENTS,
   isLoading,
   onCreateEvent,
@@ -66,11 +72,10 @@ export function Calendar({
     days.push(day)
   }
 
-  // Agrupar eventos por fecha (en zona horaria Chile)
   const eventsByDate: Record<string, CalendarEvent[]> = {}
   for (const event of events) {
-    const chileDate = getChileanDate(event.startAt)
-    const dateKey = format(chileDate, "yyyy-MM-dd")
+    const localDate = new Date(event.startAt)
+    const dateKey = format(localDate, "yyyy-MM-dd")
     if (!eventsByDate[dateKey]) {
       eventsByDate[dateKey] = []
     }
@@ -78,6 +83,7 @@ export function Calendar({
       id: event.id,
       title: event.title,
       startAt: event.startAt,
+      timeZone: event.timeZone,
       description: event.description,
       type: event.type,
     })
@@ -98,14 +104,7 @@ export function Calendar({
     }
   }
 
-  const formatEventTime = (iso: string) => {
-    try {
-      const chileDate = getChileanDate(iso)
-      return format(chileDate, "HH:mm")
-    } catch {
-      return ""
-    }
-  }
+  const formatEventTime = (iso: string) => format(new Date(iso), "HH:mm")
 
   const handleEventHover = (event: CalendarEvent, mouseEvent: React.MouseEvent) => {
     setHoveredEvent({
@@ -158,12 +157,12 @@ export function Calendar({
             ? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
             : null
           const dayEvents = dateKey ? eventsByDate[dateKey] || [] : []
-          const nowChile = getChileanDate()
+          const localNow = new Date()
           const isToday =
             day &&
-            nowChile.getDate() === day &&
-            nowChile.getMonth() === month &&
-            nowChile.getFullYear() === year
+            localNow.getDate() === day &&
+            localNow.getMonth() === month &&
+            localNow.getFullYear() === year
 
           return (
             <button
@@ -243,7 +242,10 @@ export function Calendar({
                             }}
                           >
                             <div className="font-medium truncate">{event.title}</div>
-                            <div className="opacity-80">{formatEventTime(event.startAt)}</div>
+                            <div className="opacity-80">
+                              {formatEventTime(event.startAt)} ·{" "}
+                              {event.timeZone ?? DEFAULT_EVENT_TIME_ZONE}
+                            </div>
                           </div>
                         ))}
                   </div>
@@ -273,6 +275,8 @@ export function Calendar({
           event={selectedEvent}
           isOpen={true}
           onClose={() => setSelectedEvent(null)}
+          currentUserId={currentUserId}
+          currentUserRole={currentUserRole}
         />
       )}
     </div>

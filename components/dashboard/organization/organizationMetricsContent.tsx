@@ -10,6 +10,7 @@ import {
   ViewIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useRouter } from "next/navigation"
 import { useId, useState } from "react"
 import { chartTooltipStyles } from "@/components/ui/chart-tooltip-styles"
 
@@ -27,6 +28,20 @@ const [BarChart, Bar] = await Promise.all([
   import("recharts").then((m) => m.Bar),
 ])
 
+const sourceChannelLabels: Record<string, string> = {
+  biovity: "Biovity",
+  linkedin: "LinkedIn",
+  laborum: "Laborum",
+  other_job_board: "Otro portal de empleo",
+  company_website: "Sitio web de la empresa",
+  social_media: "Redes sociales",
+  university: "Universidad o institución educativa",
+  referral: "Recomendación",
+  event: "Feria o evento",
+  other: "Otro",
+  unknown: "Desconocida",
+}
+
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
@@ -42,11 +57,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useOrganizationMetrics } from "@/lib/api/use-organization-dashboard"
-import type { MetricsPeriod } from "@/lib/types/organization-metrics"
+import {
+  useOrganizationMetrics,
+  useResponseTimeVisits,
+  useSourceApplications,
+  useStageDurationVisits,
+} from "@/lib/api/use-organization-dashboard"
+import type { MetricsPeriod, ResponseTimeBucket } from "@/lib/types/organization-metrics"
+import { formatDateChilean } from "@/lib/utils"
 import { exportMetricsCsv } from "@/lib/utils/export-metrics-csv"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { ConversionFunnelCard } from "./ConversionFunnelCard"
+import { CustomStageConversionsCard } from "./CustomStageConversionsCard"
 import { GeographicDistributionCard } from "./GeographicDistributionCard"
 
 const statusLabels: Record<string, string> = {
@@ -102,12 +124,19 @@ function KpiCard({ title, value, subtitle, trend, trendPositive, icon: Icon }: K
 }
 
 export function OrganizationMetricsContent() {
+  const router = useRouter()
   const session = useDashboardSession()
   const organizationId = session?.user?.organizationId ?? undefined
 
   const [period, setPeriod] = useState<MetricsPeriod>("month")
   const [startDate, setStartDate] = useState<string>("")
   const [endDate, setEndDate] = useState<string>("")
+  const [selectedStageKey, setSelectedStageKey] = useState<string>()
+  const [visitsPage, setVisitsPage] = useState(1)
+  const [responseBucket, setResponseBucket] = useState<ResponseTimeBucket>()
+  const [responsePage, setResponsePage] = useState(1)
+  const [selectedSourceKey, setSelectedSourceKey] = useState<string>()
+  const [sourcePage, setSourcePage] = useState(1)
 
   const {
     data: metrics,
@@ -121,26 +150,62 @@ export function OrganizationMetricsContent() {
     period === "custom" ? endDate || undefined : undefined
   )
   const _skeletonId = useId()
+  const selectedStage = metrics?.pipeline.stageDurations.find(
+    (stage) => `${stage.jobId}-${stage.stageId}` === selectedStageKey
+  )
+  const stageVisitsQuery = useStageDurationVisits(
+    organizationId,
+    selectedStage?.jobId,
+    selectedStage?.stageId,
+    period === "custom" ? startDate || undefined : undefined,
+    period === "custom" ? endDate || undefined : undefined,
+    visitsPage
+  )
+  const stageVisits = stageVisitsQuery.data?.isOk() ? stageVisitsQuery.data.value : undefined
+  const responseVisitsQuery = useResponseTimeVisits(
+    organizationId,
+    responseBucket,
+    period,
+    period === "custom" ? startDate || undefined : undefined,
+    period === "custom" ? endDate || undefined : undefined,
+    responsePage
+  )
+  const selectedSource = metrics?.sourceAttribution?.find(
+    (source) => `${source.sourceChannel}:${source.sourceMethod}` === selectedSourceKey
+  )
+  const sourceApplicationsQuery = useSourceApplications(
+    organizationId,
+    selectedSource?.sourceChannel,
+    selectedSource?.sourceMethod,
+    period,
+    period === "custom" ? startDate || undefined : undefined,
+    period === "custom" ? endDate || undefined : undefined,
+    sourcePage
+  )
+  const sourceApplications = sourceApplicationsQuery.data?.isOk()
+    ? sourceApplicationsQuery.data.value
+    : undefined
+  const responseVisits = responseVisitsQuery.data?.isOk()
+    ? responseVisitsQuery.data.value
+    : undefined
 
   const totalViews = metrics?.topJobs.reduce((sum, job) => sum + job.views, 0) ?? 0
 
   const chartData = metrics?.recentTrend.map((item) => ({
-    date: new Date(item.date).toLocaleDateString("es-CL", { day: "numeric", month: "short" }),
+    date: new Date(item.date).toLocaleDateString("es-CL", {
+      day: "numeric",
+      month: "short",
+    }),
     aplicaciones: item.applications,
     entrevistas: item.interviews,
   }))
 
   // F11.1 Funnel conversion rates
   const totalApps = metrics?.pipeline.totalApplications ?? 0
-  const countEntrevista = metrics?.pipeline.byStatus.entrevista ?? 0
-  const countOferta = metrics?.pipeline.byStatus.oferta ?? 0
-  const countContratado = metrics?.pipeline.byStatus.contratado ?? 0
-
-  // Accumulate counts for funnel stages (since to get to hired you pass offer/interview)
   const reachedPendiente = totalApps
-  const reachedEntrevista = countEntrevista + countOferta + countContratado
-  const reachedOferta = countOferta + countContratado
-  const reachedContratado = countContratado
+  const reachedEntrevista = metrics?.pipeline.reachedCounts.entrevista ?? 0
+  const reachedOferta = metrics?.pipeline.reachedCounts.oferta ?? 0
+  const reachedContratado = metrics?.pipeline.reachedCounts.contratado ?? 0
 
   const ratePendiente = 100
   const rateEntrevista = totalApps > 0 ? Math.round((reachedEntrevista / totalApps) * 100) : 0
@@ -149,14 +214,28 @@ export function OrganizationMetricsContent() {
 
   const responseTimeData = metrics?.responseTimeDistribution
     ? [
-        { bucket: "< 24h", count: metrics.responseTimeDistribution.lessThan24h },
-        { bucket: "1-3d", count: metrics.responseTimeDistribution.oneToThreeDays },
-        { bucket: "3-7d", count: metrics.responseTimeDistribution.threeToSevenDays },
-        { bucket: "> 7d", count: metrics.responseTimeDistribution.moreThanSevenDays },
+        {
+          key: "lessThan24h" as const,
+          bucket: "< 24h",
+          count: metrics.responseTimeDistribution.lessThan24h,
+        },
+        {
+          key: "oneToThreeDays" as const,
+          bucket: "1-3d",
+          count: metrics.responseTimeDistribution.oneToThreeDays,
+        },
+        {
+          key: "threeToSevenDays" as const,
+          bucket: "3-7d",
+          count: metrics.responseTimeDistribution.threeToSevenDays,
+        },
+        {
+          key: "moreThanSevenDays" as const,
+          bucket: "> 7d",
+          count: metrics.responseTimeDistribution.moreThanSevenDays,
+        },
       ]
     : []
-  const responseTimeTotal = responseTimeData.reduce((sum, item) => sum + item.count, 0)
-  const hasResponseTimeData = responseTimeTotal > 0
   const unansweredCount = metrics?.unansweredCount ?? 0
 
   if (isError) {
@@ -329,7 +408,7 @@ export function OrganizationMetricsContent() {
               icon={ViewIcon}
             />
             <KpiCard
-              title="Promedio contratación"
+              title="Tiempo hasta contratación"
               value={`${metrics?.avgHiringTimeDays ?? 0} días`}
               subtitle="desde postulación"
               icon={ClockIcon}
@@ -339,6 +418,16 @@ export function OrganizationMetricsContent() {
       </div>
 
       {/* Middle row: conversion funnel & average stage durations */}
+
+      <CustomStageConversionsCard
+        organizationId={organizationId}
+        period={period}
+        startDate={period === "custom" ? startDate || undefined : undefined}
+        endDate={period === "custom" ? endDate || undefined : undefined}
+        stages={metrics?.pipeline.customStageConversions ?? []}
+        isPending={isPending}
+      />
+
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Funnel Conversion */}
         <ConversionFunnelCard
@@ -357,7 +446,7 @@ export function OrganizationMetricsContent() {
         {/* Stage duration stats */}
         <Card className={dashboardRaisedCardClass}>
           <CardHeader>
-            <CardTitle>Tiempos Promedio en Etapa (Días)</CardTitle>
+            <CardTitle>Tiempo promedio por etapa</CardTitle>
           </CardHeader>
           <CardContent>
             {isPending ? (
@@ -366,58 +455,113 @@ export function OrganizationMetricsContent() {
                 <Skeleton className="h-12 w-full" />
                 <Skeleton className="h-12 w-full" />
               </div>
+            ) : metrics?.pipeline.stageDurations?.length ? (
+              <div className="max-h-80 space-y-3 overflow-y-auto py-2">
+                {metrics.pipeline.stageDurations?.map((stage) => (
+                  <button
+                    type="button"
+                    key={`${stage.jobId}-${stage.stageId}-${stage.stageName}`}
+                    onClick={() => {
+                      const key = `${stage.jobId}-${stage.stageId}`
+                      setSelectedStageKey((selected) => (selected === key ? undefined : key))
+                      setVisitsPage(1)
+                    }}
+                    aria-expanded={selectedStageKey === `${stage.jobId}-${stage.stageId}`}
+                    className="flex w-full cursor-pointer items-center justify-between gap-4 border-b border-border/50 pb-3 text-left last:border-0 hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{stage.stageName}</p>
+                      <p className="truncate text-xs text-muted-foreground">{stage.jobTitle}</p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-sm font-bold">{stage.averageCompletedDays} días</p>
+                      <p className="text-xs text-muted-foreground">
+                        {stage.completedVisitCount} visitas cerradas
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
             ) : (
-              <div className="space-y-6 py-2">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary border border-primary/20">
-                    <HugeiconsIcon icon={Calendar03Icon} size={20} />
+              <p className="py-8 text-center text-sm text-muted-foreground">
+                No hay visitas cerradas en el período.
+              </p>
+            )}
+            {selectedStage && (
+              <div className="mt-3 border-t border-border/50 pt-3" aria-live="polite">
+                <p className="text-xs leading-4 font-medium">
+                  Postulaciones de {selectedStage.stageName}
+                </p>
+                {stageVisitsQuery.isPending ? (
+                  <Skeleton className="mt-3 h-12 w-full" />
+                ) : stageVisitsQuery.data?.isErr() ? (
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <p className="text-xs text-destructive">No se pudieron cargar las visitas.</p>
+                    <Button size="sm" variant="outline" onClick={() => stageVisitsQuery.refetch()}>
+                      Reintentar
+                    </Button>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-sm font-semibold">Hasta Entrevista</span>
-                      <span className="text-base font-bold text-foreground">
-                        {metrics?.pipeline.avgTimeInStages?.entrevista ?? 0} días
+                ) : stageVisits?.rows.length ? (
+                  <div className="mt-2 space-y-2">
+                    {stageVisits.rows.map((visit) => (
+                      <div
+                        key={visit.visitId}
+                        className="flex items-center justify-between gap-3 border-b border-border/40 pb-2 text-xs last:border-0"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">{visit.applicantName}</p>
+                          <p className="truncate text-muted-foreground">
+                            Postulación {visit.applicationId.slice(0, 8)}
+                          </p>
+                          <p className="text-muted-foreground">
+                            {new Date(visit.enteredAt).toLocaleString("es-CL", {
+                              timeZone: "America/Santiago",
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })}
+                            {" a "}
+                            {new Date(visit.exitedAt).toLocaleString("es-CL", {
+                              timeZone: "America/Santiago",
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })}
+                          </p>
+                        </div>
+                        <span className="shrink-0 tabular-nums">
+                          {visit.durationDays.toFixed(1)} días
+                        </span>
+                      </div>
+                    ))}
+                    <div className="flex items-center justify-between pt-1 text-xs">
+                      <span className="text-muted-foreground">
+                        Página {stageVisits.page} de{" "}
+                        {Math.max(1, Math.ceil(stageVisits.total / stageVisits.pageSize))}
                       </span>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={visitsPage <= 1}
+                          onClick={() => setVisitsPage((page) => page - 1)}
+                        >
+                          Anterior
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={visitsPage * stageVisits.pageSize >= stageVisits.total}
+                          onClick={() => setVisitsPage((page) => page + 1)}
+                        >
+                          Siguiente
+                        </Button>
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Días promedio transcurridos desde postulación hasta agendar entrevista.
-                    </p>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-4 border-t border-border/50 pt-4">
-                  <div className="flex items-center justify-center size-10 rounded-lg bg-accent/10 text-accent border border-accent/20">
-                    <HugeiconsIcon icon={File02Icon} size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-sm font-semibold">Hasta Oferta</span>
-                      <span className="text-base font-bold text-foreground">
-                        {metrics?.pipeline.avgTimeInStages?.oferta ?? 0} días
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Días promedio transcurridos desde postulación hasta formalizar oferta.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 border-t border-border/50 pt-4">
-                  <div className="flex items-center justify-center size-10 rounded-lg bg-secondary/10 text-secondary border border-secondary/20">
-                    <HugeiconsIcon icon={ClockIcon} size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-sm font-semibold">Hasta Contratación</span>
-                      <span className="text-base font-bold text-foreground">
-                        {metrics?.pipeline.avgTimeInStages?.contratado ?? 0} días
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Días promedio desde postulación hasta marcar como contratado.
-                    </p>
-                  </div>
-                </div>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    No hay visitas en este rango.
+                  </p>
+                )}
               </div>
             )}
           </CardContent>
@@ -624,7 +768,7 @@ export function OrganizationMetricsContent() {
         <CardContent>
           {isPending ? (
             <Skeleton className="h-[180px] w-full" />
-          ) : hasResponseTimeData ? (
+          ) : responseTimeData.length > 0 ? (
             <div className="space-y-3">
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={responseTimeData} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
@@ -639,15 +783,296 @@ export function OrganizationMetricsContent() {
                 </BarChart>
               </ResponsiveContainer>
               <p className="text-xs text-muted-foreground">
-                Distribución de postulaciones según el tiempo que tardaste en responder.
+                Selecciona un grupo para abrir sus postulaciones.
               </p>
+              <div className="flex flex-wrap gap-2">
+                {responseTimeData.map((item) => {
+                  const selectedBucket = item.key
+                  return (
+                    <Button
+                      key={selectedBucket}
+                      size="sm"
+                      variant={responseBucket === selectedBucket ? "default" : "outline"}
+                      onClick={() => {
+                        setResponseBucket((selected) =>
+                          selected === selectedBucket ? undefined : selectedBucket
+                        )
+                        setResponsePage(1)
+                      }}
+                      aria-expanded={responseBucket === selectedBucket}
+                    >
+                      {item.bucket} · {item.count}
+                    </Button>
+                  )
+                })}
+                <Button
+                  size="sm"
+                  variant={responseBucket === "unanswered" ? "default" : "outline"}
+                  onClick={() => {
+                    setResponseBucket((selected) =>
+                      selected === "unanswered" ? undefined : "unanswered"
+                    )
+                    setResponsePage(1)
+                  }}
+                  aria-expanded={responseBucket === "unanswered"}
+                >
+                  Sin responder · {unansweredCount}
+                </Button>
+              </div>
+              {responseBucket && (
+                <div className="space-y-3 rounded-lg border border-border/50 p-3">
+                  {period === "custom" && (!startDate || !endDate) ? (
+                    <p className="text-sm text-muted-foreground">
+                      Selecciona las dos fechas para revisar este grupo.
+                    </p>
+                  ) : responseVisitsQuery.isPending ? (
+                    <Skeleton className="h-16 w-full" />
+                  ) : responseVisitsQuery.isError || responseVisitsQuery.data?.isErr() ? (
+                    <p className="text-sm text-destructive">
+                      No se pudieron cargar las postulaciones.
+                    </p>
+                  ) : responseVisits && responseVisits.rows.length > 0 ? (
+                    <>
+                      {responseVisits.rows.map((visit) => (
+                        <button
+                          key={visit.applicationId}
+                          type="button"
+                          onClick={() =>
+                            router.push(
+                              `/dashboard/offers/${visit.jobId}/applications/${visit.applicationId}`
+                            )
+                          }
+                          className="flex w-full items-center justify-between gap-3 border-b border-border/40 pb-3 text-left last:border-0 hover:bg-muted/40"
+                        >
+                          <span className="min-w-0">
+                            <span className="block truncate text-sm font-medium">
+                              {visit.applicantName}
+                            </span>
+                            <span className="block truncate text-xs text-muted-foreground">
+                              {visit.jobTitle} ·{" "}
+                              {statusLabels[visit.currentStatus] ?? visit.currentStatus}
+                            </span>
+                            <span className="block truncate text-xs text-muted-foreground">
+                              Postuló{" "}
+                              {new Date(visit.submittedAt).toLocaleString("es-CL", {
+                                timeZone: "America/Santiago",
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              })}
+                              {visit.respondedAt &&
+                                ` · Respondida ${new Date(visit.respondedAt).toLocaleString(
+                                  "es-CL",
+                                  {
+                                    timeZone: "America/Santiago",
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  }
+                                )}`}
+                            </span>
+                          </span>
+                          <span className="shrink-0 text-right text-xs text-muted-foreground">
+                            {visit.responseDays === null
+                              ? "Pendiente"
+                              : `${visit.responseDays.toFixed(1)} días`}
+                          </span>
+                        </button>
+                      ))}
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">
+                          Página {responseVisits.page} de{" "}
+                          {Math.max(1, Math.ceil(responseVisits.total / responseVisits.pageSize))}
+                        </span>
+                        <span className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={responsePage <= 1}
+                            onClick={() => setResponsePage((page) => page - 1)}
+                          >
+                            Anterior
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={
+                              responsePage * responseVisits.pageSize >= responseVisits.total
+                            }
+                            onClick={() => setResponsePage((page) => page + 1)}
+                          >
+                            Siguiente
+                          </Button>
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No hay postulaciones en este grupo.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex h-[180px] flex-col items-center justify-center gap-1 text-center">
+            <div className="flex min-h-[180px] flex-col items-center justify-center gap-3 text-center">
               <p className="text-sm font-medium">Sin datos de tiempo de respuesta</p>
-              <p className="text-xs text-muted-foreground">
-                Cuando respondas postulaciones, veremos aquí la distribución por rango de tiempo.
+              {responseTimeData.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {responseTimeData.map((item) => {
+                    const selectedBucket = item.key
+                    return (
+                      <Button
+                        key={selectedBucket}
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setResponseBucket(selectedBucket)
+                          setResponsePage(1)
+                        }}
+                      >
+                        {item.bucket} · {item.count}
+                      </Button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className={dashboardRaisedCardClass}>
+        <CardHeader>
+          <CardTitle>Fuentes de postulación</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isPending ? (
+            <Skeleton className="h-32 w-full" />
+          ) : isError ? (
+            <p className="text-sm text-destructive">No se pudieron cargar las fuentes.</p>
+          ) : (metrics?.sourceAttribution?.length ?? 0) === 0 ? (
+            <p className="text-sm text-muted-foreground">Sin postulaciones en este período.</p>
+          ) : (
+            <div className="space-y-3">
+              <div className="grid grid-cols-[minmax(0,1fr)_repeat(3,5rem)] gap-2 border-b border-border/40 pb-2 text-xs font-medium text-muted-foreground">
+                <span>Fuente</span>
+                <span className="text-right">Postulaciones</span>
+                <span className="text-right">Llegan a entrevista</span>
+                <span className="text-right">Contratos</span>
+              </div>
+              {metrics?.sourceAttribution?.map((source) => {
+                const sourceKey = `${source.sourceChannel}:${source.sourceMethod}`
+                return (
+                  <button
+                    type="button"
+                    key={sourceKey}
+                    aria-expanded={selectedSourceKey === sourceKey}
+                    onClick={() => {
+                      setSelectedSourceKey(sourceKey)
+                      setSourcePage(1)
+                    }}
+                    className="grid w-full grid-cols-[minmax(0,1fr)_repeat(3,5rem)] gap-2 rounded-md py-1 text-left text-sm hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    <span className="truncate">
+                      {sourceChannelLabels[source.sourceChannel] ?? source.sourceChannel}
+                      {source.sourceMethod === "unknown"
+                        ? " · sin dato confirmado"
+                        : source.sourceMethod === "tracked_link"
+                          ? " · enlace registrado"
+                          : " · declarado"}
+                    </span>
+                    <span className="text-right tabular-nums">{source.applications}</span>
+                    <span className="text-right tabular-nums">{source.reachedInterview}</span>
+                    <span className="text-right tabular-nums">{source.hired}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+          {selectedSource && (
+            <div className="mt-3 border-t border-border/50 pt-3" aria-live="polite">
+              <p className="text-xs leading-4 font-medium">
+                Postulaciones · {sourceChannelLabels[selectedSource.sourceChannel]}
               </p>
+              {sourceApplicationsQuery.isPending ? (
+                <Skeleton className="mt-3 h-12 w-full" />
+              ) : sourceApplicationsQuery.data?.isErr() ? (
+                <div className="mt-2 flex items-center justify-between gap-2">
+                  <p className="text-xs text-destructive">
+                    No se pudieron cargar las postulaciones.
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => sourceApplicationsQuery.refetch()}
+                  >
+                    Reintentar
+                  </Button>
+                </div>
+              ) : sourceApplications?.rows.length ? (
+                <div className="mt-2 space-y-2">
+                  {sourceApplications.rows.map((application) => (
+                    <button
+                      type="button"
+                      key={application.applicationId}
+                      onClick={() =>
+                        router.push(
+                          `/dashboard/offers/${application.jobId}/applications/${application.applicationId}`
+                        )
+                      }
+                      className="flex w-full items-center justify-between gap-3 rounded-md border border-border/40 p-2 text-left hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring/50"
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-medium">
+                          {application.candidateName}
+                        </span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {application.jobTitle}
+                        </span>
+                      </span>
+                      <span className="shrink-0 text-right text-xs text-muted-foreground">
+                        {statusLabels[application.status] ?? application.status}
+                        <span className="block">
+                          {formatDateChilean(application.appliedAt, "d MMM yyyy")}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>
+                      Página {sourceApplications.page} de{" "}
+                      {Math.max(
+                        1,
+                        Math.ceil(sourceApplications.total / sourceApplications.pageSize)
+                      )}
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={sourceApplications.page <= 1}
+                        onClick={() => setSourcePage((page) => Math.max(1, page - 1))}
+                      >
+                        Anterior
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={
+                          sourceApplications.page * sourceApplications.pageSize >=
+                          sourceApplications.total
+                        }
+                        onClick={() => setSourcePage((page) => page + 1)}
+                      >
+                        Siguiente
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  No hay postulaciones de esta fuente en el período.
+                </p>
+              )}
             </div>
           )}
         </CardContent>

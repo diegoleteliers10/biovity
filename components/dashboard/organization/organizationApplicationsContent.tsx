@@ -1,6 +1,6 @@
 "use client"
 
-import { useQueryClient } from "@tanstack/react-query"
+import { Result } from "better-result"
 import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
@@ -16,14 +16,17 @@ import type { JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
 import { useLogActivityMutation } from "@/lib/api/use-activity-logs"
 import {
-  applicationsKeys,
   useApplicationsByJob,
-  useUpdateApplicationStatusMutation,
+  useUpdateApplicationPipelineStageMutation,
 } from "@/lib/api/use-applications"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useJobs } from "@/lib/api/use-jobs"
+import { useOrganizationMembers } from "@/lib/api/use-organization-members"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
+import { usePipelineStages } from "@/lib/api/use-pipeline-stages"
 import { latestEvaluationByApplication } from "@/lib/evaluations"
+import { isHiringPlanOverdue } from "@/lib/hiring-plan"
+import { resolveApplicantPipelineStageId } from "@/lib/pipeline-stage-board"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
 import type { EventType } from "@/lib/types/events"
 import { formatDateChilean } from "@/lib/utils"
@@ -34,7 +37,7 @@ import { JobSelector, NoApplicantsEmptyState, NoJobSelectedState } from "./appli
 import { OfferLetterEditorDialog } from "./offer-letter/OfferLetterEditorDialog"
 import { PipelineToolbar } from "./PipelineToolbar"
 
-function applicationToApplicant(app: Application): Applicant {
+function applicationToApplicant(app: Application, memberNames: Map<string, string>): Applicant {
   return {
     id: app.id,
     candidateId: app.candidateId,
@@ -42,6 +45,13 @@ function applicationToApplicant(app: Application): Applicant {
     position: app.candidate?.profession ?? app.job?.title ?? "—",
     dateApplied: app.createdAt ? formatDateChilean(app.createdAt, "d MMM yyyy") : "—",
     stage: app.status as ApplicationStage,
+    pipelineStageId: app.pipelineStageId,
+    assigneeId: app.assigneeId,
+    assigneeName:
+      app.assigneeName ?? (app.assigneeId ? (memberNames.get(app.assigneeId) ?? null) : null),
+    nextAction: app.nextAction,
+    targetDate: app.targetDate,
+    stageChangedAt: app.stageChangedAt,
     avatar: app.candidate?.avatar,
     candidateEducation: app.candidate?.education ?? undefined,
     candidateSkills: app.candidate?.skills ?? undefined,
@@ -51,7 +61,6 @@ function applicationToApplicant(app: Application): Applicant {
 }
 
 export function OrganizationApplicationsContent() {
-  const queryClient = useQueryClient()
   const router = useRouter()
   const session = useDashboardSession()
   const organizationId = session?.user?.organizationId ?? undefined
@@ -62,18 +71,31 @@ export function OrganizationApplicationsContent() {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
   const [offerDialogApp, setOfferDialogApp] = useState<Applicant | null>(null)
   const { data: organization } = useOrganization(organizationId)
+  const { data: organizationMembers = [] } = useOrganizationMembers(organizationId)
 
   const { data: applications, isLoading: appsLoading } = useApplicationsByJob(
     selectedJobId ?? undefined
   )
-  const updateStatusMutation = useUpdateApplicationStatusMutation(selectedJobId ?? "")
+  const pipelineStagesQuery = usePipelineStages(selectedJobId ?? undefined)
+  const pipelineStages = pipelineStagesQuery.data ?? []
+  const updatePipelineStageMutation = useUpdateApplicationPipelineStageMutation(selectedJobId ?? "")
   const logActivityMutation = useLogActivityMutation(organizationId ?? "")
 
   const [searchQuery, setSearchQuery] = useState("")
-  const [stageFilter, setStageFilter] = useState<ApplicationStage | "all">("all")
+  const [stageFilter, setStageFilter] = useState("all")
+  const [assigneeFilter, setAssigneeFilter] = useState("all")
+  const [overdueOnly, setOverdueOnly] = useState(false)
   const [evaluationFilter, setEvaluationFilter] = useState("all")
   const [selectionMode, setSelectionMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+
+  const handleSelectJob = useCallback((jobId: string | null) => {
+    setSelectedJobId(jobId)
+    setStageFilter("all")
+    setAssigneeFilter("all")
+    setOverdueOnly(false)
+    setSelectedIds(new Set())
+  }, [])
 
   const [eventModal, setEventModal] = useState<{
     isOpen: boolean
@@ -86,7 +108,16 @@ export function OrganizationApplicationsContent() {
     [jobList, selectedJobId]
   )
 
-  const applicants = useMemo(() => (applications ?? []).map(applicationToApplicant), [applications])
+  const memberNames = useMemo(
+    () =>
+      new Map(organizationMembers.map((member) => [member.userId, member.user?.name ?? "Miembro"])),
+    [organizationMembers]
+  )
+  const applicants = useMemo(
+    () =>
+      (applications ?? []).map((application) => applicationToApplicant(application, memberNames)),
+    [applications, memberNames]
+  )
 
   const evaluationQuery = useEvaluationBatch(applicants.map((applicant) => applicant.id))
   const evaluationsByApplication = useMemo(() => {
@@ -108,7 +139,21 @@ export function OrganizationApplicationsContent() {
   const filteredApplicants = useMemo(() => {
     let result = applicants
     if (stageFilter !== "all") {
-      result = result.filter((a) => a.stage === stageFilter)
+      result = result.filter(
+        (applicant) => resolveApplicantPipelineStageId(applicant, pipelineStages) === stageFilter
+      )
+    }
+    if (assigneeFilter !== "all") {
+      result = result.filter((applicant) =>
+        assigneeFilter === "unassigned"
+          ? !applicant.assigneeId
+          : applicant.assigneeId === assigneeFilter
+      )
+    }
+    if (overdueOnly) {
+      result = result.filter((applicant) =>
+        isHiringPlanOverdue(applicant.targetDate, applicant.stage)
+      )
     }
     if (evaluationFilter !== "all") {
       result =
@@ -124,12 +169,20 @@ export function OrganizationApplicationsContent() {
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
-      result = result.filter((a) => a.candidateName.toLowerCase().includes(q))
+      result = result.filter(
+        (a) =>
+          a.candidateName.toLowerCase().includes(q) ||
+          a.nextAction?.toLowerCase().includes(q) ||
+          a.assigneeName?.toLowerCase().includes(q)
+      )
     }
     return result
   }, [
     applicants,
+    pipelineStages,
     stageFilter,
+    assigneeFilter,
+    overdueOnly,
     searchQuery,
     evaluationFilter,
     evaluationsByApplication,
@@ -162,7 +215,7 @@ export function OrganizationApplicationsContent() {
     error: scoreError,
   } = useKanbanAIScoring(selectedJobId)
 
-  const createChatMutation = useCreateOrFindChatMutation(recruiterId)
+  const createChatMutation = useCreateOrFindChatMutation(recruiterId, organizationId)
 
   const handleViewProfile = useCallback(
     (candidateId: string) => {
@@ -223,66 +276,68 @@ export function OrganizationApplicationsContent() {
     [getScore]
   )
 
-  const handleStatusChange = useCallback(
-    (applicationId: string, newStage: ApplicationStage) => {
-      if (!selectedJobId) return
-
-      const previousApps = queryClient.getQueryData(applicationsKeys.byJob(selectedJobId))
-
-      queryClient.setQueryData(
-        applicationsKeys.byJob(selectedJobId),
-        (old: Application[] | undefined) => {
-          if (!old) return old
-          return old.map((app) => (app.id === applicationId ? { ...app, status: newStage } : app))
-        }
+  const handleStageChange = useCallback(
+    async (
+      applicationId: string,
+      stageId: string,
+      rejectionNote?: string,
+      rejectionReasonId?: string
+    ): Promise<boolean> => {
+      if (!selectedJobId) return false
+      const result = await Result.tryPromise(() =>
+        updatePipelineStageMutation.mutateAsync({
+          id: applicationId,
+          stageId,
+          rejectionNote,
+          rejectionReasonId,
+        })
       )
+      if (result.isErr()) return false
 
-      updateStatusMutation.mutate(
-        { id: applicationId, status: newStage },
-        {
-          onSuccess: (updatedApp) => {
-            if (organizationId && recruiterId) {
-              const candidateName =
-                updatedApp.candidate?.name ||
-                applications?.find((a) => a.id === applicationId)?.candidate?.name ||
-                "un candidato"
-              const jobTitle = jobList.find((j) => j.id === selectedJobId)?.title || "la oferta"
-              logActivityMutation.mutate({
-                userId: recruiterId,
-                action: "candidate.stage_changed",
-                description: `Cambió la etapa de ${candidateName} a "${newStage}" en la oferta "${jobTitle}"`,
-              })
-            }
-          },
-          onError: () => {
-            queryClient.setQueryData(applicationsKeys.byJob(selectedJobId), previousApps)
-          },
-          onSettled: () => {
-            queryClient.invalidateQueries({
-              queryKey: applicationsKeys.byJob(selectedJobId),
-            })
-          },
-        }
-      )
+      if (organizationId && recruiterId) {
+        const candidateName =
+          result.value.candidate?.name ||
+          applications?.find((application) => application.id === applicationId)?.candidate?.name ||
+          "un candidato"
+        const jobTitle = jobList.find((job) => job.id === selectedJobId)?.title || "la oferta"
+        const stageName = pipelineStages.find((stage) => stage.id === stageId)?.name ?? "la etapa"
+        logActivityMutation.mutate({
+          userId: recruiterId,
+          action: "candidate.stage_changed",
+          description: `Cambió la etapa de ${candidateName} a "${stageName}" en la oferta "${jobTitle}"`,
+        })
+      }
+      return true
     },
     [
       selectedJobId,
-      updateStatusMutation,
-      queryClient,
-      applications,
-      jobList,
+      updatePipelineStageMutation,
       organizationId,
       recruiterId,
+      applications,
+      jobList,
+      pipelineStages,
       logActivityMutation.mutate,
     ]
   )
 
-  const handleBulkReject = useCallback(() => {
-    for (const id of selectedIds) {
-      handleStatusChange(id, "rechazado")
+  const handleBulkReject = useCallback(async (rejectionReasonId: string, rejectionNote?: string) => {
+    const rejectStage =
+      pipelineStages.find((stage) => !stage.isArchived && stage.systemKey === "rechazado") ??
+      pipelineStages.find((stage) => !stage.isArchived && stage.statusProjection === "rechazado")
+    if (!rejectStage) {
+      toast.error("Esta oferta no tiene una etapa activa de rechazo")
+      return
     }
+    const results = await Promise.all(
+      [...selectedIds].map((id) =>
+        handleStageChange(id, rejectStage.id, rejectionNote, rejectionReasonId)
+      )
+    )
+    if (results.some((result) => !result))
+      toast.error("No se pudieron mover todas las postulaciones")
     handleClearSelection()
-  }, [selectedIds, handleStatusChange, handleClearSelection])
+  }, [pipelineStages, selectedIds, handleStageChange, handleClearSelection])
 
   const handleBulkMessage = useCallback(() => {
     const firstId = selectedIds.values().next().value
@@ -300,13 +355,15 @@ export function OrganizationApplicationsContent() {
   }, [selectedIds, applicants, handleSendMessage, handleClearSelection])
 
   const handleBulkAdvance = useCallback(
-    (targetStage: ApplicationStage) => {
-      for (const id of selectedIds) {
-        handleStatusChange(id, targetStage)
-      }
+    async (targetStageId: string) => {
+      const results = await Promise.all(
+        [...selectedIds].map((id) => handleStageChange(id, targetStageId))
+      )
+      if (results.some((result) => !result))
+        toast.error("No se pudieron mover todas las postulaciones")
       handleClearSelection()
     },
-    [selectedIds, handleStatusChange, handleClearSelection]
+    [selectedIds, handleStageChange, handleClearSelection]
   )
 
   const handleCreateEvent = useCallback(
@@ -323,11 +380,16 @@ export function OrganizationApplicationsContent() {
   const handleEventSuccess = useCallback(
     async (_eventId: string) => {
       if (!eventModal.applicant) return
-      const newStage: ApplicationStage =
-        eventModal.lockedType === "interview" ? "entrevista" : "contratado"
-      handleStatusChange(eventModal.applicant.id, newStage)
+      const projection = eventModal.lockedType === "interview" ? "entrevista" : "contratado"
+      const targetStage =
+        pipelineStages.find((stage) => !stage.isArchived && stage.systemKey === projection) ??
+        pipelineStages.find((stage) => !stage.isArchived && stage.statusProjection === projection)
+      if (targetStage) {
+        const moved = await handleStageChange(eventModal.applicant.id, targetStage.id)
+        if (!moved) toast.error("El evento se creó, pero no se pudo actualizar la etapa")
+      } else toast.error("No hay una etapa activa compatible con este evento")
     },
-    [eventModal.applicant, eventModal.lockedType, handleStatusChange]
+    [eventModal.applicant, eventModal.lockedType, pipelineStages, handleStageChange]
   )
 
   if (!organizationId) {
@@ -374,7 +436,7 @@ export function OrganizationApplicationsContent() {
       <div className="flex min-h-0 flex-1 gap-4 flex-col lg:flex-row overflow-hidden">
         <JobSelector
           selectedJobId={selectedJobId}
-          onSelectJobId={setSelectedJobId}
+          onSelectJobId={handleSelectJob}
           jobs={jobList}
           isLoading={jobsLoading}
           error={jobsError}
@@ -431,7 +493,7 @@ export function OrganizationApplicationsContent() {
                 </p>
               </div>
               <div className="flex-1 min-h-0 p-3 lg:p-4 flex flex-col overflow-hidden">
-                {appsLoading ? (
+                {appsLoading || pipelineStagesQuery.isLoading ? (
                   <div className="flex h-full items-center justify-center py-12">
                     <div className="space-y-3 w-full p-3 lg:p-4">
                       {["first", "second", "third"].map((key) => (
@@ -448,6 +510,17 @@ export function OrganizationApplicationsContent() {
                       ))}
                     </div>
                   </div>
+                ) : pipelineStagesQuery.isError ? (
+                  <div role="alert" className="m-auto flex flex-col items-center gap-3 text-sm">
+                    <p className="text-destructive">No se pudieron cargar las etapas.</p>
+                    <button
+                      type="button"
+                      onClick={() => void pipelineStagesQuery.refetch()}
+                      className="underline"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
                 ) : applicants.length === 0 ? (
                   <NoApplicantsEmptyState jobTitle={selectedJob.title} />
                 ) : (
@@ -458,15 +531,22 @@ export function OrganizationApplicationsContent() {
                         onSearchChange={setSearchQuery}
                         stageFilter={stageFilter}
                         onStageFilterChange={setStageFilter}
+                        pipelineStages={pipelineStages}
+                        members={organizationMembers}
+                        assigneeFilter={assigneeFilter}
+                        onAssigneeFilterChange={setAssigneeFilter}
+                        overdueOnly={overdueOnly}
+                        onOverdueOnlyChange={setOverdueOnly}
                         evaluationFilter={evaluationFilter}
                         onEvaluationFilterChange={setEvaluationFilter}
                         evaluationsAvailable={
                           !evaluationQuery.isLoading && !evaluationQuery.isError
                         }
                         selectedCount={selectedIds.size}
-                        selectedApplicants={filteredApplicants.filter((a) => selectedIds.has(a.id))}
+                        selectedApplicants={applicants.filter((a) => selectedIds.has(a.id))}
                         onClearSelection={handleClearSelection}
                         onBulkReject={handleBulkReject}
+                        organizationId={organizationId ?? ""}
                         onBulkMessage={handleBulkMessage}
                         onBulkAdvance={handleBulkAdvance}
                       />
@@ -498,7 +578,8 @@ export function OrganizationApplicationsContent() {
                     <div className="flex-1 min-h-0 overflow-hidden">
                       <ApplicationsKanban
                         applicants={filteredApplicants}
-                        onStatusChange={handleStatusChange}
+                        stages={pipelineStages}
+                        onStageChange={handleStageChange}
                         onCreateEvent={handleCreateEvent}
                         getScore={getScore}
                         getEvaluations={getEvaluations}

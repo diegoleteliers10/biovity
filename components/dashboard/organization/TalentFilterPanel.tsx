@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { TalentFilters } from "@/lib/api/use-talent"
+import type { TalentFilterValues } from "@/lib/api/talent-search"
 
 const EXPERIENCE_LEVELS = [
   { value: "junior", label: "Junior (0-2 años)" },
@@ -33,8 +33,8 @@ const AVAILABILITY_OPTIONS = [
 ]
 
 interface TalentFilterPanelProps {
-  filters: TalentFilters
-  onFiltersChange: (filters: Partial<TalentFilters>) => void
+  filters: TalentFilterValues
+  onFiltersChange: (filters: Partial<TalentFilterValues>) => void
   onReset: () => void
 }
 

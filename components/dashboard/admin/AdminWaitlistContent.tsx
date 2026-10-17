@@ -31,7 +31,7 @@ type WaitlistEntry = {
 
 type InviteResult = {
   id: string
-  status: "sent" | "skipped" | "failed"
+  status: "queued" | "already_queued" | "skipped" | "failed"
 }
 
 type InviteResponse = {
@@ -337,14 +337,17 @@ export function AdminWaitlistContent() {
       const payload = data as Partial<InviteResponse> | null
       const results = payload?.results ?? []
       const remaining = payload?.remaining ?? 0
-      const sent = results.filter((r) => r.status === "sent").length
+      const queued = results.filter((r) => r.status === "queued").length
+      const alreadyQueued = results.filter((r) => r.status === "already_queued").length
       const skipped = results.filter((r) => r.status === "skipped").length
       const failed = results.filter((r) => r.status === "failed").length
 
       if (failed > 0) {
-        toast.error(`Enviados: ${sent}, ya invitados: ${skipped}, fallaron: ${failed}`)
-      } else if (sent > 0) {
-        toast.success(`Correo(s) de acceso enviado(s) a ${sent} usuario(s)`)
+        toast.error(
+          `En cola: ${queued}, ya en cola: ${alreadyQueued}, ya invitados: ${skipped}, fallaron: ${failed}`
+        )
+      } else if (queued > 0 || alreadyQueued > 0) {
+        toast.success(`Correos en cola: ${queued}. Ya en cola: ${alreadyQueued}.`)
       } else {
         toast.info("Todos los seleccionados ya fueron invitados")
       }

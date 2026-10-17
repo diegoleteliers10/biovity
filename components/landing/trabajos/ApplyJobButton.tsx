@@ -19,6 +19,7 @@ type ApplyJobButtonProps = {
 export function ApplyJobButton({ jobId, jobTitle, compact, className }: ApplyJobButtonProps) {
   const { push } = useRouter()
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [distributionSourceId, setDistributionSourceId] = useState<string | null>(null)
   const { useSession } = authClient
   const { data: session } = useSession()
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id
@@ -34,8 +35,11 @@ export function ApplyJobButton({ jobId, jobTitle, compact, className }: ApplyJob
   const isLoggedIn = Boolean(session?.user)
 
   const handleApply = () => {
+    const sourceId = new URLSearchParams(window.location.search).get("sourceId")
+    setDistributionSourceId(sourceId)
     if (!isLoggedIn) {
-      push(`/login/professional?redirect=/jobs/${jobId}`)
+      const jobPath = `/jobs/${jobId}${sourceId ? `?sourceId=${encodeURIComponent(sourceId)}` : ""}`
+      push(`/login/professional?redirect=${encodeURIComponent(jobPath)}`)
       return
     }
     if (!isProfessional) return
@@ -60,6 +64,7 @@ export function ApplyJobButton({ jobId, jobTitle, compact, className }: ApplyJob
         <ApplyJobSheet
           jobId={jobId}
           jobTitle={safeJobTitle}
+          distributionSourceId={distributionSourceId}
           open={sheetOpen}
           onOpenChange={setSheetOpen}
         />
@@ -98,6 +103,7 @@ export function ApplyJobButton({ jobId, jobTitle, compact, className }: ApplyJob
       <ApplyJobSheet
         jobId={jobId}
         jobTitle={safeJobTitle}
+        distributionSourceId={distributionSourceId}
         open={sheetOpen}
         onOpenChange={setSheetOpen}
       />

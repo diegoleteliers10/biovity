@@ -15,26 +15,32 @@ import {
   createEventNote,
   deleteEvent,
   getEventById,
+  getEventChangeHistory,
   getEventNotes,
   getEvents,
   getParticipantStatuses,
+  getParticipantStatusHistory,
   updateEvent,
   updateParticipantStatus,
 } from "./events"
 
-import { removeCalendarEvent, storeCalendarEvent } from "./events-cache"
+import { removeCalendarEvent, storeCalendarEvent, storeParticipantStatus } from "./events-cache"
 
 export const eventsKeys = {
   all: ["events"] as const,
   list: (filters?: Record<string, unknown>) => ["events", "list", filters] as const,
   detail: (id: string) => ["events", "detail", id] as const,
   notes: (eventId: string) => ["events", "notes", eventId] as const,
+  statusHistory: (eventId: string, userId: string) =>
+    ["events", "status-history", eventId, userId] as const,
+  changeHistory: (eventId: string) => ["events", "change-history", eventId] as const,
 }
 
 export function useEvents(filters?: {
   userId?: string
   organizerId?: string
   organizationId?: string
+  applicationId?: string
   type?: EventType
   status?: EventStatus
   from?: string
@@ -128,6 +134,7 @@ export function useUpdateEvent() {
       void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
 
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.changeHistory(data.id) })
       storeCalendarEvent(queryClient, data)
       void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
     },
@@ -148,6 +155,7 @@ export function useDeleteEvent() {
     onSuccess: (_data, id) => {
       void queryClient.cancelQueries({ queryKey: eventsKeys.all })
       removeCalendarEvent(queryClient, id)
+      void queryClient.invalidateQueries({ queryKey: eventsKeys.changeHistory(id) })
       void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
       void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
       void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
@@ -176,7 +184,8 @@ export function useUpdateParticipantStatus() {
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
     },
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
+      await queryClient.cancelQueries({ queryKey: ["events", "participant-statuses"] })
       void queryClient.invalidateQueries({ queryKey: ["org", "upcomingInterviews"] })
       void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
       void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
@@ -184,10 +193,12 @@ export function useUpdateParticipantStatus() {
       queryClient.setQueryData(eventsKeys.detail(data.id), data)
       storeCalendarEvent(queryClient, data)
       void queryClient.invalidateQueries({ queryKey: eventsKeys.all })
-      queryClient.setQueriesData<Record<string, ParticipantStatus>>(
-        { queryKey: ["events", "participant-statuses"] },
-        (old) => ({ ...old, [variables.eventId]: variables.status })
-      )
+      void queryClient.invalidateQueries({
+        queryKey: eventsKeys.statusHistory(variables.eventId, variables.userId),
+      })
+      if (!storeParticipantStatus(queryClient, data, variables.userId)) {
+        void queryClient.invalidateQueries({ queryKey: ["events", "participant-statuses"] })
+      }
     },
   })
 }
@@ -210,6 +221,52 @@ export function useEventNotes(eventId: string | undefined) {
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,
+    refetch: query.refetch,
+  }
+}
+
+export function useParticipantStatusHistory(
+  eventId: string | undefined,
+  userId: string | undefined
+) {
+  const query = useQuery({
+    queryKey: eventsKeys.statusHistory(eventId ?? "", userId ?? ""),
+    queryFn: async () => {
+      if (!eventId || !userId)
+        return Promise.reject(new Error("Event and participant IDs required"))
+      const result = await getParticipantStatusHistory(eventId, userId)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    enabled: Boolean(eventId && userId),
+  })
+
+  return {
+    history: query.data?.entries ?? [],
+    isLoading: query.isLoading,
+    isError: query.isError,
+    refetch: query.refetch,
+  }
+}
+
+export function useEventChangeHistory(eventId: string | undefined, enabled = true) {
+  const query = useQuery({
+    queryKey: eventsKeys.changeHistory(eventId ?? ""),
+    queryFn: async () => {
+      if (!eventId) return Promise.reject(new Error("Event ID required"))
+      const result = await getEventChangeHistory(eventId)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    enabled: Boolean(eventId && enabled),
+  })
+
+  return {
+    history: query.data?.entries ?? [],
+    isLoading: query.isLoading,
+    isError: query.isError,
     refetch: query.refetch,
   }
 }

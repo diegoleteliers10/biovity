@@ -1,6 +1,11 @@
 import type { QueryClient } from "@tanstack/react-query"
 import { z } from "zod"
-import type { Event, PaginatedEventsResponse } from "@/lib/types/events"
+import type {
+  Event,
+  EventWithParticipants,
+  PaginatedEventsResponse,
+  ParticipantStatus,
+} from "@/lib/types/events"
 
 const FiltersSchema = z
   .object({
@@ -62,4 +67,22 @@ export function removeCalendarEvent(client: QueryClient, id: string) {
     }
   })
   client.removeQueries({ queryKey: ["events", "detail", id], exact: true })
+}
+
+export function storeParticipantStatus(
+  client: QueryClient,
+  event: EventWithParticipants,
+  userId: string
+): boolean {
+  const participant = event.participants.find((item) => item.userId === userId)
+  if (!participant) return false
+
+  const cachedStatuses = client.getQueriesData<Record<string, ParticipantStatus>>({
+    queryKey: ["events", "participant-statuses"],
+  })
+  const updates = cachedStatuses.filter(([, statuses]) => statuses !== undefined)
+  for (const [queryKey, statuses] of updates) {
+    client.setQueryData(queryKey, { ...statuses, [event.id]: participant.status })
+  }
+  return updates.length > 0
 }

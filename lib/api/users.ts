@@ -1,6 +1,12 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson, fetchJsonWithSession } from "@/lib/result"
+import {
+  type CandidateAvailability,
+  type CandidateSeniority,
+  candidateAvailabilityValues,
+  candidateSeniorityValues,
+} from "./talent-search"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -18,10 +24,18 @@ export type UserOrganization = {
 }
 
 export type UserNotificationPreferences = {
-  digest?: "immediate" | "daily" | "never"
-  newApplications?: boolean
-  interviews?: boolean
-  messages?: boolean
+  digest?: "none" | "immediate" | "daily" | "weekly"
+  channels?: {
+    email?: boolean
+    in_app?: boolean
+  }
+  events?: {
+    application?: boolean
+    interview?: boolean
+    message?: boolean
+    job_alert?: boolean
+    system?: boolean
+  }
 }
 
 export type User = {
@@ -35,6 +49,8 @@ export type User = {
   organization?: UserOrganization
   avatar: string | null
   profession: string | null
+  experienceLevel?: CandidateSeniority | null
+  availability?: CandidateAvailability | null
   birthday: string | null
   phone: string | null
   location: UserLocation | null
@@ -46,9 +62,12 @@ export type User = {
 
 export type UpdateUserInput = {
   name?: string
-  type?: string
+  type?: "professional" | "organization" | "admin"
+  isActive?: boolean
   avatar?: string
   profession?: string
+  experienceLevel?: CandidateSeniority | null
+  availability?: CandidateAvailability | null
   phone?: string
   birthday?: string
   location?: UserLocation
@@ -59,6 +78,10 @@ export function formatUserLocation(loc: UserLocation | null): string {
   if (!loc) return ""
   const parts = [loc.city, loc.country].filter(Boolean)
   return parts.join(", ")
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
 }
 
 function normalizeUser(raw: unknown): User | null {
@@ -98,17 +121,31 @@ function normalizeUser(raw: unknown): User | null {
   let notificationPreferences: UserNotificationPreferences | null = null
   if (prefs && typeof prefs === "object") {
     const p = prefs as Record<string, unknown>
+    const channels = isRecord(p.channels) ? p.channels : undefined
+    const events = isRecord(p.events) ? p.events : undefined
     notificationPreferences = {
       digest:
-        typeof p.digest === "string" ? (p.digest as "immediate" | "daily" | "never") : undefined,
-      newApplications:
-        p.newApplications !== undefined
-          ? Boolean(p.newApplications)
-          : p.new_applications !== undefined
-            ? Boolean(p.new_applications)
-            : undefined,
-      interviews: p.interviews !== undefined ? Boolean(p.interviews) : undefined,
-      messages: p.messages !== undefined ? Boolean(p.messages) : undefined,
+        p.digest === "none" ||
+        p.digest === "immediate" ||
+        p.digest === "daily" ||
+        p.digest === "weekly"
+          ? p.digest
+          : undefined,
+      channels: channels
+        ? {
+            email: typeof channels.email === "boolean" ? channels.email : undefined,
+            in_app: typeof channels.in_app === "boolean" ? channels.in_app : undefined,
+          }
+        : undefined,
+      events: events
+        ? {
+            application: typeof events.application === "boolean" ? events.application : undefined,
+            interview: typeof events.interview === "boolean" ? events.interview : undefined,
+            message: typeof events.message === "boolean" ? events.message : undefined,
+            job_alert: typeof events.job_alert === "boolean" ? events.job_alert : undefined,
+            system: typeof events.system === "boolean" ? events.system : undefined,
+          }
+        : undefined,
     }
   }
 
@@ -132,6 +169,8 @@ function normalizeUser(raw: unknown): User | null {
         : undefined,
     avatar: u.avatar != null ? String(u.avatar) : null,
     profession: u.profession != null ? String(u.profession) : null,
+    experienceLevel: candidateSeniorityValues.find((value) => value === u.experienceLevel) ?? null,
+    availability: candidateAvailabilityValues.find((value) => value === u.availability) ?? null,
     birthday:
       (u.birthday ?? u.date_of_birth) != null ? String(u.birthday ?? u.date_of_birth) : null,
     phone: (u.phone ?? u.phone_number) != null ? String(u.phone ?? u.phone_number) : null,
@@ -151,10 +190,10 @@ export type GetUsersParams = {
   search?: string
   // F8.1 — Filtros faceted
   profession?: string
-  experienceLevel?: string
+  experienceLevel?: CandidateSeniority
   city?: string
   country?: string
-  availability?: string
+  availability?: CandidateAvailability
   skills?: string
   minExperience?: number
   maxExperience?: number
@@ -266,8 +305,17 @@ export async function uploadAvatar(file: File): Promise<Result<string, ApiError 
 export async function setUserActive(
   userId: string,
   isActive: boolean
-): Promise<Result<{ success: true; isActive: boolean }, ApiError | NetworkError>> {
-  const result = await fetchJson<{ error?: string }>(`/api/admin/users/${userId}/is-active`, {
+): Promise<
+  Result<
+    { success: true; isActive: boolean; sessionRevocationPending?: boolean; message?: string },
+    ApiError | NetworkError
+  >
+> {
+  const result = await fetchJson<{
+    error?: string
+    sessionRevocationPending?: boolean
+    message?: string
+  }>(`/api/admin/users/${userId}/is-active`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ isActive }),
@@ -277,7 +325,12 @@ export async function setUserActive(
 
   const data = result.value
   if (data.error) return R.err(new ApiError({ status: 400, message: data.error }))
-  return R.ok({ success: true, isActive })
+  return R.ok({
+    success: true,
+    isActive,
+    sessionRevocationPending: result.value.sessionRevocationPending,
+    message: result.value.message,
+  })
 }
 
 export async function updateUser(

@@ -7,6 +7,21 @@ import { Input } from "@/components/ui/input"
 import { EditableCard } from "./EditableCard"
 import { EMPTY_PLACEHOLDER, emptySkill, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
 
+const seniorityLabels = {
+  junior: "Junior",
+  mid: "Mid-level",
+  senior: "Senior",
+  lead: "Lead",
+  manager: "Manager",
+} as const
+
+const availabilityLabels = {
+  immediate: "Disponible ahora",
+  "2weeks": "En 2 semanas",
+  "1month": "En 1 mes",
+  open: "Abierto a ofertas",
+} as const
+
 export function PersonalForm() {
   const {
     isEditing,
@@ -39,6 +54,62 @@ export function PersonalForm() {
               {data.bio || EMPTY_PLACEHOLDER}
             </p>
           )}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <label
+              htmlFor="profile-experience-level"
+              className="text-xs leading-4 font-medium text-foreground"
+            >
+              Nivel profesional
+            </label>
+            {isEditing ? (
+              <select
+                id="profile-experience-level"
+                value={formData.experienceLevel}
+                onChange={(event) => handleInputChange("experienceLevel", event.target.value)}
+                className="h-9 w-full rounded-lg border border-border/40 bg-surface-container-low px-2.5 text-sm text-foreground focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none"
+              >
+                <option value="">Sin especificar</option>
+                <option value="junior">Junior</option>
+                <option value="mid">Mid-level</option>
+                <option value="senior">Senior</option>
+                <option value="lead">Lead</option>
+                <option value="manager">Manager</option>
+              </select>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {data.experienceLevel ? seniorityLabels[data.experienceLevel] : EMPTY_PLACEHOLDER}
+              </p>
+            )}
+          </div>
+          <div className="space-y-1.5">
+            <label
+              htmlFor="profile-availability"
+              className="text-xs leading-4 font-medium text-foreground"
+            >
+              Disponibilidad
+            </label>
+            {isEditing ? (
+              <select
+                id="profile-availability"
+                value={formData.availability}
+                onChange={(event) => handleInputChange("availability", event.target.value)}
+                className="h-9 w-full rounded-lg border border-border/40 bg-surface-container-low px-2.5 text-sm text-foreground focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none"
+              >
+                <option value="">Sin especificar</option>
+                <option value="immediate">Disponible ahora</option>
+                <option value="2weeks">En 2 semanas</option>
+                <option value="1month">En 1 mes</option>
+                <option value="open">Abierto a ofertas</option>
+              </select>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {data.availability ? availabilityLabels[data.availability] : EMPTY_PLACEHOLDER}
+              </p>
+            )}
+          </div>
         </div>
 
         {isEditing && (

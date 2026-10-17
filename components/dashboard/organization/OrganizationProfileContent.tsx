@@ -34,6 +34,7 @@ import {
   INDUSTRY_OPTIONS,
   SIZE_OPTIONS,
 } from "@/components/dashboard/organization/BrandingTab"
+import { CompanyVerificationTab } from "@/components/dashboard/organization/CompanyVerificationTab"
 import { DangerZoneTab } from "@/components/dashboard/organization/DangerZoneTab"
 import { OrganizationOffersTimeline } from "@/components/dashboard/organization/OrganizationOffersTimeline"
 import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
@@ -651,6 +652,10 @@ export function OrganizationProfileContent() {
               <HugeiconsIcon icon={CreditCardIcon} size={14} strokeWidth={1.7} />
               Suscripción
             </TabsTrigger>
+            <TabsTrigger value="verification" className={pillTabClass}>
+              <HugeiconsIcon icon={Building06Icon} size={14} strokeWidth={1.7} />
+              Verificación
+            </TabsTrigger>
             <TabsTrigger value="ai" className={pillTabClass}>
               <HugeiconsIcon icon={Brain03Icon} size={14} strokeWidth={1.7} />
               IA
@@ -1045,6 +1050,18 @@ export function OrganizationProfileContent() {
             ) : (
               <p className="text-sm text-muted-foreground text-pretty">
                 No tienes una organización asociada.
+              </p>
+            )}
+          </TabsContent>
+
+          <TabsContent value="verification" className="mt-8">
+            {organizationId ? (
+              <PanelSection label="Verificación de empresa">
+                <CompanyVerificationTab organizationId={organizationId} />
+              </PanelSection>
+            ) : (
+              <p className="text-sm text-muted-foreground text-pretty">
+                Primero, crea una organización.
               </p>
             )}
           </TabsContent>

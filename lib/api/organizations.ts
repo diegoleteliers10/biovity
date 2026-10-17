@@ -63,6 +63,89 @@ export type Organization = {
   updatedAt: string
 }
 
+export type OrganizationVerificationStatus =
+  | "unverified"
+  | "pending"
+  | "verified"
+  | "rejected"
+  | "suspended"
+
+export type OrganizationVerificationRequest = {
+  id: string
+  organizationId: string
+  organizationName?: string
+  website?: string
+  legalName: string
+  countryCode: string
+  registrationNumber: string
+  registryUrl: string
+  status: "pending" | "approved" | "rejected"
+  reviewerUserId?: string | null
+  reviewedAt?: string | null
+  reviewReason?: string | null
+  createdAt: string
+  ownerEmail?: string | null
+  readiness?: OrganizationVerificationReadiness
+}
+
+export type OrganizationVerificationReadiness = {
+  corporateEmailVerified: boolean
+  profileComplete: boolean
+  missingProfileFields: string[]
+  ready: boolean
+}
+
+export type OrganizationVerification = {
+  status: OrganizationVerificationStatus
+  latestRequest: OrganizationVerificationRequest | null
+  readiness: OrganizationVerificationReadiness
+}
+
+export function getOrganizationJobSubmissionStatus(
+  verification: OrganizationVerification | undefined
+): "active" | "draft" {
+  return verification?.status === "verified" ? "active" : "draft"
+}
+
+export type SubmitOrganizationVerificationInput = Pick<
+  OrganizationVerificationRequest,
+  "legalName" | "countryCode" | "registrationNumber" | "registryUrl"
+>
+
+export async function getOrganizationVerification(
+  id: string
+): Promise<Result<OrganizationVerification, ApiError | NetworkError>> {
+  return fetchJson<OrganizationVerification>(`/api/v1/organizations/${id}/verification`)
+}
+
+export async function submitOrganizationVerification(
+  id: string,
+  input: SubmitOrganizationVerificationInput
+): Promise<Result<OrganizationVerificationRequest, ApiError | NetworkError>> {
+  return fetchJson<OrganizationVerificationRequest>(`/api/v1/organizations/${id}/verification`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+}
+
+export async function listOrganizationVerificationRequests(): Promise<
+  Result<OrganizationVerificationRequest[], ApiError | NetworkError>
+> {
+  return fetchJson<OrganizationVerificationRequest[]>("/api/v1/admin/organization-verification")
+}
+
+export async function reviewOrganizationVerification(
+  id: string,
+  input: { decision: "approved" | "rejected"; reason: string }
+): Promise<Result<void, ApiError | NetworkError>> {
+  return fetchJson<void>(`/api/v1/admin/organization-verification/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+}
+
 /** Public company profile served by GET /organizations/public endpoints. */
 export type PublicOrganization = {
   id: string
@@ -184,6 +267,23 @@ export async function createOrganization(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   })
+}
+
+export async function registerOrganizationForUser(
+  input: CreateOrganizationInput & { ownerUserId: string }
+): Promise<Result<Organization, ApiError | NetworkError>> {
+  const result = await fetchJson<unknown>(`${API_BASE}/api/v1/organizations/internal/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+  if (result.isErr()) return R.err(result.error)
+
+  const organization = normalizeOrganization(result.value)
+  if (!organization) {
+    return R.err(new ApiError({ status: 200, message: "Formato de respuesta inválido" }))
+  }
+  return R.ok(organization)
 }
 
 export async function getPublicOrganizations(

@@ -4,11 +4,15 @@ import { Result } from "better-result"
 import {
   type CreateJobInput,
   createJob,
+  createJobDistributionSource,
   deleteJob,
+  disableJobDistributionSource,
   getJob,
+  getJobDistributionSources,
   getJobs,
   getJobsByOrganization,
   getManagedJob,
+  type JobDistributionSource,
   type UpdateJobInput,
   updateJob,
 } from "./jobs"
@@ -27,6 +31,45 @@ export const jobsKeys = {
       params?.sort ?? "",
     ] as const,
   detail: (id: string) => ["jobs", "detail", id] as const,
+  distributionSources: (jobId: string) => ["jobs", jobId, "distribution-sources"] as const,
+}
+
+export function useJobDistributionSources(jobId: string) {
+  return useQuery({
+    queryKey: jobsKeys.distributionSources(jobId),
+    queryFn: async () => {
+      const result = await getJobDistributionSources(jobId)
+      if (!Result.isOk(result)) return Promise.reject(result.error)
+      return result.value
+    },
+    enabled: Boolean(jobId),
+  })
+}
+
+export function useCreateJobDistributionSource(jobId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (sourceChannel: JobDistributionSource["sourceChannel"]) => {
+      const result = await createJobDistributionSource(jobId, sourceChannel)
+      if (!Result.isOk(result)) return Promise.reject(result.error)
+      return result.value
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: jobsKeys.distributionSources(jobId) }),
+  })
+}
+
+export function useDisableJobDistributionSource(jobId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (sourceId: string) => {
+      const result = await disableJobDistributionSource(jobId, sourceId)
+      if (!Result.isOk(result)) return Promise.reject(result.error)
+      return result.value
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: jobsKeys.distributionSources(jobId) }),
+  })
 }
 
 export function useJobs(organizationId: string | undefined) {

@@ -11,6 +11,8 @@ import { PromptInjectionError } from "@/lib/ai/errors"
 import { buildSystemPrompt } from "@/lib/ai/prompts"
 import { resolveModel, streamText } from "@/lib/ai/provider"
 import { sanitizeInput } from "@/lib/ai/sanitize"
+import { guardApprovedTools } from "@/lib/ai/tool-approval-guard"
+import { consumeApprovedToolCall, deriveToolApprovalSecret } from "@/lib/ai/tool-approval-store"
 import { externalTools } from "@/lib/ai/tools/external"
 import { organizationTools } from "@/lib/ai/tools/organization"
 import { auth } from "@/lib/auth"
@@ -133,6 +135,26 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  const masterApprovalSecret = process.env.BETTER_AUTH_SECRET
+  if (!masterApprovalSecret) {
+    await audit.finish("blocked")
+    return Response.json(
+      { error: "No se pueden validar las aprobaciones de acciones." },
+      { status: 503 }
+    )
+  }
+  const approvalSecret = deriveToolApprovalSecret(
+    masterApprovalSecret,
+    session.user.id,
+    resolvedOrganizationId
+  )
+  const protectedTools = guardApprovedTools(
+    allTools,
+    session.user.id,
+    resolvedOrganizationId,
+    consumeApprovedToolCall
+  )
+
   const conversion = await Result.tryPromise(() => convertToModelMessages(messages))
   if (conversion.isErr()) {
     await audit.finish("failed")
@@ -143,7 +165,8 @@ export async function POST(req: NextRequest) {
       model: resolved.model,
       messages: conversion.value,
       stopWhen: stepCountIs(AI_LIMITS.DEFAULT_MAX_STEPS),
-      tools: allTools,
+      tools: protectedTools,
+      experimental_toolApprovalSecret: approvalSecret,
       system: systemPrompt,
       abortSignal: req.signal,
       experimental_onToolCallFinish: ({ toolCall }) => audit.recordTool(toolCall.toolName),

@@ -2,7 +2,9 @@
 
 import { ArrowDown01Icon, Edit01Icon, EyeIcon, HelpCircleIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery } from "@tanstack/react-query"
 import { useCallback, useMemo, useReducer, useRef, useState } from "react"
+import { DialogFooter } from "@/components/animate-ui/components/radix/dialog"
 import { Sheet, SheetContent, SheetHeader } from "@/components/animate-ui/components/radix/sheet"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -10,6 +12,10 @@ import { ComboboxPortalContainer } from "@/components/ui/combobox"
 import { useOnboarding } from "@/hooks/use-onboarding"
 import type { JobTemplate } from "@/lib/api/job-templates"
 import type { Job, JobBenefitInput } from "@/lib/api/jobs"
+import {
+  getOrganizationJobSubmissionStatus,
+  getOrganizationVerification,
+} from "@/lib/api/organizations"
 import { useLogActivityMutation } from "@/lib/api/use-activity-logs"
 import { useCreateJobMutation, useUpdateJobMutation } from "@/lib/api/use-jobs"
 import { useDashboardSession } from "../DashboardSessionContext"
@@ -20,7 +26,6 @@ import {
   JobContractFields,
   JobDescriptionField,
   JobExpirationField,
-  JobFormActions,
   JobFormHeader,
   JobLocationField,
   JobMinExperience,
@@ -139,6 +144,13 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
   const createMutation = useCreateJobMutation(organizationId)
   const updateMutation = useUpdateJobMutation(organizationId)
   const logActivityMutation = useLogActivityMutation(organizationId)
+  const verificationQuery = useQuery({
+    queryKey: ["organization-verification", organizationId],
+    queryFn: () => getOrganizationVerification(organizationId),
+  })
+  const verification = verificationQuery.data?.isOk() ? verificationQuery.data.value : undefined
+  const submissionStatus = getOrganizationJobSubmissionStatus(verification)
+  const canPublish = submissionStatus === "active"
   const session = useDashboardSession()
   const recruiterId = session?.user?.id ?? ""
   const { completeStep } = useOnboarding()
@@ -237,7 +249,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
     e.preventDefault()
     if (!canSubmit) return
 
-    const payload = buildPayload("active")
+    const payload = buildPayload(submissionStatus)
 
     if (isEdit && job) {
       updateMutation.mutate(
@@ -248,7 +260,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
               logActivityMutation.mutate({
                 userId: recruiterId,
                 action: "job.updated",
-                description: `Publicó la oferta de trabajo "${payload.title}"`,
+                description: `${canPublish ? "Actualizó la oferta" : "Guardó el borrador"} "${payload.title}"`,
               })
             }
             handleOpenChange(false)
@@ -264,7 +276,7 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
             logActivityMutation.mutate({
               userId: recruiterId,
               action: "job.created",
-              description: `Publicó la oferta de trabajo "${newJob.title}"`,
+              description: `${canPublish ? "Publicó la oferta" : "Guardó el borrador"} "${newJob.title}"`,
             })
           }
           handleOpenChange(false)
@@ -450,12 +462,27 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                 </p>
               )}
 
-              <JobFormActions
-                isSubmitting={isSubmitting}
-                isEdit={isEdit}
-                canSubmit={canSubmit}
-                onCancel={() => handleOpenChange(false)}
-              />
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  disabled={isSubmitting}
+                >
+                  {isEdit ? "Cancelar" : "Guardar borrador"}
+                </Button>
+                <Button type="submit" disabled={!canSubmit || isSubmitting}>
+                  {isSubmitting
+                    ? canPublish
+                      ? "Publicando..."
+                      : "Guardando..."
+                    : canPublish
+                      ? isEdit
+                        ? "Guardar cambios"
+                        : "Publicar oferta"
+                      : "Guardar borrador"}
+                </Button>
+              </DialogFooter>
             </form>
           )}
 
@@ -494,7 +521,13 @@ export function CreateJobDialog({ organizationId, open, onOpenChange, job }: Cre
                     disabled={!canSubmit || isSubmitting}
                     onClick={(e) => handleSubmit(e as unknown as React.FormEvent)}
                   >
-                    {isSubmitting ? "Publicando…" : "Publicar oferta"}
+                    {isSubmitting
+                      ? canPublish
+                        ? "Publicando…"
+                        : "Guardando…"
+                      : canPublish
+                        ? "Publicar oferta"
+                        : "Guardar borrador"}
                   </Button>
                 </div>
               )}

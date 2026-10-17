@@ -4,6 +4,7 @@ import { ArrowLeft01Icon, ArrowRight01Icon, PlusSignIcon } from "@hugeicons/core
 import { HugeiconsIcon } from "@hugeicons/react"
 import { addWeeks, endOfWeek, startOfWeek } from "date-fns"
 import { useMemo, useRef, useState } from "react"
+import { toast } from "sonner"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
@@ -18,7 +19,7 @@ import {
   useUpdateParticipantStatus,
 } from "@/lib/api/use-events"
 import type { Event, EventStatus, EventType, ParticipantStatus } from "@/lib/types/events"
-import { getChileanDate } from "@/lib/utils"
+
 import { Calendar } from "./calendar"
 import { EventDetailModal } from "./event-detail-modal"
 import { FilterBar } from "./filter-bar"
@@ -46,7 +47,7 @@ type CalendarSectionProps = {
 }
 
 export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
-  const [currentDate, setCurrentDate] = useState(() => getChileanDate())
+  const [currentDate, setCurrentDate] = useState(() => new Date())
   const [showEventModal, setShowEventModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const selectedDateRef = useRef<Date | null>(null)
@@ -54,7 +55,6 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   const [activeType, setActiveType] = useState<EventType | undefined>()
   const [activeStatus, setActiveStatus] = useState<EventStatus | undefined>()
   const [selectedEventDetail, setSelectedEventDetail] = useState<Event | null>(null)
-  const [rsvpStatuses, setRsvpStatuses] = useState<Record<string, ParticipantStatus>>({})
 
   const session = useDashboardSession()
   const organizerId = session?.user?.id
@@ -89,7 +89,6 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
     return events.filter((e) => organizerId && e.candidateId === organizerId).map((e) => e.id)
   }, [events, organizerId])
   const { statuses: serverStatuses } = useParticipantStatuses(participantEventIds)
-  const mergedStatuses: Record<string, ParticipantStatus> = { ...serverStatuses, ...rsvpStatuses }
   const deleteEvent = useDeleteEvent()
   const updateEvent = useUpdateEvent()
   const updateParticipantStatus = useUpdateParticipantStatus()
@@ -123,10 +122,11 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
   }
 
   const handleRSVP = (eventId: string, status: ParticipantStatus) => {
-    setRsvpStatuses((prev) => ({ ...prev, [eventId]: status }))
-    if (organizerId) {
-      updateParticipantStatus.mutate({ eventId, userId: organizerId, status })
-    }
+    if (!organizerId) return
+    updateParticipantStatus.mutate(
+      { eventId, userId: organizerId, status },
+      { onError: (error) => toast.error(error.message) }
+    )
   }
 
   const displayEvents =
@@ -196,7 +196,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => setCurrentDate(getChileanDate())}
+                    onClick={() => setCurrentDate(new Date())}
                     className="h-9 rounded-md px-3 text-xs font-medium"
                   >
                     Hoy
@@ -226,6 +226,8 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
               {view === "month" ? (
                 <Calendar
                   currentDate={currentDate}
+                  currentUserId={userId ?? organizerId}
+                  currentUserRole={userRole}
                   events={displayEvents}
                   isLoading={isLoading}
                   onCreateEvent={userRole === "organization" ? handleCreateEvent : undefined}
@@ -234,6 +236,8 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
               ) : (
                 <WeekView
                   currentDate={currentDate}
+                  currentUserId={userId ?? organizerId}
+                  currentUserRole={userRole}
                   events={displayEvents}
                   isLoading={isLoading}
                   onCreateEvent={userRole === "organization" ? handleCreateEvent : undefined}
@@ -249,7 +253,7 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
             isLoading={isLoading}
             userRole={userRole}
             currentUserId={organizerId}
-            rsvpStatuses={mergedStatuses}
+            rsvpStatuses={serverStatuses}
             onEdit={handleEditEvent}
             onDelete={(eventId) => deleteEvent.mutate(eventId)}
             onStatusChange={(eventId, status) =>
@@ -283,8 +287,9 @@ export function CalendarSection({ userId, userRole }: CalendarSectionProps) {
           isOpen={true}
           onClose={() => setSelectedEventDetail(null)}
           currentUserId={organizerId}
+          currentUserRole={userRole}
           participants={selectedEventDetailData?.participants}
-          rsvpStatus={mergedStatuses[selectedEventDetail.id]}
+          rsvpStatus={serverStatuses[selectedEventDetail.id]}
           onRSVP={handleRSVP}
           isUpdating={updateParticipantStatus.isPending}
         />

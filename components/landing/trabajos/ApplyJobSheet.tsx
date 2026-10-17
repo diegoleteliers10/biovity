@@ -18,11 +18,16 @@ import { getQuestionsByJob } from "@/lib/api/job-questions"
 import { useCreateApplicationMutation } from "@/lib/api/use-applications"
 import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
+import {
+  APPLICATION_SOURCE_CHANNELS,
+  type ApplicationSourceChannel,
+} from "@/lib/types/application-source"
 import { QuestionField } from "./question-field"
 
 type ApplyJobSheetProps = {
   jobId: string
   jobTitle: string
+  distributionSourceId?: string | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -33,6 +38,7 @@ type ApplicationFormState = {
   salaryMin: string
   salaryMax: string
   availabilityDate: string
+  sourceChannel: ApplicationSourceChannel
   error: string | null
 }
 
@@ -42,6 +48,7 @@ type ApplicationFormAction =
   | { type: "SET_SALARY_MIN"; value: string }
   | { type: "SET_SALARY_MAX"; value: string }
   | { type: "SET_AVAILABILITY_DATE"; value: string }
+  | { type: "SET_SOURCE_CHANNEL"; value: ApplicationSourceChannel }
   | { type: "SET_ERROR"; error: string | null }
   | { type: "RESET" }
 
@@ -60,6 +67,8 @@ const applicationFormReducer = (
       return { ...state, salaryMax: action.value }
     case "SET_AVAILABILITY_DATE":
       return { ...state, availabilityDate: action.value }
+    case "SET_SOURCE_CHANNEL":
+      return { ...state, sourceChannel: action.value }
     case "SET_ERROR":
       return { ...state, error: action.error }
     case "RESET":
@@ -69,6 +78,7 @@ const applicationFormReducer = (
         salaryMin: "",
         salaryMax: "",
         availabilityDate: "",
+        sourceChannel: "unknown",
         error: null,
       }
     default:
@@ -82,10 +92,17 @@ const initialApplicationFormState: ApplicationFormState = {
   salaryMin: "",
   salaryMax: "",
   availabilityDate: "",
+  sourceChannel: "unknown",
   error: null,
 }
 
-export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobSheetProps) {
+export function ApplyJobSheet({
+  jobId,
+  jobTitle,
+  distributionSourceId,
+  open,
+  onOpenChange,
+}: ApplyJobSheetProps) {
   const { useSession } = authClient
   const { data: session } = useSession()
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id
@@ -177,6 +194,11 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
         salaryCurrency:
           salaryMinValue !== undefined || salaryMaxValue !== undefined ? "CLP" : undefined,
         availabilityDate: formState.availabilityDate || undefined,
+        sourceChannel:
+          !distributionSourceId && formState.sourceChannel !== "unknown"
+            ? formState.sourceChannel
+            : undefined,
+        distributionSourceId: distributionSourceId ?? undefined,
         answers: answerList.length > 0 ? answerList : undefined,
       },
       {
@@ -293,6 +315,38 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
                 onChange={(e) => dispatch({ type: "SET_AVAILABILITY_DATE", value: e.target.value })}
               />
             </div>
+
+            {!distributionSourceId && (
+              <div className="space-y-2">
+                <Label htmlFor="sourceChannel">¿Dónde conociste esta oferta?</Label>
+                <select
+                  id="sourceChannel"
+                  value={formState.sourceChannel}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "SET_SOURCE_CHANNEL",
+                      value:
+                        APPLICATION_SOURCE_CHANNELS.find(
+                          (channel) => channel === event.target.value
+                        ) ?? "unknown",
+                    })
+                  }
+                  className="border-input bg-background h-10 w-full rounded-md border px-3 text-sm"
+                >
+                  <option value="unknown">No recuerdo</option>
+                  <option value="biovity">Biovity</option>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="laborum">Laborum</option>
+                  <option value="other_job_board">Otro portal de empleo</option>
+                  <option value="company_website">Sitio web de la empresa</option>
+                  <option value="social_media">Redes sociales</option>
+                  <option value="university">Universidad o institución educativa</option>
+                  <option value="referral">Recomendación</option>
+                  <option value="event">Feria o evento</option>
+                  <option value="other">Otro</option>
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="rounded-md border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">

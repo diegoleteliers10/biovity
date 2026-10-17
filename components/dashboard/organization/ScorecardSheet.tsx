@@ -177,7 +177,7 @@ function EvaluationEditor(props: EvaluationEditorProps) {
   const [savedDraft, setSavedDraft] = useState(() => makeDraft(existing))
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [targetStage, setTargetStage] = useState<ApplicationStage | null>(null)
+  const [targetStage, setTargetStage] = useState<string | null>(null)
   const [stagePending, setStagePending] = useState(false)
   const mutation = useUpsertEvaluationMutation(props.applicationId)
   const needsNotes = draft.rating === "neutral" || draft.rating === "negative"
@@ -219,15 +219,19 @@ function EvaluationEditor(props: EvaluationEditorProps) {
   }
 
   async function changeStage() {
-    if (!targetStage || !props.onStatusChange || stagePending) return
+    if (!targetStage || (!props.onStatusChange && !props.onStageChange) || stagePending) return
     setStagePending(true)
     const stage = targetStage
     const result = await Result.tryPromise(() =>
-      Promise.resolve(props.onStatusChange?.(props.applicationId, stage))
+      Promise.resolve(
+        props.onStageChange
+          ? props.onStageChange(props.applicationId, stage)
+          : props.onStatusChange?.(props.applicationId, stage as ApplicationStage)
+      )
     )
     setStagePending(false)
     setTargetStage(null)
-    if (result.isErr())
+    if (result.isErr() || result.value === false)
       setError("La evaluación está guardada. No se pudo cambiar la etapa. Reintenta.")
   }
 
@@ -378,22 +382,35 @@ function EvaluationEditor(props: EvaluationEditorProps) {
                 </Button>
               )}
             </div>
-            {props.onStatusChange && (
+            {(props.onStatusChange || props.onStageChange) && (
               <fieldset className="space-y-2">
                 <legend className="text-xs font-medium mb-2">Cambiar etapa</legend>
                 <div className="flex flex-wrap gap-2">
-                  {STAGES.filter((stage) => stage.value !== props.applicationStatus).map(
-                    (stage) => (
-                      <Button
-                        key={stage.value}
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setTargetStage(stage.value)}
-                      >
-                        {stage.label}
-                      </Button>
-                    )
-                  )}
+                  {props.pipelineStages
+                    ? props.pipelineStages
+                        .filter((stage) => !stage.isArchived && stage.id !== props.pipelineStageId)
+                        .map((stage) => (
+                          <Button
+                            key={stage.id}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setTargetStage(stage.id)}
+                          >
+                            {stage.name}
+                          </Button>
+                        ))
+                    : STAGES.filter((stage) => stage.value !== props.applicationStatus).map(
+                        (stage) => (
+                          <Button
+                            key={stage.value}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setTargetStage(stage.value)}
+                          >
+                            {stage.label}
+                          </Button>
+                        )
+                      )}
                 </div>
               </fieldset>
             )}
@@ -458,7 +475,10 @@ function EvaluationEditor(props: EvaluationEditorProps) {
         <AlertDialogContent className="shadow-none">
           <AlertDialogHeader>
             <AlertDialogTitle>
-              ¿Cambiar la etapa a {STAGES.find((stage) => stage.value === targetStage)?.label}?
+              ¿Cambiar la etapa a{" "}
+              {props.pipelineStages?.find((stage) => stage.id === targetStage)?.name ??
+                STAGES.find((stage) => stage.value === targetStage)?.label}
+              ?
             </AlertDialogTitle>
             <AlertDialogDescription>
               La evaluación está guardada. Confirma el cambio de etapa.

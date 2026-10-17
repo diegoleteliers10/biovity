@@ -1,95 +1,136 @@
+import { Result } from "better-result"
 import { type NextRequest, NextResponse } from "next/server"
-import { ZodError, z } from "zod"
+import { z } from "zod"
+import { registerOrganizationForUser } from "@/lib/api/organizations"
 import { auth } from "@/lib/auth"
-import { pool } from "@/lib/db"
+import { ApiError } from "@/lib/errors"
+import { matchesOrganizationEmailDomain } from "@/lib/organization-domain"
+import { organizationLoginEmailSchema } from "@/lib/validations/primitives"
 
-const registerOrganizationSchema = z.object({
-  contactName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  contactEmail: z.string().email("Email inválido"),
-  contactPassword: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  contactPosition: z.string().optional(),
-  organizationName: z.string().min(2, "El nombre de la organización es requerido"),
-  organizationWebsite: z.string().url("URL inválida").or(z.literal("")),
-})
+const registerOrganizationSchema = z
+  .object({
+    name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+    email: organizationLoginEmailSchema,
+    password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+    contactPosition: z.string().optional(),
+    organizationName: z.string().min(2, "El nombre de la organización es requerido"),
+    organizationWebsite: z.string().url("URL inválida"),
+  })
+  .refine((data) => matchesOrganizationEmailDomain(data.email, data.organizationWebsite), {
+    message: "El correo corporativo debe usar el mismo dominio que el sitio web de la empresa",
+    path: ["organizationWebsite"],
+  })
+
+const signUpResponseSchema = z
+  .object({
+    user: z.object({ id: z.string().min(1) }).optional(),
+    token: z.string().nullable().optional(),
+    error: z.union([z.string(), z.object({ message: z.string().optional() })]).optional(),
+    message: z.string().optional(),
+  })
+  .passthrough()
 
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json()
-    const parsed = registerOrganizationSchema.parse(body)
+  const bodyResult = await Result.tryPromise(() => request.json())
+  if (bodyResult.isErr()) {
+    return NextResponse.json({ error: "El cuerpo debe ser JSON válido" }, { status: 400 })
+  }
 
-    // Check if email already exists
-    const existingUser = await pool.query(`SELECT id FROM "user" WHERE LOWER(email) = LOWER($1)`, [
-      parsed.contactEmail,
-    ])
-    if (existingUser.rows.length > 0) {
-      return NextResponse.json({ error: "Ya existe una cuenta con este email" }, { status: 409 })
-    }
+  const parsed = registerOrganizationSchema.safeParse(bodyResult.value)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Datos inválidos" },
+      { status: 400 }
+    )
+  }
 
-    // Server-side sign up via better-auth. Email verification is required,
-    // so no session is created here; the user must verify before signing in.
-    const response = await auth.api.signUpEmail({
+  const signUpResult = await Result.tryPromise(() =>
+    auth.api.signUpEmail({
       body: {
-        email: parsed.contactEmail,
-        password: parsed.contactPassword,
-        name: parsed.contactName,
+        email: parsed.data.email,
+        password: parsed.data.password,
+        name: parsed.data.name,
         type: "organization",
-        profession: parsed.contactPosition || "Representante",
+        profession: parsed.data.contactPosition || "Representante",
         avatar: "",
       },
       asResponse: true,
     })
-
-    if (!(response instanceof Response)) {
-      return NextResponse.json({ error: "Error al registrar la organización" }, { status: 500 })
-    }
-
-    const data = await response.json()
-    if (data.error) {
-      return NextResponse.json(data, { status: 400 })
-    }
-
-    const userId = (data.user as { id?: string } | undefined)?.id
-    if (!userId) {
-      return NextResponse.json({ error: "Error al obtener el usuario" }, { status: 500 })
-    }
-
-    // Create organization + link user atomically
-    const client = await pool.connect()
-    try {
-      await client.query("BEGIN")
-      const orgResult = await client.query<{ id: string }>(
-        `INSERT INTO organization (name, website, "createdAt", "updatedAt")
-         VALUES ($1, $2, NOW(), NOW())
-         RETURNING id`,
-        [parsed.organizationName, parsed.organizationWebsite || null]
-      )
-      const organizationId = orgResult.rows[0]?.id
-      if (!organizationId) {
-        await client.query("ROLLBACK")
-        return NextResponse.json({ error: "Error al crear la organización" }, { status: 500 })
-      }
-      await client.query(`UPDATE "user" SET "organizationId" = $1 WHERE id = $2`, [
-        organizationId,
-        userId,
-      ])
-      await client.query("COMMIT")
-
-      return NextResponse.json({ user: data.user, organizationId })
-    } catch (err) {
-      await client.query("ROLLBACK")
-      console.error("[register/organization] tx", err)
-      return NextResponse.json({ error: "Error al crear la organización" }, { status: 500 })
-    } finally {
-      client.release()
-    }
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: error.issues[0]?.message ?? "Datos inválidos" },
-        { status: 400 }
-      )
-    }
-    console.error("[register/organization]", error)
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
+  )
+  if (signUpResult.isErr()) {
+    console.error("[register/organization] Better Auth signup failed", signUpResult.error)
+    return NextResponse.json({ error: "No pudimos crear la cuenta" }, { status: 500 })
   }
+
+  if (!signUpResult.value.ok) {
+    const status = signUpResult.value.status
+    const signUpErrorResult = await Result.tryPromise(() => signUpResult.value.json())
+    const signUpError = signUpErrorResult.isOk()
+      ? signUpResponseSchema.safeParse(signUpErrorResult.value)
+      : null
+    const message = signUpError?.success
+      ? (signUpError.data.message ??
+        (typeof signUpError.data.error === "string"
+          ? signUpError.data.error
+          : signUpError.data.error?.message))
+      : undefined
+    return NextResponse.json(
+      { error: message ?? "No pudimos crear la cuenta" },
+      { status: status >= 400 && status < 500 ? 400 : 502 }
+    )
+  }
+
+  const signUpBodyResult = await Result.tryPromise(() => signUpResult.value.json())
+  if (signUpBodyResult.isErr()) {
+    console.error(
+      "[register/organization] Better Auth response was invalid",
+      signUpBodyResult.error
+    )
+    return NextResponse.json({ error: "No pudimos completar el registro" }, { status: 502 })
+  }
+
+  const signUpBody = signUpResponseSchema.safeParse(signUpBodyResult.value)
+  if (!signUpBody.success) {
+    return NextResponse.json({ error: "No pudimos completar el registro" }, { status: 502 })
+  }
+
+  if (signUpBody.data.error) {
+    const message =
+      typeof signUpBody.data.error === "string"
+        ? signUpBody.data.error
+        : (signUpBody.data.error.message ?? "No pudimos crear la cuenta")
+    return NextResponse.json({ error: message }, { status: 400 })
+  }
+
+  const userId = signUpBody.data.user?.id
+  if (!userId) {
+    return NextResponse.json({ error: "No pudimos obtener la cuenta creada" }, { status: 502 })
+  }
+
+  const organizationResult = await registerOrganizationForUser({
+    ownerUserId: userId,
+    name: parsed.data.organizationName,
+    website: parsed.data.organizationWebsite,
+  })
+  if (organizationResult.isErr()) {
+    if (organizationResult.error instanceof ApiError && organizationResult.error.status === 404) {
+      return NextResponse.json({ success: true })
+    }
+    console.error(
+      `[register/organization] organization creation failed for user ${userId}`,
+      organizationResult.error
+    )
+    return NextResponse.json(
+      {
+        error:
+          "La cuenta se creó, pero falta guardar los datos de la organización. Verifica tu correo e inicia sesión para completar el registro.",
+      },
+      { status: 502 }
+    )
+  }
+
+  return NextResponse.json({
+    user: signUpBody.data.user,
+    organizationId: organizationResult.value.id,
+  })
 }

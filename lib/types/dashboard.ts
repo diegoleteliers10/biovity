@@ -45,7 +45,13 @@ export type OrganizationRecentApplication = {
   statusColor: string
 }
 
-export type ApplicationStage = "pendiente" | "entrevista" | "oferta" | "contratado" | "rechazado"
+export type ApplicationStage =
+  | "pendiente"
+  | "entrevista"
+  | "oferta"
+  | "contratado"
+  | "rechazado"
+  | "desistido"
 
 export type Applicant = {
   id: string
@@ -54,6 +60,12 @@ export type Applicant = {
   position: string
   dateApplied: string
   stage: ApplicationStage
+  pipelineStageId?: string | null
+  assigneeId?: string | null
+  assigneeName?: string | null
+  nextAction?: string | null
+  targetDate?: string | null
+  stageChangedAt?: string
   avatar?: string | null
   candidateEducation?: string
   candidateSkills?: string[]

@@ -259,7 +259,11 @@ export function AdminEntityTable({
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
     ])
-    toast.success(result.value.isActive ? `${entityName} activado` : `${entityName} desactivado`)
+    if (result.value.sessionRevocationPending) {
+      toast.warning(result.value.message ?? "Cuenta desactivada. Revisa la revocación de sesiones.")
+    } else {
+      toast.success(result.value.isActive ? `${entityName} activado` : `${entityName} desactivado`)
+    }
   }
 
   const handleBulkToggle = async (isActive: boolean) => {
@@ -267,6 +271,12 @@ export function AdminEntityTable({
     setConfirmBulkDeactivate(false)
     const results = await Promise.allSettled(ids.map((id) => setUserActive(id, isActive)))
     const failed = results.filter((r) => r.status === "rejected" || r.value.isErr()).length
+    const revocationPending = results.filter(
+      (result) =>
+        result.status === "fulfilled" &&
+        result.value.isOk() &&
+        result.value.value.sessionRevocationPending
+    ).length
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
@@ -274,6 +284,10 @@ export function AdminEntityTable({
     if (failed > 0) {
       toast.error(`${failed} de ${ids.length} fallaron al actualizar`)
       dispatch({ type: "REFRESH" })
+    } else if (revocationPending > 0) {
+      toast.warning(
+        `Se cambió el estado de ${revocationPending} cuentas, pero sus sesiones requieren revisión`
+      )
     } else {
       toast.success(`${ids.length} ${entityNamePlural} ${isActive ? "activados" : "desactivados"}`)
     }

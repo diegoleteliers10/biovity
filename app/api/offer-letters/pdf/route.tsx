@@ -2,7 +2,7 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import { defaultOfferLetterData } from "@/components/pdf/offer-letter-document"
 import type { OfferLetterData } from "@/lib/api/offer-letters"
-import { auth } from "@/lib/auth"
+import { auth, isAdminSession } from "@/lib/auth"
 import { renderOfferLetterToPdf } from "@/lib/offer-letter-pdf"
 
 export async function POST(request: Request) {
@@ -10,6 +10,12 @@ export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: requestHeaders })
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+  if (session.user.type !== "organization" && !isAdminSession(session)) {
+    return NextResponse.json(
+      { error: "Solo una organización puede generar ofertas" },
+      { status: 403 }
+    )
   }
 
   let body: { letterData?: Partial<OfferLetterData> }

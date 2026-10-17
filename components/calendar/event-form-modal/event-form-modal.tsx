@@ -1,11 +1,16 @@
 "use client"
 
 import { Location05Icon, VideoCameraAiIcon } from "@hugeicons/core-free-icons"
+import { Result } from "better-result"
 import { useState, useTransition } from "react"
 import { Sheet, SheetContent } from "@/components/animate-ui/components/radix/sheet"
 import { Input } from "@/components/ui/input"
+import { useApplicationDetail } from "@/lib/api/use-applications"
 import { useCreateEvent, useDeleteEvent, useUpdateEvent } from "@/lib/api/use-events"
+import { useOrganizationMembers } from "@/lib/api/use-organization-members"
+import { usePipelineStageRubric } from "@/lib/api/use-pipeline-stages"
 import { useProfessionalUsers } from "@/lib/api/use-talent"
+import { DEFAULT_EVENT_TIME_ZONE, eventWallTime, organizerInstant } from "@/lib/event-time"
 import type { Event, EventType } from "@/lib/types/events"
 import { DateTimeInput } from "./DateTimeInput"
 import { DeleteConfirmDialog } from "./DeleteConfirmDialog"
@@ -36,7 +41,17 @@ export type EventFormModalProps = {
   onDelete?: (eventId: string) => void
 }
 
-export function EventFormModal({
+export function EventFormModal(props: EventFormModalProps) {
+  if (!props.isOpen) return null
+  return (
+    <EventFormFields
+      key={`${props.editEvent?.id ?? "new"}:${props.editEvent?.updatedAt ?? ""}`}
+      {...props}
+    />
+  )
+}
+
+function EventFormFields({
   isOpen,
   onClose,
   organizerId,
@@ -54,19 +69,22 @@ export function EventFormModal({
 
   const isEditMode = Boolean(editEvent)
 
-  const parsedStartDate = editEvent ? new Date(editEvent.startAt) : null
-  const parsedEndDate = editEvent?.endAt ? new Date(editEvent.endAt) : null
+  const initialTimeZone = editEvent?.timeZone ?? DEFAULT_EVENT_TIME_ZONE
+  const parsedStartDate = editEvent ? eventWallTime(editEvent.startAt, initialTimeZone) : ""
+  const parsedEndDate = editEvent?.endAt ? eventWallTime(editEvent.endAt, initialTimeZone) : ""
 
   const effectiveTitle = editEvent?.title ?? ""
   const effectiveDescription = editEvent?.description ?? ""
   const effectiveType = editEvent?.type ?? lockedType ?? "interview"
-  const effectiveStartDate = parsedStartDate ? parsedStartDate.toISOString().split("T")[0] : ""
-  const effectiveStartTime = parsedStartDate ? parsedStartDate.toTimeString().slice(0, 5) : ""
-  const effectiveEndDate = parsedEndDate ? parsedEndDate.toISOString().split("T")[0] : ""
-  const effectiveEndTime = parsedEndDate ? parsedEndDate.toTimeString().slice(0, 5) : ""
+  const effectiveStartDate = parsedStartDate ? parsedStartDate.split("T")[0] : ""
+  const effectiveStartTime = parsedStartDate ? parsedStartDate.split("T")[1] : ""
+  const effectiveEndDate = parsedEndDate ? parsedEndDate.split("T")[0] : ""
+  const effectiveEndTime = parsedEndDate ? parsedEndDate.split("T")[1] : ""
   const effectiveLocation = editEvent?.location ?? ""
   const effectiveMeetingUrl = editEvent?.meetingUrl ?? ""
 
+  const [timeZone, setTimeZone] = useState(initialTimeZone)
+  const [timeError, setTimeError] = useState<Error | null>(null)
   const [title, setTitle] = useState(effectiveTitle)
   const [description, setDescription] = useState(effectiveDescription)
   const [type, setType] = useState<EventType>(effectiveType)
@@ -82,6 +100,18 @@ export function EventFormModal({
   const [showCandidateDropdown, setShowCandidateDropdown] = useState(false)
 
   const { data: candidateResults } = useProfessionalUsers(1, candidateSearch.trim() || undefined)
+  const organizationMembers = useOrganizationMembers(organizationId)
+  const application = useApplicationDetail(applicationId)
+  const rubric = usePipelineStageRubric(application.data?.pipelineStageId ?? "")
+  const generalRole = {
+    id: "00000000-0000-4000-8000-000000000001",
+    label: "General",
+  }
+  const interviewerRoles = rubric.data?.roles ?? [generalRole]
+  const [selectedInterviewerRoles, setSelectedInterviewerRoles] = useState<Record<string, string>>(
+    {}
+  )
+  const selectedInterviewerIds = Object.keys(selectedInterviewerRoles)
 
   const [isPending, startTransition] = useTransition()
   const isLoading =
@@ -92,12 +122,35 @@ export function EventFormModal({
 
     if (!title.trim() || !startDate || !startTime) return
 
-    const startAtISO = new Date(`${startDate}T${startTime}:00`).toISOString()
-    const endAtISO =
-      endDate && endTime ? new Date(`${endDate}T${endTime}:00`).toISOString() : undefined
+    setTimeError(null)
+    const originalStart = timeZone === initialTimeZone ? editEvent?.startAt : undefined
+    const originalEnd = timeZone === initialTimeZone ? editEvent?.endAt : undefined
+    const start = organizerInstant(`${startDate}T${startTime}`, timeZone, originalStart)
+    const end =
+      endDate && endTime
+        ? organizerInstant(`${endDate}T${endTime}`, timeZone, originalEnd)
+        : Result.ok(undefined)
+    if (start.isErr()) {
+      setTimeError(start.error)
+      return
+    }
+    if (end.isErr()) {
+      setTimeError(end.error)
+      return
+    }
+    if (Boolean(endDate) !== Boolean(endTime)) {
+      setTimeError(new Error("Completa la fecha y hora de fin."))
+      return
+    }
+    const startAtISO = start.value
+    const endAtISO = end.value
+    if (endAtISO && Date.parse(endAtISO) <= Date.parse(startAtISO)) {
+      setTimeError(new Error("La hora de fin debe ser posterior al inicio."))
+      return
+    }
 
     startTransition(async () => {
-      try {
+      const saved = await Result.tryPromise(async () => {
         if (isEditMode && editEvent) {
           const result = await updateEvent.mutateAsync({
             id: editEvent.id,
@@ -106,6 +159,7 @@ export function EventFormModal({
               description: description.trim() || undefined,
               type,
               startAt: startAtISO,
+              timeZone,
               endAt: endAtISO,
               location: location.trim() || undefined,
               meetingUrl: meetingUrl.trim() || undefined,
@@ -118,6 +172,7 @@ export function EventFormModal({
             description: description.trim() || undefined,
             type,
             startAt: startAtISO,
+            timeZone,
             endAt: endAtISO,
             location: location.trim() || undefined,
             meetingUrl: meetingUrl.trim() || undefined,
@@ -125,12 +180,18 @@ export function EventFormModal({
             ...(organizationId && { organizationId }),
             ...(selectedCandidateId && { candidateId: selectedCandidateId }),
             ...(applicationId && { applicationId }),
+            ...(type === "interview" &&
+              selectedInterviewerIds.length > 0 && {
+                interviewerAssignments: selectedInterviewerIds.map((userId) => ({
+                  userId,
+                  roleId: selectedInterviewerRoles[userId],
+                })),
+              }),
           })
           onSuccess?.(result.id)
         }
-      } finally {
-        handleClose()
-      }
+      })
+      if (saved.isOk()) handleClose()
     })
   }
 
@@ -138,12 +199,10 @@ export function EventFormModal({
     if (!editEvent) return
     setShowDeleteConfirm(false)
 
-    try {
-      await deleteEvent.mutateAsync(editEvent.id)
+    const deleted = await Result.tryPromise(() => deleteEvent.mutateAsync(editEvent.id))
+    if (deleted.isOk()) {
       onDelete?.(editEvent.id)
       handleClose()
-    } catch {
-      // error handled by mutation
     }
   }
 
@@ -158,9 +217,15 @@ export function EventFormModal({
     setLocation("")
     setMeetingUrl("")
     setSelectedCandidateId(candidateId)
+    setSelectedInterviewerRoles({})
     setCandidateSearch("")
     setShowCandidateDropdown(false)
     onClose()
+  }
+
+  const handleTypeChange = (nextType: EventType) => {
+    setType(nextType)
+    if (nextType !== "interview") setSelectedInterviewerRoles({})
   }
 
   const isValid = !!(title.trim() && startDate && startTime)
@@ -212,7 +277,7 @@ export function EventFormModal({
           />
 
           {!lockedType && (
-            <EventTypeSelect value={type} onChange={setType} EVENT_TYPES={EVENT_TYPES} />
+            <EventTypeSelect value={type} onChange={handleTypeChange} EVENT_TYPES={EVENT_TYPES} />
           )}
 
           <FormField
@@ -223,6 +288,15 @@ export function EventFormModal({
             placeholder="Detalles adicionales sobre el evento..."
             type="textarea"
             rows={3}
+          />
+
+          <FormField
+            id="event-time-zone"
+            label="Zona horaria del evento (IANA)"
+            value={timeZone}
+            onChange={setTimeZone}
+            placeholder="America/Santiago"
+            required
           />
 
           <DateTimeInput
@@ -299,6 +373,11 @@ export function EventFormModal({
                           onMouseDown={(e) => {
                             e.preventDefault()
                             setSelectedCandidateId(user.id)
+                            setSelectedInterviewerRoles((current) =>
+                              Object.fromEntries(
+                                Object.entries(current).filter(([userId]) => userId !== user.id)
+                              )
+                            )
                             setCandidateSearch(user.name ?? "")
                             setShowCandidateDropdown(false)
                           }}
@@ -327,7 +406,96 @@ export function EventFormModal({
             </div>
           )}
 
-          <EventFormError error={eventError} />
+          {!isEditMode && type === "interview" && organizationId && (
+            <fieldset className="space-y-2">
+              <legend className="text-xs font-medium text-muted-foreground">Entrevistadores</legend>
+              {organizationMembers.isLoading && (
+                <p className="text-xs text-muted-foreground" role="status">
+                  Cargando equipo...
+                </p>
+              )}
+              {organizationMembers.isError && (
+                <p className="text-xs text-destructive" role="alert">
+                  No se pudo cargar el equipo.
+                </p>
+              )}
+              {organizationMembers.data
+                ?.filter(
+                  (member) =>
+                    (member.role === "admin" || member.role === "recruiter") &&
+                    member.userId !== organizerId &&
+                    member.userId !== selectedCandidateId
+                )
+                .map((member) => {
+                  const memberName = member.user?.name ?? member.user?.email ?? "Miembro"
+                  const selectedRoleId = selectedInterviewerRoles[member.userId]
+                  return (
+                    <div
+                      key={member.userId}
+                      className="space-y-2 rounded-md border border-border/40 px-3 py-2"
+                    >
+                      <label
+                        htmlFor={`event-interviewer-${member.userId}`}
+                        className="flex min-h-8 items-center gap-2 text-sm"
+                      >
+                        <input
+                          id={`event-interviewer-${member.userId}`}
+                          type="checkbox"
+                          checked={selectedRoleId !== undefined}
+                          onChange={(event) =>
+                            setSelectedInterviewerRoles((current) => {
+                              if (!event.target.checked) {
+                                return Object.fromEntries(
+                                  Object.entries(current).filter(
+                                    ([userId]) => userId !== member.userId
+                                  )
+                                )
+                              }
+                              return { ...current, [member.userId]: generalRole.id }
+                            })
+                          }
+                          className="accent-primary"
+                        />
+                        <span>{memberName}</span>
+                      </label>
+                      {selectedRoleId !== undefined && (
+                        <select
+                          className="h-8 w-full rounded-md border border-border/40 bg-background px-2 text-xs"
+                          value={selectedRoleId}
+                          aria-label={`Función de ${memberName}`}
+                          onChange={(event) =>
+                            setSelectedInterviewerRoles((current) => ({
+                              ...current,
+                              [member.userId]: event.currentTarget.value,
+                            }))
+                          }
+                        >
+                          {interviewerRoles.map((role) => (
+                            <option key={role.id} value={role.id}>
+                              {role.label}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  )
+                })}
+              {!organizationMembers.isLoading &&
+                !organizationMembers.isError &&
+                (organizationMembers.data?.filter(
+                  (member) =>
+                    (member.role === "admin" || member.role === "recruiter") &&
+                    member.userId !== organizerId &&
+                    member.userId !== selectedCandidateId
+                ).length ?? 0) === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    No hay otros reclutadores en el equipo.
+                  </p>
+                )}
+            </fieldset>
+          )}
+
+          <EventFormError error={timeError ?? eventError} />
 
           <EventFormFooter
             isEditMode={isEditMode}

@@ -8,6 +8,7 @@ import {
   UserMultipleIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useState } from "react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -28,24 +30,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
-
-const STAGE_FILTER_OPTIONS: { value: ApplicationStage | "all"; label: string }[] = [
-  { value: "all", label: "Todas" },
-  { value: "pendiente", label: "Pendiente" },
-  { value: "entrevista", label: "Entrevista" },
-  { value: "oferta", label: "Oferta" },
-  { value: "contratado", label: "Contratado" },
-  { value: "rechazado", label: "Rechazado" },
-]
-
-const STAGE_ORDER: ApplicationStage[] = ["pendiente", "entrevista", "oferta", "contratado"]
-
-function getNextStage(current: ApplicationStage): ApplicationStage | null {
-  const idx = STAGE_ORDER.indexOf(current)
-  if (idx === -1 || idx >= STAGE_ORDER.length - 1) return null
-  return STAGE_ORDER[idx + 1]
-}
+import type { OrganizationMember } from "@/lib/api/organization-members"
+import { useRejectionReasons, type PipelineStage } from "@/lib/api/use-pipeline-stages"
+import { resolveApplicantPipelineStageId } from "@/lib/pipeline-stage-board"
+import type { Applicant } from "@/lib/types/dashboard"
 
 function exportApplicantsCsv(applicants: Applicant[]) {
   const headers = ["Nombre", "Posicion", "Estado", "Salario Min", "Salario Max", "Guardado"]
@@ -83,26 +71,51 @@ export function PipelineToolbar({
   onBulkReject,
   onBulkMessage,
   onBulkAdvance,
+  pipelineStages,
+  members,
+  assigneeFilter,
+  onAssigneeFilterChange,
+  overdueOnly,
+  onOverdueOnlyChange,
+  organizationId,
 }: {
   searchQuery: string
   onSearchChange: (query: string) => void
-  stageFilter: ApplicationStage | "all"
-  onStageFilterChange: (stage: ApplicationStage | "all") => void
+  stageFilter: string
+  onStageFilterChange: (stageId: string) => void
   evaluationFilter?: string
   onEvaluationFilterChange?: (value: string) => void
   evaluationsAvailable?: boolean
   selectedCount: number
   selectedApplicants: Applicant[]
   onClearSelection: () => void
-  onBulkReject: () => void
+  onBulkReject: (reasonId: string, note?: string) => void
   onBulkMessage: () => void
-  onBulkAdvance: (stage: ApplicationStage) => void
+  onBulkAdvance: (stageId: string) => void
+  pipelineStages: PipelineStage[]
+  members: OrganizationMember[]
+  assigneeFilter: string
+  onAssigneeFilterChange: (userId: string) => void
+  overdueOnly: boolean
+  onOverdueOnlyChange: (overdueOnly: boolean) => void
+  organizationId: string
 }) {
-  const canAdvance = selectedApplicants.some((a) => getNextStage(a.stage) !== null)
+  const reasonsQuery = useRejectionReasons(organizationId)
+  const reasons = reasonsQuery.data?.filter((reason) => reason.active) ?? []
+  const [rejectionReasonId, setRejectionReasonId] = useState("")
+  const [rejectionNote, setRejectionNote] = useState("")
+  const selectedStageId = selectedApplicants[0]
+    ? resolveApplicantPipelineStageId(selectedApplicants[0], pipelineStages)
+    : null
+  const sameStage = selectedApplicants.every(
+    (applicant) => resolveApplicantPipelineStageId(applicant, pipelineStages) === selectedStageId
+  )
+  const activeStages = pipelineStages
+    .filter((stage) => !stage.isArchived)
+    .sort((a, b) => a.order - b.order)
+  const currentStageIndex = activeStages.findIndex((stage) => stage.id === selectedStageId)
   const advanceStage =
-    selectedApplicants.length > 0
-      ? (STAGE_ORDER[STAGE_ORDER.indexOf(selectedApplicants[0].stage) + 1] ?? null)
-      : null
+    sameStage && currentStageIndex >= 0 ? activeStages[currentStageIndex + 1] : undefined
 
   return (
     <div className="space-y-2">
@@ -120,21 +133,46 @@ export function PipelineToolbar({
             className="h-9 pl-9"
           />
         </div>
-        <Select
-          value={stageFilter}
-          onValueChange={(v) => onStageFilterChange(v as ApplicationStage | "all")}
-        >
+        <Select value={stageFilter} onValueChange={onStageFilterChange}>
           <SelectTrigger className="h-9 w-[140px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {STAGE_FILTER_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
+            <SelectItem value="all">Todas las etapas</SelectItem>
+            {pipelineStages.map((stage) => (
+              <SelectItem key={stage.id} value={stage.id}>
+                {stage.name}
+                {stage.isArchived ? " (Archivada)" : ""}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+        <Select value={assigneeFilter} onValueChange={onAssigneeFilterChange}>
+          <SelectTrigger className="h-9 w-[180px]" aria-label="Filtrar por responsable">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los responsables</SelectItem>
+            <SelectItem value="unassigned">Sin responsable</SelectItem>
+            {members
+              .filter((member) => member.role === "admin" || member.role === "recruiter")
+              .map((member) => (
+                <SelectItem key={member.userId} value={member.userId}>
+                  {member.user?.name ?? member.user?.email ?? "Miembro"}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+        <Button
+          type="button"
+          size="sm"
+          variant={overdueOnly ? "default" : "outline"}
+          aria-pressed={overdueOnly}
+          onClick={() => onOverdueOnlyChange(!overdueOnly)}
+          className="h-9"
+        >
+          Solo atrasadas
+        </Button>
         {onEvaluationFilterChange && (
           <Select
             value={evaluationFilter}
@@ -160,14 +198,14 @@ export function PipelineToolbar({
           <HugeiconsIcon icon={UserMultipleIcon} size={16} className="text-primary" />
           <span className="text-sm font-medium">{selectedCount} seleccionados</span>
           <div className="flex-1" />
-          {canAdvance && advanceStage && (
+          {advanceStage && (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onBulkAdvance(advanceStage)}
+              onClick={() => onBulkAdvance(advanceStage.id)}
               className="h-9 gap-1.5 rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
             >
-              Avanzar a {advanceStage}
+              Avanzar a {advanceStage.name}
             </Button>
           )}
           <Button
@@ -194,13 +232,43 @@ export function PipelineToolbar({
               <AlertDialogHeader>
                 <AlertDialogTitle>Rechazar candidatos</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Se rechazaran {selectedCount} candidato{selectedCount > 1 ? "s" : ""}. Esta accion
-                  no se puede deshacer.
+                  Selecciona un motivo para rechazar {selectedCount} candidato
+                  {selectedCount > 1 ? "s" : ""}.
                 </AlertDialogDescription>
               </AlertDialogHeader>
+              <div className="space-y-2">
+                <Select value={rejectionReasonId} onValueChange={setRejectionReasonId}>
+                  <SelectTrigger aria-label="Motivo de rechazo">
+                    <SelectValue placeholder="Seleccionar motivo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {reasons.map((reason) => (
+                      <SelectItem key={reason.id} value={reason.id}>
+                        {reason.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Textarea
+                  value={rejectionNote}
+                  onChange={(event) => setRejectionNote(event.target.value)}
+                  maxLength={2000}
+                  placeholder="Nota interna opcional"
+                  className="min-h-16"
+                />
+              </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction variant="destructive" onClick={onBulkReject}>
+                <AlertDialogAction
+                  variant="destructive"
+                  disabled={!rejectionReasonId || reasonsQuery.isLoading || reasons.length === 0}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    onBulkReject(rejectionReasonId, rejectionNote)
+                    setRejectionReasonId("")
+                    setRejectionNote("")
+                  }}
+                >
                   Rechazar {selectedCount}
                 </AlertDialogAction>
               </AlertDialogFooter>

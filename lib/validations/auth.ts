@@ -4,8 +4,8 @@
  */
 
 import { z } from "zod"
+import { matchesOrganizationEmailDomain } from "../organization-domain"
 import {
-  corporateEmailSchema,
   emailSchema,
   nameSchema,
   organizationLoginEmailSchema,
@@ -85,7 +85,7 @@ export const userRegistrationSchema = z
 const organizationRegistrationBase = z.object({
   // Contact information
   contactName: nameSchema,
-  contactEmail: corporateEmailSchema,
+  contactEmail: organizationLoginEmailSchema,
   contactPassword: organizationPasswordSchema,
   confirmPassword: z.string({
     error: () => "Debes confirmar tu contraseña",
@@ -119,13 +119,15 @@ const organizationRegistrationBase = z.object({
     }),
 })
 
-export const organizationRegistrationSchema = organizationRegistrationBase.refine(
-  (data) => data.contactPassword === data.confirmPassword,
-  {
+export const organizationRegistrationSchema = organizationRegistrationBase
+  .refine((data) => data.contactPassword === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
-  }
-)
+  })
+  .refine((data) => matchesOrganizationEmailDomain(data.contactEmail, data.organizationWebsite), {
+    message: "El correo corporativo debe usar el mismo dominio que el sitio web de la empresa",
+    path: ["organizationWebsite"],
+  })
 
 /**
  * Wizard step schemas for organization registration

@@ -6,11 +6,7 @@ import { DbError, ParseError } from "@/lib/errors"
 import { sendWaitlistInviteEmail } from "@/lib/mail"
 import { adminWaitlistInviteSchema, MAX_INVITE_RECIPIENTS } from "@/lib/validations/admin-waitlist"
 
-/**
- * Every recipient is an awaited Resend call, so the batch must fit the function
- * time budget. `CONCURRENCY_LIMIT` and this value are what keep an `all`
- * request from being cut off mid-flight.
- */
+/** Keep bulk queue writes bounded so the function can return a clear batch result. */
 export const maxDuration = 60
 
 type WaitlistRow = {
@@ -28,7 +24,7 @@ type InviteBatch = Result<{ rows: WaitlistRow[]; pendingBefore: number }, DbErro
 
 type InviteResult = {
   id: string
-  status: "sent" | "skipped" | "failed"
+  status: "queued" | "already_queued" | "skipped" | "failed"
 }
 
 const CONCURRENCY_LIMIT = 5
@@ -39,12 +35,8 @@ async function sendInvite(entry: WaitlistRow): Promise<InviteResult> {
   }
 
   try {
-    await sendWaitlistInviteEmail(entry.email, entry.role)
-    await pool.query(
-      `UPDATE waitlist SET invited_at = NOW() WHERE id = $1 AND invited_at IS NULL`,
-      [entry.id]
-    )
-    return { id: entry.id, status: "sent" }
+    const enqueued = await sendWaitlistInviteEmail(entry.email, entry.role, entry.id)
+    return { id: entry.id, status: enqueued ? "queued" : "already_queued" }
   } catch (err) {
     console.error(`[admin/waitlist/invite] Error al enviar a ${entry.email}:`, err)
     return { id: entry.id, status: "failed" }

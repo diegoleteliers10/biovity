@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   }
   const incoming = new URL(request.url).searchParams
   const query = new URLSearchParams()
-  for (const key of ["page", "limit", "type", "search"]) {
+  for (const key of ["page", "limit", "type", "search", "assignment"]) {
     const value = incoming.get(key)
     if (value) query.set(key, value)
   }

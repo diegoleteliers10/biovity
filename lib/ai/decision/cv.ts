@@ -17,12 +17,16 @@ function cvError(reason: CandidateCvError["reason"], message: string, cause?: un
 
 function validateCvPath(resume: Resume): Result<string, Error> {
   const path = resume.cvFile?.path
+  const versionedPath = path?.match(/^cv\/([0-9a-f-]{36})\/[0-9a-f-]{36}\.pdf$/i)
+  const legacyPath = path?.match(/^cv\/[a-z0-9._-]+\.pdf$/i)
   if (
     !path ||
     !resume.userId ||
-    !/^cv\/[a-z0-9._-]+\.pdf$/i.test(path) ||
-    !path.toLowerCase().endsWith(`_${resume.userId.toLowerCase()}.pdf`) ||
-    path.length <= `cv/_${resume.userId}.pdf`.length
+    (!versionedPath && !legacyPath) ||
+    (versionedPath && versionedPath[1]?.toLowerCase() !== resume.userId.toLowerCase()) ||
+    (legacyPath &&
+      (!path.toLowerCase().endsWith(`_${resume.userId.toLowerCase()}.pdf`) ||
+        path.length <= `cv/_${resume.userId}.pdf`.length))
   ) {
     return Result.err(
       cvError("path", "The CV path does not match its candidate. Upload the CV again.")

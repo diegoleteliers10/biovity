@@ -4,6 +4,8 @@ import {
   type AdminEntityColumn,
   AdminEntityTable,
 } from "@/components/dashboard/admin/AdminEntityTable"
+import { AdminOrganizationVerificationQueue } from "@/components/dashboard/admin/AdminOrganizationVerificationQueue"
+import { AdminSystemBroadcastComposer } from "@/components/dashboard/admin/AdminSystemBroadcastComposer"
 import { Badge } from "@/components/ui/badge"
 import { adminOrganizationsParsers } from "@/lib/parsers/admin-organizations"
 import { formatDateChilean } from "@/lib/utils"
@@ -44,16 +46,20 @@ const orgColumns: AdminEntityColumn[] = [
 
 export function AdminOrganizationsContent() {
   return (
-    <AdminEntityTable
-      columns={orgColumns}
-      apiType="organization"
-      title="Organizaciones"
-      description="Usuarios con tipo organizacion. Gestiona el estado de activacion."
-      entityName="Organizacion"
-      entityNamePlural="organizaciones"
-      parsers={adminOrganizationsParsers}
-      searchPlaceholder="Buscar por email o nombre..."
-      searchLabel="Buscar organizaciones"
-    />
+    <div className="space-y-8">
+      <AdminOrganizationVerificationQueue />
+      <AdminSystemBroadcastComposer />
+      <AdminEntityTable
+        columns={orgColumns}
+        apiType="organization"
+        title="Organizaciones"
+        description="Usuarios con tipo organización. El estado indica si la cuenta puede acceder."
+        entityName="Organizacion"
+        entityNamePlural="organizaciones"
+        parsers={adminOrganizationsParsers}
+        searchPlaceholder="Buscar por email o nombre..."
+        searchLabel="Buscar organizaciones"
+      />
+    </div>
   )
 }

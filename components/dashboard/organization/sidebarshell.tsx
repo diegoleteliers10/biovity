@@ -14,6 +14,7 @@ import { useOpenChatId } from "@/lib/realtime/viewer-context"
 import { computeOrgProfileCompletion } from "@/lib/utils/profile-completion"
 import { DashboardSessionContext } from "../DashboardSessionContext"
 import { DashboardSidebar } from "../shared/DashboardSidebar"
+import { CompanyVerificationNotice } from "./CompanyVerificationNotice"
 
 type DashboardShellProps = {
   children: ReactNode
@@ -91,6 +92,7 @@ export function DashboardShellOrganization({
         {/* No view-transition-name: this wrapper is the entire scrolling page, and a
             named element is snapshotted as its own layer on every navigation. */}
         <SidebarInset className="h-full max-h-full min-h-0 overflow-y-auto overflow-x-clip overscroll-contain rounded-tl-lg sm:rounded-tl-lg [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {organizationId && <CompanyVerificationNotice organizationId={organizationId} />}
           {children}
         </SidebarInset>
       </SidebarProvider>

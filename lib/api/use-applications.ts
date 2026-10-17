@@ -4,13 +4,20 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
 import { getResultErrorMessage } from "@/lib/result"
+import type { ApplicationSourceChannel } from "@/lib/types/application-source"
 import {
   type Application,
   type ApplicationStatus,
+  type ApplicationStatusHistoryItem,
   createApplication,
+  getApplicationDetail,
+  getApplicationStatusHistory,
   getApplicationsByCandidate,
   getApplicationsByJob,
   getApplicationsByOrganization,
+  reopenApplication,
+  updateApplicationHiringPlan,
+  updateApplicationPipelineStage,
   updateApplicationStatus,
 } from "./applications"
 
@@ -19,6 +26,21 @@ export const applicationsKeys = {
   byCandidate: (candidateId: string) => ["applications", "candidate", candidateId] as const,
   byOrganization: (organizationId: string) =>
     ["applications", "organization", organizationId] as const,
+  detail: (applicationId: string) => ["applications", "detail", applicationId] as const,
+}
+
+export function useApplicationDetail(applicationId: string | undefined) {
+  return useQuery({
+    queryKey: applicationsKeys.detail(applicationId ?? ""),
+    queryFn: async () => {
+      if (!applicationId) return Promise.reject(new Error("Application ID required"))
+      const result = await getApplicationDetail(applicationId)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    enabled: Boolean(applicationId),
+  })
 }
 
 function getCreateApplicationErrorMessage(error: ApiError | NetworkError): string {
@@ -71,6 +93,8 @@ export function useCreateApplicationMutation(candidateId: string | undefined) {
       salaryCurrency?: string
       availabilityDate?: string
       resumeUrl?: string
+      sourceChannel?: Exclude<ApplicationSourceChannel, "unknown">
+      distributionSourceId?: string
       answers?: { questionId: string; value: string }[]
     }) => {
       if (!candidateId?.trim()) {
@@ -103,11 +127,30 @@ export function useCreateApplicationMutation(candidateId: string | undefined) {
 export function useUpdateApplicationStatusMutation(jobId: string) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: ApplicationStatus }) => {
-      const result = await updateApplicationStatus(id, status)
+    mutationFn: async (input: {
+      id: string
+      status: ApplicationStatus
+      rejectionNote?: string
+      rejectionReasonId?: string
+    }) => {
+      const result = await updateApplicationStatus(input)
       if (!Result.isOk(result))
         return Promise.reject(new Error(getResultErrorMessage(result.error)))
       return result.value
+    },
+    onMutate: async ({ id, status }) => {
+      const queryKey = applicationsKeys.byJob(jobId)
+      await queryClient.cancelQueries({ queryKey })
+      const previous = queryClient.getQueryData<Application[]>(queryKey)
+      queryClient.setQueryData<Application[]>(queryKey, (current) =>
+        current?.map((application) =>
+          application.id === id ? { ...application, status } : application
+        )
+      )
+      return { previous, queryKey }
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous) queryClient.setQueryData(context.queryKey, context.previous)
     },
     onSuccess: (updatedApp) => {
       void queryClient.cancelQueries({ queryKey: ["applications"] })
@@ -117,14 +160,119 @@ export function useUpdateApplicationStatusMutation(jobId: string) {
       void queryClient.invalidateQueries({ queryKey: ["user", "metrics"] })
       void queryClient.invalidateQueries({ queryKey: ["jobs"] })
 
-      queryClient.setQueryData<Application[]>(applicationsKeys.byJob(jobId), (old) => {
-        if (!old) return old
-        return old.map((app) =>
-          app.id === updatedApp.id ? { ...app, status: updatedApp.status } : app
-        )
-      })
       void queryClient.invalidateQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({
+        queryKey: ["applications", "status-history", updatedApp.id],
+      })
     },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: applicationsKeys.byJob(jobId) })
+    },
+  })
+}
+
+export function useUpdateApplicationPipelineStageMutation(jobId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: {
+      id: string
+      stageId: string
+      rejectionNote?: string
+      rejectionReasonId?: string
+    }) => {
+      const result = await updateApplicationPipelineStage(input)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    onMutate: async ({ id, stageId }) => {
+      const queryKey = applicationsKeys.byJob(jobId)
+      await queryClient.cancelQueries({ queryKey })
+      const previous = queryClient.getQueryData<Application[]>(queryKey)
+      queryClient.setQueryData<Application[]>(queryKey, (current) =>
+        current?.map((application) =>
+          application.id === id ? { ...application, pipelineStageId: stageId } : application
+        )
+      )
+      return { previous, queryKey }
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous) queryClient.setQueryData(context.queryKey, context.previous)
+    },
+    onSuccess: (updatedApp) => {
+      void queryClient.invalidateQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "recentApplications"] })
+      void queryClient.invalidateQueries({
+        queryKey: ["applications", "status-history", updatedApp.id],
+      })
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: applicationsKeys.byJob(jobId) })
+    },
+  })
+}
+
+export function useReopenApplicationMutation(jobId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { id: string; stageId: string; reason: string }) => {
+      const result = await reopenApplication(input)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    onSuccess: (updatedApp) => {
+      void queryClient.invalidateQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics"] })
+      void queryClient.invalidateQueries({
+        queryKey: ["applications", "status-history", updatedApp.id],
+      })
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: applicationsKeys.byJob(jobId) })
+    },
+  })
+}
+
+export function useUpdateApplicationHiringPlanMutation(jobId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: {
+      id: string
+      assigneeId?: string | null
+      nextAction?: string | null
+      targetDate?: string | null
+    }) => {
+      const result = await updateApplicationHiringPlan(input)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    onSuccess: (updatedApp) => {
+      void queryClient.invalidateQueries({ queryKey: ["applications"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "metrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["org", "fullMetrics"] })
+      void queryClient.invalidateQueries({ queryKey: ["applications", "detail", updatedApp.id] })
+    },
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: applicationsKeys.byJob(jobId) })
+    },
+  })
+}
+
+export function useApplicationStatusHistory(applicationId: string) {
+  return useQuery<ApplicationStatusHistoryItem[]>({
+    queryKey: ["applications", "status-history", applicationId],
+    queryFn: async () => {
+      const result = await getApplicationStatusHistory(applicationId)
+      if (!Result.isOk(result))
+        return Promise.reject(new Error(getResultErrorMessage(result.error)))
+      return result.value
+    },
+    enabled: Boolean(applicationId),
   })
 }
 

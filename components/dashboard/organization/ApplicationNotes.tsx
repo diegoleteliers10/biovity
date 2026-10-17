@@ -11,10 +11,11 @@ import { formatDateChilean } from "@/lib/utils"
 import { applicationComments } from "./application-comments"
 
 export function ApplicationNotes({ applicationId }: { applicationId: string }) {
-  const { data: notes, isLoading } = useApplicationNotes(applicationId)
+  const notesQuery = useApplicationNotes(applicationId)
+  const notes = notesQuery.data
   const evaluationsQuery = useEvaluations(applicationId)
   const comments = applicationComments(notes ?? [], evaluationsQuery.data ?? [])
-  const loading = isLoading || evaluationsQuery.isLoading
+  const loading = notesQuery.isLoading || evaluationsQuery.isLoading
   const addMutation = useAddNoteMutation(applicationId)
   const deleteMutation = useDeleteNoteMutation(applicationId)
 
@@ -26,7 +27,8 @@ export function ApplicationNotes({ applicationId }: { applicationId: string }) {
     addMutation.mutate(
       { content: newNote.trim() },
       {
-        onSuccess: () => {
+        onSuccess: (result) => {
+          if (!result?.isOk()) return
           setNewNote("")
           setIsAdding(false)
         },
@@ -71,6 +73,25 @@ export function ApplicationNotes({ applicationId }: { applicationId: string }) {
       )}
 
       {loading && <p className="text-xs text-muted-foreground py-2">Cargando notas...</p>}
+
+      {notesQuery.isError && (
+        <div role="alert" className="text-xs text-destructive">
+          No se pudieron cargar las notas.
+          <button
+            type="button"
+            onClick={() => void notesQuery.refetch()}
+            className="ml-2 underline"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {(addMutation.data?.isErr() || deleteMutation.data?.isErr()) && (
+        <p role="alert" className="text-xs text-destructive">
+          No se pudo guardar el cambio. Reintenta.
+        </p>
+      )}
 
       {!loading && !evaluationsQuery.isError && comments.length === 0 && (
         <div className="rounded-lg border border-dashed bg-background p-4 text-center">

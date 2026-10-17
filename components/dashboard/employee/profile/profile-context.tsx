@@ -11,6 +11,7 @@ import type {
   ResumeLanguage,
   ResumeSkill,
 } from "@/lib/api/resumes"
+import type { CandidateAvailability, CandidateSeniority } from "@/lib/api/talent-search"
 import {
   locationToFormData,
   parseLocationString,
@@ -54,6 +55,8 @@ export type FormData = {
   phone: string
   location: string
   profession: string
+  experienceLevel: CandidateSeniority | ""
+  availability: CandidateAvailability | ""
   bio: string
   skills: readonly string[]
   avatar: string
@@ -101,6 +104,8 @@ const emptyFormData = (): FormData => ({
   phone: "",
   location: "",
   profession: "",
+  experienceLevel: "",
+  availability: "",
   bio: "",
   skills: [],
   avatar: "",
@@ -206,6 +211,8 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
       phone: user?.phone ?? "",
       location: user ? locationToFormData(user.location) : "",
       profession: user?.profession ?? "",
+      experienceLevel: user?.experienceLevel ?? "",
+      availability: user?.availability ?? "",
       bio: resume?.summary ?? "",
       skills: Array.isArray(resume?.skills)
         ? resume.skills.map((s): string => (typeof s === "string" ? s : s.name))
@@ -392,6 +399,8 @@ export function ProfileProvider({ children, session: serverSession }: ProfilePro
       await updateUserMutation.mutateAsync({
         name: formData.name,
         profession: formData.profession || undefined,
+        experienceLevel: formData.experienceLevel || null,
+        availability: formData.availability || null,
         phone: formData.phone || undefined,
         avatar: formData.avatar || undefined,
         birthday: formData.dateOfBirth || undefined,

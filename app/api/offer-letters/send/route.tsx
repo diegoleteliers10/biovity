@@ -1,9 +1,10 @@
+import { Result as R } from "better-result"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
-import { Resend } from "resend"
 import { defaultOfferLetterData } from "@/components/pdf/offer-letter-document"
 import type { OfferLetterData } from "@/lib/api/offer-letters"
 import { auth } from "@/lib/auth"
+import { enqueueEmail } from "@/lib/email-outbox"
 import { renderOfferLetterToPdf } from "@/lib/offer-letter-pdf"
 import { fetchJsonWithSession } from "@/lib/result"
 import { getSupabaseAdmin } from "@/lib/supabase"
@@ -100,6 +101,7 @@ export async function POST(request: Request) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         applicationId,
+        expiresOn: letterData.offerValidUntil,
         title,
         letterData,
         pdfPath,
@@ -114,16 +116,12 @@ export async function POST(request: Request) {
   }
   const offerLetter = unwrapData<{ id: string; chatId: string | null }>(createResult.value)
 
-  // 5. Email the candidate with the PDF attached. Best-effort: the offer is
-  // already recorded and visible in chat.
-  let emailed = false
-  try {
-    const apiKey = process.env.RESEND_API_KEY
-    if (apiKey) {
-      const resend = new Resend(apiKey)
-      const fromEmail = process.env.EMAIL_FROM || "Biovity <no-reply@biovity.cl>"
-      await resend.emails.send({
-        from: fromEmail,
+  // 5. Queue the email after the offer record and private PDF exist.
+  const emailQueueResult = await R.tryPromise({
+    try: () =>
+      enqueueEmail({
+        type: "offer_letter",
+        recipientUserId: application.candidateId,
         to: candidate.email,
         subject: `${title} | Biovity`,
         html: offerEmailHtml({
@@ -137,17 +135,18 @@ export async function POST(request: Request) {
             content: Buffer.from(pdfBytes).toString("base64"),
           },
         ],
-      })
-      emailed = true
-    }
-  } catch (error) {
-    console.error("[offer-letters/send] email failed:", error)
+      }),
+    catch: (cause) => cause,
+  })
+  const emailQueued = emailQueueResult.isOk() && emailQueueResult.value
+  if (emailQueueResult.isErr()) {
+    console.error("[offer-letters/send] email queue failed:", emailQueueResult.error)
   }
 
   return NextResponse.json({
     offerLetterId: offerLetter.id,
     chatId: offerLetter.chatId,
-    emailed,
+    emailQueued,
   })
 }
 

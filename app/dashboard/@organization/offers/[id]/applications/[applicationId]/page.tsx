@@ -15,6 +15,9 @@ import { toast } from "sonner"
 import { EventFormModal } from "@/components/calendar/event-form-modal"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { ApplicationDetailActions } from "@/components/dashboard/organization/ApplicationDetailActions"
+import { ApplicationHiringPlanEditor } from "@/components/dashboard/organization/ApplicationHiringPlanEditor"
+import { ApplicationInterviews } from "@/components/dashboard/organization/ApplicationInterviews"
+import { OfferLetterActions } from "@/components/dashboard/organization/OfferLetterActions"
 import { OfferLetterEditorDialog } from "@/components/dashboard/organization/offer-letter/OfferLetterEditorDialog"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -23,9 +26,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getApplicationDetail } from "@/lib/api/applications"
 import { getOrgQuestionsByJob } from "@/lib/api/job-questions"
-import { useUpdateApplicationStatusMutation } from "@/lib/api/use-applications"
+import {
+  useReopenApplicationMutation,
+  useUpdateApplicationPipelineStageMutation,
+} from "@/lib/api/use-applications"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
+import { useOrganizationMembers } from "@/lib/api/use-organization-members"
 import { useOrganization } from "@/lib/api/use-organization-mutations"
+import { usePipelineStages } from "@/lib/api/use-pipeline-stages"
 import { formatUserLocation, useResumeByUser, useUser } from "@/lib/api/use-profile"
 import { getResultErrorMessage } from "@/lib/result"
 import type { ApplicationStage } from "@/lib/types/dashboard"
@@ -130,16 +138,38 @@ export default function OrganizationApplicationDetailPage() {
   const questionLabelById = new Map((questionsQuery.data ?? []).map((q) => [q.id, q.label]))
   const candidateName = application?.candidate?.name ?? candidateProfile?.name ?? "Candidato"
   const { data: organization } = useOrganization(application?.job?.organizationId ?? undefined)
+  const { data: organizationMembers = [] } = useOrganizationMembers(organizationId || undefined)
 
   const recruiterId = session?.user?.id
-  const updateStatusMutation = useUpdateApplicationStatusMutation(jobId ?? "")
-  const createChatMutation = useCreateOrFindChatMutation(recruiterId)
+  const updatePipelineStageMutation = useUpdateApplicationPipelineStageMutation(jobId ?? "")
+  const reopenApplicationMutation = useReopenApplicationMutation(jobId ?? "")
+  const pipelineStagesQuery = usePipelineStages(jobId)
+  const createChatMutation = useCreateOrFindChatMutation(recruiterId, organizationId)
 
-  const handleStatusChange = useCallback(
-    async (applicationId: string, newStage: ApplicationStage) => {
-      await updateStatusMutation.mutateAsync({ id: applicationId, status: newStage })
+  const handlePipelineStageChange = useCallback(
+    async (
+      applicationId: string,
+      stageId: string,
+      rejectionNote?: string,
+      rejectionReasonId?: string
+    ): Promise<boolean> => {
+      await updatePipelineStageMutation.mutateAsync({
+        id: applicationId,
+        stageId,
+        rejectionNote,
+        rejectionReasonId,
+      })
+      return true
     },
-    [updateStatusMutation]
+    [updatePipelineStageMutation]
+  )
+
+  const handleReopenApplication = useCallback(
+    async (applicationId: string, stageId: string, reason: string): Promise<boolean> => {
+      await reopenApplicationMutation.mutateAsync({ id: applicationId, stageId, reason })
+      return true
+    },
+    [reopenApplicationMutation]
   )
 
   const handleScheduleInterview = useCallback((candidateId: string) => {
@@ -295,18 +325,35 @@ export default function OrganizationApplicationDetailPage() {
 
             <ApplicationDetailActions
               applicationId={applicationId}
+              organizationId={organizationId}
               applicationStatus={application.status as ApplicationStage}
+              pipelineStageId={application.pipelineStageId}
+              pipelineStages={pipelineStagesQuery.data ?? []}
+              onStageChange={handlePipelineStageChange}
+              onReopen={handleReopenApplication}
               candidateId={application.candidateId}
               candidateName={candidateName}
               candidateAvatar={application.candidate?.avatar}
               candidateProfession={
                 application.candidate?.profession ?? candidateProfile?.profession ?? "Candidato"
               }
-              onStatusChange={handleStatusChange}
               onScheduleInterview={handleScheduleInterview}
               onSendMessage={handleSendMessage}
               onSendOffer={() => setOfferDialogOpen(true)}
             />
+
+            <OfferLetterActions applicationId={applicationId} />
+
+            <ApplicationHiringPlanEditor
+              applicationId={applicationId}
+              jobId={jobId}
+              assigneeId={application.assigneeId}
+              nextAction={application.nextAction}
+              targetDate={application.targetDate}
+              members={organizationMembers}
+            />
+
+            <ApplicationInterviews applicationId={applicationId} organizationId={organizationId} />
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="rounded-lg border p-3">

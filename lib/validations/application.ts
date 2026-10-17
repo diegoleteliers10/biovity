@@ -6,6 +6,7 @@ export const applicationStatusSchema = z.enum([
   "entrevista",
   "rechazado",
   "contratado",
+  "desistido",
 ])
 
 export const applicationAnswerSchema = z.object({
