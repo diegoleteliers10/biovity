@@ -294,7 +294,7 @@ export const buildOperationsQueueUrl = (input: {
 }
 
 export const buildOnboardingAssignmentUrl = (organizationId: string) =>
-  `/api/admin/operations-queue/${encodeURIComponent(organizationId)}/assignment`
+  `/api/admin/operations-queue/organizations/${encodeURIComponent(organizationId)}/assignment`
 
 export const buildAdminTaskAssignmentUrl = (
   kind: "expired_job" | "organization_without_active_jobs",

@@ -33,11 +33,11 @@ Module._load = function (name, parent, ...args) {
   return load.call(this, name, parent, ...args)
 }
 
-const { PATCH } = require("../app/api/admin/operations-queue/[organizationId]/assignment/route.ts")
+const { PATCH } = require("../app/api/admin/operations-queue/organizations/[organizationId]/assignment/route.ts")
 const organizationId = "00000000-0000-4000-8000-000000000001"
 
 function request(body) {
-  return new Request("https://biovity.test/api/admin/operations-queue", {
+  return new Request("https://biovity.test/api/admin/operations-queue/organizations", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body,

@@ -249,7 +249,7 @@ test("filters onboarding cases by assignment state", () => {
   );
   assert.equal(
     buildOnboardingAssignmentUrl("organization id"),
-    "/api/admin/operations-queue/organization%20id/assignment",
+    "/api/admin/operations-queue/organizations/organization%20id/assignment",
   );
 });
 
