@@ -13,6 +13,13 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { getQuestionsByJob } from "@/lib/api/job-questions"
 import { useCreateApplicationMutation } from "@/lib/api/use-applications"
@@ -319,32 +326,37 @@ export function ApplyJobSheet({
             {!distributionSourceId && (
               <div className="space-y-2">
                 <Label htmlFor="sourceChannel">¿Dónde conociste esta oferta?</Label>
-                <select
-                  id="sourceChannel"
+                <Select
                   value={formState.sourceChannel}
-                  onChange={(event) =>
+                  onValueChange={(value) =>
                     dispatch({
                       type: "SET_SOURCE_CHANNEL",
                       value:
-                        APPLICATION_SOURCE_CHANNELS.find(
-                          (channel) => channel === event.target.value
-                        ) ?? "unknown",
+                        APPLICATION_SOURCE_CHANNELS.find((channel) => channel === value) ??
+                        "unknown",
                     })
                   }
-                  className="border-input bg-background h-10 w-full rounded-md border px-3 text-sm"
                 >
-                  <option value="unknown">No recuerdo</option>
-                  <option value="biovity">Biovity</option>
-                  <option value="linkedin">LinkedIn</option>
-                  <option value="laborum">Laborum</option>
-                  <option value="other_job_board">Otro portal de empleo</option>
-                  <option value="company_website">Sitio web de la empresa</option>
-                  <option value="social_media">Redes sociales</option>
-                  <option value="university">Universidad o institución educativa</option>
-                  <option value="referral">Recomendación</option>
-                  <option value="event">Feria o evento</option>
-                  <option value="other">Otro</option>
-                </select>
+                  <SelectTrigger
+                    id="sourceChannel"
+                    className="h-10 w-full rounded-md border-input bg-background px-3 pr-1 text-sm"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unknown">No recuerdo</SelectItem>
+                    <SelectItem value="biovity">Biovity</SelectItem>
+                    <SelectItem value="linkedin">LinkedIn</SelectItem>
+                    <SelectItem value="laborum">Laborum</SelectItem>
+                    <SelectItem value="other_job_board">Otro portal de empleo</SelectItem>
+                    <SelectItem value="company_website">Sitio web de la empresa</SelectItem>
+                    <SelectItem value="social_media">Redes sociales</SelectItem>
+                    <SelectItem value="university">Universidad o institución educativa</SelectItem>
+                    <SelectItem value="referral">Recomendación</SelectItem>
+                    <SelectItem value="event">Feria o evento</SelectItem>
+                    <SelectItem value="other">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             )}
           </div>

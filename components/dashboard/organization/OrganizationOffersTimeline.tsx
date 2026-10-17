@@ -23,6 +23,33 @@ const STATUS_CHIP: Record<string, string> = {
   expired: "bg-destructive/10 text-destructive",
 }
 
+function plainTextDescription(description: string): string {
+  return description
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<br\s*\/?\s*>/gi, "\n")
+    .replace(/<li\b[^>]*>/gi, "• ")
+    .replace(/<\/(?:p|div|li|h[1-6]|blockquote)>/gi, "\n")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&amp;/gi, "&")
+    .replace(/!?(\[([^\]]*)\])\([^)]+\)/g, "$2")
+    .replace(/^\s{0,3}#{1,6}\s+/gm, "")
+    .replace(/^\s*>\s?/gm, "")
+    .replace(/^\s*[-*+]\s+/gm, "• ")
+    .replace(/^\s*\d+[.)]\s+/gm, "• ")
+    .replace(/(`{1,3}|\*\*|__|~~)(.*?)\1/g, "$2")
+    .replace(/([*_])([^*_]+)\1/g, "$2")
+    .split("\n")
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .join(" ")
+}
+
 export function OrganizationOffersTimeline({ organizationId }: { organizationId: string }) {
   const router = useRouter()
   const { data, isLoading, error } = useJobsByOrganization(organizationId, { limit: 20 })
@@ -75,7 +102,7 @@ export function OrganizationOffersTimeline({ organizationId }: { organizationId:
           </div>
           {job.description && (
             <p className="mt-1.5 line-clamp-2 max-w-[55ch] text-sm leading-6 text-muted-foreground text-pretty">
-              {job.description}
+              {plainTextDescription(job.description)}
             </p>
           )}
           <button

@@ -3,8 +3,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { fetchJson } from "@/lib/result"
 
 type OrganizationOption = {
@@ -93,34 +100,39 @@ export function AdminSystemBroadcastComposer() {
   const pageItems = organizations.data?.data ?? []
 
   return (
-    <section className="space-y-4 rounded-lg border border-border/40 bg-surface-container-lowest p-4 sm:p-6">
-      <h2 className="text-sm font-medium">Enviar aviso a una empresa</h2>
-      <form className="grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
-        <div className="space-y-2">
-          <label className="text-xs font-medium" htmlFor="broadcast-organization">
+    <section className="space-y-5 rounded-xl border border-border/40 bg-surface-container-lowest p-5 shadow-none sm:p-6">
+      <h2 className="text-xs leading-4 font-medium text-foreground">Enviar aviso</h2>
+      <form className="grid max-w-5xl gap-x-6 gap-y-6 md:grid-cols-2" onSubmit={handleSubmit}>
+        <div className="space-y-3">
+          <label
+            className="text-xs leading-4 font-medium text-foreground"
+            htmlFor="broadcast-organization"
+          >
             Empresa
           </label>
-          <select
-            id="broadcast-organization"
-            className="h-11 w-full rounded-lg border border-border/40 bg-background px-3 text-sm"
-            value={organizationId}
-            onChange={(event) => setOrganizationId(event.target.value)}
-            required
+          <Select
+            value={organizationId || "none"}
+            onValueChange={(value) => setOrganizationId(value === "none" ? "" : value)}
             disabled={Boolean(requestId) || organizations.isLoading || pageItems.length === 0}
           >
-            <option value="">Seleccionar empresa</option>
-            {pageItems.map((organization) => {
-              const location = [organization.address?.city, organization.address?.country]
-                .filter(Boolean)
-                .join(", ")
-              return (
-                <option key={organization.id} value={organization.id}>
-                  {location ? `${organization.name} · ${location}` : organization.name}
-                </option>
-              )
-            })}
-          </select>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <SelectTrigger id="broadcast-organization" className="h-11 w-full">
+              <SelectValue placeholder="Seleccionar empresa" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Seleccionar empresa</SelectItem>
+              {pageItems.map((organization) => {
+                const location = [organization.address?.city, organization.address?.country]
+                  .filter(Boolean)
+                  .join(", ")
+                return (
+                  <SelectItem key={organization.id} value={organization.id}>
+                    {location ? `${organization.name} · ${location}` : organization.name}
+                  </SelectItem>
+                )
+              })}
+            </SelectContent>
+          </Select>
+          <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
             <Button
               type="button"
               size="sm"
@@ -158,12 +170,16 @@ export function AdminSystemBroadcastComposer() {
           )}
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-medium" htmlFor="broadcast-title">
+        <div className="space-y-3">
+          <label
+            className="text-xs leading-4 font-medium text-foreground"
+            htmlFor="broadcast-title"
+          >
             Título
           </label>
           <Input
             id="broadcast-title"
+            className="h-11"
             value={title}
             maxLength={160}
             onChange={(event) => setTitle(event.target.value)}
@@ -172,8 +188,8 @@ export function AdminSystemBroadcastComposer() {
           />
         </div>
 
-        <div className="space-y-2 md:col-span-2">
-          <label className="text-xs font-medium" htmlFor="broadcast-body">
+        <div className="space-y-3 md:col-span-2">
+          <label className="text-xs leading-4 font-medium text-foreground" htmlFor="broadcast-body">
             Mensaje
           </label>
           <textarea
@@ -191,6 +207,7 @@ export function AdminSystemBroadcastComposer() {
           <div className="flex flex-wrap gap-2">
             <Button
               type="submit"
+              className="h-11"
               disabled={!organizationId || !title.trim() || !body.trim() || broadcast.isPending}
             >
               {broadcast.isPending

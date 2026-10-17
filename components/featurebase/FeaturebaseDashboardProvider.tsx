@@ -63,7 +63,7 @@ export function FeaturebaseDashboardProvider({
   children,
 }: {
   appId: string
-  jwt: string
+  jwt?: string
   board?: string
   children: ReactNode
 }) {
@@ -84,7 +84,7 @@ export function FeaturebaseDashboardProvider({
       {primed && (
         <FeaturebaseProvider
           appId={appId}
-          featurebaseJwt={jwt}
+          {...(jwt ? { featurebaseJwt: jwt } : {})}
           messenger
           hideDefaultLauncher
           theme="light"

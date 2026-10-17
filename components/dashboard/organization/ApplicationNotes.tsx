@@ -10,11 +10,20 @@ import { useAddNoteMutation, useApplicationNotes, useDeleteNoteMutation } from "
 import { formatDateChilean } from "@/lib/utils"
 import { applicationComments } from "./application-comments"
 
-export function ApplicationNotes({ applicationId }: { applicationId: string }) {
+export function ApplicationNotes({
+  applicationId,
+  canManageHiring,
+}: {
+  applicationId: string
+  canManageHiring: boolean | undefined
+}) {
   const notesQuery = useApplicationNotes(applicationId)
   const notes = notesQuery.data
-  const evaluationsQuery = useEvaluations(applicationId)
-  const comments = applicationComments(notes ?? [], evaluationsQuery.data ?? [])
+  const evaluationsQuery = useEvaluations(applicationId, canManageHiring)
+  const comments = applicationComments(
+    notes ?? [],
+    canManageHiring ? (evaluationsQuery.data ?? []) : []
+  )
   const loading = notesQuery.isLoading || evaluationsQuery.isLoading
   const addMutation = useAddNoteMutation(applicationId)
   const deleteMutation = useDeleteNoteMutation(applicationId)

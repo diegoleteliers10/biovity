@@ -6,6 +6,13 @@ import { useCallback, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   useOrganizationMembers,
   useTransferOwnershipMutation,
 } from "@/lib/api/use-organization-members"
@@ -61,19 +68,22 @@ export function DangerZoneTab({ organizationId }: DangerZoneTabProps) {
             >
               Seleccionar nuevo owner
             </label>
-            <select
-              id="transfer-owner"
-              value={transferTargetId}
-              onChange={(e) => setTransferTargetId(e.target.value)}
-              className="flex h-9 w-full rounded-md border border-input bg-input/20 px-2.5 text-[13px] leading-4 outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
+            <Select
+              value={transferTargetId || "__none"}
+              onValueChange={(value) => setTransferTargetId(value === "__none" ? "" : value)}
             >
-              <option value="">Seleccionar miembro...</option>
-              {otherMembers.map((m) => (
-                <option key={m.id} value={m.userId}>
-                  {m.user?.name ?? m.user?.email ?? "Unknown"}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="transfer-owner" className="h-9 w-full text-[13px] leading-4">
+                <SelectValue placeholder="Seleccionar miembro..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none">Seleccionar miembro...</SelectItem>
+                {otherMembers.map((m) => (
+                  <SelectItem key={m.id} value={m.userId}>
+                    {m.user?.name ?? m.user?.email ?? "Unknown"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1.5">
             <span aria-hidden className="invisible block text-xs leading-4 font-medium">

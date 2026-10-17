@@ -36,8 +36,8 @@ export async function assessWithJev(
           ])
         ),
         perQuestion: result.answers,
-        inputTokens: result.usage.input_tokens,
-        outputTokens: result.usage.output_tokens,
+        inputTokens: result.usage.input_tokens ?? 0,
+        outputTokens: result.usage.output_tokens ?? 0,
       }
     },
     catch: (cause) => (cause instanceof Error ? cause : new Error("Jev request failed")),

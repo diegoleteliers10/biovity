@@ -7,7 +7,7 @@ import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  Map,
+  Map as InteractiveMap,
   MapArc,
   MapControls,
   MapMarker,
@@ -158,136 +158,149 @@ export function GeographicDistributionCard({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {!hasData ? (
-          <p className="text-sm text-muted-foreground">No hay datos geográficos disponibles.</p>
-        ) : (
-          <>
-            {/* Interactive Map */}
-            <div
-              className="relative flex min-h-[230px] w-full flex-1 flex-col overflow-hidden rounded-lg border border-border/40 bg-muted/20"
-              {...(basemap === "blank"
-                ? {
-                    style: {
-                      backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)",
-                      backgroundSize: "16px 16px",
-                    },
-                  }
-                : {})}
-            >
-              <Map
-                center={[-70.9, -35.6]}
-                zoom={4.1}
-                minZoom={3}
-                maxZoom={12}
-                className="w-full flex-1"
-                {...(basemap === "blank" ? { blank: true } : {})}
-              >
-                <MapControls position="top-right" showCompass={false} />
+        <div
+          className="relative flex min-h-[230px] w-full flex-1 flex-col overflow-hidden rounded-lg border border-border/40 bg-muted/20"
+          {...(basemap === "blank"
+            ? {
+                style: {
+                  backgroundImage: "radial-gradient(var(--border) 1px, transparent 1px)",
+                  backgroundSize: "16px 16px",
+                },
+              }
+            : {})}
+        >
+          <InteractiveMap
+            center={SANTIAGO_COORDS}
+            zoom={5.2}
+            minZoom={3}
+            maxZoom={12}
+            className="w-full flex-1"
+            showLoader={hasData}
+            {...(basemap === "blank" ? { blank: true } : {})}
+          >
+            <MapControls position="top-right" showCompass={false} />
 
-                {basemap === "blank" && (
-                  <MapArc
-                    data={buildSpokes(items)}
-                    curvature={0.25}
-                    paint={{
-                      "line-color": "var(--secondary)",
-                      "line-width": 1.5,
-                      "line-opacity": 0.45,
-                    }}
-                  />
-                )}
-
-                {items.map((item) => {
-                  const [lng, lat] = item.coordinates
-                  const isSelected = selectedCity === item.city
-                  const sizeMultiplier = Math.min(Math.max(item.percentage / 10, 1), 2.2)
-                  const bubbleSize = 16 * sizeMultiplier
-
-                  return (
-                    <MapMarker key={item.city} longitude={lng} latitude={lat}>
-                      <MarkerContent>
-                        <div
-                          className="group relative flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-125"
-                          onClick={() => setSelectedCity(isSelected ? null : item.city)}
-                        >
-                          <div
-                            className="rounded-full bg-primary/25 animate-ping absolute"
-                            style={{ width: `${bubbleSize + 8}px`, height: `${bubbleSize + 8}px` }}
-                          />
-                          <div
-                            className="flex items-center justify-center rounded-full bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container font-bold text-[10px] shadow-md border-2 border-white dark:border-background transition-all"
-                            style={{ width: `${bubbleSize}px`, height: `${bubbleSize}px` }}
-                          >
-                            {item.count}
-                          </div>
-                        </div>
-                      </MarkerContent>
-
-                      <MarkerTooltip>
-                        <div className="text-center font-medium">
-                          <p className="font-semibold">{item.city}</p>
-                          <p className="text-[10px] opacity-90">
-                            {item.count} postulantes ({item.percentage}%)
-                          </p>
-                        </div>
-                      </MarkerTooltip>
-
-                      <MarkerPopup closeButton>
-                        <div className="p-1 text-xs space-y-1">
-                          <p className="font-semibold text-foreground">{item.city}</p>
-                          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-                            <HugeiconsIcon icon={UserMultiple02Icon} size={12} />
-                            <span>{item.count} postulaciones registradas</span>
-                          </div>
-                          <Badge variant="secondary" className="text-[10px] mt-1">
-                            {item.percentage}% del total nacional
-                          </Badge>
-                        </div>
-                      </MarkerPopup>
-                    </MapMarker>
-                  )
-                })}
-              </Map>
-            </div>
-
-            {/* List breakdown */}
-            <div className="space-y-2.5 pr-1">
-              {items.map((geo) => (
-                <div
-                  key={geo.city}
-                  className={`flex items-center justify-between p-1.5 rounded-md transition-colors ${
-                    selectedCity === geo.city
-                      ? "bg-primary/10 border border-primary/30"
-                      : "hover:bg-muted/30"
-                  }`}
-                  onClick={() => setSelectedCity(selectedCity === geo.city ? null : geo.city)}
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="size-2 rounded-full bg-primary shrink-0" />
-                    <span className="text-xs font-medium text-foreground truncate cursor-pointer">
-                      {geo.city}
+            {!hasData && (
+              <MapMarker longitude={SANTIAGO_COORDS[0]} latitude={SANTIAGO_COORDS[1]}>
+                <MarkerContent>
+                  <div className="flex flex-col items-center gap-1.5">
+                    <span className="size-3 rounded-full border-2 border-background bg-primary shadow-sm" />
+                    <span className="rounded-md border border-border/60 bg-background px-2 py-1 text-xs font-medium text-foreground">
+                      Santiago
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-24 sm:w-32 h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full transition-all duration-500"
-                        style={{ width: `${geo.percentage}%` }}
-                      />
-                    </div>
-                    <span className="text-xs font-semibold tabular-nums text-foreground w-6 text-right">
-                      {geo.count}
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className="text-[10px] px-1 py-0 h-4 font-normal text-muted-foreground w-9 text-center"
+                </MarkerContent>
+              </MapMarker>
+            )}
+
+            {basemap === "blank" && hasData && (
+              <MapArc
+                data={buildSpokes(items)}
+                curvature={0.25}
+                paint={{
+                  "line-color": "var(--secondary)",
+                  "line-width": 1.5,
+                  "line-opacity": 0.45,
+                }}
+              />
+            )}
+
+            {items.map((item) => {
+              const [lng, lat] = item.coordinates
+              const isSelected = selectedCity === item.city
+              const sizeMultiplier = Math.min(Math.max(item.percentage / 10, 1), 2.2)
+              const bubbleSize = 16 * sizeMultiplier
+
+              return (
+                <MapMarker key={item.city} longitude={lng} latitude={lat}>
+                  <MarkerContent>
+                    <button
+                      type="button"
+                      aria-label={`Ver postulantes de ${item.city}`}
+                      aria-pressed={isSelected}
+                      className="group relative flex cursor-pointer items-center justify-center border-0 bg-transparent p-0 transition-transform duration-200 hover:scale-125"
+                      onClick={() => setSelectedCity(isSelected ? null : item.city)}
                     >
-                      {geo.percentage}%
-                    </Badge>
-                  </div>
+                      <div
+                        className="rounded-full bg-primary/25 animate-ping absolute"
+                        style={{ width: `${bubbleSize + 8}px`, height: `${bubbleSize + 8}px` }}
+                      />
+                      <div
+                        className="flex items-center justify-center rounded-full bg-primary text-primary-foreground dark:bg-secondary-container dark:text-on-secondary-container font-bold text-[10px] shadow-md border-2 border-white dark:border-background transition-all"
+                        style={{ width: `${bubbleSize}px`, height: `${bubbleSize}px` }}
+                      >
+                        {item.count}
+                      </div>
+                    </button>
+                  </MarkerContent>
+
+                  <MarkerTooltip>
+                    <div className="text-center font-medium">
+                      <p className="font-semibold">{item.city}</p>
+                      <p className="text-[10px] opacity-90">
+                        {item.count} postulantes ({item.percentage}%)
+                      </p>
+                    </div>
+                  </MarkerTooltip>
+
+                  <MarkerPopup closeButton>
+                    <div className="p-1 text-xs space-y-1">
+                      <p className="font-semibold text-foreground">{item.city}</p>
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                        <HugeiconsIcon icon={UserMultiple02Icon} size={12} />
+                        <span>{item.count} postulaciones registradas</span>
+                      </div>
+                      <Badge variant="secondary" className="text-[10px] mt-1">
+                        {item.percentage}% del total nacional
+                      </Badge>
+                    </div>
+                  </MarkerPopup>
+                </MapMarker>
+              )
+            })}
+          </InteractiveMap>
+        </div>
+
+        {hasData && (
+          <div className="space-y-2.5 pr-1">
+            {items.map((geo) => (
+              <button
+                type="button"
+                key={geo.city}
+                aria-pressed={selectedCity === geo.city}
+                className={`flex w-full items-center justify-between border border-transparent bg-transparent p-1.5 text-left transition-colors ${
+                  selectedCity === geo.city
+                    ? "bg-primary/10 border-primary/30"
+                    : "hover:bg-muted/30"
+                }`}
+                onClick={() => setSelectedCity(selectedCity === geo.city ? null : geo.city)}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="size-2 rounded-full bg-primary shrink-0" />
+                  <span className="text-xs font-medium text-foreground truncate cursor-pointer">
+                    {geo.city}
+                  </span>
                 </div>
-              ))}
-            </div>
-          </>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="w-24 sm:w-32 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary rounded-full transition-all duration-500"
+                      style={{ width: `${geo.percentage}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-semibold tabular-nums text-foreground w-6 text-right">
+                    {geo.count}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] px-1 py-0 h-4 font-normal text-muted-foreground w-9 text-center"
+                  >
+                    {geo.percentage}%
+                  </Badge>
+                </div>
+              </button>
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

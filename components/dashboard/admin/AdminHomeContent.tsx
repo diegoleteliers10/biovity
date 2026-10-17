@@ -49,9 +49,9 @@ type AdminStats = {
   }
 }
 
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { MetricCard } from "@/components/dashboard/employee/home/metricCard"
 import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Metric } from "@/lib/types/dashboard"

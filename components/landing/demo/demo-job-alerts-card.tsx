@@ -8,6 +8,13 @@ import { toast } from "sonner"
 import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { formatJobAlertCriteria } from "@/lib/api/job-alerts"
 import { CATEGORIAS_TRABAJOS, PLACEHOLDER_CATEGORIA } from "@/lib/data/trabajos-filtros-data"
 import type { JobAlert, JobAlertFrequency } from "@/lib/types/job-alert"
@@ -25,7 +32,7 @@ const CATEGORY_OPTIONS = CATEGORIAS_TRABAJOS.filter(
 const inputClass = "h-11 bg-surface-container-low border-border/40 text-sm rounded-lg"
 
 const selectClass =
-  "h-11 w-full appearance-none rounded-lg border border-border/40 bg-surface-container-low px-3.5 pr-9 text-sm text-foreground focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none"
+  "h-11 w-full rounded-lg border-border/40 bg-surface-container-low px-3.5 pr-1 text-sm text-foreground focus-visible:border-secondary focus-visible:ring-secondary/20"
 
 /**
  * Demo counterpart of components/dashboard/employee/home/jobAlertsCard.tsx.
@@ -104,22 +111,26 @@ export function DemoJobAlertsCard({ initialAlerts }: { initialAlerts: JobAlert[]
               >
                 Categoría
               </label>
-              <div className="relative">
-                <select
+              <Select
+                value={category || "all-categories"}
+                onValueChange={(value) => setCategory(value === "all-categories" ? "" : value)}
+              >
+                <SelectTrigger
                   id="demo-alert-category"
-                  value={category}
-                  onChange={(event) => setCategory(event.target.value)}
                   className={selectClass}
                   aria-label="Categoría de la alerta (demo)"
                 >
-                  <option value="">Todas</option>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all-categories">Todas</SelectItem>
                   {CATEGORY_OPTIONS.map((option) => (
-                    <option key={option.id} value={option.id}>
+                    <SelectItem key={option.id} value={option.id}>
                       {option.label}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-              </div>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
@@ -129,21 +140,25 @@ export function DemoJobAlertsCard({ initialAlerts }: { initialAlerts: JobAlert[]
               >
                 Frecuencia
               </label>
-              <div className="relative">
-                <select
+              <Select
+                value={frequency}
+                onValueChange={(value) => setFrequency(value as JobAlertFrequency)}
+              >
+                <SelectTrigger
                   id="demo-alert-frequency"
-                  value={frequency}
-                  onChange={(event) => setFrequency(event.target.value as JobAlertFrequency)}
                   className={selectClass}
                   aria-label="Frecuencia de la alerta (demo)"
                 >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
                   {(Object.keys(FREQUENCY_LABELS) as JobAlertFrequency[]).map((value) => (
-                    <option key={value} value={value}>
+                    <SelectItem key={value} value={value}>
                       {FREQUENCY_LABELS[value]}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-              </div>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

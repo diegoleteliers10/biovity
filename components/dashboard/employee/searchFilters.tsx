@@ -102,7 +102,7 @@ export function SearchFilters({
                 value={query}
                 onChange={(e) => onQueryChange(e.target.value)}
                 aria-label="Buscar por palabra clave"
-                className="h-9 bg-surface-container-low border-border/40 pl-10 pr-4 text-sm rounded-lg w-full"
+                className="h-9 w-full rounded-lg border-border/40 bg-surface-container-lowest pr-4 pl-10 text-sm"
               />
               <HugeiconsIcon
                 icon={Search01Icon}
@@ -119,7 +119,7 @@ export function SearchFilters({
               value={location}
               onChange={(e) => onLocationChange(e.target.value)}
               aria-label="Filtrar por ubicación"
-              className="h-9 bg-surface-container-low border-border/40 px-4 text-sm rounded-lg w-full"
+              className="h-9 w-full rounded-lg border-border/40 bg-surface-container-lowest px-4 text-sm"
             />
           </div>
           <div className="flex items-center gap-2">

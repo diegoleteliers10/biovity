@@ -5,6 +5,13 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import type { OrganizationMember } from "@/lib/api/organization-members"
 import { useUpdateApplicationHiringPlanMutation } from "@/lib/api/use-applications"
 
@@ -73,28 +80,35 @@ export function ApplicationHiringPlanEditor({
     <section className="space-y-3 rounded-xl bg-surface-container-low p-4">
       <h3 className="text-xs font-medium">Plan de seguimiento</h3>
       <div className="grid gap-3 sm:grid-cols-3">
-        <label className="space-y-1 text-xs text-muted-foreground">
+        <label htmlFor="application-assignee" className="space-y-1 text-xs text-muted-foreground">
           Responsable
-          <select
-            value={draft.assigneeId}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, assigneeId: event.target.value }))
+          <Select
+            value={draft.assigneeId || "__unassigned"}
+            onValueChange={(value) =>
+              setDraft((current) => ({
+                ...current,
+                assigneeId: value === "__unassigned" ? "" : value,
+              }))
             }
-            className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
             disabled={mutation.isPending}
           >
-            <option value="">Sin responsable</option>
-            {currentAssigneeIsMissing && (
-              <option value={draft.assigneeId} disabled>
-                Responsable anterior no disponible
-              </option>
-            )}
-            {operators.map((member) => (
-              <option key={member.userId} value={member.userId}>
-                {member.user?.name ?? member.user?.email ?? "Miembro"}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="application-assignee" className="h-9 w-full bg-background text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__unassigned">Sin responsable</SelectItem>
+              {currentAssigneeIsMissing && (
+                <SelectItem value={draft.assigneeId} disabled>
+                  Responsable anterior no disponible
+                </SelectItem>
+              )}
+              {operators.map((member) => (
+                <SelectItem key={member.userId} value={member.userId}>
+                  {member.user?.name ?? member.user?.email ?? "Miembro"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
         <div className="space-y-1 text-xs text-muted-foreground sm:col-span-2">
           <label htmlFor="application-next-action">Próxima acción</label>

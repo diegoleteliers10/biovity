@@ -2,9 +2,16 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { fetchJson } from "@/lib/result"
 import { formatFechaRelativa } from "@/lib/utils"
@@ -133,6 +140,7 @@ const queueLabels: Record<QueueType, string> = {
   saved_search_match: "Matching de perfiles fallido",
   ai_explanation: "Explicaciones de IA fallidas",
 }
+const isQueueType = (value: string): value is QueueType => Object.hasOwn(queueLabels, value)
 type EmailRetryResult = { status: "requeued" | "not_retryable" }
 type StatusNotificationRetryResult = { status: "requeued" | "not_retryable" }
 type ApplicationCreatedNotificationRetryResult = {
@@ -175,7 +183,7 @@ function OnboardingAssignmentControls({
   const dateInputId = `onboarding-date-${item.organizationId}`
 
   return (
-    <div className="space-y-2">
+    <div className="max-w-64 space-y-3">
       {(item.assignedAdminName || item.assignedAdminEmail) && (
         <p className="text-xs text-muted-foreground">
           {item.assignedAdminName || item.assignedAdminEmail}
@@ -200,24 +208,24 @@ function OnboardingAssignmentControls({
         <span className="text-xs text-muted-foreground">Asignado</span>
       ) : (
         <>
-          <label htmlFor={actionInputId} className="block text-xs text-muted-foreground">
+          <label htmlFor={actionInputId} className="block space-y-2 text-xs text-muted-foreground">
             Próxima acción
             <Input
               id={actionInputId}
               value={nextAction}
               maxLength={160}
               onChange={(event) => setNextAction(event.target.value)}
-              className="mt-1 h-9"
+              className="h-9"
             />
           </label>
-          <label htmlFor={dateInputId} className="block text-xs text-muted-foreground">
+          <label htmlFor={dateInputId} className="block space-y-2 text-xs text-muted-foreground">
             Fecha objetivo
             <Input
               id={dateInputId}
               type="date"
               value={targetDate}
               onChange={(event) => setTargetDate(event.target.value)}
-              className="mt-1 h-9"
+              className="h-9"
             />
           </label>
           <Button
@@ -622,51 +630,73 @@ export function AdminOperationsQueue() {
         </p>
       </header>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <Input
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value)
-            setPage(1)
-          }}
-          placeholder="Buscar vacante, organización o candidato"
-          aria-label="Buscar operaciones"
-          className="h-10 max-w-sm"
-        />
-        <fieldset className="flex flex-wrap gap-2">
-          <legend className="sr-only">Tipo de tarea</legend>
-          {(Object.keys(queueLabels) as QueueType[]).map((item) => (
-            <Button
-              key={item}
-              variant={type === item ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setType(item)
-                if (item !== "organization_onboarding") setAssignment("all")
-                setPage(1)
-              }}
-            >
-              {queueLabels[item]}
-            </Button>
-          ))}
-        </fieldset>
-        <label className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>Asignación admin</span>
-          <select
-            className="h-10 rounded-lg border border-border/40 bg-background px-3 text-sm text-foreground"
-            value={assignment}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1.5fr)_minmax(14rem,1fr)_minmax(14rem,1fr)]">
+        <label
+          htmlFor="operations-search"
+          className="grid gap-2 text-xs leading-4 font-medium text-foreground"
+        >
+          Buscar
+          <Input
+            id="operations-search"
+            value={search}
             onChange={(event) => {
-              const next = event.currentTarget.value
+              setSearch(event.target.value)
+              setPage(1)
+            }}
+            placeholder="Vacante, organización o candidato"
+            aria-label="Buscar operaciones"
+            className="h-11"
+          />
+        </label>
+        <label
+          htmlFor="operations-type"
+          className="grid gap-2 text-xs leading-4 font-medium text-foreground"
+        >
+          Tipo de tarea
+          <Select
+            value={type}
+            onValueChange={(next) => {
+              if (!isQueueType(next)) return
+              setType(next)
+              if (next !== "organization_onboarding") setAssignment("all")
+              setPage(1)
+            }}
+          >
+            <SelectTrigger id="operations-type" className="h-11 w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.entries(queueLabels) as [QueueType, string][]).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </label>
+        <label
+          htmlFor="operations-assignment"
+          className="grid gap-2 text-xs leading-4 font-medium text-foreground"
+        >
+          Asignación admin
+          <Select
+            value={assignment}
+            onValueChange={(next) => {
               if (next !== "all" && next !== "assigned" && next !== "unassigned") return
               setAssignment(next)
               setType("all")
               setPage(1)
             }}
           >
-            <option value="all">Todos</option>
-            <option value="assigned">Asignados</option>
-            <option value="unassigned">Sin asignar</option>
-          </select>
+            <SelectTrigger id="operations-assignment" className="h-11 w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="assigned">Asignados</SelectItem>
+              <SelectItem value="unassigned">Sin asignar</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
       </div>
 
@@ -800,7 +830,11 @@ export function AdminOperationsQueue() {
         </p>
       )}
 
-      {queue && <p className="text-sm text-muted-foreground">{queue.total} tareas</p>}
+      {queue && (
+        <p className="text-xs leading-4 font-medium text-muted-foreground">
+          {queue.total} {queue.total === 1 ? "tarea" : "tareas"}
+        </p>
+      )}
       <div className="overflow-x-auto rounded-lg border">
         {result.isLoading ? (
           <div className="space-y-3 p-6">
@@ -811,28 +845,38 @@ export function AdminOperationsQueue() {
         ) : error ? (
           <p className="p-8 text-sm text-destructive">{error}</p>
         ) : queue?.data.length ? (
-          <table className="w-full min-w-[760px] text-left text-sm">
-            <thead className="border-b bg-muted/30 text-xs text-muted-foreground">
+          <table className="w-full min-w-[960px] text-left text-sm">
+            <thead className="border-b bg-muted/30 text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground">
               <tr>
-                <th className="px-4 py-3 font-medium">Caso</th>
-                <th className="px-4 py-3 font-medium">Organización</th>
-                <th className="px-4 py-3 font-medium">Motivo</th>
-                <th className="px-4 py-3 font-medium">Fecha objetivo</th>
-                <th className="px-4 py-3 font-medium">ID de registro</th>
-                <th className="px-4 py-3 font-medium">Responsable</th>
-                <th className="px-4 py-3 font-medium">Acción</th>
+                <th className="min-w-64 px-4 py-3 font-medium">Caso</th>
+                <th className="min-w-48 px-4 py-3 font-medium">Organización</th>
+                <th className="min-w-72 px-4 py-3 font-medium">Motivo</th>
+                <th className="min-w-36 px-4 py-3 font-medium">Fecha objetivo</th>
+                <th className="min-w-64 px-4 py-3 font-medium">Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {queue.data.map((item) => (
-                <tr key={`${item.kind}-${item.id}`}>
-                  <td className="px-4 py-4">
+                <tr key={`${item.kind}-${item.id}`} className="align-top">
+                  <td className="max-w-64 px-4 py-4">
                     <p className="font-medium">{item.title}</p>
                     {item.candidateName && (
                       <p className="mt-1 text-xs text-muted-foreground">{item.candidateName}</p>
                     )}
+                    <details className="mt-2 text-xs text-muted-foreground">
+                      <summary className="w-fit cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
+                        Ver ID
+                      </summary>
+                      <code className="mt-1 block break-all rounded-md bg-muted/40 px-2 py-1 text-[11px]">
+                        {item.applicationId ?? item.id}
+                      </code>
+                    </details>
                   </td>
-                  <td className="px-4 py-4">{item.organizationName || "Sin organización"}</td>
+                  <td className="max-w-56 px-4 py-4">
+                    {item.organizationName === item.title
+                      ? "—"
+                      : item.organizationName || "Sin organización"}
+                  </td>
                   <td className="px-4 py-4">
                     <Badge variant="secondary">
                       {item.reason === "incomplete_onboarding"
@@ -899,41 +943,8 @@ export function AdminOperationsQueue() {
                       </ul>
                     )}
                   </td>
-                  <td className="px-4 py-4 text-muted-foreground">
+                  <td className="whitespace-nowrap px-4 py-4 text-muted-foreground">
                     {item.targetDate || item.expiresAt || "Sin fecha"}
-                  </td>
-                  <td className="px-4 py-4 font-mono text-xs text-muted-foreground">
-                    <span className="mr-2 font-sans">
-                      {item.kind === "expired_job"
-                        ? "Oferta"
-                        : item.kind === "offer_response_email"
-                          ? "Intento"
-                          : item.kind === "application_status_notification"
-                            ? "Aviso de estado"
-                            : item.kind === "application_created_notification"
-                              ? "Nueva postulación"
-                              : item.kind === "event_change_notification"
-                                ? "Aviso de entrevista"
-                                : item.kind === "event_lifecycle_notification"
-                                  ? "Aviso de evento"
-                                  : item.kind === "message_notification"
-                                    ? "Aviso de mensaje"
-                                    : item.kind === "interview_reminder_notification"
-                                      ? "Recordatorio de entrevista"
-                                      : item.kind === "system_broadcast_notification"
-                                        ? "Aviso administrativo"
-                                        : item.kind === "saved_search_alert"
-                                          ? "Alerta de búsqueda"
-                                          : item.kind === "saved_search_match"
-                                            ? "Cambio de perfil"
-                                            : item.kind === "ai_explanation"
-                                              ? "Explicación IA"
-                                              : item.kind === "organization_without_active_jobs" ||
-                                                  item.kind === "organization_onboarding"
-                                                ? "Organización"
-                                                : "Postulación"}
-                    </span>
-                    {item.applicationId ?? item.id}
                   </td>
                   <td className="px-4 py-4">
                     {item.kind === "organization_onboarding" ||
@@ -959,12 +970,7 @@ export function AdminOperationsQueue() {
                             })
                         }}
                       />
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-4">
-                    {item.kind === "offer_response_email" ? (
+                    ) : item.kind === "offer_response_email" ? (
                       <Button
                         size="sm"
                         disabled={emailRetryMutation.isPending}
@@ -1052,9 +1058,7 @@ export function AdminOperationsQueue() {
                       >
                         Reintentar explicación
                       </Button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
+                    ) : null}
                   </td>
                 </tr>
               ))}

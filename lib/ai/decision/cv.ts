@@ -9,7 +9,7 @@ export class CandidateCvError extends TaggedError("CandidateCvError")<{
   message: string
   reason: "path" | "download" | "invalid_pdf" | "limits" | "no_text" | "cleanup"
   cause?: unknown
-}>() {}
+}> {}
 
 function cvError(reason: CandidateCvError["reason"], message: string, cause?: unknown): Error {
   return new CandidateCvError({ reason, message, cause })

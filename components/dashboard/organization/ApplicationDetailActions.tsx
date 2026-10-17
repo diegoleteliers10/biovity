@@ -8,6 +8,7 @@ import {
   NoteAddIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -33,6 +34,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useEvaluations } from "@/hooks/use-evaluations"
 import type { ApplicationStatus } from "@/lib/api/applications"
+import { getOrganizationVerification } from "@/lib/api/organizations"
 import { useApplicationStatusHistory } from "@/lib/api/use-applications"
 import { type PipelineStage, useRejectionReasons } from "@/lib/api/use-pipeline-stages"
 import type { ApplicationStage } from "@/lib/types/dashboard"
@@ -113,7 +115,13 @@ export function ApplicationDetailActions({
   onSendMessage?: (candidateId: string) => void
   onSendOffer?: () => void
 }) {
-  const evaluationQuery = useEvaluations(applicationId)
+  const verificationQuery = useQuery({
+    queryKey: ["organization-verification", organizationId],
+    queryFn: () => getOrganizationVerification(organizationId),
+  })
+  const canManageHiring =
+    verificationQuery.data?.isOk() && verificationQuery.data.value.status === "verified"
+  const evaluationQuery = useEvaluations(applicationId, canManageHiring)
   const historyQuery = useApplicationStatusHistory(applicationId)
   const rejectionReasonsQuery = useRejectionReasons(organizationId)
   const activeRejectionReasons = rejectionReasonsQuery.data?.filter((reason) => reason.active) ?? []
@@ -254,6 +262,7 @@ export function ApplicationDetailActions({
 
         <ScorecardSheet
           applicationId={applicationId}
+          canManageHiring={canManageHiring}
           candidateName={candidateName}
           candidateAvatar={candidateAvatar}
           candidateProfession={candidateProfession}
@@ -269,6 +278,7 @@ export function ApplicationDetailActions({
         >
           <Button
             variant="outline"
+            disabled={!canManageHiring}
             className="h-9 gap-1.5 rounded-md px-3 border-secondary/30 hover:bg-secondary/10 hover:text-secondary"
           >
             <HugeiconsIcon icon={NoteAddIcon} size={14} />
@@ -479,12 +489,15 @@ export function ApplicationDetailActions({
             </button>
           </div>
         ) : (
-          <EvaluationSummary evaluations={evaluationQuery.data ?? []} mode="detail" />
+          <EvaluationSummary
+            evaluations={canManageHiring ? (evaluationQuery.data ?? []) : []}
+            mode="detail"
+          />
         )}
       </section>
 
       {/* Notes section */}
-      <ApplicationNotes applicationId={applicationId} />
+      <ApplicationNotes applicationId={applicationId} canManageHiring={canManageHiring} />
     </div>
   )
 }

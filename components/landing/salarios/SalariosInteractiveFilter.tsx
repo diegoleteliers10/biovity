@@ -9,6 +9,13 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   CARRERA_CHART_DATA,
   CARRERAS_STEM_CHILE,
   INDUSTRIA_CHART_DATA,
@@ -270,29 +277,29 @@ function FilterSelect({
   onChange: (v: string) => void
   options: { value: string; label: string }[]
 }) {
+  const id = `salary-filter-${label.toLowerCase().replaceAll(" ", "-")}`
+
   return (
     <div>
-      <label className="block text-xs font-medium text-foreground mb-1.5">{label}</label>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+      <label htmlFor={id} className="block text-xs font-medium text-foreground mb-1.5">
+        {label}
+      </label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger
+          id={id}
           aria-label={label}
-          className={cn(
-            "h-10 w-full appearance-none rounded-lg border border-border bg-surface-container-lowest px-3 pr-9 text-xs sm:text-sm text-foreground",
-            "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 outline-none transition-colors"
-          )}
+          className="h-10 w-full rounded-lg border-border bg-surface-container-lowest px-3 pr-1 text-xs text-foreground focus-visible:border-ring focus-visible:ring-ring/30 sm:text-sm"
         >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="text-foreground">
-              {opt.label}
-            </option>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
           ))}
-        </select>
-        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-          <HugeiconsIcon icon={ArrowRight01Icon} size={14} className="rotate-90" />
-        </div>
-      </div>
+        </SelectContent>
+      </Select>
     </div>
   )
 }

@@ -4,9 +4,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { Result } from "better-result"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   type AdminLegacyChatSummary,
   assignAdminChatOrganization,
@@ -46,7 +53,7 @@ function ChatRow({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`w-full rounded-md border p-3 text-left ${selected ? "border-primary bg-primary/5" : "border-border"}`}
+      className={`w-full rounded-lg border p-4 text-left transition-colors duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 ${selected ? "border-secondary bg-secondary/5" : "border-border/40 bg-background hover:bg-surface-container-low"}`}
     >
       <span className="block font-medium">
         {chat.recruiter.name} · {chat.professional.name}
@@ -127,15 +134,32 @@ export function AdminLegacyChatsContent() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
-        <Card>
+        <Card className="border-border/40 shadow-none">
           <CardHeader>
-            <CardTitle>Chats sin organización ({chatsQuery.data?.total ?? 0})</CardTitle>
+            <CardTitle className="text-base font-semibold">
+              Chats pendientes
+              <span className="ml-2 text-sm font-normal tabular-nums text-muted-foreground">
+                {chatsQuery.data?.total ?? 0}
+              </span>
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {chatsQuery.isPending && <p role="status">Cargando chats…</p>}
-            {chatsQuery.isError && <p role="alert">{getErrorMessage(chatsQuery.error)}</p>}
+          <CardContent className="space-y-4">
+            {chatsQuery.isPending && (
+              <div className="space-y-3" role="status" aria-label="Cargando chats">
+                <span className="sr-only">Cargando chats</span>
+                <div className="h-20 rounded-lg bg-surface-container-low" />
+                <div className="h-20 rounded-lg bg-surface-container-low" />
+              </div>
+            )}
+            {chatsQuery.isError && (
+              <p role="alert" className="rounded-lg bg-destructive/5 p-4 text-sm text-destructive">
+                {getErrorMessage(chatsQuery.error)}
+              </p>
+            )}
             {!chatsQuery.isPending && chatsQuery.data?.data.length === 0 && (
-              <p>No hay chats pendientes de revisión.</p>
+              <p className="rounded-lg bg-surface-container-low p-5 text-sm font-medium text-foreground">
+                No hay chats pendientes de revisión.
+              </p>
             )}
             {chatsQuery.data?.data.map((chat) => (
               <ChatRow
@@ -145,34 +169,51 @@ export function AdminLegacyChatsContent() {
                 onSelect={() => setSelectedChatId(chat.id)}
               />
             ))}
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-sm text-muted-foreground">
-                Página {page} de {totalPages}
-              </span>
-              <div className="flex gap-2">
-                <Button variant="outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-                  Anterior
-                </Button>
-                <Button
-                  variant="outline"
-                  disabled={page >= totalPages}
-                  onClick={() => setPage(page + 1)}
-                >
-                  Siguiente
-                </Button>
+            {chatsQuery.data?.data.length ? (
+              <div className="flex items-center justify-between gap-3 pt-1">
+                <span className="text-xs text-muted-foreground">
+                  Página {page} de {totalPages}
+                </span>
+                <div className="flex gap-2">
+                  <Button variant="outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+                    Anterior
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled={page >= totalPages}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    Siguiente
+                  </Button>
+                </div>
               </div>
-            </div>
+            ) : null}
           </CardContent>
         </Card>
-
-        <Card>
+        <Card className="border-border/40 shadow-none">
           <CardHeader>
-            <CardTitle>Participantes e historial</CardTitle>
+            <CardTitle className="text-base font-semibold">Participantes e historial</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            {!selectedChatId && <p>Selecciona un chat para revisar su historial.</p>}
-            {detailQuery.isPending && <p role="status">Cargando historial…</p>}
-            {detailQuery.isError && <p role="alert">{getErrorMessage(detailQuery.error)}</p>}
+            {!selectedChatId && (
+              <p className="rounded-lg bg-surface-container-low p-5 text-sm text-muted-foreground">
+                {chatsQuery.data?.data.length
+                  ? "Selecciona un chat para revisar su historial."
+                  : "El historial aparecerá aquí cuando haya chats pendientes."}
+              </p>
+            )}
+            {selectedChatId && detailQuery.isPending && (
+              <div className="space-y-3" role="status" aria-label="Cargando historial">
+                <span className="sr-only">Cargando historial</span>
+                <div className="h-14 rounded-lg bg-surface-container-low" />
+                <div className="h-40 rounded-lg bg-surface-container-low" />
+              </div>
+            )}
+            {selectedChatId && detailQuery.isError && (
+              <p role="alert" className="rounded-lg bg-destructive/5 p-4 text-sm text-destructive">
+                {getErrorMessage(detailQuery.error)}
+              </p>
+            )}
             {detail && (
               <>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -190,9 +231,9 @@ export function AdminLegacyChatsContent() {
 
                 <div>
                   <h2 className="mb-2 font-medium">Mensajes</h2>
-                  <ol className="max-h-80 space-y-3 overflow-y-auto rounded-md border p-3">
+                  <ol className="max-h-80 space-y-3 overflow-y-auto rounded-lg bg-surface-container-low p-4">
                     {detail.messages.map((message) => (
-                      <li key={message.id} className="border-b pb-3 last:border-b-0">
+                      <li key={message.id} className="pb-3 last:pb-0">
                         <p className="text-sm font-medium">
                           {message.senderName} · {formatDate(message.createdAt)}
                         </p>
@@ -212,6 +253,7 @@ export function AdminLegacyChatsContent() {
                   </label>
                   <Input
                     id="verified-organization-search"
+                    className="h-11 rounded-lg"
                     value={organizationSearch}
                     onChange={(event) => {
                       setOrganizationSearch(event.target.value)
@@ -220,19 +262,25 @@ export function AdminLegacyChatsContent() {
                     }}
                     placeholder="Buscar por nombre"
                   />
-                  <select
-                    aria-label="Seleccionar organización verificada"
-                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-                    value={organizationId}
-                    onChange={(event) => setOrganizationId(event.target.value)}
+                  <Select
+                    value={organizationId || "none"}
+                    onValueChange={(value) => setOrganizationId(value === "none" ? "" : value)}
                   >
-                    <option value="">Selecciona una organización</option>
-                    {organizationsQuery.data?.data.map((organization) => (
-                      <option key={organization.id} value={organization.id}>
-                        {organization.name}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger
+                      className="h-11 w-full"
+                      aria-label="Seleccionar organización verificada"
+                    >
+                      <SelectValue placeholder="Selecciona una organización" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Selecciona una organización</SelectItem>
+                      {organizationsQuery.data?.data.map((organization) => (
+                        <SelectItem key={organization.id} value={organization.id}>
+                          {organization.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {organizationsQuery.isError && (
                     <p role="alert">{getErrorMessage(organizationsQuery.error)}</p>
                   )}

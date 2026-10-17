@@ -1,5 +1,6 @@
 "use client"
 
+import { Result } from "better-result"
 import {
   type AdminEntityColumn,
   AdminEntityTable,
@@ -7,15 +8,13 @@ import {
 import { AdminOrganizationVerificationQueue } from "@/components/dashboard/admin/AdminOrganizationVerificationQueue"
 import { AdminSystemBroadcastComposer } from "@/components/dashboard/admin/AdminSystemBroadcastComposer"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { adminOrganizationsParsers } from "@/lib/parsers/admin-organizations"
 import { formatDateChilean } from "@/lib/utils"
 
 function formatDate(iso: string): string {
-  try {
-    return formatDateChilean(iso, "d MMM yyyy")
-  } catch {
-    return iso
-  }
+  const result = Result.try(() => formatDateChilean(iso, "d MMM yyyy"))
+  return result.isOk() ? result.value : iso
 }
 
 const orgColumns: AdminEntityColumn[] = [
@@ -46,20 +45,42 @@ const orgColumns: AdminEntityColumn[] = [
 
 export function AdminOrganizationsContent() {
   return (
-    <div className="space-y-8">
-      <AdminOrganizationVerificationQueue />
-      <AdminSystemBroadcastComposer />
-      <AdminEntityTable
-        columns={orgColumns}
-        apiType="organization"
-        title="Organizaciones"
-        description="Usuarios con tipo organización. El estado indica si la cuenta puede acceder."
-        entityName="Organizacion"
-        entityNamePlural="organizaciones"
-        parsers={adminOrganizationsParsers}
-        searchPlaceholder="Buscar por email o nombre..."
-        searchLabel="Buscar organizaciones"
-      />
+    <div className="p-4 sm:p-6">
+      <Tabs defaultValue="accounts" className="gap-4">
+        <TabsList
+          variant="line"
+          className="h-10 w-full justify-start gap-2 rounded-none border-b border-border/40 p-0"
+        >
+          <TabsTrigger value="accounts" className="h-10 flex-none px-3 text-xs">
+            Cuentas
+          </TabsTrigger>
+          <TabsTrigger value="verification" className="h-10 flex-none px-3 text-xs">
+            Verificación
+          </TabsTrigger>
+          <TabsTrigger value="notices" className="h-10 flex-none px-3 text-xs">
+            Avisos
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="accounts" className="mt-0">
+          <AdminEntityTable
+            className="p-0"
+            columns={orgColumns}
+            apiType="organization"
+            title="Cuentas de organización"
+            entityName="Organizacion"
+            entityNamePlural="organizaciones"
+            parsers={adminOrganizationsParsers}
+            searchPlaceholder="Buscar por email o nombre..."
+            searchLabel="Buscar organizaciones"
+          />
+        </TabsContent>
+        <TabsContent value="verification" className="mt-0">
+          <AdminOrganizationVerificationQueue />
+        </TabsContent>
+        <TabsContent value="notices" className="mt-0">
+          <AdminSystemBroadcastComposer />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

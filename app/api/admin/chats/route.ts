@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
   })
   if (pagination.search) query.set("search", pagination.search)
   const endpoint =
-    resource === "verified-organizations" ? `verified-organizations?${query}` : `?${query}`
+    resource === "verified-organizations" ? `/verified-organizations?${query}` : `?${query}`
   const result = await fetchJsonWithSession<unknown>(
     `${API_BASE}/api/v1/admin/legacy-chats${endpoint}`,
     request.headers

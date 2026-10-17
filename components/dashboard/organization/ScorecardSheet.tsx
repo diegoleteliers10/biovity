@@ -25,6 +25,13 @@ import {
 } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   type Evaluation,
   useEvaluations,
   useUpsertEvaluationMutation,
@@ -133,7 +140,7 @@ export function ScorecardSheet(props: ScorecardSheetProps) {
 
 function EvaluationLoader(props: EvaluationLoaderProps) {
   const session = useDashboardSession()
-  const query = useEvaluations(props.applicationId)
+  const query = useEvaluations(props.applicationId, props.canManageHiring)
   const [loaded, setLoaded] = useState(false)
   if (!loaded && query.isFetchedAfterMount && !query.isError && query.data !== undefined) {
     setLoaded(true)
@@ -248,18 +255,21 @@ function EvaluationEditor(props: EvaluationEditorProps) {
             <label htmlFor="evaluation-context" className="text-sm font-medium">
               Contexto
             </label>
-            <select
-              id="evaluation-context"
-              value={draft.context}
-              onChange={(event) => update({ context: event.target.value })}
-              className="w-full rounded-md border border-border bg-surface-container-low p-2 text-sm"
-            >
-              {CONTEXTS.map((context) => (
-                <option key={context.value} value={context.value}>
-                  {context.label}
-                </option>
-              ))}
-            </select>
+            <Select value={draft.context} onValueChange={(value) => update({ context: value })}>
+              <SelectTrigger
+                id="evaluation-context"
+                className="w-full bg-surface-container-low text-sm"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CONTEXTS.map((context) => (
+                  <SelectItem key={context.value} value={context.value}>
+                    {context.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium mb-2">Dictamen</legend>

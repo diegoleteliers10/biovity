@@ -7,8 +7,8 @@ import { Result } from "better-result"
 import { type ParserBuilder, useQueryStates } from "nuqs"
 import { useCallback, useReducer, useRef, useState } from "react"
 import { toast } from "sonner"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { ConfirmDialog } from "@/components/dashboard/admin/ConfirmDialog"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -24,7 +24,7 @@ import { useMountEffect } from "@/hooks/use-mount-effect"
 import { setUserActive } from "@/lib/api/users"
 import { fetchJson, getResultErrorMessage } from "@/lib/result"
 import type { AdminUser } from "@/lib/types/admin"
-import { formatDateChilean } from "@/lib/utils"
+import { cn, formatDateChilean } from "@/lib/utils"
 
 type EntityState = {
   items: AdminUser[]
@@ -173,7 +173,7 @@ type AdminEntityTableProps = {
   columns: AdminEntityColumn[]
   apiType: "professional" | "organization"
   title: string
-  description: string
+  description?: string
   entityName: string
   entityNamePlural: string
   parsers: {
@@ -186,6 +186,7 @@ type AdminEntityTableProps = {
   extraActions?: React.ReactNode
   extraSearchParams?: Record<string, string>
   onRowClick?: (item: AdminUser) => void
+  className?: string
 }
 
 export function AdminEntityTable({
@@ -202,6 +203,7 @@ export function AdminEntityTable({
   extraActions,
   extraSearchParams,
   onRowClick,
+  className,
 }: AdminEntityTableProps) {
   const queryClient = useQueryClient()
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -304,11 +306,13 @@ export function AdminEntityTable({
   const totalPages = Math.max(1, Math.ceil(state.total / PAGE_SIZE))
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
+    <div className={cn("flex flex-1 flex-col gap-6 p-4 sm:p-6", className)}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{title}</h1>
-          <p className="mt-1 text-pretty text-sm text-muted-foreground">{description}</p>
+          {description && (
+            <p className="mt-1 text-pretty text-sm text-muted-foreground">{description}</p>
+          )}
         </div>
         <Button
           variant="ghost"

@@ -4,6 +4,13 @@ import { Cancel01Icon, LanguageSkillIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { EditableCard } from "./EditableCard"
 import { EmptyListState } from "./EmptyListState"
 import { emptyLanguage, LEVEL_OPTIONS, useProfileContext } from "./profile-context"
@@ -30,23 +37,30 @@ export function LanguagesForm() {
                   placeholder="Idioma"
                   className="h-9 rounded-lg border-border/40 bg-surface-container-lowest text-xs sm:text-sm flex-1"
                 />
-                <select
-                  value={lang.level ?? ""}
-                  onChange={(e) =>
+                <Select
+                  value={lang.level || "__unspecified"}
+                  onValueChange={(value) =>
                     handleResumeArrayChange("languages", (arr) => {
                       const next = [...arr]
-                      next[i] = { ...next[i], level: e.target.value || undefined }
+                      next[i] = { ...next[i], level: value === "__unspecified" ? undefined : value }
                       return next
                     })
                   }
-                  className="h-9 rounded-lg border border-border/40 bg-surface-container-lowest px-2.5 text-xs text-foreground focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none w-32 shrink-0"
                 >
-                  {LEVEL_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="h-9 w-32 shrink-0 rounded-lg bg-surface-container-lowest text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LEVEL_OPTIONS.map((option) => (
+                      <SelectItem
+                        key={option.value || "__unspecified"}
+                        value={option.value || "__unspecified"}
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button
                   type="button"
                   variant="ghost"

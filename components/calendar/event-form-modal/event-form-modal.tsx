@@ -5,6 +5,13 @@ import { Result } from "better-result"
 import { useState, useTransition } from "react"
 import { Sheet, SheetContent } from "@/components/animate-ui/components/radix/sheet"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useApplicationDetail } from "@/lib/api/use-applications"
 import { useCreateEvent, useDeleteEvent, useUpdateEvent } from "@/lib/api/use-events"
 import { useOrganizationMembers } from "@/lib/api/use-organization-members"
@@ -459,23 +466,29 @@ function EventFormFields({
                         <span>{memberName}</span>
                       </label>
                       {selectedRoleId !== undefined && (
-                        <select
-                          className="h-8 w-full rounded-md border border-border/40 bg-background px-2 text-xs"
+                        <Select
                           value={selectedRoleId}
-                          aria-label={`Función de ${memberName}`}
-                          onChange={(event) =>
+                          onValueChange={(value) =>
                             setSelectedInterviewerRoles((current) => ({
                               ...current,
-                              [member.userId]: event.currentTarget.value,
+                              [member.userId]: value,
                             }))
                           }
                         >
-                          {interviewerRoles.map((role) => (
-                            <option key={role.id} value={role.id}>
-                              {role.label}
-                            </option>
-                          ))}
-                        </select>
+                          <SelectTrigger
+                            className="h-8 w-full bg-background text-xs"
+                            aria-label={`Función de ${memberName}`}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {interviewerRoles.map((role) => (
+                              <SelectItem key={role.id} value={role.id}>
+                                {role.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       )}
                     </div>
                   )

@@ -27,7 +27,7 @@ export function guardApprovedTools<T extends ToolSet>(
         toolName,
         {
           ...currentTool,
-          execute: async (input: unknown, options: ToolExecutionOptions) => {
+          execute: async (input: unknown, options: ToolExecutionOptions<unknown>) => {
             const consumed = await consume(
               actorId,
               organizationId,

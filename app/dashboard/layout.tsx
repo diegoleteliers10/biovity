@@ -7,6 +7,7 @@ import {
   FEATUREBASE_APP_ID,
   FEATUREBASE_BOARDS,
   isFeaturebaseEnabled,
+  isFeaturebaseIdentifyEnabled,
 } from "@/lib/featurebase/config"
 import { signFeaturebaseJwt } from "@/lib/featurebase/jwt"
 
@@ -35,24 +36,25 @@ export default async function DashboardLayout({
       | { id?: string; email?: string; name?: string; avatar?: string }
       | undefined
 
-    if (sessionUser?.id && sessionUser.email) {
-      const jwt = signFeaturebaseJwt({
-        userId: sessionUser.id,
-        email: sessionUser.email,
-        name: sessionUser.name,
-        profilePicture: sessionUser.avatar || undefined,
-        locale: "es",
-      })
-      return (
-        <FeaturebaseDashboardProvider
-          appId={FEATUREBASE_APP_ID}
-          jwt={jwt}
-          board={FEATUREBASE_BOARDS[role]}
-        >
-          {slot}
-        </FeaturebaseDashboardProvider>
-      )
-    }
+    const jwt =
+      isFeaturebaseIdentifyEnabled() && sessionUser?.id && sessionUser.email
+        ? signFeaturebaseJwt({
+            userId: sessionUser.id,
+            email: sessionUser.email,
+            name: sessionUser.name,
+            profilePicture: sessionUser.avatar || undefined,
+            locale: "es",
+          })
+        : undefined
+    return (
+      <FeaturebaseDashboardProvider
+        appId={FEATUREBASE_APP_ID}
+        jwt={jwt}
+        board={FEATUREBASE_BOARDS[role]}
+      >
+        {slot}
+      </FeaturebaseDashboardProvider>
+    )
   }
 
   return <>{slot}</>

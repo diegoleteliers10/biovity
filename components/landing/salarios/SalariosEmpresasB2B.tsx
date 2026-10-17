@@ -8,6 +8,13 @@ import Link from "next/link"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { BANDAS_SALARIALES_B2B } from "@/lib/data/salarios-data"
 import { cn, formatSalarioRango } from "@/lib/utils"
 
@@ -63,28 +70,21 @@ export function SalariosEmpresasB2B() {
                   >
                     Cargo a contratar
                   </label>
-                  <div className="relative">
-                    <select
+                  <Select value={career} onValueChange={setCareer}>
+                    <SelectTrigger
                       id="b2b-career"
-                      value={career}
-                      onChange={(e) => setCareer(e.target.value)}
-                      className={cn(
-                        "h-10 w-full appearance-none rounded-lg border border-border bg-surface-container-lowest px-3 pr-9 text-xs sm:text-sm text-foreground",
-                        "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 outline-none transition-colors"
-                      )}
+                      className="h-10 w-full rounded-lg border-border bg-surface-container-lowest px-3 pr-1 text-xs text-foreground focus-visible:border-ring focus-visible:ring-ring/30 sm:text-sm"
                     >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
                       {BANDAS_SALARIALES_B2B.map((band) => (
-                        <option key={band.career} value={band.career}>
+                        <SelectItem key={band.career} value={band.career}>
                           {band.career}
-                        </option>
+                        </SelectItem>
                       ))}
-                    </select>
-                    <HugeiconsIcon
-                      icon={ArrowRight01Icon}
-                      size={14}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none"
-                    />
-                  </div>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>

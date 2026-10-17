@@ -1,5 +1,6 @@
 "use client"
 
+import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useRouter } from "next/navigation"
 import { useCallback, useMemo, useState } from "react"
@@ -14,6 +15,7 @@ import { useEvaluationBatch } from "@/hooks/use-evaluations"
 import { useKanbanAIScoring } from "@/hooks/useKanbanAIScoring"
 import type { JobOfferContext } from "@/lib/ai/types"
 import type { Application } from "@/lib/api/applications"
+import { getOrganizationVerification } from "@/lib/api/organizations"
 import { useLogActivityMutation } from "@/lib/api/use-activity-logs"
 import {
   useApplicationsByJob,
@@ -65,6 +67,13 @@ export function OrganizationApplicationsContent() {
   const session = useDashboardSession()
   const organizationId = session?.user?.organizationId ?? undefined
   const recruiterId = session?.user?.id ?? undefined
+  const verificationQuery = useQuery({
+    queryKey: ["organization-verification", organizationId],
+    queryFn: () => getOrganizationVerification(organizationId ?? ""),
+    enabled: Boolean(organizationId),
+  })
+  const canManageHiring =
+    verificationQuery.data?.isOk() && verificationQuery.data.value.status === "verified"
 
   const { data: jobs, isLoading: jobsLoading, error: jobsError } = useJobs(organizationId)
   const jobList = jobs ?? []
@@ -119,7 +128,10 @@ export function OrganizationApplicationsContent() {
     [applications, memberNames]
   )
 
-  const evaluationQuery = useEvaluationBatch(applicants.map((applicant) => applicant.id))
+  const evaluationQuery = useEvaluationBatch(
+    applicants.map((applicant) => applicant.id),
+    canManageHiring
+  )
   const evaluationsByApplication = useMemo(() => {
     const grouped = new Map<string, NonNullable<typeof evaluationQuery.data>>()
     for (const evaluation of evaluationQuery.data ?? []) {
@@ -130,10 +142,10 @@ export function OrganizationApplicationsContent() {
   }, [evaluationQuery.data])
   const getEvaluations = useCallback(
     (applicationId: string) =>
-      evaluationQuery.isLoading || evaluationQuery.isError
+      !canManageHiring || evaluationQuery.isLoading || evaluationQuery.isError
         ? null
         : (evaluationsByApplication.get(applicationId) ?? []),
-    [evaluationQuery.isLoading, evaluationQuery.isError, evaluationsByApplication]
+    [canManageHiring, evaluationQuery.isLoading, evaluationQuery.isError, evaluationsByApplication]
   )
 
   const filteredApplicants = useMemo(() => {
@@ -155,7 +167,7 @@ export function OrganizationApplicationsContent() {
         isHiringPlanOverdue(applicant.targetDate, applicant.stage)
       )
     }
-    if (evaluationFilter !== "all") {
+    if (evaluationFilter !== "all" && canManageHiring) {
       result =
         evaluationQuery.isLoading || evaluationQuery.isError
           ? []
@@ -185,6 +197,7 @@ export function OrganizationApplicationsContent() {
     overdueOnly,
     searchQuery,
     evaluationFilter,
+    canManageHiring,
     evaluationsByApplication,
     evaluationQuery.isLoading,
     evaluationQuery.isError,

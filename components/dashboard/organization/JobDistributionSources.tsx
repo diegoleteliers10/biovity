@@ -3,6 +3,13 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   useCreateJobDistributionSource,
   useDisableJobDistributionSource,
   useJobDistributionSources,
@@ -53,21 +60,26 @@ export function JobDistributionSources({ jobId }: { jobId: string }) {
     <section className="space-y-3 rounded-lg border border-border/40 bg-surface-container-low p-4">
       <h2 className="text-xs leading-4 font-medium text-foreground">Enlaces de difusión</h2>
       <div className="flex flex-wrap items-center gap-2">
-        <select
-          aria-label="Canal de difusión"
-          className="h-9 min-w-52 rounded-md border border-border/40 bg-background px-2 text-sm"
+        <Select
           value={channel}
-          onChange={(event) => {
-            const value = event.currentTarget.value
+          onValueChange={(value) => {
             if (isDistributionChannel(value)) setChannel(value)
           }}
         >
-          {Object.entries(channelLabels).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger
+            aria-label="Canal de difusión"
+            className="h-9 min-w-52 bg-background text-sm"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(channelLabels).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button
           type="button"
           size="sm"

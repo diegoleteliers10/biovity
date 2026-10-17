@@ -1,7 +1,14 @@
 "use client"
 
-import { ArrowDown01Icon, File02Icon } from "@hugeicons/core-free-icons"
+import { File02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { dashboardRaisedCardClass } from "@/components/dashboard/shared/surface-classes"
 import type { Job } from "@/lib/api/jobs"
 import { cn } from "@/lib/utils"
@@ -65,26 +72,25 @@ export function JobSelector({
       </aside>
 
       <div className="lg:hidden mb-3">
-        <div className="relative">
-          <select
-            value={selectedJobId ?? ""}
-            onChange={(e) => onSelectJobId(e.target.value || null)}
-            className="h-11 w-full appearance-none rounded-lg border border-border/40 bg-surface-container-low px-3.5 pr-9 text-sm text-foreground outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20"
+        <Select
+          value={selectedJobId ?? "__no_job"}
+          onValueChange={(value) => onSelectJobId(value === "__no_job" ? null : value)}
+        >
+          <SelectTrigger
+            className="h-11 w-full rounded-lg bg-surface-container-low text-sm"
             aria-label="Seleccionar oferta"
           >
-            <option value="">Selecciona una oferta</option>
+            <SelectValue placeholder="Selecciona una oferta" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__no_job">Selecciona una oferta</SelectItem>
             {jobs.map((job) => (
-              <option key={job.id} value={job.id}>
+              <SelectItem key={job.id} value={job.id}>
                 {job.title}
-              </option>
+              </SelectItem>
             ))}
-          </select>
-          <HugeiconsIcon
-            icon={ArrowDown01Icon}
-            aria-hidden="true"
-            className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-          />
-        </div>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   )

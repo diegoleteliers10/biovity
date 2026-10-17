@@ -379,7 +379,7 @@ export function ApplicationsContent() {
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-1 flex-col gap-4">
           {/* Filter toolbar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 p-1.5 bg-surface-container-low border border-border/40 rounded-xl shadow-none">
             {/* Status Tabs */}
@@ -428,24 +428,16 @@ export function ApplicationsContent() {
 
           {/* List of Applications */}
           {filteredApplications.length === 0 ? (
-            <div className="bg-surface-container-low border border-border/40 rounded-xl p-5 text-center max-w-md mx-auto my-6 shadow-none">
-              <p className="text-xs font-medium text-foreground mb-1">
+            <div className="flex min-h-64 w-full flex-1 flex-col items-center justify-center py-12 text-center">
+              <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-surface-container-highest text-muted-foreground">
+                <HugeiconsIcon icon={File02Icon} size={20} />
+              </div>
+              <p className="mb-1 text-sm font-medium text-foreground">
                 Sin resultados para el filtro
               </p>
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="mb-4 text-xs text-muted-foreground">
                 No encontramos postulaciones que coincidan con la búsqueda actual.
               </p>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setActiveTab("all")
-                  setSearchQuery("")
-                }}
-                className="h-9 px-4 rounded-lg border-border/40 bg-surface-container-lowest hover:bg-surface-container-low text-xs font-medium text-foreground transition-colors shadow-none"
-              >
-                Restablecer filtros
-              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3.5">

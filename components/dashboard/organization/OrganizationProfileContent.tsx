@@ -39,6 +39,7 @@ import { DangerZoneTab } from "@/components/dashboard/organization/DangerZoneTab
 import { OrganizationOffersTimeline } from "@/components/dashboard/organization/OrganizationOffersTimeline"
 import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { TeamManagementTab } from "@/components/dashboard/organization/TeamManagementTab"
+import { GoogleCalendarIntegration } from "@/components/dashboard/shared/GoogleCalendarIntegration"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -680,13 +681,17 @@ export function OrganizationProfileContent() {
               <HugeiconsIcon icon={UserGroupIcon} size={14} strokeWidth={1.7} />
               Equipo
             </TabsTrigger>
+            <TabsTrigger value="calendar" className={pillTabClass}>
+              <HugeiconsIcon icon={Calendar03Icon} size={14} strokeWidth={1.7} />
+              Calendario
+            </TabsTrigger>
             <TabsTrigger value="danger" className={dangerTabClass}>
               <HugeiconsIcon icon={AlertDiamondIcon} size={14} strokeWidth={1.7} />
               Danger Zone
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="profile" className="mt-8">
+          <TabsContent value="profile" className="mt-20">
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div className="min-w-0 space-y-10">
                 <section className="space-y-4">
@@ -1039,7 +1044,7 @@ export function OrganizationProfileContent() {
             </div>
           </TabsContent>
 
-          <TabsContent value="subscription" className="mt-8">
+          <TabsContent value="subscription" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Plan y suscripción"
@@ -1054,7 +1059,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="verification" className="mt-8">
+          <TabsContent value="verification" className="mt-20">
             {organizationId ? (
               <PanelSection label="Verificación de empresa">
                 <CompanyVerificationTab organizationId={organizationId} />
@@ -1066,7 +1071,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="ai" className="mt-8">
+          <TabsContent value="ai" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Configuración de IA"
@@ -1081,7 +1086,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="notifications" className="mt-8">
+          <TabsContent value="notifications" className="mt-20">
             {userId ? (
               <PanelSection
                 label="Notificaciones"
@@ -1096,7 +1101,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="preferences" className="mt-8">
+          <TabsContent value="preferences" className="mt-20">
             {userId ? (
               <PanelSection
                 label="Preferencias de notificación"
@@ -1111,7 +1116,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="activity" className="mt-8">
+          <TabsContent value="activity" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Registro de actividad"
@@ -1126,7 +1131,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="branding" className="mt-8">
+          <TabsContent value="branding" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Branding de empresa"
@@ -1141,7 +1146,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="team" className="mt-8">
+          <TabsContent value="team" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Equipo"
@@ -1156,7 +1161,21 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="danger" className="mt-8">
+          <TabsContent value="calendar" className="mt-20">
+            {organizationId ? (
+              <PanelSection label="Google Calendar">
+                <div id="google-calendar">
+                  <GoogleCalendarIntegration scope={{ kind: "organization", organizationId }} />
+                </div>
+              </PanelSection>
+            ) : (
+              <p className="text-sm text-muted-foreground text-pretty">
+                No tienes una organización asociada.
+              </p>
+            )}
+          </TabsContent>
+
+          <TabsContent value="danger" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Zona de peligro"

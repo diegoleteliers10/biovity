@@ -777,7 +777,7 @@ export function OrganizationMetricsContent() {
                   <Tooltip
                     {...chartTooltipStyles}
                     cursor={{ fill: "var(--muted)" }}
-                    formatter={(value: number) => [value.toLocaleString("es-CL"), "Postulaciones"]}
+                    formatter={(value) => [Number(value ?? 0).toLocaleString("es-CL"), "Postulaciones"]}
                   />
                   <Bar dataKey="count" fill="var(--secondary)" radius={[4, 4, 0, 0]} />
                 </BarChart>

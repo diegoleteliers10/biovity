@@ -3,6 +3,13 @@
 import { useState } from "react"
 import { useDashboardSession } from "@/components/dashboard/DashboardSessionContext"
 import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import type {
   EventInterviewCriterionResponse,
   EventInterviewEvaluation,
@@ -226,32 +233,42 @@ export function EventInterviewRecords({ eventId }: { eventId: string }) {
                 }
                 return (
                   <div key={criterion.id} className="space-y-1 rounded-md bg-background p-2">
-                    <label className="block space-y-1 text-xs">
+                    <label
+                      htmlFor={`interview-criterion-${criterion.id}`}
+                      className="block space-y-1 text-xs"
+                    >
                       <span>{criterion.label} · Puntaje 1 a 5</span>
                       {criterion.description && (
                         <span className="block text-muted-foreground">{criterion.description}</span>
                       )}
-                      <select
-                        className="h-9 w-full rounded-md border border-border/40 bg-background px-2"
-                        value={value.score}
-                        onChange={(event) =>
+                      <Select
+                        value={value.score || "__unrated"}
+                        onValueChange={(score) =>
                           setCriterionDraft((current) => ({
                             ...current,
                             [criterion.id]: {
                               ...value,
-                              score: event.currentTarget.value,
+                              score: score === "__unrated" ? "" : score,
                             },
                           }))
                         }
-                        aria-label={`Puntaje de ${criterion.label}`}
                       >
-                        <option value="">Selecciona un puntaje</option>
-                        {[1, 2, 3, 4, 5].map((score) => (
-                          <option key={score} value={score}>
-                            {score}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger
+                          id={`interview-criterion-${criterion.id}`}
+                          className="h-9 w-full bg-background"
+                          aria-label={`Puntaje de ${criterion.label}`}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="__unrated">Selecciona un puntaje</SelectItem>
+                          {[1, 2, 3, 4, 5].map((score) => (
+                            <SelectItem key={score} value={String(score)}>
+                              {score}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </label>
                     <label className="block space-y-1 text-xs">
                       <span>Evidencia opcional</span>
@@ -275,41 +292,45 @@ export function EventInterviewRecords({ eventId }: { eventId: string }) {
               })}
             </fieldset>
           )}
-          <label className="block space-y-1 text-xs">
+          <label htmlFor="interview-rating" className="block space-y-1 text-xs">
             <span>Tu evaluación</span>
-            <select
-              className="h-9 w-full rounded-md border border-border/40 bg-background px-2"
-              value={rating}
-              onChange={(event) =>
-                setRatingDraft(isRating(event.currentTarget.value) ? event.currentTarget.value : "")
-              }
+            <Select
+              value={rating || "__unrated"}
+              onValueChange={(value) => setRatingDraft(isRating(value) ? value : "")}
             >
-              <option value="">Selecciona una evaluación</option>
-              {Object.entries(ratingLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="interview-rating" className="h-9 w-full bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__unrated">Selecciona una evaluación</SelectItem>
+                {Object.entries(ratingLabels).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
-          <label className="block space-y-1 text-xs">
+          <label htmlFor="interview-recommendation" className="block space-y-1 text-xs">
             <span>Recomendación</span>
-            <select
-              className="h-9 w-full rounded-md border border-border/40 bg-background px-2"
-              value={recommendation}
-              onChange={(event) =>
-                setRecommendationDraft(
-                  isRecommendation(event.currentTarget.value) ? event.currentTarget.value : ""
-                )
+            <Select
+              value={recommendation || "__no_recommendation"}
+              onValueChange={(value) =>
+                setRecommendationDraft(isRecommendation(value) ? value : "")
               }
             >
-              <option value="">Sin recomendación</option>
-              {Object.entries(recommendationLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id="interview-recommendation" className="h-9 w-full bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__no_recommendation">Sin recomendación</SelectItem>
+                {Object.entries(recommendationLabels).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
           <div className="grid grid-cols-3 gap-2">
             {[
@@ -382,24 +403,24 @@ export function EventInterviewRecords({ eventId }: { eventId: string }) {
           </p>
           {query.data.canDecideOutcome && (
             <>
-              <label className="block space-y-1 text-xs">
+              <label htmlFor="interview-outcome" className="block space-y-1 text-xs">
                 <span>Decisión de la empresa</span>
-                <select
-                  className="h-9 w-full rounded-md border border-border/40 bg-background px-2"
-                  value={outcome}
-                  onChange={(event) =>
-                    setOutcomeDraft(
-                      isRecommendation(event.currentTarget.value) ? event.currentTarget.value : ""
-                    )
-                  }
+                <Select
+                  value={outcome || "__pending_outcome"}
+                  onValueChange={(value) => setOutcomeDraft(isRecommendation(value) ? value : "")}
                 >
-                  <option value="">Selecciona un resultado</option>
-                  {Object.entries(recommendationLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger id="interview-outcome" className="h-9 w-full bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__pending_outcome">Selecciona un resultado</SelectItem>
+                    {Object.entries(recommendationLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
               <textarea
                 aria-label="Notas del resultado final"

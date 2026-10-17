@@ -3,8 +3,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   type ContactInquiry,
@@ -106,34 +113,35 @@ export function ContactInquiryQueue() {
           aria-label="Buscar consultas"
           className="h-10 max-w-sm"
         />
-        <select
+        <Select
           value={status}
-          onChange={(event) =>
-            updateFilter(setStatus, event.target.value as ContactInquiryStatus | "all")
-          }
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-          aria-label="Filtrar por estado"
+          onValueChange={(value) => updateFilter(setStatus, value as ContactInquiryStatus | "all")}
         >
-          {STATUS_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <select
-          value={assigneeId}
-          onChange={(event) => updateFilter(setAssigneeId, event.target.value)}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-          aria-label="Filtrar por responsable"
-        >
-          <option value="all">Todo el equipo</option>
-          <option value="unassigned">Sin responsable</option>
-          {operators.map((operator) => (
-            <option key={operator.id} value={operator.id}>
-              {operator.name || operator.email}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-10 w-[190px]" aria-label="Filtrar por estado">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={assigneeId} onValueChange={(value) => updateFilter(setAssigneeId, value)}>
+          <SelectTrigger className="h-10 w-[190px]" aria-label="Filtrar por responsable">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todo el equipo</SelectItem>
+            <SelectItem value="unassigned">Sin responsable</SelectItem>
+            {operators.map((operator) => (
+              <SelectItem key={operator.id} value={operator.id}>
+                {operator.name || operator.email}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <label className="flex h-10 items-center gap-2 rounded-md border px-3 text-sm">
           <input
             type="checkbox"
@@ -314,32 +322,46 @@ function ContactInquiryRow({
       </td>
       <td className="min-w-[430px] space-y-2 px-3 py-4">
         <div className="grid grid-cols-2 gap-2">
-          <label className="space-y-1 text-xs text-muted-foreground">
+          <label
+            htmlFor={`inquiry-status-${inquiry.id}`}
+            className="space-y-1 text-xs text-muted-foreground"
+          >
             Estado
-            <select
+            <Select
               value={status}
-              onChange={(event) => setStatus(event.target.value as ContactInquiryStatus)}
-              className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
+              onValueChange={(value) => setStatus(value as ContactInquiryStatus)}
             >
-              <option value="open">Abierta</option>
-              <option value="in_progress">En curso</option>
-              <option value="resolved">Resuelta</option>
-            </select>
+              <SelectTrigger id={`inquiry-status-${inquiry.id}`} className="h-9 w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="open">Abierta</SelectItem>
+                <SelectItem value="in_progress">En curso</SelectItem>
+                <SelectItem value="resolved">Resuelta</SelectItem>
+              </SelectContent>
+            </Select>
           </label>
-          <label className="space-y-1 text-xs text-muted-foreground">
+          <label
+            htmlFor={`inquiry-assignee-${inquiry.id}`}
+            className="space-y-1 text-xs text-muted-foreground"
+          >
             Responsable
-            <select
-              value={assignedAdminId}
-              onChange={(event) => setAssignedAdminId(event.target.value)}
-              className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
+            <Select
+              value={assignedAdminId || "unassigned"}
+              onValueChange={(value) => setAssignedAdminId(value === "unassigned" ? "" : value)}
             >
-              <option value="">Sin responsable</option>
-              {operators.map((operator) => (
-                <option key={operator.id} value={operator.id}>
-                  {operator.name || operator.email}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger id={`inquiry-assignee-${inquiry.id}`} className="h-9 w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unassigned">Sin responsable</SelectItem>
+                {operators.map((operator) => (
+                  <SelectItem key={operator.id} value={operator.id}>
+                    {operator.name || operator.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </label>
         </div>
         <label

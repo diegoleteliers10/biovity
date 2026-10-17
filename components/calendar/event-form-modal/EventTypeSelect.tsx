@@ -1,6 +1,13 @@
 "use client"
 
 import type { EventType } from "@/lib/types/events"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type EventTypeSelectProps = {
   value: EventType
@@ -14,18 +21,18 @@ export function EventTypeSelect({ value, onChange, EVENT_TYPES }: EventTypeSelec
       <label htmlFor="event-type" className="text-sm font-medium text-foreground">
         Tipo de evento
       </label>
-      <select
-        id="event-type"
-        value={value}
-        onChange={(e) => onChange(e.target.value as EventType)}
-        className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
-      >
-        {EVENT_TYPES.map((t) => (
-          <option key={t.value} value={t.value}>
-            {t.label}
-          </option>
-        ))}
-      </select>
+      <Select value={value} onValueChange={(nextValue) => onChange(nextValue as EventType)}>
+        <SelectTrigger id="event-type" className="h-10 w-full">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {EVENT_TYPES.map((type) => (
+            <SelectItem key={type.value} value={type.value}>
+              {type.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }

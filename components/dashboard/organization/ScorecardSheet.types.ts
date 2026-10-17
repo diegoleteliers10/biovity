@@ -5,6 +5,7 @@ import type { ApplicationStage } from "@/lib/types/dashboard"
 
 export type ScorecardSheetProps = {
   applicationId: string
+  canManageHiring: boolean | undefined
   candidateName: string
   candidateAvatar?: string | null
   candidateProfession?: string | null

@@ -1,26 +1,17 @@
 import { TaggedError } from "better-result"
 
-// Factory-based error classes using TaggedError pattern
-const NetworkErrorFactory = TaggedError("NetworkError")
-const ApiErrorFactory = TaggedError("ApiError")
-const ParseErrorFactory = TaggedError("ParseError")
-const NotFoundErrorFactory = TaggedError("NotFoundError")
-const DbErrorFactory = TaggedError("DbError")
-
-const _NetworkError = NetworkErrorFactory<{ message: string; cause?: unknown }>()
-class NetworkError extends _NetworkError {
+class NetworkError extends TaggedError("NetworkError")<{ message: string; cause?: unknown }> {
   constructor(args: { message: string; cause?: unknown }) {
     super({ message: args.message, cause: args.cause })
   }
 }
 
-const _ApiError = ApiErrorFactory<{
+class ApiError extends TaggedError("ApiError")<{
   status: number
   statusText?: string
   message: string
   body?: unknown
-}>()
-class ApiError extends _ApiError {
+}> {
   constructor(args: {
     status: number
     statusText?: string
@@ -40,15 +31,17 @@ class ApiError extends _ApiError {
   }
 }
 
-const _ParseError = ParseErrorFactory<{ message: string; cause?: unknown }>()
-class ParseError extends _ParseError {
+class ParseError extends TaggedError("ParseError")<{ message: string; cause?: unknown }> {
   constructor(args: { message: string; cause?: unknown }) {
     super({ message: args.message, cause: args.cause })
   }
 }
 
-const _NotFoundError = NotFoundErrorFactory<{ resource: string; id: string; message: string }>()
-class NotFoundError extends _NotFoundError {
+class NotFoundError extends TaggedError("NotFoundError")<{
+  resource: string
+  id: string
+  message: string
+}> {
   constructor(args: { resource: string; id: string }) {
     super({
       resource: args.resource,
@@ -58,8 +51,11 @@ class NotFoundError extends _NotFoundError {
   }
 }
 
-const _DbError = DbErrorFactory<{ operation: string; message: string; cause?: unknown }>()
-class DbError extends _DbError {
+class DbError extends TaggedError("DbError")<{
+  operation: string
+  message: string
+  cause?: unknown
+}> {
   constructor(args: { operation: string; cause?: unknown }) {
     const msg = args.cause instanceof Error ? args.cause.message : String(args.cause ?? "unknown")
     super({

@@ -88,6 +88,43 @@ export type OrganizationVerificationRequest = {
   readiness?: OrganizationVerificationReadiness
 }
 
+function isOrganizationVerificationRequest(
+  value: unknown
+): value is OrganizationVerificationRequest {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "organizationId" in value &&
+    typeof value.organizationId === "string" &&
+    "legalName" in value &&
+    typeof value.legalName === "string" &&
+    "countryCode" in value &&
+    typeof value.countryCode === "string" &&
+    "registrationNumber" in value &&
+    typeof value.registrationNumber === "string" &&
+    "registryUrl" in value &&
+    typeof value.registryUrl === "string" &&
+    "status" in value &&
+    (value.status === "pending" || value.status === "approved" || value.status === "rejected") &&
+    "createdAt" in value &&
+    typeof value.createdAt === "string"
+  )
+}
+
+function findOrganizationVerificationRequests(
+  value: unknown
+): OrganizationVerificationRequest[] | null {
+  if (Array.isArray(value)) {
+    return value.every(isOrganizationVerificationRequest) ? value : null
+  }
+  if (value === null || typeof value !== "object") return null
+  if ("data" in value) return findOrganizationVerificationRequests(value.data)
+  if ("requests" in value) return findOrganizationVerificationRequests(value.requests)
+  return null
+}
+
 export type OrganizationVerificationReadiness = {
   corporateEmailVerified: boolean
   profileComplete: boolean
@@ -99,6 +136,53 @@ export type OrganizationVerification = {
   status: OrganizationVerificationStatus
   latestRequest: OrganizationVerificationRequest | null
   readiness: OrganizationVerificationReadiness
+}
+
+function normalizeOrganizationVerification(raw: unknown): OrganizationVerification | null {
+  let payload = raw
+  for (let depth = 0; depth < 2; depth += 1) {
+    if (
+      !payload ||
+      typeof payload !== "object" ||
+      !("data" in payload) ||
+      !payload.data ||
+      typeof payload.data !== "object"
+    ) {
+      break
+    }
+    payload = payload.data
+  }
+  if (!payload || typeof payload !== "object") return null
+
+  const value = payload as Record<string, unknown>
+  const readiness = value.readiness
+  if (
+    !["unverified", "pending", "verified", "rejected", "suspended"].includes(
+      String(value.status)
+    ) ||
+    !(value.latestRequest === null || isOrganizationVerificationRequest(value.latestRequest)) ||
+    !readiness ||
+    typeof readiness !== "object"
+  ) {
+    return null
+  }
+
+  const readinessValue = readiness as Record<string, unknown>
+  if (
+    typeof readinessValue.corporateEmailVerified !== "boolean" ||
+    typeof readinessValue.profileComplete !== "boolean" ||
+    typeof readinessValue.ready !== "boolean" ||
+    !Array.isArray(readinessValue.missingProfileFields) ||
+    !readinessValue.missingProfileFields.every((field) => typeof field === "string")
+  ) {
+    return null
+  }
+
+  return {
+    status: value.status as OrganizationVerificationStatus,
+    latestRequest: value.latestRequest as OrganizationVerificationRequest | null,
+    readiness: readinessValue as OrganizationVerificationReadiness,
+  }
 }
 
 export function getOrganizationJobSubmissionStatus(
@@ -115,7 +199,14 @@ export type SubmitOrganizationVerificationInput = Pick<
 export async function getOrganizationVerification(
   id: string
 ): Promise<Result<OrganizationVerification, ApiError | NetworkError>> {
-  return fetchJson<OrganizationVerification>(`/api/v1/organizations/${id}/verification`)
+  const result = await fetchJson<unknown>(`/api/v1/organizations/${id}/verification`)
+  if (result.isErr()) return R.err(result.error)
+
+  const verification = normalizeOrganizationVerification(result.value)
+  if (!verification) {
+    return R.err(new ApiError({ status: 200, message: "Formato de verificación inválido" }))
+  }
+  return R.ok(verification)
 }
 
 export async function submitOrganizationVerification(
@@ -132,7 +223,14 @@ export async function submitOrganizationVerification(
 export async function listOrganizationVerificationRequests(): Promise<
   Result<OrganizationVerificationRequest[], ApiError | NetworkError>
 > {
-  return fetchJson<OrganizationVerificationRequest[]>("/api/v1/admin/organization-verification")
+  const result = await fetchJson<unknown>("/api/v1/admin/organization-verification")
+  if (result.isErr()) return R.err(result.error)
+
+  const requests = findOrganizationVerificationRequests(result.value)
+  if (!requests) {
+    return R.err(new ApiError({ status: 200, message: "Formato de solicitudes inválido" }))
+  }
+  return R.ok(requests)
 }
 
 export async function reviewOrganizationVerification(

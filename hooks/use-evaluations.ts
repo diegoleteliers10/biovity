@@ -4,13 +4,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getApplicationEvaluations, saveApplicationEvaluation } from "@/lib/api/evaluations"
 import { ApiError } from "@/lib/errors"
-import { type Evaluation, type EvaluationInput } from "@/lib/evaluations"
+import type { Evaluation, EvaluationInput } from "@/lib/evaluations"
 
 import type { EvaluationQueryData } from "@/lib/evaluations/types"
 
 export type { Evaluation } from "@/lib/evaluations"
 
-function useEvaluationQuery(applicationIds: readonly string[], batch: boolean) {
+function useEvaluationQuery(applicationIds: readonly string[], batch: boolean, enabled = true) {
   const ids = [...new Set(applicationIds)].sort()
   const queryClient = useQueryClient()
   const queryKey = ["evaluations", batch ? "batch" : "single", ids]
@@ -29,7 +29,7 @@ function useEvaluationQuery(applicationIds: readonly string[], batch: boolean) {
       }
       return { kind: "ready", evaluations }
     },
-    enabled: ids.length > 0,
+    enabled: enabled && ids.length > 0,
     staleTime: 30 * 1000,
     refetchOnMount: "always",
   })
@@ -42,12 +42,12 @@ function useEvaluationQuery(applicationIds: readonly string[], batch: boolean) {
   }
 }
 
-export function useEvaluations(applicationId: string | undefined) {
-  return useEvaluationQuery(applicationId ? [applicationId] : [], false)
+export function useEvaluations(applicationId: string | undefined, enabled = true) {
+  return useEvaluationQuery(applicationId ? [applicationId] : [], false, enabled)
 }
 
-export function useEvaluationBatch(applicationIds: readonly string[]) {
-  return useEvaluationQuery(applicationIds, true)
+export function useEvaluationBatch(applicationIds: readonly string[], enabled = true) {
+  return useEvaluationQuery(applicationIds, true, enabled)
 }
 
 export function useUpsertEvaluationMutation(applicationId: string | undefined) {

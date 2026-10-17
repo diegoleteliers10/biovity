@@ -5,7 +5,7 @@ import { formatInTimeZone } from "date-fns-tz"
 
 export const DEFAULT_EVENT_TIME_ZONE = "America/Santiago"
 
-export class EventTimeError extends TaggedError("EventTimeError")<{ message: string }>() {}
+export class EventTimeError extends TaggedError("EventTimeError")<{ message: string }> {}
 
 export function formatParticipantTime(instant: string, pattern = "dd MMM yyyy, HH:mm"): string {
   return format(new Date(instant), pattern, { locale: es })
