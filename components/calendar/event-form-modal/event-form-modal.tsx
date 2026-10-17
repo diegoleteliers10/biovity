@@ -101,6 +101,9 @@ function EventFormFields({
   const [endTime, setEndTime] = useState(effectiveEndTime)
   const [location, setLocation] = useState(effectiveLocation)
   const [meetingUrl, setMeetingUrl] = useState(effectiveMeetingUrl)
+  const [calendarProvider, setCalendarProvider] = useState<"biovity" | "google">(
+    editEvent?.calendarProvider ?? "biovity"
+  )
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | undefined>(candidateId)
   const [candidateSearch, setCandidateSearch] = useState("")
@@ -170,6 +173,7 @@ function EventFormFields({
               endAt: endAtISO,
               location: location.trim() || undefined,
               meetingUrl: meetingUrl.trim() || undefined,
+              calendarProvider,
             },
           })
           onSuccess?.(result.id)
@@ -183,6 +187,7 @@ function EventFormFields({
             endAt: endAtISO,
             location: location.trim() || undefined,
             meetingUrl: meetingUrl.trim() || undefined,
+            calendarProvider,
             organizerId,
             ...(organizationId && { organizationId }),
             ...(selectedCandidateId && { candidateId: selectedCandidateId }),
@@ -328,6 +333,32 @@ function EventFormFields({
             onChange={setLocation}
             placeholder="Oficina central, Sala A, Remoto..."
           />
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="event-calendar-provider"
+              className="text-sm font-medium text-foreground"
+            >
+              Guardar evento en
+            </label>
+            <Select
+              value={calendarProvider}
+              onValueChange={(value) =>
+                setCalendarProvider(value === "google" ? "google" : "biovity")
+              }
+            >
+              <SelectTrigger
+                id="event-calendar-provider"
+                className="h-10 w-full bg-background text-sm"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="biovity">Calendario de Biovity</SelectItem>
+                <SelectItem value="google">Google Calendar conectado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           <IconInput
             id="event-meeting-url"

@@ -19,6 +19,7 @@ export type Event = {
   location?: string
   meetingUrl?: string
   status: EventStatus
+  calendarProvider?: EventCalendarProvider
   organizerId: string
   candidateId?: string
   applicationId?: string

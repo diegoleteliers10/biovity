@@ -11,6 +11,7 @@ import { PersonalForm } from "@/components/dashboard/employee/profile/PersonalFo
 import { ProfileAside } from "@/components/dashboard/employee/profile/ProfileAside"
 import { ProfileIdentityHeader } from "@/components/dashboard/employee/profile/ProfileIdentityHeader"
 import { useProfileContext } from "@/components/dashboard/employee/profile/profile-context"
+import { GoogleCalendarIntegration } from "@/components/dashboard/shared/GoogleCalendarIntegration"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { useMountEffect } from "@/hooks/use-mount-effect"
 
@@ -113,6 +114,12 @@ export function ProfileContentInner() {
             <section className="space-y-2.5">
               <SectionLabel>Enlaces</SectionLabel>
               <LinksForm />
+            </section>
+            <section className="space-y-2.5">
+              <SectionLabel>Google Calendar</SectionLabel>
+              <div id="google-calendar">
+                <GoogleCalendarIntegration scope={{ kind: "personal" }} />
+              </div>
             </section>
           </div>
 
