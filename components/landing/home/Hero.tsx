@@ -1,25 +1,32 @@
 "use client"
 
 import {
+  ArrowUpRight01Icon,
   Building06Icon,
   Location05Icon,
   Search01Icon,
-  SparklesIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useReducedMotion } from "motion/react"
+import * as m from "motion/react-m"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { HeroIllustration } from "@/components/landing/home/HeroIllustration"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { LANDING_ANIMATION } from "@/lib/animations"
+
+const ease = LANDING_ANIMATION.easeOut
 
 export function Hero() {
   const router = useRouter()
+  const reducedMotion = Boolean(useReducedMotion())
   const [query, setQuery] = useState("")
   const [location, setLocation] = useState("")
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     const params = new URLSearchParams()
     if (query.trim()) params.set("q", query.trim())
     if (location.trim()) params.set("ubicacion", location.trim())
@@ -28,114 +35,111 @@ export function Hero() {
     router.push(`/jobs${searchString ? `?${searchString}` : ""}`)
   }
 
+  const reveal = (delay: number) => ({
+    initial: reducedMotion ? false : { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: reducedMotion ? 0 : 0.55, delay: reducedMotion ? 0 : delay, ease },
+  })
+
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-surface-container-lowest via-surface-container-low/40 to-surface-container-lowest py-32 sm:py-44 lg:py-56">
-      {/* Una sola capa de gradientes radiales + patron de puntos estatico.
-          Ninguna de las dos se anima, asi que el compositor las pinta una vez
-          y las reutiliza en todos los frames de scroll. */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(132,131,212,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_70%_35%,rgba(0,107,94,0.12)_0%,transparent_60%),radial-gradient(ellipse_at_50%_95%,rgba(0,55,74,0.08)_0%,transparent_60%)]" />
+    <section className="relative overflow-hidden bg-surface-container-lowest pb-16 pt-32 sm:pb-20 sm:pt-36 lg:pb-24 lg:pt-40">
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8">
+        <div className="relative z-10 lg:col-span-6">
+          <m.p
+            {...reveal(0)}
+            className="mb-5 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-secondary"
+          >
+            Oportunidades en ciencias · Chile
+          </m.p>
+          <m.h1
+            {...reveal(0.08)}
+            className="mb-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+          >
+            Tu carrera científica puede <span className="text-accent">llegar más lejos.</span>
+          </m.h1>
+          <m.p
+            {...reveal(0.16)}
+            className="mb-8 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
+          >
+            Encuentra empleos en biotecnología, bioquímica, química, salud e investigación.
+          </m.p>
 
-        <div
-          className="absolute inset-0 opacity-[0.035]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, #00374a 1px, transparent 0)`,
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Heading */}
-          <h1 className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:fill-mode-both text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-6 sm:mb-8 tracking-tight leading-[1.12] text-balance">
-            Empleos en biotecnología y ciencias,{" "}
-            <span className="text-accent">salarios transparentes</span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-100 motion-safe:fill-mode-both text-base sm:text-lg md:text-xl text-muted-foreground mb-10 sm:mb-14 max-w-2xl mx-auto leading-relaxed text-pretty">
-            Ofertas verificadas en laboratorios, centros de I+D y la industria científica de Chile.
-          </p>
-
-          {/* Main Interactive Search Console */}
-          <div className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:zoom-in-95 motion-safe:duration-500 motion-safe:delay-200 motion-safe:fill-mode-both max-w-3xl mx-auto mb-8 sm:mb-12">
+          <m.div {...reveal(0.24)} className="mb-6 max-w-3xl">
             <form
               onSubmit={handleSearch}
-              className="rounded-2xl border-2 border-border/80 bg-surface-container-lowest p-2.5 sm:p-3 transition-all focus-within:border-secondary/50"
+              className="rounded-xl border border-border/50 bg-surface-container-low p-2"
             >
-              <div className="flex flex-col sm:flex-row gap-2.5">
-                {/* Field 1: Query */}
-                <div className="flex-1 relative">
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="relative min-w-0 flex-1">
                   <HugeiconsIcon
                     icon={Search01Icon}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-secondary size-5"
-                    strokeWidth={1.75}
+                    aria-hidden="true"
+                    className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                   />
                   <Input
                     aria-label="Buscar cargo o habilidad"
                     placeholder="Cargo, técnica o especialidad"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="pl-11 h-12 bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:bg-surface-container-low/40 rounded-xl"
+                    onChange={(event) => setQuery(event.target.value)}
+                    className="h-11 rounded-lg border-border/50 bg-surface-container-lowest pl-10 text-sm"
                   />
                 </div>
-
-                <div className="hidden sm:block w-px bg-border my-2" />
-
-                {/* Field 2: Location */}
-                <div className="flex-1 relative">
+                <div className="relative min-w-0 flex-1">
                   <HugeiconsIcon
                     icon={Location05Icon}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-accent size-5"
-                    strokeWidth={1.75}
+                    aria-hidden="true"
+                    className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                   />
                   <Input
                     aria-label="Buscar región o modalidad"
-                    placeholder="Región, ciudad o Remoto"
+                    placeholder="Región, ciudad o remoto"
                     value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="pl-11 h-12 bg-transparent border-0 text-sm focus-visible:ring-0 focus-visible:bg-surface-container-low/40 rounded-xl"
+                    onChange={(event) => setLocation(event.target.value)}
+                    className="h-11 rounded-lg border-border/50 bg-surface-container-lowest pl-10 text-sm"
                   />
                 </div>
-
-                {/* Submit button */}
                 <Button
                   type="submit"
-                  size="lg"
-                  className="h-12 px-8 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm w-full sm:w-auto shrink-0 shadow-sm transition-all hover:scale-[1.02]"
+                  className="h-11 w-full shrink-0 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 sm:w-auto"
                 >
-                  <HugeiconsIcon
-                    icon={Search01Icon}
-                    size={18}
-                    strokeWidth={1.75}
-                    className="mr-1.5"
-                  />
-                  Buscar Empleos
+                  <HugeiconsIcon icon={Search01Icon} size={16} aria-hidden="true" />
+                  Buscar empleos
                 </Button>
               </div>
             </form>
-          </div>
+          </m.div>
 
-          {/* Quick links to professional and company registration */}
-          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-xs sm:text-sm">
+          <m.div {...reveal(0.32)} className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
             <Link
               href="/salaries"
-              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-secondary font-medium transition-colors"
+              className="group inline-flex min-h-11 items-center gap-2 font-medium text-secondary transition-colors hover:text-primary"
             >
-              <HugeiconsIcon icon={SparklesIcon} size={15} className="text-secondary" />
-              Explorar Estudio Salarial 2026
+              Explorar salarios por carrera
+              <HugeiconsIcon
+                icon={ArrowUpRight01Icon}
+                size={16}
+                aria-hidden="true"
+                className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
             </Link>
-            <span className="text-border hidden sm:inline">·</span>
             <Link
               href="/companies"
-              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-accent font-medium transition-colors"
+              className="inline-flex min-h-11 items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
             >
-              <HugeiconsIcon icon={Building06Icon} size={15} className="text-accent" />
-              Publicar ofertas para empresas
+              <HugeiconsIcon icon={Building06Icon} size={16} aria-hidden="true" />
+              Soy una organización
             </Link>
-          </div>
+          </m.div>
         </div>
+
+        <m.div
+          className="relative lg:col-span-6"
+          initial={reducedMotion ? false : { opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: reducedMotion ? 0 : 0.7, delay: reducedMotion ? 0 : 0.12, ease }}
+        >
+          <HeroIllustration />
+        </m.div>
       </div>
     </section>
   )

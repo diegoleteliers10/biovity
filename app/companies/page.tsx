@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { ComoFuncionaEmpresas } from "@/components/landing/empresas/ComoFuncionaEmpresas"
+import { CompaniesMotion } from "@/components/landing/empresas/CompaniesMotion"
 import { CTAContacto } from "@/components/landing/empresas/CTAContacto"
 import { FAQ } from "@/components/landing/empresas/FAQ"
 import { HeroEmpresas } from "@/components/landing/empresas/HeroEmpresas"
@@ -82,7 +83,7 @@ export default function EmpresasPage() {
           { name: "Para Empresas", url: "https://biovity.cl/companies" },
         ]}
       />
-      <main className="flex flex-col relative">
+      <CompaniesMotion>
         <HeroEmpresas />
         <LazyOrganizationDashboardPreview />
         {/* TODO: Descomentar cuando tengamos logos de empresas clientes */}
@@ -96,7 +97,7 @@ export default function EmpresasPage() {
         {/* <Testimonios /> */}
         <FAQ />
         <CTAContacto />
-      </main>
+      </CompaniesMotion>
     </LandingLayout>
   )
 }

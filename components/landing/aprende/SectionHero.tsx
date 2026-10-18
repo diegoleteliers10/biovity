@@ -1,57 +1,57 @@
-"use client"
-
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
-import { APRENDE_STATS } from "@/lib/data/aprende-data"
+import { Button } from "@/components/ui/button"
+import { LearnHeroFigure } from "./LearnHeroFigure"
 
 export function SectionHero() {
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isReduced = Boolean(reducedMotion)
-
-  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
-
   return (
-    <section className="relative pt-32 pb-16 md:pt-40 md:pb-24">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={t()}
-          className="max-w-3xl"
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance">
-            Cápsulas de aprendizaje para el{" "}
-            <span className="text-accent font-semibold">sector biocientífico</span>
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed text-pretty">
-            Aprende programación aplicada a biociencia con cápsulas prácticas. Cada una incluye
-            ejercicios, un quiz y un certificado al aprobar.
+    <section
+      aria-labelledby="learn-heading"
+      className="overflow-hidden bg-surface-container-lowest pb-12 pt-32 sm:pb-16 sm:pt-36 lg:pt-40"
+    >
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <header className="mx-auto max-w-4xl text-center">
+          <p className="mb-5 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+            Aprendizaje aplicado · Biovity
           </p>
-        </m.div>
-
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={t(LANDING_ANIMATION.sequenceDelay)}
-          className="grid grid-cols-3 gap-3 sm:gap-4 max-w-3xl"
-        >
-          {APRENDE_STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-surface-container-low rounded-xl p-4 sm:p-5 text-center shadow-none"
+          <h1
+            id="learn-heading"
+            data-learn-heading
+            className="text-balance text-4xl font-semibold leading-[1.04] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+          >
+            Aprende con <span className="text-accent">datos biológicos.</span>
+          </h1>
+          <p
+            data-learn-description
+            className="mx-auto mb-5 mt-4 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:mb-6 sm:mt-4 sm:text-lg"
+          >
+            Cápsulas prácticas de bioinformática e inteligencia artificial para biotecnología. Lee,
+            practica y comprueba lo que aprendiste.
+          </p>
+          <div data-learn-actions className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Button asChild className="h-11 rounded-lg px-6 text-sm font-medium">
+              <a href="#capsulas">Explorar cápsulas</a>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="h-11 rounded-lg border-border/50 bg-surface-container-lowest px-6 text-sm font-medium hover:bg-surface-container-low"
             >
-              <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1 tracking-tight">
-                {stat.value}
-              </p>
-              <p className="text-xs sm:text-sm font-medium text-foreground mb-0.5 leading-snug">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </m.div>
+              <a href="#recorrido">Ver cómo funciona</a>
+            </Button>
+          </div>
+        </header>
+
+        <figure data-learn-figure className="mx-auto mt-6 max-w-[52rem] sm:mt-7 lg:mt-6">
+          <LearnHeroFigure />
+          <figcaption className="mt-1 text-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground sm:text-xs">
+            Una cápsula: contenido, práctica, quiz y certificado
+          </figcaption>
+        </figure>
+
+        <div className="mx-auto mt-8 flex max-w-4xl flex-wrap justify-center gap-x-6 gap-y-2 border-t border-border/50 pt-5 font-mono text-xs uppercase tracking-wide text-muted-foreground sm:mt-9">
+          <span>Bioinformática</span>
+          <span>IA y biotech</span>
+          <span>Python y Biopython</span>
+        </div>
       </div>
     </section>
   )

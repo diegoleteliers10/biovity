@@ -69,9 +69,11 @@ export default async function BlogPage() {
           { name: "Blog", url: `${siteUrl}/blog` },
         ]}
       />
-      <main className="min-h-screen bg-surface-container-lowest pt-24 pb-20 md:pt-32 md:pb-28">
-        <BlogHeader />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+      <main className="min-h-screen bg-surface-container-lowest pb-20 md:pb-28">
+        <section className="border-b border-border bg-surface-container-low pt-24 md:pt-32">
+          <BlogHeader />
+        </section>
+        <div className="pt-10 md:pt-14">
           <BlogGrid posts={posts} />
         </div>
       </main>

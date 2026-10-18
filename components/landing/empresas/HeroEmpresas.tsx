@@ -1,95 +1,87 @@
-"use client"
-
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowDown01Icon, ArrowRight01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
 import Link from "next/link"
-import { HERO_STATS_EMPRESAS } from "@/lib/data/empresas-data"
-import { Button } from "../../ui/button"
+import { Button } from "@/components/ui/button"
+import { HiringBrief } from "./HiringBrief"
 
 export function HeroEmpresas() {
-  const reducedMotion = useReducedMotion()
-  const ease = [0.23, 1, 0.32, 1] as const
-
   return (
-    <section className="relative min-h-[85vh] sm:min-h-screen w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest pt-24 pb-16 md:pt-32 md:pb-24">
-      {/* Ambient brand glow */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[44rem] h-[30rem] rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-70" />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Main Headline */}
-          <m.h1
-            initial={{ opacity: 0, y: 24, scale: 0.99 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, ease }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
+    <section
+      aria-labelledby="companies-heading"
+      className="overflow-hidden bg-surface-container-lowest pb-12 pt-32 sm:pb-16 sm:pt-36 lg:pt-40"
+    >
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <header className="mb-10 max-w-5xl sm:mb-12">
+          <p className="mb-5 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+            Para quienes contratan en ciencias · Chile
+          </p>
+          <h1
+            id="companies-heading"
+            data-company-heading
+            className="max-w-5xl text-balance text-4xl font-semibold leading-[1.04] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
-            Recluta <span className="text-accent font-semibold">talento científico</span> en Chile
-          </m.h1>
+            El talento que tu <span className="text-accent">ciencia necesita.</span>
+          </h1>
+        </header>
 
-          {/* Subheadline */}
-          <m.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed text-pretty"
-          >
-            Publica ofertas técnicas, evalúa con scoring de IA y gestiona todo tu pipeline en un
-            solo ATS.
-          </m.p>
-
-          {/* CTA Group */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.16, ease }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-          >
-            <Button
-              size="lg"
-              className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
-              asChild
-            >
-              <Link href="/register/organization">
-                Publicar una oferta
-                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full sm:w-auto h-11 px-6 bg-surface-container-lowest border-border/30 hover:bg-surface-container-low rounded-lg text-sm font-medium"
-              asChild
-            >
-              <Link href="/plans">Ver planes y precios</Link>
-            </Button>
-          </m.div>
-
-          {/* Metrics Grid - Centered 3 columns */}
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.24, ease }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto"
-          >
-            {HERO_STATS_EMPRESAS.map((stat) => (
-              <div
-                key={stat.label}
-                className="bg-surface-container-low rounded-xl p-4 sm:p-5 text-center transition-colors hover:bg-surface-container-highest/60"
+        <div className="grid items-start gap-8 border-t border-border/50 pt-8 lg:grid-cols-12 lg:gap-10 lg:pt-10">
+          <div data-company-notes className="lg:col-span-4 lg:pt-2">
+            <p className="mb-7 max-w-md text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Conecta con profesionales de biociencias. Publica tus ofertas, evalúa perfiles
+              técnicos y coordina cada etapa con tu equipo.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+              <Button asChild className="h-11 rounded-lg px-6 text-sm font-medium">
+                <Link href="/register/organization">
+                  Publicar una oferta
+                  <HugeiconsIcon
+                    icon={ArrowRight01Icon}
+                    size={16}
+                    className="ml-2"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-11 rounded-lg border-border/50 bg-surface-container-lowest px-6 text-sm font-medium hover:bg-surface-container-low"
               >
-                <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1 tracking-tight">
-                  {stat.value}
-                </p>
-                <p className="text-xs sm:text-sm font-medium text-foreground mb-0.5 leading-snug">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </m.div>
+                <a href="#demo-reclutamiento">
+                  Explorar la plataforma
+                  <HugeiconsIcon
+                    icon={ArrowDown01Icon}
+                    size={16}
+                    className="ml-2"
+                    aria-hidden="true"
+                  />
+                </a>
+              </Button>
+            </div>
+            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+              <li className="flex items-center gap-1.5">
+                <HugeiconsIcon icon={Tick02Icon} size={14} aria-hidden="true" />
+                Plan gratuito disponible
+              </li>
+              <li className="flex items-center gap-1.5">
+                <HugeiconsIcon icon={Tick02Icon} size={14} aria-hidden="true" />
+                Sin tarjeta de crédito
+              </li>
+            </ul>
+          </div>
+          <div data-company-board className="min-w-0 lg:col-span-8">
+            <HiringBrief />
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-3 border-t border-border/50 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">Un espacio para equipos que trabajan en</p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-foreground">
+            <li>Laboratorios</li>
+            <li>Biotecnología</li>
+            <li>Industria</li>
+            <li>Centros de I+D</li>
+          </ul>
         </div>
       </div>
     </section>

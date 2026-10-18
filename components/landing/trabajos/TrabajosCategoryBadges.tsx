@@ -28,7 +28,7 @@ export function TrabajosCategoryBadges() {
   }
 
   return (
-    <nav className="flex flex-wrap gap-2 pt-1" aria-label="Categorías de empleo">
+    <nav className="flex flex-wrap gap-2 pt-5" aria-label="Categorías de empleo">
       {TRABAJOS_CATEGORIAS.map((cat) => {
         const isSelected = urlState.categoria === cat.id
         return (
@@ -37,10 +37,10 @@ export function TrabajosCategoryBadges() {
             type="button"
             onClick={() => handleSelectCategoria(cat.id)}
             className={cn(
-              "inline-flex items-center rounded-full px-4 py-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer",
+              "inline-flex h-11 items-center gap-2 rounded-lg border px-3.5 text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isSelected
-                ? "bg-secondary text-secondary-foreground border border-secondary shadow-xs font-semibold"
-                : "border border-border bg-surface-container-lowest text-muted-foreground hover:border-secondary/50 hover:text-foreground hover:bg-surface-container-low"
+                ? "border-secondary bg-secondary text-secondary-foreground"
+                : "border-border/60 bg-surface-container-low text-muted-foreground hover:border-secondary/50 hover:bg-surface-container-highest hover:text-foreground"
             )}
             aria-pressed={isSelected}
           >

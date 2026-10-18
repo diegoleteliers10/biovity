@@ -3,6 +3,7 @@ import { CTANosotros } from "@/components/landing/nosotros/CTANosotros"
 import { Equipo } from "@/components/landing/nosotros/Equipo"
 import { HistoriaMision } from "@/components/landing/nosotros/HistoriaMision"
 import { NosotrosHero } from "@/components/landing/nosotros/NosotrosHero"
+import { NosotrosMotion } from "@/components/landing/nosotros/NosotrosMotion"
 import { ProblemaSolucion } from "@/components/landing/nosotros/ProblemaSolucion"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import {
@@ -61,13 +62,13 @@ export default function NosotrosPage() {
           { name: "Nosotros", url: "https://biovity.cl/about" },
         ]}
       />
-      <main className="flex flex-col relative">
+      <NosotrosMotion>
         <NosotrosHero />
         <HistoriaMision />
         <ProblemaSolucion />
         <Equipo />
         <CTANosotros />
-      </main>
+      </NosotrosMotion>
     </LandingLayout>
   )
 }

@@ -1,61 +1,65 @@
-"use client"
-
-import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
-import { APRENDE_BENEFITS } from "@/lib/data/aprende-data"
+const STEPS = [
+  {
+    number: "01",
+    title: "Entiende el método",
+    description: "Revisa conceptos y ejemplos aplicados a las ciencias biológicas.",
+  },
+  {
+    number: "02",
+    title: "Practica con código",
+    description: "Sigue ejercicios para trabajar con datos biológicos.",
+  },
+  {
+    number: "03",
+    title: "Comprueba lo aprendido",
+    description: "Responde un quiz al terminar cada cápsula.",
+  },
+  {
+    number: "04",
+    title: "Obtén tu certificado",
+    description: "Aprueba el quiz y descarga tu certificado en PDF.",
+  },
+] as const
 
 export function SectionBenefits() {
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isReduced = Boolean(reducedMotion)
-
-  const viewportMargin = isMobile
-    ? LANDING_ANIMATION_MOBILE.viewportMargin
-    : LANDING_ANIMATION.viewportMargin
-  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
-
   return (
-    <section className="relative py-24 md:py-36">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: viewportMargin }}
-          transition={t()}
-          className="mb-12 md:mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            ¿Por qué aprender con <span className="text-accent font-semibold">Biovity</span>?
-          </h2>
-        </m.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {APRENDE_BENEFITS.map((benefit, i) => (
-            <m.div
-              key={benefit.title}
-              initial={isReduced ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: viewportMargin }}
-              transition={t(
-                isMobile
-                  ? LANDING_ANIMATION_MOBILE.sequenceDelay * i
-                  : LANDING_ANIMATION.stagger * i
-              )}
-              className="flex gap-4"
-            >
-              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
-                <HugeiconsIcon icon={benefit.icon} size={20} className="text-secondary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">{benefit.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{benefit.description}</p>
-              </div>
-            </m.div>
-          ))}
+    <section id="recorrido" className="relative bg-surface-container-low py-20 sm:py-24 lg:py-32">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div data-learn-reveal className="mb-12 grid gap-5 lg:mb-16 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <p className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+              Un recorrido breve y práctico
+            </p>
+            <h2 className="max-w-3xl text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              De la primera idea a una habilidad que puedes{" "}
+              <span className="text-accent">mostrar.</span>
+            </h2>
+          </div>
+          <p className="max-w-lg text-pretty text-base leading-relaxed text-muted-foreground lg:col-span-4 lg:col-start-9">
+            Cada cápsula combina contenido, práctica y evaluación en un mismo lugar.
+          </p>
         </div>
+
+        <ol className="grid border-t border-border/60 sm:grid-cols-2 lg:grid-cols-4">
+          {STEPS.map((step) => (
+            <li
+              key={step.number}
+              data-learn-reveal
+              className="relative border-b border-border/60 py-6 pr-6 sm:py-8 lg:border-b-0 lg:border-r lg:px-6 lg:first:pl-0 lg:last:border-r-0 lg:last:pr-0"
+            >
+              <span className="mb-8 block font-mono text-xs text-secondary">{step.number}</span>
+              <span
+                aria-hidden="true"
+                className="absolute left-0 top-0 h-px w-10 bg-secondary"
+                style={{ transformOrigin: "left" }}
+              />
+              <h3 className="mb-2 text-lg font-semibold text-foreground">{step.title}</h3>
+              <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+                {step.description}
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )

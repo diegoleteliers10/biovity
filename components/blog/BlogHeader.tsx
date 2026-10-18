@@ -1,35 +1,23 @@
-"use client"
-
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
-import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
-
 export function BlogHeader() {
-  const reducedMotion = useReducedMotion()
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-
   return (
-    <div className="relative pt-12 pb-16 text-center max-w-3xl mx-auto px-4">
-      <div className="relative z-10">
-        <m.h1
-          initial={{ opacity: 0, y: 24, scale: 0.99 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay)}
-          className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight text-balance"
-        >
-          Blog <span className="text-accent font-semibold">Biovity</span>
-        </m.h1>
-
-        <m.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay * 2)}
-          className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty max-w-xl mx-auto"
-        >
-          Análisis sobre el mercado laboral, avances en biotecnología y guías profesionales para la
-          comunidad científica en Chile.
-        </m.p>
+    <header className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pb-12 pt-8 sm:px-6 md:grid-cols-12 md:items-end md:gap-10 md:px-8 md:pb-16 md:pt-12">
+      <div className="md:col-span-8">
+        <h1 className="text-4xl font-semibold leading-[0.98] tracking-tight text-foreground text-balance sm:text-5xl md:text-6xl lg:text-7xl">
+          Ideas para una carrera <span className="text-secondary">científica.</span>
+        </h1>
       </div>
-    </div>
+      <div className="md:col-span-4 md:pb-1">
+        <p className="max-w-md text-base leading-relaxed text-muted-foreground text-pretty sm:text-lg">
+          Lecturas sobre biotecnología, trabajo y desarrollo profesional en Chile.
+        </p>
+      </div>
+      <div className="col-span-full flex items-center gap-3" aria-hidden="true">
+        <span className="h-2 w-2 rounded-full bg-secondary" />
+        <span className="h-px flex-1 bg-border" />
+        <span className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          Blog Biovity
+        </span>
+      </div>
+    </header>
   )
 }

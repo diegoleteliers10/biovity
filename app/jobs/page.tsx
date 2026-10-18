@@ -25,7 +25,7 @@ const FAQS_TRABAJOS = [
   {
     question: "¿Qué tipos de trabajos científicos encuentro en Biovity?",
     answer:
-      "En Biovity encuentras ofertas en biotecnología, bioquímica, química, ingeniería química, salud y áreas relacionadas. Incluye posiciones de investigación, desarrollo, control de calidad, producción y más.",
+      "En Biovity puedes explorar ofertas en biotecnología, bioquímica, química, ingeniería química, salud, investigación, desarrollo y control de calidad.",
   },
   {
     question: "¿Cómo funciona el matching por IA?",
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Empleos en Biotecnología y Biociencias | Biovity Chile",
     description:
-      "Encuentra ofertas de empleo en biotecnología, bioquímica, química, ingeniería química y salud en Chile. Búsqueda avanzada por área, ubicación y modalidad.",
+      "Explora ofertas de empleo en biotecnología, bioquímica, química, ingeniería química y salud en Chile. Filtra por área, ubicación y modalidad.",
     url: "/jobs",
     images: [
       {
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "Empleos en Biotecnología y Biociencias | Biovity Chile",
     description:
-      "Portal de empleo especializado en biotecnología, bioquímica, química y ciencias. Encuentra tu próximo trabajo en Chile.",
+      "Ofertas de empleo en biotecnología, bioquímica, química y ciencias. Explora oportunidades en Chile.",
     images: ["/og/jobs.png"],
   },
   alternates: {
@@ -107,22 +107,25 @@ export default function TrabajosPage() {
         ]}
       />
       <main className="flex flex-col relative bg-surface-container-lowest">
-        <section className="bg-surface-container-lowest pt-32 pb-4 md:pt-40 md:pb-6">
+        <section className="bg-surface-container-lowest pb-6 pt-32 md:pt-40">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary mb-3 block">
-              Oportunidades Laborales • Chile
-            </span>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight text-balance mb-4">
-              Empleos en <span className="text-secondary">Biotecnología</span> y{" "}
-              <span className="text-accent">Ciencias</span>
-            </h1>
-
-            <p className="max-w-3xl text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty mb-6">
-              Explora ofertas de trabajo verificadas en biotecnología, bioquímica, química,
-              farmacéutica, laboratorio e I+D en Chile. Postula gratis y conecta directamente con
-              empresas líderes del ecosistema.
-            </p>
+            <div className="grid gap-6 pb-2 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+              <div>
+                <span className="mb-3 block text-sm font-medium text-secondary">
+                  Trabajo científico · Chile
+                </span>
+                <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-foreground text-balance sm:text-4xl md:text-5xl">
+                  Encuentra tu lugar en la <span className="text-accent">ciencia.</span>
+                </h1>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                  Explora oportunidades en biotecnología, bioquímica, química, salud e
+                  investigación.
+                </p>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground lg:pb-1">
+                Áreas de especialidad
+              </p>
+            </div>
 
             <Suspense>
               <TrabajosCategoryBadges />

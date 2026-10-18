@@ -10,9 +10,9 @@ const OrganizationDashboardPreview = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="py-24 md:py-36 bg-surface-container-lowest animate-pulse">
+      <div className="pb-20 pt-8 md:pb-28 md:pt-12 bg-surface-container-lowest motion-safe:animate-pulse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="h-9 w-96 bg-muted rounded-lg mx-auto mb-16" />
+          <div className="h-9 w-full max-w-sm bg-muted rounded-lg mx-auto mb-16" />
           <div className="h-[560px] lg:h-[620px] bg-surface-container-low border border-border/50 rounded-2xl" />
         </div>
       </div>

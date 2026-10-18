@@ -3,18 +3,18 @@
 import dynamic from "next/dynamic"
 
 const shotSkeleton = (
-  <div className="py-24 md:py-36 bg-surface-container-low animate-pulse">
+  <div className="py-24 md:py-36 bg-surface-container-low motion-safe:animate-pulse">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="h-9 w-96 bg-muted rounded-lg mx-auto mb-16" />
+      <div className="h-9 w-full max-w-sm bg-muted rounded-lg mx-auto mb-16" />
       <div className="h-[420px] bg-surface-container-lowest border border-border/50 rounded-2xl" />
     </div>
   </div>
 )
 
 const shotSkeletonLowest = (
-  <div className="py-24 md:py-36 bg-surface-container-lowest animate-pulse">
+  <div className="py-24 md:py-36 bg-surface-container-lowest motion-safe:animate-pulse">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="h-9 w-96 bg-muted rounded-lg mx-auto mb-16" />
+      <div className="h-9 w-full max-w-sm bg-muted rounded-lg mx-auto mb-16" />
       <div className="h-[420px] bg-surface-container-low border border-border/50 rounded-2xl" />
     </div>
   </div>

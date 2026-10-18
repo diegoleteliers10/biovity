@@ -6,30 +6,11 @@ import {
   UserMultiple02Icon,
 } from "@hugeicons/core-free-icons"
 import type {
-  HerramientaActual,
-  HeroStatReclutamiento,
-  MatrizComparativaItem,
   FlujoEtapa,
+  HerramientaActual,
+  MatrizComparativaItem,
   ReclutamientoFAQItem,
 } from "@/lib/types/reclutamiento"
-
-export const HERO_STATS_RECLUTAMIENTO: HeroStatReclutamiento[] = [
-  {
-    value: "60%",
-    label: "Reducción en tiempo de contratación",
-    sublabel: "De 45+ días a menos de 15 días en roles técnicos",
-  },
-  {
-    value: "100%",
-    label: "Foco exclusivo en biociencias y biotech",
-    sublabel: "Sin ruido ni perfiles no calificados del mercado general",
-  },
-  {
-    value: "4.8x",
-    label: "Mayor precisión en matching técnico",
-    sublabel: "Reconocimiento semántico de técnicas, equipos y normativas",
-  },
-]
 
 export const HERRAMIENTAS_ACTUALES: HerramientaActual[] = [
   {
@@ -95,7 +76,8 @@ export const HERRAMIENTAS_ACTUALES: HerramientaActual[] = [
   {
     title: "Bolsas Universitarias & Redes de Contactos",
     category: "Búsqueda Académica",
-    examples: "Bolsas de egresados de facultades, cadenas de contactos personales, grupos de WhatsApp",
+    examples:
+      "Bolsas de egresados de facultades, cadenas de contactos personales, grupos de WhatsApp",
     icon: MicroscopeIcon,
     tag: "Alcance fragmentado",
     comoSeUsa:
@@ -338,7 +320,7 @@ export const FLUJO_COMPARATIVO: FlujoEtapa[] = [
       descripcion:
         "Entrevistas enfocadas con candidatos de alto ajuste técnico. Ofertas respaldadas por datos salariales reales de mercado.",
       tiempo: "Días 10 a 15",
-      destacado: "60% menos tiempo de contratación",
+      destacado: "Seguimiento en un mismo proceso",
     },
   },
 ]
@@ -351,7 +333,8 @@ export const FAQS_RECLUTAMIENTO: ReclutamientoFAQItem[] = [
     category: "Comparativa",
   },
   {
-    question: "¿Biovity reemplaza o complementa mi ATS corporativo actual (Workday, Greenhouse, etc.)?",
+    question:
+      "¿Biovity reemplaza o complementa mi ATS corporativo actual (Workday, Greenhouse, etc.)?",
     answer:
       "Biovity puede funcionar de ambas formas: como tu ATS principal completo (con tablero Kanban, gestión de postulantes y notas de equipo) si buscas una solución ágil y sin costos de setup; o como tu canal especializado de atracción y pre-calificación técnica científica que alimenta tu ATS central corporativo.",
     category: "Integración",

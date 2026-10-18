@@ -1,15 +1,20 @@
+import { Result } from "better-result"
 import type { Metadata } from "next"
+import { AprendeMotion } from "@/components/landing/aprende/AprendeMotion"
 import { SectionBenefits } from "@/components/landing/aprende/SectionBenefits"
+import type { CategoryListing } from "@/components/landing/aprende/SectionCategories"
 import { SectionCategories } from "@/components/landing/aprende/SectionCategories"
 import { SectionCTA } from "@/components/landing/aprende/SectionCTA"
 import { SectionHero } from "@/components/landing/aprende/SectionHero"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import { BreadcrumbJsonLd, OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd"
+import { APRENDE_CATEGORIES } from "@/lib/data/aprende-data"
+import { getCapsulesByCategory } from "@/lib/posts"
 
 export const metadata: Metadata = {
   title: "Aprende bioinformática e IA para biotecnología",
   description:
-    "Cápsulas de aprendizaje para el sector biocientífico. Aprende programación aplicada a biociencia y obtén certificados verificables.",
+    "Aprende bioinformática e inteligencia artificial aplicada a biotecnología con cápsulas prácticas, ejercicios y evaluación.",
   keywords: ["aprendizaje", "bioinformática", "programación", "biociencia", "certificados"],
   openGraph: {
     title: "Aprende | Biovity",
@@ -27,7 +32,16 @@ export const metadata: Metadata = {
   alternates: { canonical: "/learn" },
 }
 
-export default function AprendePage() {
+export default async function AprendePage() {
+  const listings = await Promise.all(
+    APRENDE_CATEGORIES.map(async (category): Promise<CategoryListing> => {
+      const result = await getCapsulesByCategory(category.slug)
+      if (!Result.isOk(result)) return { category, status: "unavailable" }
+      if (result.value.length === 0) return { category, status: "empty" }
+      return { category, status: "available", capsules: result.value }
+    })
+  )
+
   return (
     <LandingLayout>
       <WebSiteJsonLd />
@@ -38,12 +52,12 @@ export default function AprendePage() {
           { name: "Aprende", url: "https://biovity.cl/learn" },
         ]}
       />
-      <main className="flex flex-col relative">
+      <AprendeMotion>
         <SectionHero />
         <SectionBenefits />
-        <SectionCategories />
+        <SectionCategories listings={listings} />
         <SectionCTA />
-      </main>
+      </AprendeMotion>
     </LandingLayout>
   )
 }

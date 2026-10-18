@@ -1,11 +1,4 @@
 import type { IconSvgElement } from "@hugeicons/react"
-import type { IconTitleDescription } from "@/lib/types/landing"
-
-export type HeroStatReclutamiento = {
-  value: string
-  label: string
-  sublabel?: string
-}
 
 export type HerramientaActual = {
   title: string

@@ -11,32 +11,35 @@ import { MATRIZ_COMPARATIVA } from "@/lib/data/reclutamiento-data"
 export function ComparativaTabla() {
   const reducedMotion = useReducedMotion()
   const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const [selectedMobileTab, setSelectedMobileTab] = useState<"biovity" | "ats" | "portales" | "headhunters">("biovity")
+  const [selectedMobileTab, setSelectedMobileTab] = useState<
+    "biovity" | "ats" | "portales" | "headhunters"
+  >("biovity")
 
   return (
-    <section className="py-24 md:py-36 bg-surface-container-lowest" id="comparativa">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
+    <section className="bg-surface-container-lowest py-20 sm:py-24" id="comparativa">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <m.div
-          initial={{ opacity: 0, y: 32 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
           transition={t(0)}
-          className="text-center mb-16 max-w-3xl mx-auto"
+          className="mb-10 grid max-w-4xl gap-4 sm:mb-14 sm:grid-cols-12 sm:items-end"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            <span className="text-accent font-semibold">Biovity</span> frente al mercado
+          <p className="text-sm font-semibold text-secondary sm:col-span-3">La comparación</p>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:col-span-9 sm:text-4xl md:text-5xl">
+            <span className="text-accent">Biovity</span> frente al mercado
           </h2>
         </m.div>
 
-        {/* Mobile View Switcher */}
-        <div className="lg:hidden mb-6 flex rounded-lg bg-surface-container-low p-1 border border-border/40">
+        <fieldset className="mb-5 grid grid-cols-2 gap-1 rounded-xl border border-border/40 bg-surface-container-low p-1.5 sm:grid-cols-4 lg:hidden">
+          <legend className="sr-only">Comparar alternativas de reclutamiento</legend>
           <button
             type="button"
             onClick={() => setSelectedMobileTab("biovity")}
-            className={`flex-1 py-2 text-xs font-semibold rounded-md transition-colors ${
+            aria-pressed={selectedMobileTab === "biovity"}
+            className={`min-h-10 rounded-lg px-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:text-sm ${
               selectedMobileTab === "biovity"
-                ? "bg-secondary text-secondary-foreground shadow-none"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -45,7 +48,8 @@ export function ComparativaTabla() {
           <button
             type="button"
             onClick={() => setSelectedMobileTab("ats")}
-            className={`flex-1 py-2 text-xs font-medium rounded-md transition-colors ${
+            aria-pressed={selectedMobileTab === "ats"}
+            className={`min-h-10 rounded-lg px-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:text-sm ${
               selectedMobileTab === "ats"
                 ? "bg-surface-container-highest text-foreground shadow-none"
                 : "text-muted-foreground hover:text-foreground"
@@ -56,7 +60,8 @@ export function ComparativaTabla() {
           <button
             type="button"
             onClick={() => setSelectedMobileTab("portales")}
-            className={`flex-1 py-2 text-xs font-medium rounded-md transition-colors ${
+            aria-pressed={selectedMobileTab === "portales"}
+            className={`min-h-10 rounded-lg px-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:text-sm ${
               selectedMobileTab === "portales"
                 ? "bg-surface-container-highest text-foreground shadow-none"
                 : "text-muted-foreground hover:text-foreground"
@@ -67,7 +72,8 @@ export function ComparativaTabla() {
           <button
             type="button"
             onClick={() => setSelectedMobileTab("headhunters")}
-            className={`flex-1 py-2 text-xs font-medium rounded-md transition-colors ${
+            aria-pressed={selectedMobileTab === "headhunters"}
+            className={`min-h-10 rounded-lg px-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:text-sm ${
               selectedMobileTab === "headhunters"
                 ? "bg-surface-container-highest text-foreground shadow-none"
                 : "text-muted-foreground hover:text-foreground"
@@ -75,19 +81,18 @@ export function ComparativaTabla() {
           >
             Headhunters
           </button>
-        </div>
+        </fieldset>
 
-        {/* Mobile Cards View */}
-        <div className="lg:hidden space-y-4">
+        <div className="space-y-3 lg:hidden">
           {MATRIZ_COMPARATIVA.map((row) => {
             const data =
               selectedMobileTab === "biovity"
-                ? { col: row.biovity, name: "Biovity", isBiovity: true }
+                ? { col: row.biovity, isBiovity: true }
                 : selectedMobileTab === "ats"
-                ? { col: row.atsTradicional, name: "ATS Tradicional", isBiovity: false }
-                : selectedMobileTab === "portales"
-                ? { col: row.portalesMasivos, name: "Portales Masivos", isBiovity: false }
-                : { col: row.headhunters, name: "Headhunters", isBiovity: false }
+                  ? { col: row.atsTradicional, isBiovity: false }
+                  : selectedMobileTab === "portales"
+                    ? { col: row.portalesMasivos, isBiovity: false }
+                    : { col: row.headhunters, isBiovity: false }
 
             return (
               <div
@@ -106,7 +111,7 @@ export function ComparativaTabla() {
                         <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
                       </div>
                     ) : data.col.status === "parcial" ? (
-                      <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400">
+                      <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
                         Parcial
                       </span>
                     ) : (
@@ -116,57 +121,63 @@ export function ComparativaTabla() {
                     )}
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground mb-3">{row.descripcion}</p>
-                <div className="pt-2.5 border-t border-border/40">
-                  <p className="text-xs text-foreground font-medium">{data.col.detalle}</p>
+                <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
+                  {row.descripcion}
+                </p>
+                <div className="mt-3">
+                  <p className="text-sm font-medium leading-relaxed text-foreground">
+                    {data.col.detalle}
+                  </p>
                 </div>
               </div>
             )
           })}
         </div>
 
-        {/* Desktop Table View */}
-        <div className="hidden lg:block overflow-hidden rounded-2xl border border-border/40 bg-surface-container-lowest">
+        <div className="hidden overflow-hidden rounded-xl border border-border/50 bg-surface-container-lowest lg:block">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-border/40 bg-surface-container-low">
-                  <th className="py-5 px-6 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground w-2/5">
+                <tr className="bg-surface-container-low">
+                  <th className="w-2/5 px-6 py-5 text-sm font-semibold text-muted-foreground">
                     Criterio de Evaluación
                   </th>
-                  <th className="py-5 px-6 text-xs font-mono font-semibold uppercase tracking-wider text-secondary bg-secondary/5 border-x border-secondary/20 w-1/4">
+                  <th className="w-1/4 bg-secondary/5 px-6 py-5 text-sm font-semibold text-secondary">
                     <div className="flex items-center gap-1.5">
                       <HugeiconsIcon icon={SparklesIcon} size={15} />
                       <span>Biovity</span>
                     </div>
                   </th>
-                  <th className="py-5 px-5 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground w-1/8">
+                  <th className="w-1/8 px-5 py-5 text-sm font-semibold text-muted-foreground">
                     ATS Tradicionales
                   </th>
-                  <th className="py-5 px-5 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground w-1/8">
+                  <th className="w-1/8 px-5 py-5 text-sm font-semibold text-muted-foreground">
                     Portales Masivos
                   </th>
-                  <th className="py-5 px-5 text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground w-1/8">
+                  <th className="w-1/8 px-5 py-5 text-sm font-semibold text-muted-foreground">
                     Headhunters
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/30">
+              <tbody>
                 {MATRIZ_COMPARATIVA.map((row) => (
-                  <tr key={row.criterio} className="hover:bg-surface-container-low/40 transition-colors">
+                  <tr
+                    key={row.criterio}
+                    className="hover:bg-surface-container-low/40 transition-colors"
+                  >
                     {/* Criterio */}
                     <td className="py-4 px-6 align-top">
                       <p className="text-sm font-semibold text-foreground mb-0.5">{row.criterio}</p>
-                      <p className="text-xs text-muted-foreground">{row.descripcion}</p>
+                      <p className="text-sm text-muted-foreground">{row.descripcion}</p>
                     </td>
 
                     {/* Biovity Column (Highlighted) */}
-                    <td className="py-4 px-6 align-top bg-secondary/5 border-x border-secondary/20">
+                    <td className="bg-secondary/5 px-6 py-4 align-top">
                       <div className="flex items-start gap-2.5">
                         <div className="size-5 rounded-full bg-secondary/15 flex items-center justify-center text-secondary shrink-0 mt-0.5">
                           <HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} />
                         </div>
-                        <p className="text-xs font-medium text-foreground leading-relaxed">
+                        <p className="text-sm font-medium leading-relaxed text-foreground">
                           {row.biovity.detalle}
                         </p>
                       </div>
@@ -180,7 +191,7 @@ export function ComparativaTabla() {
                             <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
                           </div>
                         ) : row.atsTradicional.status === "parcial" ? (
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 shrink-0 font-medium">
+                          <span className="shrink-0 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
                             Parcial
                           </span>
                         ) : (
@@ -188,7 +199,7 @@ export function ComparativaTabla() {
                             <HugeiconsIcon icon={Cancel01Icon} size={11} />
                           </div>
                         )}
-                        <p className="text-xs text-muted-foreground leading-relaxed">
+                        <p className="text-sm leading-relaxed text-muted-foreground">
                           {row.atsTradicional.detalle}
                         </p>
                       </div>
@@ -202,7 +213,7 @@ export function ComparativaTabla() {
                             <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
                           </div>
                         ) : row.portalesMasivos.status === "parcial" ? (
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 shrink-0 font-medium">
+                          <span className="shrink-0 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
                             Parcial
                           </span>
                         ) : (
@@ -210,7 +221,7 @@ export function ComparativaTabla() {
                             <HugeiconsIcon icon={Cancel01Icon} size={11} />
                           </div>
                         )}
-                        <p className="text-xs text-muted-foreground leading-relaxed">
+                        <p className="text-sm leading-relaxed text-muted-foreground">
                           {row.portalesMasivos.detalle}
                         </p>
                       </div>
@@ -224,7 +235,7 @@ export function ComparativaTabla() {
                             <HugeiconsIcon icon={CheckmarkCircle02Icon} size={12} />
                           </div>
                         ) : row.headhunters.status === "parcial" ? (
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 shrink-0 font-medium">
+                          <span className="shrink-0 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
                             Parcial
                           </span>
                         ) : (
@@ -232,7 +243,7 @@ export function ComparativaTabla() {
                             <HugeiconsIcon icon={Cancel01Icon} size={11} />
                           </div>
                         )}
-                        <p className="text-xs text-muted-foreground leading-relaxed">
+                        <p className="text-sm leading-relaxed text-muted-foreground">
                           {row.headhunters.detalle}
                         </p>
                       </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Pricing } from "@/components/landing/empresas/Pricing"
+import { PlansPricing } from "@/components/landing/planes/PlansPricing"
 import { LandingLayout } from "@/components/layouts/LandingLayout"
 import {
   BreadcrumbJsonLd,
@@ -57,8 +57,8 @@ export default function PlanesPage() {
           { name: "Planes y Precios", url: "https://biovity.cl/plans" },
         ]}
       />
-      <main className="flex flex-col relative pt-20 md:pt-28">
-        <Pricing heading="h1" />
+      <main className="relative flex flex-col">
+        <PlansPricing />
       </main>
     </LandingLayout>
   )

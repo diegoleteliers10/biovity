@@ -88,11 +88,20 @@ const Categories = dynamic(
   {
     loading: () => (
       <div className="py-24 md:py-36 bg-surface-container-lowest content-reserve">
-        <div className={content}>
-          <div className="h-9 w-64 bg-muted/50 rounded-lg mx-auto mb-16" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="h-24 bg-surface-container-low/70 rounded-xl" />
+        <div className={`${content} grid gap-8 md:grid-cols-12 md:gap-12`}>
+          <div className="md:col-span-4">
+            <div className="h-3 w-36 bg-muted/50 rounded mb-4" />
+            <div className="h-10 w-full max-w-sm bg-muted/50 rounded-lg" />
+          </div>
+          <div className="grid gap-x-8 sm:grid-cols-2 md:col-span-8">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <div
+                key={`category-skeleton-${item}`}
+                className="h-20 border-b border-border/40 py-4"
+              >
+                <div className="h-4 w-40 bg-muted/50 rounded mb-2" />
+                <div className="h-3 w-24 bg-muted/40 rounded" />
+              </div>
             ))}
           </div>
         </div>
@@ -117,11 +126,11 @@ export function LazyLandingSections() {
   return (
     <>
       <TrustStrip />
+      <Categories />
       <DashboardPreview />
       <MessagesShowcase />
       <MetricsShowcase />
       <ConexionTalento />
-      <Categories />
       <CTA />
     </>
   )

@@ -521,3 +521,511 @@ Motion here communicates state, not personality. No stagger, no scroll-reveal, n
 - Don't apply `scale: 0.98` transforms on parent containers hosting coordinate-measured SVGs like `AnimatedBeam`.
 - Don't copy a brand-register component (hero stat card, CTA banner, AnimatedBeam) directly into a dashboard/product surface without re-deriving it through §0.
 - Don't ship a dashboard card, table, or list with only its populated state designed.
+
+---
+
+## 9. Home Landing Direction — Science, Connected
+
+### Concept card
+
+- **Surface:** `/`, brand register.
+- **Audience:** Professionals who want work in biotechnology, biochemistry, chemistry, health, and research in Chile.
+- **One-line promise:** Find science roles and salary references in one specialized place.
+- **Visual anchor:** A scientist searches Biovity at a laboratory desk. A laptop shows a clear job listing beside a recognizable microscope and lab tools.
+- **Mood:** Precise, calm, editorial, and clearly scientific.
+- **Do not use:** Generic SaaS dashboard framing, fake market metrics, decorative maps without location data, or animated background noise.
+
+### Concept options
+
+| Concept | Fit | Distinction | Feasibility | Decision |
+|---|---:|---:|---:|---|
+| Scientist searching Biovity at a laboratory desk | 5 | 5 | 4 | Selected |
+| Chile opportunity map | 4 | 4 | 2 | Rejected: no matching geographic dataset |
+| Editorial job index | 4 | 3 | 5 | Keep as the specialty list treatment |
+
+### Composition
+
+- Use a two-column hero on desktop and a single-column reading order on mobile.
+- Put the eyebrow, headline, short description, search form, and salary link in the first column.
+- Show a detailed SVG scene in the second column, without a card or background panel. Keep discipline names in the editorial index, and keep counts out of the illustration.
+- Place the live specialty index after `TrustStrip` and before the product previews.
+- Render the six specialties as a clear editorial list with live offer counts when available.
+- Keep the search form as the primary action and keep its controls at `h-11` with `rounded-lg`.
+
+### Type, color, and spacing
+
+- Reuse the existing brand tokens, Geist type, 12-column grid, and spacing rules.
+- Use an uppercase monospace emerald eyebrow, a large foreground headline, and one violet headline accent.
+- Let the illustration sit directly on the page background. Use solid, shaded laboratory objects and the Biovity job listing as the focal point.
+- Preserve generous brand spacing and a readable mobile width.
+
+### Motion
+
+- Motion verb: **discover**.
+- Reveal the hero scene once, then settle it into place.
+- Use short staggered entrances for the hero copy and specialty rows. Search stays visible and usable without waiting for animation.
+- Reuse `motion/react` and existing landing motion tokens. Respect reduced-motion preferences and show the final state immediately when motion is reduced.
+- Do not run a continuous loop or animate the background.
+
+### Quality checks
+
+- Every discipline label and count must come from current app data.
+- The hero must remain clear when the SVG is hidden and when motion is disabled.
+- Check the layout at narrow mobile and wide desktop widths.
+
+
+## 10. Companies landing direction: Scientific hiring criteria
+
+### Brief and concept selection
+
+- Surface: `/companies`, brand register. Audience: scientific employers in Chile.
+- Job: connect a technical vacancy to the existing ATS demo and organization registration.
+- Keep the existing Next.js, Tailwind, Geist, theme tokens, and real product components.
+- No customer logos, performance claims, or organization counts without evidence.
+
+| Territory | Concept | Signature and screenshot | Emotion | Anchor | Originality / fit / feasibility / portability |
+|---|---|---|---|---|---|
+| Profession | Scientific criteria shape each search | Switch a vacancy brief between laboratory, bioprocesses, and research | Precision | Biovity uses science-specific techniques and specialties | 4 / 5 / 5 / 2 |
+| Process | From offer to interview in one workspace | The actual ATS kanban changes through user actions | Control | Existing organization pipeline and demo | 3 / 5 / 5 / 3 |
+| Place | A hiring network across Chile | A region-based talent index | Proximity | Professionals and employers in Chile | 4 / 4 / 2 / 2 |
+
+Select scientific criteria. It makes the specialization concrete without unsupported market data.
+Use the real ATS demo as product evidence. Region mapping does not earn the hero.
+
+### Concept card
+
+- Idea: Define the scientific criteria, then manage the hiring process with your team.
+- Metaphor: A vacancy brief with explicit technical requirements.
+- Signature: User-selected vacancy briefs. Content settles into place after each choice.
+- Emotion: Clear, specific, calm.
+- Motion verb: Settle.
+- Screenshot: Editorial hero beside the scientific brief, followed by the actual ATS.
+
+### System
+
+- Ground: `surface-container-lowest` (`#ffffff` light).
+- Alternate ground: `surface-container-low` (`#f3f3f5` light).
+- Ink and action: `primary` (`#00374a` light). Secondary ink: `muted-foreground` (`#71787d`).
+- Verified or selected state: `secondary` (`#006b5e` light). Display accent: `accent` (`#8483d4`).
+- All colors follow existing theme tokens. Do not add fixed page colors.
+- Display: Geist Sans, 36 to 60 px, semibold, tight tracking, 1.06 leading.
+- Body: Geist Sans, 16 to 18 px, 1.6 leading. Metadata: Geist Mono, 12 px.
+- Grid: 12 columns, 32 px desktop gutters. Mobile: one column, 16 px gutters.
+- Radius: existing `rounded-lg` controls and `rounded-xl` containers. No card shadows.
+- Motion: GSAP scoped to `/companies`, `power2.out`, 300 to 550 ms, 40 to 60 ms stagger.
+- Respect reduced motion through matchMedia and cleanup on navigation. No loader, autoplay, scroll capture, or background loop.
+- Retain existing Motion-based product demos and their functional interactions. The new page choreography does not target their animated children.
+
+### Composition
+
+```text
+Hero          [full-width masthead]
+Brief         [promise and actions, 4 cols] [interactive vacancy brief, 8 cols]
+ATS           [section title]                           [demo label]
+              [real organization application pipeline, full width]
+Value         [statement, 4 cols] [four open criteria, 8 cols]
+Process       [heading]                         [contact link]
+              [profile] ---- [offer] ---- [assessment] ---- [interview]
+Talent        [title aligned to left] [real talent component below]
+Metrics       [title aligned to left] [real funnel and map components below]
+Plans         [existing functional plan comparison]
+FAQ           [heading, 4 cols] [separated question rows, 8 cols]
+Contact       [direct links, 5 cols] [contact form, 7 cols]
+```
+
+The genericness check removed the centered glow, unsupported stat cards, repeated equal-card grids, and the full-viewport gap before the product. Examples are labeled as examples. Existing prices and demo data keep their source and behavior.
+
+## 12. Learn page direction: an open study sheet
+
+### Concept card
+
+- Idea: A learning capsule turns biological data into a practical skill through content, exercises, a quiz, and a certificate.
+- Metaphor: An open workbook with each learning stage laid out on the page.
+- Signature: A green path links the lesson, exercise, assessment, and certificate inside the illustration.
+- Emotion: Clear, practical, and focused.
+- Motion verb: Trace.
+- Screenshot: A centered learning statement and actions sit above the open workbook.
+- Anchor: Existing MDX capsules include durations, modules, and quiz questions. The catalog reads those values directly.
+
+### System
+
+- Register: brand.
+- Palette: Existing Biovity tokens. Navy outlines, emerald stage path, one lavender stage mark, and tonal workbook surfaces.
+- Type: Geist Sans for titles and course names. Geist Mono for labels and course metadata.
+- Grid: 12 columns on desktop, one column on mobile. Keep the hero copy and SVG aligned to the same container.
+- Rhythm: Centered statement and actions, open workbook figure, topic index, four-step learning path, grouped capsule list, and direct course action.
+- Shape: Existing `rounded-lg` controls and `rounded-xl` containers. No card shadows.
+- Motion: Scoped GSAP, `power2.out`, a short statement reveal, one workbook reveal, low-distance section reveals, one path draw, and a static view when reduced motion is active.
+
+### Composition
+
+```text
+Hero       [centered learning promise and links] [open workbook figure] [topic index]
+Path       [four connected learning steps across the content width]
+Catalog    [area and description, 4 cols]       [real capsule entries, 8 cols]
+Action     [course invitation, 8 cols]           [direct capsule link, 4 cols]
+```
+
+The genericness check removed unsupported course stats and generic equal-card grids. Capsule title, duration, module count, and quiz count come from the MDX frontmatter.
+
+## 13. Blog direction: a field journal for scientific work
+
+### Brief and concept selection
+
+- Surface: `/blog`, brand register. Audience: professionals and students in scientific fields in Chile.
+- Job: help readers find useful articles about scientific work, biotechnology, and career development.
+- Language: Spanish for Chile. Use the existing article title, excerpt, author, and date as the only article data. The current `featuredImage` points to the same solid-blue placeholder for every post, so the archive uses a decorative journal illustration instead of presenting that placeholder as article art.
+- Evidence: the current archive has real articles about salary negotiation, biotech skills, networking, CVs, interviews, and the transition from academia to industry.
+
+| Territory | Concept | Signature and screenshot | Emotion | Anchor | Originality / fit / feasibility / portability |
+|---|---|---|---|---|---|
+| Process | A field journal follows scientific work from one featured reading into a clear archive | One article opens the page, followed by an index of real readings | Curious and focused | Existing articles connect science and work in Chile | 4 / 5 / 5 / 2 |
+| Material | A lab notebook sets each article as a dated observation | Date and author lead each entry; the image works as a specimen plate | Precise and approachable | Biovity covers biotechnology and scientific careers | 3 / 4 / 4 / 3 |
+| Formal system | The archive is an annotated reading list with one large lead and ruled entries | A single feature gives way to compact, searchable rows | Calm and useful | The blog has a small, finite article collection | 3 / 4 / 5 / 3 |
+
+Select the field journal. Its lead article and dated index use the real blog content, and the layout still works as the archive grows.
+
+### Concept card
+
+- Idea: A field journal follows scientific work from a featured reading into the rest of the archive.
+- Metaphor: Notes from the intersection of science and work in Chile.
+- Signature: The latest article appears as a large journal entry, then gives way to an annotated reading index.
+- Emotion: Editorial, credible, and inviting.
+- Motion verb: Unfold.
+- Screenshot: A large feature beside its date and author, with the next readings indexed below.
+- Genericness test: Use Biovity's real Chilean science and career articles. Do not add unsupported topics, counts, or credentials.
+
+### System
+
+- Register: brand.
+- Palette: existing Biovity tokens. Use `surface-container-low` as the journal opening, `surface-container-lowest` for the reading area, `foreground` for titles, `muted-foreground` for metadata, and `secondary` for links and small index marks.
+- Type: Geist Sans for headings and article text. Geist Mono for date, author, and archive labels.
+- Grid: 12 columns on desktop, one column on mobile. Align the hero heading and archive index to the same max-width container.
+- Rhythm: split editorial heading, featured article, then compact archive rows with a search field.
+- Shape: one rounded feature frame with a decorative journal illustration. Keep archive rows text-first to avoid repeating the same placeholder image. No card shadows.
+- Motion: Scale the journal illustration and shift its reading arrow on hover. Remove transitions and movement for reduced-motion users.
+
+### Composition
+
+```text
+Opening    [editorial title, 8 cols] [short purpose, 4 cols]
+Index      [live result count]                            [article search]
+Feature    [decorative journal illustration, 7 cols] [date, author, title, excerpt, action, 5 cols]
+Archive    [section heading, 4 cols] [dated article rows, 8 cols]
+```
+
+The genericness check removed the repeated equal-card grid and duplicate description below the heading. Search covers the real title, excerpt, and author fields. The illustration is a visual motif, not article content. Replace it with article images when posts have distinct, relevant artwork.
+
+## 14. Career tips direction: a field guide for scientific work
+
+### Brief and concept selection
+
+- Surface: `/career-tips`, brand register. Audience: students and professionals in scientific fields in Chile.
+- Job: help readers find practical career guidance, tools, and answers.
+- Language: Spanish for Chile. Keep the current guide, category, resource, and FAQ data.
+- Anchor: the page already groups real guides by CV, interviews, career transition, salary negotiation, and networking.
+
+| Territory | Concept | Signature and screenshot | Emotion | Anchor | Originality / fit / feasibility / portability |
+|---|---|---|---|---|---|
+| Process | A field guide turns practical career advice into a searchable index | A large guide heading opens to a responsive index whose filters narrow real entries | Clear and capable | Existing guide topics map to real career questions | 4 / 5 / 5 / 2 |
+| Material | A lab notebook uses short annotations to orient the reader | Category labels and reading times act as precise margin notes | Focused and practical | Biovity serves scientific careers | 3 / 4 / 5 / 3 |
+| Formal system | A taxonomy organizes every resource by topic | Category counts form a compact topic index above the guide rows | Ordered and calm | The page has five guide categories | 3 / 4 / 5 / 3 |
+
+Select the field guide. It gives the current search and category filters a clear role and keeps the real resources central.
+
+### Concept card
+
+- Idea: A field guide indexes practical advice for scientific careers.
+- Metaphor: A reference guide with an index, entries, and resource notes.
+- Signature: Category filters and search narrow the real guide index.
+- Emotion: Clear, credible, and useful.
+- Motion verb: File. Filtered entries settle into the index with short, reduced-motion-aware transitions.
+- Screenshot: A large editorial heading beside the live topic index, followed by a clean guide list.
+- Genericness test: Use the page's real career topics as the index. Avoid stock learning visuals and unsupported success metrics.
+
+### System
+
+- Register: brand.
+- Palette: paper `#ffffff` (`surface-container-lowest`), ink `#0f172a` (`foreground`), muted `#5f6569` (`muted-foreground`), line `#e2e2e4` (`border`), accent `#006b5e` (`secondary`), dark field `#00374a` (`primary`). Dark mode uses the matching existing tokens.
+- Type: Geist Sans for headings and reading text. Geist Mono for small category and time labels.
+- Grid: 12 columns on desktop, one column on mobile. Align hero and guide index to the same container.
+- Rhythm: split hero, open guide index, offset resource list, two-column FAQ, full-width CTA.
+- Shape: rounded-lg for controls, rounded-xl for the feature panel. Keep cards shadow-free.
+- Motion: 180–300 ms opacity and transform transitions. Let filters reflow the list. Remove movement for reduced-motion users.
+
+### Composition
+
+```text
+Hero       [large title and purpose, 7 cols] [topic index with real counts, 5 cols]
+Guides     [heading and live count, 5 cols] [search, 7 cols]
+Filters    [category controls across 12 cols]
+Index      [category and reading time, 3 cols] [title and summary, 7 cols] [action, 2 cols]
+Resources  [section heading, 4 cols] [three resource rows, 8 cols]
+FAQ        [section heading, 4 cols] [accordion, 8 cols]
+CTA        [career action, 8 cols] [profile and job links, 4 cols]
+```
+
+Use counts derived from the current article data. Keep every article link and resource destination intact. Do not claim that a resource downloads before the user registers.
+
+## 15. Waitlist direction: a ficha de ingreso científico
+
+### Brief and concept selection
+
+- Surface: `/waitlist`, brand register. Audience: scientific professionals and organizations in Chile.
+- Job: collect an email and profile so Biovity can contact people about early access.
+- Language: Spanish for Chile. Keep the current role choices, API contract, and truthful product scope.
+- Anchor: the form asks for two real pieces of information, profile and email, and the product connects opportunities, salary data, and technical recruiting.
+
+| Territory | Concept | Signature and screenshot | Emotion | Anchor | Originality / fit / feasibility / portability |
+|---|---|---|---|---|---|
+| Process | A clear intake sheet records who wants access to scientific work | Profile choice leads into one email field, then a direct confirmation state | Precise and welcoming | The existing form collects a role and email | 4 / 5 / 5 / 2 |
+| Material | A lab accession label organizes the page into a small set of named fields | The profile and email sit in a carefully ruled form panel | Ordered and credible | Biovity serves scientific fields | 3 / 4 / 5 / 3 |
+| Formal system | Two audience paths share one point of entry | Selecting a profile updates the email label and placeholder | Clear and efficient | The API accepts professional or organization roles | 3 / 5 / 5 / 3 |
+
+Select the intake sheet. It uses the actual registration fields as the composition and does not imply queue position, launch dates, or access guarantees.
+
+### Concept card
+
+- Idea: A short intake sheet connects scientific professionals and organizations to Biovity.
+- Metaphor: A scientific work register with clearly named fields.
+- Signature: A narrow emerald marker moves between the two profile choices, then the selected role sets the email label. A connected three-item index names the actual Biovity areas.
+- Emotion: Clear, considered, and trustworthy.
+- Motion verb: Register. Use short opacity and vertical shifts for entry and confirmation.
+- Screenshot: A strong editorial statement beside the profile and email form.
+- Genericness test: Keep the two actual role paths and Biovity's real product areas. Do not show invented waitlist counts or promises.
+
+### System
+
+- Register: brand.
+- Palette: existing Biovity tokens. Use `surface-container-lowest` as the page ground, `surface-container-low` for the form panel, `foreground` for headings, `muted-foreground` for support text, `border` for rules, `secondary` for small emphasis, and `primary` for the submit action.
+- Type: Geist Sans for the headline, form, and body. Geist Mono for the small context label only.
+- Grid: 12 columns on desktop. Place the statement in 6 columns and the form in 6 columns. Stack both in reading order on mobile.
+- Rhythm: compact brand header, open two-column hero, connected three-item product index, profile and email fields with a clear signup benefit, then a quiet footer.
+- Shape: rounded-lg for controls and rounded-xl for the form panel. No card shadows or decorative background gradients.
+- Motion: existing Motion components and transition helpers. Use a shared marker for profile selection and one success transition. Keep content visible when reduced motion is active.
+
+### Composition
+
+```text
+Header     [Biovity mark and name, 6 cols] [waitlist context, 6 cols]
+Hero       [statement and purpose, 6 cols] [profile and email form, 6 cols]
+Index      [vacantes] [datos salariales] [reclutamiento técnico] as connected nodes
+Footer     [Biovity context, 6 cols] [return link, 6 cols]
+```
+
+## 16. Share salary direction: a record of scientific compensation
+
+### Brief and concept selection
+
+- Surface: `/share-salary`, public brand page with a task-focused form. Use brand framing and product-level form clarity.
+- Audience: professionals in science, health, and biotechnology in Chile.
+- Job: collect an anonymous salary observation with its role, location, experience, education, benefits, and skills.
+- Keep the existing three-step form, category values, validation, API payload, and success behavior. Do not add salary counts or promise when a segment will appear in public data.
+
+| Territory | Concept | Signature and screenshot | Anchor | Originality / fit / feasibility / portability |
+|---|---|---|---|---|
+| Process | A scientific salary record is completed through three clear observations | The active stage tracks the form from role and location, to compensation, to education and skills | The current form already collects those three groups | 4 / 5 / 5 / 2 |
+| Material | A field notebook records compensation beside its work context | The salary fields read like a concise field note with technical labels | The dataset includes workplace, region, modality, and skills | 3 / 4 / 4 / 3 |
+| Formal system | A compensation ledger places every answer in a single dense register | The form advances through aligned rows like a salary ledger | The experience is a structured record, not an open text survey | 3 / 4 / 4 / 3 |
+
+Select the three-stage salary record. It uses the actual form sequence as the visual idea, and its stage tracker follows the visitor's progress without invented data.
+
+### Concept card
+
+- Idea: Each salary reference joins a role, a compensation, and the context behind it.
+- Metaphor: A scientific observation sheet completed in three stages.
+- Signature: A live stage index and progress line move with the existing form step.
+- Emotion: Precise, useful, and trustworthy.
+- Motion verb: Record. The active stage settles into place, and the fields shift a short distance between steps.
+- Screenshot: A clear salary statement aligned beside the active observation form.
+- Genericness test: Use the form's actual fields and Chilean science context. Do not show sample salary values or unsupported community totals.
+
+### System
+
+- Register: brand frame, task-focused form.
+- Palette: existing tokens. `surface-container-lowest` is the page ground, `surface-container-low` is the record panel, `foreground` carries field titles, `muted-foreground` supports guidance, `secondary` marks progress and confirmation, `accent` highlights one large phrase, and `border` connects the stages.
+- Type: Geist Sans for the headline and form. Geist Mono for stage indices and short data labels.
+- Grid: 12 columns on desktop. Place the statement and stage index in 5 columns, the form in 7. Stack them in that order on mobile.
+- Rhythm: compact page start after the fixed navigation, editorial statement, connected stage index, current form stage, privacy note, then success state.
+- Shape: rounded-lg controls and rounded-xl form panel. Keep the panel shadow-free and use existing tonal surfaces.
+- Motion: one short stage transition. Move the progress line with `scaleX`, not layout dimensions. Keep the full form usable with reduced motion.
+
+### Composition
+
+```text
+Opening    [statement and salary context, 5 cols] [stage / form record, 7 cols]
+Stage      [three connected steps, 5 cols]        [current fields, 7 cols]
+Privacy    [short anonymity note beneath the form]
+Success    [contribution confirmation, 5 cols]    [next actions, 7 cols]
+```
+
+
+## 11. About page direction: a field journal for scientific work
+
+### Brief and concept selection
+
+- Surface: \`/about\`, brand register. Audience: scientific professionals and organizations in Chile.
+- Job: explain why Biovity exists and direct each audience to a useful next step.
+- Language: Spanish for Chile.
+- Evidence: the product connects scientific jobs, salary information, and recruiting tools. The page has a real founder portrait. It has no verified community-size metric or verified year of founding.
+
+| Territory | Concept | Signature and screenshot | Emotion | Anchor | Originality / fit / feasibility / portability |
+|---|---|---|---|---|---|
+| Process | A connection manifesto links scientific work to real Biovity destinations | A line connects jobs, salary references, and organization tools across the page | Focused and credible | Biovity connects scientific work in Chile | 4 / 5 / 4 / 2 |
+| Identity | A founder note tells why Biovity began | The real founder portrait opens into a short profile | Personal and direct | Biovity has a named founder and portrait | 3 / 4 / 5 / 4 |
+| Formal system | A scientific index organizes the page by audience | Each index entry routes to a product area | Precise | The product serves professionals and organizations | 3 / 4 / 4 / 3 |
+
+Select the connection manifesto. It uses real product routes to explain what Biovity connects.
+
+### Concept card
+
+- Idea: Biovity connects scientific professionals and organizations with useful work tools.
+- Metaphor: A manifesto with a visible path from science to work.
+- Signature: A green route joins jobs, salary references, and organization tools.
+- Emotion: Direct, credible, and connected.
+- Motion verb: Trace.
+- Screenshot: A wide statement leads into a full-width route index and a concise purpose note.
+- Genericness test: Use the page's real scientific fields, Chile focus, founder profile, and product routes. Do not add unsupported scale claims.
+
+### System
+
+- Register: brand.
+- Palette: existing Biovity tokens. Navy for primary actions, emerald for labels and the connector, violet for one large headline phrase, and tonal surfaces for section changes.
+- Type: Geist Sans for statements and body copy. Geist Mono for chapter labels.
+- Grid: 12 columns on desktop, one column on mobile. Align the statement and destination route to the shared container.
+- Rhythm: full-width statement, connected destination route, purpose and actions, origin narrative, founder profile, and concise signup finale.
+- Shape: rounded-lg for controls and rounded-xl for image crops. No card shadows.
+- Motion: scoped GSAP. Use a brief hero reveal, low-distance section reveals, and one scrubbed connector. Reduced-motion users see the full content and a complete static connector.
+
+### Composition
+
+\`\`\`text
+Hero       [full-width statement and purpose]
+Routes     [connected jobs / salaries / companies across the content width]
+Actions    [employment and story links]
+Origin     [chapter title, 5 cols]   [specific story, 6 cols]
+Founder    [portrait, 5 cols]        [name, role, account, contact, 6 cols]
+Finale     [statement, 8 cols]       [professional / organization actions, 4 cols]
+\`\`\`
+
+## Legal pages direction: A clear field guide
+
+### Brief and concept selection
+
+- Surfaces: `/cookies`, `/privacy`, and `/terms`, public brand register. Readers need to find exact rules and understand the complete policy.
+- Keep every existing legal statement, date, table value, and link.
+
+| Territory | Concept | Signature | Fit | Feasibility | Portability |
+|---|---|---|---:|---:|---:|
+| Formal system | A printed legal register with a page-specific index | Native links jump to each clause | 5 | 5 | 2 |
+| Process | A map from data collection to use | A flow diagram summarizes each policy | 3 | 3 | 3 |
+| Identity | Three documents share one Biovity cover | A coordinated legal library | 4 | 5 | 3 |
+
+Select the printed legal register. It makes dense, existing text easier to scan without inventing a summary.
+
+### Concept card
+
+- Idea: Biovity's policies become a readable register with direct links to every section.
+- Metaphor: A carefully edited legal field guide.
+- Signature: Each page gets an index shaped to its content: horizontal for cookies, side index for privacy, chapter index for terms.
+- Emotion: Clear, calm, and dependable.
+- Motion verb: Navigate. Use native anchor links. Do not animate legal text.
+- Screenshot: A large left-aligned title, date, and page-specific index lead into readable legal copy.
+- Genericness test: Keep cookie identifiers and Biovity's Chilean policy clauses as the material. Do not add a generic illustration or legal claims.
+
+### System
+
+- Register: public brand pages. Use existing Biovity color and typography tokens.
+- Type: Geist Sans for titles and legal copy. Use monospace only for literal cookie identifiers.
+- Grid: 12 columns on desktop and one column on mobile. Keep privacy navigation in a separate column on wide screens.
+- Rhythm: Left-aligned document title, visible update date, section index, then complete legal text.
+- Shape: Existing rounded-lg controls and rounded-xl document surface. Use no decorative shadows.
+- Motion: Native anchor navigation and existing link feedback. Keep all content visible without scripts.
+
+## Recruiting page direction: Translate scientific skills into hiring signals
+
+### Brief and concept selection
+
+- Surface: `/recruiting`, brand register. Audience: scientific employers in Chile.
+- Job: explain how Biovity supports science-focused hiring and move organizations to sign-up or plans.
+- Language: Spanish for Chile.
+- Evidence: the existing FAQ names real technical equivalences such as HPLC and qPCR. Existing numerical claims have no visible source on this page.
+
+| Territory | Concept | Signature | Fit | Feasibility | Portability |
+|---|---|---|---:|---:|---:|
+| Scientific material | Translate a technique name into a recognized equivalent | Two real terminology pairs demonstrate the hiring signal | 5 | 5 | 2 |
+| Formal system | Compare recruiting methods as a field guide | Five methods become complete editorial entries | 4 | 5 | 3 |
+| Process | Follow one hiring decision through four stages | Traditional and Biovity paths meet at each stage | 4 | 4 | 3 |
+
+Select scientific translation as the signature. It uses examples already present in the recruiting FAQ.
+
+### Concept card
+
+- Idea: Biovity helps employers recognize scientific experience across different terms.
+- Metaphor: A laboratory glossary applied to hiring.
+- Signature: HPLC and qPCR connect to their established expanded names in a clear example panel.
+- Emotion: Precise, useful, and credible.
+- Motion verb: Resolve. Technique labels settle into their matching terms with one short reveal.
+- Screenshot: The hiring statement sits beside a clear two-row terminology comparison.
+- Genericness test: Keep examples, tools, FAQ, and claims tied to the existing recruiting content. Do not add candidate data or unsupported performance figures.
+
+### System
+
+- Register: brand. Reuse Biovity color tokens, Geist Sans, Geist Mono, and existing animation helpers.
+- Palette: `foreground` for statements, `primary` for controls, `secondary` for scientific labels, `accent` for one headline phrase, and token surfaces for grouped content.
+- Type: Large left-aligned hero headline and 16–18 px body copy. Use monospace for literal technique names only.
+- Grid: 12 columns in a shared 7xl container. Hero uses 6 columns for copy and 6 for the terminology panel.
+- Rhythm: split hero, editorial method index, comparison matrix, four-stage workflow, two-column FAQ, then a focused signup close.
+- Shape: rounded-lg controls, rounded-xl panels, no card shadows.
+- Motion: Low-distance reveals with the existing easing and reduced-motion helpers. No ambient loops or decorative gradients.
+
+### Composition
+
+```text
+Hero       [recruiting statement, 6 cols] [real terminology pairs, 6 cols]
+Methods    [heading, 4 cols] [five complete method entries, 8 cols]
+Matrix     [comparison heading] [responsive existing matrix]
+Workflow   [stage title, 3 cols] [traditional / Biovity paths, 9 cols]
+FAQ        [sticky heading, 4 cols] [accessible accordion, 8 cols]
+Close      [recruiting invitation and existing actions]
+```
+
+## Plans page direction: Hiring capacity as a menu
+
+### Concept
+
+- Show the actual hiring capacity progression from Free through Enterprise as one ordered pricing menu.
+- Use `PLANES_EMPRESAS` as the only source for price, feature, and CTA content.
+- Keep billing controls beside the title and label the 20% discounted view as a reference. Do not imply an annual billing contract.
+
+### System
+
+- Register: public brand page. Use Geist, existing Biovity tokens, and left-aligned hierarchy.
+- Layout: one ordered list with aligned plan, features, and price/action columns. Collapse to one column on mobile.
+- Shape: subtle Pro row tint, standard rounded controls, no card shadows.
+- Motion: short, low-distance row entrance. Respect reduced-motion settings.
+
+## Jobs page direction: Scientific specialties as an index
+
+### Concept
+
+- Use the seven real job categories as the entry point to search.
+- Keep the page about finding work. Do not add sample listings or unsupported hiring claims.
+- Make selected categories, loading, empty, and error states clear in both themes.
+
+### System
+
+- Register: product. Keep search controls at `h-11`, use existing surface and text tokens, and keep cards shadow-free.
+- Type: use a concise page title, readable offer titles, and compact sans-serif result metadata.
+- Color: use `secondary` for selected search areas and `accent` only for the headline emphasis.
+- Motion: use functional hover, focus, and loading transitions. Avoid decorative movement.
+
+### Composition
+
+```text
+Hero       [left-aligned job-search statement] [specialty context]
+Index      [seven selectable specialties]
+Search     [keyword search and expandable filters]
+Results    [result count and sort] [real job listings]
+States     [themed loading, error with retry, and empty results]
+```
