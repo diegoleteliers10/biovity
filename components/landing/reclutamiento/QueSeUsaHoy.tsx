@@ -4,72 +4,77 @@ import { Cancel01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { HERRAMIENTAS_ACTUALES } from "@/lib/data/reclutamiento-data"
 
 export function QueSeUsaHoy() {
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const transition = (delay: number) => getTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-24 md:py-36 bg-surface-container-low" id="que-se-usa-hoy">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <m.div
-          initial={{ opacity: 0, y: 32 }}
+    <section className="bg-surface-container-low py-20 sm:py-24" id="que-se-usa-hoy">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-14 lg:px-8">
+        <m.header
+          initial={reducedMotion ? false : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(0)}
-          className="text-center mb-12 max-w-3xl mx-auto md:mb-16"
+          transition={transition(0)}
+          className="h-fit lg:col-span-4 lg:sticky lg:top-28"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Lo que se usa <span className="text-accent font-semibold">hoy</span>
+          <p className="mb-4 text-sm font-semibold text-secondary">El panorama actual</p>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Lo que se usa <span className="text-accent">hoy</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            Las 5 alternativas predominantes para contratar en ciencias.
+          <p className="mt-5 max-w-sm text-base leading-relaxed text-muted-foreground">
+            Cinco caminos comunes para encontrar talento científico.
           </p>
-        </m.div>
+        </m.header>
 
-        {/* 5 Compact Cards: verdict + examples + one key limitation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="overflow-hidden rounded-xl bg-surface-container-lowest lg:col-span-8">
           {HERRAMIENTAS_ACTUALES.map((item, index) => (
-            <m.div
+            <m.article
               key={item.title}
-              initial={{ opacity: 0, y: 28, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(index * LANDING_ANIMATION.stagger)}
-              className="bg-surface-container-lowest rounded-xl p-6 shadow-none border border-border/20"
+              transition={transition(index * 0.06)}
+              className="grid gap-4 border-b border-border/50 p-5 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_minmax(13rem,0.8fr)] sm:gap-8 sm:p-7"
             >
-              <div className="flex items-center gap-3.5">
-                <div className="size-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary shrink-0">
-                  <HugeiconsIcon icon={item.icon} size={20} />
+              <div>
+                <div className="mb-3 flex items-center gap-3">
+                  <HugeiconsIcon icon={item.icon} size={19} className="shrink-0 text-primary" />
+                  <span className="text-sm text-muted-foreground">{item.category}</span>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-base font-semibold text-foreground leading-snug">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5 font-mono truncate">
-                    {item.examples}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-5 pt-4 border-t border-border/40">
-                <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-surface-container-highest text-muted-foreground inline-block mb-3">
-                  {item.tag}
-                </span>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex items-start gap-2">
-                  <HugeiconsIcon
-                    icon={Cancel01Icon}
-                    size={14}
-                    className="text-rose-500/80 shrink-0 mt-0.5"
-                  />
-                  {item.limitaciones[0]}
+                <h3 className="text-lg font-semibold leading-snug text-foreground sm:text-xl">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {item.examples}
+                </p>
+                <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                  {item.comoSeUsa}
                 </p>
               </div>
-            </m.div>
+
+              <div className="sm:pt-1">
+                <p className="mb-3 text-sm font-semibold text-foreground">{item.tag}</p>
+                <ul className="space-y-2">
+                  {item.limitaciones.map((limitation) => (
+                    <li
+                      key={limitation}
+                      className="flex items-start gap-2.5 text-sm leading-relaxed text-muted-foreground"
+                    >
+                      <HugeiconsIcon
+                        icon={Cancel01Icon}
+                        size={15}
+                        className="mt-0.5 shrink-0 text-muted-foreground"
+                      />
+                      <span>{limitation}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </m.article>
           ))}
         </div>
       </div>

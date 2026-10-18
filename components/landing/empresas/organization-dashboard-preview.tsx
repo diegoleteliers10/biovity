@@ -558,7 +558,7 @@ export function OrganizationDashboardPreview() {
   const reducedMotion = useReducedMotion()
   const isMobile = useMediaQuery("(max-width: 767px)")
   const isReduced = Boolean(reducedMotion)
-  const [view, setView] = useState("home")
+  const [view, setView] = useState("applications")
 
   const viewportMargin = isMobile
     ? LANDING_ANIMATION_MOBILE.viewportMargin
@@ -576,20 +576,24 @@ export function OrganizationDashboardPreview() {
   }
 
   return (
-    <section className="w-full bg-surface-container-lowest py-24 md:py-36">
+    <section
+      id="demo-reclutamiento"
+      aria-label="Demo de reclutamiento"
+      className="w-full scroll-mt-28 bg-surface-container-lowest pb-20 pt-8 md:pb-28 md:pt-12"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
           transition={t()}
-          className="mb-10 text-center md:mb-14"
+          className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-10"
         >
-          <h2 className="text-3xl font-semibold text-foreground mb-3 tracking-tight text-balance sm:text-4xl md:text-5xl">
-            Así se ve tu <span className="text-accent font-semibold">panel de reclutamiento</span>
+          <h2 className="max-w-2xl text-3xl font-semibold text-foreground tracking-tight text-balance sm:text-4xl">
+            Tu proceso, <span className="text-accent font-semibold">a la vista.</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground mb-0 max-w-2xl mx-auto leading-relaxed text-pretty">
-            Explora la demo interactiva con datos de ejemplo.
+          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+            Gestión de candidatos (ATS). Demo con datos de ejemplo.
           </p>
         </m.div>
 

@@ -26,16 +26,16 @@ export function FunnelGeoShowcase() {
   const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
 
   return (
-    <section className="w-full bg-surface-container-lowest py-24 md:py-36">
+    <section className="w-full bg-surface-container-lowest py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <m.div
           initial={isReduced ? false : { opacity: 0, y: isMobile ? 16 : 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: viewportMargin }}
           transition={t()}
-          className="mb-10 text-center md:mb-12"
+          className="mb-10 text-left md:mb-12"
         >
-          <h2 className="text-3xl font-semibold text-foreground mb-0 tracking-tight text-balance sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-semibold text-foreground mb-0 tracking-tight text-balance sm:text-4xl">
             Del anuncio al <span className="text-accent font-semibold">contrato</span>, medido
           </h2>
         </m.div>

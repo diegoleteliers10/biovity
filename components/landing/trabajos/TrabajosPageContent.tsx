@@ -1,6 +1,7 @@
 "use client"
 import { useQueryStates } from "nuqs"
 import { useMemo } from "react"
+import { Button } from "@/components/ui/button"
 import type { Job } from "@/lib/api/jobs"
 import { formatJobLocation } from "@/lib/api/jobs"
 import { useJobsSearch } from "@/lib/api/use-jobs"
@@ -161,7 +162,7 @@ export function TrabajosPageContent() {
     isLoading,
     isFetching,
     isError,
-    error,
+    refetch,
   } = useJobsSearch({
     search: urlState.q || undefined,
     category: filtros.categoria ?? undefined,
@@ -253,40 +254,49 @@ export function TrabajosPageContent() {
     <>
       <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
       {isLoading && (
-        <section className="bg-surface-container-lowest pb-16">
+        <section className="bg-surface-container-lowest pb-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-center items-center py-12">
+            <div className="flex min-h-32 items-center justify-center rounded-lg bg-surface-container-low py-8">
               <div className="flex items-center gap-3 text-muted-foreground">
                 <div className="size-6 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-                <span>Cargando ofertas…</span>
+                <span className="text-sm" aria-live="polite">
+                  Cargando ofertas…
+                </span>
               </div>
             </div>
           </div>
         </section>
       )}
       {isError && (
-        <section className="bg-surface-container-lowest pb-16">
+        <section className="bg-surface-container-lowest pb-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-3xl rounded-xl border border-border/40 bg-surface-container-low px-6 py-12 text-center">
-              <p className="text-lg text-destructive font-medium">
-                Error al cargar las ofertas laborales
+            <div className="flex min-h-40 flex-col items-center justify-center rounded-lg bg-surface-container-low px-4 py-8 text-center">
+              <p className="text-base font-semibold text-foreground">
+                No pudimos cargar las ofertas
               </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                {error instanceof Error ? error.message : "Intenta nuevamente más tarde"}
+              <p className="mt-1 text-sm text-muted-foreground">
+                Vuelve a intentarlo en un momento.
               </p>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isFetching}
+                onClick={() => refetch()}
+                className="mt-4 h-10 rounded-lg border-border bg-surface-container-lowest px-4 text-sm font-medium"
+              >
+                {isFetching ? "Reintentando…" : "Reintentar"}
+              </Button>
             </div>
           </div>
         </section>
       )}
       {!isLoading && !isError && apiTrabajos.length === 0 && (
-        <section className="bg-surface-container-lowest pb-16">
+        <section className="bg-surface-container-lowest pb-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center py-12">
-              <p className="text-lg text-foreground font-medium">
-                No hay ofertas publicadas actualmente
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Vuelve pronto, estamos trabajando para traer nuevas oportunidades.
+            <div className="flex min-h-40 flex-col items-center justify-center rounded-lg bg-surface-container-low px-4 py-8 text-center">
+              <p className="text-base font-semibold text-foreground">No hay ofertas publicadas</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Revisa más adelante para ver nuevas oportunidades.
               </p>
             </div>
           </div>
@@ -295,7 +305,8 @@ export function TrabajosPageContent() {
       {!isLoading && !isError && apiTrabajos.length > 0 && (
         <>
           <section className="bg-surface-container-lowest">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end pb-4">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pb-3 pt-2 sm:px-6 lg:px-8">
+              <p className="text-sm font-medium text-muted-foreground">Resultados</p>
               <SortSelect
                 value={urlState.orden}
                 onChange={(orden) => setUrlState({ orden, pagina: 1 })}

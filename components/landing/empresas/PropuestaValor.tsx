@@ -1,53 +1,45 @@
-"use client"
-
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { BENEFICIOS_EMPRESAS } from "@/lib/data/empresas-data"
 
 export function PropuestaValor() {
-  const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-
   return (
-    <section className="py-24 md:py-36 bg-surface-container-low">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <m.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(0)}
-          className="text-center mb-12 max-w-3xl mx-auto md:mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            Por qué las empresas científicas eligen{" "}
-            <span className="text-accent font-semibold">Biovity</span>
+    <section
+      aria-labelledby="companies-value-heading"
+      className="bg-surface-container-low py-20 md:py-28"
+    >
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
+        <div data-company-reveal className="lg:col-span-4">
+          <h2
+            id="companies-value-heading"
+            className="text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl"
+          >
+            La especialidad <span className="text-accent">cambia la búsqueda.</span>
           </h2>
-        </m.div>
-
-        {/* 4 Clean borderless white cards on surface-container-low */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {BENEFICIOS_EMPRESAS.map((beneficio, index) => (
-            <m.div
+          <p className="mt-6 text-base leading-relaxed text-muted-foreground">
+            Un CV no se resume en un cargo. Las técnicas, la formación y la experiencia también
+            cuentan.
+          </p>
+        </div>
+        <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:col-span-8">
+          {BENEFICIOS_EMPRESAS.map((beneficio) => (
+            <article
               key={beneficio.title}
-              initial={{ opacity: 0, y: 28, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className="bg-surface-container-lowest rounded-xl p-6 sm:p-8 flex flex-col justify-between transition-colors hover:bg-white/80"
+              data-company-reveal
+              className="border-t border-border/60 pt-5"
             >
-              <div>
-                <div className="size-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-5 text-primary">
-                  <HugeiconsIcon icon={beneficio.icon} size={20} />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2.5">{beneficio.title}</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                  {beneficio.description}
-                </p>
-              </div>
-            </m.div>
+              <HugeiconsIcon
+                icon={beneficio.icon}
+                size={24}
+                className="mb-3 text-secondary"
+                aria-hidden="true"
+              />
+              <h3 className="mb-2 text-lg font-semibold tracking-tight text-foreground">
+                {beneficio.title}
+              </h3>
+              <p className="text-base leading-relaxed text-muted-foreground">
+                {beneficio.description}
+              </p>
+            </article>
           ))}
         </div>
       </div>

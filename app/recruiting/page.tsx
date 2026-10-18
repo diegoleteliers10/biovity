@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Herramientas de Reclutamiento Científico: Estado Actual vs Biovity",
     description:
-      "Descubre qué se usa hoy para contratar en ciencias, sus limitaciones y por qué Biovity reduce un 60% el tiempo de contratación con AI matching especializado.",
+      "Descubre qué se usa hoy para contratar en ciencias, sus limitaciones y cómo Biovity organiza la atracción y evaluación de talento científico.",
     url: "/recruiting",
     images: [
       {

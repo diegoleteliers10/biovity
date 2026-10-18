@@ -1,67 +1,108 @@
-"use client"
-
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
 import Link from "next/link"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { getTransition, LANDING_ANIMATION, LANDING_ANIMATION_MOBILE } from "@/lib/animations"
-import { APRENDE_CATEGORIES } from "@/lib/data/aprende-data"
+import type { CategoryItem } from "@/lib/data/aprende-data"
+import type { CapsuleMeta } from "@/lib/types/capsulas"
 
-export function SectionCategories() {
-  const reducedMotion = useReducedMotion()
-  const isMobile = useMediaQuery("(max-width: 767px)")
-  const isReduced = Boolean(reducedMotion)
+export type CategoryListing =
+  | { category: CategoryItem; status: "available"; capsules: CapsuleMeta[] }
+  | { category: CategoryItem; status: "empty" }
+  | { category: CategoryItem; status: "unavailable" }
 
-  const viewportMargin = isMobile
-    ? LANDING_ANIMATION_MOBILE.viewportMargin
-    : LANDING_ANIMATION.viewportMargin
-  const t = (delay = 0) => getTransition({ delay, reducedMotion, isMobile })
+type SectionCategoriesProps = {
+  listings: CategoryListing[]
+}
 
+export function SectionCategories({ listings }: SectionCategoriesProps) {
   return (
-    <section className="relative py-24 md:py-36">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <m.div
-          initial={isReduced ? false : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: viewportMargin }}
-          transition={t()}
-          className="mb-12 md:mb-16"
+    <section id="capsulas" className="py-20 sm:py-24 lg:py-32">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div
+          data-learn-reveal
+          className="mb-10 flex flex-col gap-5 sm:mb-14 sm:flex-row sm:items-end sm:justify-between"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            Contenido <span className="text-accent font-semibold">organizado</span> por área
-          </h2>
-        </m.div>
+          <div>
+            <p className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
+              Catálogo de cápsulas
+            </p>
+            <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              Aprende por <span className="text-accent">área.</span>
+            </h2>
+          </div>
+          <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Elige un tema y avanza a tu ritmo.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {APRENDE_CATEGORIES.map((category, i) => (
-            <m.div
+        <div className="divide-y divide-border/60 border-y border-border/60">
+          {listings.map(({ category, ...listing }, index) => (
+            <section
               key={category.slug}
-              initial={isReduced ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: viewportMargin }}
-              transition={t(
-                isMobile ? LANDING_ANIMATION_MOBILE.stagger * i : LANDING_ANIMATION.stagger * i
-              )}
+              data-learn-reveal
+              aria-labelledby={`learn-category-${category.slug}`}
+              className="grid gap-5 py-7 sm:py-9 lg:grid-cols-12 lg:gap-8"
             >
-              <Link
-                href={`/learn/${category.slug}`}
-                className="block group p-6 rounded-xl bg-surface-container-low border border-border/40 hover:border-secondary/40 transition-colors shadow-none"
-              >
-                <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
-                  <HugeiconsIcon icon={category.icon} size={20} className="text-secondary" />
+              <div className="lg:col-span-4">
+                <p className="mb-4 font-mono text-xs text-muted-foreground">
+                  0{index + 1} / 0{listings.length}
+                </p>
+                <div className="mb-4 flex size-10 items-center justify-center rounded-full bg-secondary/10 text-secondary">
+                  <HugeiconsIcon icon={category.icon} size={19} />
                 </div>
-                <h3 className="font-semibold text-foreground group-hover:text-secondary transition-colors">
+                <h3
+                  id={`learn-category-${category.slug}`}
+                  className="text-xl font-semibold text-foreground"
+                >
                   {category.name}
                 </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-5 line-clamp-2 min-h-10">
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
                   {category.description}
                 </p>
-                <div className="mt-4 text-xs font-medium text-secondary">
-                  {category.capsuleCount} cápsula{category.capsuleCount !== 1 ? "s" : ""}
-                </div>
-              </Link>
-            </m.div>
+              </div>
+
+              <div className="lg:col-span-8">
+                {listing.status === "available" ? (
+                  <ul className="divide-y divide-border/50">
+                    {listing.capsules.map((capsule) => (
+                      <li key={capsule.slug}>
+                        <Link
+                          href={`/learn/${category.slug}/${capsule.slug}`}
+                          className="group grid gap-4 py-5 first:pt-0 last:pb-0 sm:grid-cols-[1fr_auto] sm:items-center"
+                        >
+                          <div>
+                            <h4 className="text-lg font-medium text-foreground transition-colors group-hover:text-secondary">
+                              {capsule.frontmatter.title}
+                            </h4>
+                            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                              {capsule.frontmatter.description}
+                            </p>
+                            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
+                              <span>{capsule.frontmatter.duration} min</span>
+                              <span>{capsule.frontmatter.modules.length} módulos</span>
+                              <span>{capsule.frontmatter.quiz.length} preguntas</span>
+                            </div>
+                          </div>
+                          <span className="inline-flex items-center gap-2 text-sm font-medium text-secondary">
+                            Ver cápsula
+                            <HugeiconsIcon
+                              icon={ArrowUpRight01Icon}
+                              size={17}
+                              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                            />
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="py-5 text-sm text-muted-foreground">
+                    {listing.status === "empty"
+                      ? "Pronto habrá nuevas cápsulas en esta área."
+                      : "No se pudo cargar el contenido de esta área."}
+                  </p>
+                )}
+              </div>
+            </section>
           ))}
         </div>
       </div>

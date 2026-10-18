@@ -12,7 +12,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Card } from "@/components/ui/card"
 import type { TipoBeneficio, Trabajo } from "@/lib/types/trabajos"
 import { formatFechaRelativa } from "@/lib/utils"
 
@@ -43,17 +42,16 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
 
   if (trabajos.length === 0) {
     return (
-      <section className="py-16 bg-surface-container-lowest">
+      <section className="bg-surface-container-lowest py-6">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-12 text-center">
+          <div className="rounded-lg border border-border/60 bg-surface-container-low p-6 text-center">
             <p className="text-lg font-semibold text-foreground mb-2">
               No se encontraron ofertas con los filtros seleccionados
             </p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Intenta ajustar tus criterios de búsqueda o limpiar los filtros para ver todas las
-              oportunidades disponibles.
+              Ajusta la búsqueda o limpia los filtros para ver otras oportunidades.
             </p>
-          </Card>
+          </div>
         </div>
       </section>
     )
@@ -63,10 +61,10 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
   const remaining = count - trabajos.length
 
   return (
-    <section className="bg-surface-container-lowest pb-24 pt-4">
+    <section className="bg-surface-container-lowest pb-16 pt-2">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-4 px-1">
-          <p className="text-xs sm:text-sm font-mono text-muted-foreground" aria-live="polite">
+          <p className="text-xs sm:text-sm text-muted-foreground" aria-live="polite">
             {count === 1 ? "1 oferta disponible" : `${count} ofertas disponibles`}
             {isUpdating ? " · actualizando…" : ""}
           </p>
@@ -77,16 +75,15 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
             <Link
               key={trabajo.id}
               href={`/jobs/${trabajo.slug}`}
-              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-surface-container-lowest hover:border-secondary/40 hover:bg-surface-container-low/40 transition-all p-5 sm:p-6 block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+              className="group relative block cursor-pointer overflow-hidden rounded-lg border border-border/60 bg-surface-container-lowest p-5 transition-colors hover:border-secondary/50 hover:bg-surface-container-low/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99] sm:p-6"
               aria-label={`Ver detalles de ${trabajo.titulo}`}
             >
               <div className="flex flex-col gap-3">
-                {/* Header: Título y Fecha */}
                 <div className="flex items-start justify-between gap-4">
                   <h2 className="text-lg sm:text-xl font-semibold text-foreground tracking-tight group-hover:text-secondary transition-colors">
                     {trabajo.titulo}
                   </h2>
-                  <div className="flex shrink-0 items-center gap-1.5 text-xs font-mono text-muted-foreground">
+                  <div className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
                     <HugeiconsIcon
                       icon={Clock01Icon}
                       size={15}
@@ -96,7 +93,6 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
                   </div>
                 </div>
 
-                {/* Segunda fila: Empresa | Ubicación, Beneficios, Salario */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <div className="flex min-w-0 shrink-0 items-center gap-2 text-sm text-muted-foreground">
                     {trabajo.empresaSlug ? (
@@ -152,7 +148,7 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
                     )}
 
                     {(trabajo.rangoSalarial.min > 0 || trabajo.rangoSalarial.max > 0) && (
-                      <div className="flex min-w-0 items-center gap-1.5 font-mono font-semibold text-secondary text-sm sm:text-base">
+                      <div className="flex min-w-0 items-center gap-1.5 font-semibold tabular-nums text-secondary text-sm sm:text-base">
                         <HugeiconsIcon
                           icon={Cash02Icon}
                           size={18}
@@ -168,12 +164,11 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
                   </div>
                 </div>
 
-                {/* Tercera fila: Badges */}
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
-                  <span className="px-2.5 py-1 rounded-full font-mono font-medium bg-secondary/10 text-secondary border border-secondary/20 capitalize">
+                  <span className="px-2.5 py-1 rounded-full font-medium bg-secondary/10 text-secondary border border-secondary/20 capitalize">
                     {trabajo.modalidad === "hibrido" ? "Híbrido" : trabajo.modalidad}
                   </span>
-                  <span className="px-2.5 py-1 rounded-full font-mono font-medium bg-surface-container-highest text-foreground border border-border capitalize">
+                  <span className="px-2.5 py-1 rounded-full font-medium bg-surface-container-highest text-foreground border border-border capitalize">
                     {trabajo.formato === "full-time"
                       ? "Full Time"
                       : trabajo.formato === "part-time"
@@ -183,12 +178,12 @@ export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: T
                           : trabajo.formato}
                   </span>
                   {trabajo.categoria && (
-                    <span className="px-2.5 py-1 rounded-full font-mono font-medium bg-surface-container-low text-muted-foreground border border-border capitalize">
+                    <span className="px-2.5 py-1 rounded-full font-medium bg-surface-container-low text-muted-foreground border border-border capitalize">
                       {trabajo.categoria}
                     </span>
                   )}
                   {trabajo.experiencia && (
-                    <span className="px-2.5 py-1 rounded-full font-mono font-medium bg-surface-container-low text-muted-foreground border border-border capitalize">
+                    <span className="px-2.5 py-1 rounded-full font-medium bg-surface-container-low text-muted-foreground border border-border capitalize">
                       Exp. {trabajo.experiencia}
                     </span>
                   )}

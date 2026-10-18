@@ -8,56 +8,55 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/animate-ui/components/radix/accordion"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { FAQS_RECLUTAMIENTO } from "@/lib/data/reclutamiento-data"
 
 export function ReclutamientoFAQ() {
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const transition = (delay: number) => getTransition({ delay, reducedMotion })
 
   return (
-    <section id="faq-reclutamiento" className="py-24 md:py-36 bg-surface-container-lowest">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <m.div
-          initial={{ opacity: 0, y: 32 }}
+    <section id="faq-reclutamiento" className="bg-surface-container-lowest py-20 sm:py-24">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
+        <m.header
+          initial={reducedMotion ? false : { opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(0)}
-          className="text-center mb-12"
+          transition={transition(0)}
+          className="h-fit lg:col-span-4 lg:sticky lg:top-28"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-Preguntas <span className="text-accent font-semibold">frecuentes</span>
-</h2>
-        </m.div>
+          <p className="mb-4 text-sm font-semibold text-secondary">Antes de empezar</p>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Preguntas <span className="text-accent">frecuentes</span>
+          </h2>
+        </m.header>
 
-        {/* Accordion List */}
         <m.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={ts(LANDING_ANIMATION.sequenceDelay)}
+          transition={transition(0.08)}
+          className="lg:col-span-8"
         >
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-2">
             {FAQS_RECLUTAMIENTO.map((faq) => (
               <AccordionItem
                 key={faq.question}
                 value={faq.question}
-                className="bg-surface-container-low rounded-xl overflow-hidden transition-colors hover:bg-surface-container-highest/60 border border-border/30"
+                className="rounded-xl border-0 bg-surface-container-low px-5 sm:px-6"
               >
-                <AccordionTrigger className="w-full px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left transition-colors hover:no-underline font-semibold text-foreground text-sm sm:text-base gap-4 [&>svg]:text-muted-foreground">
-                  {faq.question}
+                <AccordionTrigger className="group min-h-16 w-full gap-6 py-5 text-left text-base font-medium text-foreground hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:py-6 sm:text-lg [&>svg]:text-muted-foreground">
+                  <span>{faq.question}</span>
                 </AccordionTrigger>
                 <AccordionContent
-                  className="px-5 sm:px-6 pb-5 text-muted-foreground leading-relaxed text-pretty text-xs sm:text-sm"
+                  className="pb-6 pl-11 pr-8 text-base leading-relaxed text-muted-foreground text-pretty sm:pl-16 sm:pr-12"
                   keepRendered
                   transition={{
-                    duration: reducedMotion ? 0.01 : 0.4,
+                    duration: reducedMotion ? 0.01 : 0.35,
                     ease: [0.22, 0.61, 0.36, 1],
                   }}
                 >
-                  <p>{faq.answer}</p>
+                  <p className="max-w-3xl">{faq.answer}</p>
                 </AccordionContent>
               </AccordionItem>
             ))}

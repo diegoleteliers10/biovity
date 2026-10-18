@@ -1,106 +1,89 @@
 "use client"
 
-import { Clock01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
+import { Clock01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { getTransition, LANDING_ANIMATION } from "@/lib/animations"
 import { FLUJO_COMPARATIVO } from "@/lib/data/reclutamiento-data"
 
 export function FlujoComparativo() {
   const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
+  const transition = (delay: number) => getTransition({ delay, reducedMotion })
 
   return (
-    <section className="py-24 md:py-36 bg-surface-container-low" id="flujo-comparativo">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <m.div
-          initial={{ opacity: 0, y: 32 }}
+    <section className="bg-surface-container-low py-20 sm:py-24" id="flujo-comparativo">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <m.header
+          initial={reducedMotion ? false : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(0)}
-          className="text-center mb-16 max-w-3xl mx-auto"
+          transition={transition(0)}
+          className="mb-12 grid gap-5 sm:mb-16 sm:grid-cols-12 sm:items-end"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            Antes vs. con <span className="text-accent font-semibold">Biovity</span>
+          <p className="text-sm font-semibold text-secondary sm:col-span-3">El proceso</p>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:col-span-9 sm:text-4xl md:text-5xl">
+            Una contratación, <span className="text-accent">cuatro etapas.</span>
           </h2>
-        </m.div>
+        </m.header>
 
-        {/* Timeline Comparison Cards */}
-        <div className="space-y-6 max-w-5xl mx-auto">
-          {FLUJO_COMPARATIVO.map((etapa, index) => (
-            <m.div
-              key={etapa.numero}
-              initial={{ opacity: 0, y: 24 }}
+        <ol className="space-y-4">
+          {FLUJO_COMPARATIVO.map((stage, index) => (
+            <m.li
+              key={stage.numero}
+              initial={reducedMotion ? false : { opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-              transition={ts(index * LANDING_ANIMATION.stagger)}
-              className="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 border border-border/30 shadow-none"
+              transition={transition(index * 0.07)}
+              className="grid gap-6 rounded-xl bg-surface-container-lowest p-5 sm:grid-cols-12 sm:gap-8 sm:p-8"
             >
-              {/* Stage Header */}
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/30">
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-surface-container-low text-primary">
-                  FASE {etapa.numero}
-                </span>
-                <h3 className="text-base sm:text-lg font-semibold text-foreground">{etapa.fase}</h3>
+              <div className="sm:col-span-3">
+                <h3 className="mt-2 text-lg font-semibold leading-snug text-foreground sm:text-xl">
+                  {stage.fase}
+                </h3>
               </div>
 
-              {/* Side-by-side comparison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-                {/* Traditional Side */}
-                <div className="rounded-xl p-5 bg-surface-container-low/60 border border-border/20 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2.5">
-                      <span className="text-[11px] font-mono uppercase font-semibold text-muted-foreground">
-                        Método Tradicional
-                      </span>
-                      <span className="text-xs font-mono text-muted-foreground flex items-center gap-1">
-                        <HugeiconsIcon icon={Clock01Icon} size={13} />
-                        {etapa.tradicional.tiempo}
-                      </span>
-                    </div>
-                    <h4 className="text-sm font-semibold text-foreground mb-2">
-                      {etapa.tradicional.titulo}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                      {etapa.tradicional.descripcion}
+              <div className="grid gap-6 sm:col-span-9 md:grid-cols-2 md:gap-8">
+                <article className="md:pt-5">
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-muted-foreground">
+                      Método tradicional
                     </p>
-                  </div>
-                </div>
-
-                {/* Biovity Side */}
-                <div className="rounded-xl p-5 bg-secondary/5 border border-secondary/30 flex flex-col justify-between relative overflow-hidden">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2.5">
-                      <span className="text-[11px] font-mono uppercase font-semibold text-secondary flex items-center gap-1">
-                        <HugeiconsIcon icon={SparklesIcon} size={13} />
-                        Con Biovity
-                      </span>
-                      <span className="text-xs font-mono font-semibold text-secondary flex items-center gap-1">
-                        <HugeiconsIcon icon={Clock01Icon} size={13} />
-                        {etapa.biovity.tiempo}
-                      </span>
-                    </div>
-                    <h4 className="text-sm font-semibold text-foreground mb-2">
-                      {etapa.biovity.titulo}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed text-pretty mb-3">
-                      {etapa.biovity.descripcion}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-secondary/20">
-                    <span className="text-[11px] font-mono font-semibold text-secondary bg-secondary/15 px-2 py-0.5 rounded-full inline-block">
-                      ✓ {etapa.biovity.destacado}
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <HugeiconsIcon icon={Clock01Icon} size={14} />
+                      {stage.tradicional.tiempo}
                     </span>
                   </div>
-                </div>
+                  <h4 className="text-base font-semibold leading-snug text-foreground">
+                    {stage.tradicional.titulo}
+                  </h4>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {stage.tradicional.descripcion}
+                  </p>
+                </article>
+
+                <article className="rounded-lg bg-secondary/10 p-4 sm:p-5">
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-secondary">Con Biovity</p>
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <HugeiconsIcon icon={Clock01Icon} size={14} />
+                      {stage.biovity.tiempo}
+                    </span>
+                  </div>
+                  <h4 className="text-base font-semibold leading-snug text-foreground">
+                    {stage.biovity.titulo}
+                  </h4>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {stage.biovity.descripcion}
+                  </p>
+                  <p className="mt-3 text-sm font-medium text-secondary">
+                    {stage.biovity.destacado}
+                  </p>
+                </article>
               </div>
-            </m.div>
+            </m.li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   )

@@ -1,110 +1,100 @@
-"use client"
-
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
-import { getSpringTransition, getTransition, LANDING_ANIMATION } from "@/lib/animations"
-import { DESAFIOS_MERCADO, SOLUCIONES_BIOVITY } from "@/lib/data/nosotros-data"
+import Link from "next/link"
+
+const paths = [
+  {
+    label: "Para profesionales",
+    title: "Empleos en ciencias",
+    description: "Explora vacantes por especialidad, área y ubicación.",
+    href: "/jobs",
+  },
+  {
+    label: "Información salarial",
+    title: "Referencias con fuente",
+    description: "Consulta los datos disponibles y cómo se calcularon.",
+    href: "/salaries",
+  },
+  {
+    label: "Para organizaciones",
+    title: "Búsqueda especializada",
+    description: "Publica ofertas y organiza tus procesos de selección.",
+    href: "/companies",
+  },
+]
 
 export function ProblemaSolucion() {
-  const reducedMotion = useReducedMotion()
-  const t = (delay = 0) => getTransition({ delay, reducedMotion })
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-
   return (
-    <section className="py-24 md:py-36 bg-surface-container-lowest">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <m.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-          transition={t(0)}
-          className="mb-16 max-w-3xl mx-auto text-center"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            Por qué existe <span className="text-accent font-semibold">Biovity</span>
+    <section className="scroll-mt-32 bg-surface-container-lowest pb-20 pt-28 sm:py-24 lg:py-32">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8">
+        <div data-about-reveal className="lg:col-span-5">
+          <p className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-secondary">
+            Lo que conectamos
+          </p>
+          <h2 className="max-w-xl text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+            Cada etapa necesita información útil.
           </h2>
-        </m.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto items-stretch">
-          {/* Problemas / Desafíos Card - Clean borderless tonal surface */}
-          <m.div
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={ts(0)}
-            className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10 flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between gap-3 pb-5 mb-6 border-b border-border">
-                <h3 className="text-lg font-semibold text-foreground">El Desafío Tradicional</h3>
-                <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-surface-container-highest text-muted-foreground">
-                  Fricción actual
-                </span>
-              </div>
-
-              <div className="space-y-6">
-                {DESAFIOS_MERCADO.map((item) => (
-                  <div key={item.title} className="flex items-start gap-4">
-                    <div className="size-8 rounded-lg bg-surface-container-highest flex items-center justify-center shrink-0 text-muted-foreground mt-0.5">
-                      <HugeiconsIcon icon={item.icon} size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-foreground mb-1">{item.title}</h4>
-                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <p className="text-xs text-muted-foreground mt-8 pt-4 border-t border-border font-mono">
-              Resultado: Desmotivación, fuga de cerebros y procesos de contratación lentos.
-            </p>
-          </m.div>
-
-          {/* Solución Biovity Card - Bordered solution block with brand highlight */}
-          <m.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={ts(LANDING_ANIMATION.stagger)}
-            className="bg-surface-container-low rounded-xl p-6 sm:p-8 md:p-10 border border-secondary/40 flex flex-col justify-between relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-36 h-36 bg-secondary/5 rounded-full blur-2xl pointer-events-none" />
-
-            <div className="relative z-10">
-              <div className="flex items-center justify-between gap-3 pb-5 mb-6 border-b border-border">
-                <h3 className="text-lg font-semibold text-foreground">El Enfoque Biovity</h3>
-                <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-secondary/15 text-secondary border border-secondary/20">
-                  Nuevo estándar
-                </span>
-              </div>
-
-              <div className="space-y-6">
-                {SOLUCIONES_BIOVITY.map((item) => (
-                  <div key={item.title} className="flex items-start gap-4">
-                    <div className="size-8 rounded-lg bg-secondary/15 flex items-center justify-center shrink-0 text-secondary mt-0.5">
-                      <HugeiconsIcon icon={item.icon} size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-foreground mb-1">{item.title}</h4>
-                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <p className="text-xs text-secondary mt-8 pt-4 border-t border-border font-mono font-medium relative z-10">
-              Resultado: Procesos ágiles, salarios justos y retención de talento en Chile.
-            </p>
-          </m.div>
+          <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+            Biovity reúne herramientas para quienes buscan oportunidades y para los equipos que
+            necesitan talento científico.
+          </p>
         </div>
+        <ol className="relative lg:col-span-6 lg:col-start-7">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 1 100"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute left-[5px] top-10 h-[calc(100%-5rem)] w-px overflow-visible"
+          >
+            <path
+              data-about-thread
+              d="M 0.5 0 V 100"
+              fill="none"
+              stroke="var(--secondary)"
+              strokeWidth="1"
+            />
+          </svg>
+          {paths.map((item) => (
+            <li key={item.href} data-about-reveal className="relative border-b border-border/60">
+              <Link
+                href={item.href}
+                className="group flex min-h-32 items-start gap-5 py-6 pl-9 pr-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 12 12"
+                  className="absolute left-0 top-[27px] size-3"
+                >
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="4.5"
+                    fill="var(--surface-container-lowest)"
+                    stroke="var(--secondary)"
+                    strokeWidth="2"
+                  />
+                </svg>
+                <span className="min-w-0 flex-1">
+                  <span className="mb-2 block font-mono text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    {item.label}
+                  </span>
+                  <span className="mb-1 block text-xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-secondary">
+                    {item.title}
+                  </span>
+                  <span className="block text-sm leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </span>
+                </span>
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={18}
+                  aria-hidden="true"
+                  className="mt-1 shrink-0 text-muted-foreground transition-transform duration-150 group-hover:translate-x-1 group-hover:text-secondary"
+                />
+              </Link>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )

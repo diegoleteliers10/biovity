@@ -7,7 +7,6 @@ import {
   GiftIcon,
   Loading01Icon,
   PlusSignIcon,
-  Shield02Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
@@ -38,6 +37,12 @@ import type { ExperienceLevelChile } from "@/lib/types/salarios"
 import { cn, formatAmountCLP } from "@/lib/utils"
 
 const TOTAL_STEPS = 3
+const STEP_TITLES = ["Cargo y ubicación", "Compensación", "Formación y habilidades"]
+const STEP_DETAILS = [
+  "Tu perfil y lugar de trabajo",
+  "Sueldo líquido y beneficios",
+  "Estudios y técnicas principales",
+]
 
 type FormState = {
   profession: string
@@ -175,45 +180,57 @@ export function SalariosCrowdsourcing() {
 
   if (isCompleted) {
     return (
-      <section className="py-28 md:py-36 lg:py-48 bg-surface-container-lowest">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-surface-container-lowest px-4 pb-16 pt-32 sm:px-6 sm:pt-36 lg:px-8">
+        <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5 lg:self-center">
+            <p className="mb-5 text-xs font-mono font-semibold uppercase tracking-wider text-secondary">
+              Registro salarial · Chile
+            </p>
+            <h1 className="max-w-xl text-4xl font-semibold leading-[1.04] tracking-tight text-foreground text-balance sm:text-5xl">
+              Un sueldo también es un <span className="text-accent">dato.</span>
+            </h1>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Comparte tu sueldo líquido y el contexto de tu trayectoria. Tu aporte anónimo ayuda a
+              formar referencias salariales para las ciencias en Chile.
+            </p>
+          </div>
           <m.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
+            transition={{ duration: reducedMotion ? 0.01 : 0.35, ease: "easeOut" }}
+            className="rounded-xl border border-border bg-surface-container-low p-5 shadow-none sm:p-6 lg:col-span-7 lg:self-center lg:p-8"
+            role="status"
           >
-            <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-6 sm:p-8 md:p-10 text-center">
-              <div className="size-14 rounded-xl bg-secondary/10 text-secondary border border-secondary/20 flex items-center justify-center mx-auto mb-5">
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} size={28} />
-              </div>
-
-              <h3 className="text-2xl font-semibold text-foreground tracking-tight mb-3">
-                ¡Salario registrado exitosamente!
-              </h3>
-
-              <p className="text-base text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
-                Gracias por contribuir a la transparencia salarial del ecosistema científico en
-                Chile. Tu aporte es 100% anónimo.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Button
-                  type="button"
-                  onClick={handleReset}
-                  className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
-                >
-                  <HugeiconsIcon icon={PlusSignIcon} size={16} className="mr-1.5" />
-                  Registrar otro sueldo
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-11 px-6 bg-surface-container-lowest border-border hover:bg-surface-container-high rounded-lg text-sm font-medium"
-                  asChild
-                >
-                  <a href="/jobs">Explorar ofertas de empleo</a>
-                </Button>
-              </div>
-            </Card>
+            <div className="mb-6 flex size-12 items-center justify-center rounded-lg border border-secondary/20 bg-secondary/10 text-secondary">
+              <HugeiconsIcon icon={CheckmarkCircle02Icon} size={28} />
+            </div>
+            <p className="mb-2 text-xs font-mono font-semibold uppercase tracking-wider text-secondary">
+              Aporte recibido
+            </p>
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              Tu referencia ya está registrada.
+            </h2>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Gracias por contribuir a la transparencia salarial del ecosistema científico en Chile.
+              Tu aporte es 100% anónimo.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button
+                type="button"
+                onClick={handleReset}
+                className="h-11 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                <HugeiconsIcon icon={PlusSignIcon} size={16} className="mr-1.5" />
+                Registrar otro sueldo
+              </Button>
+              <Button
+                variant="outline"
+                className="h-11 rounded-lg border-border bg-surface-container-lowest px-6 text-sm font-medium hover:bg-surface-container-high"
+                asChild
+              >
+                <a href="/jobs">Explorar ofertas de empleo</a>
+              </Button>
+            </div>
           </m.div>
         </div>
       </section>
@@ -221,138 +238,187 @@ export function SalariosCrowdsourcing() {
   }
 
   return (
-    <section id="encuesta" className="py-28 md:py-36 lg:py-48 bg-surface-container-lowest">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <m.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-          transition={{ duration: reducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
-          className="text-center mb-12 max-w-2xl mx-auto"
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4 tracking-tight text-balance">
-            Comparte tu sueldo y{" "}
-            <span className="text-accent font-semibold">apoya a la comunidad</span>
-          </h1>
+    <section
+      id="encuesta"
+      className="bg-surface-container-lowest px-4 pb-16 pt-32 sm:px-6 sm:pb-20 sm:pt-36 lg:px-8 lg:pb-24"
+    >
+      <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5 lg:self-center">
+          <m.div initial={false} animate={{ opacity: 1, y: 0 }}>
+            <p className="mb-5 text-xs font-mono font-semibold uppercase tracking-wider text-secondary">
+              Datos de compensación · Ciencias en Chile
+            </p>
+            <h1 className="max-w-xl text-4xl font-semibold leading-[1.04] tracking-tight text-foreground text-balance sm:text-5xl lg:text-6xl">
+              Un sueldo también es un <span className="text-accent">dato.</span>
+            </h1>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Comparte tu sueldo líquido y el contexto de tu trayectoria. Tu aporte anónimo ayuda a
+              formar referencias salariales para las ciencias en Chile.
+            </p>
+          </m.div>
 
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed text-pretty">
-            100% anónimo y sin registro previo. Tu contribución ayuda a crear el primer dataset
-            abierto de compensaciones científicas en Chile.
-          </p>
-        </m.div>
+          <ol className="relative mt-9 space-y-1 before:absolute before:bottom-7 before:left-[15px] before:top-7 before:w-px before:bg-border">
+            {STEP_TITLES.map((title, index) => {
+              const isCurrent = step === index
+              const isComplete = step > index
 
-        {/* Form Container */}
-        <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-6 sm:p-8 md:p-10">
-          {/* Step Progress Header */}
-          <div className="bg-surface-container-lowest rounded-xl p-5 md:p-6 mb-8 border border-border">
-            <div className="flex items-center justify-between gap-4 mb-3">
-              <div className="flex items-center gap-2.5">
-                <HugeiconsIcon icon={Shield02Icon} size={20} className="text-secondary shrink-0" />
-                <h3 className="text-base sm:text-lg font-semibold text-foreground tracking-tight">
-                  Paso {step + 1} de {TOTAL_STEPS}:{" "}
-                  {step === 0
-                    ? "Cargo y Ubicación"
-                    : step === 1
-                      ? "Compensación"
-                      : "Formación y Habilidades"}
-                </h3>
+              return (
+                <li
+                  key={title}
+                  aria-current={isCurrent ? "step" : undefined}
+                  className="relative flex items-center gap-4 py-2.5"
+                >
+                  <span
+                    className={cn(
+                      "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full border bg-surface-container-lowest font-mono text-xs tabular-nums transition-colors",
+                      isCurrent
+                        ? "border-secondary bg-secondary/10 text-secondary"
+                        : isComplete
+                          ? "border-secondary bg-secondary text-secondary-foreground"
+                          : "border-border text-muted-foreground"
+                    )}
+                  >
+                    {isComplete ? (
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} />
+                    ) : (
+                      `0${index + 1}`
+                    )}
+                  </span>
+                  <span>
+                    <span
+                      className={cn(
+                        "block text-sm font-medium",
+                        isCurrent ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      {title}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {STEP_DETAILS[index]}
+                    </span>
+                  </span>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+
+        <div className="lg:col-span-7 lg:self-center">
+          <Card className="rounded-xl border border-border bg-surface-container-low p-5 shadow-none sm:p-6 lg:p-8">
+            <div className="mb-7">
+              <div className="mb-4 flex items-end justify-between gap-4">
+                <div>
+                  <p className="mb-1 text-xs font-mono font-semibold uppercase tracking-wider text-secondary">
+                    Ficha salarial
+                  </p>
+                  <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                    {STEP_TITLES[step]}
+                  </h2>
+                </div>
+                <span className="shrink-0 font-mono text-xs font-medium tabular-nums text-muted-foreground">
+                  0{step + 1} <span className="text-border">/</span> 0{TOTAL_STEPS}
+                </span>
               </div>
-              <span className="text-xs font-mono font-medium text-secondary bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20 shrink-0">
-                {Math.round(((step + 1) / TOTAL_STEPS) * 100)}%
-              </span>
+              <div
+                role="progressbar"
+                aria-label="Avance del formulario"
+                aria-valuemin={1}
+                aria-valuemax={TOTAL_STEPS}
+                aria-valuenow={step + 1}
+                aria-valuetext={`Etapa ${step + 1} de ${TOTAL_STEPS}`}
+                className="h-1.5 overflow-hidden rounded-full bg-surface-container-highest"
+              >
+                <m.div
+                  className="h-full origin-left rounded-full bg-secondary"
+                  initial={false}
+                  animate={{ scaleX: (step + 1) / TOTAL_STEPS }}
+                  transition={{ duration: reducedMotion ? 0.01 : 0.3, ease: "easeOut" }}
+                />
+              </div>
             </div>
-            <div className="h-1.5 w-full rounded-full bg-surface-container-highest overflow-hidden">
+
+            <div>
               <m.div
-                className="h-full bg-secondary rounded-full"
-                initial={false}
-                animate={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
-                transition={{ duration: reducedMotion ? 0.01 : 0.3, ease: "easeOut" }}
-              />
+                key={step}
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: reducedMotion ? 0.01 : 0.25, ease: "easeOut" }}
+              >
+                {step === 0 && (
+                  <StepRole form={form} set={set} setExperienceYears={setExperienceYears} />
+                )}
+                {step === 1 && (
+                  <StepCompensation form={form} set={set} toggleArrayItem={toggleArrayItem} />
+                )}
+                {step === 2 && (
+                  <StepEducation form={form} set={set} toggleArrayItem={toggleArrayItem} />
+                )}
+              </m.div>
+
+              {error && (
+                <p className="text-sm text-destructive mt-4 font-medium" role="alert">
+                  {error}
+                </p>
+              )}
+
+              <div className="mt-8 flex items-center justify-between gap-3 pt-6 border-t border-border/60">
+                {step > 0 ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleBack}
+                    disabled={isSubmitting}
+                    className="h-11 px-5 rounded-lg border-border bg-surface-container-lowest text-sm font-medium"
+                  >
+                    <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="mr-1.5" />
+                    Atrás
+                  </Button>
+                ) : (
+                  <span />
+                )}
+
+                {step < TOTAL_STEPS - 1 ? (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!stepValid}
+                    className="h-11 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium"
+                  >
+                    Continuar
+                    <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting || !stepValid}
+                    className="h-11 px-6 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/90 text-sm font-medium"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <HugeiconsIcon
+                          icon={Loading01Icon}
+                          size={16}
+                          className="animate-spin mr-1.5"
+                        />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <HugeiconsIcon icon={GiftIcon} size={16} className="mr-1.5" />
+                        Registrar salario
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
+          </Card>
 
-          <div>
-            <m.div
-              key={step}
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: reducedMotion ? 0.01 : 0.25, ease: "easeOut" }}
-            >
-              {step === 0 && (
-                <StepRole form={form} set={set} setExperienceYears={setExperienceYears} />
-              )}
-              {step === 1 && (
-                <StepCompensation form={form} set={set} toggleArrayItem={toggleArrayItem} />
-              )}
-              {step === 2 && (
-                <StepEducation form={form} set={set} toggleArrayItem={toggleArrayItem} />
-              )}
-            </m.div>
-
-            {error && (
-              <p className="text-sm text-destructive mt-4 font-medium" role="alert">
-                {error}
-              </p>
-            )}
-
-            <div className="mt-8 flex items-center justify-between gap-3 pt-6 border-t border-border/60">
-              {step > 0 ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleBack}
-                  disabled={isSubmitting}
-                  className="h-11 px-5 rounded-lg border-border bg-surface-container-lowest text-sm font-medium"
-                >
-                  <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="mr-1.5" />
-                  Atrás
-                </Button>
-              ) : (
-                <span />
-              )}
-
-              {step < TOTAL_STEPS - 1 ? (
-                <Button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={!stepValid}
-                  className="h-11 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-medium"
-                >
-                  Continuar
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting || !stepValid}
-                  className="h-11 px-6 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/90 text-sm font-medium"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <HugeiconsIcon
-                        icon={Loading01Icon}
-                        size={16}
-                        className="animate-spin mr-1.5"
-                      />
-                      Enviando...
-                    </>
-                  ) : (
-                    <>
-                      <HugeiconsIcon icon={GiftIcon} size={16} className="mr-1.5" />
-                      Registrar salario
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-        </Card>
-
-        <p className="text-center text-xs font-mono text-muted-foreground mt-6">
-          Nunca guardamos tu correo ni información identificable.
-        </p>
+          <p className="text-center text-xs font-mono text-muted-foreground mt-6">
+            Nunca guardamos tu correo ni información identificable.
+          </p>
+        </div>
       </div>
     </section>
   )

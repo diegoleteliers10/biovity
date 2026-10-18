@@ -8,7 +8,7 @@ import {
   Search01Icon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useCallback, useEffect, useReducer, useState } from "react"
+import { useCallback, useReducer, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -42,13 +42,11 @@ type FilterFormState = {
   salarioMax: string
   moneda: "CLP" | "USD"
   experiencia: string
-  categoria: string
 }
 
 type FilterFormAction =
   | { type: "SET_FIELD"; field: keyof FilterFormState; value: string }
   | { type: "RESET" }
-  | { type: "SYNC_FROM_FILTROS"; payload: FiltrosTrabajos }
 
 function formatSalarioInputValue(value: number): string {
   return new Intl.NumberFormat("es-CL", {
@@ -76,23 +74,6 @@ const filterFormReducer = (state: FilterFormState, action: FilterFormAction): Fi
         salarioMax: "",
         moneda: "CLP",
         experiencia: "",
-        categoria: state.categoria,
-      }
-    case "SYNC_FROM_FILTROS":
-      return {
-        query: action.payload.query,
-        ubicacion: action.payload.ubicacion,
-        modalidad: action.payload.modalidad === "Modalidad" ? "" : action.payload.modalidad,
-        formato: action.payload.formato === "Formato" ? "" : action.payload.formato,
-        salarioMin: action.payload.salarioMin
-          ? formatSalarioInputValue(action.payload.salarioMin)
-          : "",
-        salarioMax: action.payload.salarioMax
-          ? formatSalarioInputValue(action.payload.salarioMax)
-          : "",
-        moneda: action.payload.moneda,
-        experiencia: action.payload.experiencia === "Experiencia" ? "" : action.payload.experiencia,
-        categoria: action.payload.categoria || "",
       }
     default:
       return state
@@ -120,17 +101,10 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
     salarioMax: filtros.salarioMax ? formatSalarioInputValue(filtros.salarioMax) : "",
     moneda: filtros.moneda,
     experiencia: filtros.experiencia === "Experiencia" ? "" : filtros.experiencia,
-    categoria: filtros.categoria || "",
   })
 
   const initialActiveCount = countActiveFilters(filterState)
   const [isExpanded, setIsExpanded] = useState(initialActiveCount > 0)
-
-  // Sincroniza la categoria si cambia desde fuera (badges) sin borrar
-  // lo que el usuario escribe en el formulario.
-  useEffect(() => {
-    dispatch({ type: "SET_FIELD", field: "categoria", value: filtros.categoria || "" })
-  }, [filtros.categoria])
 
   const handleBuscar = useCallback(() => {
     onFiltrosChange({
@@ -142,10 +116,9 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
       salarioMax: filterState.salarioMax ? parseSalarioInputValue(filterState.salarioMax) : null,
       moneda: filterState.moneda,
       experiencia: filterState.experiencia as FiltrosTrabajos["experiencia"],
-      categoria:
-        filterState.categoria === "todas" || !filterState.categoria ? null : filterState.categoria,
+      categoria: filtros.categoria,
     })
-  }, [filterState, onFiltrosChange])
+  }, [filterState, filtros.categoria, onFiltrosChange])
 
   const handleLimpiar = useCallback(() => {
     dispatch({ type: "RESET" })
@@ -158,19 +131,17 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
       salarioMax: null,
       moneda: "CLP",
       experiencia: "" as FiltrosTrabajos["experiencia"],
-      categoria:
-        filterState.categoria === "todas" || !filterState.categoria ? null : filterState.categoria,
+      categoria: filtros.categoria,
     })
-  }, [filterState.categoria, onFiltrosChange])
+  }, [filtros.categoria, onFiltrosChange])
 
   const activeCount = countActiveFilters(filterState)
 
   return (
     <section className="bg-surface-container-lowest py-4">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="rounded-xl border-0 shadow-none bg-surface-container-low p-4 sm:p-6">
+        <Card className="rounded-lg border-0 shadow-none bg-surface-container-low p-4 sm:p-6">
           <div className="space-y-4">
-            {/* Primary Search Bar */}
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <HugeiconsIcon
@@ -181,7 +152,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 <Input
                   type="text"
                   placeholder="Buscar por cargo, empresa, tecnología o palabras clave..."
-                  className="pl-10 pr-4 h-11 sm:h-12 w-full bg-surface-container-lowest text-sm sm:text-base rounded-lg border-border"
+                  className="h-11 w-full rounded-lg border-border bg-surface-container-lowest pl-10 pr-4 text-sm"
                   value={filterState.query}
                   onChange={(e) =>
                     dispatch({ type: "SET_FIELD", field: "query", value: e.target.value })
@@ -200,7 +171,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   variant="outline"
                   onClick={() => setIsExpanded((prev) => !prev)}
                   className={cn(
-                    "h-11 sm:h-12 px-4 bg-surface-container-lowest rounded-lg border-border font-medium text-sm flex items-center gap-2 transition-colors hover:bg-surface-container-lowest/80",
+                    "flex h-11 items-center gap-2 rounded-lg border-border bg-surface-container-lowest px-4 text-sm font-medium transition-colors hover:bg-surface-container-lowest/80",
                     isExpanded && "border-secondary text-secondary bg-secondary/10",
                     activeCount > 0 && !isExpanded && "border-secondary/60 text-secondary"
                   )}
@@ -226,18 +197,16 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                 <Button
                   type="button"
                   onClick={handleBuscar}
-                  className="h-11 sm:h-12 px-6 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm sm:text-base shrink-0"
+                  className="h-11 shrink-0 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   Buscar
                 </Button>
               </div>
             </div>
 
-            {/* Collapsible Advanced Filters Section */}
             {isExpanded && (
-              <div className="pt-4 border-t border-border space-y-4 animate-in fade-in-50 duration-200">
+              <div className="space-y-4 pt-4 animate-in fade-in-50 duration-200">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {/* Ubicación */}
                   <div className="relative flex items-center">
                     <HugeiconsIcon
                       icon={Location05Icon}
@@ -258,7 +227,6 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                     />
                   </div>
 
-                  {/* Modalidad */}
                   <Select
                     value={filterState.modalidad}
                     onValueChange={(value) =>
@@ -277,7 +245,6 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                     </SelectContent>
                   </Select>
 
-                  {/* Formato */}
                   <Select
                     value={filterState.formato}
                     onValueChange={(value) =>
@@ -296,7 +263,6 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                     </SelectContent>
                   </Select>
 
-                  {/* Salario mínimo */}
                   <Input
                     type="text"
                     inputMode="numeric"
@@ -307,14 +273,13 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
                       dispatch({ type: "SET_FIELD", field: "salarioMin", value: formatted })
                     }}
-                    className="h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border placeholder:text-muted-foreground font-mono"
+                    className="h-11 rounded-lg border-border bg-surface-container-lowest px-3.5 text-sm tabular-nums placeholder:text-muted-foreground"
                     aria-label="Salario mínimo"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleBuscar()
                     }}
                   />
 
-                  {/* Salario máximo */}
                   <Input
                     type="text"
                     inputMode="numeric"
@@ -325,14 +290,13 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       const formatted = raw ? formatSalarioInputValue(parseInt(raw, 10)) : ""
                       dispatch({ type: "SET_FIELD", field: "salarioMax", value: formatted })
                     }}
-                    className="h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border placeholder:text-muted-foreground font-mono"
+                    className="h-11 rounded-lg border-border bg-surface-container-lowest px-3.5 text-sm tabular-nums placeholder:text-muted-foreground"
                     aria-label="Salario máximo"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleBuscar()
                     }}
                   />
 
-                  {/* Moneda */}
                   <Select
                     value={filterState.moneda}
                     onValueChange={(value) =>
@@ -352,7 +316,6 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                     </SelectContent>
                   </Select>
 
-                  {/* Experiencia */}
                   <Select
                     value={filterState.experiencia}
                     onValueChange={(value) =>
@@ -372,7 +335,6 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                   </Select>
                 </div>
 
-                {/* Filter Actions */}
                 <div className="flex gap-3 justify-end pt-2">
                   <Button
                     type="button"

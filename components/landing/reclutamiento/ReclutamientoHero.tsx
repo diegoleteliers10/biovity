@@ -1,57 +1,64 @@
 "use client"
 
-import { ArrowRight01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useReducedMotion } from "motion/react"
 import * as m from "motion/react-m"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { HERO_STATS_RECLUTAMIENTO } from "@/lib/data/reclutamiento-data"
+
+const techniquePairs = [
+  { short: "HPLC", full: "Cromatografía líquida de alta resolución" },
+  { short: "qPCR", full: "PCR en tiempo real" },
+] as const
 
 export function ReclutamientoHero() {
   const reducedMotion = useReducedMotion()
-  const ease = [0.23, 1, 0.32, 1] as const
+  const transition = (delay: number) => ({
+    duration: reducedMotion ? 0 : 0.5,
+    delay: reducedMotion ? 0 : delay,
+    ease: [0.23, 1, 0.32, 1] as const,
+  })
 
   return (
-    <section className="relative min-h-[85vh] sm:min-h-screen w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest pt-24 pb-16 md:pt-32 md:pb-24">
-      {/* Ambient brand glow */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[48rem] h-[32rem] rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-75" />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Main Headline */}
-          <m.h1
-            initial={{ opacity: 0, y: 24, scale: 0.99 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, ease }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight tracking-tight text-balance"
-          >
-            Cómo se recluta en ciencias hoy, y cómo con{" "}
-            <span className="text-accent font-semibold">Biovity</span>
-          </m.h1>
-
-          {/* Subheadline */}
+    <section className="bg-surface-container-lowest pb-16 pt-32 sm:pb-20 sm:pt-36 lg:pb-24 lg:pt-40">
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-12 lg:gap-10 lg:px-8">
+        <div className="lg:col-span-6">
           <m.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={reducedMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.08, ease }}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed text-pretty"
+            transition={transition(0)}
+            className="mb-5 text-sm font-semibold text-secondary"
           >
-            Las herramientas actuales, sus fricciones y la comparativa completa.
+            Para quienes contratan en ciencias · Chile
+          </m.p>
+          <m.h1
+            initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={transition(0.06)}
+            className="mb-6 max-w-3xl text-balance text-4xl font-semibold leading-[1.06] tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+          >
+            Encuentra el talento que entiende tu <span className="text-accent">ciencia.</span>
+          </m.h1>
+          <m.p
+            initial={reducedMotion ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={transition(0.12)}
+            className="mb-8 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
+          >
+            Publica ofertas científicas, reconoce habilidades técnicas y coordina cada etapa con tu
+            equipo.
           </m.p>
 
-          {/* CTA Group */}
           <m.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={reducedMotion ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.16, ease }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            transition={transition(0.18)}
+            className="mb-8 flex flex-col gap-3 sm:flex-row"
           >
             <Button
               size="lg"
-              className="w-full sm:w-auto h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium"
+              className="h-11 w-full rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 sm:w-auto"
               asChild
             >
               <Link href="/register/organization">
@@ -62,41 +69,62 @@ export function ReclutamientoHero() {
             <Button
               size="lg"
               variant="outline"
-              className="w-full sm:w-auto h-11 px-6 bg-surface-container-lowest border-border/40 hover:bg-surface-container-low rounded-lg text-sm font-medium"
+              className="h-11 w-full rounded-lg border-border/50 bg-surface-container-lowest px-6 text-sm font-medium hover:bg-surface-container-low sm:w-auto"
               asChild
             >
-              <Link href="#comparativa">
-                <HugeiconsIcon icon={SparklesIcon} size={16} className="mr-1.5 text-accent" />
-                Ver matriz comparativa
-              </Link>
+              <Link href="#comparativa">Ver matriz comparativa</Link>
             </Button>
           </m.div>
 
-          {/* Metrics Grid - Brand Register Pattern (Centered, shadow-none, bg-surface-container-low) */}
           <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.01 : 0.5, delay: 0.24, ease }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto"
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={transition(0.24)}
+            className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground"
           >
-            {HERO_STATS_RECLUTAMIENTO.map((stat) => (
-              <div
-                key={stat.label}
-                className="bg-surface-container-low rounded-xl p-4 sm:p-5 text-center transition-colors hover:bg-surface-container-highest/60 shadow-none"
-              >
-                <p className="text-2xl sm:text-3xl font-bold text-foreground mb-1 tracking-tight">
-                  {stat.value}
-                </p>
-                <p className="text-xs sm:text-sm font-medium text-foreground mb-0.5 leading-snug">
-                  {stat.label}
-                </p>
-                {stat.sublabel && (
-                  <p className="text-[11px] text-muted-foreground leading-tight">{stat.sublabel}</p>
-                )}
-              </div>
-            ))}
+            <span>Plan gratuito disponible</span>
           </m.div>
         </div>
+
+        <m.div
+          initial={reducedMotion ? false : { opacity: 0, x: 18 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={transition(0.12)}
+          className="lg:col-span-6"
+        >
+          <div
+            data-ui="technical-equivalence-example"
+            className="rounded-xl bg-surface-container-low p-5 sm:p-7"
+          >
+            <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+                Ejemplo de equivalencia técnica
+              </h2>
+              <span className="text-sm text-muted-foreground">Experiencia científica</span>
+            </div>
+            <div className="grid gap-3">
+              {techniquePairs.map((pair, index) => (
+                <m.div
+                  key={pair.short}
+                  initial={reducedMotion ? false : { opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={transition(0.3 + index * 0.1)}
+                  className="grid grid-cols-[4rem_1fr] items-center gap-3 rounded-lg bg-surface-container-lowest p-4 sm:grid-cols-[5rem_1fr] sm:gap-5 sm:p-5"
+                >
+                  <code className="w-fit rounded-md bg-primary px-2.5 py-2 text-sm font-semibold text-primary-foreground sm:text-base">
+                    {pair.short}
+                  </code>
+                  <div>
+                    <p className="text-xs text-muted-foreground">También se conoce como</p>
+                    <p className="mt-1 text-sm font-medium leading-snug text-foreground sm:text-base">
+                      {pair.full}
+                    </p>
+                  </div>
+                </m.div>
+              ))}
+            </div>
+          </div>
+        </m.div>
       </div>
     </section>
   )

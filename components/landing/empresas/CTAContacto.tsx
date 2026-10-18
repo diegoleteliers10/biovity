@@ -2,107 +2,109 @@
 
 import {
   ArrowRight01Icon,
-  Building02Icon,
   CallIcon,
   CheckmarkCircle02Icon,
   Mail01Icon,
-  UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
+import { Result } from "better-result"
 import Link from "next/link"
-import { useRef, useState } from "react"
-import { getSpringTransition, LANDING_ANIMATION } from "@/lib/animations"
+import { useState } from "react"
 import { validateOrganizationContact } from "@/lib/validations"
 import { Button } from "../../ui/button"
 import { Input } from "../../ui/input"
 
 export function CTAContacto() {
-  const formRef = useRef<HTMLFormElement>(null)
-  const reducedMotion = useReducedMotion()
-  const ts = (delay = 0) => getSpringTransition({ delay, reducedMotion })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle")
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (status === "submitting") return
     setErrors({})
 
-    if (!formRef.current) return
-
-    const formData = new FormData(formRef.current)
+    const formData = new FormData(event.currentTarget)
     const data = {
-      nombre: formData.get("nombre") as string,
-      apellido: formData.get("apellido") as string,
-      email: formData.get("email") as string,
-      telefono: formData.get("telefono") as string | null,
-      empresa: formData.get("empresa") as string,
-      mensaje: formData.get("mensaje") as string,
+      nombre: formData.get("nombre"),
+      apellido: formData.get("apellido"),
+      email: formData.get("email"),
+      telefono: formData.get("telefono"),
+      empresa: formData.get("empresa"),
+      mensaje: formData.get("mensaje"),
     }
+    const validation = validateOrganizationContact(data)
 
-    const result = validateOrganizationContact(data)
-
-    if (!result.success) {
-      setErrors(result.errors ?? {})
+    if (!validation.success) {
+      setErrors(validation.errors ?? {})
       return
     }
 
-    setIsSubmitting(true)
-    setErrors({})
-    try {
-      const response = await fetch("/api/contact", {
+    setStatus("submitting")
+    const request = await Result.tryPromise(() =>
+      fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
+    )
 
-      const payload = (await response.json().catch(() => ({}))) as {
-        error?: string
-        success?: boolean
-      }
-
-      if (!response.ok || !payload.success) {
-        setErrors({ form: payload.error || "No pudimos enviar tu mensaje. Intenta de nuevo." })
-        return
-      }
-
-      setIsSubmitted(true)
-    } catch (err) {
-      console.error("[CTAContacto] submit error:", err)
+    if (request.isErr()) {
+      setStatus("idle")
       setErrors({ form: "Error de conexión. Verifica tu red e intenta de nuevo." })
-    } finally {
-      setIsSubmitting(false)
+      return
     }
+
+    const response = request.value
+    const responseBody = await Result.tryPromise(async (): Promise<unknown> => response.json())
+    const payload = responseBody.isOk() ? responseBody.value : null
+    if (
+      !response.ok ||
+      typeof payload !== "object" ||
+      payload === null ||
+      !("success" in payload) ||
+      payload.success !== true
+    ) {
+      const message =
+        typeof payload === "object" &&
+        payload !== null &&
+        "error" in payload &&
+        typeof payload.error === "string" &&
+        payload.error.length > 0
+          ? payload.error
+          : "No pudimos enviar tu mensaje. Intenta de nuevo."
+      setStatus("idle")
+      setErrors({ form: message })
+      return
+    }
+
+    setStatus("submitted")
   }
 
   return (
-    <section id="contacto" className="py-24 md:py-36 bg-surface-container-low">
+    <section
+      id="contacto"
+      aria-labelledby="companies-contact-title"
+      className="bg-surface-container-low py-24 md:py-32"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Column: Context & Direct Info */}
-          <m.div
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={ts(0)}
-            className="lg:col-span-5"
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-5 tracking-tight text-balance">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          <div data-company-reveal className="lg:col-span-5">
+            <span className="mb-5 block font-mono text-xs font-semibold uppercase tracking-wider text-secondary">
+              Hablemos de tu equipo
+            </span>
+            <h2
+              id="companies-contact-title"
+              className="mb-10 text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-4xl"
+            >
               ¿Listo para encontrar tu próximo{" "}
               <span className="text-accent font-semibold">talento científico</span>?
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed text-pretty">
-              Comienza gratis o cuéntanos qué necesitas y te contactamos.
-            </p>
-
-            <div className="space-y-4 mb-8">
+            <div className="mb-10 divide-y divide-border/60 border-y border-border/60">
               <a
                 href="mailto:dleteliers@biovity.cl"
-                className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
+                className="flex min-h-16 items-center gap-4 py-4 text-sm text-foreground transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none"
               >
-                <div className="size-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-container-lowest text-secondary">
                   <HugeiconsIcon icon={Mail01Icon} size={18} />
                 </div>
                 <span className="font-medium">dleteliers@biovity.cl</span>
@@ -110,9 +112,9 @@ export function CTAContacto() {
 
               <a
                 href="tel:+56978181654"
-                className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
+                className="flex min-h-16 items-center gap-4 py-4 text-sm text-foreground transition-colors hover:text-secondary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring motion-reduce:transition-none"
               >
-                <div className="size-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-container-lowest text-secondary">
                   <HugeiconsIcon icon={CallIcon} size={18} />
                 </div>
                 <span className="font-medium">+56 9 7818 1654</span>
@@ -122,7 +124,7 @@ export function CTAContacto() {
             <Button
               size="lg"
               variant="outline"
-              className="h-11 px-5 bg-surface-container-lowest border border-border hover:bg-surface-container-low rounded-lg text-sm font-medium"
+              className="h-11 px-5 bg-surface-container-lowest border border-border hover:bg-surface-container-low rounded-lg text-sm font-medium motion-reduce:transition-none"
               asChild
             >
               <Link href="/register/organization">
@@ -130,18 +132,14 @@ export function CTAContacto() {
                 <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-1.5" />
               </Link>
             </Button>
-          </m.div>
+          </div>
 
-          {/* Right Column: Contact Form - Clean borderless container on surface-container-lowest */}
-          <m.div
-            initial={{ opacity: 0, y: 28, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
-            transition={ts(LANDING_ANIMATION.stagger)}
-            className="lg:col-span-7"
-          >
-            {isSubmitted ? (
-              <div className="bg-surface-container-lowest rounded-xl p-8 sm:p-12 text-center">
+          <div data-company-reveal className="min-w-0 lg:col-span-7">
+            {status === "submitted" ? (
+              <div
+                role="status"
+                className="rounded-xl bg-surface-container-lowest p-8 text-center sm:p-12"
+              >
                 <div className="size-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mx-auto mb-4 text-secondary">
                   <HugeiconsIcon icon={CheckmarkCircle02Icon} size={28} />
                 </div>
@@ -155,172 +153,166 @@ export function CTAContacto() {
               </div>
             ) : (
               <form
-                ref={formRef}
                 onSubmit={handleSubmit}
-                className="bg-surface-container-lowest rounded-xl p-6 sm:p-8 md:p-10"
+                aria-busy={status === "submitting"}
+                className="rounded-xl border border-border/40 bg-surface-container-lowest p-5 sm:p-8 md:p-10"
               >
-                <div className="mb-6 pb-4 border-b border-border">
+                <div className="mb-8 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-baseline border-b border-border/60 pb-5">
                   <h3 className="text-lg font-semibold text-foreground">
                     Contacta a nuestro equipo
                   </h3>
-                  <p className="text-xs text-muted-foreground">
-                    Cuéntanos sobre tus requerimientos y te responderemos a la brevedad.
-                  </p>
+                  <span className="shrink-0 font-mono text-xs text-muted-foreground">
+                    * Obligatorio
+                  </span>
                 </div>
 
                 {Object.keys(errors).length > 0 && (
                   <div
+                    id="companies-contact-errors"
                     role="alert"
                     className="mb-5 p-3.5 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-xs font-medium"
                   >
-                    {Object.values(errors)[0]}
+                    <ul className="space-y-1">
+                      {Object.entries(errors).map(([field, message]) => (
+                        <li key={field}>{message}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-5">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor="nombre"
-                        className="block text-xs font-medium text-foreground mb-1.5"
+                        className="block text-xs font-medium text-foreground mb-2.5"
                       >
                         Nombre <span className="text-destructive">*</span>
                       </label>
-                      <div className="relative">
-                        <HugeiconsIcon
-                          icon={UserIcon}
-                          size={16}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                        />
-                        <Input
-                          id="nombre"
-                          name="nombre"
-                          required
-                          placeholder="Tu nombre"
-                          className={`pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg ${
-                            errors.nombre
-                              ? "border-destructive focus-visible:ring-destructive/30"
-                              : ""
-                          }`}
-                        />
-                      </div>
+                      <Input
+                        id="nombre"
+                        autoComplete="given-name"
+                        name="nombre"
+                        aria-invalid={Boolean(errors.nombre)}
+                        aria-describedby={errors.nombre ? "companies-contact-errors" : undefined}
+                        required
+                        placeholder="Tu nombre"
+                        className={`h-11 text-sm bg-surface-container-lowest border-border rounded-lg motion-reduce:transition-none ${
+                          errors.nombre
+                            ? "border-destructive focus-visible:ring-destructive/30"
+                            : ""
+                        }`}
+                      />
                     </div>
 
                     <div>
                       <label
                         htmlFor="apellido"
-                        className="block text-xs font-medium text-foreground mb-1.5"
+                        className="block text-xs font-medium text-foreground mb-2.5"
                       >
                         Apellido <span className="text-destructive">*</span>
                       </label>
                       <Input
                         id="apellido"
+                        autoComplete="family-name"
                         name="apellido"
+                        aria-invalid={Boolean(errors.apellido)}
+                        aria-describedby={errors.apellido ? "companies-contact-errors" : undefined}
                         required
                         placeholder="Tu apellido"
-                        className="h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
+                        className="h-11 text-sm bg-surface-container-lowest border-border rounded-lg motion-reduce:transition-none"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor="email"
-                        className="block text-xs font-medium text-foreground mb-1.5"
+                        className="block text-xs font-medium text-foreground mb-2.5"
                       >
                         Email corporativo <span className="text-destructive">*</span>
                       </label>
-                      <div className="relative">
-                        <HugeiconsIcon
-                          icon={Mail01Icon}
-                          size={16}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                        />
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          required
-                          placeholder="tu@empresa.cl"
-                          className="pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
-                        />
-                      </div>
+                      <Input
+                        id="email"
+                        autoComplete="email"
+                        name="email"
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? "companies-contact-errors" : undefined}
+                        type="email"
+                        required
+                        placeholder="tu@empresa.cl"
+                        className="h-11 text-sm bg-surface-container-lowest border-border rounded-lg motion-reduce:transition-none"
+                      />
                     </div>
 
                     <div>
                       <label
                         htmlFor="empresa"
-                        className="block text-xs font-medium text-foreground mb-1.5"
+                        className="block text-xs font-medium text-foreground mb-2.5"
                       >
                         Empresa / Institución <span className="text-destructive">*</span>
                       </label>
-                      <div className="relative">
-                        <HugeiconsIcon
-                          icon={Building02Icon}
-                          size={16}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                        />
-                        <Input
-                          id="empresa"
-                          name="empresa"
-                          required
-                          placeholder="Nombre de la entidad"
-                          className="pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
-                        />
-                      </div>
+                      <Input
+                        id="empresa"
+                        autoComplete="organization"
+                        name="empresa"
+                        aria-invalid={Boolean(errors.empresa)}
+                        aria-describedby={errors.empresa ? "companies-contact-errors" : undefined}
+                        required
+                        placeholder="Nombre de la entidad"
+                        className="h-11 text-sm bg-surface-container-lowest border-border rounded-lg motion-reduce:transition-none"
+                      />
                     </div>
                   </div>
 
                   <div>
                     <label
                       htmlFor="telefono"
-                      className="block text-xs font-medium text-foreground mb-1.5"
+                      className="block text-xs font-medium text-foreground mb-2.5"
                     >
                       Teléfono <span className="text-muted-foreground font-normal">(opcional)</span>
                     </label>
-                    <div className="relative">
-                      <HugeiconsIcon
-                        icon={CallIcon}
-                        size={16}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                      />
-                      <Input
-                        id="telefono"
-                        name="telefono"
-                        type="tel"
-                        placeholder="+56 9 1234 5678"
-                        className="pl-9 h-10 text-sm bg-surface-container-lowest border-border rounded-lg"
-                      />
-                    </div>
+                    <Input
+                      id="telefono"
+                      autoComplete="tel"
+                      name="telefono"
+                      aria-invalid={Boolean(errors.telefono)}
+                      aria-describedby={errors.telefono ? "companies-contact-errors" : undefined}
+                      type="tel"
+                      placeholder="+56 9 1234 5678"
+                      className="h-11 text-sm bg-surface-container-lowest border-border rounded-lg motion-reduce:transition-none"
+                    />
                   </div>
 
                   <div>
                     <label
                       htmlFor="mensaje"
-                      className="block text-xs font-medium text-foreground mb-1.5"
+                      className="block text-xs font-medium text-foreground mb-2.5"
                     >
                       ¿Cómo podemos ayudarte? <span className="text-destructive">*</span>
                     </label>
                     <textarea
                       id="mensaje"
                       name="mensaje"
+                      aria-invalid={Boolean(errors.mensaje)}
+                      aria-describedby={errors.mensaje ? "companies-contact-errors" : undefined}
                       rows={3}
                       required
-                      placeholder="Cuéntanos sobre los perfiles o vacantes que buscas cubrir..."
-                      className="w-full px-3.5 py-2.5 bg-surface-container-lowest border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/30 focus:outline-none transition-colors resize-none"
+                      placeholder="Cuéntanos sobre los perfiles o vacantes que buscas cubrir."
+                      className="w-full px-3.5 py-2.5 bg-surface-container-lowest border border-border rounded-lg font-sans text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/30 focus:outline-none transition-colors resize-y motion-reduce:transition-none"
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={status === "submitting"}
                     className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium mt-2"
                   >
-                    {isSubmitting ? (
+                    {status === "submitting" ? (
                       <>
-                        <span className="size-4 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
-                        Enviando solicitud…
+                        <span className="size-4 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2 motion-reduce:animate-none" />
+                        Enviando solicitud...
                       </>
                     ) : (
                       <>
@@ -332,7 +324,7 @@ export function CTAContacto() {
                 </div>
               </form>
             )}
-          </m.div>
+          </div>
         </div>
       </div>
     </section>

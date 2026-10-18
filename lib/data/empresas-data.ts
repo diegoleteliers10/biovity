@@ -1,11 +1,9 @@
 import {
   Building03Icon,
   Chemistry01Icon,
-  Clock01Icon,
   FileSearchIcon,
   MailSend01Icon,
   Search01Icon,
-  Shield01Icon,
   Target01Icon,
   Tick02Icon,
   UserMultiple02Icon,
@@ -122,22 +120,22 @@ export const PASOS_EMPRESAS: PasoEmpresaItem[] = [
   {
     icon: Building03Icon,
     title: "Crea tu perfil de empresa",
-    description: "Configura tu cuenta corporativa en minutos.",
+    description: "Completa los datos de tu organización y solicita su verificación.",
   },
   {
     icon: MailSend01Icon,
     title: "Publica tus vacantes",
-    description: "Define requisitos técnicos específicos y publica.",
+    description: "Define los requisitos técnicos y una banda salarial visible.",
   },
   {
     icon: FileSearchIcon,
-    title: "Evalúa en el ATS integrado",
+    title: "Revisa las postulaciones",
     description: "Filtra por habilidades y coordina etapas con tu equipo.",
   },
   {
     icon: Tick02Icon,
-    title: "Contrata con precisión",
-    description: "Agenda entrevistas y cierra sin intermediarios.",
+    title: "Coordina el siguiente paso",
+    description: "Coordina entrevistas y registra las decisiones de tu equipo.",
   },
 ]
 
@@ -146,27 +144,26 @@ export type BeneficioEmpresaItem = IconTitleDescription
 export const BENEFICIOS_EMPRESAS: BeneficioEmpresaItem[] = [
   {
     icon: UserMultiple02Icon,
-    title: "Talento 100% Calificado",
-    description:
-      "Candidatos con formación real en biociencias, control de calidad, bioprocesos, ensayos y regulación.",
+    title: "Perfiles de tu especialidad",
+    description: "Busca por formación, técnicas de laboratorio y experiencia en biociencias.",
   },
   {
-    icon: Clock01Icon,
-    title: "Menor Tiempo de Contratación",
+    icon: FileSearchIcon,
+    title: "Criterios técnicos claros",
     description:
-      "Reduce semanas en tus procesos eliminando filtros manuales sobre cientos de CVs no afines al rubro.",
+      "Define los requisitos de tu oferta y revisa los antecedentes de cada postulación.",
   },
   {
     icon: Search01Icon,
-    title: "Búsqueda Directa y Proactiva",
+    title: "Búsqueda directa de talento",
     description:
-      "Contacta perfiles técnicos de alto interés antes de que inicien una búsqueda activa en el mercado.",
+      "Explora profesionales por especialidad y contacta a quienes se ajusten a tu búsqueda.",
   },
   {
-    icon: Shield01Icon,
-    title: "Validación y Rigor",
+    icon: Tick02Icon,
+    title: "Evaluación en equipo",
     description:
-      "Perfiles con verificación de formación académica y experiencia técnica para contrataciones confiables.",
+      "Comparte notas, revisa candidatos y mantén el seguimiento de cada etapa en un mismo lugar.",
   },
 ]
 
