@@ -200,13 +200,18 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          sendWelcomeEmail(
-            user.email,
-            user.name,
-            (user.type as "professional" | "organization") || "professional"
-          ).catch((err) => {
-            console.error("Failed to send welcome email:", err)
+          const welcomeResult = await Result.tryPromise({
+            try: () =>
+              sendWelcomeEmail(
+                user.email,
+                user.name,
+                (user.type as "professional" | "organization") || "professional"
+              ),
+            catch: (cause) => cause,
           })
+          if (welcomeResult.isErr()) {
+            console.error("Failed to queue welcome email:", welcomeResult.error)
+          }
           subscribeToResendAudience(user.email, user.name).catch((err) => {
             console.error("Failed to subscribe user to Resend Audience:", err)
           })

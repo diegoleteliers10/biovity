@@ -4,14 +4,16 @@ import { addDays, format, isSameDay, startOfWeek } from "date-fns"
 import { es } from "date-fns/locale"
 import type React from "react"
 import { useState } from "react"
+import { DEFAULT_EVENT_TIME_ZONE } from "@/lib/event-time"
 import type { Event } from "@/lib/types/events"
-import { getChileanDate } from "@/lib/utils"
+
 import { EventDetailModal } from "./event-detail-modal"
 
 type WeekViewEvent = {
   readonly id: string
   readonly title: string
   readonly startAt: string
+  readonly timeZone?: string
   readonly endAt?: string
   readonly description?: string
   readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
@@ -19,12 +21,14 @@ type WeekViewEvent = {
 
 type WeekViewProps = {
   readonly currentDate: Date
+  currentUserId?: string
+  currentUserRole?: "professional" | "organization"
   events?: Event[]
   isLoading?: boolean
   onCreateEvent?: (date: Date) => void
 }
 
-const HOURS = Array.from({ length: 13 }, (_, i) => i + 8)
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const SLOT_HEIGHT = 48
 const EMPTY_WEEK_EVENTS: Event[] = []
 
@@ -45,6 +49,8 @@ const getEventTypeColor = (type: WeekViewEvent["type"]) => {
 
 export function WeekView({
   currentDate,
+  currentUserId,
+  currentUserRole,
   events = EMPTY_WEEK_EVENTS,
   isLoading,
   onCreateEvent,
@@ -56,8 +62,8 @@ export function WeekView({
 
   const eventsByDay: Record<string, WeekViewEvent[]> = {}
   for (const event of events) {
-    const chileDate = getChileanDate(event.startAt)
-    const dateKey = format(chileDate, "yyyy-MM-dd")
+    const localDate = new Date(event.startAt)
+    const dateKey = format(localDate, "yyyy-MM-dd")
     if (!eventsByDay[dateKey]) {
       eventsByDay[dateKey] = []
     }
@@ -65,6 +71,7 @@ export function WeekView({
       id: event.id,
       title: event.title,
       startAt: event.startAt,
+      timeZone: event.timeZone,
       endAt: event.endAt,
       description: event.description,
       type: event.type,
@@ -72,20 +79,17 @@ export function WeekView({
   }
 
   const getEventPosition = (event: WeekViewEvent) => {
-    const chileDate = getChileanDate(event.startAt)
-    const hours = chileDate.getHours() + chileDate.getMinutes() / 60
-    const startOffset = Math.max(0, hours - 8)
-    const top = startOffset * SLOT_HEIGHT
+    const localDate = new Date(event.startAt)
+    const hours = localDate.getHours() + localDate.getMinutes() / 60
+    const top = hours * SLOT_HEIGHT
 
     let height = SLOT_HEIGHT
     if (event.endAt) {
-      const endChile = getChileanDate(event.endAt)
-      const endHours = endChile.getHours() + endChile.getMinutes() / 60
-      const duration = endHours - hours
+      const duration = (Date.parse(event.endAt) - Date.parse(event.startAt)) / 3_600_000
       height = Math.max(SLOT_HEIGHT, duration * SLOT_HEIGHT)
     }
 
-    return { top, height }
+    return { top, height: Math.min(height, (24 - hours) * SLOT_HEIGHT) }
   }
 
   const handleSlotClick = (day: Date, hour: number) => {
@@ -103,10 +107,9 @@ export function WeekView({
     }
   }
 
-  const nowChile = getChileanDate()
-  const currentHour = nowChile.getHours()
-  const currentMinute = nowChile.getMinutes()
-  const showCurrentTime = currentHour >= 8 && currentHour <= 20
+  const localNow = new Date()
+  const currentHour = localNow.getHours()
+  const currentMinute = localNow.getMinutes()
 
   return (
     <div className="relative">
@@ -114,7 +117,7 @@ export function WeekView({
       <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-border/30">
         <div />
         {weekDays.map((day) => {
-          const isToday = isSameDay(day, nowChile)
+          const isToday = isSameDay(day, localNow)
           return (
             <div key={day.toISOString()} className="p-2 text-center border-l border-border/30">
               <div className="text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground">
@@ -159,7 +162,7 @@ export function WeekView({
                   key={hour}
                   type="button"
                   disabled={!onCreateEvent}
-                  className="border-b border-border/30 hover:bg-surface-container-highest/40 transition-colors"
+                  className="block w-full border-b border-border/30 hover:bg-surface-container-highest/40 transition-colors"
                   style={{ height: SLOT_HEIGHT }}
                   onClick={() => handleSlotClick(day, hour)}
                   aria-label={`Crear evento ${format(day, "d 'de' MMMM", { locale: es })} a las ${String(hour).padStart(2, "0")}:00`}
@@ -174,11 +177,11 @@ export function WeekView({
               )}
 
               {/* Current time indicator */}
-              {showCurrentTime && isSameDay(day, nowChile) && (
+              {isSameDay(day, localNow) && (
                 <div
                   className="absolute left-0 right-0 z-20 pointer-events-none"
                   style={{
-                    top: (currentHour - 8) * SLOT_HEIGHT + (currentMinute / 60) * SLOT_HEIGHT,
+                    top: currentHour * SLOT_HEIGHT + (currentMinute / 60) * SLOT_HEIGHT,
                   }}
                 >
                   <div className="flex items-center">
@@ -202,7 +205,8 @@ export function WeekView({
                     >
                       <div className="font-medium truncate">{event.title}</div>
                       <div className="opacity-80 text-[10px] tabular-nums">
-                        {format(getChileanDate(event.startAt), "HH:mm")}
+                        {format(new Date(event.startAt), "HH:mm")} ·{" "}
+                        {event.timeZone ?? DEFAULT_EVENT_TIME_ZONE}
                       </div>
                     </button>
                   )
@@ -217,6 +221,8 @@ export function WeekView({
           event={selectedEvent}
           isOpen={true}
           onClose={() => setSelectedEvent(null)}
+          currentUserId={currentUserId}
+          currentUserRole={currentUserRole}
         />
       )}
     </div>

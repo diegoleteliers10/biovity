@@ -1,6 +1,7 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson, fetchJsonWithSession } from "@/lib/result"
+import type { ApplicationSourceChannel } from "@/lib/types/application-source"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -47,8 +48,120 @@ export type Application = {
   resumeUrl?: string | null
   answers?: ApplicationAnswer[]
   status: ApplicationStatus
+  pipelineStageId?: string | null
+  assigneeId?: string | null
+  assigneeName?: string | null
+  nextAction?: string | null
+  targetDate?: string | null
+  stageChangedAt?: string
   createdAt: string
   updatedAt: string
+}
+
+export async function updateApplicationPipelineStage(input: {
+  id: string
+  stageId: string
+  rejectionNote?: string
+  rejectionReasonId?: string
+  requestHeaders?: Headers
+}): Promise<Result<Application, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/applications/${input.id}/stage`
+  const init: RequestInit = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      stageId: input.stageId,
+      rejectionNote: input.rejectionNote,
+      rejectionReasonId: input.rejectionReasonId,
+    }),
+  }
+  const result = input.requestHeaders
+    ? await fetchJsonWithSession<{ data?: Application } | Application>(
+        url,
+        input.requestHeaders,
+        init
+      )
+    : await fetchJson<{ data?: Application } | Application>(url, init)
+  if (result.isErr()) return R.err(result.error)
+
+  const payload = result.value
+  const application =
+    payload && typeof payload === "object" && "data" in payload ? payload.data : payload
+  if (!application || typeof application !== "object" || !("id" in application)) {
+    return R.err(new ApiError({ status: 200, message: "Respuesta inválida de postulación" }))
+  }
+  return R.ok(application)
+}
+
+export async function reopenApplication(input: {
+  id: string
+  stageId: string
+  reason: string
+  requestHeaders?: Headers
+}): Promise<Result<Application, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/applications/${input.id}/reopen`
+  const init: RequestInit = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stageId: input.stageId, reason: input.reason }),
+  }
+  const result = input.requestHeaders
+    ? await fetchJsonWithSession<{ data?: Application } | Application>(
+        url,
+        input.requestHeaders,
+        init
+      )
+    : await fetchJson<{ data?: Application } | Application>(url, init)
+  if (result.isErr()) return R.err(result.error)
+  const payload = result.value
+  const application =
+    payload && typeof payload === "object" && "data" in payload ? payload.data : payload
+  if (!application || typeof application !== "object" || !("id" in application)) {
+    return R.err(new ApiError({ status: 200, message: "Respuesta inválida de postulación" }))
+  }
+  return R.ok(application)
+}
+
+export async function updateApplicationHiringPlan(input: {
+  id: string
+  assigneeId?: string | null
+  nextAction?: string | null
+  targetDate?: string | null
+}): Promise<Result<Application, ApiError | NetworkError>> {
+  const result = await fetchJson<{ data?: Application } | Application>(
+    `${API_BASE}/api/v1/applications/${input.id}/hiring-plan`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        assigneeId: input.assigneeId,
+        nextAction: input.nextAction,
+        targetDate: input.targetDate,
+      }),
+    }
+  )
+  if (result.isErr()) return R.err(result.error)
+  const payload = result.value
+  const application =
+    payload && typeof payload === "object" && "data" in payload ? payload.data : payload
+  if (!application || typeof application !== "object" || !("id" in application)) {
+    return R.err(new ApiError({ status: 200, message: "Respuesta inválida de postulación" }))
+  }
+  return R.ok(application)
+}
+
+export type ApplicationStatusHistoryItem = {
+  id: string
+  previousStatus: ApplicationStatus | null
+  newStatus: ApplicationStatus
+  changedAt: string
+  changedById: string | null
+  changedByName: string | null
+  rejectionNote: string | null
+  rejectionReasonId: string | null
+  rejectionReasonSnapshot: string | null
+  transitionKind: "stage" | "reopen"
+  transitionNote: string | null
 }
 
 export type ApplicationAnswer = {
@@ -118,6 +231,8 @@ export type CreateApplicationInput = {
   salaryCurrency?: string
   availabilityDate?: string
   resumeUrl?: string
+  sourceChannel?: Exclude<ApplicationSourceChannel, "unknown">
+  distributionSourceId?: string
   answers?: { questionId: string; value: string }[]
 }
 
@@ -133,19 +248,29 @@ export async function createApplication(
   return R.ok(result.value.data)
 }
 
-export async function updateApplicationStatus(
-  id: string,
-  status: ApplicationStatus,
+export async function updateApplicationStatus(input: {
+  id: string
+  status: ApplicationStatus
+  rejectionNote?: string
+  rejectionReasonId?: string
   requestHeaders?: Headers
-): Promise<Result<Application, ApiError | NetworkError>> {
-  const url = `${API_BASE}/api/v1/applications/${id}/status`
+}): Promise<Result<Application, ApiError | NetworkError>> {
+  const url = `${API_BASE}/api/v1/applications/${input.id}/status`
   const init = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({
+      status: input.status,
+      rejectionNote: input.rejectionNote,
+      rejectionReasonId: input.rejectionReasonId,
+    }),
   }
-  const result = requestHeaders
-    ? await fetchJsonWithSession<{ data?: Application } | Application>(url, requestHeaders, init)
+  const result = input.requestHeaders
+    ? await fetchJsonWithSession<{ data?: Application } | Application>(
+        url,
+        input.requestHeaders,
+        init
+      )
     : await fetchJson<{ data?: Application } | Application>(url, init)
 
   if (result.isErr()) return R.err(result.error)
@@ -155,6 +280,17 @@ export async function updateApplicationStatus(
     json && typeof json === "object" && "data" in json ? (json as { data: Application }).data : json
   ) as Application
   return R.ok(app)
+}
+
+export async function getApplicationStatusHistory(
+  id: string
+): Promise<Result<ApplicationStatusHistoryItem[], ApiError | NetworkError>> {
+  const result = await fetchJson<
+    { data?: ApplicationStatusHistoryItem[] } | ApplicationStatusHistoryItem[]
+  >(`${API_BASE}/api/v1/applications/${id}/status-history`)
+  if (result.isErr()) return R.err(result.error)
+  const payload = result.value
+  return R.ok(Array.isArray(payload) ? payload : (payload.data ?? []))
 }
 
 export async function getApplicationDetail(

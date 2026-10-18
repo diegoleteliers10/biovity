@@ -13,16 +13,28 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { getQuestionsByJob } from "@/lib/api/job-questions"
 import { useCreateApplicationMutation } from "@/lib/api/use-applications"
 import { authClient } from "@/lib/auth-client"
 import { getResultErrorMessage } from "@/lib/result"
+import {
+  APPLICATION_SOURCE_CHANNELS,
+  type ApplicationSourceChannel,
+} from "@/lib/types/application-source"
 import { QuestionField } from "./question-field"
 
 type ApplyJobSheetProps = {
   jobId: string
   jobTitle: string
+  distributionSourceId?: string | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -33,6 +45,7 @@ type ApplicationFormState = {
   salaryMin: string
   salaryMax: string
   availabilityDate: string
+  sourceChannel: ApplicationSourceChannel
   error: string | null
 }
 
@@ -42,6 +55,7 @@ type ApplicationFormAction =
   | { type: "SET_SALARY_MIN"; value: string }
   | { type: "SET_SALARY_MAX"; value: string }
   | { type: "SET_AVAILABILITY_DATE"; value: string }
+  | { type: "SET_SOURCE_CHANNEL"; value: ApplicationSourceChannel }
   | { type: "SET_ERROR"; error: string | null }
   | { type: "RESET" }
 
@@ -60,6 +74,8 @@ const applicationFormReducer = (
       return { ...state, salaryMax: action.value }
     case "SET_AVAILABILITY_DATE":
       return { ...state, availabilityDate: action.value }
+    case "SET_SOURCE_CHANNEL":
+      return { ...state, sourceChannel: action.value }
     case "SET_ERROR":
       return { ...state, error: action.error }
     case "RESET":
@@ -69,6 +85,7 @@ const applicationFormReducer = (
         salaryMin: "",
         salaryMax: "",
         availabilityDate: "",
+        sourceChannel: "unknown",
         error: null,
       }
     default:
@@ -82,10 +99,17 @@ const initialApplicationFormState: ApplicationFormState = {
   salaryMin: "",
   salaryMax: "",
   availabilityDate: "",
+  sourceChannel: "unknown",
   error: null,
 }
 
-export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobSheetProps) {
+export function ApplyJobSheet({
+  jobId,
+  jobTitle,
+  distributionSourceId,
+  open,
+  onOpenChange,
+}: ApplyJobSheetProps) {
   const { useSession } = authClient
   const { data: session } = useSession()
   const sessionUserId = (session?.user as { id?: string } | undefined)?.id
@@ -177,6 +201,11 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
         salaryCurrency:
           salaryMinValue !== undefined || salaryMaxValue !== undefined ? "CLP" : undefined,
         availabilityDate: formState.availabilityDate || undefined,
+        sourceChannel:
+          !distributionSourceId && formState.sourceChannel !== "unknown"
+            ? formState.sourceChannel
+            : undefined,
+        distributionSourceId: distributionSourceId ?? undefined,
         answers: answerList.length > 0 ? answerList : undefined,
       },
       {
@@ -293,6 +322,43 @@ export function ApplyJobSheet({ jobId, jobTitle, open, onOpenChange }: ApplyJobS
                 onChange={(e) => dispatch({ type: "SET_AVAILABILITY_DATE", value: e.target.value })}
               />
             </div>
+
+            {!distributionSourceId && (
+              <div className="space-y-2">
+                <Label htmlFor="sourceChannel">¿Dónde conociste esta oferta?</Label>
+                <Select
+                  value={formState.sourceChannel}
+                  onValueChange={(value) =>
+                    dispatch({
+                      type: "SET_SOURCE_CHANNEL",
+                      value:
+                        APPLICATION_SOURCE_CHANNELS.find((channel) => channel === value) ??
+                        "unknown",
+                    })
+                  }
+                >
+                  <SelectTrigger
+                    id="sourceChannel"
+                    className="h-10 w-full rounded-md border-input bg-background px-3 pr-1 text-sm"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="unknown">No recuerdo</SelectItem>
+                    <SelectItem value="biovity">Biovity</SelectItem>
+                    <SelectItem value="linkedin">LinkedIn</SelectItem>
+                    <SelectItem value="laborum">Laborum</SelectItem>
+                    <SelectItem value="other_job_board">Otro portal de empleo</SelectItem>
+                    <SelectItem value="company_website">Sitio web de la empresa</SelectItem>
+                    <SelectItem value="social_media">Redes sociales</SelectItem>
+                    <SelectItem value="university">Universidad o institución educativa</SelectItem>
+                    <SelectItem value="referral">Recomendación</SelectItem>
+                    <SelectItem value="event">Feria o evento</SelectItem>
+                    <SelectItem value="other">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <div className="rounded-md border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">

@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  ArrowDown01Icon,
   ArrowRight01Icon,
   Search01Icon,
   SparklesIcon,
@@ -13,6 +12,13 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export function MarcaComponents() {
   const [isAnualDemo, setIsAnualDemo] = useState(false)
@@ -233,22 +239,20 @@ export function MarcaComponents() {
                   />
                 </div>
 
-                <div className="relative w-full sm:w-56">
-                  <select
-                    className="h-11 w-full appearance-none rounded-lg border border-border/40 bg-surface-container-low px-3.5 pr-9 text-xs sm:text-sm text-foreground focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none"
+                <Select defaultValue="all-regions">
+                  <SelectTrigger
                     aria-label="Filtrar por región"
+                    className="h-11 w-full rounded-lg border-border/40 bg-surface-container-low px-3.5 pr-1 text-xs text-foreground focus-visible:border-secondary focus-visible:ring-secondary/20 sm:w-56 sm:text-sm"
                   >
-                    <option>Todas las regiones</option>
-                    <option>Región Metropolitana</option>
-                    <option>Antofagasta</option>
-                    <option>Valparaíso</option>
-                  </select>
-                  <HugeiconsIcon
-                    icon={ArrowDown01Icon}
-                    size={16}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                  />
-                </div>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all-regions">Todas las regiones</SelectItem>
+                    <SelectItem value="metropolitana">Región Metropolitana</SelectItem>
+                    <SelectItem value="antofagasta">Antofagasta</SelectItem>
+                    <SelectItem value="valparaiso">Valparaíso</SelectItem>
+                  </SelectContent>
+                </Select>
 
                 <Button className="h-11 px-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium w-full sm:w-auto shrink-0">
                   Explorar Ofertas

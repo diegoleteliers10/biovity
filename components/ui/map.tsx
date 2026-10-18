@@ -191,6 +191,8 @@ type MapProps = {
   onViewportChange?: (viewport: MapViewport) => void
   /** Show a loading indicator on the map */
   loading?: boolean
+  /** Hide the loading indicator when the map content does not need it */
+  showLoader?: boolean
 } & Omit<MapLibreGL.MapOptions, "container" | "style">
 
 function DefaultLoader() {
@@ -226,6 +228,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     viewport,
     onViewportChange,
     loading = false,
+    showLoader = true,
     ...props
   },
   ref
@@ -383,7 +386,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   return (
     <MapContext.Provider value={contextValue}>
       <div ref={containerRef} className={cn("relative h-full w-full", className)}>
-        {(!isLoaded || loading) && <DefaultLoader />}
+        {showLoader && (!isLoaded || loading) && <DefaultLoader />}
         {/* SSR-safe: children render only when map is loaded on client */}
         {mapInstance && children}
       </div>

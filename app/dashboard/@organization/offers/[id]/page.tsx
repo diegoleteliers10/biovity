@@ -16,6 +16,7 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { addTransitionType, startTransition, useState, ViewTransition } from "react"
 import { CreateJobDialog } from "@/components/dashboard/organization/CreateJobDialog"
+import { JobDistributionSources } from "@/components/dashboard/organization/JobDistributionSources"
 import { CloseJobAlertDialog } from "@/components/dashboard/organization/ofertas/CloseJobAlertDialog"
 import { QuestionsManager } from "@/components/dashboard/organization/QuestionsManager"
 import { DirectionalTransition } from "@/components/dashboard/shared/DirectionalTransition"
@@ -293,6 +294,7 @@ export default function OfertaDetailPage() {
               Postulaciones ({applications?.length ?? 0})
             </TabsTrigger>
             <TabsTrigger value="questions">Preguntas Postulación</TabsTrigger>
+            <TabsTrigger value="distribution">Difusión</TabsTrigger>
           </TabsList>
 
           <TabsContent value="applicants">
@@ -386,6 +388,10 @@ export default function OfertaDetailPage() {
               jobId={job.id}
               organizationId={job.organizationId ?? organization?.id ?? ""}
             />
+          </TabsContent>
+
+          <TabsContent value="distribution">
+            <JobDistributionSources jobId={job.id} />
           </TabsContent>
         </Tabs>
 

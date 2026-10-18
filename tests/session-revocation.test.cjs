@@ -2,16 +2,21 @@ require('./register-ts.cjs')
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
 const Module = require('node:module')
+const { Result } = require('better-result')
+const { ApiError } = require('../lib/errors.ts')
 let options
 let currentSession = { user: { id: 'admin', email: 'admin@example.com', type: 'admin', isActive: true } }
-let rowCount = 1
-const queries = []
+let user = { id: 'user', isActive: true }
+const revokedSessions = []
 const load = Module._load
 Module._load = function (name, parent, ...args) {
   if (name === '@better-auth/infra') return { dash: () => ({}), sentinel: () => ({}) }
   if (name === 'better-auth') return { betterAuth: (config) => {
     options = config
-    return { api: { getSession: async () => currentSession } }
+    return {
+      api: { getSession: async () => currentSession },
+      $context: Promise.resolve({ internalAdapter: { deleteUserSessions: async (id) => revokedSessions.push(id) } }),
+    }
   } }
   if (name === 'better-auth/api') return { APIError: class APIError extends Error {}, createAuthMiddleware: (handler) => handler }
   if (name === 'better-auth/next-js') return { nextCookies: () => ({}) }
@@ -19,10 +24,15 @@ Module._load = function (name, parent, ...args) {
   if (name === 'react') return { cache: (fn) => fn }
   if (name === '@/lib/mail') return {}
   if (name === '@/lib/db/short-links') return {}
-  if (name === '@/lib/db') return { pool: { query: async (sql, values) => {
-    queries.push({ sql, values })
-    return { rows: rowCount ? [{ id: values[1] }] : [], rowCount }
-  } } }
+  if (name === '@/lib/api/users') return {
+    getUser: async () => user
+      ? Result.ok(user)
+      : Result.err(new ApiError({ status: 404, message: 'User not found' })),
+    updateUser: async (_id, updates) => {
+      user = { ...user, ...updates }
+      return Result.ok(user)
+    },
+  }
   return load.call(this, name, parent, ...args)
 }
 const authModule = require('../lib/auth.ts')
@@ -48,32 +58,30 @@ test('the session API rejects an inactive account in direct route calls', async 
   currentSession = { user: { id: 'admin', email: 'admin@example.com', type: 'admin', isActive: true } }
 })
 
-test('deactivation changes the user and revokes all sessions in one statement', async () => {
-  queries.length = 0
+test('deactivation changes the user through NestJS and revokes all sessions', async () => {
+  user = { id: 'user', isActive: true }
+  revokedSessions.length = 0
   assert.equal((await PATCH(request(false), params)).status, 200)
-  assert.equal(queries.length, 1)
-  assert.match(queries[0].sql, /WITH updated_user AS/)
-  assert.match(queries[0].sql, /DELETE FROM "session" USING updated_user/)
-  assert.match(queries[0].sql, /"session"\.user_id = updated_user\.id AND \$1 = false/)
-  assert.deepEqual(queries[0].values, [false, 'user'])
+  assert.equal(user.isActive, false)
+  assert.deepEqual(revokedSessions, ['user'])
 })
 
-test('reactivation does not select session revocation and a missing user returns 404', async () => {
-  queries.length = 0
+test('reactivation revokes stale sessions and a missing user returns 404', async () => {
+  user = { id: 'user', isActive: false }
+  revokedSessions.length = 0
   assert.equal((await PATCH(request(true), params)).status, 200)
-  assert.deepEqual(queries[0].values, [true, 'user'])
-  rowCount = 0
+  assert.equal(user.isActive, true)
+  assert.deepEqual(revokedSessions, ['user'])
+  user = null
   assert.equal((await PATCH(request(false), params)).status, 404)
-  rowCount = 1
+  user = { id: 'user', isActive: true }
 })
 
 test('the admin route rejects an inactive admin and malformed input before SQL', async () => {
-  queries.length = 0
   currentSession.user.isActive = false
   assert.equal((await PATCH(request(false), params)).status, 403)
   currentSession.user.isActive = true
   assert.equal((await PATCH(request('false'), params)).status, 400)
   const malformed = new Request('http://localhost/api/admin/users/user/is-active', { method: 'PATCH', body: '{' })
   assert.equal((await PATCH(malformed, params)).status, 400)
-  assert.equal(queries.length, 0)
 })

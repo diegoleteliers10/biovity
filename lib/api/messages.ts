@@ -37,7 +37,11 @@ export function parseRealtimeMessage(payload: unknown): Message | null {
 
   const rawType = eventPayload.type
   const messageType: MessageType =
-    rawType === "event" || rawType === "audio" || rawType === "image" || rawType === "file"
+    rawType === "event" ||
+    rawType === "audio" ||
+    rawType === "image" ||
+    rawType === "file" ||
+    rawType === "offer"
       ? rawType
       : "text"
   const rawContentType = eventPayload.content_type ?? eventPayload.contentType

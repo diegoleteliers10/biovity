@@ -265,7 +265,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       dispatch({ type: "SET_FIELD", field: "modalidad", value })
                     }
                   >
-                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
+                    <SelectTrigger className="w-full h-11 pl-3.5 pr-1 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
                       <SelectValue placeholder="Modalidad" />
                     </SelectTrigger>
                     <SelectContent>
@@ -284,7 +284,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       dispatch({ type: "SET_FIELD", field: "formato", value })
                     }
                   >
-                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
+                    <SelectTrigger className="w-full h-11 pl-3.5 pr-1 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
                       <SelectValue placeholder="Tipo de Jornada" />
                     </SelectTrigger>
                     <SelectContent>
@@ -343,7 +343,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       })
                     }
                   >
-                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
+                    <SelectTrigger className="w-full h-11 pl-3.5 pr-1 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
                       <SelectValue placeholder="Moneda" />
                     </SelectTrigger>
                     <SelectContent>
@@ -359,7 +359,7 @@ export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSear
                       dispatch({ type: "SET_FIELD", field: "experiencia", value })
                     }
                   >
-                    <SelectTrigger className="w-full h-11 px-3.5 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
+                    <SelectTrigger className="w-full h-11 pl-3.5 pr-1 bg-surface-container-lowest text-sm rounded-lg border-border text-foreground">
                       <SelectValue placeholder="Nivel de Experiencia" />
                     </SelectTrigger>
                     <SelectContent>

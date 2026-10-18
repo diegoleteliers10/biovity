@@ -1,13 +1,13 @@
 import { Result as R, type Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
-import { fetchJson } from "@/lib/result"
+import { fetchJson, fetchNoContent } from "@/lib/result"
 
 const API_BASE =
   typeof window !== "undefined"
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
 
-export type OfferLetterStatus = "sent" | "accepted" | "rejected"
+export type OfferLetterStatus = "sent" | "accepted" | "rejected" | "cancelled" | "expired"
 
 export type OfferLetterData = {
   companyName: string
@@ -55,6 +55,7 @@ export type OfferLetter = {
   messageId?: string | null
   sentAt: string
   respondedAt?: string | null
+  expiresAt?: string | null
   createdAt: string
 }
 
@@ -129,7 +130,7 @@ export async function renderOfferLetterPdf(
 export type SendOfferLetterResult = {
   offerLetterId: string
   chatId: string | null
-  emailed: boolean
+  emailQueued: boolean
 }
 
 export async function sendOfferLetter(input: {
@@ -154,6 +155,23 @@ export async function sendOfferLetter(input: {
   } catch (err) {
     return R.err(err instanceof Error ? err.message : "Network error")
   }
+}
+
+export async function cancelOfferLetter(
+  offerLetterId: string
+): Promise<Result<void, ApiError | NetworkError>> {
+  return fetchNoContent(`${API_BASE}/api/v1/offer-letters/${offerLetterId}`, { method: "DELETE" })
+}
+
+export async function resendOfferLetter(
+  offerLetterId: string,
+  expiresOn: string
+): Promise<Result<{ emailQueued: boolean; chatNotified: boolean }, ApiError | NetworkError>> {
+  return fetchJson(`/api/offer-letters/${offerLetterId}/resend`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ expiresOn }),
+  })
 }
 
 export function offerLetterPdfUrl(offerLetterId: string): string {

@@ -51,6 +51,7 @@ interface TalentDetailSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   recruiterId?: string | null
+  organizationId?: string | null
 }
 
 export function TalentDetailSheet({
@@ -58,11 +59,15 @@ export function TalentDetailSheet({
   open,
   onOpenChange,
   recruiterId,
+  organizationId,
 }: TalentDetailSheetProps) {
   const { push } = useRouter()
   const { data: user, isLoading: userLoading } = useUser(userId ?? undefined)
   const { data: resume, isLoading: resumeLoading } = useResumeByUser(userId ?? undefined)
-  const createChatMutation = useCreateOrFindChatMutation(recruiterId ?? undefined)
+  const createChatMutation = useCreateOrFindChatMutation(
+    recruiterId ?? undefined,
+    organizationId ?? undefined
+  )
   const incrementProfileViews = useIncrementProfileViews()
   const incrementViewsRef = useRef(incrementProfileViews)
   incrementViewsRef.current = incrementProfileViews

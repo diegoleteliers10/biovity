@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result } from "better-result"
 import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson, fetchNoContent, getResultErrorMessage } from "@/lib/result"
+import type { TalentFilters } from "./talent-search"
 
 const API_BASE =
   typeof window !== "undefined"
@@ -14,8 +15,8 @@ export type SavedSearch = {
   id: string
   organizationId: string
   name: string
-  filters: Record<string, unknown>
-  notify: boolean
+  filters: unknown
+  notifyEnabled: boolean
   createdAt: string
   updatedAt: string
 }
@@ -41,7 +42,7 @@ export async function getSavedSearches(
   organizationId: string
 ): Promise<Result<SavedSearch[], ApiError | NetworkError>> {
   const result = await fetchJson<unknown>(
-    `${API_BASE}/api/v1/saved-searches?organizationId=${encodeURIComponent(organizationId)}`
+    `${API_BASE}/api/v1/saved-searches/organization/${encodeURIComponent(organizationId)}`
   )
   if (result.isErr()) return Result.err(result.error)
   const searches = extractSearches(result.value)
@@ -51,8 +52,8 @@ export async function getSavedSearches(
 export async function createSavedSearch(data: {
   organizationId: string
   name: string
-  filters: Record<string, unknown>
-  notify: boolean
+  filters: TalentFilters
+  notifyEnabled?: boolean
 }): Promise<Result<SavedSearch, ApiError | NetworkError>> {
   const result = await fetchJson<{ data: SavedSearch }>(`${API_BASE}/api/v1/saved-searches`, {
     method: "POST",
@@ -71,6 +72,19 @@ export async function deleteSavedSearch(
   })
 }
 
+export async function updateSavedSearch(
+  id: string,
+  data: { notifyEnabled: boolean }
+): Promise<Result<SavedSearch, ApiError | NetworkError>> {
+  const result = await fetchJson<{ data: SavedSearch }>(`${API_BASE}/api/v1/saved-searches/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
+}
+
 export function useSavedSearches(organizationId: string | undefined) {
   return useQuery({
     queryKey: savedSearchesKeys.byOrganization(organizationId ?? ""),
@@ -87,11 +101,7 @@ export function useSavedSearches(organizationId: string | undefined) {
 export function useCreateSavedSearchMutation(organizationId: string) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: {
-      name: string
-      filters: Record<string, unknown>
-      notify: boolean
-    }) => {
+    mutationFn: async (data: { name: string; filters: TalentFilters; notifyEnabled?: boolean }) => {
       const result = await createSavedSearch({ organizationId, ...data })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
@@ -111,6 +121,23 @@ export function useDeleteSavedSearchMutation(organizationId: string) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: savedSearchesKeys.byOrganization(organizationId) })
+    },
+  })
+}
+
+export function useUpdateSavedSearchMutation(organizationId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; notifyEnabled: boolean }) =>
+      updateSavedSearch(input.id, {
+        notifyEnabled: input.notifyEnabled,
+      }),
+    onSuccess: (result) => {
+      if (Result.isOk(result)) {
+        queryClient.invalidateQueries({
+          queryKey: savedSearchesKeys.byOrganization(organizationId),
+        })
+      }
     },
   })
 }

@@ -1,15 +1,26 @@
 import type { ReactNode } from "react"
 import type { Evaluation } from "@/hooks/use-evaluations"
+import type { PipelineStage } from "@/lib/api/use-pipeline-stages"
 import type { ApplicationStage } from "@/lib/types/dashboard"
 
 export type ScorecardSheetProps = {
   applicationId: string
+  canManageHiring: boolean | undefined
   candidateName: string
   candidateAvatar?: string | null
   candidateProfession?: string | null
   children: ReactNode
   applicationStatus?: ApplicationStage
-  onStatusChange?: (applicationId: string, stage: ApplicationStage) => Promise<void> | void
+  pipelineStageId?: string | null
+  pipelineStages?: PipelineStage[]
+  onStageChange?: (applicationId: string, stageId: string) => Promise<boolean>
+  onStatusChange?:
+    | ((applicationId: string, stage: ApplicationStage, rejectionNote?: string) => void)
+    | ((
+        applicationId: string,
+        stage: ApplicationStage,
+        rejectionNote?: string
+      ) => boolean | Promise<boolean>)
   onScheduleInterview?: () => void
   onSendMessage?: () => void
 }

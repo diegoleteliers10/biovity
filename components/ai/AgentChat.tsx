@@ -81,6 +81,7 @@ import { Suggestion } from "@/components/ai-elements/suggestion"
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/components/ai-elements/tool"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { isPendingToolApproval } from "@/lib/ai/tool-approval"
 import { getMaskedCredential, listCredentials } from "@/lib/api/ai-credentials"
 import { useSession } from "@/lib/auth-client"
 
@@ -106,10 +107,6 @@ type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance
 type WindowWithSpeechRecognition = Window & {
   SpeechRecognition?: SpeechRecognitionConstructor
   webkitSpeechRecognition?: SpeechRecognitionConstructor
-}
-
-type ToolApproval = {
-  id: string
 }
 
 const QUICK_ACTIONS = [
@@ -194,12 +191,6 @@ const getCvUrlsFromOutput = (output: unknown): string[] => {
 
   walk(output)
   return Array.from(urls)
-}
-
-const isToolApproval = (value: unknown): value is ToolApproval => {
-  if (!value || typeof value !== "object") return false
-  const maybeApproval = value as { id?: unknown }
-  return typeof maybeApproval.id === "string" && maybeApproval.id.length > 0
 }
 
 function ToolCvPreview({ cvUrl }: { cvUrl: string }) {
@@ -785,16 +776,20 @@ function MessageBubble({
                   | "output-denied"
                   | undefined) ?? "input-available"
               const toolKey = `${toolName}-${idx}-${JSON.stringify(tool.input ?? "").slice(0, 20)}`
-              const isDestructive = ["delete", "create", "update", "edit", "remove"].some((kw) =>
-                toolName.toLowerCase().includes(kw)
-              )
-              const approval = isToolApproval(tool.approval) ? tool.approval : null
+              const approval = isPendingToolApproval(tool.approval, toolState)
+                ? tool.approval
+                : null
 
-              if (isDestructive && approval && toolState === "approval-requested") {
+              if (approval) {
                 return (
                   <Confirmation key={toolKey} approval={approval} state={toolState}>
                     <ConfirmationRequest>
-                      Esta accion quiere ejecutar: <code>{toolName}</code>
+                      <div className="space-y-3">
+                        <p>
+                          Revisa los datos de <code>{toolName}</code> antes de aprobar la acción.
+                        </p>
+                        <ToolInput input={tool.input} />
+                      </div>
                     </ConfirmationRequest>
                     <ConfirmationAccepted>
                       <CheckIcon className="size-4" />

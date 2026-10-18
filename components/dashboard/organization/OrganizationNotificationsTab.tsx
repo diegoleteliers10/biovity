@@ -4,19 +4,11 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import type { OrganizationIntegrations } from "@/lib/api/organizations"
 import { useOrganization, useUpdateOrganizationMutation } from "@/lib/api/use-organization"
-import { useUpdateUserMutation, useUser } from "@/lib/api/use-profile"
-import type { UserNotificationPreferences } from "@/lib/api/users"
+import { useUser } from "@/lib/api/use-profile"
 import { cn } from "@/lib/utils"
-import { FieldHelp, FieldLabel, SECTION_LABEL_CLASS, SettingRow } from "./SettingsUi"
+import { FieldLabel, SECTION_LABEL_CLASS, SettingRow } from "./SettingsUi"
 
 function DiscordIcon(props: React.ComponentProps<"svg">) {
   return (
@@ -47,37 +39,13 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
   const { data: user, isLoading: userLoading, error: userError } = useUser(userId)
   const { data: org, isLoading: orgLoading } = useOrganization(user?.organizationId ?? undefined)
 
-  const updateUserMutation = useUpdateUserMutation(userId)
   const updateOrgMutation = useUpdateOrganizationMutation(user?.organizationId ?? "")
-
-  const [prefs, setPrefs] = useState<UserNotificationPreferences>(() => ({
-    digest: user?.notificationPreferences?.digest ?? "immediate",
-    newApplications: user?.notificationPreferences?.newApplications ?? true,
-    interviews: user?.notificationPreferences?.interviews ?? true,
-    messages: user?.notificationPreferences?.messages ?? true,
-  }))
 
   const [integrations, setIntegrations] = useState<OrganizationIntegrations>(() => ({
     slackWebhookUrl: org?.integrations?.slackWebhookUrl ?? "",
     discordWebhookUrl: org?.integrations?.discordWebhookUrl ?? "",
     enabled: org?.integrations?.enabled ?? false,
   }))
-
-  const handleSavePrefs = () => {
-    updateUserMutation.mutate(
-      {
-        notificationPreferences: prefs,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Preferencias de notificación actualizadas correctamente")
-        },
-        onError: () => {
-          toast.error("Ocurrió un error al guardar las preferencias")
-        },
-      }
-    )
-  }
 
   const handleSaveIntegrations = () => {
     updateOrgMutation.mutate(
@@ -116,77 +84,6 @@ export function OrganizationNotificationsTab({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-10">
-      {/* SECCIÓN 1: NOTIFICACIONES POR CORREO */}
-      <section className="space-y-4">
-        <h3 className={SECTION_LABEL_CLASS}>Notificaciones por correo</h3>
-        <p className="max-w-[60ch] text-sm leading-6 text-muted-foreground text-pretty">
-          Elige qué alertas de actividad deseas recibir y con qué frecuencia en tu correo
-          electrónico.
-        </p>
-        <div className="divide-y divide-border/70">
-          <SettingRow
-            title="Nuevas postulaciones"
-            desc="Recibe un correo cuando un candidato postule a una de tus ofertas."
-            switchId="notify-applications"
-            checked={prefs.newApplications}
-            onCheckedChange={(checked) =>
-              setPrefs((prev) => ({ ...prev, newApplications: checked }))
-            }
-          />
-          <SettingRow
-            title="Entrevistas y eventos"
-            desc="Alertas sobre confirmación de asistencia, cancelaciones o actualizaciones de entrevistas."
-            switchId="notify-interviews"
-            checked={prefs.interviews}
-            onCheckedChange={(checked) => setPrefs((prev) => ({ ...prev, interviews: checked }))}
-          />
-          <SettingRow
-            title="Mensajes de chat"
-            desc="Notifica por correo si tienes mensajes sin leer después de un período de inactividad."
-            switchId="notify-messages"
-            checked={prefs.messages}
-            onCheckedChange={(checked) => setPrefs((prev) => ({ ...prev, messages: checked }))}
-          />
-        </div>
-
-        <div className="mt-4 max-w-[380px] space-y-2">
-          <FieldLabel htmlFor="notif-freq">Frecuencia de envío (resumen)</FieldLabel>
-          <Select
-            value={prefs.digest}
-            onValueChange={(val: "immediate" | "daily" | "never") =>
-              setPrefs((prev) => ({ ...prev, digest: val }))
-            }
-          >
-            <SelectTrigger id="notif-freq" className="h-9 w-full">
-              <SelectValue placeholder="Selecciona frecuencia" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="immediate">Inmediato (tiempo real)</SelectItem>
-              <SelectItem value="daily">Resumen diario</SelectItem>
-              <SelectItem value="never">Nunca enviar correos</SelectItem>
-            </SelectContent>
-          </Select>
-          <FieldHelp>
-            El resumen diario consolida las alertas en un solo correo al final de cada jornada
-            laboral.
-          </FieldHelp>
-        </div>
-
-        <div className="mt-6 flex justify-end">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={handleSavePrefs}
-            disabled={updateUserMutation.isPending}
-            id="save-notifications-btn"
-            className="h-9 rounded-lg px-4 bg-secondary text-secondary-foreground hover:bg-secondary/90 text-xs font-medium shadow-none transition-colors"
-          >
-            {updateUserMutation.isPending ? "Guardando..." : "Guardar cambios"}
-          </Button>
-        </div>
-      </section>
-
-      {/* SECCIÓN 2: INTEGRACIONES DE WEBHOOKS */}
       {user?.organizationId && (
         <section className="space-y-4 border-t border-border pt-10">
           <h3 className={SECTION_LABEL_CLASS}>Integración de webhooks (Slack / Discord)</h3>

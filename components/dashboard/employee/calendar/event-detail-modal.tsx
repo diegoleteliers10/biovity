@@ -16,8 +16,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { useEventChangeHistory, useParticipantStatusHistory } from "@/lib/api/use-events"
+import { DEFAULT_EVENT_TIME_ZONE, formatParticipantTime } from "@/lib/event-time"
 import type { Event, EventParticipant, ParticipantStatus } from "@/lib/types/events"
-import { formatDateChilean } from "@/lib/utils"
 
 const PARTICIPANT_STATUS_LABELS: Record<ParticipantStatus, string> = {
   pending: "Pendiente",
@@ -36,6 +37,7 @@ type EventDetailModalProps = {
   isOpen: boolean
   onClose: () => void
   currentUserId?: string
+  currentUserRole?: "professional" | "organization"
   participants?: EventParticipant[]
   rsvpStatus?: ParticipantStatus
   onRSVP?: (eventId: string, status: ParticipantStatus) => void
@@ -70,11 +72,125 @@ const STATUS_COLORS: Record<Event["status"], string> = {
   cancelled: "bg-destructive/10 text-destructive",
 }
 
+function ParticipantStatusHistory({ eventId, userId }: { eventId: string; userId: string }) {
+  const { history, isLoading, isError, refetch } = useParticipantStatusHistory(eventId, userId)
+
+  return (
+    <section
+      className="space-y-2 border-t border-border/40 pt-3"
+      aria-label="Historial de respuesta"
+    >
+      <h3 className="text-xs font-medium text-foreground">Historial de respuesta</h3>
+      {isLoading && <p className="text-xs text-muted-foreground">Cargando historial.</p>}
+      {isError && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>No se pudo cargar el historial.</span>
+          <button type="button" onClick={() => void refetch()} className="text-primary underline">
+            Reintentar
+          </button>
+        </div>
+      )}
+      {!isLoading && !isError && history.length === 0 && (
+        <p className="text-xs text-muted-foreground">No hay cambios de respuesta.</p>
+      )}
+      {!isLoading && !isError && history.length > 0 && (
+        <ol className="space-y-2">
+          {history.map((entry) => (
+            <li key={entry.id} className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-foreground">
+                {PARTICIPANT_STATUS_LABELS[entry.fromStatus]} →{" "}
+                {PARTICIPANT_STATUS_LABELS[entry.toStatus]}
+              </span>
+              <time dateTime={entry.changedAt} className="shrink-0 text-muted-foreground">
+                {formatParticipantTime(entry.changedAt, "d MMM yyyy, HH:mm")}
+              </time>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  )
+}
+
+const eventChangeLabel = (field: string): string => {
+  switch (field) {
+    case "title":
+      return "Título"
+    case "description":
+      return "Descripción"
+    case "type":
+      return "Tipo"
+    case "timeZone":
+      return "Zona horaria"
+    case "startAt":
+      return "Inicio"
+    case "endAt":
+      return "Término"
+    case "location":
+      return "Ubicación"
+    case "meetingUrl":
+      return "Enlace de reunión"
+    case "status":
+      return "Estado"
+    default:
+      return field
+  }
+}
+
+function EventChangeHistory({ eventId, enabled }: { eventId: string; enabled: boolean }) {
+  const { history, isLoading, isError, refetch } = useEventChangeHistory(eventId, enabled)
+
+  return (
+    <section className="space-y-2 border-t border-border/40 pt-3" aria-label="Historial del evento">
+      <h3 className="text-xs font-medium text-foreground">Historial del evento</h3>
+      {isLoading && <p className="text-xs text-muted-foreground">Cargando historial.</p>}
+      {isError && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>No se pudo cargar el historial.</span>
+          <button type="button" onClick={() => void refetch()} className="text-primary underline">
+            Reintentar
+          </button>
+        </div>
+      )}
+      {!isLoading && !isError && history.length === 0 && (
+        <p className="text-xs text-muted-foreground">No hay cambios registrados.</p>
+      )}
+      {!isLoading && !isError && history.length > 0 && (
+        <ol className="space-y-3">
+          {history.map((entry) => (
+            <li key={entry.id} className="space-y-1 text-xs">
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-medium text-foreground">
+                  {entry.action === "cancelled" ? "Evento cancelado" : "Evento actualizado"}
+                </span>
+                <time dateTime={entry.createdAt} className="shrink-0 text-muted-foreground">
+                  {formatParticipantTime(entry.createdAt, "d MMM yyyy, HH:mm")}
+                </time>
+              </div>
+              <p className="text-muted-foreground">
+                {entry.actorUserId ? `Usuario ${entry.actorUserId}` : "Usuario eliminado"}
+              </p>
+              <ul className="space-y-1 text-muted-foreground">
+                {Object.entries(entry.changes).map(([field, change]) => (
+                  <li key={field}>
+                    {eventChangeLabel(field)}: {change.from ?? "—"} → {change.to ?? "—"}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  )
+}
+
 export function EventDetailModal({
   event,
   isOpen,
   onClose,
   currentUserId,
+  currentUserRole,
   participants,
   rsvpStatus,
   onRSVP,
@@ -124,11 +240,12 @@ export function EventDetailModal({
             <HugeiconsIcon icon={Clock01Icon} className="size-4 text-muted-foreground shrink-0" />
             <div>
               <span className="font-medium text-foreground">
-                {formatDateChilean(event.startAt, "EEEE d 'de' MMMM, yyyy")}
+                {formatParticipantTime(event.startAt, "EEEE d 'de' MMMM, yyyy")}
               </span>
               <span className="text-muted-foreground ml-2">
-                {formatDateChilean(event.startAt, "HH:mm")}
-                {event.endAt && ` - ${formatDateChilean(event.endAt, "HH:mm")}`}
+                {formatParticipantTime(event.startAt, "HH:mm")}
+                {event.endAt && ` - ${formatParticipantTime(event.endAt, "HH:mm")}`} ·{" "}
+                {event.timeZone ?? DEFAULT_EVENT_TIME_ZONE}
               </span>
             </div>
           </div>
@@ -169,9 +286,22 @@ export function EventDetailModal({
 
           <div className="pt-2 border-t border-border/40">
             <p className="text-xs text-muted-foreground">
-              Creado {formatDateChilean(event.createdAt, "d 'de' MMMM, yyyy")}
+              Creado {formatParticipantTime(event.createdAt, "d 'de' MMMM, yyyy")}
             </p>
           </div>
+
+          {isOpen &&
+            event.candidateId &&
+            currentUserId &&
+            (currentUserId === event.candidateId ||
+              currentUserId === event.organizerId ||
+              currentUserRole === "organization") && (
+              <ParticipantStatusHistory eventId={event.id} userId={event.candidateId} />
+            )}
+
+          {isOpen && currentUserRole === "organization" && (
+            <EventChangeHistory eventId={event.id} enabled={isOpen} />
+          )}
 
           {currentUserId && showRSVP && myStatus && (
             <div className="pt-3 border-t border-border/40">

@@ -20,27 +20,12 @@ import {
   useUpdateOrganizationMutation,
   useUploadOrganizationLogoMutation,
 } from "@/lib/api/use-organization"
+import { INDUSTRY_OPTIONS } from "@/lib/data/industries"
 import { FieldLabel } from "./SettingsUi"
 
 type BrandingTabProps = {
   organizationId: string
 }
-
-export const INDUSTRY_OPTIONS = [
-  "Biotecnología",
-  "Bioquímica",
-  "Química",
-  "Farmacéutica",
-  "Salud",
-  "Ingeniería Química",
-  "Agroindustria",
-  "Alimentos y Bebidas",
-  "Cosmética",
-  "Medio Ambiente",
-  "Investigación",
-  "Educación",
-  "Otros",
-]
 
 export const SIZE_OPTIONS = [
   "1-10 empleados",

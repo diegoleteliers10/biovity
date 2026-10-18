@@ -42,7 +42,7 @@ export function exportMetricsCsv(metrics: OrganizationMetrics, period: string) {
     ["Tendencia de aplicaciones (%)", metrics.dashboard.applicationsTrend],
     ["Entrevistas este periodo", metrics.dashboard.interviewsThisPeriod],
     ["Tendencia de entrevistas (%)", metrics.dashboard.interviewsTrend],
-    ["Tiempo medio de contratacion (dias)", metrics.avgHiringTimeDays],
+    ["Tiempo hasta contratación (días)", metrics.avgHiringTimeDays],
     ["Tasa de conversion (%)", metrics.pipeline.conversionRate],
   ]
   downloadCsv(`${prefix}_kpis.csv`, rowsToCsv(kpiHeaders, kpiRows))
@@ -53,6 +53,17 @@ export function exportMetricsCsv(metrics: OrganizationMetrics, period: string) {
     count,
   ])
   downloadCsv(`${prefix}_pipeline.csv`, rowsToCsv(pipelineHeaders, pipelineRows))
+
+  const stageHeaders = ["Oferta", "Etapa", "Promedio de visita cerrada (dias)", "Visitas cerradas"]
+  const stageRows = (metrics.pipeline.stageDurations ?? []).map((stage) => [
+    stage.jobTitle,
+    stage.stageName,
+    stage.averageCompletedDays,
+    stage.completedVisitCount,
+  ])
+  if (stageRows.length > 0) {
+    downloadCsv(`${prefix}_tiempo_por_etapa.csv`, rowsToCsv(stageHeaders, stageRows))
+  }
 
   if (metrics.topJobs.length > 0) {
     const jobsHeaders = ["Oferta", "Vistas", "Postulaciones", "Tasa de conversion (%)"]

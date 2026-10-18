@@ -9,12 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { formatDateChilean } from "@/lib/utils"
+import { formatParticipantTime, DEFAULT_EVENT_TIME_ZONE } from "@/lib/event-time"
 
 type CalendarEvent = {
   readonly id: string
   readonly title: string
   readonly startAt: string
+  readonly timeZone?: string
   readonly description?: string
   readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
@@ -29,7 +30,7 @@ type DayModalProps = {
 
 export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProps) {
   const formatEventTime = (iso: string) => {
-    return formatDateChilean(iso, "p")
+    return formatParticipantTime(iso, "p")
   }
 
   const getEventTypeInfo = (type: CalendarEvent["type"]) => {
@@ -118,7 +119,10 @@ export function DayModal({ isOpen, onClose, day, dayName, events }: DayModalProp
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <HugeiconsIcon icon={Clock03Icon} className="size-4" />
-                          <span className="font-medium">{formatEventTime(event.startAt)}</span>
+                          <span className="font-medium">
+                            {formatEventTime(event.startAt)} ·{" "}
+                            {event.timeZone ?? DEFAULT_EVENT_TIME_ZONE}
+                          </span>
                         </div>
                       </div>
 

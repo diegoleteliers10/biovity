@@ -3,9 +3,16 @@
 import { useCallback, useState } from "react"
 import { toast } from "sonner"
 import { Sheet, SheetContent, SheetHeader } from "@/components/animate-ui/components/radix/sheet"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { ConfirmDialog } from "@/components/dashboard/admin/ConfirmDialog"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import type { AdminUser } from "@/lib/types/admin"
 import { formatFechaRelativa } from "@/lib/utils"
 
@@ -141,18 +148,18 @@ export function UserDetailSheet({ user, open, onOpenChange, onUserUpdated }: Use
                 <label htmlFor="edit-type" className="text-xs text-muted-foreground">
                   Tipo de usuario
                 </label>
-                <select
-                  id="edit-type"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="flex h-7 w-full rounded-md border border-input bg-input/20 px-2"
-                >
-                  {TYPE_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                <Select value={type} onValueChange={setType}>
+                  <SelectTrigger id="edit-type" className="h-7 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TYPE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>

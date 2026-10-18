@@ -13,6 +13,12 @@ export async function GET() {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 })
   }
+  if ((session.user as { type?: string }).type !== "organization") {
+    return NextResponse.json(
+      { error: "Solo una organización puede ver este onboarding" },
+      { status: 403 }
+    )
+  }
 
   const organizationId = (session.user as { organizationId?: string }).organizationId
   if (!organizationId) {
@@ -100,6 +106,12 @@ export async function PATCH(request: Request) {
   const session = await getServerSession()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 })
+  }
+  if ((session.user as { type?: string }).type !== "organization") {
+    return NextResponse.json(
+      { error: "Solo una organización puede editar este onboarding" },
+      { status: 403 }
+    )
   }
 
   const organizationId = (session.user as { organizationId?: string }).organizationId

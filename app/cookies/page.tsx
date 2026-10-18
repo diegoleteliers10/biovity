@@ -145,10 +145,10 @@ export default function CookiesPage() {
               <p>
                 Para cualquier consulta sobre nuestra política de cookies, puedes escribir a{" "}
                 <a
-                  href="mailto:contacto@biovity.cl"
+                  href="mailto:dleteliers@biovity.cl"
                   className="text-secondary font-medium underline hover:text-secondary/80"
                 >
-                  contacto@biovity.cl
+                  dleteliers@biovity.cl
                 </a>{" "}
                 o revisar nuestra{" "}
                 <Link

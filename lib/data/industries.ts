@@ -1,0 +1,15 @@
+export const INDUSTRY_OPTIONS = [
+  "Biotecnología",
+  "Bioquímica",
+  "Química",
+  "Farmacéutica",
+  "Salud",
+  "Ingeniería Química",
+  "Agroindustria",
+  "Alimentos y Bebidas",
+  "Cosmética",
+  "Medio Ambiente",
+  "Investigación",
+  "Educación",
+  "Otros",
+] as const

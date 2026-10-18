@@ -18,8 +18,8 @@ function resolveApiUrl(input: RequestInfo): RequestInfo {
 }
 
 /**
- * Server-side calls authenticate with the shared internal key accepted by
- * the API's SessionAuthGuard. The key never reaches the browser bundle.
+ * Server-side calls can use the internal key for routes guarded by
+ * InternalSecretGuard. User routes still need the Better Auth session cookie.
  */
 function withServerAuth(init?: RequestInit): RequestInit {
   if (typeof window !== "undefined") return init ?? {}

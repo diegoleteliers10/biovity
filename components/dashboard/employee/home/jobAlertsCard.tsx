@@ -5,6 +5,13 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatJobAlertCriteria } from "@/lib/api/job-alerts"
 import { useCreateJobAlert, useDeleteJobAlert, useJobAlerts } from "@/lib/api/use-job-alerts"
@@ -25,8 +32,7 @@ const CATEGORY_OPTIONS = CATEGORIAS_TRABAJOS.filter(
 
 const inputClass = "h-11 bg-surface-container-low border-border/40 text-sm rounded-lg"
 
-const selectClass =
-  "h-11 w-full appearance-none rounded-lg border border-border/40 bg-surface-container-low px-3.5 pr-9 text-sm text-foreground focus:border-secondary focus:ring-2 focus:ring-secondary/20 outline-none"
+const selectClass = "h-11 w-full rounded-lg bg-surface-container-low"
 
 type JobAlertsCardProps = {
   userId?: string
@@ -127,22 +133,26 @@ export function JobAlertsCard({ userId }: JobAlertsCardProps) {
               >
                 Categoría
               </label>
-              <div className="relative">
-                <select
+              <Select
+                value={category || "__all_categories"}
+                onValueChange={(value) => setCategory(value === "__all_categories" ? "" : value)}
+              >
+                <SelectTrigger
                   id="alert-category"
-                  value={category}
-                  onChange={(event) => setCategory(event.target.value)}
                   className={selectClass}
                   aria-label="Categoría de la alerta"
                 >
-                  <option value="">Todas</option>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all_categories">Todas</SelectItem>
                   {CATEGORY_OPTIONS.map((option) => (
-                    <option key={option.id} value={option.id}>
+                    <SelectItem key={option.id} value={option.id}>
                       {option.label}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-              </div>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
@@ -152,21 +162,25 @@ export function JobAlertsCard({ userId }: JobAlertsCardProps) {
               >
                 Frecuencia
               </label>
-              <div className="relative">
-                <select
+              <Select
+                value={frequency}
+                onValueChange={(value) => setFrequency(value as JobAlertFrequency)}
+              >
+                <SelectTrigger
                   id="alert-frequency"
-                  value={frequency}
-                  onChange={(event) => setFrequency(event.target.value as JobAlertFrequency)}
                   className={selectClass}
                   aria-label="Frecuencia de la alerta"
                 >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
                   {JOB_ALERT_FREQUENCIES.map((value) => (
-                    <option key={value} value={value}>
+                    <SelectItem key={value} value={value}>
                       {FREQUENCY_LABELS[value]}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-              </div>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

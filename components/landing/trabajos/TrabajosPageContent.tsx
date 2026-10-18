@@ -253,7 +253,7 @@ export function TrabajosPageContent() {
     <>
       <TrabajosSearchFilters filtros={filtros} onFiltrosChange={handleFiltrosChange} />
       {isLoading && (
-        <section className="bg-white pb-16">
+        <section className="bg-surface-container-lowest pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center py-12">
               <div className="flex items-center gap-3 text-muted-foreground">
@@ -265,9 +265,9 @@ export function TrabajosPageContent() {
         </section>
       )}
       {isError && (
-        <section className="bg-white pb-16">
+        <section className="bg-surface-container-lowest pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center py-12">
+            <div className="mx-auto max-w-3xl rounded-xl border border-border/40 bg-surface-container-low px-6 py-12 text-center">
               <p className="text-lg text-destructive font-medium">
                 Error al cargar las ofertas laborales
               </p>
@@ -279,7 +279,7 @@ export function TrabajosPageContent() {
         </section>
       )}
       {!isLoading && !isError && apiTrabajos.length === 0 && (
-        <section className="bg-white pb-16">
+        <section className="bg-surface-container-lowest pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center py-12">
               <p className="text-lg text-foreground font-medium">
@@ -294,7 +294,7 @@ export function TrabajosPageContent() {
       )}
       {!isLoading && !isError && apiTrabajos.length > 0 && (
         <>
-          <section className="bg-white">
+          <section className="bg-surface-container-lowest">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end pb-4">
               <SortSelect
                 value={urlState.orden}

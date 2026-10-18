@@ -46,9 +46,23 @@ export function applyDashboardEvent(
     }
     const messageKey = ["messages", "chat", message.chatId]
     void client.cancelQueries({ queryKey: messageKey })
-    client.setQueryData<Message[]>(messageKey, (current) =>
-      current && !current.some((item) => item.id === message.id) ? [...current, message] : current
-    )
+    client.setQueryData<Message[]>(messageKey, (current) => {
+      if (!current || current.some((item) => item.id === message.id)) return current
+      const offerLetterId =
+        message.type === "offer" && typeof message.contentType?.offerLetterId === "string"
+          ? message.contentType.offerLetterId
+          : null
+      const currentMessages = offerLetterId
+        ? current.map((item) =>
+            item.type === "offer" &&
+            item.contentType?.offerLetterId === offerLetterId &&
+            item.contentType.status === "sent"
+              ? { ...item, contentType: { ...item.contentType, status: "superseded" } }
+              : item
+          )
+        : current
+      return [...currentMessages, message]
+    })
     client.setQueriesData<Chat[]>({ queryKey: ["chats"] }, (current) =>
       current?.map((chat) => {
         if (chat.id !== message.chatId) return chat

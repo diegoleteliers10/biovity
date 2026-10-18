@@ -18,6 +18,11 @@ import { Button } from "@/components/ui/button"
 import type { MessageType } from "@/lib/api/messages"
 import { offerLetterPdfUrl, respondToOfferLetter } from "@/lib/api/offer-letters"
 import { useUser } from "@/lib/api/use-profile"
+import {
+  type OfferMessageResponse,
+  type OfferMessageStatus,
+  resolveOfferMessageStatus,
+} from "@/lib/offer-message-status"
 import { cn } from "@/lib/utils"
 
 type MessageBubbleProps = {
@@ -77,10 +82,7 @@ export function MessageBubble({
 
           {/* Bubble */}
           {message.type === "offer" ? (
-            <OfferMessageCard
-              message={message}
-              canRespond={Boolean(isOfferRecipient && !isOwn)}
-            />
+            <OfferMessageCard message={message} canRespond={Boolean(isOfferRecipient && !isOwn)} />
           ) : (
             <div
               className={cn(
@@ -360,7 +362,18 @@ function EventMessageCard({
 type OfferContentShape = {
   offerLetterId?: string
   title?: string
-  status?: "sent" | "accepted" | "rejected"
+  status?: OfferMessageStatus
+  expiresOn?: string
+}
+
+function santiagoDateToday(): string {
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "America/Santiago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date())
+  return `${parts.find((part) => part.type === "year")?.value}-${parts.find((part) => part.type === "month")?.value}-${parts.find((part) => part.type === "day")?.value}`
 }
 
 function OfferMessageCard({
@@ -372,8 +385,12 @@ function OfferMessageCard({
 }) {
   const content = (message.contentType ?? {}) as OfferContentShape
   const offerLetterId = content.offerLetterId ?? ""
-  const [status, setStatus] = useState(content.status ?? "sent")
+  const [localResponse, setLocalResponse] = useState<OfferMessageResponse | null>(null)
+  const status = resolveOfferMessageStatus(content.status, localResponse)
   const [isResponding, setIsResponding] = useState(false)
+  const isExpired =
+    status === "sent" && Boolean(content.expiresOn && santiagoDateToday() > content.expiresOn)
+  const visibleStatus = isExpired ? "expired" : status
 
   const handleRespond = async (response: "accepted" | "rejected") => {
     if (!offerLetterId) return
@@ -388,7 +405,7 @@ function OfferMessageCard({
       )
       return
     }
-    setStatus(response)
+    setLocalResponse(response)
     toast.success(
       response === "accepted"
         ? "Oferta aceptada. La empresa fue notificada."
@@ -397,25 +414,45 @@ function OfferMessageCard({
   }
 
   const statusBadge =
-    status === "accepted"
+    visibleStatus === "accepted"
       ? {
           label: "Aceptada",
           className:
             "bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/30",
           icon: CheckmarkCircle02Icon,
         }
-      : status === "rejected"
+      : visibleStatus === "rejected"
         ? {
             label: "Rechazada",
             className: "bg-destructive/10 text-destructive border border-destructive/30",
             icon: Cancel01Icon,
           }
-        : {
-            label: "Pendiente de respuesta",
-            className:
-              "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30",
-            icon: Mail01Icon,
-          }
+        : visibleStatus === "cancelled"
+          ? {
+              label: "Cancelada",
+              className:
+                "bg-surface-container-highest text-muted-foreground border border-border/50",
+              icon: Cancel01Icon,
+            }
+          : visibleStatus === "expired"
+            ? {
+                label: "Vencida",
+                className: "bg-destructive/10 text-destructive border border-destructive/30",
+                icon: Cancel01Icon,
+              }
+            : visibleStatus === "superseded"
+              ? {
+                  label: "Reemplazada",
+                  className:
+                    "bg-surface-container-highest text-muted-foreground border border-border/50",
+                  icon: Mail01Icon,
+                }
+              : {
+                  label: "Pendiente de respuesta",
+                  className:
+                    "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30",
+                  icon: Mail01Icon,
+                }
 
   return (
     <div className="w-[290px] sm:w-[330px] overflow-hidden rounded-2xl border border-border/50 bg-surface-container-lowest text-foreground shadow-none">
@@ -441,7 +478,7 @@ function OfferMessageCard({
       </div>
 
       {/* Preview del PDF */}
-      {offerLetterId && (
+      {offerLetterId && status !== "superseded" && (
         <iframe
           title="Vista previa de la carta de oferta"
           src={`${offerLetterPdfUrl(offerLetterId)}#toolbar=0&view=FitH`}
@@ -452,7 +489,7 @@ function OfferMessageCard({
 
       {/* Acciones */}
       <div className="space-y-2 px-4 py-3">
-        {offerLetterId && (
+        {offerLetterId && status !== "superseded" && (
           <a
             href={offerLetterPdfUrl(offerLetterId)}
             target="_blank"
@@ -464,7 +501,23 @@ function OfferMessageCard({
           </a>
         )}
 
-        {canRespond && status === "sent" && (
+        {content.expiresOn && (
+          <p className="text-center text-[11px] text-muted-foreground">
+            Válida hasta{" "}
+            {new Intl.DateTimeFormat("es-CL", {
+              dateStyle: "medium",
+              timeZone: "America/Santiago",
+            }).format(new Date(`${content.expiresOn}T12:00:00-03:00`))}
+          </p>
+        )}
+
+        {status === "superseded" && (
+          <p className="text-center text-[11px] text-muted-foreground">
+            La empresa envió una versión nueva de esta oferta.
+          </p>
+        )}
+
+        {canRespond && visibleStatus === "sent" && (
           <div className="flex gap-2 pt-0.5">
             <Button
               size="sm"
@@ -486,7 +539,7 @@ function OfferMessageCard({
           </div>
         )}
 
-        {!canRespond && status === "sent" && (
+        {!canRespond && visibleStatus === "sent" && (
           <p className="text-center text-[11px] text-muted-foreground">
             Esperando la respuesta del candidato.
           </p>

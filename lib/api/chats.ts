@@ -12,6 +12,7 @@ export type Chat = {
   id: string
   recruiterId: string
   professionalId: string
+  organizationId?: string | null
   lastMessage: string | null
   unreadCountRecruiter: number
   unreadCountProfessional: number
@@ -25,6 +26,7 @@ const ChatResponseSchema = z.object({
   id: z.string(),
   recruiterId: z.string(),
   professionalId: z.string(),
+  organizationId: z.string().nullable().optional(),
   lastMessage: z.string().nullable().default(null),
   unreadCountRecruiter: z.number().default(0),
   unreadCountProfessional: z.number().default(0),
@@ -92,7 +94,8 @@ export async function getChatsByProfessional(
 
 export async function createOrFindChat(
   professionalId: string,
-  requestHeaders?: Headers
+  requestHeaders?: Headers,
+  organizationId?: string
 ): Promise<Result<Chat, ApiError | NetworkError>> {
   const base =
     typeof window !== "undefined"
@@ -104,7 +107,7 @@ export async function createOrFindChat(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ professionalId }),
+    body: JSON.stringify({ professionalId, organizationId }),
   } satisfies RequestInit
   const result = requestHeaders
     ? await fetchJsonWithSession<{ data?: Chat; error?: string; message?: string }>(

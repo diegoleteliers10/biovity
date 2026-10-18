@@ -24,6 +24,7 @@ import { CreateOfferCard } from "./home/createOfferCard"
 import { OrganizationHomeHeader } from "./home/organizationHomeHeader"
 import { OrganizationRecentApplicationsCard } from "./home/organizationRecentApplicationsCard"
 import { PlaceholderCard } from "./home/placeholderCard"
+import { OrganizationSetupRecovery } from "./OrganizationSetupRecovery"
 import { OnboardingChecklist } from "./onboarding/OnboardingChecklist"
 
 export function OrganizationHomeContent() {
@@ -81,6 +82,8 @@ export function OrganizationHomeContent() {
   const displayName = organizationName || firstName
 
   const skeletonId = useId()
+
+  if (!hasOrgId) return <OrganizationSetupRecovery />
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">

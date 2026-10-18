@@ -25,6 +25,7 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Result } from "better-result"
 import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { AIScoreBadge, AIScoreBadgeSkeleton } from "@/components/ai/AIScoreBadge"
@@ -39,17 +40,50 @@ import {
 import type { Evaluation } from "@/hooks/use-evaluations"
 import type { ScoreEntry } from "@/hooks/useKanbanAIScoring"
 import type { JobOfferContext } from "@/lib/ai/types"
+import { getStageAgeDays, isHiringPlanOverdue } from "@/lib/hiring-plan"
+import {
+  groupApplicantsByPipelineStage,
+  type PipelineBoardStage,
+  resolveApplicantPipelineStageId,
+} from "@/lib/pipeline-stage-board"
 import type { Applicant, ApplicationStage } from "@/lib/types/dashboard"
-import { cn } from "@/lib/utils"
+import { cn, formatDateChilean } from "@/lib/utils"
 import { EvaluationSummary } from "./EvaluationSummary"
 
-const STAGES: { id: ApplicationStage; label: string; icon: typeof File02Icon }[] = [
-  { id: "pendiente", label: "Pendiente", icon: File02Icon },
-  { id: "entrevista", label: "Entrevista", icon: Message01Icon },
-  { id: "oferta", label: "Oferta", icon: Calendar04Icon },
-  { id: "contratado", label: "Contratado", icon: CheckmarkCircle02Icon },
-  { id: "rechazado", label: "Rechazado", icon: Cancel01Icon },
+const DEFAULT_STAGES: PipelineBoardStage[] = [
+  { id: "pendiente", name: "Pendiente", statusProjection: "pendiente", isArchived: false },
+  { id: "entrevista", name: "Entrevista", statusProjection: "entrevista", isArchived: false },
+  { id: "oferta", name: "Oferta", statusProjection: "oferta", isArchived: false },
+  { id: "contratado", name: "Contratado", statusProjection: "contratado", isArchived: false },
+  { id: "rechazado", name: "Rechazado", statusProjection: "rechazado", isArchived: false },
+  { id: "desistido", name: "Desistido", statusProjection: "desistido", isArchived: false },
 ]
+
+const TERMINAL_STATUSES: ReadonlySet<ApplicationStage> = new Set([
+  "contratado",
+  "rechazado",
+  "desistido",
+])
+
+function getStageIcon(status: PipelineBoardStage["statusProjection"]) {
+  switch (status) {
+    case "entrevista":
+      return Message01Icon
+    case "oferta":
+      return Calendar04Icon
+    case "contratado":
+      return CheckmarkCircle02Icon
+    case "rechazado":
+      return Cancel01Icon
+    case "pendiente":
+    case "desistido":
+      return File02Icon
+    default: {
+      const exhaustive: never = status
+      return exhaustive
+    }
+  }
+}
 
 type ApplicantCardProps = {
   applicant: Applicant
@@ -85,7 +119,7 @@ function ApplicantCard({
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: applicant.id,
     data: { applicant, stage: applicant.stage },
-    disabled: selectionMode,
+    disabled: selectionMode || TERMINAL_STATUSES.has(applicant.stage),
   })
 
   const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined
@@ -95,14 +129,18 @@ function ApplicantCard({
   }
 
   const scoreEntry = getScore ? getScore(applicant.id) : undefined
+  const isOverdue = isHiringPlanOverdue(applicant.targetDate, applicant.stage)
+  const stageAgeDays = getStageAgeDays(applicant.stageChangedAt)
 
   return (
     <Card
       ref={setNodeRef}
       style={style}
       className={cn(
-        "cursor-grab touch-none border-border/50 py-3.5 active:cursor-grabbing transition-colors duration-150 relative",
+        "touch-none border-border/50 py-3.5 transition-colors duration-150 relative",
+        !TERMINAL_STATUSES.has(applicant.stage) && "cursor-grab active:cursor-grabbing",
         isDragging && "opacity-50 border-primary/50",
+        isOverdue && "border-destructive/60 bg-destructive/5",
         selectionMode && isSelected && "border-primary/50 bg-primary/5"
       )}
       {...listeners}
@@ -151,6 +189,7 @@ function ApplicantCard({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => onSendOffer?.(applicant)}
+                disabled={TERMINAL_STATUSES.has(applicant.stage)}
                 className="cursor-pointer"
               >
                 <HugeiconsIcon icon={Mail01Icon} size={16} />
@@ -291,6 +330,31 @@ function ApplicantCard({
                 </span>
               )}
             </div>
+            {(applicant.assigneeId ||
+              applicant.nextAction ||
+              applicant.targetDate ||
+              stageAgeDays !== null) && (
+              <div
+                className={cn(
+                  "mt-1 space-y-0.5 text-[11px]",
+                  isOverdue ? "text-destructive" : "text-muted-foreground"
+                )}
+              >
+                {applicant.assigneeId && (
+                  <p>Responsable: {applicant.assigneeName ?? "Miembro no disponible"}</p>
+                )}
+                {applicant.nextAction && (
+                  <p className="truncate">Próxima acción: {applicant.nextAction}</p>
+                )}
+                {applicant.targetDate && (
+                  <p>
+                    {isOverdue ? "Atrasada desde" : "Objetivo"}:{" "}
+                    {formatDateChilean(new Date(`${applicant.targetDate}T12:00:00Z`), "d MMM")}
+                  </p>
+                )}
+                {stageAgeDays !== null && <p>En etapa: {stageAgeDays} d</p>}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
@@ -313,7 +377,7 @@ function KanbanColumn({
   selectionMode,
   onToggleSelection,
 }: {
-  stage: (typeof STAGES)[number]
+  stage: PipelineBoardStage
   applicants: Applicant[]
   getEvaluations?: (applicationId: string) => Evaluation[] | null
   getScore?: (applicationId: string) => ScoreEntry | undefined
@@ -328,26 +392,28 @@ function KanbanColumn({
   selectionMode?: boolean
   onToggleSelection?: (id: string) => void
 }) {
-  const { setNodeRef, isOver } = useDroppable({ id: stage.id })
+  const { setNodeRef, isOver } = useDroppable({ id: stage.id, disabled: stage.isArchived })
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
         "flex min-w-[220px] max-w-[220px] lg:min-w-[250px] lg:max-w-[250px] flex-col rounded-xl border bg-muted/20 p-2.5 lg:p-3 transition-colors h-full max-h-full min-h-0 snap-start shrink-0 overflow-hidden",
-        isOver && "border-primary/50 bg-primary/5"
+        isOver && "border-primary/50 bg-primary/5",
+        stage.isArchived && "border-dashed opacity-80"
       )}
     >
       <div className="mb-2 lg:mb-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-1.5 lg:gap-2">
           <HugeiconsIcon
-            icon={stage.icon}
+            icon={getStageIcon(stage.statusProjection)}
             size={16}
             strokeWidth={1.5}
             className="text-muted-foreground lg:size-5"
           />
-          <span className="text-xs leading-4 font-medium text-foreground">{stage.label}</span>
+          <span className="text-xs leading-4 font-medium text-foreground">{stage.name}</span>
         </div>
+        {stage.isArchived && <span className="text-[10px] text-muted-foreground">Archivada</span>}
         <span className="tabular-nums text-muted-foreground text-xs bg-surface-container-highest px-2 py-0.5 rounded-md font-medium">
           {applicants.length}
         </span>
@@ -377,9 +443,21 @@ function KanbanColumn({
 
 export type { Applicant, ApplicationStage }
 
+type StageChangeHandler = (applicationId: string, stageId: string) => boolean | Promise<boolean>
+
+type StatusChangeHandler =
+  | ((applicationId: string, stage: ApplicationStage, rejectionNote?: string) => void)
+  | ((
+      applicationId: string,
+      stage: ApplicationStage,
+      rejectionNote?: string
+    ) => boolean | Promise<boolean>)
+
 export function ApplicationsKanban({
   applicants: initialApplicants,
+  stages: configuredStages,
   onStatusChange,
+  onStageChange,
   onCreateEvent,
   getScore,
   getEvaluations,
@@ -396,7 +474,9 @@ export function ApplicationsKanban({
   onClearSelection: _onClearSelection,
 }: {
   applicants: Applicant[]
-  onStatusChange?: (applicationId: string, newStage: ApplicationStage) => void | Promise<void>
+  stages?: PipelineBoardStage[]
+  onStatusChange?: StatusChangeHandler
+  onStageChange?: StageChangeHandler
   /** Called when dragging to 'entrevista' or 'contratado' stages */
   onCreateEvent?: (applicant: Applicant, eventType: "interview" | "onboarding") => void
   /** Get score for a candidate */
@@ -415,19 +495,12 @@ export function ApplicationsKanban({
   onClearSelection?: () => void
 }) {
   const [activeApplicant, setActiveApplicant] = useState<Applicant | null>(null)
+  const stages = configuredStages ?? DEFAULT_STAGES
 
-  const applicantsByStage = useMemo(() => {
-    const map = new Map<ApplicationStage, Applicant[]>()
-    for (const s of STAGES) {
-      map.set(s.id, [])
-    }
-    for (const a of initialApplicants) {
-      const list = map.get(a.stage) ?? []
-      list.push(a)
-      map.set(a.stage, list)
-    }
-    return map
-  }, [initialApplicants])
+  const applicantsByStage = useMemo(
+    () => groupApplicantsByPipelineStage(initialApplicants, stages),
+    [initialApplicants, stages]
+  )
 
   const handleDragStart = useCallback((event: DragEndEvent) => {
     const data = event.active.data.current as { applicant: Applicant } | undefined
@@ -437,45 +510,71 @@ export function ApplicationsKanban({
   }, [])
 
   const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
+    async (event: DragEndEvent) => {
       setActiveApplicant(null)
       const { active, over } = event
       if (!over?.id || typeof over.id !== "string") return
       const data = active.data.current as { applicant: Applicant } | undefined
       if (!data?.applicant) return
 
-      let targetStage: ApplicationStage
-      if (STAGES.some((s) => s.id === over.id)) {
-        targetStage = over.id as ApplicationStage
+      let targetStageId: string
+      if (stages.some((stage) => stage.id === over.id)) {
+        targetStageId = over.id
       } else {
         const targetApplicant = initialApplicants.find((a) => a.id === over.id)
         if (!targetApplicant) return
-        targetStage = targetApplicant.stage
+        const resolvedTargetId = resolveApplicantPipelineStageId(targetApplicant, stages)
+        if (!resolvedTargetId) return
+        targetStageId = resolvedTargetId
       }
 
-      if (data.applicant.stage === targetStage) return
-
-      const previousStage = data.applicant.stage
-
-      const stageLabel = STAGES.find((s) => s.id === targetStage)?.label ?? targetStage
-      toast.success(`Movido a ${stageLabel}`, {
-        description: `${data.applicant.candidateName} -> ${stageLabel}`,
-        action: {
-          label: "Deshacer",
-          onClick: () => onStatusChange?.(data.applicant.id, previousStage),
-        },
-      })
-
-      if (targetStage === "entrevista" || targetStage === "contratado") {
-        const eventType = targetStage === "entrevista" ? "interview" : "onboarding"
-        onStatusChange?.(data.applicant.id, targetStage)
-        onCreateEvent?.(data.applicant, eventType)
+      const targetStage = stages.find((stage) => stage.id === targetStageId)
+      if (!targetStage || targetStage.isArchived) return
+      if (targetStage.statusProjection === "rechazado") {
+        toast.info("Usa la acción Rechazar para seleccionar el motivo.")
         return
       }
 
-      onStatusChange?.(data.applicant.id, targetStage)
+      const previousStageId = resolveApplicantPipelineStageId(data.applicant, stages)
+      if (!previousStageId || previousStageId === targetStageId) return
+      const previousStage = stages.find((stage) => stage.id === previousStageId)
+      if (!previousStage) return
+
+      const moveApplicant = (stage: PipelineBoardStage) =>
+        onStageChange
+          ? onStageChange(data.applicant.id, stage.id)
+          : onStatusChange?.(data.applicant.id, stage.statusProjection)
+      if (!onStageChange && !onStatusChange) return
+      const result = await Result.tryPromise(() => Promise.resolve(moveApplicant(targetStage)))
+      if (result.isErr() || result.value === false) {
+        toast.error("No se pudo cambiar la etapa. Reintenta.")
+        return
+      }
+
+      const stageLabel = targetStage.name
+      toast.success(`Movido a ${stageLabel}`, {
+        description: `${data.applicant.candidateName} -> ${stageLabel}`,
+        action: previousStage.isArchived
+          ? undefined
+          : {
+              label: "Deshacer",
+              onClick: () => {
+                void Promise.resolve(moveApplicant(previousStage)).then((saved) => {
+                  if (saved === false) toast.error("No se pudo deshacer el cambio de etapa.")
+                })
+              },
+            },
+      })
+
+      if (
+        targetStage.statusProjection === "entrevista" ||
+        targetStage.statusProjection === "contratado"
+      ) {
+        const eventType = targetStage.statusProjection === "entrevista" ? "interview" : "onboarding"
+        onCreateEvent?.(data.applicant, eventType)
+      }
     },
-    [onStatusChange, onCreateEvent, initialApplicants.find]
+    [onStageChange, onStatusChange, onCreateEvent, initialApplicants, stages]
   )
 
   const sensors = useSensors(
@@ -489,7 +588,7 @@ export function ApplicationsKanban({
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       {/* Desktop: horizontal scroll, Mobile: vertical stack or smaller cards */}
       <div className="flex h-full min-h-0 w-full gap-3 overflow-x-auto overflow-y-hidden pb-1 snap-x snap-mandatory lg:snap-none">
-        {STAGES.map((stage) => (
+        {stages.map((stage) => (
           <KanbanColumn
             key={stage.id}
             stage={stage}

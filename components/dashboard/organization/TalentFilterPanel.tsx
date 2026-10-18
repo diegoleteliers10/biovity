@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { TalentFilters } from "@/lib/api/use-talent"
+import type { TalentFilterValues } from "@/lib/api/talent-search"
 
 const EXPERIENCE_LEVELS = [
   { value: "junior", label: "Junior (0-2 años)" },
@@ -33,8 +33,8 @@ const AVAILABILITY_OPTIONS = [
 ]
 
 interface TalentFilterPanelProps {
-  filters: TalentFilters
-  onFiltersChange: (filters: Partial<TalentFilters>) => void
+  filters: TalentFilterValues
+  onFiltersChange: (filters: Partial<TalentFilterValues>) => void
   onReset: () => void
 }
 
@@ -126,14 +126,18 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
             <div className="space-y-1">
               <Label className="text-xs">Nivel de experiencia</Label>
               <Select
-                value={filters.experienceLevel ?? ""}
-                onValueChange={(v) => onFiltersChange({ experienceLevel: v || undefined })}
+                value={filters.experienceLevel ?? "__any_experience_level__"}
+                onValueChange={(v) =>
+                  onFiltersChange({
+                    experienceLevel: v === "__any_experience_level__" ? undefined : v,
+                  })
+                }
               >
                 <SelectTrigger id="filter-exp-level" className="h-9">
                   <SelectValue placeholder="Cualquier nivel" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Cualquier nivel</SelectItem>
+                  <SelectItem value="__any_experience_level__">Cualquier nivel</SelectItem>
                   {EXPERIENCE_LEVELS.map((l) => (
                     <SelectItem key={l.value} value={l.value}>
                       {l.label}
@@ -146,14 +150,18 @@ export function TalentFilterPanel({ filters, onFiltersChange, onReset }: TalentF
             <div className="space-y-1">
               <Label className="text-xs">Disponibilidad</Label>
               <Select
-                value={filters.availability ?? ""}
-                onValueChange={(v) => onFiltersChange({ availability: v || undefined })}
+                value={filters.availability ?? "__any_availability__"}
+                onValueChange={(v) =>
+                  onFiltersChange({
+                    availability: v === "__any_availability__" ? undefined : v,
+                  })
+                }
               >
                 <SelectTrigger id="filter-availability" className="h-9">
                   <SelectValue placeholder="Cualquier disponibilidad" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Cualquier disponibilidad</SelectItem>
+                  <SelectItem value="__any_availability__">Cualquier disponibilidad</SelectItem>
                   {AVAILABILITY_OPTIONS.map((a) => (
                     <SelectItem key={a.value} value={a.value}>
                       {a.label}

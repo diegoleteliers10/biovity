@@ -1,14 +1,10 @@
 import { TaggedError } from "better-result"
 
-const PromptInjectionErrorFactory = TaggedError("PromptInjectionError")
-
-const _PromptInjectionError = PromptInjectionErrorFactory<{
+class PromptInjectionError extends TaggedError("PromptInjectionError")<{
   code: string
   detectedPattern: string
   userId?: string
-}>()
-
-class PromptInjectionError extends _PromptInjectionError {
+}> {
   constructor(args: { code: string; detectedPattern: string; userId?: string }) {
     super({
       code: args.code,
@@ -20,14 +16,10 @@ class PromptInjectionError extends _PromptInjectionError {
 
 export { PromptInjectionError }
 
-const UnauthorizedToolAccessErrorFactory = TaggedError("UnauthorizedToolAccessError")
-
-const _UnauthorizedToolAccessError = UnauthorizedToolAccessErrorFactory<{
+class UnauthorizedToolAccessError extends TaggedError("UnauthorizedToolAccessError")<{
   toolName: string
   userId?: string
-}>()
-
-class UnauthorizedToolAccessError extends _UnauthorizedToolAccessError {
+}> {
   constructor(args: { toolName: string; userId?: string }) {
     super({ toolName: args.toolName, userId: args.userId })
   }

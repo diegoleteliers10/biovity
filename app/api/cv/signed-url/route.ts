@@ -14,9 +14,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
   const path = new URL(request.url).searchParams.get("path")
-  const ownerId = path?.match(
-    /^cv\/[^/]+_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.pdf$/i
-  )?.[1]
+  const ownerId =
+    path?.match(/^cv\/([0-9a-f-]{36})\/[0-9a-f-]{36}\.pdf$/i)?.[1] ??
+    path?.match(
+      /^cv\/[^/]+_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.pdf$/i
+    )?.[1]
   if (!path || !ownerId || path.includes("..")) {
     return NextResponse.json({ error: "Ruta inválida" }, { status: 400 })
   }

@@ -48,6 +48,16 @@ export const defaultOfferLetterData = (data: Partial<OfferLetterData> = {}): Off
   hrContactPhone: data.hrContactPhone ?? "",
 })
 
+function formatOfferExpiryDate(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
+  return new Intl.DateTimeFormat("es-CL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00Z`))
+}
+
 /** Paragraph: pdfcn Text renders inline (<span>), so block it with a View. */
 function P({
   children,
@@ -215,8 +225,8 @@ export function OfferLetterDocument({ data }: { data: OfferLetterData }) {
           <LetterSection title="Vigencia de la oferta">
             <View>
               <Text variant="base" align="justify">
-                Esta oferta tiene vigencia hasta el {data.offerValidUntil}. Pasada esa fecha,
-                requeriremos confirmación para seguir con el proceso.
+                Esta oferta tiene vigencia hasta el {formatOfferExpiryDate(data.offerValidUntil)}.
+                Pasada esa fecha, requeriremos confirmación para seguir con el proceso.
               </Text>
             </View>
           </LetterSection>

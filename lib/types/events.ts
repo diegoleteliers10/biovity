@@ -4,6 +4,7 @@
 
 export type EventType = "interview" | "task_deadline" | "announcement" | "onboarding"
 export type EventStatus = "scheduled" | "completed" | "cancelled"
+export type EventCalendarProvider = "biovity" | "google"
 export type ParticipantRole = "organizer" | "attendee" | "guest"
 export type ParticipantStatus = "pending" | "accepted" | "declined"
 
@@ -12,6 +13,7 @@ export type Event = {
   title: string
   description?: string
   type: EventType
+  timeZone?: string
   startAt: string
   endAt?: string
   location?: string
@@ -46,10 +48,46 @@ export type EventNote = {
   createdAt: string
 }
 
+export type EventParticipantStatusHistory = {
+  eventId: string
+  userId: string
+  entries: Array<{
+    id: string
+    fromStatus: ParticipantStatus
+    toStatus: ParticipantStatus
+    changedAt: string
+  }>
+}
+
+export type EventChangeField =
+  | "title"
+  | "description"
+  | "type"
+  | "timeZone"
+  | "startAt"
+  | "endAt"
+  | "location"
+  | "meetingUrl"
+  | "calendarProvider"
+  | "status"
+
+export type EventChangeHistory = {
+  eventId: string
+  entries: Array<{
+    id: string
+    actorUserId: string | null
+    action: "updated" | "cancelled"
+    changes: Partial<Record<EventChangeField, { from: string | null; to: string | null }>>
+    createdAt: string
+  }>
+}
+
 export type CreateEventInput = {
   title: string
   description?: string
   type: EventType
+  calendarProvider?: EventCalendarProvider
+  timeZone?: string
   startAt: string
   endAt?: string
   location?: string
@@ -58,12 +96,16 @@ export type CreateEventInput = {
   organizationId?: string
   candidateId?: string
   applicationId?: string
+  interviewerIds?: string[]
+  interviewerAssignments?: Array<{ userId: string; roleId: string }>
 }
 
 export type UpdateEventInput = {
   title?: string
   description?: string
   type?: EventType
+  calendarProvider?: EventCalendarProvider
+  timeZone?: string
   startAt?: string
   endAt?: string
   location?: string
@@ -73,6 +115,7 @@ export type UpdateEventInput = {
 
 export type EventFilters = {
   organizationId?: string
+  applicationId?: string
   userId?: string
   organizerId?: string
   type?: EventType

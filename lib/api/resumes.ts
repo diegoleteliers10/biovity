@@ -81,6 +81,7 @@ export type Resume = {
   languages: ResumeLanguage[]
   links: ResumeLink[]
   cvFile: ResumeCvFile | null
+  cvVersion?: number
   createdAt: string
   updatedAt: string
 }
@@ -149,6 +150,7 @@ function normalizeResume(raw: unknown): Resume | null {
     languages: Array.isArray(r.languages) ? r.languages : [],
     links: Array.isArray(r.links) ? r.links : [],
     cvFile: normalizeCvFile(r.cvFile ?? r.cv_file),
+    cvVersion: typeof r.cvVersion === "number" ? r.cvVersion : 0,
     createdAt: String(r.createdAt ?? r.created_at ?? ""),
     updatedAt: String(r.updatedAt ?? r.updated_at ?? ""),
   }
@@ -224,30 +226,7 @@ export async function uploadResumeCv(
 ): Promise<Result<Resume, ApiError | NetworkError>> {
   const formData = new FormData()
   formData.append("file", file)
+  formData.append("resumeId", resumeId)
 
-  const uploadUrl = "/api/upload/cv"
-
-  const uploadResult = await fetchJson<{
-    path?: string
-    url?: string
-    originalName?: string
-    mimeType?: string
-    size?: number
-    uploadedAt?: string
-  }>(uploadUrl, { method: "POST", body: formData })
-
-  if (uploadResult.isErr()) return R.err(uploadResult.error)
-
-  const uploadData = uploadResult.value
-
-  const cvFile: ResumeCvFile = {
-    path: uploadData.path,
-    url: uploadData.url,
-    originalName: uploadData.originalName,
-    mimeType: uploadData.mimeType,
-    size: uploadData.size,
-    uploadedAt: uploadData.uploadedAt,
-  }
-
-  return updateResume(resumeId, { cvFile })
+  return resumeResponse(await fetchJson<unknown>("/api/upload/cv", { method: "POST", body: formData }))
 }

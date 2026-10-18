@@ -5,15 +5,25 @@ import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getApplicationsByOrganization } from "@/lib/api/applications"
 import { getEvents } from "@/lib/api/events"
-import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
+import {
+  getCustomStageApplications,
+  getOrganizationMetrics,
+  getResponseTimeVisits,
+  getSourceApplications,
+  getStageDurationVisits,
+} from "@/lib/api/organization-metrics"
 import { getUser } from "@/lib/api/users"
 import {
   fetchOrgFeaturedCandidates,
   fetchOrgRecentMessages,
 } from "@/lib/data/organization-dashboard-data"
 import { getResultErrorMessage } from "@/lib/result"
+import type {
+  ApplicationSourceChannel,
+  ApplicationSourceMethod,
+} from "@/lib/types/application-source"
 import type { Metric } from "@/lib/types/dashboard"
-import type { MetricsPeriod } from "@/lib/types/organization-metrics"
+import type { MetricsPeriod, ResponseTimeBucket } from "@/lib/types/organization-metrics"
 
 export const orgDashboardKeys = {
   metrics: ["org", "metrics"] as const,
@@ -49,7 +59,9 @@ export function useOrgMetrics(organizationId: string | undefined) {
     queryKey: [...orgDashboardKeys.metrics, organizationId],
     queryFn: async () => {
       if (!organizationId) throw new Error("organizationId is required")
-      const result = await getOrganizationMetrics(organizationId, { period: "month" })
+      const result = await getOrganizationMetrics(organizationId, {
+        period: "month",
+      })
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return getMetricsCards(result.value.dashboard, false)
     },
@@ -74,9 +86,17 @@ export function useOrganizationMetrics(
           dashboard: DEFAULT_DASHBOARD_METRICS,
           pipeline: {
             totalApplications: 0,
-            byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 },
+            reachedCounts: { entrevista: 0, oferta: 0, contratado: 0 },
+            byStatus: {
+              pendiente: 0,
+              oferta: 0,
+              entrevista: 0,
+              rechazado: 0,
+              contratado: 0,
+            },
             conversionRate: 0,
-            avgTimeInStages: { entrevista: 0, oferta: 0, contratado: 0 },
+            customStageConversions: [],
+            stageDurations: [],
           },
           topJobs: [],
           recentTrend: [],
@@ -92,15 +112,27 @@ export function useOrganizationMetrics(
           unansweredCount: 0,
         }
       }
-      const result = await getOrganizationMetrics(organizationId, { period, startDate, endDate })
+      const result = await getOrganizationMetrics(organizationId, {
+        period,
+        startDate,
+        endDate,
+      })
       if (!Result.isOk(result)) {
         return {
           dashboard: DEFAULT_DASHBOARD_METRICS,
           pipeline: {
             totalApplications: 0,
-            byStatus: { pendiente: 0, oferta: 0, entrevista: 0, rechazado: 0, contratado: 0 },
+            reachedCounts: { entrevista: 0, oferta: 0, contratado: 0 },
+            byStatus: {
+              pendiente: 0,
+              oferta: 0,
+              entrevista: 0,
+              rechazado: 0,
+              contratado: 0,
+            },
             conversionRate: 0,
-            avgTimeInStages: { entrevista: 0, oferta: 0, contratado: 0 },
+            customStageConversions: [],
+            stageDurations: [],
           },
           topJobs: [],
           recentTrend: [],
@@ -120,6 +152,150 @@ export function useOrganizationMetrics(
     },
     enabled: Boolean(organizationId),
     placeholderData: (previousData) => previousData,
+  })
+}
+
+export function useStageDurationVisits(
+  organizationId: string | undefined,
+  jobId: string | undefined,
+  stageId: string | undefined,
+  startDate: string | undefined,
+  endDate: string | undefined,
+  page: number
+) {
+  return useQuery({
+    queryKey: [
+      "org",
+      "stageDurationVisits",
+      organizationId,
+      jobId,
+      stageId,
+      startDate,
+      endDate,
+      page,
+    ],
+    queryFn: () =>
+      organizationId && jobId && stageId
+        ? getStageDurationVisits(organizationId, jobId, stageId, {
+            startDate,
+            endDate,
+            page,
+            pageSize: 20,
+          })
+        : Promise.resolve(null),
+    enabled: Boolean(organizationId && jobId && stageId),
+    staleTime: 60 * 1000,
+  })
+}
+
+export function useCustomStageApplications(
+  organizationId: string | undefined,
+  jobId: string | undefined,
+  stageId: string | undefined,
+  period: MetricsPeriod,
+  startDate: string | undefined,
+  endDate: string | undefined,
+  page: number
+) {
+  return useQuery({
+    queryKey: [
+      "org",
+      "customStageApplications",
+      organizationId,
+      jobId,
+      stageId,
+      period,
+      startDate,
+      endDate,
+      page,
+    ],
+    queryFn: () =>
+      organizationId && jobId && stageId
+        ? getCustomStageApplications(organizationId, jobId, stageId, {
+            period,
+            startDate,
+            endDate,
+            page,
+            pageSize: 20,
+          })
+        : Promise.resolve(null),
+    enabled: Boolean(organizationId && jobId && stageId),
+    staleTime: 60 * 1000,
+  })
+}
+
+export function useResponseTimeVisits(
+  organizationId: string | undefined,
+  bucket: ResponseTimeBucket | undefined,
+  period: MetricsPeriod,
+  startDate: string | undefined,
+  endDate: string | undefined,
+  page: number
+) {
+  return useQuery({
+    queryKey: [
+      "org",
+      "responseTimeVisits",
+      organizationId,
+      bucket,
+      period,
+      startDate,
+      endDate,
+      page,
+    ],
+    queryFn: () =>
+      organizationId && bucket
+        ? getResponseTimeVisits(organizationId, bucket, {
+            period,
+            startDate,
+            endDate,
+            page,
+            pageSize: 20,
+          })
+        : Promise.resolve(null),
+    enabled: Boolean(organizationId && bucket && (period !== "custom" || (startDate && endDate))),
+    staleTime: 60 * 1000,
+  })
+}
+
+export function useSourceApplications(
+  organizationId: string | undefined,
+  sourceChannel: ApplicationSourceChannel | undefined,
+  sourceMethod: ApplicationSourceMethod | undefined,
+  period: MetricsPeriod,
+  startDate: string | undefined,
+  endDate: string | undefined,
+  page: number
+) {
+  return useQuery({
+    queryKey: [
+      "org",
+      "sourceApplications",
+      organizationId,
+      sourceChannel,
+      sourceMethod,
+      period,
+      startDate,
+      endDate,
+      page,
+    ],
+    queryFn: () =>
+      organizationId && sourceChannel && sourceMethod
+        ? getSourceApplications(organizationId, sourceChannel, sourceMethod, {
+            period,
+            startDate,
+            endDate,
+            page,
+            pageSize: 20,
+          })
+        : Promise.resolve(null),
+    enabled: Boolean(
+      organizationId &&
+        sourceChannel &&
+        sourceMethod &&
+        (period !== "custom" || (startDate && endDate))
+    ),
+    staleTime: 60 * 1000,
   })
 }
 

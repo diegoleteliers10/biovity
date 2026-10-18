@@ -36,12 +36,15 @@ export function useChatsByProfessional(professionalId: string | undefined) {
   })
 }
 
-export function useCreateOrFindChatMutation(recruiterId: string | undefined) {
+export function useCreateOrFindChatMutation(
+  recruiterId: string | undefined,
+  organizationId: string | undefined
+) {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (professionalId: string) => {
-      const result = await createOrFindChat(professionalId)
+      const result = await createOrFindChat(professionalId, undefined, organizationId)
       if (!Result.isOk(result)) throw new Error(getResultErrorMessage(result.error))
       return result.value
     },

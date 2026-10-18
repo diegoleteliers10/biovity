@@ -3,6 +3,8 @@ name: Background workers
 on:
   schedule:
     - cron: "*/5 * * * *"
+    - cron: "0 5 * * *"
+    - cron: "0 12 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -15,9 +17,10 @@ concurrency:
 jobs:
   process-queues:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 5
     steps:
       - name: Process Jev queue
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/5 * * * *'
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
@@ -26,8 +29,12 @@ jobs:
             -H "Authorization: Bearer $CRON_SECRET" \
             https://biovity.cl/api/ai/score-worker
 
+  process-realtime-outbox:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/5 * * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
       - name: Dispatch Realtime outbox
-        if: always()
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
@@ -35,3 +42,59 @@ jobs:
           curl --fail --silent --show-error --max-time 60 \
             -H "Authorization: Bearer $CRON_SECRET" \
             https://biovity.cl/api/realtime/outbox-worker
+
+  process-backend-jobs:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/5 * * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Dispatch backend jobs
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error --max-time 60 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://biovity.cl/api/cron/backend-dispatch
+
+  process-email-outbox:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/5 * * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Dispatch email outbox
+        env:
+          EMAIL_OUTBOX_SECRET: ${{ secrets.EMAIL_OUTBOX_SECRET }}
+        run: |
+          test -n "$EMAIL_OUTBOX_SECRET"
+          curl --fail --silent --show-error --max-time 60 -X POST \
+            -H "Authorization: Bearer $EMAIL_OUTBOX_SECRET" \
+            https://biovity.cl/api/cron/email-outbox
+
+  clean-cv-files:
+    if: github.event.schedule == '0 5 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Clean expired CV files
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error --max-time 60 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://biovity.cl/api/cron/cv-cleanup
+
+  enqueue-organization-digests:
+    if: github.event.schedule == '0 12 * * 1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Enqueue organization digests
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error --max-time 60 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://biovity.cl/api/cron/weekly-digest

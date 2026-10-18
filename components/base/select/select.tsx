@@ -57,8 +57,8 @@ type SelectValueProps = {
 }
 
 export const sizes = {
-  sm: { root: "py-2 px-3", shortcut: "pr-2.5" },
-  md: { root: "h-7 px-2.5", shortcut: "pr-2" },
+  sm: { root: "py-2 pl-3 pr-5", shortcut: "pr-2.5" },
+  md: { root: "h-7 pl-2.5 pr-5", shortcut: "pr-2" },
 }
 
 const SelectValue = ({

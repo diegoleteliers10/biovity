@@ -187,6 +187,7 @@ export default function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable}`}
       data-scroll-behavior="smooth"
+      suppressHydrationWarning
     >
       <head>
         {/* Was #2563EB, a Tailwind blue this brand does not use. The theme script

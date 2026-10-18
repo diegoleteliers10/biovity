@@ -1,14 +1,17 @@
+import type { PoolClient } from "pg"
 import { Resend } from "resend"
+import { pool } from "@/lib/db"
+import { enqueueEmail } from "@/lib/email-outbox"
 
 let resendInstance: Resend | null = null
-function getResend() {
+function getResend(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return null
   if (!resendInstance) {
-    resendInstance = new Resend(process.env.RESEND_API_KEY || "re_mock_key")
+    resendInstance = new Resend(apiKey)
   }
   return resendInstance
 }
-
-const EMAIL_FROM = process.env.EMAIL_FROM || "Biovity <no-reply@biovity.cl>"
 
 // Premium layout base CSS/HTML matching Biovity colors and branding
 const emailLayout = (title: string, content: string) => {
@@ -128,7 +131,12 @@ const emailLayout = (title: string, content: string) => {
 `
 }
 
-export async function sendWaitlistEmail(to: string, role: string) {
+export async function sendWaitlistEmail(
+  to: string,
+  role: string,
+  waitlistId: string,
+  client?: PoolClient
+) {
   const isCompany = role === "organization"
   const welcomeText = isCompany
     ? `Nos entusiasma que quieras impulsar tu organización con nuestro buscador inteligente de talento y automatizaciones por IA. Estamos afinando los últimos detalles de la plataforma para abrir las puertas a las primeras empresas.`
@@ -146,15 +154,46 @@ export async function sendWaitlistEmail(to: string, role: string) {
     `
   )
 
-  return getResend().emails.send({
-    from: EMAIL_FROM,
-    to,
-    subject: "¡Te damos la bienvenida a la lista de espera de Biovity! 🎉",
-    html,
-  })
+  return enqueueEmail(
+    {
+      type: "waitlist",
+      to,
+      idempotencyKey: `waitlist-welcome:${waitlistId}`,
+      subject: "¡Te damos la bienvenida a la lista de espera de Biovity! 🎉",
+      html,
+    },
+    client
+  )
 }
 
-export async function sendWaitlistInviteEmail(to: string, role: string) {
+export async function sendWaitlistInviteEmail(to: string, role: string, waitlistId: string) {
+  const existing = await pool.query<{
+    status: string
+    expired: boolean
+    has_content: boolean
+  }>(
+    `SELECT status, expires_at <= now() AS expired, html IS NOT NULL AS has_content
+     FROM email_outbox
+     WHERE email_type = 'waitlist_invite' AND source_type = 'waitlist' AND source_id = $1
+     ORDER BY created_at DESC LIMIT 1`,
+    [waitlistId]
+  )
+  const latest = existing.rows[0]
+  if (latest && (latest.status !== "dead" || (!latest.expired && latest.has_content))) {
+    return false
+  }
+
+  const generation = latest
+    ? await pool.query<{ count: number }>(
+        `SELECT count(*)::int AS count FROM email_outbox
+         WHERE email_type = 'waitlist_invite' AND source_type = 'waitlist' AND source_id = $1`,
+        [waitlistId]
+      )
+    : null
+  const idempotencyKey = latest
+    ? `waitlist-invite:${waitlistId}:retry:${generation?.rows[0]?.count ?? 1}`
+    : `waitlist-invite:${waitlistId}`
+
   const isCompany = role === "organization"
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://biovity.cl"
   const registerUrl = isCompany
@@ -182,9 +221,11 @@ export async function sendWaitlistInviteEmail(to: string, role: string) {
     `
   )
 
-  return getResend().emails.send({
-    from: EMAIL_FROM,
+  return enqueueEmail({
+    type: "waitlist_invite",
     to,
+    idempotencyKey,
+    source: { type: "waitlist", id: waitlistId },
     subject: isCompany
       ? "¡La lista de espera de Biovity se abrió! Tu organización fue seleccionada 🎉"
       : "¡La lista de espera de Biovity se abrió! Fuiste seleccionado/a 🎉",
@@ -238,8 +279,8 @@ export async function sendWelcomeEmail(
     `
   )
 
-  return getResend().emails.send({
-    from: EMAIL_FROM,
+  return enqueueEmail({
+    type: "welcome",
     to,
     subject: isCompany
       ? "¡Bienvenido a Biovity Empresas! 🏢"
@@ -264,8 +305,8 @@ export async function sendVerificationEmail(to: string, url: string) {
     `
   )
 
-  return getResend().emails.send({
-    from: EMAIL_FROM,
+  return enqueueEmail({
+    type: "verification",
     to,
     subject: "Verifica tu cuenta de Biovity",
     html,
@@ -288,8 +329,8 @@ export async function sendResetPasswordEmail(to: string, url: string) {
     `
   )
 
-  return getResend().emails.send({
-    from: EMAIL_FROM,
+  return enqueueEmail({
+    type: "password_reset",
     to,
     subject: "Restablecer tu contraseña de Biovity",
     html,
@@ -326,8 +367,8 @@ export async function sendOrganizationInvitationEmail(
     `
   )
 
-  return getResend().emails.send({
-    from: EMAIL_FROM,
+  return enqueueEmail({
+    type: "organization_invite",
     to,
     subject: `${inviterName} te ha invitado a unirte a ${organizationName} en Biovity`,
     html,
@@ -340,13 +381,18 @@ export async function subscribeToResendAudience(email: string, name?: string) {
     console.warn("RESEND_AUDIENCE_ID is not defined, skipping contact subscription.")
     return null
   }
+  const resend = getResend()
+  if (!resend) {
+    console.error("RESEND_API_KEY is not defined, skipping contact subscription.")
+    return null
+  }
 
   const nameParts = name?.trim().split(/\s+/) || []
   const firstName = nameParts[0] || ""
   const lastName = nameParts.slice(1).join(" ") || ""
 
   try {
-    const { data, error } = await getResend().contacts.create({
+    const { data, error } = await resend.contacts.create({
       email,
       firstName,
       lastName,

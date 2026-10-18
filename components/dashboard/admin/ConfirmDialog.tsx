@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import {
   Dialog,
   DialogContent,

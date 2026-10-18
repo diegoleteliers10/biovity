@@ -4,12 +4,13 @@ import { Clock01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
-import { formatDateChilean } from "@/lib/utils"
+import { formatParticipantTime, DEFAULT_EVENT_TIME_ZONE } from "@/lib/event-time"
 
 type Event = {
   readonly id: string
   readonly title: string
   readonly startAt: string
+  readonly timeZone?: string
   readonly description?: string
   readonly type: "interview" | "task_deadline" | "announcement" | "onboarding"
 }
@@ -56,7 +57,7 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
   const tooltipPosition = adjustedPosition ?? position
 
   const formatEventDateTime = (iso: string) => {
-    return formatDateChilean(iso, "EEE d MMM, HH:mm")
+    return formatParticipantTime(iso, "EEE d MMM, HH:mm")
   }
 
   const getEventTypeLabel = (type: Event["type"]) => {
@@ -112,7 +113,9 @@ export function EventTooltip({ event, position }: EventTooltipProps) {
 
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <HugeiconsIcon icon={Clock01Icon} className="size-3.5" />
-              <span className="text-xs tabular-nums">{formatEventDateTime(event.startAt)}</span>
+              <span className="text-xs tabular-nums">
+                {formatEventDateTime(event.startAt)} · {event.timeZone ?? DEFAULT_EVENT_TIME_ZONE}
+              </span>
             </div>
           </div>
 

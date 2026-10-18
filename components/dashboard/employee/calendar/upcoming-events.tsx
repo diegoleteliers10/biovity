@@ -27,7 +27,7 @@ import {
 import { Card } from "@/components/ui/card"
 import { useEvent } from "@/lib/api/use-events"
 import type { Event, EventStatus, ParticipantStatus } from "@/lib/types/events"
-import { formatDateChilean, getChileanDate } from "@/lib/utils"
+import { formatParticipantTime, DEFAULT_EVENT_TIME_ZONE } from "@/lib/event-time"
 
 const PARTICIPANT_STATUS_LABELS: Record<ParticipantStatus, string> = {
   pending: "Pendiente",
@@ -78,22 +78,22 @@ export function UpcomingEvents({
     ? expandedEvent?.participants?.find((p) => p.userId === currentUserId)
     : undefined
 
-  const now = getChileanDate()
+  const now = new Date()
   const upcoming = events
-    .filter((e) => getChileanDate(e.startAt) >= now && e.status !== "cancelled")
-    .sort((a, b) => getChileanDate(a.startAt).getTime() - getChileanDate(b.startAt).getTime())
+    .filter((e) => new Date(e.startAt) >= now && e.status !== "cancelled")
+    .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
     .slice(0, 5)
 
   const formatEventDate = (iso: string) => {
-    return formatDateChilean(iso, "d MMM yyyy")
+    return formatParticipantTime(iso, "d MMM yyyy")
   }
 
   const formatEventTime = (iso: string) => {
-    return formatDateChilean(iso, "p")
+    return formatParticipantTime(iso, "p")
   }
 
   const formatEndTime = (iso: string) => {
-    return formatDateChilean(iso, "p")
+    return formatParticipantTime(iso, "p")
   }
 
   const getEventTypeDot = (type: Event["type"]) => {
@@ -215,7 +215,10 @@ export function UpcomingEvents({
                           </div>
                           <div className="flex items-center gap-1">
                             <HugeiconsIcon icon={Clock01Icon} className="size-3" />
-                            <span>{formatEventTime(event.startAt)}</span>
+                            <span>
+                              {formatEventTime(event.startAt)} ·{" "}
+                              {event.timeZone ?? DEFAULT_EVENT_TIME_ZONE}
+                            </span>
                           </div>
                         </div>
 

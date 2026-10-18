@@ -6,12 +6,14 @@ import {
   getApplicationDetail,
   getApplicationsByJob,
   getApplicationsByOrganization,
+  updateApplicationPipelineStage,
 } from "@/lib/api/applications"
 import { createOrFindChat } from "@/lib/api/chats"
 import { getOrgQuestionsByJob } from "@/lib/api/job-questions"
 import { getJobsByOrganization, getManagedJob } from "@/lib/api/jobs"
 import { sendMessage } from "@/lib/api/messages"
 import { getOrganizationMetrics } from "@/lib/api/organization-metrics"
+import { getPipelineStages, getRejectionReasons } from "@/lib/api/pipeline-stages"
 import { getResumeByUserId } from "@/lib/api/resumes"
 import { getUser, getUsers } from "@/lib/api/users"
 
@@ -217,21 +219,57 @@ export const getJobOffersTool = tool({
 })
 
 export const updateCandidateStatusTool = tool({
-  description: "Mueve un candidato a otra columna del kanban",
+  description:
+    "Mueve una postulación a una etapa configurable. Usa getPipelineStages para encontrar el stageId válido de la oferta.",
   inputSchema: z.object({
     applicationId: z.string().min(1).max(100),
-    newStatus: z.enum(["applied", "reviewing", "interview", "offer", "rejected"]),
-    reason: z.string().min(1).max(500),
+    stageId: z.string().uuid(),
+    reason: z.string().max(500).optional(),
+    rejectionReasonId: z.string().uuid().optional(),
   }),
   needsApproval: true,
-  execute: async ({ applicationId, newStatus, reason }) => {
-    validateToolInput("updateCandidateStatus", { applicationId })
-    const { updateApplicationStatus } = await import("@/lib/api/applications")
-    const result = await updateApplicationStatus(
-      applicationId,
-      mapKanbanToApiStatus(newStatus),
-      await headers()
-    )
+  execute: async ({ applicationId, stageId, reason, rejectionReasonId }) => {
+    validateToolInput("updateCandidateStatus", { applicationId, stageId, reason, rejectionReasonId })
+    const requestHeaders = await headers()
+    const applicationResult = await getApplicationDetail(applicationId, requestHeaders)
+    if (!Result.isOk(applicationResult))
+      return { success: false, error: "No se encontró la postulación" }
+    const stagesResult = await getPipelineStages(applicationResult.value.jobId, requestHeaders)
+    if (!Result.isOk(stagesResult))
+      return { success: false, error: "No se pudieron obtener las etapas" }
+    const target = stagesResult.value.find((stage) => stage.id === stageId)
+    if (!target || target.isArchived)
+      return { success: false, error: "La etapa no está disponible para esta oferta" }
+    if (target.statusProjection === "rechazado") {
+      const organizationId = applicationResult.value.job?.organizationId
+      if (!organizationId) {
+        return { success: false, error: "No se pudo identificar la empresa de la oferta" }
+      }
+      const reasonsResult = await getRejectionReasons(
+        organizationId,
+        requestHeaders
+      )
+      if (!Result.isOk(reasonsResult))
+        return { success: false, error: "No se pudieron obtener los motivos de rechazo" }
+      const reasons = reasonsResult.value.filter((item) => item.active)
+      if (!rejectionReasonId) {
+        return {
+          success: false,
+          error: "Selecciona un motivo activo de la lista",
+          rejectionReasons: reasons.map(({ id, label }) => ({ id, label })),
+        }
+      }
+      if (!reasons.some((item) => item.id === rejectionReasonId)) {
+        return { success: false, error: "El motivo de rechazo seleccionado no está activo" }
+      }
+    }
+    const result = await updateApplicationPipelineStage({
+      id: applicationId,
+      stageId,
+      rejectionNote: target.statusProjection === "rechazado" ? reason : undefined,
+      rejectionReasonId: target.statusProjection === "rechazado" ? rejectionReasonId : undefined,
+      requestHeaders,
+    })
     if (!Result.isOk(result)) {
       return {
         success: false,
@@ -243,10 +281,24 @@ export const updateCandidateStatusTool = tool({
     return {
       success: true,
       applicationId,
-      newStatus,
       reason,
+      stage: target.name,
       updatedAt: result.value.updatedAt,
     }
+  },
+})
+
+export const getPipelineStagesTool = tool({
+  description: "Lista las etapas configuradas y activas para una oferta de trabajo.",
+  inputSchema: z.object({ jobId: z.string().uuid() }),
+  execute: async ({ jobId }) => {
+    validateToolInput("getPipelineStages", { jobId })
+    const result = await getPipelineStages(jobId, await headers())
+    if (!Result.isOk(result))
+      return { error: "No se pudieron obtener las etapas", details: String(result.error) }
+    return result.value
+      .filter((stage) => !stage.isArchived)
+      .map(({ id, name, order, statusProjection }) => ({ id, name, order, statusProjection }))
   },
 })
 
@@ -255,14 +307,15 @@ export const sendMessageToCandidateTool = tool({
   inputSchema: z.object({
     candidateId: z.string().min(1).max(100),
     recruiterId: z.string().min(1).max(100),
+    organizationId: z.string().uuid(),
     subject: z.string().min(1).max(200),
     body: z.string().min(1).max(5000),
   }),
   needsApproval: true,
-  execute: async ({ candidateId, recruiterId, subject, body }) => {
+  execute: async ({ candidateId, recruiterId, organizationId, subject, body }) => {
     validateToolInput("sendMessageToCandidate", { candidateId, subject, body })
     const requestHeaders = await headers()
-    const chatResult = await createOrFindChat(candidateId, requestHeaders)
+    const chatResult = await createOrFindChat(candidateId, requestHeaders, organizationId)
     if (!Result.isOk(chatResult)) {
       return {
         success: false,
@@ -612,6 +665,7 @@ export const organizationTools = {
   getCandidates: getCandidatesTool,
   getJobOffer: getJobOfferTool,
   getJobOffers: getJobOffersTool,
+  getPipelineStages: getPipelineStagesTool,
   updateCandidateStatus: updateCandidateStatusTool,
   sendMessageToCandidate: sendMessageToCandidateTool,
   searchCandidatesBySkills: searchCandidatesBySkillsTool,

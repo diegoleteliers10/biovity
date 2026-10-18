@@ -22,17 +22,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { parseTalentFilters, type TalentFilters } from "@/lib/api/talent-search"
 import {
   type SavedSearch,
   useCreateSavedSearchMutation,
   useDeleteSavedSearchMutation,
   useSavedSearches,
+  useUpdateSavedSearchMutation,
 } from "@/lib/api/use-saved-searches"
 
 type SavedSearchDialogProps = {
   organizationId: string | undefined
-  currentFilters: Record<string, unknown>
-  onLoadSearch: (filters: Record<string, unknown>) => void
+  currentFilters: TalentFilters
+  onLoadSearch: (filters: TalentFilters) => void
 }
 
 export function SavedSearchDialog({
@@ -42,34 +44,42 @@ export function SavedSearchDialog({
 }: SavedSearchDialogProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState("")
-  const [notify, setNotify] = useState(false)
+  const [notifyEnabled, setNotifyEnabled] = useState(false)
   const [loadValue, setLoadValue] = useState("")
 
   const { data: savedSearches = [] } = useSavedSearches(organizationId)
   const createMutation = useCreateSavedSearchMutation(organizationId ?? "")
   const deleteMutation = useDeleteSavedSearchMutation(organizationId ?? "")
+  const updateMutation = useUpdateSavedSearchMutation(organizationId ?? "")
 
   const handleSave = useCallback(() => {
     if (!name.trim() || !organizationId) return
     createMutation.mutate(
-      { name: name.trim(), filters: currentFilters, notify },
+      { name: name.trim(), filters: currentFilters, notifyEnabled },
       {
         onSuccess: () => {
           toast.success("Búsqueda guardada")
           setName("")
-          setNotify(false)
+          setNotifyEnabled(false)
           setOpen(false)
         },
         onError: (err) => toast.error(err.message),
       }
     )
-  }, [name, organizationId, currentFilters, notify, createMutation])
+  }, [name, notifyEnabled, organizationId, currentFilters, createMutation])
 
   const handleLoad = useCallback(
     (searchId: string) => {
       const search = savedSearches.find((s) => s.id === searchId)
       if (search) {
-        onLoadSearch(search.filters)
+        const filters = parseTalentFilters(search.filters)
+        if (!filters) {
+          toast.error(
+            "Esta búsqueda guardada tiene filtros inválidos. Elimínala y guárdala de nuevo."
+          )
+          return
+        }
+        onLoadSearch(filters)
         setLoadValue("")
         toast.success(`Filtros cargados: ${search.name}`)
       }
@@ -87,6 +97,20 @@ export function SavedSearchDialog({
     },
     [deleteMutation]
   )
+
+  const handleToggleAlerts = useCallback(() => {
+    const search = savedSearches.find((item) => item.id === loadValue)
+    if (!search) return
+    updateMutation.mutate(
+      { id: search.id, notifyEnabled: !search.notifyEnabled },
+      {
+        onSuccess: (result) => {
+          if (result.isErr()) toast.error(result.error.message)
+          else toast.success(result.value.notifyEnabled ? "Alertas activadas" : "Alertas pausadas")
+        },
+      }
+    )
+  }, [loadValue, savedSearches, updateMutation])
 
   return (
     <div className="flex items-center gap-2">
@@ -109,17 +133,30 @@ export function SavedSearchDialog({
             </SelectContent>
           </Select>
           {loadValue && (
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              onClick={() => {
-                const search = savedSearches.find((s) => s.id === loadValue)
-                if (search) handleDelete({ stopPropagation: () => {} } as React.MouseEvent, search)
-              }}
-              aria-label="Eliminar búsqueda guardada"
-            >
-              <HugeiconsIcon icon={Delete03Icon} size={14} />
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleToggleAlerts}
+                disabled={updateMutation.isPending}
+              >
+                {savedSearches.find((search) => search.id === loadValue)?.notifyEnabled
+                  ? "Pausar alertas"
+                  : "Activar alertas"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onClick={() => {
+                  const search = savedSearches.find((s) => s.id === loadValue)
+                  if (search)
+                    handleDelete({ stopPropagation: () => {} } as React.MouseEvent, search)
+                }}
+                aria-label="Eliminar búsqueda guardada"
+              >
+                <HugeiconsIcon icon={Delete03Icon} size={14} />
+              </Button>
+            </>
           )}
         </div>
       )}
@@ -145,15 +182,19 @@ export function SavedSearchDialog({
                 placeholder="ej: Desarrolladores React Chile"
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2">
               <Checkbox
-                id="search-notify"
-                checked={notify}
-                onCheckedChange={(checked) => setNotify(checked === true)}
+                id="search-alerts"
+                checked={notifyEnabled}
+                onCheckedChange={(checked) => setNotifyEnabled(checked === true)}
               />
-              <Label htmlFor="search-notify" className="text-sm cursor-pointer">
-                Notificarme cuando haya nuevos candidatos
-              </Label>
+              <div className="space-y-1">
+                <Label htmlFor="search-alerts">Activar alertas para esta búsqueda</Label>
+                <p className="text-xs text-muted-foreground">
+                  Los reclutadores de la empresa reciben avisos según sus preferencias. Los
+                  resúmenes llegan a las 09:00, hora de Santiago. El semanal llega el lunes.
+                </p>
+              </div>
             </div>
             <div className="flex justify-end gap-2">
               <Button

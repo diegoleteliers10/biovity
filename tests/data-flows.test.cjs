@@ -124,6 +124,37 @@ test('a live message and notification update the shared cache once and reject an
   assert.equal(queryClient.getQueryData(['notifications', job.id]), undefined)
 })
 
+test('a realtime offer keeps its offer type and card payload', () => {
+  const { applyDashboardEvent } = require('../lib/realtime/dashboard-events.ts')
+  const client = new QueryClient()
+  const queryKey = ['messages', 'chat', job.id]
+  client.setQueryData(queryKey, [{
+    id: 'offer-message-old', chatId: job.id, senderId: orgId, content: 'Carta anterior',
+    type: 'offer', contentType: { offerLetterId: 'offer-1', status: 'sent' },
+    isRead: false, createdAt: '2026-10-12T12:00:00.000Z',
+  }])
+  const offerContent = { offerLetterId: 'offer-1', title: 'Offer', status: 'sent', expiresOn: '2026-10-30' }
+
+  applyDashboardEvent(client, orgId, {
+    event: 'message_insert',
+    payload: {
+      id: 'offer-message-1',
+      chat_id: job.id,
+      sender_id: orgId,
+      content: 'Carta de oferta',
+      type: 'offer',
+      content_type: offerContent,
+      created_at: new Date().toISOString(),
+    },
+  })
+
+  const [previousMessage, message] = client.getQueryData(queryKey)
+  assert.equal(previousMessage.contentType.status, 'superseded')
+  assert.equal(message.type, 'offer')
+  assert.deepEqual(message.contentType, offerContent)
+  client.clear()
+})
+
 test('shared channel survives one subscriber leaving and reconciles on reconnect', async () => {
   const { subscribeUserChannel } = require('../lib/realtime/user-channel.ts')
   let statusCallback
@@ -375,7 +406,10 @@ test('two pending notification reads never refetch and keep the optimistic state
   const finish = new Map()
   let reads = 0
   global.fetch = (url, init) => {
-    if (init.method === 'PATCH') return new Promise(resolve => finish.set(new URL(url).searchParams.get('id'), resolve))
+    if (init.method === 'PATCH') {
+      const path = new URL(url, 'http://localhost').pathname.split('/')
+      return new Promise(resolve => finish.set(path.at(-2), resolve))
+    }
     reads += 1
     return Promise.resolve(Response.json({ data: rows, unreadCount: 2 }))
   }
@@ -495,4 +529,82 @@ test('the viewer context only treats the chat param as open when it is set', () 
   const { activeChatId, isReadingMessages } = require('../lib/realtime/viewer-context.ts')
   assert.equal(typeof isReadingMessages, 'function')
   assert.equal(activeChatId(), null)
+})
+
+test('participant status cache uses the status returned by the server', () => {
+  const { storeParticipantStatus } = require('../lib/api/events-cache.ts')
+  const client = new QueryClient()
+  const queryKey = ['events', 'participant-statuses', ['event-1']]
+  client.setQueryData(queryKey, { 'event-1': 'pending' })
+
+  const stored = storeParticipantStatus(
+    client,
+    { id: 'event-1', participants: [{ userId: 'candidate-1', status: 'declined' }] },
+    'candidate-1'
+  )
+
+  assert.equal(stored, true)
+  assert.deepEqual(client.getQueryData(queryKey), { 'event-1': 'declined' })
+  client.clear()
+})
+
+test('participant status cache reports when the response omits the participant', () => {
+  const { storeParticipantStatus } = require('../lib/api/events-cache.ts')
+  const client = new QueryClient()
+
+  const stored = storeParticipantStatus(
+    client,
+    { id: 'event-1', participants: [] },
+    'candidate-1'
+  )
+
+  assert.equal(stored, false)
+  client.clear()
+})
+
+test('participant status cache reports when a matching query has no data', () => {
+  const { storeParticipantStatus } = require('../lib/api/events-cache.ts')
+  const client = new QueryClient()
+  const queryKey = ['events', 'participant-statuses', ['event-1']]
+  client.getQueryCache().build(client, { queryKey })
+
+  const stored = storeParticipantStatus(
+    client,
+    { id: 'event-1', participants: [{ userId: 'candidate-1', status: 'accepted' }] },
+    'candidate-1'
+  )
+
+  assert.equal(stored, false)
+  assert.equal(client.getQueryData(queryKey), undefined)
+  client.clear()
+})
+
+test('participant status cache keeps the mutation result after cancelling an old refetch', async () => {
+  const { QueryObserver } = actualQuery
+  const { storeParticipantStatus } = require('../lib/api/events-cache.ts')
+  const client = new QueryClient()
+  const queryKey = ['events', 'participant-statuses', ['event-1']]
+  let resolveOldFetch
+  client.setQueryData(queryKey, { 'event-1': 'pending' })
+  const observer = new QueryObserver(client, {
+    queryKey,
+    queryFn: () => new Promise(resolve => { resolveOldFetch = resolve }),
+    staleTime: 0,
+  })
+  const dispose = observer.subscribe(() => {})
+  const oldFetch = observer.refetch()
+  await new Promise(resolve => setImmediate(resolve))
+
+  await client.cancelQueries({ queryKey: ['events', 'participant-statuses'] })
+  storeParticipantStatus(
+    client,
+    { id: 'event-1', participants: [{ userId: 'candidate-1', status: 'accepted' }] },
+    'candidate-1'
+  )
+  resolveOldFetch({ 'event-1': 'declined' })
+  await oldFetch
+
+  assert.deepEqual(client.getQueryData(queryKey), { 'event-1': 'accepted' })
+  dispose()
+  client.clear()
 })

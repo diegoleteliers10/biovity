@@ -6,10 +6,10 @@ import type { ApiError, NetworkError } from "@/lib/errors"
 import { fetchJson } from "@/lib/result"
 
 export type NotificationPreferencesInput = {
-  digest: "none" | "daily" | "weekly"
+  digest: "none" | "immediate" | "daily" | "weekly"
   channels: {
     email: boolean
-    inApp: boolean
+    in_app: boolean
   }
   events: {
     application: boolean

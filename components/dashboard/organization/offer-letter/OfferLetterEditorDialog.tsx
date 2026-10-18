@@ -49,6 +49,19 @@ function formatClp(value: number | undefined): string {
   return `$${new Intl.NumberFormat("es-CL").format(value)}`
 }
 
+function defaultOfferExpiryDate(): string {
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "America/Santiago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date())
+  const year = Number(parts.find((part) => part.type === "year")?.value)
+  const month = Number(parts.find((part) => part.type === "month")?.value)
+  const day = Number(parts.find((part) => part.type === "day")?.value)
+  return new Date(Date.UTC(year, month - 1, day + 7)).toISOString().slice(0, 10)
+}
+
 const CONTRACT_TYPES = [
   "Contrato de trabajo, plazo indefinido",
   "Contrato de trabajo, plazo fijo",
@@ -132,7 +145,7 @@ export function OfferLetterEditorDialog({
     noticePeriod: "",
     vacationDays: "",
     bonusDetails: "",
-    offerValidUntil: "",
+    offerValidUntil: defaultOfferExpiryDate(),
     conditions: "",
     closing: "",
     acceptanceNote: "",
@@ -237,9 +250,9 @@ export function OfferLetterEditorDialog({
       return
     }
     toast.success(
-      result.value.emailed
-        ? "Oferta enviada por chat y correo al candidato."
-        : "Oferta enviada por chat al candidato."
+      result.value.emailQueued
+        ? "Oferta enviada por chat. El correo quedó en cola de entrega."
+        : "Oferta enviada por chat. No se pudo agregar el correo a la cola."
     )
     onClose()
     onSent?.()
@@ -368,11 +381,11 @@ export function OfferLetterEditorDialog({
                   placeholder="15 días hábiles al año"
                 />
               </Field>
-              <Field label="Vigencia de la oferta">
+              <Field label="Válida hasta">
                 <Input
+                  type="date"
                   value={form.offerValidUntil}
                   onChange={(e) => update("offerValidUntil", e.target.value)}
-                  placeholder="15 de enero, 2027"
                 />
               </Field>
               <Field label="Bonos e incentivos" full>

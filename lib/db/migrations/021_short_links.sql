@@ -4,7 +4,7 @@
 --
 -- schema-primary-keys: text code (random, unguessable)
 -- schema-lowercase-identifiers: snake_case
--- Security: RLS DISABLED; access only via service-role (server-side auth).
+-- Security: RLS enabled; revoke Data API access. The server uses its private database connection.
 -- Idempotent: safe to re-run.
 -- Run with: psql $DATABASE_URL -f lib/db/migrations/021_short_links.sql
 
@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS short_link (
 );
 
 CREATE INDEX IF NOT EXISTS short_link_created_at_idx ON short_link (created_at);
+
+ALTER TABLE public.short_link ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE public.short_link FROM PUBLIC, anon, authenticated, service_role;
 
 -- Register migration
 INSERT INTO migrations (timestamp, name)

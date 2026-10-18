@@ -4,10 +4,17 @@ import { ArrowLeft01Icon, ArrowRight01Icon, Refresh01Icon } from "@hugeicons/cor
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useCallback, useEffect, useReducer, useRef } from "react"
 import { toast } from "sonner"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -31,7 +38,7 @@ type WaitlistEntry = {
 
 type InviteResult = {
   id: string
-  status: "sent" | "skipped" | "failed"
+  status: "queued" | "already_queued" | "skipped" | "failed"
 }
 
 type InviteResponse = {
@@ -337,14 +344,17 @@ export function AdminWaitlistContent() {
       const payload = data as Partial<InviteResponse> | null
       const results = payload?.results ?? []
       const remaining = payload?.remaining ?? 0
-      const sent = results.filter((r) => r.status === "sent").length
+      const queued = results.filter((r) => r.status === "queued").length
+      const alreadyQueued = results.filter((r) => r.status === "already_queued").length
       const skipped = results.filter((r) => r.status === "skipped").length
       const failed = results.filter((r) => r.status === "failed").length
 
       if (failed > 0) {
-        toast.error(`Enviados: ${sent}, ya invitados: ${skipped}, fallaron: ${failed}`)
-      } else if (sent > 0) {
-        toast.success(`Correo(s) de acceso enviado(s) a ${sent} usuario(s)`)
+        toast.error(
+          `En cola: ${queued}, ya en cola: ${alreadyQueued}, ya invitados: ${skipped}, fallaron: ${failed}`
+        )
+      } else if (queued > 0 || alreadyQueued > 0) {
+        toast.success(`Correos en cola: ${queued}. Ya en cola: ${alreadyQueued}.`)
       } else {
         toast.info("Todos los seleccionados ya fueron invitados")
       }
@@ -417,18 +427,21 @@ export function AdminWaitlistContent() {
           className="max-w-sm h-11"
           aria-label="Buscar en lista de espera"
         />
-        <select
-          value={state.roleFilter}
-          onChange={(e) => handleRoleFilterChange(e.target.value)}
-          className="h-11 rounded-lg border border-border/40 bg-surface-container-low px-3 text-sm"
-          aria-label="Filtrar por rol"
+        <Select
+          value={state.roleFilter || "all"}
+          onValueChange={(value) => handleRoleFilterChange(value === "all" ? "" : value)}
         >
-          {ROLE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-11 w-[210px]" aria-label="Filtrar por rol">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {ROLE_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value || "all"} value={opt.value || "all"}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button
           variant="outline"
           className="h-11"

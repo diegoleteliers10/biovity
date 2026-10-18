@@ -10,7 +10,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
 import {
   authButtonClass,
@@ -25,12 +25,14 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
+import { getSafeCallbackURL } from "@/lib/auth-redirect"
 import { cn } from "@/lib/utils"
 
 const { signIn } = authClient
 
 export function UserLoginContent() {
-  const _router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackURL = getSafeCallbackURL(searchParams.get("redirect"))
 
   const [formData, setFormData] = useState({
     email: "",
@@ -56,7 +58,7 @@ export function UserLoginContent() {
         email: formData.email,
         password: formData.password,
         rememberMe,
-        callbackURL: "/dashboard",
+        callbackURL,
       })
 
       if (result?.error) {
@@ -68,7 +70,7 @@ export function UserLoginContent() {
       }
 
       authClient.$store.notify("$sessionSignal")
-      window.location.href = "/dashboard"
+      window.location.href = callbackURL
     })
   }
 

@@ -530,8 +530,11 @@ export default function OrganizationRegisterPage() {
 
                         <div className="space-y-1.5">
                           <label htmlFor="organizationWebsite" className={authLabelClass}>
-                            Sitio web
+                            Sitio web de la empresa
                           </label>
+                          <p className="text-xs text-muted-foreground">
+                            El dominio debe coincidir con tu correo corporativo verificado.
+                          </p>
                           <div className="relative">
                             <HugeiconsIcon
                               icon={Globe02Icon}
@@ -564,7 +567,10 @@ export default function OrganizationRegisterPage() {
                       </div>
 
                       <div className="pt-2">
-                        <label className="flex items-start gap-2 text-xs cursor-pointer select-none">
+                        <label
+                          htmlFor="terms"
+                          className="flex items-start gap-2 text-xs cursor-pointer select-none"
+                        >
                           <Checkbox
                             id="terms"
                             checked={acceptTerms}

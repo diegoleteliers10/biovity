@@ -209,10 +209,10 @@ export default function TerminosPage() {
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Correo electrónico:{" "}
                   <a
-                    href="mailto:contacto@biovity.cl"
+                    href="mailto:dleteliers@biovity.cl"
                     className="text-secondary font-medium underline hover:text-secondary/80"
                   >
-                    contacto@biovity.cl
+                    dleteliers@biovity.cl
                   </a>
                 </p>
                 <p className="text-xs sm:text-sm text-muted-foreground">Santiago, Chile</p>

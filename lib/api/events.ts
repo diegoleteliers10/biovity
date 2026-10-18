@@ -4,8 +4,10 @@ import { fetchJson, fetchJsonWithSession, fetchNoContent } from "@/lib/result"
 import type {
   CreateEventInput,
   Event,
+  EventChangeHistory,
   EventFilters,
   EventNote,
+  EventParticipantStatusHistory,
   EventWithParticipants,
   PaginatedEventsResponse,
   ParticipantStatus,
@@ -25,6 +27,7 @@ export async function getEvents(
   if (filters?.userId) searchParams.set("userId", filters.userId)
   if (filters?.organizationId) searchParams.set("organizationId", filters.organizationId)
   if (filters?.organizerId) searchParams.set("organizerId", filters.organizerId)
+  if (filters?.applicationId) searchParams.set("applicationId", filters.applicationId)
   if (filters?.type) searchParams.set("type", filters.type)
   if (filters?.status) searchParams.set("status", filters.status)
   if (filters?.from) searchParams.set("from", filters.from)
@@ -111,6 +114,27 @@ export async function getEventNotes(
 ): Promise<Result<EventNote[], ApiError | NetworkError>> {
   const result = await fetchJson<{ data: EventNote[] }>(
     `${API_BASE}/api/v1/events/${eventId}/notes`
+  )
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
+}
+
+export async function getParticipantStatusHistory(
+  eventId: string,
+  userId: string
+): Promise<Result<EventParticipantStatusHistory, ApiError | NetworkError>> {
+  const result = await fetchJson<{ data: EventParticipantStatusHistory }>(
+    `${API_BASE}/api/v1/events/${eventId}/participants/${userId}/status-history`
+  )
+  if (result.isErr()) return Result.err(result.error)
+  return Result.ok(result.value.data)
+}
+
+export async function getEventChangeHistory(
+  eventId: string
+): Promise<Result<EventChangeHistory, ApiError | NetworkError>> {
+  const result = await fetchJson<{ data: EventChangeHistory }>(
+    `${API_BASE}/api/v1/events/${eventId}/change-history`
   )
   if (result.isErr()) return Result.err(result.error)
   return Result.ok(result.value.data)

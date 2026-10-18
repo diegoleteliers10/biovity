@@ -7,9 +7,14 @@ import { TalentDetailSheet } from "@/components/dashboard/organization/TalentDet
 import { TalentPageHeader } from "@/components/dashboard/organization/TalentPageHeader"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { useTalentSearch } from "@/hooks/use-talent-search"
+import {
+  candidateAvailabilityValues,
+  candidateSeniorityValues,
+  type TalentFilters,
+  type TalentFilterValues,
+} from "@/lib/api/talent-search"
 import { useCreateOrFindChatMutation } from "@/lib/api/use-chats"
 import { useProfessionalUsers } from "@/lib/api/use-talent"
-import type { User } from "@/lib/api/users"
 import { talentParsers } from "@/lib/parsers/talent"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { SavedSearchDialog } from "./SavedSearchDialog"
@@ -45,19 +50,20 @@ export function TalentContent() {
 
   const session = useDashboardSession()
   const recruiterId = session?.user?.id ?? undefined
-  const createChatMutation = useCreateOrFindChatMutation(recruiterId)
+  const organizationId = session?.user?.organizationId ?? undefined
+  const createChatMutation = useCreateOrFindChatMutation(recruiterId, organizationId)
 
   // Track selection state for F8.8
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
 
   // F8.1 — Combine filters
-  const filters = {
+  const filters: TalentFilters = {
     search: search || undefined,
     profession: profession || undefined,
     city: city || undefined,
     country: country || undefined,
-    experienceLevel: experienceLevel || undefined,
-    availability: availability || undefined,
+    experienceLevel: candidateSeniorityValues.find((value) => value === experienceLevel),
+    availability: candidateAvailabilityValues.find((value) => value === availability),
     skills: skills || undefined,
     minExp: minExp > 0 ? minExp : undefined,
     maxExp: maxExp > 0 ? maxExp : undefined,
@@ -110,7 +116,9 @@ export function TalentContent() {
   const handleSelectAll = () => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
-      users.forEach((u) => next.add(u.id))
+      users.forEach((u) => {
+        next.add(u.id)
+      })
       return next
     })
   }
@@ -118,7 +126,9 @@ export function TalentContent() {
   const handleDeselectAll = () => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
-      users.forEach((u) => next.delete(u.id))
+      users.forEach((u) => {
+        next.delete(u.id)
+      })
       return next
     })
   }
@@ -129,7 +139,7 @@ export function TalentContent() {
 
   const selectedUsers = users.filter((u) => selectedIds.has(u.id))
 
-  const handleFiltersChange = (newFilters: Partial<typeof filters>) => {
+  const handleFiltersChange = (newFilters: Partial<TalentFilterValues>) => {
     setUrlState({
       ...newFilters,
       page: 1, // Reset page to 1 when changing filters
@@ -168,7 +178,7 @@ export function TalentContent() {
         <div className="flex items-center gap-2">
           <SavedSearchDialog
             organizationId={session?.user?.organizationId ?? undefined}
-            currentFilters={filters as Record<string, unknown>}
+            currentFilters={filters}
             onLoadSearch={(loadedFilters) => {
               setUrlState({
                 ...loadedFilters,
@@ -213,6 +223,7 @@ export function TalentContent() {
         open={sheetOpen}
         onOpenChange={handleCloseSheet}
         recruiterId={recruiterId}
+        organizationId={organizationId}
       />
     </div>
   )

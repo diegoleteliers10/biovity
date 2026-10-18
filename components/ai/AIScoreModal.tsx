@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Result as R, type Result } from "better-result"
 import { z } from "zod"
 import type { CandidateScore } from "@/app/api/ai/score-candidates/route"
+import { AIRecommendationReview } from "@/components/ai/AIRecommendationReview"
 import { ScoreExplanationSummary, ScoreExplanationView } from "@/components/ai/ScoreExplanationView"
 import {
   Dialog,
@@ -121,7 +122,15 @@ export function AIScoreModal({ score, jobId, candidateName, open, onOpenChange }
             El análisis no se completó. Vuelve a solicitarlo desde la oferta.
           </div>
         ) : explanation ? (
-          <ScoreExplanationView explanation={explanation} />
+          <>
+            <ScoreExplanationView explanation={explanation} />
+            <AIRecommendationReview
+              key={score.revisionId}
+              jobId={jobId}
+              revisionId={score.revisionId}
+              recommendation={explanation.recommendation}
+            />
+          </>
         ) : response?.status === "failed" || explanationQuery.data?.isErr() ? (
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>

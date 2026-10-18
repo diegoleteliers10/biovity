@@ -16,16 +16,23 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { type SalarySubmissionPayload, submitSalary } from "@/lib/api/salaries"
 import {
   BENEFICIOS_CHILE,
   CARRERAS_STEM_CHILE,
+  HABILIDADES_CIENCIA_CHILE,
   INDUSTRIAS_CHILE,
   MODALIDADES_TRABAJO_CHILE,
   NIVELES_EDUCACION_CHILE,
   NIVELES_EXPERIENCIA_CHILE,
   REGIONES_CHILE,
-  SKILLS_IMPACTO_CHILE,
 } from "@/lib/data/salarios-data"
 import type { ExperienceLevelChile } from "@/lib/types/salarios"
 import { cn, formatAmountCLP } from "@/lib/utils"
@@ -475,7 +482,7 @@ function StepCompensation({ form, set, toggleArrayItem }: StepProps) {
 }
 
 function StepEducation({ form, set, toggleArrayItem }: StepProps) {
-  const skillOptions = useMemo(() => SKILLS_IMPACTO_CHILE.map((s) => s.skill), [])
+  const skillOptions = HABILIDADES_CIENCIA_CHILE
   return (
     <div className="space-y-6">
       <Field label="Nivel educativo máximo" required>
@@ -549,32 +556,30 @@ function StyledSelect({
   options: { value: string; label: string }[]
 }) {
   return (
-    <div className="relative">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+    <Select
+      value={value || "select-placeholder"}
+      onValueChange={(nextValue) => onChange(nextValue === "select-placeholder" ? "" : nextValue)}
+    >
+      <SelectTrigger
         aria-label={placeholder}
         className={cn(
-          "h-11 w-full appearance-none rounded-lg border border-border bg-surface-container-lowest px-3.5 pr-9 text-sm text-foreground",
-          "focus:border-secondary outline-none transition-colors",
+          "h-11 w-full rounded-lg border-border bg-surface-container-lowest px-3.5 pr-1 text-sm text-foreground focus-visible:border-secondary",
           value === "" && "text-muted-foreground"
         )}
       >
-        <option value="" disabled>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="select-placeholder" disabled>
           {placeholder}
-        </option>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value} className="text-foreground">
-            {opt.label}
-          </option>
+        </SelectItem>
+        {options.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
         ))}
-      </select>
-      <HugeiconsIcon
-        icon={ArrowRight01Icon}
-        size={16}
-        className="absolute right-3.5 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none"
-      />
-    </div>
+      </SelectContent>
+    </Select>
   )
 }
 

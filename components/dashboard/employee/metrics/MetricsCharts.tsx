@@ -259,8 +259,8 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                 <Tooltip
                   {...chartTooltipStyles}
                   cursor={{ stroke: "var(--chart-1)", strokeWidth: 1, strokeDasharray: "2 2" }}
-                  formatter={(value: number) => [
-                    `${value} ${value === 1 ? "postulación" : "postulaciones"}`,
+                  formatter={(value) => [
+                    `${Number(value ?? 0)} ${Number(value ?? 0) === 1 ? "postulación" : "postulaciones"}`,
                     "Postulados",
                   ]}
                   labelFormatter={(label) => formatTrendTick(String(label), period)}
@@ -322,7 +322,7 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                 <Tooltip
                   {...chartTooltipStyles}
                   cursor={{ fill: "var(--muted)" }}
-                  formatter={(val: number) => [`${val} aplicaciones`, "Postulaciones"]}
+                  formatter={(val) => [`${Number(val ?? 0)} aplicaciones`, "Postulaciones"]}
                 />
                 <Bar
                   dataKey="count"
@@ -441,9 +441,9 @@ export function ChartsGrid({ metricsData, period, animated = true }: ChartsGridP
                   <PieChart>
                     <Tooltip
                       {...chartTooltipStyles}
-                      formatter={(val: number, name: string) => [
-                        `${val} postulaciones (${categoriesApplied.find((c) => c.category === name)?.percentage ?? 0}%)`,
-                        name,
+                      formatter={(val, name) => [
+                        `${Number(val ?? 0)} postulaciones (${categoriesApplied.find((c) => c.category === String(name))?.percentage ?? 0}%)`,
+                        String(name),
                       ]}
                     />
                     <Pie

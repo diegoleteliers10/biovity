@@ -8,6 +8,13 @@ import {
 } from "@/components/dashboard/admin/AdminEntityTable"
 import { UserDetailSheet } from "@/components/dashboard/admin/UserDetailSheet"
 import { Badge } from "@/components/ui/badge"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { adminUsersParsers } from "@/lib/parsers/admin-users"
 import type { AdminUser } from "@/lib/types/admin"
 
@@ -57,18 +64,21 @@ export function AdminUsersContent() {
   }, [queryClient])
 
   const filterSelect = (
-    <select
-      value={isActiveFilter}
-      onChange={(e) => setIsActiveFilter(e.target.value)}
-      className="h-11 rounded-lg border border-border/40 bg-surface-container-low px-3 text-sm"
-      aria-label="Filtrar por estado"
+    <Select
+      value={isActiveFilter || "all"}
+      onValueChange={(value) => setIsActiveFilter(value === "all" ? "" : value)}
     >
-      {IS_ACTIVE_OPTIONS.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger className="h-11 w-[160px]" aria-label="Filtrar por estado">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {IS_ACTIVE_OPTIONS.map((opt) => (
+          <SelectItem key={opt.value || "all"} value={opt.value || "all"}>
+            {opt.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 
   const extraSearchParams: Record<string, string> = {}

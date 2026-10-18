@@ -1,11 +1,46 @@
 import { Result as R, type Result } from "better-result"
 import { ApiError, type NetworkError } from "@/lib/errors"
 import { fetchJson, fetchJsonWithSession, fetchNoContent } from "@/lib/result"
+import type { ApplicationSourceChannel } from "@/lib/types/application-source"
 
 const API_BASE =
   typeof window !== "undefined"
     ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
     : (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001")
+
+export type JobDistributionSource = {
+  id: string
+  jobId: string
+  sourceChannel: Exclude<ApplicationSourceChannel, "unknown">
+  createdAt: string
+  disabledAt: string | null
+}
+
+export async function getJobDistributionSources(
+  jobId: string
+): Promise<Result<JobDistributionSource[], ApiError | NetworkError>> {
+  return fetchJson<JobDistributionSource[]>(`${API_BASE}/api/v1/jobs/${jobId}/distribution-sources`)
+}
+
+export async function createJobDistributionSource(
+  jobId: string,
+  sourceChannel: JobDistributionSource["sourceChannel"]
+): Promise<Result<JobDistributionSource, ApiError | NetworkError>> {
+  return fetchJson<JobDistributionSource>(`${API_BASE}/api/v1/jobs/${jobId}/distribution-sources`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sourceChannel }),
+  })
+}
+
+export async function disableJobDistributionSource(
+  jobId: string,
+  sourceId: string
+): Promise<Result<void, ApiError | NetworkError>> {
+  return fetchNoContent(`${API_BASE}/api/v1/jobs/${jobId}/distribution-sources/${sourceId}`, {
+    method: "DELETE",
+  })
+}
 
 export type JobSalary = {
   min?: number

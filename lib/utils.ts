@@ -100,9 +100,9 @@ export function notificationDotColor(type: string, isRead: boolean): string {
 
 // --- Formatting (Single Responsibility: one concern per function) ---
 
-/** Formats value as CLP thousands for Salarios charts (e.g. "2.550.000"). */
+/** Formats a CLP amount without changing its value. */
 export function formatCurrencyCLP(value: number): string {
-  return `$${value.toLocaleString("es-CL")}.000`
+  return formatAmountCLP(value)
 }
 
 /** Formats raw CLP amounts (e.g. "800.000"). */

@@ -3,9 +3,16 @@
 import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { useState } from "react"
+import { AdminButton as Button } from "@/components/dashboard/admin/AdminButton"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -127,19 +134,24 @@ export function AdminAILogsContent() {
           className="max-w-sm h-11"
           aria-label="Buscar logs de AI"
         />
-        <Button type="submit" variant="outline">
+        <Button type="submit" variant="outline" className="h-11 rounded-lg px-6">
           Buscar
         </Button>
-        <select
-          value={filters.flagged}
-          onChange={(event) => setFilters({ ...filters, flagged: event.target.value, page: 1 })}
-          className="h-11 rounded-lg border border-border/40 bg-surface-container-low px-3 text-sm"
-          aria-label="Filtrar marcas"
+        <Select
+          value={filters.flagged || "all"}
+          onValueChange={(value) =>
+            setFilters({ ...filters, flagged: value === "all" ? "" : value, page: 1 })
+          }
         >
-          <option value="">Todos</option>
-          <option value="true">Marcados</option>
-          <option value="false">No marcados</option>
-        </select>
+          <SelectTrigger className="h-11 w-[180px]" aria-label="Filtrar marcas">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="true">Marcados</SelectItem>
+            <SelectItem value="false">No marcados</SelectItem>
+          </SelectContent>
+        </Select>
       </form>
       <div className="rounded-lg border overflow-x-auto">
         {query.isPending ? (

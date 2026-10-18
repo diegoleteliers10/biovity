@@ -29,11 +29,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
-import {
-  BrandingTab,
-  INDUSTRY_OPTIONS,
-  SIZE_OPTIONS,
-} from "@/components/dashboard/organization/BrandingTab"
+import { BrandingTab, SIZE_OPTIONS } from "@/components/dashboard/organization/BrandingTab"
+import { CompanyVerificationTab } from "@/components/dashboard/organization/CompanyVerificationTab"
 import { DangerZoneTab } from "@/components/dashboard/organization/DangerZoneTab"
 import { OrganizationOffersTimeline } from "@/components/dashboard/organization/OrganizationOffersTimeline"
 import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
@@ -62,6 +59,7 @@ import {
   useUploadAvatarMutation,
   useUser,
 } from "@/lib/api/use-profile"
+import { INDUSTRY_OPTIONS } from "@/lib/data/industries"
 import { cn, formatDateChilean } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { AiSettingsTab } from "./AiSettingsTab"
@@ -651,6 +649,10 @@ export function OrganizationProfileContent() {
               <HugeiconsIcon icon={CreditCardIcon} size={14} strokeWidth={1.7} />
               Suscripción
             </TabsTrigger>
+            <TabsTrigger value="verification" className={pillTabClass}>
+              <HugeiconsIcon icon={Building06Icon} size={14} strokeWidth={1.7} />
+              Verificación
+            </TabsTrigger>
             <TabsTrigger value="ai" className={pillTabClass}>
               <HugeiconsIcon icon={Brain03Icon} size={14} strokeWidth={1.7} />
               IA
@@ -681,7 +683,7 @@ export function OrganizationProfileContent() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="profile" className="mt-8">
+          <TabsContent value="profile" className="mt-20">
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
               <div className="min-w-0 space-y-10">
                 <section className="space-y-4">
@@ -1034,7 +1036,7 @@ export function OrganizationProfileContent() {
             </div>
           </TabsContent>
 
-          <TabsContent value="subscription" className="mt-8">
+          <TabsContent value="subscription" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Plan y suscripción"
@@ -1049,7 +1051,19 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="ai" className="mt-8">
+          <TabsContent value="verification" className="mt-20">
+            {organizationId ? (
+              <PanelSection label="Verificación de empresa">
+                <CompanyVerificationTab organizationId={organizationId} />
+              </PanelSection>
+            ) : (
+              <p className="text-sm text-muted-foreground text-pretty">
+                Primero, crea una organización.
+              </p>
+            )}
+          </TabsContent>
+
+          <TabsContent value="ai" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Configuración de IA"
@@ -1064,7 +1078,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="notifications" className="mt-8">
+          <TabsContent value="notifications" className="mt-20">
             {userId ? (
               <PanelSection
                 label="Notificaciones"
@@ -1079,7 +1093,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="preferences" className="mt-8">
+          <TabsContent value="preferences" className="mt-20">
             {userId ? (
               <PanelSection
                 label="Preferencias de notificación"
@@ -1094,7 +1108,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="activity" className="mt-8">
+          <TabsContent value="activity" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Registro de actividad"
@@ -1109,7 +1123,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="branding" className="mt-8">
+          <TabsContent value="branding" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Branding de empresa"
@@ -1124,7 +1138,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="team" className="mt-8">
+          <TabsContent value="team" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Equipo"
@@ -1139,7 +1153,7 @@ export function OrganizationProfileContent() {
             )}
           </TabsContent>
 
-          <TabsContent value="danger" className="mt-8">
+          <TabsContent value="danger" className="mt-20">
             {organizationId ? (
               <PanelSection
                 label="Zona de peligro"

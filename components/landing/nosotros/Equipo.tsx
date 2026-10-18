@@ -94,7 +94,7 @@ export function Equipo() {
               </a>
 
               <a
-                href="mailto:contacto@biovity.cl"
+                href="mailto:dleteliers@biovity.cl"
                 className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Enviar correo a Diego Letelier"
               >

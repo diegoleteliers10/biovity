@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Result } from "better-result"
 import { getResultErrorMessage } from "@/lib/result"
+import type { TalentFilters } from "./talent-search"
 import { getUsers } from "./users"
 
 export const talentKeys = {
@@ -10,17 +11,7 @@ export const talentKeys = {
     ["talent", "professionals", page, filters ?? {}] as const,
 }
 
-export type TalentFilters = {
-  search?: string
-  profession?: string
-  city?: string
-  country?: string
-  experienceLevel?: string
-  availability?: string
-  skills?: string
-  minExp?: number
-  maxExp?: number
-}
+export type { TalentFilters } from "./talent-search"
 
 const PAGE_SIZE = 20
 
@@ -42,10 +33,10 @@ export function useProfessionalUsers(page: number = 1, filters?: TalentFilters |
         ...(resolvedFilters?.city?.trim() && { city: resolvedFilters.city.trim() }),
         ...(resolvedFilters?.country?.trim() && { country: resolvedFilters.country.trim() }),
         ...(resolvedFilters?.experienceLevel?.trim() && {
-          experienceLevel: resolvedFilters.experienceLevel.trim(),
+          experienceLevel: resolvedFilters.experienceLevel,
         }),
         ...(resolvedFilters?.availability?.trim() && {
-          availability: resolvedFilters.availability.trim(),
+          availability: resolvedFilters.availability,
         }),
         ...(resolvedFilters?.skills?.trim() && { skills: resolvedFilters.skills.trim() }),
         ...(resolvedFilters?.minExp &&
