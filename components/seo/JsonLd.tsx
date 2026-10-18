@@ -340,6 +340,8 @@ export function OrganizationJsonLd() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
+      email: "dleteliers@biovity.cl",
+      telephone: "+56978181654",
       availableLanguage: ["Spanish"],
     },
     areaServed: {
@@ -568,6 +570,8 @@ export function AboutPageJsonLd() {
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer service",
+        email: "dleteliers@biovity.cl",
+        telephone: "+56978181654",
         availableLanguage: ["Spanish"],
       },
     },

@@ -71,10 +71,10 @@ export default function PrivacidadPage() {
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   Canal de Privacidad y Derechos ARCO:{" "}
                   <a
-                    href="mailto:contacto@biovity.cl"
+                    href="mailto:dleteliers@biovity.cl"
                     className="text-secondary font-medium underline hover:text-secondary/80"
                   >
-                    contacto@biovity.cl
+                    dleteliers@biovity.cl
                   </a>
                 </p>
                 <p className="text-xs sm:text-sm text-muted-foreground">
@@ -169,10 +169,10 @@ export default function PrivacidadPage() {
               <p className="mt-3">
                 Para ejercer cualquiera de estos derechos, envía un correo a{" "}
                 <a
-                  href="mailto:contacto@biovity.cl"
+                  href="mailto:dleteliers@biovity.cl"
                   className="text-secondary font-medium underline hover:text-secondary/80"
                 >
-                  contacto@biovity.cl
+                  dleteliers@biovity.cl
                 </a>{" "}
                 indicando tu solicitud.
               </p>

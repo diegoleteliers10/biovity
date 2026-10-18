@@ -27,12 +27,12 @@ import { type SalarySubmissionPayload, submitSalary } from "@/lib/api/salaries"
 import {
   BENEFICIOS_CHILE,
   CARRERAS_STEM_CHILE,
+  HABILIDADES_CIENCIA_CHILE,
   INDUSTRIAS_CHILE,
   MODALIDADES_TRABAJO_CHILE,
   NIVELES_EDUCACION_CHILE,
   NIVELES_EXPERIENCIA_CHILE,
   REGIONES_CHILE,
-  SKILLS_IMPACTO_CHILE,
 } from "@/lib/data/salarios-data"
 import type { ExperienceLevelChile } from "@/lib/types/salarios"
 import { cn, formatAmountCLP } from "@/lib/utils"
@@ -482,7 +482,7 @@ function StepCompensation({ form, set, toggleArrayItem }: StepProps) {
 }
 
 function StepEducation({ form, set, toggleArrayItem }: StepProps) {
-  const skillOptions = useMemo(() => SKILLS_IMPACTO_CHILE.map((s) => s.skill), [])
+  const skillOptions = HABILIDADES_CIENCIA_CHILE
   return (
     <div className="space-y-6">
       <Field label="Nivel educativo máximo" required>

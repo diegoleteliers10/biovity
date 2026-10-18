@@ -121,11 +121,11 @@ export function Footer() {
           <div className="flex flex-wrap gap-6 mb-4 md:mb-0">
             <div className="flex items-center gap-2">
               <HugeiconsIcon icon={Mail01Icon} size={16} />
-              <span>contacto@biovity.cl</span>
+              <span>dleteliers@biovity.cl</span>
             </div>
             <div className="flex items-center gap-2">
               <HugeiconsIcon icon={CallIcon} size={16} />
-              <span>+56 9 8765 4321</span>
+              <span>+56 9 7818 1654</span>
             </div>
             <div className="flex items-center gap-2">
               <HugeiconsIcon icon={MapPinIcon} size={16} />

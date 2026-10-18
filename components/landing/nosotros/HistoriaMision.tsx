@@ -52,7 +52,7 @@ export function HistoriaMision() {
           </m.div>
         </div>
 
-        {/* Misión, Visión, Valores Cards - Clean borderless white cards on surface-container-low */}
+        {/* Misión, Visión y Valores */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {VALUES_DATA.map((item, index) => (
             <m.div
@@ -61,7 +61,7 @@ export function HistoriaMision() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: LANDING_ANIMATION.viewportMargin }}
               transition={ts(index * LANDING_ANIMATION.chainStagger)}
-              className="bg-surface-container-lowest rounded-xl p-6 sm:p-8 flex flex-col justify-between transition-colors hover:bg-white/80"
+              className="flex flex-col justify-between rounded-xl bg-surface-container-lowest p-6 sm:p-8"
             >
               <div>
                 <div className="size-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-5 text-primary">

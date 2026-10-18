@@ -29,17 +29,12 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState } from "react"
 import { ConnectedNotificationBell } from "@/components/common/ConnectedNotificationBell"
 import { AvatarEditModal } from "@/components/dashboard/employee/profile/AvatarEditModal"
-import {
-  BrandingTab,
-  INDUSTRY_OPTIONS,
-  SIZE_OPTIONS,
-} from "@/components/dashboard/organization/BrandingTab"
+import { BrandingTab, SIZE_OPTIONS } from "@/components/dashboard/organization/BrandingTab"
 import { CompanyVerificationTab } from "@/components/dashboard/organization/CompanyVerificationTab"
 import { DangerZoneTab } from "@/components/dashboard/organization/DangerZoneTab"
 import { OrganizationOffersTimeline } from "@/components/dashboard/organization/OrganizationOffersTimeline"
 import { SubscriptionTab } from "@/components/dashboard/organization/SubscriptionTab"
 import { TeamManagementTab } from "@/components/dashboard/organization/TeamManagementTab"
-import { GoogleCalendarIntegration } from "@/components/dashboard/shared/GoogleCalendarIntegration"
 import { MobileMenuButton } from "@/components/dashboard/shared/MobileMenuButton"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -64,6 +59,7 @@ import {
   useUploadAvatarMutation,
   useUser,
 } from "@/lib/api/use-profile"
+import { INDUSTRY_OPTIONS } from "@/lib/data/industries"
 import { cn, formatDateChilean } from "@/lib/utils"
 import { useDashboardSession } from "../DashboardSessionContext"
 import { AiSettingsTab } from "./AiSettingsTab"
@@ -681,10 +677,6 @@ export function OrganizationProfileContent() {
               <HugeiconsIcon icon={UserGroupIcon} size={14} strokeWidth={1.7} />
               Equipo
             </TabsTrigger>
-            <TabsTrigger value="calendar" className={pillTabClass}>
-              <HugeiconsIcon icon={Calendar03Icon} size={14} strokeWidth={1.7} />
-              Calendario
-            </TabsTrigger>
             <TabsTrigger value="danger" className={dangerTabClass}>
               <HugeiconsIcon icon={AlertDiamondIcon} size={14} strokeWidth={1.7} />
               Danger Zone
@@ -1153,20 +1145,6 @@ export function OrganizationProfileContent() {
                 description="Administra los miembros y roles de tu organización."
               >
                 <TeamManagementTab organizationId={organizationId} />
-              </PanelSection>
-            ) : (
-              <p className="text-sm text-muted-foreground text-pretty">
-                No tienes una organización asociada.
-              </p>
-            )}
-          </TabsContent>
-
-          <TabsContent value="calendar" className="mt-20">
-            {organizationId ? (
-              <PanelSection label="Google Calendar">
-                <div id="google-calendar">
-                  <GoogleCalendarIntegration scope={{ kind: "organization", organizationId }} />
-                </div>
               </PanelSection>
             ) : (
               <p className="text-sm text-muted-foreground text-pretty">

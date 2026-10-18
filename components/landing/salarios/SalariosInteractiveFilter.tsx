@@ -1,11 +1,10 @@
 "use client"
 
-import { ArrowRight01Icon, Search01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useReducedMotion } from "motion/react"
-import * as m from "motion/react-m"
+import { type UseQueryResult, useQuery } from "@tanstack/react-query"
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -15,320 +14,322 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { getSalaryStats, type SalaryStats } from "@/lib/api/salaries"
 import {
-  CARRERA_CHART_DATA,
-  CARRERAS_STEM_CHILE,
-  INDUSTRIA_CHART_DATA,
-  INDUSTRIAS_CHILE,
-  REGION_CHART_DATA,
-  REGIONES_CHILE,
-} from "@/lib/data/salarios-data"
-import { cn, formatCurrencyCLP } from "@/lib/utils"
+  SALARIES_UPDATED_AT,
+  SALARY_BENCHMARKS,
+  SALARY_CAREER_VALUES,
+  type SalaryAmount,
+  type SalaryCareerValue,
+  salaryBenchmarkFor,
+} from "@/lib/data/salarios-benchmark"
+import { CARRERAS_STEM_CHILE } from "@/lib/data/salarios-data"
+import { formatCurrencyCLP } from "@/lib/utils"
 
-const INDUSTRY_AVG =
-  INDUSTRIA_CHART_DATA.reduce((sum, i) => sum + i.promedio, 0) / INDUSTRIA_CHART_DATA.length
-const REGION_AVG =
-  REGION_CHART_DATA.reduce((sum, r) => sum + r.promedio, 0) / REGION_CHART_DATA.length
+type CommunityStatsState =
+  | { kind: "unavailable" }
+  | { kind: "below-threshold"; count: number }
+  | { kind: "published"; stats: SalaryStats }
 
-function industryModifier(industryValue: string): number {
-  const found = INDUSTRIA_CHART_DATA.find((_, idx) => {
-    const dataValue = INDUSTRIAS_CHILE[idx]?.value
-    return dataValue === industryValue
-  })
-  if (!found) return 1
-  return found.promedio / INDUSTRY_AVG
-}
-
-function regionLabelToData(regionLabel: string): number {
-  const found = REGION_CHART_DATA.find((r) =>
-    r.region.toLowerCase().includes(regionLabel.toLowerCase())
-  )
-  return found?.promedio ?? REGION_AVG
-}
-
-const REGION_SHORT: Record<string, string> = {
-  ANTOFAGASTA: "Antofagasta",
-  METROPOLITANA: "Metropolitana",
-  OHIGGINS: "O'Higgins/Maule",
-  MAULE: "O'Higgins/Maule",
-  VALPARAISO: "Metropolitana",
-  BIOBIO: "O'Higgins/Maule",
-}
-
-function regionModifier(regionValue: string): number {
-  const short = REGION_SHORT[regionValue]
-  if (!short) return 1
-  const dataVal = regionLabelToData(short)
-  return dataVal / REGION_AVG
-}
-
-function careerByName(careerValue: string) {
-  const opt = CARRERAS_STEM_CHILE.find((c) => c.value === careerValue)
-  const label = opt?.label ?? ""
-  return (
-    CARRERA_CHART_DATA.find((c) => label.toLowerCase().includes(c.carrera.toLowerCase())) ??
-    CARRERA_CHART_DATA[0]
-  )
-}
+const formatAmount = (amount: SalaryAmount) => formatCurrencyCLP(amount.amountClp)
 
 export function SalariosInteractiveFilter() {
-  const reducedMotion = useReducedMotion()
-  const [career, setCareer] = useState(CARRERAS_STEM_CHILE[0].value)
-  const [industry, setIndustry] = useState(INDUSTRIAS_CHILE[0].value)
-  const [region, setRegion] = useState<string>(REGIONES_CHILE[2].value)
-  const [hasSearched, setHasSearched] = useState(false)
+  const [career, setCareer] = useState<SalaryCareerValue>("bioinformatica")
+  const benchmark = salaryBenchmarkFor(career)
+  const selectedCareer = CARRERAS_STEM_CHILE.find((item) => item.value === career)
 
-  const estimate = useMemo(() => {
-    const base = careerByName(career)
-    const indMod = industryModifier(industry)
-    const regMod = regionModifier(region)
-    const junior = Math.round((base.junior * indMod * regMod) / 5) * 5 * 1000
-    const senior = Math.round((base.senior * indMod * regMod) / 5) * 5 * 1000
-    return { junior, senior, mid: Math.round((junior + senior) / 2) }
-  }, [career, industry, region])
+  const communityQuery = useQuery({
+    queryKey: ["salary-stats", career],
+    queryFn: async () => {
+      const result = await getSalaryStats({ profession: career })
+      if (result.isErr()) return { kind: "unavailable" as const }
+      if (result.value.count < 10) {
+        return { kind: "below-threshold" as const, count: result.value.count }
+      }
+      return { kind: "published" as const, stats: result.value }
+    },
+    staleTime: 5 * 60 * 1000,
+  })
 
-  const careerLabel = CARRERAS_STEM_CHILE.find((c) => c.value === career)?.label ?? ""
-  const industryLabel = INDUSTRIAS_CHILE.find((i) => i.value === industry)?.label ?? ""
-  const regionLabel = REGIONES_CHILE.find((r) => r.value === region)?.label ?? ""
-
-  const handleExplore = () => setHasSearched(true)
+  const handleCareerChange = (value: string) => {
+    const matchingCareer = SALARY_CAREER_VALUES.find((careerValue) => careerValue === value)
+    if (matchingCareer) setCareer(matchingCareer)
+  }
 
   return (
-    <section className="py-24 md:py-36 bg-surface-container-lowest">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 max-w-3xl md:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-0 tracking-tight text-balance">
-            Estima tu sueldo por{" "}
-            <span className="text-accent font-semibold">carrera, industria y región</span>
+    <section className="bg-surface-container-lowest py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 max-w-3xl">
+          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Referencias salariales por carrera
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-          {/* Filtros */}
-          <Card className="rounded-xl border-0 shadow-none bg-surface-container-low lg:col-span-2 p-2 sm:p-4">
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.6fr)]">
+          <Card className="border-0 bg-surface-container-low p-2 shadow-none sm:p-4">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-foreground">
-                Configura tu búsqueda
-              </CardTitle>
-              <CardDescription className="text-xs text-muted-foreground">
-                Selecciona las dimensiones del perfil
+              <CardTitle className="text-lg font-semibold">Selecciona una carrera</CardTitle>
+              <CardDescription>
+                Los filtros de industria y región no ajustan estas cifras.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <FilterSelect
-                label="Carrera / Profesión"
-                value={career}
-                onChange={setCareer}
-                options={CARRERAS_STEM_CHILE}
-              />
-              <FilterSelect
-                label="Industria"
-                value={industry}
-                onChange={setIndustry}
-                options={INDUSTRIAS_CHILE}
-              />
-              <FilterSelect
-                label="Región de Chile"
-                value={region}
-                onChange={setRegion}
-                options={REGIONES_CHILE}
-              />
-              <Button
-                type="button"
-                onClick={handleExplore}
-                className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium mt-2"
-              >
-                <HugeiconsIcon icon={Search01Icon} size={16} className="mr-1.5" />
-                Estimar sueldo
+            <CardContent>
+              <label htmlFor="salary-career" className="mb-2 block text-sm font-medium">
+                Carrera o profesión
+              </label>
+              <Select value={career} onValueChange={handleCareerChange}>
+                <SelectTrigger id="salary-career" className="h-11 w-full bg-surface-container-low">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CARRERAS_STEM_CHILE.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button asChild className="mt-5 w-full">
+                <Link href="/share-salary">
+                  Compartir sueldo
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="ml-2" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
 
-          {/* Resultado */}
-          <div className="lg:col-span-3">
-            <m.div
-              key={`${career}-${industry}-${region}-${hasSearched ? "1" : "0"}`}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: reducedMotion ? 0.01 : 0.35, ease: "easeOut" }}
-            >
-              <Card className="rounded-xl border border-secondary/30 bg-surface-container-low shadow-none p-2 sm:p-4">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-foreground">
-                    Estimación de Banda Salarial
-                  </CardTitle>
-                  <CardDescription className="text-xs font-mono text-secondary">
-                    {careerLabel} • {industryLabel} • {regionLabel}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-3 mb-6">
-                    <EstimateCell label="Junior (0-2 años)" value={estimate.junior} />
-                    <EstimateCell label="Mid (2-5 años)" value={estimate.mid} highlight />
-                    <EstimateCell label="Senior (5+ años)" value={estimate.senior} />
-                  </div>
-
-                  <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5 border border-border">
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed text-pretty">
-                      {hasSearched ? (
-                        <>
-                          Esta estimación combina los datos de referencia oficiales de carrera,
-                          industria y región del mercado chileno. Para obtener una comparativa de
-                          percentil precisa, puedes completar la encuesta anónima.
-                        </>
-                      ) : (
-                        <>
-                          Ajusta los filtros según tu perfil y pulsa{" "}
-                          <strong>“Estimar sueldo”</strong> para actualizar las bandas salariales de
-                          referencia en CLP líquido mensual.
-                        </>
-                      )}
+          <Card className="border border-border bg-surface-container-lowest p-2 shadow-none sm:p-4">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">{selectedCareer?.label}</CardTitle>
+              <CardDescription>Actualizado: {SALARIES_UPDATED_AT}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {benchmark.official ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <OfficialMetric
+                    heading="Ingreso promedio · 1er año"
+                    amount={benchmark.official.firstYear.average}
+                    cohort="Titulados 2021–2023"
+                  />
+                  <OfficialMetric
+                    heading="Ingreso promedio · 4º año"
+                    amount={benchmark.official.fourthYear}
+                    cohort="Titulados 2018–2020"
+                  />
+                  <div className="rounded-xl border border-border p-4 sm:col-span-2">
+                    <h3 className="mb-3 text-sm font-semibold">
+                      Distribución al primer año · bruto
+                    </h3>
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                      <Percentile label="P10" amount={benchmark.official.firstYear.p10} />
+                      <Percentile label="P50" amount={benchmark.official.firstYear.p50} />
+                      <Percentile label="P90" amount={benchmark.official.firstYear.p90} />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      Empleabilidad al primer año:{" "}
+                      {benchmark.official.firstYear.employmentRatePercent}%
                     </p>
+                    <SourceLink source={benchmark.official.firstYear.average.source} />
                   </div>
-                </CardContent>
-              </Card>
-            </m.div>
-          </div>
+                </div>
+              ) : benchmark.marketProxy ? (
+                <div className="rounded-xl border border-border p-4">
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-secondary">
+                    MiFuturo no publica una cifra directa para Bioinformática
+                  </p>
+                  <p className="mb-3 text-sm text-muted-foreground">
+                    Referencia de mercado · no es un dato directo de la carrera
+                  </p>
+                  <h3 className="mb-4 font-semibold">{benchmark.marketProxy.label}</h3>
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <Percentile label="P25" amount={benchmark.marketProxy.p25} />
+                    <Percentile label="P50" amount={benchmark.marketProxy.p50} />
+                    <Percentile label="P75" amount={benchmark.marketProxy.p75} />
+                  </div>
+                  <SourceLink source={benchmark.marketProxy.p50.source} />
+                </div>
+              ) : (
+                <p className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+                  Aún no tenemos datos confiables para esta carrera.
+                </p>
+              )}
+
+              <CommunityData careerLabel={benchmark.careerLabel} query={communityQuery} />
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Tabla resumen de referencia indexable para SEO */}
-        <div className="mt-16 pt-10 border-t border-border">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h3 className="text-xl font-semibold text-foreground tracking-tight">
-                Rangos salariales de referencia en Chile (CLP líquido)
-              </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Estimaciones basadas en el mercado laboral chileno para profesionales de ciencias e
-                ingeniería.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="shrink-0 bg-surface-container-lowest border-border rounded-lg"
-            >
-              <Link href="/jobs" className="flex items-center gap-1.5 text-xs font-medium">
-                <span>Ver ofertas activas</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
-              </Link>
-            </Button>
-          </div>
-
+        <div className="mt-12 border-t border-border pt-8">
+          <h3 className="mb-4 text-xl font-semibold">Comparación por carrera</h3>
           <div className="overflow-x-auto rounded-xl border border-border bg-surface-container-lowest">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-surface-container-low border-b border-border text-muted-foreground text-xs uppercase font-mono">
+            <table className="w-full min-w-[720px] text-left text-sm text-foreground">
+              <thead className="border-b border-border bg-surface-container-low text-xs text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-5 py-3.5 font-semibold">
-                    Carrera / Especialidad
-                  </th>
-                  <th scope="col" className="px-5 py-3.5 font-semibold">
-                    Junior (0-2 años)
-                  </th>
-                  <th scope="col" className="px-5 py-3.5 font-semibold">
-                    Senior (5+ años)
-                  </th>
-                  <th scope="col" className="px-5 py-3.5 font-semibold text-right">
-                    Vacantes
-                  </th>
+                  <th className="px-4 py-3 font-medium">Carrera</th>
+                  <th className="px-4 py-3 font-medium">Promedio · 1er año</th>
+                  <th className="px-4 py-3 font-medium">Promedio · 4º año</th>
+                  <th className="px-4 py-3 font-medium">Empleabilidad · 1er año</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {CARRERA_CHART_DATA.map((item) => (
-                  <tr
-                    key={item.carrera}
-                    className="hover:bg-surface-container-low/60 transition-colors"
-                  >
-                    <td className="px-5 py-3.5 font-medium text-foreground">{item.carrera}</td>
-                    <td className="px-5 py-3.5 text-muted-foreground font-mono">
-                      {formatCurrencyCLP(item.junior)}
-                    </td>
-                    <td className="px-5 py-3.5 text-foreground font-mono font-semibold">
-                      {formatCurrencyCLP(item.senior)}
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <Link
-                        href={`/jobs?q=${encodeURIComponent(item.carrera)}`}
-                        className="text-xs text-secondary hover:underline font-medium inline-flex items-center gap-1"
-                      >
-                        Buscar vacantes &rarr;
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {SALARY_CAREER_VALUES.map((careerValue) => {
+                  const item = SALARY_BENCHMARKS[careerValue]
+                  return (
+                    <tr key={careerValue}>
+                      <th scope="row" className="px-4 py-3 font-medium">
+                        {item.careerLabel}
+                      </th>
+                      {item.official ? (
+                        <>
+                          <td className="px-4 py-3">
+                            {formatAmount(item.official.firstYear.average)}
+                            <BasisLabel basis={item.official.firstYear.average.basis} />
+                          </td>
+                          <td className="px-4 py-3">
+                            {formatAmount(item.official.fourthYear)}
+                            <BasisLabel basis={item.official.fourthYear.basis} />
+                          </td>
+                          <td className="px-4 py-3">
+                            {item.official.firstYear.employmentRatePercent}%
+                          </td>
+                        </>
+                      ) : (
+                        <td colSpan={3} className="px-4 py-3 text-muted-foreground">
+                          {item.marketProxy
+                            ? "Referencia de Data Scientist, no equivalente directo"
+                            : "Sin datos suficientes"}
+                        </td>
+                      )}
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Fuente de los datos disponibles: MiFuturo.cl. Montos mensuales brutos en pesos de
+            septiembre de 2025.
+          </p>
         </div>
       </div>
     </section>
   )
 }
 
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  options,
+function OfficialMetric({
+  heading,
+  amount,
+  cohort,
 }: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-  options: { value: string; label: string }[]
+  heading: string
+  amount: SalaryAmount
+  cohort: string
 }) {
-  const id = `salary-filter-${label.toLowerCase().replaceAll(" ", "-")}`
-
   return (
-    <div>
-      <label htmlFor={id} className="block text-xs font-medium text-foreground mb-1.5">
-        {label}
-      </label>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger
-          id={id}
-          aria-label={label}
-          className="h-10 w-full rounded-lg border-border bg-surface-container-lowest px-3 pr-1 text-xs text-foreground focus-visible:border-ring focus-visible:ring-ring/30 sm:text-sm"
-        >
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="rounded-xl border border-border p-4">
+      <h3 className="text-sm font-medium text-muted-foreground">{heading}</h3>
+      <p className="mt-2 text-2xl font-semibold tracking-tight">{formatAmount(amount)}</p>
+      <BasisLabel basis={amount.basis} />
+      <p className="mt-2 text-xs text-muted-foreground">{cohort}</p>
+      <SourceLink source={amount.source} />
     </div>
   )
 }
 
-function EstimateCell({
-  label,
-  value,
-  highlight,
-}: {
-  label: string
-  value: number
-  highlight?: boolean
-}) {
+function Percentile({ label, amount }: { label: string; amount: SalaryAmount }) {
   return (
-    <div
-      className={cn(
-        "rounded-lg p-3.5 text-center transition-colors",
-        highlight ? "border border-secondary/30 bg-secondary/10" : "bg-surface-container-lowest"
-      )}
-    >
-      <p className="text-[11px] text-muted-foreground mb-1 font-mono">{label}</p>
-      <p
-        className={cn(
-          "font-mono font-bold tracking-tight",
-          highlight ? "text-secondary text-base sm:text-lg" : "text-foreground text-sm sm:text-base"
-        )}
+    <div>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="font-semibold">{formatAmount(amount)}</p>
+      <BasisLabel basis={amount.basis} />
+    </div>
+  )
+}
+
+function BasisLabel({ basis }: { basis: SalaryAmount["basis"] }) {
+  return (
+    <span className="ml-2 text-xs text-muted-foreground">
+      {basis === "bruto" ? "Bruto" : basis === "liquido" ? "Líquido" : "Base no especificada"}
+    </span>
+  )
+}
+
+function SourceLink({ source }: { source: SalaryAmount["source"] }) {
+  return (
+    <p className="mt-3 text-xs text-muted-foreground">
+      Fuente:{" "}
+      <a
+        className="underline underline-offset-2"
+        href={source.url}
+        target="_blank"
+        rel="noreferrer"
       >
-        {formatCurrencyCLP(value / 1000)}
+        {source.name}
+      </a>{" "}
+      · {source.year}
+    </p>
+  )
+}
+
+function CommunityData({
+  careerLabel,
+  query,
+}: {
+  careerLabel: string
+  query: UseQueryResult<CommunityStatsState, Error>
+}) {
+  if (query.data?.kind === "published") {
+    const { stats } = query.data
+    const trust =
+      stats.count >= 100
+        ? "Muestra amplia"
+        : stats.count >= 30
+          ? "Muestra intermedia"
+          : "Muestra inicial"
+    return (
+      <div className="rounded-xl bg-surface-container-low p-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="font-semibold">Datos de la comunidad Biovity</h3>
+          <span className="text-xs text-muted-foreground">
+            {trust} · n={stats.count}
+          </span>
+        </div>
+        <p className="mt-3 text-sm">
+          Mediana {formatCurrencyCLP(stats.median)} · P25 {formatCurrencyCLP(stats.p25)} · P75{" "}
+          {formatCurrencyCLP(stats.p75)}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {careerLabel} · CLP mensuales · base bruto/líquido no especificada · todos los niveles de
+          experiencia.
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">Actualizado: {SALARIES_UPDATED_AT}</p>
+      </div>
+    )
+  }
+
+  if (query.isLoading) return null
+
+  if (query.isError || query.data?.kind === "unavailable") {
+    return (
+      <div className="rounded-xl bg-surface-container-low p-4">
+        <h3 className="font-semibold">Datos de la comunidad Biovity</h3>
+        <p className="mt-1 text-sm text-muted-foreground">No pudimos consultar esta muestra.</p>
+        <Button variant="outline" size="sm" asChild className="mt-3">
+          <Link href="/share-salary">Compartir mi sueldo</Link>
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-xl bg-surface-container-low p-4">
+      <h3 className="font-semibold">Datos de la comunidad Biovity</h3>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Aún no hay una muestra de 10 respuestas para esta carrera.
       </p>
+      <Button variant="outline" size="sm" asChild className="mt-3">
+        <Link href="/share-salary">Compartir mi sueldo</Link>
+      </Button>
     </div>
   )
 }

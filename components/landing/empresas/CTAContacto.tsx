@@ -99,23 +99,23 @@ export function CTAContacto() {
 
             <div className="space-y-4 mb-8">
               <a
-                href="mailto:empresas@biovity.cl"
+                href="mailto:dleteliers@biovity.cl"
                 className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
               >
                 <div className="size-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
                   <HugeiconsIcon icon={Mail01Icon} size={18} />
                 </div>
-                <span className="font-medium">empresas@biovity.cl</span>
+                <span className="font-medium">dleteliers@biovity.cl</span>
               </a>
 
               <a
-                href="tel:+56912345678"
+                href="tel:+56978181654"
                 className="flex items-center gap-3 text-sm text-foreground hover:text-secondary transition-colors"
               >
                 <div className="size-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
                   <HugeiconsIcon icon={CallIcon} size={18} />
                 </div>
-                <span className="font-medium">+56 9 1234 5678</span>
+                <span className="font-medium">+56 9 7818 1654</span>
               </a>
             </div>
 
