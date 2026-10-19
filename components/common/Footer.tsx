@@ -9,6 +9,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
+import { CookiePreferencesButton } from "@/components/common/CookieConsentProvider"
 import { Logo } from "@/components/ui/logo"
 
 const FOOTER_SECTIONS = [
@@ -112,6 +113,11 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
+              {section.title === "Soporte & Recursos" && (
+                <div className="mt-2">
+                  <CookiePreferencesButton />
+                </div>
+              )}
             </div>
           ))}
         </div>

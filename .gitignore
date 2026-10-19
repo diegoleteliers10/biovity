@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# local CodeGraph index and daemon socket
+.codegraph/
+
 # production
 /build
 

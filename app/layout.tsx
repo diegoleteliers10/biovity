@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Instrument_Serif, Rubik } from "next/font/google"
+import { cookies } from "next/headers"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import "./globals.css"
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner"
+import { CookieConsentProvider } from "@/components/common/CookieConsentProvider"
 import { MotionProvider } from "@/components/providers/MotionProvider"
 import { QueryProvider } from "@/components/providers/QueryProvider"
+import { COOKIE_CONSENT_COOKIE, parseCookieConsent } from "@/lib/cookie-consent"
 import { themeScript } from "@/lib/theme"
 
 const geistSans = Geist({
@@ -177,11 +178,14 @@ export const metadata: Metadata = {
   category: "technology",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = await cookies()
+  const initialConsent = parseCookieConsent(cookieStore.get(COOKIE_CONSENT_COOKIE)?.value)
+
   return (
     <html
       lang="es"
@@ -213,7 +217,9 @@ export default function RootLayout({
       <body className={`${rubik.variable} ${instrumentSerif.variable} antialiased`}>
         <NuqsAdapter>
           <QueryProvider>
-            <MotionProvider>{children}</MotionProvider>
+            <CookieConsentProvider initialConsent={initialConsent}>
+              <MotionProvider>{children}</MotionProvider>
+            </CookieConsentProvider>
           </QueryProvider>
         </NuqsAdapter>
         {/*
@@ -244,8 +250,6 @@ export default function RootLayout({
           }}
         />
       </body>
-      <Analytics />
-      <SpeedInsights />
     </html>
   )
 }

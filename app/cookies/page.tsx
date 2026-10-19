@@ -45,7 +45,7 @@ export default function CookiesPage() {
       <LegalDocumentLayout
         variant="cookies"
         title="Política de Cookies y Almacenamiento"
-        lastUpdated={{ dateTime: "2026-08-20", label: "20 de Agosto de 2026" }}
+        lastUpdated={{ dateTime: "2026-10-18", label: "18 de octubre de 2026" }}
         sections={sections}
       >
         <section id="que-son-cookies">
@@ -93,6 +93,18 @@ export default function CookiesPage() {
                 <tr className="odd:bg-surface-container-lowest even:bg-surface-container-low">
                   <td className="px-2 py-3 sm:px-4">
                     <code className="break-all font-mono font-medium text-foreground">
+                      biovity-cookie-consent
+                    </code>
+                  </td>
+                  <td className="px-2 py-3 sm:px-4">Biovity (Propia)</td>
+                  <td className="px-2 py-3 sm:px-4">
+                    Preferencia de cookies esenciales y analítica
+                  </td>
+                  <td className="px-2 py-3 sm:px-4">180 días</td>
+                </tr>
+                <tr className="odd:bg-surface-container-lowest even:bg-surface-container-low">
+                  <td className="px-2 py-3 sm:px-4">
+                    <code className="break-all font-mono font-medium text-foreground">
                       better-auth.session_token
                     </code>
                   </td>
@@ -120,19 +132,32 @@ export default function CookiesPage() {
                   <td className="px-2 py-3 sm:px-4">Preferencia visual de navegación</td>
                   <td className="px-2 py-3 sm:px-4">30 días</td>
                 </tr>
-                <tr className="odd:bg-surface-container-lowest even:bg-surface-container-low">
-                  <td className="px-2 py-3 sm:px-4">
-                    <code className="break-all font-mono font-medium text-foreground">
-                      _vercel_analytics
-                    </code>
-                  </td>
-                  <td className="px-2 py-3 sm:px-4">Vercel Inc.</td>
-                  <td className="px-2 py-3 sm:px-4">Telemetría anónima de rendimiento</td>
-                  <td className="px-2 py-3 sm:px-4">Sesión</td>
-                </tr>
               </tbody>
             </table>
           </div>
+          <p className="mt-4">
+            Si aceptas la analítica, cargamos Vercel Web Analytics y Speed Insights. Web Analytics
+            no usa cookies y almacena datos anónimos. Speed Insights registra métricas anónimas de
+            rendimiento, sin asociarlas a una persona o dirección IP. Revisa la{" "}
+            <a
+              className="text-secondary font-medium underline hover:text-secondary/80"
+              href="https://vercel.com/docs/analytics"
+              rel="noreferrer"
+              target="_blank"
+            >
+              documentación de Web Analytics
+            </a>{" "}
+            y la{" "}
+            <a
+              className="text-secondary font-medium underline hover:text-secondary/80"
+              href="https://vercel.com/docs/speed-insights/privacy-policy"
+              rel="noreferrer"
+              target="_blank"
+            >
+              política de privacidad de Speed Insights
+            </a>
+            .
+          </p>
         </section>
 
         <section id="gestionar-cookies">
@@ -140,9 +165,10 @@ export default function CookiesPage() {
             3. Cómo Gestionar las Cookies
           </h2>
           <p>
-            Puedes permitir, bloquear o eliminar las cookies en tu dispositivo configurando las
-            opciones de tu navegador. Si bloqueas las cookies técnicas esenciales, algunas funciones
-            autenticadas de la plataforma podrían verse limitadas.
+            Puedes cambiar tu elección desde Preferencias de cookies, disponible al final de cada
+            página. También puedes permitir, bloquear o eliminar cookies en tu navegador. Si
+            bloqueas las cookies técnicas esenciales, algunas funciones autenticadas podrían verse
+            limitadas.
           </p>
         </section>
 
