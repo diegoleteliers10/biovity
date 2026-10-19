@@ -57,18 +57,18 @@ export function SalariosInteractiveFilter() {
   }
 
   return (
-    <section className="bg-surface-container-lowest py-20 sm:py-24">
+    <section className="bg-surface-container-lowest py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 max-w-3xl">
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <div className="mb-10 max-w-3xl lg:mb-12">
+          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             Referencias salariales por carrera
           </h2>
         </div>
 
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.6fr)]">
-          <Card className="border-0 bg-surface-container-low p-2 shadow-none sm:p-4">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">Selecciona una carrera</CardTitle>
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(17rem,0.72fr)_minmax(0,1.28fr)] lg:gap-8">
+          <Card className="border-0 bg-surface-container-low p-2 shadow-none sm:p-4 lg:sticky lg:top-28">
+            <CardHeader className="gap-2">
+              <CardTitle className="text-xl font-semibold">Selecciona una carrera</CardTitle>
               <CardDescription>
                 Los filtros de industria y región no ajustan estas cifras.
               </CardDescription>
@@ -98,9 +98,11 @@ export function SalariosInteractiveFilter() {
             </CardContent>
           </Card>
 
-          <Card className="border border-border bg-surface-container-lowest p-2 shadow-none sm:p-4">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">{selectedCareer?.label}</CardTitle>
+          <Card className="border-0 bg-surface-container-low p-2 shadow-none sm:p-4">
+            <CardHeader className="gap-2">
+              <CardTitle className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                {selectedCareer?.label}
+              </CardTitle>
               <CardDescription>Actualizado: {SALARIES_UPDATED_AT}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -116,7 +118,7 @@ export function SalariosInteractiveFilter() {
                     amount={benchmark.official.fourthYear}
                     cohort="Titulados 2018–2020"
                   />
-                  <div className="rounded-xl border border-border p-4 sm:col-span-2">
+                  <div className="rounded-xl bg-surface-container-lowest p-4 sm:col-span-2 sm:p-5">
                     <h3 className="mb-3 text-sm font-semibold">
                       Distribución al primer año · bruto
                     </h3>
@@ -133,8 +135,8 @@ export function SalariosInteractiveFilter() {
                   </div>
                 </div>
               ) : benchmark.marketProxy ? (
-                <div className="rounded-xl border border-border p-4">
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-secondary">
+                <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5">
+                  <p className="mb-1 text-sm font-semibold text-secondary">
                     MiFuturo no publica una cifra directa para Bioinformática
                   </p>
                   <p className="mb-3 text-sm text-muted-foreground">
@@ -159,42 +161,47 @@ export function SalariosInteractiveFilter() {
           </Card>
         </div>
 
-        <div className="mt-12 border-t border-border pt-8">
-          <h3 className="mb-4 text-xl font-semibold">Comparación por carrera</h3>
-          <div className="overflow-x-auto rounded-xl border border-border bg-surface-container-lowest">
+        <div className="mt-16 sm:mt-20">
+          <h3 className="mb-5 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Comparación por carrera
+          </h3>
+          <div className="overflow-x-auto rounded-xl bg-surface-container-low p-2 sm:p-3">
             <table className="w-full min-w-[720px] text-left text-sm text-foreground">
-              <thead className="border-b border-border bg-surface-container-low text-xs text-muted-foreground">
+              <thead className="bg-surface-container-lowest text-xs text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Carrera</th>
-                  <th className="px-4 py-3 font-medium">Promedio · 1er año</th>
-                  <th className="px-4 py-3 font-medium">Promedio · 4º año</th>
-                  <th className="px-4 py-3 font-medium">Empleabilidad · 1er año</th>
+                  <th className="rounded-l-lg px-4 py-4 font-medium">Carrera</th>
+                  <th className="px-4 py-4 font-medium">Promedio · 1er año</th>
+                  <th className="px-4 py-4 font-medium">Promedio · 4º año</th>
+                  <th className="rounded-r-lg px-4 py-4 font-medium">Empleabilidad · 1er año</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody>
                 {SALARY_CAREER_VALUES.map((careerValue) => {
                   const item = SALARY_BENCHMARKS[careerValue]
                   return (
-                    <tr key={careerValue}>
-                      <th scope="row" className="px-4 py-3 font-medium">
+                    <tr
+                      key={careerValue}
+                      className="transition-colors duration-150 hover:bg-surface-container-highest/50"
+                    >
+                      <th scope="row" className="px-4 py-4 font-medium">
                         {item.careerLabel}
                       </th>
                       {item.official ? (
                         <>
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-4">
                             {formatAmount(item.official.firstYear.average)}
                             <BasisLabel basis={item.official.firstYear.average.basis} />
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-4">
                             {formatAmount(item.official.fourthYear)}
                             <BasisLabel basis={item.official.fourthYear.basis} />
                           </td>
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-4">
                             {item.official.firstYear.employmentRatePercent}%
                           </td>
                         </>
                       ) : (
-                        <td colSpan={3} className="px-4 py-3 text-muted-foreground">
+                        <td colSpan={3} className="px-4 py-4 text-muted-foreground">
                           {item.marketProxy
                             ? "Referencia de Data Scientist, no equivalente directo"
                             : "Sin datos suficientes"}
@@ -226,7 +233,7 @@ function OfficialMetric({
   cohort: string
 }) {
   return (
-    <div className="rounded-xl border border-border p-4">
+    <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5">
       <h3 className="text-sm font-medium text-muted-foreground">{heading}</h3>
       <p className="mt-2 text-2xl font-semibold tracking-tight">{formatAmount(amount)}</p>
       <BasisLabel basis={amount.basis} />
@@ -287,7 +294,7 @@ function CommunityData({
           ? "Muestra intermedia"
           : "Muestra inicial"
     return (
-      <div className="rounded-xl bg-surface-container-low p-4">
+      <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold">Datos de la comunidad Biovity</h3>
           <span className="text-xs text-muted-foreground">
@@ -311,7 +318,7 @@ function CommunityData({
 
   if (query.isError || query.data?.kind === "unavailable") {
     return (
-      <div className="rounded-xl bg-surface-container-low p-4">
+      <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5">
         <h3 className="font-semibold">Datos de la comunidad Biovity</h3>
         <p className="mt-1 text-sm text-muted-foreground">No pudimos consultar esta muestra.</p>
         <Button variant="outline" size="sm" asChild className="mt-3">
@@ -322,7 +329,7 @@ function CommunityData({
   }
 
   return (
-    <div className="rounded-xl bg-surface-container-low p-4">
+    <div className="rounded-xl bg-surface-container-lowest p-4 sm:p-5">
       <h3 className="font-semibold">Datos de la comunidad Biovity</h3>
       <p className="mt-1 text-sm text-muted-foreground">
         Aún no hay una muestra de 10 respuestas para esta carrera.

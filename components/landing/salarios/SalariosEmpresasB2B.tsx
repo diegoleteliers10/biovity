@@ -30,14 +30,14 @@ export function SalariosEmpresasB2B() {
   }
 
   return (
-    <section className="bg-surface-container-lowest py-20 sm:py-24">
+    <section className="bg-surface-container-low py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 max-w-3xl">
           <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Referencias para equipos de contratación
           </h2>
         </div>
-        <Card className="border border-border bg-surface-container-lowest p-2 shadow-none sm:p-4">
+        <Card className="border-0 bg-surface-container-lowest p-2 shadow-none sm:p-4">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
               Consulta los datos disponibles por carrera
@@ -118,7 +118,7 @@ function EmployerMetric(props: EmployerMetricProps) {
       : `${formatCurrencyCLP(props.low.amountClp)} a ${formatCurrencyCLP(props.high.amountClp)}`
 
   return (
-    <div className="rounded-xl bg-surface-container-low p-4">
+    <div className="rounded-xl bg-surface-container-low p-4 sm:p-5">
       <p className="text-sm font-medium text-muted-foreground">{props.label}</p>
       <p className="mt-2 text-xl font-semibold">
         {text} <span className="text-xs font-normal">Bruto</span>

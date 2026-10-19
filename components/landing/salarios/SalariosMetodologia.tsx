@@ -3,11 +3,11 @@ import { FAQS_SALARIOS, SALARIES_UPDATED_AT, SALARY_SOURCES } from "@/lib/data/s
 
 export function SalariosMetodologia() {
   return (
-    <section className="bg-surface-container-low py-20 sm:py-24">
+    <section className="bg-surface-container-low py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Card className="border border-border bg-surface-container-lowest p-4 shadow-none sm:p-8">
+        <Card className="border-0 bg-surface-container-lowest p-4 shadow-none sm:p-8">
           <CardHeader className="px-0 pt-0">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Fuentes y metodología
             </h2>
           </CardHeader>
@@ -34,7 +34,7 @@ export function SalariosMetodologia() {
               permiten calcular esos factores de forma comparable. Cada sueldo depende también del
               cargo, responsabilidades y beneficios.
             </p>
-            <div>
+            <div className="rounded-xl bg-surface-container-low p-4 sm:p-6">
               <h3 className="mb-3 text-base font-semibold text-foreground">Preguntas frecuentes</h3>
               <div className="space-y-4">
                 {FAQS_SALARIOS.map((faq) => (
@@ -45,7 +45,7 @@ export function SalariosMetodologia() {
                 ))}
               </div>
             </div>
-            <div>
+            <div className="rounded-xl bg-surface-container-low p-4 sm:p-6">
               <h3 className="mb-3 text-base font-semibold text-foreground">Fuentes consultadas</h3>
               <ul className="list-inside list-disc space-y-2">
                 {SALARY_SOURCES.map((source) => (

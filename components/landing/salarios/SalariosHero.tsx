@@ -12,37 +12,43 @@ export function SalariosHero() {
   const transition = (delay = 0) => getTransition({ delay, reducedMotion })
 
   return (
-    <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden bg-surface-container-lowest px-4 pb-16 pt-24 sm:px-6 md:pb-24 md:pt-32">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] left-1/2 h-[30rem] w-[44rem] -translate-x-1/2 rounded-full bg-gradient-to-b from-secondary/10 via-accent/5 to-transparent blur-3xl opacity-70" />
-      </div>
-      <div className="relative z-10 mx-auto w-full max-w-7xl">
-        <div className="mx-auto max-w-4xl text-center">
-          <m.h1
-            initial={{ opacity: 0, y: 24, scale: 0.99 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={transition(LANDING_ANIMATION.sequenceDelay)}
-            className="mb-6 text-balance text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
-          >
-            Sueldos en biotecnología,{" "}
-            <span className="font-semibold text-accent">ciencias e ingeniería</span> en Chile
-          </m.h1>
+    <section className="relative w-full overflow-hidden bg-surface-container-low px-4 pb-16 pt-28 sm:px-6 md:pb-24 md:pt-36">
+      <div className="mx-auto w-full max-w-7xl">
+        <m.h1
+          initial={{ opacity: 0, y: 24, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={transition(LANDING_ANIMATION.sequenceDelay)}
+          className="mb-8 text-balance text-[clamp(2rem,5vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.045em] text-foreground"
+        >
+          Sueldos en biotecnología,{" "}
+          <span className="font-semibold text-accent">ciencias e ingeniería</span> en Chile
+        </m.h1>
+        <div className="grid items-end gap-8 sm:grid-cols-[minmax(0,1.1fr)_minmax(16rem,0.6fr)]">
           <m.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={transition(LANDING_ANIMATION.sequenceDelay * 2)}
-            className="mx-auto mb-8 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl"
+            className="max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl"
           >
             Compara ingresos reales de titulados, con su fuente, cohorte y límites a la vista.
           </m.p>
           <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={transition(LANDING_ANIMATION.sequenceDelay * 3)}
-            className="inline-flex items-center gap-2 rounded-md bg-surface-container-low px-3 py-2 text-xs text-muted-foreground"
+            className="flex items-center gap-4 rounded-lg border border-border/40 bg-surface-container-lowest p-4 sm:max-w-md sm:justify-self-end sm:p-5"
           >
-            <HugeiconsIcon icon={TradeUpIcon} size={14} className="text-accent" />
-            <span>Fuente principal: MiFuturo.cl · Actualizado: {SALARIES_UPDATED_AT}</span>
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-secondary/10">
+              <HugeiconsIcon icon={TradeUpIcon} size={20} className="text-secondary" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm font-medium leading-5 text-foreground">
+                Fuente principal: MiFuturo.cl
+              </span>
+              <span className="mt-1 block text-xs leading-4 text-muted-foreground">
+                Actualizado: {SALARIES_UPDATED_AT}
+              </span>
+            </span>
           </m.div>
         </div>
       </div>
