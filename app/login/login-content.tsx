@@ -4,116 +4,95 @@ import { ArrowRight01Icon, Building06Icon, UserIcon } from "@hugeicons/core-free
 import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
+import { AuthPageShell } from "@/components/auth/AuthPageShell"
 import { authLinkClass, authSubtitleClass, authTitleClass } from "@/components/auth/form-styles"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export function LoginContent() {
   return (
-    <div className="flex h-dvh bg-surface-container-lowest overflow-hidden">
-      {/* Left: Illustration Column */}
-      <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
-        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
+    <AuthPageShell
+      imageSrc="/Login.webp"
+      imageAlt="Persona frente a una puerta abierta"
+      imageClassName="scale-[1.06]"
+    >
+      <div className="mx-auto w-full max-w-xl">
+        <Link
+          href="/"
+          aria-label="Ir al inicio"
+          className="inline-flex w-fit items-center justify-center rounded-md transition-opacity duration-150 ease-out hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary"
+        >
           <Image
-            src="/Login.webp"
-            alt="Persona frente a una puerta abierta"
-            fill
-            className="object-cover object-center"
+            src="/logoIcon.webp"
+            alt="Biovity"
+            width={50}
+            height={50}
+            className="h-12 w-auto object-contain"
             priority
-            sizes="50vw"
           />
-        </div>
-      </div>
+        </Link>
 
-      {/* Right: Login block */}
-      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-xl space-y-8 p-6 lg:p-12">
-          {/* Logo & Header */}
-          <div className="flex flex-col items-center text-center space-y-3">
-            <Link
-              href="/"
-              aria-label="Ir al inicio"
-              className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
-            >
-              <Image
-                src="/logoIcon.webp"
-                alt="Biovity"
-                width={50}
-                height={50}
-                className="h-12 w-auto object-contain"
-                priority
-              />
-            </Link>
+        <div className="my-auto w-full py-10 sm:py-14">
+          <div className="mb-8 space-y-3 text-left">
             <h1 className={authTitleClass}>Bienvenido a Biovity</h1>
             <p className={authSubtitleClass}>Selecciona tu tipo de acceso para continuar</p>
           </div>
 
-          {/* Cards for User vs Org */}
           <div className="flex flex-col gap-3">
-            <Link href="/login/professional" className="block">
-              <Card className="group cursor-pointer rounded-xl border border-border bg-surface-container-low hover:border-secondary/40 hover:bg-secondary/5 transition-all duration-200 shadow-none">
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-surface-container-lowest border border-border text-secondary transition-colors group-hover:border-secondary/40 group-hover:bg-secondary/10">
-                    <HugeiconsIcon icon={UserIcon} size={20} strokeWidth={1.5} />
+            <Link
+              href="/login/professional"
+              className="group block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+            >
+              <Card className="rounded-lg border border-border/40 bg-surface-container-low transition-[transform,background-color,border-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 group-hover:border-secondary/40 group-hover:bg-secondary/5 group-active:translate-y-0 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 shadow-none">
+                <CardContent className="flex items-center gap-4 p-5 sm:p-6">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-secondary/10 text-secondary">
+                    <HugeiconsIcon icon={UserIcon} size={22} strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 flex-1 text-left">
-                    <h3 className="font-semibold text-foreground text-sm transition-colors">
-                      Usuario Individual
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
+                    <h2 className="text-base font-semibold text-foreground">Usuario Individual</h2>
+                    <p className="mt-1 text-sm leading-5 text-muted-foreground">
                       Profesionales, investigadores y estudiantes
                     </p>
                   </div>
-                  <HugeiconsIcon
-                    icon={ArrowRight01Icon}
-                    size={16}
-                    strokeWidth={1.5}
-                    className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-secondary"
-                  />
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest text-secondary transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
+                    <HugeiconsIcon icon={ArrowRight01Icon} size={17} strokeWidth={1.5} />
+                  </span>
                 </CardContent>
               </Card>
             </Link>
 
-            <Link href="/login/organization" className="block">
-              <Card className="group cursor-pointer rounded-xl border border-border bg-surface-container-low hover:border-accent/40 hover:bg-accent/5 transition-all duration-200 shadow-none">
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-surface-container-lowest border border-border text-accent transition-colors group-hover:border-accent/40 group-hover:bg-accent/10">
-                    <HugeiconsIcon icon={Building06Icon} size={20} strokeWidth={1.5} />
+            <Link
+              href="/login/organization"
+              className="group block rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+            >
+              <Card className="rounded-lg border border-border/40 bg-surface-container-low transition-[transform,background-color,border-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 group-hover:border-accent/40 group-hover:bg-accent/5 group-active:translate-y-0 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 shadow-none">
+                <CardContent className="flex items-center gap-4 p-5 sm:p-6">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-accent/10 text-primary">
+                    <HugeiconsIcon icon={Building06Icon} size={22} strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 flex-1 text-left">
-                    <h3 className="font-semibold text-foreground text-sm transition-colors">
-                      Organización
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
+                    <h2 className="text-base font-semibold text-foreground">Organización</h2>
+                    <p className="mt-1 text-sm leading-5 text-muted-foreground">
                       Empresas, instituciones y laboratorios
                     </p>
                   </div>
-                  <HugeiconsIcon
-                    icon={ArrowRight01Icon}
-                    size={16}
-                    strokeWidth={1.5}
-                    className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
-                  />
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest text-primary transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
+                    <HugeiconsIcon icon={ArrowRight01Icon} size={17} strokeWidth={1.5} />
+                  </span>
                 </CardContent>
               </Card>
             </Link>
           </div>
 
-          {/* Registration Options */}
-          <div className="space-y-4 border-t border-border pt-6">
-            <p className="text-center text-xs font-mono font-semibold uppercase tracking-wider text-secondary">
-              ¿Eres nuevo en Biovity?
-            </p>
-            <div className="space-y-2">
+          <div className="mt-8 space-y-3 rounded-lg bg-surface-container-low p-5 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:space-y-0">
+            <p className="text-sm font-semibold text-foreground">¿Eres nuevo en Biovity?</p>
+            <div className="flex flex-col gap-2 sm:items-end">
               <Button
                 asChild
                 variant="outline"
-                className="w-full h-11 rounded-lg bg-surface-container-lowest border-border/40 text-foreground hover:bg-surface-container-low text-sm font-medium"
+                className="h-10 w-full justify-start rounded-md border-border/40 bg-surface-container-lowest px-3 text-sm font-medium text-foreground transition-colors duration-150 ease-out hover:bg-surface-container-highest active:scale-[0.98] sm:w-72"
               >
-                <Link
-                  href="/register/professional"
-                  className="flex items-center justify-center gap-2"
-                >
+                <Link href="/register/professional" className="flex items-center gap-2">
                   <HugeiconsIcon icon={UserIcon} size={16} strokeWidth={1.5} />
                   Crear cuenta de usuario
                 </Link>
@@ -121,12 +100,9 @@ export function LoginContent() {
               <Button
                 asChild
                 variant="outline"
-                className="w-full h-11 rounded-lg bg-surface-container-lowest border-border/40 text-foreground hover:bg-surface-container-low text-sm font-medium"
+                className="h-10 w-full justify-start rounded-md border-border/40 bg-surface-container-lowest px-3 text-sm font-medium text-foreground transition-colors duration-150 ease-out hover:bg-surface-container-highest active:scale-[0.98] sm:w-72"
               >
-                <Link
-                  href="/register/organization"
-                  className="flex items-center justify-center gap-2"
-                >
+                <Link href="/register/organization" className="flex items-center gap-2">
                   <HugeiconsIcon icon={Building06Icon} size={16} strokeWidth={1.5} />
                   Registrar organización
                 </Link>
@@ -134,7 +110,7 @@ export function LoginContent() {
             </div>
           </div>
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="mt-6 text-left text-xs text-muted-foreground">
             ¿Necesitas ayuda?{" "}
             <a href="mailto:support@biovity.com" className={authLinkClass}>
               Contactar soporte
@@ -142,6 +118,6 @@ export function LoginContent() {
           </p>
         </div>
       </div>
-    </div>
+    </AuthPageShell>
   )
 }

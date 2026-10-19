@@ -12,6 +12,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useReducer } from "react"
+import { AuthPageShell } from "@/components/auth/AuthPageShell"
 import {
   authButtonClass,
   authInputClass,
@@ -122,163 +123,147 @@ export function AdminLoginContent() {
   }
 
   return (
-    <div className="flex h-dvh bg-surface-container-lowest overflow-hidden">
-      <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
-        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
-          <Image
-            src="/Login.webp"
-            alt="Biovity - Acceso administrativo"
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="50vw"
-            quality={70}
-          />
+    <AuthPageShell
+      imageSrc="/Login.webp"
+      imageAlt="Persona frente a una puerta abierta"
+      imageClassName="scale-[1.06]"
+    >
+      <div className="w-full max-w-md space-y-7">
+        {/* Logo & Header */}
+        <div className="flex flex-col items-start space-y-3 text-left">
+          <Link
+            href="/"
+            aria-label="Ir al inicio"
+            className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
+          >
+            <Image
+              src="/logoIcon.webp"
+              alt="Biovity"
+              width={50}
+              height={50}
+              className="h-12 w-auto object-contain"
+            />
+          </Link>
+          <h1 className={authTitleClass}>Panel de Administración</h1>
+          <p className={authSubtitleClass}>Acceso exclusivo para administradores del sistema</p>
         </div>
-      </div>
 
-      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-md space-y-8 p-6 lg:p-12">
-          {/* Logo & Header */}
-          <div className="flex flex-col items-center text-center space-y-3">
-            <Link
-              href="/"
-              aria-label="Ir al inicio"
-              className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
-            >
-              <Image
-                src="/logoIcon.webp"
-                alt="Biovity"
-                width={50}
-                height={50}
-                className="h-12 w-auto object-contain"
+        <form onSubmit={handleSignIn} className="space-y-4">
+          <div className="space-y-1.5">
+            <label htmlFor="email" className={authLabelClass}>
+              Correo electrónico
+            </label>
+            <div className="relative">
+              <HugeiconsIcon
+                icon={Mail01Icon}
+                size={16}
+                strokeWidth={1.5}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
-            </Link>
-            <h1 className={authTitleClass}>Panel de Administración</h1>
-            <p className={authSubtitleClass}>Acceso exclusivo para administradores del sistema</p>
-          </div>
-
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div className="space-y-1.5">
-              <label htmlFor="email" className={authLabelClass}>
-                Correo electrónico
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={Mail01Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="admin@biovity.cl"
-                  value={state.formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={cn(
-                    authInputClass,
-                    "pl-10",
-                    state.errors.email && "border-destructive"
-                  )}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-              {state.errors.email && (
-                <p className="text-xs text-destructive mt-1">{state.errors.email}</p>
-              )}
+              <Input
+                id="email"
+                type="email"
+                placeholder="admin@biovity.cl"
+                value={state.formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                className={cn(authInputClass, "pl-10", state.errors.email && "border-destructive")}
+                required
+                autoComplete="email"
+              />
             </div>
-
-            <div className="space-y-1.5">
-              <label htmlFor="password" className={authLabelClass}>
-                Contraseña
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={SquareLock02Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="password"
-                  type={state.isPasswordVisible ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={state.formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={cn(
-                    authInputClass,
-                    "pl-10 pr-10",
-                    state.errors.password && "border-destructive"
-                  )}
-                  required
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  aria-label={state.isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  aria-pressed={state.isPasswordVisible}
-                  onClick={() => dispatch({ type: "TOGGLE_PASSWORD_VISIBILITY" })}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none"
-                >
-                  <HugeiconsIcon
-                    icon={state.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
-                    size={16}
-                    strokeWidth={1.75}
-                  />
-                </button>
-              </div>
-              {state.errors.password && (
-                <p className="text-xs text-destructive mt-1">{state.errors.password}</p>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between pt-1">
-              <label
-                htmlFor="remember"
-                className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
-              >
-                <Checkbox
-                  id="remember"
-                  checked={state.rememberMe}
-                  onCheckedChange={(checked) =>
-                    dispatch({ type: "SET_REMEMBER_ME", value: checked === true })
-                  }
-                />
-                Recordarme
-              </label>
-            </div>
-
-            {state.errors.general && (
-              <div
-                role="alert"
-                className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
-              >
-                {state.errors.general}
-              </div>
+            {state.errors.email && (
+              <p className="text-xs text-destructive mt-1">{state.errors.email}</p>
             )}
-
-            <Button
-              type="submit"
-              className={cn(authButtonClass, "w-full")}
-              disabled={state.isLoading}
-            >
-              {state.isLoading ? "Accediendo..." : "Acceder al panel"}
-            </Button>
-          </form>
-
-          <div className="border-t border-border pt-6 text-center">
-            <Link
-              href="/login"
-              className="inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.5} />
-              Volver a selección de acceso
-            </Link>
           </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="password" className={authLabelClass}>
+              Contraseña
+            </label>
+            <div className="relative">
+              <HugeiconsIcon
+                icon={SquareLock02Icon}
+                size={16}
+                strokeWidth={1.5}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
+                id="password"
+                type={state.isPasswordVisible ? "text" : "password"}
+                placeholder="••••••••"
+                value={state.formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className={cn(
+                  authInputClass,
+                  "pl-10 pr-10",
+                  state.errors.password && "border-destructive"
+                )}
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                aria-label={state.isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-pressed={state.isPasswordVisible}
+                onClick={() => dispatch({ type: "TOGGLE_PASSWORD_VISIBILITY" })}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+              >
+                <HugeiconsIcon
+                  icon={state.isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                  size={16}
+                  strokeWidth={1.75}
+                />
+              </button>
+            </div>
+            {state.errors.password && (
+              <p className="text-xs text-destructive mt-1">{state.errors.password}</p>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <label
+              htmlFor="remember"
+              className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
+            >
+              <Checkbox
+                id="remember"
+                checked={state.rememberMe}
+                onCheckedChange={(checked) =>
+                  dispatch({ type: "SET_REMEMBER_ME", value: checked === true })
+                }
+              />
+              Recordarme
+            </label>
+          </div>
+
+          {state.errors.general && (
+            <div
+              role="alert"
+              className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+            >
+              {state.errors.general}
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            className={cn(authButtonClass, "w-full")}
+            disabled={state.isLoading}
+          >
+            {state.isLoading ? "Accediendo..." : "Acceder al panel"}
+          </Button>
+        </form>
+
+        <div className="pt-6 text-left">
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.5} />
+            Volver a selección de acceso
+          </Link>
         </div>
       </div>
-    </div>
+    </AuthPageShell>
   )
 }
