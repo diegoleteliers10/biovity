@@ -57,20 +57,6 @@ jobs:
             -H "Authorization: Bearer $CRON_SECRET" \
             https://biovity.cl/api/cron/backend-dispatch
 
-  process-email-outbox:
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '*/5 * * * *'
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    steps:
-      - name: Dispatch email outbox
-        env:
-          EMAIL_OUTBOX_SECRET: ${{ secrets.EMAIL_OUTBOX_SECRET }}
-        run: |
-          test -n "$EMAIL_OUTBOX_SECRET"
-          curl --fail --silent --show-error --max-time 60 -X POST \
-            -H "Authorization: Bearer $EMAIL_OUTBOX_SECRET" \
-            https://biovity.cl/api/cron/email-outbox
-
   clean-cv-files:
     if: github.event.schedule == '0 5 * * *'
     runs-on: ubuntu-latest
