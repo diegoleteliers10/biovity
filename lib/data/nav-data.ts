@@ -100,7 +100,7 @@ export const NAV_DATA_ADMIN: NavData = {
     { title: "Operaciones", url: "/dashboard/operations", icon: UserListIcon },
     { title: "Chats sin organización", url: "/dashboard/chats", icon: BubbleChatIcon },
     { title: "Correos fallidos", url: "/dashboard/email", icon: Mail01Icon },
-    { title: "Contacto", url: "/dashboard/contact", icon: Mail01Icon },
+    { title: "Contacto", url: "/dashboard/contact", icon: BubbleChatIcon },
     { title: "Lista de Espera", url: "/dashboard/waitlist", icon: UserListIcon },
     { title: "Logs de AI", url: "/dashboard/ai-logs", icon: RadarIcon },
   ],
