@@ -12,6 +12,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useState, useTransition } from "react"
+import { AuthPageShell } from "@/components/auth/AuthPageShell"
 import {
   authButtonClass,
   authInputClass,
@@ -75,183 +76,168 @@ export function UserLoginContent() {
   }
 
   return (
-    <div className="flex h-dvh bg-surface-container-lowest overflow-hidden">
-      {/* Left: Illustration */}
-      <div className="relative hidden w-1/2 p-4 lg:p-6 lg:block">
-        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border bg-surface-container-low">
-          <Image
-            src="/LoginProfessional.png"
-            alt="Laboratorio científico con microscopio y matraz"
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="50vw"
-          />
-        </div>
-      </div>
-
-      {/* Right: Login form */}
-      <div className="flex min-h-0 w-full flex-col overflow-y-auto bg-surface-container-lowest lg:w-1/2">
-        <div className="m-auto w-full max-w-xl space-y-8 p-6 lg:p-12">
-          {/* Logo & Header */}
-          <div className="flex flex-col items-center text-center space-y-3">
-            <Link
-              href="/"
-              aria-label="Ir al inicio"
-              className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
-            >
-              <Image
-                src="/logoIcon.webp"
-                alt="Biovity"
-                width={50}
-                height={50}
-                className="h-12 w-auto object-contain"
-                priority
-              />
-            </Link>
-            <h1 className={authTitleClass}>Iniciar sesión</h1>
-            <p className={authSubtitleClass}>
-              Acceso para profesionales, investigadores y estudiantes
-            </p>
-          </div>
-
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div className="space-y-1.5">
-              <label htmlFor="email" className={authLabelClass}>
-                Correo electrónico
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={Mail01Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={cn(authInputClass, "pl-10", errors.email && "border-destructive")}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-              {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
-            </div>
-
-            <div className="space-y-1.5">
-              <label htmlFor="password" className={authLabelClass}>
-                Contraseña
-              </label>
-              <div className="relative">
-                <HugeiconsIcon
-                  icon={SquareLock02Icon}
-                  size={16}
-                  strokeWidth={1.5}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                />
-                <Input
-                  id="password"
-                  type={isPasswordVisible ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  className={cn(
-                    authInputClass,
-                    "pl-10 pr-10",
-                    errors.password && "border-destructive"
-                  )}
-                  required
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  aria-pressed={isPasswordVisible}
-                  onClick={() => setIsPasswordVisible((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none"
-                >
-                  <HugeiconsIcon
-                    icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
-                    size={16}
-                    strokeWidth={1.75}
-                  />
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs text-destructive mt-1">{errors.password}</p>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between pt-1">
-              <label
-                htmlFor="remember"
-                className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
-              >
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked === true)}
-                />
-                Recordarme
-              </label>
-              <Link href="/password/reset" className={authLinkClass}>
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </div>
-
-            {errors.general && (
-              <div
-                role="alert"
-                className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
-              >
-                {errors.general}
-              </div>
-            )}
-
-            <Button type="submit" className={cn(authButtonClass, "w-full")} disabled={isPending}>
-              {isPending ? "Iniciando sesión..." : "Iniciar sesión"}
-            </Button>
-          </form>
-
-          <div className="space-y-3.5 border-t border-border pt-6 text-center text-xs sm:text-sm">
-            <div>
-              <p className="text-muted-foreground">
-                ¿No tienes una cuenta?{" "}
-                <Link href="/register/professional" className={authLinkClass}>
-                  Regístrate como usuario
-                </Link>
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">
-                ¿Eres una organización?{" "}
-                <Link href="/login/organization" className={authOrgLinkClass}>
-                  Acceso organizacional
-                </Link>
-              </p>
-            </div>
-            <div className="pt-2">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.5} />
-                Volver a selección de acceso
-              </Link>
-            </div>
-          </div>
-
-          <p className="text-center text-xs text-muted-foreground">
-            ¿Necesitas ayuda?{" "}
-            <a href="mailto:support@biovity.com" className={authLinkClass}>
-              Contactar soporte
-            </a>
+    <AuthPageShell
+      imageSrc="/LoginProfessional.png"
+      imageAlt="Laboratorio científico con microscopio y matraz"
+      imageClassName="scale-[1.06]"
+    >
+      <div className="w-full max-w-xl space-y-7">
+        {/* Logo & Header */}
+        <div className="flex flex-col items-start space-y-3 text-left">
+          <Link
+            href="/"
+            aria-label="Ir al inicio"
+            className="inline-flex items-center justify-center transition-opacity hover:opacity-80 mb-2"
+          >
+            <Image
+              src="/logoIcon.webp"
+              alt="Biovity"
+              width={50}
+              height={50}
+              className="h-12 w-auto object-contain"
+              priority
+            />
+          </Link>
+          <h1 className={authTitleClass}>Iniciar sesión</h1>
+          <p className={authSubtitleClass}>
+            Acceso para profesionales, investigadores y estudiantes
           </p>
         </div>
+
+        <form onSubmit={handleSignIn} className="space-y-4">
+          <div className="space-y-1.5">
+            <label htmlFor="email" className={authLabelClass}>
+              Correo electrónico
+            </label>
+            <div className="relative">
+              <HugeiconsIcon
+                icon={Mail01Icon}
+                size={16}
+                strokeWidth={1.5}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
+                id="email"
+                type="email"
+                placeholder="tu@email.com"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                className={cn(authInputClass, "pl-10", errors.email && "border-destructive")}
+                required
+                autoComplete="email"
+              />
+            </div>
+            {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="password" className={authLabelClass}>
+              Contraseña
+            </label>
+            <div className="relative">
+              <HugeiconsIcon
+                icon={SquareLock02Icon}
+                size={16}
+                strokeWidth={1.5}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
+                id="password"
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className={cn(
+                  authInputClass,
+                  "pl-10 pr-10",
+                  errors.password && "border-destructive"
+                )}
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                aria-label={isPasswordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-pressed={isPasswordVisible}
+                onClick={() => setIsPasswordVisible((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+              >
+                <HugeiconsIcon
+                  icon={isPasswordVisible ? ViewOffSlashIcon : ViewIcon}
+                  size={16}
+                  strokeWidth={1.75}
+                />
+              </button>
+            </div>
+            {errors.password && <p className="text-xs text-destructive mt-1">{errors.password}</p>}
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            <label
+              htmlFor="remember"
+              className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground cursor-pointer select-none"
+            >
+              <Checkbox
+                id="remember"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked === true)}
+              />
+              Recordarme
+            </label>
+            <Link href="/password/reset" className={authLinkClass}>
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
+
+          {errors.general && (
+            <div
+              role="alert"
+              className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive text-center"
+            >
+              {errors.general}
+            </div>
+          )}
+
+          <Button type="submit" className={cn(authButtonClass, "w-full")} disabled={isPending}>
+            {isPending ? "Iniciando sesión..." : "Iniciar sesión"}
+          </Button>
+        </form>
+
+        <div className="space-y-3.5 pt-6 text-left text-xs sm:text-sm">
+          <div>
+            <p className="text-muted-foreground">
+              ¿No tienes una cuenta?{" "}
+              <Link href="/register/professional" className={authLinkClass}>
+                Regístrate como usuario
+              </Link>
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">
+              ¿Eres una organización?{" "}
+              <Link href="/login/organization" className={authOrgLinkClass}>
+                Acceso organizacional
+              </Link>
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={14} strokeWidth={1.5} />
+              Volver a selección de acceso
+            </Link>
+          </div>
+        </div>
+
+        <p className="text-left text-xs text-muted-foreground">
+          ¿Necesitas ayuda?{" "}
+          <a href="mailto:support@biovity.com" className={authLinkClass}>
+            Contactar soporte
+          </a>
+        </p>
       </div>
-    </div>
+    </AuthPageShell>
   )
 }
