@@ -12,6 +12,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 import type { TipoBeneficio, Trabajo } from "@/lib/types/trabajos"
 import { formatFechaRelativa } from "@/lib/utils"
 
@@ -20,6 +21,7 @@ type TrabajosListProps = {
   totalCount?: number
   onShowMore?: () => void
   isUpdating?: boolean
+  onResetFilters: () => void
 }
 
 const getBeneficioIcon = (tipo: TipoBeneficio) => {
@@ -37,20 +39,38 @@ const getBeneficioIcon = (tipo: TipoBeneficio) => {
   }
 }
 
-export function TrabajosList({ trabajos, totalCount, onShowMore, isUpdating }: TrabajosListProps) {
+export function TrabajosList({
+  trabajos,
+  totalCount,
+  onShowMore,
+  isUpdating,
+  onResetFilters,
+}: TrabajosListProps) {
   const { push } = useRouter()
 
   if (trabajos.length === 0) {
     return (
       <section className="bg-surface-container-lowest py-6">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-lg border border-border/60 bg-surface-container-low p-6 text-center">
-            <p className="text-lg font-semibold text-foreground mb-2">
+          <div
+            className="rounded-lg border border-border/60 bg-surface-container-low p-6 text-center"
+            role="status"
+          >
+            <p className="text-base font-semibold text-foreground mb-2 text-balance">
               No se encontraron ofertas con los filtros seleccionados
             </p>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto text-pretty">
               Ajusta la búsqueda o limpia los filtros para ver otras oportunidades.
             </p>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onResetFilters}
+              disabled={isUpdating}
+              className="mt-4 h-11 rounded-lg"
+            >
+              Limpiar filtros
+            </Button>
           </div>
         </div>
       </section>
