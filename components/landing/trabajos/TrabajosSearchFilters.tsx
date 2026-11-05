@@ -46,6 +46,7 @@ type FilterFormState = {
 
 type FilterFormAction =
   | { type: "SET_FIELD"; field: keyof FilterFormState; value: string }
+  | { type: "SYNC"; state: FilterFormState }
   | { type: "RESET" }
 
 function formatSalarioInputValue(value: number): string {
@@ -64,6 +65,8 @@ const filterFormReducer = (state: FilterFormState, action: FilterFormAction): Fi
   switch (action.type) {
     case "SET_FIELD":
       return { ...state, [action.field]: action.value }
+    case "SYNC":
+      return action.state
     case "RESET":
       return {
         query: "",
@@ -91,17 +94,27 @@ function countActiveFilters(state: FilterFormState): number {
   ].filter(Boolean).length
 }
 
+const createFilterFormState = (filtros: FiltrosTrabajos): FilterFormState => ({
+  query: filtros.query,
+  ubicacion: filtros.ubicacion,
+  modalidad: filtros.modalidad === "Modalidad" ? "" : filtros.modalidad,
+  formato: filtros.formato === "Formato" ? "" : filtros.formato,
+  salarioMin: filtros.salarioMin !== null ? formatSalarioInputValue(filtros.salarioMin) : "",
+  salarioMax: filtros.salarioMax !== null ? formatSalarioInputValue(filtros.salarioMax) : "",
+  moneda: filtros.moneda,
+  experiencia: filtros.experiencia === "Experiencia" ? "" : filtros.experiencia,
+})
+
 export function TrabajosSearchFilters({ filtros, onFiltrosChange }: TrabajosSearchFiltersProps) {
-  const [filterState, dispatch] = useReducer(filterFormReducer, {
-    query: filtros.query,
-    ubicacion: filtros.ubicacion,
-    modalidad: filtros.modalidad === "Modalidad" ? "" : filtros.modalidad,
-    formato: filtros.formato === "Formato" ? "" : filtros.formato,
-    salarioMin: filtros.salarioMin ? formatSalarioInputValue(filtros.salarioMin) : "",
-    salarioMax: filtros.salarioMax ? formatSalarioInputValue(filtros.salarioMax) : "",
-    moneda: filtros.moneda,
-    experiencia: filtros.experiencia === "Experiencia" ? "" : filtros.experiencia,
-  })
+  const [filterState, dispatch] = useReducer(filterFormReducer, filtros, createFilterFormState)
+  const filtersKey = JSON.stringify(filtros)
+  const [appliedFiltersKey, setAppliedFiltersKey] = useState(filtersKey)
+
+  // Sincroniza Atrás/Adelante sin remontar los inputs ni perder el foco al buscar.
+  if (appliedFiltersKey !== filtersKey) {
+    setAppliedFiltersKey(filtersKey)
+    dispatch({ type: "SYNC", state: createFilterFormState(filtros) })
+  }
 
   const initialActiveCount = countActiveFilters(filterState)
   const [isExpanded, setIsExpanded] = useState(initialActiveCount > 0)

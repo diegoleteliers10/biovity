@@ -180,6 +180,33 @@ export function TrabajosPageContent() {
     setUrlState({ ...filtrosToUrlState(newFiltros), orden: urlState.orden, pagina: 1 })
   }
 
+  const hasActiveFilters = Boolean(
+    filtros.query ||
+      filtros.ubicacion ||
+      filtros.modalidad !== "Modalidad" ||
+      filtros.formato !== "Formato" ||
+      filtros.salarioMin !== null ||
+      filtros.salarioMax !== null ||
+      filtros.moneda !== "CLP" ||
+      filtros.experiencia !== "Experiencia" ||
+      filtros.categoria
+  )
+
+  const handleResetFilters = () => {
+    setUrlState({
+      q: null,
+      ubicacion: null,
+      modalidad: null,
+      formato: null,
+      salarioMin: null,
+      salarioMax: null,
+      moneda: null,
+      experiencia: null,
+      categoria: null,
+      pagina: null,
+    })
+  }
+
   const trabajosFiltrados = useMemo(() => {
     return apiTrabajos.filter((trabajo) => {
       if (filtros.query) {
@@ -290,7 +317,7 @@ export function TrabajosPageContent() {
           </div>
         </section>
       )}
-      {!isLoading && !isError && apiTrabajos.length === 0 && (
+      {!isLoading && !isError && apiTrabajos.length === 0 && !hasActiveFilters && (
         <section className="bg-surface-container-lowest pb-12">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex min-h-40 flex-col items-center justify-center rounded-lg bg-surface-container-low px-4 py-8 text-center">
@@ -302,7 +329,7 @@ export function TrabajosPageContent() {
           </div>
         </section>
       )}
-      {!isLoading && !isError && apiTrabajos.length > 0 && (
+      {!isLoading && !isError && (apiTrabajos.length > 0 || hasActiveFilters) && (
         <>
           <section className="bg-surface-container-lowest">
             <div className="mx-auto flex max-w-6xl items-center justify-between px-4 pb-3 pt-2 sm:px-6 lg:px-8">
@@ -318,6 +345,7 @@ export function TrabajosPageContent() {
             totalCount={trabajosFiltrados.length}
             onShowMore={hasMore ? () => setUrlState({ pagina: safePagina + 1 }) : undefined}
             isUpdating={isFetching}
+            onResetFilters={handleResetFilters}
           />
         </>
       )}
